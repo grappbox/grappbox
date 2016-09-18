@@ -30,7 +30,7 @@ public class BugAssignationCursors {
     }
 
     public static Cursor query_BugAssignation(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
-        return sBugAssignationQueryBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
+        return openHelper.getReadableDatabase().query(BugAssignationEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
     }
 
     public static Cursor query_BugAssignationByBugId(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
@@ -50,6 +50,10 @@ public class BugAssignationCursors {
     }
 
     public static Uri insert(@NonNull Uri uri, ContentValues values, GrappboxDBHelper openHelper){
+        Cursor result = openHelper.getReadableDatabase().query(BugAssignationEntry.TABLE_NAME, new String[]{BugEntry._ID}, BugAssignationEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{values.getAsString(BugAssignationEntry.COLUMN_LOCAL_BUG_ID), values.getAsString(BugAssignationEntry.COLUMN_LOCAL_USER_ID)}, null, null, null);
+        if (result != null && result.moveToFirst()){
+            return GrappboxContract.BugTagEntry.buildBugTagWithLocalIdUri(result.getLong(0));
+        }
         long id = openHelper.getWritableDatabase().insert(BugAssignationEntry.TABLE_NAME, null, values);
         if (id <= 0)
             throw new SQLException("Failed to insert row into " + uri);

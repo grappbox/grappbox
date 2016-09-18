@@ -1,34 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.view.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/viewPager"
     tools:context="com.grappbox.grappbox.project_fragments.BugtrackerFragment">
-    <android.support.v4.view.ViewPager
+    <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/viewPager">
-        <android.support.design.widget.TabLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:tabBackground="@color/GrappPurple"
-            app:tabTextColor="@color/GrappWhiteLight"
-            app:tabSelectedTextColor="@color/GrappWhiteLight"
-            app:tabIndicatorColor="@color/GrappWhiteLight">
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Open"/>
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Closed"/>
-            <android.support.design.widget.TabItem
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Yours"/>
-        </android.support.design.widget.TabLayout>
-    </android.support.v4.view.ViewPager>
-
-
-</FrameLayout>
+        android:layout_height="wrap_content"
+        app:tabBackground="@color/GrappPurple"
+        app:tabTextColor="@color/GrappWhiteLight"
+        app:tabSelectedTextColor="@color/GrappWhiteLight"
+        app:tabIndicatorColor="@color/GrappWhiteLight">
+    </android.support.design.widget.TabLayout>
+</android.support.v4.view.ViewPager>

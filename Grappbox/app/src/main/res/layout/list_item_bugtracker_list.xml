@@ -2,9 +2,9 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_gravity="center_vertical"
     android:paddingTop="15dp"
-    android:paddingBottom="15dp">
+    android:paddingBottom="15dp"
+    android:descendantFocusability="blocksDescendants">
 
     <ImageView
         android:layout_width="match_parent"
@@ -33,30 +33,14 @@
             android:layout_height="wrap_content"
             android:text="Opened the 2016-09-17"
             android:id="@+id/date_status"/>
-        <HorizontalScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingTop="5dp"
-            android:paddingEnd="15dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
                 android:id="@+id/tag_container">
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Bug"
-                    android:textColor="@color/GrappWhiteLight"
-                    android:background="@drawable/bg_rounded_colored"
-                    android:paddingTop="2dp"
-                    android:paddingBottom="2dp"
-                    android:paddingEnd="5dp"
-                    android:paddingStart="5dp"
-                    android:layout_marginEnd="5dp"
-                    android:backgroundTint="@color/GrappPurple"/>
+
             </LinearLayout>
-        </HorizontalScrollView>
+
     </LinearLayout>
 
     <LinearLayout

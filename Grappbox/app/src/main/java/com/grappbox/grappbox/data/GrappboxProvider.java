@@ -83,6 +83,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_BY_GRAPPBOX_ID = 212;
     public static final int BUG_ALL_JOIN = 213;
     public static final int BUG_WITH_ASSIGNATION = 214;
+    public static final int BUG_WITH_TAG = 215;
 
     public static final int BUG_TAG = 220;
     public static final int BUG_TAG_BY_BUG_ID = 221;
@@ -178,6 +179,7 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG, BUG);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/tag_user", BUG_ALL_JOIN);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/user_assignation", BUG_WITH_ASSIGNATION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/tags", BUG_WITH_TAG);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/#", BUG_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/*", BUG_BY_GRAPPBOX_ID);
 
@@ -507,6 +509,9 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_WITH_ASSIGNATION:
                 retCursor = BugCursors.query_BugWithAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case BUG_WITH_TAG:
+                retCursor = BugCursors.query_BugWithTag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_TAG_BY_GRAPPBOX_BUG_ID:
                 retCursor = BugTagCursors.query_BugTagByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -618,37 +623,53 @@ public class GrappboxProvider extends ContentProvider {
 
     @Override
     public int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] args) {
+        int ret;
         switch (sUriMatcher.match(uri)) {
             case USER:
-                return UserCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = UserCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case PROJECT:
-                return ProjectCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = ProjectCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case PROJECT_ACCOUNT:
-                return ProjectCursors.update_account(uri, contentValues, selection, args, mOpenHelper);
+                ret = ProjectCursors.update_account(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case ROLE:
-                return RoleCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = RoleCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case ROLE_ASSIGNATION:
-                return RoleAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = RoleAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case BUG:
-                return BugCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = BugCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case BUG_TAG:
-                return BugTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = BugTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case BUG_ASSIGNATION:
-                return BugAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = BugAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case TIMELINE:
-                return TimelineCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = TimelineCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case TIMELINE_MESSAGES:
-               return TimelineMessageCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = TimelineMessageCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case CLOUD:
-                return CloudCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = CloudCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case EVENT:
-                return EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case EVENT_TYPE:
-                return EventTypeCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = EventTypeCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
-
+        if (getContext() != null && getContext().getContentResolver() != null)
+            getContext().getContentResolver().notifyChange(uri, null);
+        return ret;
     }
 
     @Override

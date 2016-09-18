@@ -263,9 +263,8 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 userValue.put(UserEntry.COLUMN_GRAPPBOX_ID, currentUser.getString("id"));
                 userValue.put(UserEntry.COLUMN_FIRSTNAME, currentUser.getString("firstname"));
                 userValue.put(UserEntry.COLUMN_LASTNAME, currentUser.getString("lastname"));
-                usersValues[i] = userValue;
+                getContext().getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
             }
-            getContext().getContentResolver().bulkInsert(UserEntry.CONTENT_URI, usersValues);
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
         } catch (JSONException e) {
@@ -358,10 +357,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                     continue;
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, id);
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
-                rolesAssignationsValues.add(roleAssignationValue);
+                getContext().getContentResolver().insert(RolesAssignationEntry.CONTENT_URI, roleAssignationValue);
                 projectCursor.close();
             }
-            getContext().getContentResolver().bulkInsert(RolesAssignationEntry.CONTENT_URI, rolesAssignationsValues.toArray(new ContentValues[rolesAssignationsValues.size()]));
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
         } catch (JSONException e) {

@@ -84,6 +84,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_CLOUD_IMPORT_FILE = "com.grappbox.grappbox.sync.ACTION_CLOUD_IMPORT_FILE";
     public static final String ACTION_CLOUD_DELETE = "com.grappbox.grappbox.sync.ACTION_CLOUD_DELETE";
     public static final String ACTION_CLOUD_DOWNLOAD = "com.grappbox.grappbox.sync.ACTION_CLOUD_DOWNLOAD";
+    public static final String ACTION_SYNC_BUG_COMMENT = "com.grappbox.grappbox.sync.ACTION_SYNC_BUG_COMMENT";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -100,6 +101,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_CLOUD_FILE_PASSWORD = "cloud_file_password";
     public static final String EXTRA_DIRECTORY_NAME = "dir_name";
     public static final String EXTRA_FILENAME = "filename";
+    public static final String EXTRA_BUG_ID = "bug_id";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -169,6 +171,9 @@ public class GrappboxJustInTimeService extends IntentService {
                 String password = intent.hasExtra(EXTRA_CLOUD_FILE_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_FILE_PASSWORD) : null;
                 String passwordSafe = intent.hasExtra(EXTRA_CLOUD_PASSWORD) ? intent.getStringExtra(EXTRA_CLOUD_PASSWORD) : null;
                 handleCloudDownload(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_CLOUD_PATH), intent.getStringExtra(EXTRA_FILENAME), passwordSafe, password, responseObserver);
+            }
+            else if (ACTION_SYNC_BUG_COMMENT.equals(action)){
+                handleBugsCommentsSync(intent.getLongExtra(EXTRA_USER_ID, -1), intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_BUG_ID, -1), responseObserver);
             }
         }
     }
@@ -690,6 +695,101 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
+    private void handleBugsCommentsSync(long localUID, long localPID, long bugId, @Nullable ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        if (apiToken.isEmpty() || localUID == -1 || localPID == -1)
+            return;
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        Cursor grappboxBugId = getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry.COLUMN_GRAPPBOX_ID}, BugEntry._ID + "=?", new String[]{String.valueOf(bugId)}, null);
+        if (grappboxProjectId == null || !grappboxProjectId.moveToFirst() || grappboxBugId == null || !grappboxBugId.moveToFirst())
+            return;
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/bugtracker/getcomments/" + apiToken+"/"+grappboxProjectId.getString(0)+"/"+grappboxBugId.getString(0));
+            Log.d(LOG_TAG, "Connect bug API : " + url.toString());
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson != null && !returnedJson.isEmpty()){
+                JSONObject json = new JSONObject(returnedJson);
+                Log.d(LOG_TAG, json.toString());
+                if (Utils.Errors.checkAPIError(json)){
+                    Log.d(LOG_TAG, "error detected : " + Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    if (responseObserver != null)
+                    {
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
+                    }
+                }
+                else {
+                    JSONArray bugsData = json.getJSONObject("data").getJSONArray("array");
+                    Log.d(LOG_TAG, "BugData length : " + bugsData.length());
+                    ArrayList<Long> existingComments = new ArrayList<>();
+                    if (bugsData.length() != 0){
+                        for (int i = 0; i < bugsData.length(); ++i) {
+                            ContentValues currentValue = new ContentValues();
+                            JSONObject bug = bugsData.getJSONObject(i);
+
+                            String grappboxCID = bug.getJSONObject("creator").getString("id");
+                            Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+
+                            if (creatorId == null || !creatorId.moveToFirst())
+                            {
+                                handleUserDetailSync(grappboxCID);
+                                creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                                if (creatorId == null || !creatorId.moveToFirst()){
+                                    Log.e(LOG_TAG, "creator id not exist");
+                                    continue;
+                                }
+                            }
+                            currentValue.put(BugEntry.COLUMN_GRAPPBOX_ID, bug.getString("id"));
+                            currentValue.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                            creatorId.close();
+                            currentValue.put(BugEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
+                            currentValue.put(BugEntry.COLUMN_TITLE, bug.getString("title"));
+                            currentValue.put(BugEntry.COLUMN_DESCRIPTION, bug.getString("description"));
+                            currentValue.put(BugEntry.COLUMN_LOCAL_PARENT_ID, bugId);
+                            String last_edited = Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject(bug.isNull("editedAt") ? "createdAt" : "editedAt").getString("date"));
+                            currentValue.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, last_edited);
+                            if (!bug.isNull("deletedAt")){
+                                currentValue.put(BugEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(bug.getJSONObject("deletedAt").getString("date")));
+                            }
+                            Uri commentUri = getContentResolver().insert(BugEntry.CONTENT_URI, currentValue);
+                            if (commentUri == null)
+                                continue;
+                            long commentId = Long.parseLong(commentUri.getLastPathSegment());
+                            existingComments.add(commentId);
+                        }
+                    }
+                    String selection = BugEntry.COLUMN_LOCAL_PARENT_ID + "="+bugId+ (existingComments.size() > 0 ? " AND " + BugEntry._ID + " NOT IN (" : "");
+                    if (existingComments.size() > 0){
+                        boolean isFirst = true;
+                        for (Long commentId : existingComments){
+                            selection += isFirst ? commentId.toString() : ", " + commentId.toString();
+                            isFirst = false;
+                        }
+                        selection += ")";
+                    }
+                    getContentResolver().delete(BugEntry.CONTENT_URI, selection, null);
+                }
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "IOException : ", e);
+        } catch (JSONException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            grappboxProjectId.close();
+            if (connection != null)
+                connection.disconnect();
+            if (responseObserver != null){
+                responseObserver.send(Activity.RESULT_OK, null);
+            }
+        }
+    }
+
     private void handleBugsSync(long localUID, long localPID, int offset, int limit, boolean isSyncingClosedBugs, ResultReceiver responseObserver) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         if (apiToken.isEmpty() || localUID == -1 || localPID == -1)
@@ -722,15 +822,14 @@ public class GrappboxJustInTimeService extends IntentService {
                 else {
                     JSONArray bugsData = json.getJSONObject("data").getJSONArray("array");
                     Log.d(LOG_TAG, "BugData length : " + bugsData.length());
+
                     if (bugsData.length() != 0){
+
                         for (int i = 0; i < bugsData.length(); ++i) {
                             ContentValues currentValue = new ContentValues();
                             JSONObject bug = bugsData.getJSONObject(i);
                             JSONArray bugTag = bug.getJSONArray("tags");
                             JSONArray bugUser = bug.getJSONArray("users");
-
-                            ArrayList<ContentValues> tagAssignationValue = new ArrayList<>();
-                            ArrayList<ContentValues> userAssignationValue = new ArrayList<>();
 
                             String grappboxCID = bug.getJSONObject("creator").getString("id");
                             Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
@@ -743,7 +842,6 @@ public class GrappboxJustInTimeService extends IntentService {
                                     Log.e(LOG_TAG, "creator id not exist");
                                     continue;
                                 }
-
                             }
                             currentValue.put(BugEntry.COLUMN_GRAPPBOX_ID, bug.getString("id"));
                             currentValue.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
@@ -761,8 +859,16 @@ public class GrappboxJustInTimeService extends IntentService {
                             if (bugUri == null)
                                 continue;
                             long bugId = Long.parseLong(bugUri.getLastPathSegment());
+                            Intent syncComments = new Intent(this, GrappboxJustInTimeService.class);
+                            syncComments.setAction(ACTION_SYNC_BUG_COMMENT);
+                            syncComments.putExtra(EXTRA_PROJECT_ID, localPID);
+                            syncComments.putExtra(EXTRA_USER_ID, localUID);
+                            syncComments.putExtra(EXTRA_RESPONSE_RECEIVER, responseObserver);
+                            syncComments.putExtra(EXTRA_BUG_ID, bugId);
+                            startService(syncComments);
                             Log.d(LOG_TAG, "Insert tag : " + bugTag.length());
                             //Insert tags
+                            ArrayList<Long> existingTags = new ArrayList<>();
                             for (int j = 0; j < bugTag.length(); ++j) {
                                 JSONObject currentTag = bugTag.getJSONObject(j);
                                 ContentValues tagValue = new ContentValues();
@@ -776,12 +882,25 @@ public class GrappboxJustInTimeService extends IntentService {
                                     continue;
                                 tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_BUG_ID, bugId);
                                 tagAssignValue.put(BugTagEntry.COLUMN_LOCAL_TAG_ID, Long.parseLong(tagURI.getLastPathSegment()));
-                                tagAssignationValue.add(tagAssignValue);
+                                Uri bugtagUri = getContentResolver().insert(BugTagEntry.CONTENT_URI, tagAssignValue);
+                                if (bugtagUri == null)
+                                    continue;
+                                long bugtagId = Long.parseLong(bugtagUri.getLastPathSegment());
+                                existingTags.add(bugtagId);
                             }
-                            getContentResolver().bulkInsert(BugTagEntry.CONTENT_URI, tagAssignationValue.toArray(new ContentValues[tagAssignationValue.size()]));
-
+                            String selection = BugTagEntry.COLUMN_LOCAL_BUG_ID + "=?"+ (existingTags.size() > 0 ? " AND " + BugTagEntry._ID + " NOT IN (" : "");
+                            if (existingTags.size() > 0){
+                                boolean isFirst = true;
+                                for (Long idTag : existingTags){
+                                    selection += isFirst ? idTag.toString() : "," + idTag.toString();
+                                    isFirst = false;
+                                }
+                                selection += ")";
+                            }
+                            getContentResolver().delete(BugTagEntry.CONTENT_URI, selection, new String[]{String.valueOf(bugId)});
                             //insert users
                             Log.d(LOG_TAG, "Insert users : " +  bugUser.length());
+                            ArrayList<Long> existingUsers = new ArrayList<>();
                             for (int j = 0; j < bugUser.length(); ++j) {
                                 JSONObject currentUser = bugUser.getJSONObject(j);
                                 Cursor userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
@@ -799,10 +918,23 @@ public class GrappboxJustInTimeService extends IntentService {
                                 currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_BUG_ID, bugId);
                                 Log.d(LOG_TAG, "User inserted : " + userCursor.getLong(0));
                                 currentUserAssignation.put(BugAssignationEntry.COLUMN_LOCAL_USER_ID, userCursor.getLong(0));
-                                userAssignationValue.add(currentUserAssignation);
+                                Uri userEntryURI = getContentResolver().insert(BugAssignationEntry.CONTENT_URI, currentUserAssignation);
+                                if (userEntryURI == null)
+                                    continue;
+                                long userEntryId = Long.parseLong(userEntryURI.getLastPathSegment());
+                                existingUsers.add(userEntryId);
                                 userCursor.close();
                             }
-                            getContentResolver().bulkInsert(BugAssignationEntry.CONTENT_URI, userAssignationValue.toArray(new ContentValues[userAssignationValue.size()]));
+                            selection = BugTagEntry.COLUMN_LOCAL_BUG_ID + "=?" + (existingUsers.size() > 0 ? " AND " + BugAssignationEntry._ID + " NOT IN (" : "");
+                            if (existingUsers.size() > 0){
+                                boolean isFirst = true;
+                                for (Long idUser : existingUsers){
+                                    selection += isFirst ? idUser.toString() : "," + idUser.toString();
+                                    isFirst = false;
+                                }
+                                selection += ")";
+                            }
+                            getContentResolver().delete(BugAssignationEntry.CONTENT_URI, selection, new String[]{String.valueOf(bugId)});
                         }
                     }
                 }

@@ -20,6 +20,7 @@ import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 public class BugCursors {
     private static final SQLiteQueryBuilder sCompleteQueryBuilder;
     private static final SQLiteQueryBuilder sBugWithAssignationBuilder;
+    private static final SQLiteQueryBuilder sBugWithTag;
 
 
     static {
@@ -38,11 +39,21 @@ public class BugCursors {
         " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID +
         " INNER JOIN " + UserEntry.TABLE_NAME +
         " ON " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_USER_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
+
+        sBugWithTag = new SQLiteQueryBuilder();
+        sBugWithTag.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugTagEntry.TABLE_NAME +
+        " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_BUG_ID +
+        " INNER JOIN " + TagEntry.TABLE_NAME +
+        " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_TAG_ID + " = " + TagEntry.TABLE_NAME + "." + TagEntry._ID);
     }
 
 
     public static Cursor query_Bug(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return openHelper.getReadableDatabase().query(BugEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
+    }
+
+    public static Cursor query_BugWithTag(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
+        return sBugWithTag.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static Cursor query_BugById(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
