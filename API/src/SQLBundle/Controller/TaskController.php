@@ -985,7 +985,11 @@ class TaskController extends RolesAndTokenVerificationController
 
 		if (array_key_exists('finished_at', $content))
 		{
-			$task->setFinishedAt(new Datetime($content->finished_at));
+			if ($content->finished_at == null)
+				$task->setFinishedAt(null);
+			else
+				$task->setFinishedAt(new Datetime($content->finished_at));
+
 
 			// if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
 			// 	$deletedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
