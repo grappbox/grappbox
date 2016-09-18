@@ -387,15 +387,17 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
         delete = (LinearLayout) moreDialogView.findViewById(R.id.delete);
 
         title.setText(filename);
-        filesize.setText(FileUtils.byteCountToDisplaySize(item.getLong(CloudListAdapter.COLUMN_SIZE)));
-        filetype.setText(item.getString(CloudListAdapter.COLUMN_MIMETYPE));
-        lastModified.setText(item.getString(CloudListAdapter.COLUMN_LAST_EDITED_UTC).split("\\.")[0]);
+        if (item.getInt(CloudListAdapter.COLUMN_TYPE) == 0){
+            filesize.setText(FileUtils.byteCountToDisplaySize(item.getLong(CloudListAdapter.COLUMN_SIZE)));
+            filetype.setText(item.getString(CloudListAdapter.COLUMN_MIMETYPE));
+            lastModified.setText(item.getString(CloudListAdapter.COLUMN_LAST_EDITED_UTC).split("\\.")[0]);
+        }
 
-        if (item.getInt(CloudListAdapter.COLUMN_TYPE) > 1)
+        if (item.getInt(CloudListAdapter.COLUMN_TYPE) > 0)
         {
-            filesize.setVisibility(View.GONE);
-            filetype.setVisibility(View.GONE);
-            lastModified.setVisibility(View.GONE);
+            moreDialogView.findViewById(R.id.lay_filetype).setVisibility(View.GONE);
+            moreDialogView.findViewById(R.id.lay_filesize).setVisibility(View.GONE);
+            moreDialogView.findViewById(R.id.lay_last_modified).setVisibility(View.GONE);
             download.setVisibility(View.GONE);
         }
 

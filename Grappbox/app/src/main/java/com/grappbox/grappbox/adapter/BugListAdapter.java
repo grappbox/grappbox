@@ -78,7 +78,6 @@ public class BugListAdapter extends CursorAdapter {
         boolean isClosed = !cursor.isNull(COLUMN_DELETED_UTC);
 
         vh.mTitle.setText(cursor.getString(COLUMN_TITLE));
-        Log.d(LOG_TAG, String.valueOf(isClosed));
         Date date = null;
         try {
             date = Utils.Date.convertUTCToPhone(cursor.getString(isClosed ? COLUMN_DELETED_UTC : COLUMN_LAST_EDIT_UTC));

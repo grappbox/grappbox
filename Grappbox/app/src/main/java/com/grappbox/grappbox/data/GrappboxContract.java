@@ -60,7 +60,7 @@ public class GrappboxContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildWithJoint(){
+        public static Uri buildWithoint(){
             return CONTENT_URI.buildUpon().appendPath("user").appendPath("0").build();
         }
 
@@ -380,6 +380,10 @@ public class GrappboxContract {
 
         public static Uri buildBugWithAllJoin(){
             return CONTENT_URI.buildUpon().appendPath("tag_user").build();
+        }
+
+        public static  Uri buildBugWithAssignation(){
+            return CONTENT_URI.buildUpon().appendPath("user_assignation").build();
         }
     }
 

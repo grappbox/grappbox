@@ -229,6 +229,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         Uri uri = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, user);
         if (uri == null || uri.getLastPathSegment().isEmpty() || Long.parseLong(uri.getLastPathSegment()) == -1)
             throw new SQLiteAbortException("Insert account user failed");
+        Log.d(LOG_TAG, uri.toString());
         long localUID = Long.parseLong(uri.getLastPathSegment());
         AccountManager am = AccountManager.get(getContext());
         am.setUserData(account, GrappboxJustInTimeService.EXTRA_USER_ID, String.valueOf(localUID));
@@ -378,6 +379,8 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
+        getContext().startService(launchBugSyncing);
+        launchBugSyncing.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
         getContext().startService(launchBugSyncing);
     }
 

@@ -25,6 +25,7 @@
         android:paddingTop="15dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
+        android:id="@+id/lay_filesize"
         >
         <TextView
             android:layout_width="match_parent"
@@ -51,6 +52,7 @@
         android:paddingTop="15dp"
         android:paddingStart="15dp"
         android:paddingEnd="15dp"
+        android:id="@+id/lay_filetype"
         >
         <TextView
             android:layout_width="match_parent"
@@ -79,6 +81,7 @@
         android:paddingEnd="15dp"
         android:background="@drawable/bg_bottom_border"
         android:paddingBottom="15dp"
+        android:id="@+id/lay_last_modified"
         >
         <TextView
             android:layout_width="match_parent"

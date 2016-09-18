@@ -17,6 +17,7 @@ import com.grappbox.grappbox.R;
  */
 public class GrappboxProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+
     private GrappboxDBHelper mOpenHelper;
     private Context mContext;
 
@@ -80,7 +81,8 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG = 210;
     public static final int BUG_BY_ID = 211;
     public static final int BUG_BY_GRAPPBOX_ID = 212;
-    public static final int BUG_ALL_JOIN = 223;
+    public static final int BUG_ALL_JOIN = 213;
+    public static final int BUG_WITH_ASSIGNATION = 214;
 
     public static final int BUG_TAG = 220;
     public static final int BUG_TAG_BY_BUG_ID = 221;
@@ -175,6 +177,7 @@ public class GrappboxProvider extends ContentProvider {
         //Bug related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG, BUG);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/tag_user", BUG_ALL_JOIN);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/user_assignation", BUG_WITH_ASSIGNATION);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/#", BUG_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/*", BUG_BY_GRAPPBOX_ID);
 
@@ -500,6 +503,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_ALL_JOIN:
                 retCursor = BugCursors.query_BugWithTagAndAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_WITH_ASSIGNATION:
+                retCursor = BugCursors.query_BugWithAssignation(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case BUG_TAG_BY_GRAPPBOX_BUG_ID:
                 retCursor = BugTagCursors.query_BugTagByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);

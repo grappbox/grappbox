@@ -19,6 +19,8 @@ import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
  */
 public class BugCursors {
     private static final SQLiteQueryBuilder sCompleteQueryBuilder;
+    private static final SQLiteQueryBuilder sBugWithAssignationBuilder;
+
 
     static {
         sCompleteQueryBuilder = new SQLiteQueryBuilder();
@@ -28,6 +30,12 @@ public class BugCursors {
         " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_TAG_ID + " = " + TagEntry.TABLE_NAME + "." + TagEntry._ID +
         " INNER JOIN " + BugAssignationEntry.TABLE_NAME +
         " ON " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID + " = " + BugEntry.TABLE_NAME + "." + BugEntry._ID +
+        " INNER JOIN " + UserEntry.TABLE_NAME +
+        " ON " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_USER_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
+
+        sBugWithAssignationBuilder = new SQLiteQueryBuilder();
+        sBugWithAssignationBuilder.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugAssignationEntry.TABLE_NAME +
+        " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID +
         " INNER JOIN " + UserEntry.TABLE_NAME +
         " ON " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_USER_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
     }
@@ -47,6 +55,10 @@ public class BugCursors {
 
     public static Cursor query_BugWithTagAndAssignation(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return sCompleteQueryBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
+    }
+
+    public static Cursor query_BugWithAssignation(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
+        return sBugWithAssignationBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static Uri insert(@NonNull Uri uri, ContentValues values, GrappboxDBHelper openHelper){

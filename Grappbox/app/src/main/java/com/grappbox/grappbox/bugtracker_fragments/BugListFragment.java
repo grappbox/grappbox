@@ -27,6 +27,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.BugAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
+import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
@@ -83,6 +84,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                 bugSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                 bugSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
                 bugSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+                if (getArguments().getInt(ARG_LIST_TYPE) == TYPE_CLOSE)
+                    bugSync.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
                 getActivity().startService(bugSync);
             }
         });
@@ -92,7 +95,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.d(LOG_TAG, "onCreateLoader");
-        String selection, sortOrder;
+        String selection, sortOrder = "datetime("+BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
         String[] selectionArgs;
 
         switch (args.getInt(ARG_LIST_TYPE)){
@@ -101,25 +104,23 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                 selectionArgs = new String[]{
                         String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1))
                 };
-                sortOrder = "datetime("+BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
                 break;
             case TYPE_CLOSE:
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NOT NULL";
                 selectionArgs = new String[]{
                         String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1))
                 };
-                sortOrder = "datetime("+BugEntry.COLUMN_DATE_DELETED_UTC + ") DESC";
                 break;
             case TYPE_YOURS:
                 long uid = Long.parseLong(AccountManager.get(getActivity()).getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+                Log.d(LOG_TAG, "UID = " + uid);
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL AND " +
-                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + "=?";
+                        UserEntry.TABLE_NAME + "." + UserEntry._ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)),
                         String.valueOf(uid)
                 };
-                sortOrder = "datetime("+BugEntry.COLUMN_DATE_DELETED_UTC + ") DESC";
-                return new CursorLoader(getActivity(), BugEntry.buildBugWithAllJoin(), BugListAdapter.projection, selection, selectionArgs, sortOrder);
+                return new CursorLoader(getActivity(), BugEntry.buildBugWithAssignation(), BugListAdapter.projection, selection, selectionArgs, sortOrder);
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
@@ -128,6 +129,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (getArguments().getInt(ARG_LIST_TYPE) == TYPE_YOURS)
+            DatabaseUtils.dumpCursor(data);
         mAdapter.swapCursor(data);
     }
 
