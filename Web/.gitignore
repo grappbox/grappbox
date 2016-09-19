@@ -63,8 +63,12 @@ $RECYCLE.BIN/
 /web/bundles/
 
 # =========================
-# Custom
+# Resources
 # =========================
 
 /web/resources/css/*
+!/web/resources/css/.gitkeep
 /web/resources/js/*
+!/web/resources/js/.gitkeep
+!/web/resources/js/html5shiv.min.js
+!/web/resources/js/respond.min.js
