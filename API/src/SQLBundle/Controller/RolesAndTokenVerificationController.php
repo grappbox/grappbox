@@ -34,31 +34,35 @@ class RolesAndTokenVerificationController extends Controller
 		if (!$token)
 			return NULL;
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('token' => $token));
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('token' => $token));
 
-		if (!$user)
-			return $user;
+		if (!$auth)
+			return $auth;
 
 		$now = new DateTime('now');
-		if ($user->getToken() && $user->getTokenValidity() && $user->getTokenValidity() < $now)
+		if ($auth->getToken() && $auth->getTokenValidity() && $auth->getTokenValidity() < $now)
 		{
-			$this->token = null;
+			$auth->setToken(null);
+
+			$em->persist($auth);
+			$em->flush();
+
 			return null;
 		}
-		else if ($user->getToken() && $user->getTokenValidity())
+		else if ($auth->getToken() && $auth->getTokenValidity())
 		{
-			$user->setTokenValidity($now->add(new DateInterval("P1D")));
+			$auth->setTokenValidity($now->add(new DateInterval("P1D")));
 
-			$em = $this->getDoctrine()->getManager();
-			$em->persist($user);
+			$em->persist($auth);
 			$em->flush();
 		}
 
-		return $user;
+		return $auth->getUser();
 	}
 
 	// return 0 if user has no rigths on this role
-	// return 1 if user has rights
+	// return 1 if user has readOnly rights
+	// return 2 if user has read and writte rights
 	protected function checkRoles($user, $projectId, $role)
 	{
 		$em = $this->getDoctrine()->getManager();
