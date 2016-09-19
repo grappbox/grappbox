@@ -14,9 +14,9 @@ use Symfony\Component\HttpFoundation\Request;
 class HomeController extends Controller
 {
 
-  // Routine definition
-  // Beautify Symfony URLs (remove tailing slash) 
-  public function tailingSlashAction(Request $request)
+  // Routine definition (public)
+  // Beautify Symfony URLs by removing tailing slash 
+  public function rewriteAction(Request $request)
   {
     $path = $request->getPathInfo();
     $url = $request->getRequestUri();
@@ -25,8 +25,8 @@ class HomeController extends Controller
   }
 
 
-  // Start point
-  // Load APP homepage (public)	
+  // Routine definition (public)
+  // Load APP homepage
   public function indexAction()
   {
     return $this->render("AppBundle:Home:index.html.twig");

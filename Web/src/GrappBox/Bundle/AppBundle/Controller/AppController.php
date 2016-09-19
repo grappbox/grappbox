@@ -16,9 +16,9 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 class AppController extends Controller
 {
 
-  // Routine definition
-  // Beautify angularJS URLs (remove "/#/") 
-  public function angularRouteManagementAction(Request $request)
+  // Routine definition (public)
+  // Beautify AngularJS URLs by removing "/#/" 
+  public function rewriteAction(Request $request)
   {
     $path = $request->getpathInfo();
 
@@ -27,8 +27,8 @@ class AppController extends Controller
   }
 
 
-  // Start point
-  // Load APP homepage (connected)
+  // Routine definition (public)
+  // Load APP homepage
   public function indexAction()
   {
     $cookies = array(

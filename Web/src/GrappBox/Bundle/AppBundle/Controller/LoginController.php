@@ -13,8 +13,11 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 
-class UserController extends Controller
+class LoginController extends Controller
 {
   private $api_baseURL = "http://api.grappbox.com/";
   private $api_version = "V0.2";
@@ -35,7 +38,20 @@ class UserController extends Controller
 
 
   // Routine definition
-  // Get initial user data from GrappBox API  
+  // On API critical error behavior
+  private function onCriticalError($data)
+  {
+    $redirect = new RedirectResponse("/login");
+    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+    curl_close($data);
+
+    return $redirect;
+  }
+
+
+  // Routine definition
+  // Get initial user data from GrappBox API
   private function getLoginData($formData)
   {
     $data = curl_init();
@@ -49,8 +65,7 @@ class UserController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      throw new HttpException(500, "Unable to fetch data from GrappBox API. Please try again.");
-
+      return onCriticalError($data);
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -85,14 +100,15 @@ class UserController extends Controller
       }
     }
     else
-      throw new HttpException(500, 'Invalid JSON data format from GRAPPBOX API.');
+      return onCriticalError($data);
+    
     return $redirect;
   }
 
 
   // Routine definition
   // Check stored user data before login   
-  private function checkLoginData($token)
+  private function setLoginState($token)
   {
     $data = curl_init();
 
@@ -103,8 +119,7 @@ class UserController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      throw new HttpException(500, "Unable to fetch data from GrappBox API. Please try again.");
-
+      return onCriticalError($data);
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -131,33 +146,33 @@ class UserController extends Controller
       }
     }
     else
-      throw new HttpException(500, "Invalid JSON data format from GrappBox API. Please try again.");
+      return onCriticalError($data);
     return $redirect;
   }
 
 
-  // Start point
-  // Load APP login page (public)  
-  public function loginAction(Request $request)
+  // Routine definition (public)
+  // Load APP login page  
+  public function indexAction(Request $request)
   {
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
 
     if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
-      return $this->checkLoginData(base64_decode($cookieData->get("TOKEN")));
+      return $this->setLoginState(base64_decode($cookieData->get("TOKEN")));
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)
-    ->add("email", "email")
-    ->add("password", "password")
-    ->add("submit", "submit", array("label" => "Login"))
+    ->add("email", EmailType::class)
+    ->add("password", PasswordType::class)
+    ->add("submit", SubmitType::class, array("label" => "Login"))
     ->getForm();
 
     $form->handleRequest($request);
 
     if ($form->isValid())
       return $this->getLoginData(json_encode(array("data" => array(
-        "login" => $form["email"]->getData(),
+        "login" => strtolower($form["email"]->getData()),
         "password" => $form["password"]->getData()))));
 
     return $this->render("AppBundle:Home:login.html.twig", array("form" => $form->createView()));   

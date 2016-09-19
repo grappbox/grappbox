@@ -4,7 +4,11 @@ app_home:
 
 app_login:
     path: /login
-    defaults: { _controller: AppBundle:User:login }
+    defaults: { _controller: AppBundle:Login:index }
+
+app_register:
+    path: /register
+    defaults: { _controller: AppBundle:Register:index }
 
 app_index:
     path: /app/
@@ -12,17 +16,17 @@ app_index:
 
 app_routing:
     path: /app/{url}
-    defaults: { _controller: AppBundle:App:angularRouteManagement }
+    defaults: { _controller: AppBundle:App:rewrite }
 
 app_routing_advanced:
     path: /app/{url}/{parameters}
-    defaults: { _controller: AppBundle:App:angularRouteManagement }
+    defaults: { _controller: AppBundle:App:rewrite }
     requirements:
       parameters: ".+"
 
 app_resource:
     path: /{url}
-    defaults: { _controller: AppBundle:Home:tailingSlash }
+    defaults: { _controller: AppBundle:Home:rewrite }
     requirements:
         url: .*/$
     methods: [GET]
