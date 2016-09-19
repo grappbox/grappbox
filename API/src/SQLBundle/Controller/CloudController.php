@@ -125,12 +125,12 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		$userRepository = $this->getDoctrine()->getRepository("SQLBundle:User");
-		$user = $userRepository->findOneByToken($token);
-		return (is_null($user) ? -1 : $user->getId());
-		// $authRepository = $this->getDoctrine()->getRepository("SQLBundle:Authentication");
-		// $user = $authRepository->findOneByToken($token)->getUser();
+		// $userRepository = $this->getDoctrine()->getRepository("SQLBundle:User");
+		// $user = $userRepository->findOneByToken($token);
 		// return (is_null($user) ? -1 : $user->getId());
+		$authRepository = $this->getDoctrine()->getRepository("SQLBundle:Authentication");
+		$user = $authRepository->findOneByToken($token);
+		return (is_null($user) ? -1 : $user->getUser()->getId());
 	}
 
 	private function checkUserCloudAuthorization($userId, $idProject)
