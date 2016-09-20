@@ -6,177 +6,180 @@
 
 {% extends 'AppBundle:Home:base.html.twig' %}
 
-{% block title %}Home | GrappBox{% endblock %}
+{% block title %}GrappBox{% endblock %}
 
 {% block body %}
 
-  <section id="home">
-    <div class="header-section home-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="home-title">
-              <h1>Grapp<span class="red">Box</span></h1>
-              <h2>The new way to manage projects</h2>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <ul class="list-inline btn-social-list">
-              <li>
-                <a target="_blank" title="GrappBox on Twitter" class="btn-social btn-twitter btn-radial" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a>
-              </li>
-              <li>
-                <a target="_blank" title="GrappBox on Facebook" class="btn-social btn-facebook btn-radial" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i></a>
-              </li>
-              <li>
-                <a target="_blank" title="GrappBox on Google+" class="btn-social btn-google-plus btn-radial" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
-              </li>
-              <li>
-                <a target="_blank" title="Contact GrappBox by email" class="btn-social btn-mail btn-radial" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <nav class="navbar" role="navigation">
-    <div class="container">
-      <div class="navbar-header">
-        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-menu">
-          <span class="sr-only">Toggle navigation</span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-          <span class="icon-bar"></span>
-        </button>
-      </div>
-      <div class="collapse navbar-collapse" id="navbar-menu">
-        <ul class="nav navbar-nav">
-          <li><a href="#home" title="Home" class="btn-center-underline active"><i class="fa fa-home"></i>Home</a></li>
-          <li><a href="#about" title="About GrappBox" class="btn-center-underline"><i class="fa fa-list"></i>About</a></li>
-          <li><a href="#register" title="Create your GrappBox account" class="btn-center-underline"><i class="fa fa-check"></i>Register</a></li>
-          <li><a href="/login" title="Sign in to your GrappBox account" class="btn-right-sweep app-login"><i class="fa fa-sign-in fa-fw"></i>Sign in</a></li>
-        </ul>
-      </div>
-    </div>
-  </nav>
-
-  <section id="about">
-    <div class="content-section even-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-5 col-sm-6">
-            <div class="clearfix"></div>
-            <h3 class="section-heading">Manage YOUR projects the way YOU want.<br></h3>
-            <p class="section-text">If you want a tool for managing your projects, teams, tasks, ideas, files, and even clients, GrappBox is for you!<br>We wanted to design a simple platform, fresh and fast that allows you to create and manage your projects from A to Z!</p>
-          </div>
-          <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-            <img class="img-responsive" alt="Teamwork !" src="resources/images/business-team_wide.min.png">
-          </div>
-        </div>
-      </div>
+<!-- Navbar -->
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand page-scroll" href="/#home"><img src="resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo">Grapp<span class="box">Box</span></a>
     </div>
 
-    <div class="content-section odd-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-5 col-lg-offset-1 col-sm-push-6 col-sm-6">
-            <div class="clearfix"></div>
-            <h3 class="section-heading">Think, design and create!<br></h3>
-            <p class="section-text">With GrappBox, creating technology projects have never been so easy.<br>Manage all your projects, add teams and team members, schedule appointments, store your files on your reserved cloud storage, share your ideas on the real-time collaborative whiteboard, give life to them thanks to our visualization diagram maker, and discuss with your clients via the timeline!</p>
-          </div>
-          <div class="col-lg-5 col-sm-pull-6 col-sm-6">
-            <img class="img-responsive img-reduced img-round-radius" alt="Lead by your imagination." src="resources/images/business-work.min.png">
-          </div>
-        </div>
-      </div>
+    <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="#about">About</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a class="login" href="/login"><i class="material-icons">open_in_new</i>Login</a></li>
+      </ul>
     </div>
+  </div>
+</nav>
 
-    <div class="content-section even-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-5 col-sm-6">
-            <div class="clearfix"></div>
-            <h3 class="section-heading">On all your devices.<br></h3>
-            <p class="section-text">We are for world peace, be it the computer world as yours. Therefore, we try to create a homogeneous ecosystem, simple and harmonious, and most importantly, accessible.<br>Also, we try to be everywhere you need: Web, Android, iPhone, Windows Phone ...<br>You don't have Internet access? No problem, the Windows and Linux applications are made for you!</p>
-          </div>
-          <div class="col-lg-5 col-lg-offset-2 col-sm-6">
-            <img class="img-responsive img-reduced" lt="On all your devices." src="resources/images/travel-around-world_square.min.png" id="around-world">
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <section id="register">
-    <div class="content-section odd-section">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-12">
-            <div class="clearfix"></div>
-            <h3 class="section-heading text-center">Already ready to join us?</h3>
-            <p class="section-text text-center">That's awesome, thanks a lot!<br>But please wait a bit more, we're not ready yet... (but we will, soon)</p>
-            <ul class="btn-account-list list-inline text-center">
-              <li>
-                <a title="Create your GrappBox account" class="btn btn-account btn-register btn-fade disabled"><i class="fa fa-check fa-fw"></i>Register</a>
-              </li>
-              <li>
-                <a href="/login" title="Log in to your GrappBox account" class="btn btn-account btn-login btn-fade"><i class="fa fa-sign-in fa-fw"></i>Sign in</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="content-section" id="contact-header"></div>
-
-    <div class="content-section odd-section" id="contact">
-      <div class="container">
-        <div class="row">
-          <div class="col-lg-3">
-            <h3>Stay in touch!</h3>
-          </div>
-          <div class="col-lg-9">
-            <ul class="list-inline btn-social-list">
-              <li>
-                <a target="_blank" title="GrappBox on Twitter" class="btn-social btn-twitter btn-radial" href="https://twitter.com/GrappBox"><i class="fa fa-twitter fa-fw"></i></a><span class="network-name">@GrappBox</span>
-              </li>
-              <li>
-                <a target="_blank" title="GrappBox on Facebook" class="btn-social btn-facebook btn-radial" href="https://facebook.com/GrappBox"><i class="fa fa-facebook fa-fw"></i>
-                </a>
-                <span class="network-name">GrappBox</span>
-              </li>
-              <li>
-                <a target="_blank" title="GrappBox on Google+" class="btn-social btn-google-plus btn-radial" href="https://plus.google.com/115657691021326143456/posts"><i class="fa fa-google-plus fa-fw"></i></a>
-                <span class="network-name">+GrappBox</span>
-              </li>
-              <li>
-                <a target="_blank" title="Contact GrappBox by email" class="btn-social btn-mail btn-radial" href="mailto:grappbox@gmail.com"><i class="fa fa-envelope-o fa-fw"></i></a>
-                <span class="network-name">grappbox@gmail.com</span>
-              </li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <footer>
+<!-- Header -->
+<div id="home">
+  <div class="home-body">
     <div class="container">
       <div class="row">
-        <div class="col-lg-12">
-          <div class="content-footer footer">
-            <p class="copyright">Copyright &copy; GrappBox 2016. All rights reserved.<br>Vector images created by <a target="_blank" href="http://www.freepik.com">Freepik</a> and <a target="_blank" href="http://www.justcreative.com">JustCreative</a>.</p>
-          </div>
+        <div class="col-md-7 brand">
+          <h1>Grapp<span class="red">Box</span><span class="blinker bg-red"></span></h1>
+          <p class="home-text">A strong project manager with truly useful features.<br>Everything you need, everywhere.</p>
+        </div>
+        <div class="col-md-5 actions">
+          <a href="/login" class="btn btn-default login"><i class="material-icons">open_in_new</i>Login</a>
+          <a href="/" class="btn btn-default register"><i class="material-icons">add_circle_outline</i>Register</a>
+          <a href="/" class="btn btn-default download"><i class="material-icons">file_download</i>Download</a>
+          <a href="#about" class="btn btn-default more"><i class="material-icons">arrow_drop_down</i>Learn more</a>
         </div>
       </div>
     </div>
-  </footer>
+  </div>
+</div>
+
+<div class="separation"></div>
+
+<!-- About -->
+<div id="about">
+  <div class="container">
+    <div class="section-title text-center center">
+      <h2>About GrappBox</h2>
+      <hr class="bg-red">
+    </div>
+    <div class="row">
+      <div class="col-md-4">
+        <div class="about-text">
+          <h3>Who We Are</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam. Sed commodo nibh ante facilisis bibendum dolor feugiat at. Duis sed dapibus leo nec ornare diam commodo nibh.</p>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam. Sed commodo nibh ante facilisis bibendum. </p>
+        </div>
+      </div>
+      <div class="col-md-4"><img src="resources/img/grappbox.min.png" class="img-responsive" height="360" width="360" alt="GrappBox logo"></div>
+      <div class="col-md-4">
+        <div class="about-text">
+          <h3>What's inside</h3>
+          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diam. Sed commodo nibh ante facilisis bibendum dolor feugiat at. Duis sed dapibus leo nec ornare diam.</p>
+          <ul>
+            <li><i class="material-icons">check</i>Lorem ipsum dolor sit amet</li>
+            <li><i class="material-icons">check</i>Consectetur adipiscing commodo</li>
+            <li><i class="material-icons">check</i>Duis sed dapibus leo sed dapibus</li>
+            <li><i class="material-icons">check</i>Sed commodo nibh ante bibendum</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Services -->
+<div id="services" class="text-center">
+  <div class="container">
+    <div class="section-title center">
+      <h2>Our Services</h2>
+      <hr class="bg-red">
+    </div>
+    <div class="space"></div>
+    <div class="row">
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop red">dashboard</i>
+          <h4>Dashboard</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque etiam.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop yellow">cloud_queue</i>
+          <h4>Cloud</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop green">mode_edit</i>
+          <h4>Collborative whiteboard</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque etiam.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop orange">forum</i>
+          <h4>Team timeline</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque.</p>
+        </div>
+      </div>
+    </div>
+    <div class="space"></div>
+    <div class="row">
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop orange">people_outline</i>
+          <h4>Customer timeline</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque etiam.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop purple">bug_report</i>
+          <h4>Bugtracker</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop blue">event</i>
+          <h4>Calendar</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque etiam.</p>
+        </div>
+      </div>
+      <div class="col-md-3 col-sm-6">
+        <div class="service"><i class="material-icons pop red">important_devices</i>
+          <h4>All-in-one</h4>
+          <p>Lorem ipsum dolor sit amet placerat facilisis felis mi in tempus eleifend pellentesque natoque.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="separation"></div>
+
+<!-- Contact -->
+<div id="contact" class="text-center">
+  <div class="container">
+    <div class="section-title center">
+      <h2>Contact us</h2>
+      <hr class="bg-red">
+      <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Duis sed dapibus leo nec ornare diamcommodo nibh ante facilisis.</p>
+    </div>
+    <div class="col-md-12">
+      <ul>
+        <li class="col-md-4">
+          <a href="mailto:grappbox@gmail.com" target="_blank" class="pop"><i class="material-icons bg-green">email</i><p>grappbox@gmail.com</p></a>
+        </li>
+        <li class="col-md-4">
+          <a href="https://www.facebook.com/GrappBox/" target="_blank" class="pop"><img src="resources/img/facebook.min.png" height="45" width="45" alt="GrappBox on Facebook">
+            <p>GrappBox</p>
+          </a>
+        </li>
+        <li class="col-md-4">
+          <a href="https://twitter.com/grappbox" target="_blank" class="pop"><img src="resources/img/twitter.min.png" height="45" width="45" alt="GrappBox on Twitter">
+            <p>@GrappBox</p>
+          </a>  
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<div id="footer">
+  <div class="container">
+    <p>Copyright &copy; GrappBox 2016. All rights reserved.</p>
+  </div>
+</div>
 
 {% endblock %}

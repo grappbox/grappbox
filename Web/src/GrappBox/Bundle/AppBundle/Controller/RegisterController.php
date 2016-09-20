@@ -9,6 +9,7 @@
 namespace GrappBox\Bundle\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -17,7 +18,7 @@ use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-class LoginController extends Controller
+class RegisterController extends Controller
 {
   private $api_baseURL = "http://api.grappbox.com/";
   private $api_version = "V0.2";
@@ -41,7 +42,7 @@ class LoginController extends Controller
   // On API critical error behavior
   private function onCriticalError($data)
   {
-    $redirect = new RedirectResponse("/login");
+    $redirect = new RedirectResponse("/register");
     $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
     curl_close($data);
@@ -163,9 +164,12 @@ class LoginController extends Controller
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)
+    ->add("firstname", TextType::class)
+    ->add("lastname", TextType::class)
     ->add("email", EmailType::class)
     ->add("password", PasswordType::class)
-    ->add("submit", SubmitType::class, array("label" => "Login"))
+    ->add("Birthday", BirthdayType::class)
+    ->add("submit", SubmitType::class, array("label" => "Create account"))
     ->getForm();
 
     $form->handleRequest($request);

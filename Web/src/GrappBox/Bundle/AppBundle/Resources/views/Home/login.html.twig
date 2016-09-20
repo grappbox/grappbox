@@ -6,9 +6,27 @@
 
 {% extends 'AppBundle:Home:base.html.twig' %}
 
-{% block title %}Login | GrappBox{% endblock %}
+{% block title %}Sign in to GrappBox{% endblock %}
 
 {% block body %}
+
+<!-- Navbar -->
+<nav class="navbar navbar-custom navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <a class="navbar-brand page-scroll" href="/#home"><img src="resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo">Grapp<span class="red">Box</span></a>
+    </div>
+
+    <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
+      <ul class="nav navbar-nav">
+        <li><a href="/#about">About</a></li>
+        <li><a href="/#services">Services</a></li>
+        <li><a href="/#contact">Contact</a></li>
+        <li><a class="login" href="/login"><i class="material-icons">open_in_new</i>Login</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
 <div class="container-fluid">
   <div class="row">
@@ -49,6 +67,12 @@
       </div>
 
     </div>
+  </div>
+</div>
+
+<div id="footer">
+  <div class="container">
+    <p>Copyright &copy; GrappBox 2016. All rights reserved.</p>
   </div>
 </div>
 

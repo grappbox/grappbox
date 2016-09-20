@@ -9,15 +9,32 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
-    <meta http-equiv="content-language" content="en-us" />
-    <meta name="description" content="GrappBox" />
-    <meta name="author" content="GrappBox" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta charset="UTF-8" />
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
+    <meta http-equiv="content-language" content="en-us">
+    <meta name="description" content="GrappBox">
+    <meta name="author" content="GrappBox">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <link rel="apple-touch-icon" sizes="57x57" href="resources/img/favicon/apple-icon-57x57.png">
+    <link rel="apple-touch-icon" sizes="60x60" href="resources/img/favicon/apple-icon-60x60.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="resources/img/favicon/apple-icon-72x72.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="resources/img/favicon/apple-icon-76x76.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="resources/img/favicon/apple-icon-114x114.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="resources/img/favicon/apple-icon-120x120.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="resources/img/favicon/apple-icon-144x144.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="resources/img/favicon/apple-icon-152x152.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="resources/img/favicon/apple-icon-180x180.png">
+    <link rel="icon" type="image/png" sizes="192x192" href="resources/img/favicon/android-icon-192x192.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="resources/img/favicon/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="resources/img/favicon/favicon-96x96.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="resources/img/favicon/favicon-16x16.png">
+    <link rel="manifest" href="resources/img/favicon/manifest.json">
+    <meta name="msapplication-TileColor" content="#ffffff">
+    <meta name="msapplication-TileImage" content="resources/img/favicon/ms-icon-144x144.png">
+    <meta name="theme-color" content="#ffffff">
     <!-- Google Fonts -->
-    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900" />
+    <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900">
 
     {% stylesheets
     '@AppBundle/Resources/public/css/vendor/bootstrap.css'
@@ -26,7 +43,7 @@
     '@AppBundle/Resources/public/css/vendor/ripples.css'
     '@AppBundle/Resources/public/css/home/home.css'
     filter='?uglifycss' output='resources/css/home.min.css' %}
-    <link rel="stylesheet" type="text/css" href="{{ asset_url }}" />
+    <link rel="stylesheet" type="text/css" href="{{ asset_url }}">
     {% endstylesheets %}
 
     <!-- Responsive for IE8 -->
@@ -46,9 +63,13 @@
     '@AppBundle/Resources/public/js/vendor/bootstrap-material.js'
     '@AppBundle/Resources/public/js/vendor/cookie.js'
     '@AppBundle/Resources/public/js/vendor/hammer.js'
+    '@AppBundle/Resources/public/js/vendor/konami.js'
+    '@AppBundle/Resources/public/js/vendor/parallax.js'
     '@AppBundle/Resources/public/js/vendor/ripples.js'
+    '@AppBundle/Resources/public/js/vendor/scroll.js'
     '@AppBundle/Resources/public/js/home/home.js'
     '@AppBundle/Resources/public/js/home/login.js'
+    '@AppBundle/Resources/public/js/home/secret.js'
     filter='?uglifyjs2' output='resources/js/home.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
