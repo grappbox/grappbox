@@ -475,8 +475,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     var elem = {"token": $rootScope.user.token,
                 "projectId": $scope.projectID,
                 "title": task.title,
-                "description": task.description,
-                "due_date": new Date(task.due_date),
+                "description": task.description ? task.description : null,
                 "is_milestone": false,
                 "is_container": false
                 };
@@ -484,12 +483,18 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       elem['is_container'] = true;
       elem["tasksAdd"] = $scope.data.taskToAdd;
       elem["tasksRemove"] = $scope.data.taskToRemove;
+      elem['due_date'] = null;
+      elem['started_at'] = null;
     }
     if (task.type == "milestone") {
       elem['is_milestone'] = true;
       elem['dependencies'] = task.dependencies;
+      elem['due_date'] = new Date(task.due_date);
+      elem['started_at'] = new Date(task.due_date);
     }
     if (task.type == "regular") {
+      elem['due_date'] = new Date(task.due_date);
+      elem['started_at'] = new Date(task.started_at);
       elem['dependencies'] = task.dependencies;
     }
 
