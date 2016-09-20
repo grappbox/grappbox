@@ -47,20 +47,13 @@ SQLBundle\Entity\User:
             type: string
             length: 255
             nullable: TRUE
-        isClient:
-            type: boolean
-            column: is_client
         twitter:
             type: string
             length: 255
             nullable: TRUE
-        token:
-          type: string
-          length: 255
-          nullable: TRUE
-        tokenValidity:
-          type: datetime
-          nullable: TRUE
+        isClient:
+            type: boolean
+            column: is_client
     manyToMany:
         projects:
           targetEntity: Project
@@ -107,5 +100,8 @@ SQLBundle\Entity\User:
           cascade: [remove]
         ressources:
           targetEntity: Ressources
+          mappedBy: user
+        authentications:
+          targetEntity: Authentication
           mappedBy: user
     lifecycleCallbacks: {  }

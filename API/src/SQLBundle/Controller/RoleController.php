@@ -766,14 +766,14 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} array.projectId project id
 	* @apiSuccess {Number} array.roleId Role id
 	* @apiSuccess {String} array.name Role name
-	* @apiSuccess {Number} array.team_timeline Team timeline role
-	* @apiSuccess {Number} array.customer_timeline Customer timeline role
+	* @apiSuccess {Number} array.teamTimeline Team timeline role
+	* @apiSuccess {Number} array.customerTimeline Customer timeline role
 	* @apiSuccess {Number} array.gantt Gantt role
 	* @apiSuccess {Number} array.whiteboard Whiteboard role
 	* @apiSuccess {Number} array.bugtracker Bugtracker role
 	* @apiSuccess {Number} array.event Event role
 	* @apiSuccess {Number} array.task Task role
-	* @apiSuccess {Number} array.project_settings Project settings role
+	* @apiSuccess {Number} array.projectSettings Project settings role
 	* @apiSuccess {Number} array.cloud Cloud role
 	*
 	* @apiSuccessExample Success-Response:
@@ -789,14 +789,14 @@ class RoleController extends RolesAndTokenVerificationController
 	*					"projectId": 1,
 	*					"roleId": 10,
 	*					"name": "Intern roles",
-	*					"team_timeline": 1,
-	*					"customer_timeline": 0,
+	*					"teamTimeline": 1,
+	*					"customerTimeline": 0,
 	*					"gantt": 0,
 	*					"whiteboard": 0,
 	*					"bugtracker": 1,
 	*					"event": 0,
 	*					"task": 0,
-	*					"project_settings": 0,
+	*					"projectSettings": 0,
 	*					"cloud": 1
 	*				},
 	*				...
@@ -854,14 +854,14 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} array Array of roles
 	* @apiSuccess {Number} array.id Role id
 	* @apiSuccess {String} array.name Role name
-	* @apiSuccess {Number} array.team_timeline Team timeline role
-	* @apiSuccess {Number} array.customer_timeline Customer timeline role
+	* @apiSuccess {Number} array.teamTimeline Team timeline role
+	* @apiSuccess {Number} array.customerTimeline Customer timeline role
 	* @apiSuccess {Number} array.gantt Gantt role
 	* @apiSuccess {Number} array.whiteboard Whiteboard role
 	* @apiSuccess {Number} array.bugtracker Bugtracker role
 	* @apiSuccess {Number} array.event Event role
 	* @apiSuccess {Number} array.task Task role
-	* @apiSuccess {Number} array.project_settings Project settings role
+	* @apiSuccess {Number} array.projectSettings Project settings role
 	* @apiSuccess {Number} array.cloud Cloud role
 	*
 	* @apiSuccessExample Success-Response:
@@ -876,14 +876,14 @@ class RoleController extends RolesAndTokenVerificationController
 	*				{
 	*					"id": 10,
 	*					"name": "Intern roles",
-	*					"team_timeline": 1,
-	*					"customer_timeline": 0,
+	*					"teamTimeline": 1,
+	*					"customerTimeline": 0,
 	*					"gantt": 0,
 	*					"whiteboard": 0,
 	*					"bugtracker": 1,
 	*					"event": 0,
 	*					"task": 0,
-	*					"project_settings": 0,
+	*					"projectSettings": 0,
 	*					"cloud": 1
 	*				}
 	*			]
@@ -1460,9 +1460,24 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	*
 	* @apiSuccess {Object[]} array Array of user roles
+<<<<<<< HEAD
 	* @apiSuccess {Number} array.id Project user role id
 	* @apiSuccess {Number} array.project_id Id of the project
 	* @apiSuccess {Number} array.role_id Id of the role
+=======
+	* @apiSuccess {Number} array.projectId project id
+	* @apiSuccess {Number} array.roleId Role id
+	* @apiSuccess {String} array.name Role name
+	* @apiSuccess {Number} array.teamTimeline Team timeline role
+	* @apiSuccess {Number} array.customerTimeline Customer timeline role
+	* @apiSuccess {Number} array.gantt Gantt role
+	* @apiSuccess {Number} array.whiteboard Whiteboard role
+	* @apiSuccess {Number} array.bugtracker Bugtracker role
+	* @apiSuccess {Number} array.event Event role
+	* @apiSuccess {Number} array.task Task role
+	* @apiSuccess {Number} array.projectSettings Project settings role
+	* @apiSuccess {Number} array.cloud Cloud role
+>>>>>>> a65f14e0014c123637387a0cca5b02583e7c8c21
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1474,10 +1489,27 @@ class RoleController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"array": [
 	*				{
+<<<<<<< HEAD
 	*					"id": 10,
 	*					"project_id": 5,
 	*					"role_id": 1
 	*				}
+=======
+	*					"projectId": 1,
+	*					"roleId": 10,
+	*					"name": "Intern roles",
+	*					"teamTimeline": 1,
+	*					"customerTimeline": 0,
+	*					"gantt": 0,
+	*					"whiteboard": 0,
+	*					"bugtracker": 1,
+	*					"event": 0,
+	*					"task": 0,
+	*					"projectSettings": 0,
+	*					"cloud": 1
+	*				},
+	*				...
+>>>>>>> a65f14e0014c123637387a0cca5b02583e7c8c21
 	*			]
 	*		}
 	*	}

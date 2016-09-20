@@ -77,16 +77,6 @@ class User implements UserInterface
     private $twitter;
 
     /**
-     * @var string
-     */
-    private $token;
-
-    /**
-     * @var \DateTime
-     */
-    private $tokenValidity;
-
-    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $bug_creator;
@@ -144,8 +134,13 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $authentications;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $colors;
-    
+
     /**
      * @var boolean
      */
@@ -166,6 +161,7 @@ class User implements UserInterface
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->authentications = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -192,8 +188,7 @@ class User implements UserInterface
           'firstname' => $this->firstname,
           'lastname' => $this->lastname,
           'email' => $this->email,
-          'token' => $this->token,
-          'avatar' => $this->avatarDate->format('Y-m-d H:i:s'),
+          'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
           'is_client' => $this->isClient
       );
     }
@@ -482,52 +477,6 @@ class User implements UserInterface
     public function getTwitter()
     {
         return $this->twitter;
-    }
-
-    /**
-     * Set token
-     *
-     * @param string $token
-     * @return User
-     */
-    public function setToken($token)
-    {
-        $this->token = $token;
-
-        return $this;
-    }
-
-    /**
-     * Get token
-     *
-     * @return string
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * Set tokenValidity
-     *
-     * @param \DateTime $tokenValidity
-     * @return User
-     */
-    public function setTokenValidity($tokenValidity)
-    {
-        $this->tokenValidity = $tokenValidity;
-
-        return $this;
-    }
-
-    /**
-     * Get tokenValidity
-     *
-     * @return \DateTime
-     */
-    public function getTokenValidity()
-    {
-        return $this->tokenValidity;
     }
 
     /**
@@ -1003,11 +952,7 @@ class User implements UserInterface
     /**
      * Get whiteboard_creator
      *
-<<<<<<< HEAD
-     * @return \Doctrine\Common\Collections\Collection 
-=======
      * @return \Doctrine\Common\Collections\Collection
->>>>>>> API-Work
      */
     public function getWhiteboardCreator()
     {
@@ -1063,10 +1008,43 @@ class User implements UserInterface
     /**
      * Get isClient
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsClient()
     {
         return $this->isClient;
+    }
+
+    /**
+     * Add authentications
+     *
+     * @param \SQLBundle\Entity\Authentication $authentication
+     * @return User
+     */
+    public function addAuthentication(\SQLBundle\Entity\Authentication $authentication)
+    {
+        $this->authentications[] = $authentication;
+
+        return $this;
+    }
+
+    /**
+     * Remove authentications
+     *
+     * @param \SQLBundle\Entity\Authentication $ressources
+     */
+    public function removeAuthentication(\SQLBundle\Entity\Authentication $authentication)
+    {
+        $this->authentications->removeElement($authentication);
+    }
+
+    /**
+     * Get authentications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthentications()
+    {
+        return $this->authentications;
     }
 }

@@ -12,6 +12,7 @@ use Symfony\Component\Security\Core\Util\SecureRandom;
 use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\Project;
 use SQLBundle\Entity\User;
+use SQLBundle\Entity\Authentication;
 use DateTime;
 use DateInterval;
 
@@ -133,12 +134,18 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*
  	* @apiParam {string} login login (user's email)
  	* @apiParam {string} password password
+	* @apiParam {string} mac MAC address of the device (equals null if flag = 'web')
+	* @apiParam {string} flag device flag (web, and, ios, wph, desk)
+	* @apiParam {string} device_name name of the device
  	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	*		"data": {
 	*   		"login": "john.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
+	*   		"password": "ThisisAPassword",
+	*   		"mac": "XXXXXXXXXXXXXX",
+	*   		"flag": "and",
+	*   		"device_name": "John Doe's phone"
 	*		}
 	*   }
 	*
@@ -146,9 +153,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} firstname user's firstname
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
 	* @apiSuccess {string} avatar user's avatar last modif date
 	* @apiSuccess {Boolean} is_client if the user is a client
+	* @apiSuccess {string} token user's authentication token
  	*
  	* @apiSuccessExample {json} Success-Response:
  	* 	{
@@ -161,9 +168,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
 	*				"avatar": "1945-06-18 06:00:00",
-	*				"is_client": false
+	*				"is_client": false,
+	*				"token": "fkE35dcDneOjF....",
 	*			}
  	* 	}
  	*
@@ -181,6 +188,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
+	*		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.6",
+	*			"return_message": "AccountAdministration - login - Missing Parameter"
 	*		}
 	* 	}
  	*
@@ -258,29 +273,52 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
-		$now = new DateTime('now');
-		if ($user->getToken() && $user->getTokenValidity() > $now)
-			{
-				$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('deviceFlag' => $content->flag, 'macAddr' => $content->mac));
+		if ($auth instanceof Authentication && $content->flag != "web")
+		{
+			if ($content->device_name != $auth->getDeviceName()) {
+				$auth->setDeviceName($content->device_name);
+				$em->persist($auth);
+				$em->flush();
+			}
+		}
+		else {
+			$auth = new Authentication();
+			$auth->setuser($user);
+			$auth->setMacAddr($content->mac);
+			$auth->setDeviceFlag($content->flag);
+			$auth->setDeviceName($content->device_name);
+			$em->persist($auth);
+			$em->flush();
+		}
 
-				$em->persist($user);
+		$now = new DateTime('now');
+		if ($auth->getToken() && $auth->getTokenValidity() > $now)
+			{
+				$auth->setTokenValidity($now->add(new DateInterval("P1D")));
+
+				$em->persist($auth);
 				$em->flush();
 
-				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+				$userObj = $user->objectToArray();
+				$userObj['token'] = $auth->getToken();
+				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
 			}
 
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
-		$user->setToken($token);
-		$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		$auth->setToken($token);
+		$auth->setTokenValidity($now->add(new DateInterval("P1D")));
 
-		$em->persist($user);
+		$em->persist($auth);
 		$em->flush();
 
 		$this->checkProjectsDeletedTime($user);
 
-		return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+		$userObj = $user->objectToArray();
+		$userObj['token'] = $auth->getToken();
+		return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
 	}
 
 	private function checkProjectsDeletedTime($user)
@@ -414,14 +452,19 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!$user)
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
 
-		$user->setToken(null);
-
 		$em = $this->getDoctrine()->getManager();
-		$em->persist($user);
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('user' => $user, 'token' => $token));
+		if (!($auth instanceof Authentication))
+			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
+
+		$auth->setToken(null);
+
+		$em->persist($auth);
 		$em->flush();
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
+
 	/**
 	* @api {post} /0.3/accountadministration/register Register
 	* @apiName register
@@ -435,6 +478,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiParam {string} lastname user's lastname
 	* @apiParam {Date} [birthday] user's birthday
 	* @apiParam {boolean} is_client If the user is a client
+	* @apiParam {string} mac MAC address of the device (equals null if flag = 'web')
+	* @apiParam {string} flag device flag (web, and, ios, wph, desk)
+	* @apiParam {string} device_name name of the device
 	*
 	* @apiParamExample {json} Request-Example Minimum:
 	*   {
@@ -443,7 +489,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false
+	*				"is_client": false,
+	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*				"flag": "desk",
+	*				"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Partial:
@@ -453,10 +502,13 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false,
+	*   		"is_client": false,
 	*   		"avatar": "100100111010011110100100.......",
 	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia"
+	*   		"country": "New Caledonia",
+	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*				"flag": "desk",
+	*				"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Full:
@@ -466,14 +518,17 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false,
+	*   		"is_client": false,
 	*   		"birthday": "1980-12-04",
 	*   		"avatar": "100100111010011110100100.......",
 	*   		"phone": "010-1658-9520",
 	*   		"country": "New Caledonia",
 	*   		"linkedin": "linkedin.com/janne.doe"
 	*   		"viadeo": "viadeo.com/janne.doe",
-	*   		"twitter": "twitter.com/janne.doe"
+	*   		"twitter": "twitter.com/janne.doe",
+	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*				"flag": "desk",
+	*				"device_name": "John's Desktop"
 	*   	}
 	*   }
 	*
@@ -481,9 +536,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} firstname user's firstname
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
 	* @apiSuccess {string} avatar user's avatar last modification date
 	* @apiSuccess {Boolean} is_client if the user is a client
+	* @apiSuccess {string} token user's authentication token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	HTTP/1.1 201 Created
@@ -497,9 +552,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*				"firstname": "Janne",
 	*				"lastname": "Doe",
 	*				"email": "janne.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
 	*				"avatar": "1945-06-18 06:00:00",
-	*				"is_client": false
+	*				"is_client": false,
+	*				"token": "fkE35dcDneOjF...."
 	*			}
 	* 	}
 	*
@@ -627,7 +682,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = $content->data;
 
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content)
-				|| !array_key_exists('password', $content) || !array_key_exists('email', $content) || !array_key_exists('is_client', $content))
+				|| !array_key_exists('password', $content) || !array_key_exists('email', $content)
+				|| !array_key_exists('is_client', $content) || !array_key_exists('mac', $content)
+				|| !array_key_exists('flag', $content) || !array_key_exists('device_name', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
 		$em = $this->getDoctrine()->getManager();
@@ -647,17 +704,28 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
 
+		$em->persist($user);
+		$em->flush();
+
+		$auth = new Authentication();
+		$auth->setUser($user);
+		$auth->setMacAddr($content->mac);
+		$auth->setDeviceFlag($content->flag);
+		$auth->setDeviceName($content->device_name);
+
 		$now = new DateTime('now');
 
 		$secureUtils = $this->get('security.secure_random');
 		$tmpToken = $secureUtils->nextBytes(25);
 		$token = md5($tmpToken);
-		$user->setToken($token);
-		$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		$auth->setToken($token);
+		$auth->setTokenValidity($now->add(new DateInterval("P1D")));
 
-		$em->persist($user);
+		$em->persist($auth);
 		$em->flush();
 
-		return $this->setCreated("1.14.1", "AccountAdministration", "register", "Complete Success", $user->objectToArray());
+		$userObj = $user->objectToArray();
+		$userObj['token'] = $auth->getToken();
+		return $this->setCreated("1.14.1", "AccountAdministration", "register", "Complete Success", $userObj);
 	}
 }

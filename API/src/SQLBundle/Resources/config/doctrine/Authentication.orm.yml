@@ -1,0 +1,39 @@
+SQLBundle\Entity\Authentication:
+    type: entity
+    table: authentication
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        token:
+          type: string
+          length: 255
+          nullable: TRUE
+        tokenValidity:
+          type: datetime
+          nullable: TRUE
+        macAddr:
+          type: string
+          length: 255
+          nullable: TRUE
+          column: mac_addr
+        deviceFlag:
+          type: string
+          length: 255
+          column: device_flag
+        deviceName:
+          type: string
+          length: 255
+          column: device_name
+    manyToOne:
+      user:
+        targetEntity: User
+        inveredBy: authentications
+        joinColumn:
+          name: user_id
+          referencedColumnName: id
+
+    lifecycleCallbacks: {  }
