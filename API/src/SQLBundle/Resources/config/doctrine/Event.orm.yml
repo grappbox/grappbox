@@ -31,10 +31,6 @@ SQLBundle\Entity\Event:
             type: datetime
             column: edited_at
             nullable: TRUE
-        deletedAt:
-            type: datetime
-            column: deleted_at
-            nullable: TRUE
     manyToOne:
         projects:
           targetEntity: Project

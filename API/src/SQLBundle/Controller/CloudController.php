@@ -153,7 +153,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.3/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
+	* @api {post} /0.3/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
 	* @apiVersion 0.3.0
 	* @apiDescription This method is here to create an upload process between API and Cloud.
 	* @apiGroup Cloud
@@ -310,7 +310,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.3/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
+	* @api {delete} /0.3/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
 	* @apiVersion 0.3.0
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
@@ -319,7 +319,7 @@ class CloudController extends Controller
 	* @apiParam {Number} project_id The project id to execute the command.
 	* @apiParam {Number} stream_id The id of the stream to close.
 	* @apiParamExample {curl} Request Example:
-	*	curl -X DELETE http://api.grappbox.com/V0.3/cloud/stream/myToken/42/1
+	*	curl -X DELETE http://api.grappbox.com/0.3/cloud/stream/myToken/42/1
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
 	* @apiSuccess (200) {string} info.return_code Request end state code
@@ -429,7 +429,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /V0.3/cloud/file send a file chunk.
+	* @api {put} /0.3/cloud/file send a file chunk.
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
 	* @apiGroup Cloud
@@ -557,7 +557,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.3/cloud/list/:token/:idProject/:path[/:passwordSafe] Cloud LS
+	* @api {get} /0.3/cloud/list/:token/:idProject/:path[/:passwordSafe] Cloud LS
 	* @apiVersion 0.3.0
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
@@ -567,7 +567,7 @@ class CloudController extends Controller
 	* @apiParam {string} path The path to the file with coma instead of slash. This have to start with a coma
 	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the user want the safe content
 	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.3/cloud/list/minus5percent/1/,Sauron/satan
+	*	curl http://api.grappbox.com/0.3/cloud/list/minus5percent/1/,Sauron/satan
 	*
 	* @apiSuccess (200) {Object} info Informations about the request
 	* @apiSuccess (200) {string} info.return_code Request end state code
@@ -737,7 +737,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.3/cloud/file/:cloudPath/:token/:idProject/[:passwordSafe] Download a file
+	* @api {get} /0.3/cloud/file/:cloudPath/:token/:idProject/[:passwordSafe] Download a file
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
@@ -837,7 +837,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {get} /V0.3/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a secured file
+	* @api {get} /0.3/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a secured file
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
@@ -848,7 +848,7 @@ class CloudController extends Controller
 	* @apiParam {string} [password] The password hashed in a clear way. Use only if file is password protected.
 	* @apiParam {string} [passwordSafe] The project safe password. Use it only if the file is in the safe
 	* @apiParamExample {curl} Request Example:
-	*	curl http://api.grappbox.com/V0.3/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
+	*	curl http://api.grappbox.com/0.3/cloud/getfile/,Sauron/minus5percent/1/mustache/satan
 	* @apiSuccess (203) {string} Header HTTP/1.1 203 Redirect (You will be redirected on the file URL in GET method (for download))
 	*
 	* @apiError (206) {Object} info Informations about the request
@@ -941,7 +941,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {put} /v0.3/cloud/safepass Set the safe password
+	* @api {put} /0.3/cloud/safepass Set the safe password
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to change the safe password for a given project.
 	* @apiGroup Cloud
@@ -1070,7 +1070,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.3/cloud/file/:token/:project_id/:path/:password Delete a file or directory
+	* @api {delete} /0.3/cloud/file/:token/:project_id/:path/:password Delete a file or directory
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
@@ -1080,7 +1080,7 @@ class CloudController extends Controller
 	* @apiParam {string} path The path of the file/directory in the cloud (absolute path from the root of the project's cloud)
 	* @apiParam {string} [passwordSafe] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
 	* @apiParamExample {curl} Request Example:
-	* curl -X DELETE http://api.grappbox.com/V0.3/cloud/del/MyToken/1/,Doulan.txt/satan
+	* curl -X DELETE http://api.grappbox.com/0.3/cloud/del/MyToken/1/,Doulan.txt/satan
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
@@ -1193,7 +1193,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /V0.3/cloud/filesecured/:token/:project_id/:path/:password/:safe_password Delete a secured file or directory
+	* @api {delete} /0.3/cloud/filesecured/:token/:project_id/:path/:password/:safe_password Delete a secured file or directory
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
@@ -1204,7 +1204,7 @@ class CloudController extends Controller
 	* @apiParam {string} password the password of the file you want to delete
 	* @apiParam {string} [passwordSafe] The project's safe password, in order to delete a file or a directory into the safe. Use only if file or directory into the safe. You can't delete the safe itself!
 	* @apiParamExample {curl} Request Example:
-	* curl -X DELETE http://api.grappbox.com/V0.3/cloud/del/MyToken/1/,Doulan.txt/satan
+	* curl -X DELETE http://api.grappbox.com/0.3/cloud/del/MyToken/1/,Doulan.txt/satan
 	*
 	* @apiSuccessExample {json} Success Response:
 	*	HTTP/1.1 200 OK
@@ -1321,7 +1321,7 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /V0.3/cloud/createdir create a directory
+	* @api {post} /0.3/cloud/createdir create a directory
 	* @apiVersion 0.3.0
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud

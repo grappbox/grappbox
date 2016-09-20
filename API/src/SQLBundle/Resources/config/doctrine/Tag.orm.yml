@@ -11,6 +11,9 @@ SQLBundle\Entity\Tag:
         name:
             type: string
             length: 255
+        color:
+            type: string
+            length: 255
     manyToMany:
         tasks:
           targetEntity: Task

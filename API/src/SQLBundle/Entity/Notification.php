@@ -172,16 +172,15 @@ class Notification
 
     public function objectToArray()
     {
-      // $projectId = null;
-      // if ($this->projects)
-      //   $projectId = $this->projects->getId();
+        $create = null;
+        if ($this->createdAt != null)
+            $create = $this->createdAt->format('Y-m-d H:i:s');
         return array(
             'id' => $this->id,
-            // TODO user ??
             "type" => $this->type,
             "targetId" => $this->targetId,
             "message" => $this->message,
-            'createdAt' => $this->createdAt,
+            'createdAt' => $create,
             'isRead' => $this->isRead
         );
     }

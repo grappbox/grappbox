@@ -30,7 +30,7 @@ use DateInterval;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.3/accountadministration/login/:token Client login
+	* @api {get} /0.3/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -125,7 +125,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
  	/**
- 	* @api {post} /V0.3/accountadministration/login Login
+ 	* @api {post} /0.3/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -345,7 +345,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
-	* @api {get} /V0.3/accountadministration/logout/:token Logout
+	* @api {get} /0.3/accountadministration/logout/:token Logout
 	* @apiName logout
 	* @apiGroup AccountAdministration
 	* @apiDescription unvalid user's token
@@ -423,7 +423,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
 	/**
-	* @api {post} /V0.3/accountadministration/register Register
+	* @api {post} /0.3/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
@@ -434,12 +434,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiParam {email} email user's email
 	* @apiParam {string} lastname user's lastname
 	* @apiParam {Date} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
 	* @apiParam {boolean} is_client If the user is a client
 	*
 	* @apiParamExample {json} Request-Example Minimum:
@@ -650,23 +644,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$encoded = $encoder->encodePassword($user, $content->password);
 		$user->setPassword($encoded);
 
-		if (array_key_exists('avatar', $content))
-		{
-			$user->setAvatar($content->avatar);
-			$user->setAvatarDate(date_create(new DateTime('now')));
-		}
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
-		if (array_key_exists('phone', $content))
-			$user->setPhone($content->phone);
-		if (array_key_exists('country', $content))
-			$user->setCountry($content->country);
-		if (array_key_exists('linkedin', $content))
-			$user->setLinkedin($content->linkedin);
-		if (array_key_exists('viadeo', $content))
-			$user->setViadeo($content->viadeo);
-		if (array_key_exists('twitter', $content))
-			$user->setTwitter($content->twitter);
 
 		$now = new DateTime('now');
 

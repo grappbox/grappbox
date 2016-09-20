@@ -31,7 +31,7 @@ use DateTime;
 class BugtrackerController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /V0.3/bugtracker/postticket Post ticket
+	* @api {post} /0.3/bugtracker/postticket Post ticket
 	* @apiName postTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Post a ticket
@@ -361,7 +361,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/bugtracker/editticket Edit ticket
+	* @api {put} /0.3/bugtracker/editticket Edit ticket
 	* @apiName editTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Edit ticket
@@ -739,7 +739,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/bugtracker/closeticket/:token/:id Close ticket
+	* @api {delete} /0.3/bugtracker/closeticket/:token/:id Close ticket
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Close a ticket, to delete a comment see [deleteComment](/#api-Bugtracker-deleteComment) request
@@ -873,7 +873,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/bugtracker/deleteticket/:token/:id Delete ticket
+	* @api {delete} /0.3/bugtracker/deleteticket/:token/:id Delete ticket
 	* @apiName deleteTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a ticket
@@ -944,7 +944,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/bugtracker/reopenticket/:token/:id Reopen closed ticket
+	* @api {put} /0.3/bugtracker/reopenticket/:token/:id Reopen closed ticket
 	* @apiName reopenTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Reopen a closed ticket
@@ -1084,7 +1084,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /V0.3/bugtracker/getticket/:token/:id Get ticket
+	* @api {get} /0.3/bugtracker/getticket/:token/:id Get ticket
 	* @apiName getTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Get ticket informations, tags and assigned users
@@ -1288,7 +1288,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/gettickets/:token/:id Get open tickets
+	* @api {get} /0.3/bugtracker/gettickets/:token/:id Get open tickets
 	* @apiName getTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get all open tickets of a project
@@ -1570,7 +1570,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/getclosedtickets/:token/:id Get closed tickets
+	* @api {get} /0.3/bugtracker/getclosedtickets/:token/:id Get closed tickets
 	* @apiName getClosedTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get all closed tickets of a project
@@ -1852,7 +1852,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/getlasttickets/:token/:id/:offset/:limit Get last tickets
+	* @api {get} /0.3/bugtracker/getlasttickets/:token/:id/:offset/:limit Get last tickets
 	* @apiName getLastTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get X last tickets from offset Y
@@ -2138,7 +2138,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/getlastclosedtickets/:token/:id/:offset/:limit Get last closed tickets
+	* @api {get} /0.3/bugtracker/getlastclosedtickets/:token/:id/:offset/:limit Get last closed tickets
 	* @apiName getLastClosedTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get X last closed tickets from offset Y
@@ -2426,7 +2426,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/getticketsbyuser/:token/:id/:user Get tickets by user
+	* @api {get} /0.3/bugtracker/getticketsbyuser/:token/:id/:user Get tickets by user
 	* @apiName getTicketsByUser
 	* @apiGroup Bugtracker
 	* @apiDescription Get Tickets asssigned to a user for a project
@@ -2953,7 +2953,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {put} /V0.3/bugtracker/setparticipants Set participants
+	* @api {put} /0.3/bugtracker/setparticipants Set participants
 	* @apiName setParticipants
 	* @apiGroup Bugtracker
 	* @apiDescription Assign/unassign users to a ticket
@@ -3281,7 +3281,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /V0.3/bugtracker/getcomments/:token/:id/:ticketId Get comments by bug
+	* @api {get} /0.3/bugtracker/getcomments/:token/:id/:ticketId Get comments by bug
 	* @apiName getComments
 	* @apiGroup Bugtracker
 	* @apiDescription Get all comments of a bug ticket
@@ -3498,7 +3498,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.3/bugtracker/postcomment Post comment
+	* @api {post} /0.3/bugtracker/postcomment Post comment
 	* @apiName postComment
 	* @apiGroup Bugtracker
 	* @apiDescription Post comment on a bug ticket
@@ -3723,7 +3723,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/bugtracker/editcomment Edit comment
+	* @api {put} /0.3/bugtracker/editcomment Edit comment
 	* @apiName EditComment
 	* @apiGroup Bugtracker
 	* @apiDescription Edit a comment
@@ -3924,7 +3924,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/bugtracker/deletecomment/:token/:id Delete comment
+	* @api {delete} /0.3/bugtracker/deletecomment/:token/:id Delete comment
 	* @apiName deletecomment
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a comment (creator allowed only)
@@ -3997,7 +3997,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {post} /V0.3/bugtracker/tagcreation Create tag
+	* @api {post} /0.3/bugtracker/tagcreation Create tag
 	* @apiName tagCreation
 	* @apiGroup Bugtracker
 	* @apiDescription Create a tag
@@ -4164,7 +4164,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/bugtracker/tagupdate Update tag
+	* @api {put} /0.3/bugtracker/tagupdate Update tag
 	* @apiName tagUpdate
 	* @apiGroup Bugtracker
 	* @apiDescription Update a tag
@@ -4332,7 +4332,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/taginformations/:token/:tagId Get tag info
+	* @api {get} /0.3/bugtracker/taginformations/:token/:tagId Get tag info
 	* @apiName tagInformations
 	* @apiGroup Bugtracker
 	* @apiDescription Get a tag informations
@@ -4452,7 +4452,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/bugtracker/deletetag/:token/:tagId Delete tag
+	* @api {delete} /0.3/bugtracker/deletetag/:token/:tagId Delete tag
 	* @apiName deleteTag
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a tag
@@ -4564,7 +4564,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/bugtracker/assigntag Assign tag
+	* @api {put} /0.3/bugtracker/assigntag Assign tag
 	* @apiName assignTagToBug
 	* @apiGroup Bugtracker
 	* @apiDescription Assign a tag to a bug
@@ -4788,7 +4788,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/bugtracker/removetag/:token/:bugId/:tagId Remove tag
+	* @api {delete} /0.3/bugtracker/removetag/:token/:bugId/:tagId Remove tag
 	* @apiName removeTagToBug
 	* @apiGroup Bugtracker
 	* @apiDescription Remove a tag to a bug
@@ -4936,7 +4936,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/bugtracker/getprojecttags/:token/:projectId Get tags by project
+	* @api {get} /0.3/bugtracker/getprojecttags/:token/:projectId Get tags by project
 	* @apiName getProjectTags
 	* @apiGroup Bugtracker
 	* @apiDescription Get all the tags for a project

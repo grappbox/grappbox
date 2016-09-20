@@ -34,6 +34,124 @@ use SQLBundle\Entity\Color;
 class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
+	* @api {post} /0.3/projects/projectcreation Create a project for the user connected
+	* @apiName projectCreation
+	* @apiGroup Project
+	* @apiDescription Create a project for the user connected
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} name Name of the project
+	* @apiParam {String} [description] Description of the project
+	* @apiParam {Text} [logo] Logo of the project
+	* @apiParam {String} [phone] Phone for the project
+	* @apiParam {String} [company] Company of the project
+	* @apiParam {String} [email] Email for the project
+	* @apiParam {String} [facebook] Facebook of the project
+	* @apiParam {String} [twitter] Twitter of the person
+	* @apiParam {String} password Safe password for the project hashed in SHA-1 512
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"logo": "10001111001100110010101010",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"email": "contact@oieoppresee.com",
+	*			"facebook": "www.facebook.com/OieOpp",
+	*			"twitter": "www.twitter.com/OieOpp",
+	*			"password": "yolo42"
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox"
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"email": "contact@oieoppresee.com",
+	*			"password": "yolo42"
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project created
+	* @apiSuccess {string} name Name of the project
+	* @apiSuccess {string} description Description of the project
+	* @apiSuccess {Object[]} creator Creator infos
+	* @apiSuccess {int} creator.id Id of the creator
+	* @apiSuccess {string} creator.firstname Firstname of the creator
+	* @apiSuccess {string} creator.lastname Lastname of the creator
+	* @apiSuccess {string} logo Date of last modification of the logo
+	* @apiSuccess {string} phone Phone of the company
+	* @apiSuccess {string} company Company of the project
+	* @apiSuccess {string} contact_mail Mail of contact of the project
+	* @apiSuccess {string} facebook Facebook of the project
+	* @apiSuccess {string} twitter Twitter of the project
+	* @apiSuccess {string} color Color of the project
+	* @apiSuccess {string} created_at Date of creation of the project
+	* @apiSuccess {string} deleted_at Date of deletion of the project
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - projectcreation - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1,
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"creator": {
+	*				"id": 13,
+	*				"firstname": "John",
+	*				"lastname": "Doe"
+	*			},
+	*			"logo": "2016-10-04 18:00:00",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"contact_mail": "contact@oieoppresee.com",
+	*			"facebook": "www.facebook.com/OieOpp",
+	*			"twitter": "www.twitter.com/OieOpp",
+	*			"color": "#333333",
+	*			"created_at": "2016-10-04 18:00:00",
+	*			"deleted_at": null
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.1.3",
+	*			"return_message": "Project - projectcreation - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.1.6",
+	*			"return_message": "Project - projectcreation - Missing Parameter"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {post} /V0.2/projects/projectcreation Create a project for the user connected
 	* @apiName projectCreation
 	* @apiGroup Project
@@ -220,7 +338,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$this->get('service_stat')->initiateStatistics($project, $content->token, $request);
 
-		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", array("id" => $id));
+		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", $project->objectToArray($em, $user));
 	}
 
 	private function grappSha1($str) // note : PLEASE DON'T REMOVE THAT FUNCTION! GOD DAMN IT!
@@ -228,6 +346,160 @@ class ProjectController extends RolesAndTokenVerificationController
 		return $str; //TODO : code the Grappbox sha-1 algorithm when assigned people ready
 	}
 
+	/**
+	* @api {put} /0.3/projects/updateinformations Update a project informations
+	* @apiName updateInformations
+	* @apiGroup Project
+	* @apiDescription Update the given project informations
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} [creatorId] Id of the new creator
+	* @apiParam {String} [name] name of the project
+	* @apiParam {String} [description] Description of the project
+	* @apiParam {Text} [logo] Logo of the project
+	* @apiParam {String} [phone] Phone for the project
+	* @apiParam {String} [company] Company of the project
+	* @apiParam {String} [email] Email for the project
+	* @apiParam {String} [facebook] Facebook of the project
+	* @apiParam {String} [twitter] Twitter of the person
+	* @apiParam {String} [password] New safe password for the project hashed in SHA-1 512
+	* @apiParam {String} [oldPassword] Old safe password for the project hashed in SHA-1 512
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"projectId": 2,
+	*			"creatorId": 18,
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"logo": "10001111001100110010101010",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"email": "contact@oieoppresee.com",
+	*			"facebook": "www.facebook.com/OieOpp",
+	*			"twitter": "www.twitter.com/OieOpp",
+	*			"password": "yolo42"
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"projectId": 2
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"token": "13135",
+	*			"projectId": 2,
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"logo": "10001111001100110010101010",
+	*			"phone": "+335 65 23 45 94",
+	*			"twitter": "www.twitter.com/OieOpp"
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project created
+	* @apiSuccess {string} name Name of the project
+	* @apiSuccess {string} description Description of the project
+	* @apiSuccess {Object[]} creator Creator infos
+	* @apiSuccess {int} creator.id Id of the creator
+	* @apiSuccess {string} creator.firstname Firstname of the creator
+	* @apiSuccess {string} creator.lastname Lastname of the creator
+	* @apiSuccess {string} logo Date of last modification of the logo
+	* @apiSuccess {string} phone Phone of the company
+	* @apiSuccess {string} company Company of the project
+	* @apiSuccess {string} contact_mail Mail of contact of the project
+	* @apiSuccess {string} facebook Facebook of the project
+	* @apiSuccess {string} twitter Twitter of the project
+	* @apiSuccess {string} color Color of the project
+	* @apiSuccess {string} created_at Date of creation of the project
+	* @apiSuccess {string} deleted_at Date of deletion of the project
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - updateinformations - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1,
+	*			"name": "Grappbox",
+	*			"description": "grappbox est un projet de gestion de projets",
+	*			"creator": {
+	*				"id": 13,
+	*				"firstname": "John",
+	*				"lastname": "Doe"
+	*			},
+	*			"logo": "2016-10-04 18:00:00",
+	*			"phone": "+335 65 23 45 94",
+	*			"company": "L'oie oppressée",
+	*			"contact_mail": "contact@oieoppresee.com",
+	*			"facebook": "www.facebook.com/OieOpp",
+	*			"twitter": "www.twitter.com/OieOpp",
+	*			"color": "#333333",
+	*			"created_at": "2016-10-04 18:00:00",
+	*			"deleted_at": null
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.3",
+	*			"return_message": "Project - updateinformations - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.6",
+	*			"return_message": "Project - updateinformations - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.9",
+	*			"return_message": "Project - updateinformations - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.4",
+	*			"return_message": "Project - updateinformations - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Reading Error: role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.1",
+	*			"return_message": "Project - updateinformations - Reading Error: role"
+	*		}
+	*	}
+	* @apiErrorExample Reading Error: project user role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.1",
+	*			"return_message": "Project - updateinformations - Reading Error: project user role"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {put} /V0.2/projects/updateinformations Update a project informations
 	* @apiName updateInformations
@@ -439,9 +711,88 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "updateinformations", "Complete Success", array("id" => $project->getId()));
+		return $this->setSuccess("1.6.1", "Project", "updateinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
 
+	/**
+	* @api {get} /0.3/projects/getinformations/:token/:projectId Get a project basic informations
+	* @apiName getInformations
+	* @apiGroup Project
+	* @apiDescription Get the given project basic informations
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {String} name Name of the project
+	* @apiSuccess {String} description Description of the project
+	* @apiSuccess {Object[]} creator Creator infos
+	* @apiSuccess {int} creator.id Id of the creator
+	* @apiSuccess {string} creator.firstname Firstname of the creator
+	* @apiSuccess {string} creator.lastname Lastname of the creator
+	* @apiSuccess {string} logo Logo last modif date of the project
+	* @apiSuccess {String} phone Phone number of the project
+	* @apiSuccess {String} company Company name
+	* @apiSuccess {String} contact_mail for the project
+	* @apiSuccess {String} facebook Facebook for the project
+	* @apiSuccess {String} twitter Twitter for the project
+	* @apiSuccess {String} color Color of the project
+	* @apiSuccess {string} creation_date Date of creation of the project
+	* @apiSuccess {string} deleted_at Date when the project will be deleted
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getinformations - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"name": "Grappbox",
+	*			"description": "Grappbox est un projet",
+	*			"creator": {
+	*				"id": 13,
+	*				"firstname": "John",
+	*				"lastname": "Doe"
+	*			},
+	*			"logo": "1945-06-18 06:00:00",
+	*			"phone": "+89130 2145 8795",
+	*			"company": "L'oie Oppressée",
+	*			"contact_mail": "contact@grappbox.com",
+	*			"facebook": "https://facebook.com/Grappbox",
+	*			"twitter": "https://twitter.com/Grappbox",
+	*			"color": "12ff52",
+	*			"creation_date": "2015-10-15 11:00:00",
+	*			"deleted_at": null
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.3.3",
+	*			"return_message": "Project - getinformations - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.3.4",
+	*			"return_message": "Project - getinformations - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.3.9",
+	*			"return_message": "Project - getinformations - Insufficient Rights"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/projects/getinformations/:token/:projectId Get a project basic informations
 	* @apiName getInformations
@@ -529,26 +880,54 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: projectId");
 
-		$name = $project->getName();
-		$description = $project->getDescription();
-		$logo = $project->getLogoDate();
-		$phone = $project->getPhone();
-		$company = $project->getCompany();
-		$contactMail = $project->getContactEmail();
-		$facebook = $project->getFacebook();
-		$twitter = $project->getTwitter();
-		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
-		if ($color === null)
-			$color = $project->getColor();
-		else
-			$color = $color->getColor();
-		$creation = $project->getCreatedAt();
-		$deletedAt = $project->getDeletedAt();
 
-		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", array("name" => $name, "description" => $description, "logo" => $logo, "phone" => $phone,
-			"company" => $company , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "color" => $color, "creation_date" => $creation, "deleted_at" => $deletedAt));
+		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
 
+	/**
+	* @api {delete} /0.3/projects/delproject/:token/:projectId Delete a project 7 days after the call
+	* @apiName delProject
+	* @apiGroup Project
+	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - delproject - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.4.3",
+	*			"return_message": "Project - delproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.4.9",
+	*			"return_message": "Project - delproject - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.4.4",
+	*			"return_message": "Project - delproject - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {delete} /V0.2/projects/delproject/:token/:projectId Delete a project 7 days after the call
 	* @apiName delProject
@@ -620,6 +999,52 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {get} /0.3/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
+	* @apiName retrieveProject
+	* @apiGroup Project
+	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Number} id Id of the project retrieve
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - retrieveproject - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.5.3",
+	*			"return_message": "Project - retrieveproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.5.9",
+	*			"return_message": "Project - retrieveproject - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.5.4",
+	*			"return_message": "Project - retrieveproject - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {get} /V0.2/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
 	* @apiName retrieveProject
 	* @apiGroup Project
@@ -687,9 +1112,83 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setDeletedAt(null);
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "retrieveproject", "Complete Success", array("id" => $projectId));
+		return $this->setSuccess("1.6.1", "Project", "retrieveproject", "Complete Success", null);
 	}
 
+	/**
+	* @api {post} /0.3/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @apiName generateCustomerAccess
+	* @apiGroup Project
+	* @apiDescription Generate or regenerate a customer access for the given project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {String} projectId Id of the project
+	* @apiParam {String} name Name of the customer access
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "13cqs43c54vqd3",
+	*			"projectId": 2,
+	*			"name": "access for Toyota"
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the customer access
+	* @apiSuccess {string} name Nom du customer access
+	* @apiSuccess {string} token Customer access token
+	* @apiSuccess {int} project_id Id of the project
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - generatecustomeraccess - Complete Success"
+  	*		},
+	*		"data":
+	*		{
+	*			"id": 1,
+	*			"name": "access for Toyota",
+	*			"token": "246107b11d98a9546978a2c20632bb2d",
+	*			"project_id": 2
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.6.3",
+	*			"return_message": "Project - generatecustomeraccess - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.6.6",
+	*			"return_message": "Project - generatecustomeraccess - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.6.9",
+	*			"return_message": "Project - generatecustomeraccess - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.6.4",
+	*			"return_message": "Project - generatecustomeraccess - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {post} /V0.2/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
 	* @apiName generateCustomerAccess
@@ -808,9 +1307,64 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->addCustomersAccess($customerAccess);
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "generatecustomeraccess", "Complete Success", array("id" => $customerAccess->getId()));
+		return $this->setSuccess("1.6.1", "Project", "generatecustomeraccess", "Complete Success", $customerAccess->objectToArray());
 	}
 
+	/**
+	* @api {get} /0.3/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
+	* @apiName getCustomerAccessById
+	* @apiGroup Project
+	* @apiDescription Get a customer access by it's id
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the customer access
+	*
+	* @apiSuccess {int} id Id of the customer access
+	* @apiSuccess {String} token Customer access token
+	* @apiSuccess {Number} project_id Id of the project
+	* @apiSuccess {String} name Name of the customer access
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getcustomeraccessbyid - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 18,
+	*			"token": "dizjflqfq41c645w",
+	*			"project_id": 2,
+	*			"name": "access for X company"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.7.3",
+	*			"return_message": "Project - getcustomeraccessbyid - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.7.4",
+	*			"return_message": "Project - getcustomeraccessbyid - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.7.9",
+	*			"return_message": "Project - getcustomeraccessbyid - Insufficient Rights"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
 	* @apiName getCustomerAccessById
@@ -883,14 +1437,80 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
 
-		$name = $customerAccess->getName();
-		$hash = $customerAccess->getHash();
-		$createdAt = $customerAccess->getCreatedAt();
-		$project = $customerAccess->getProjects()->getId();
-
-		return $this->setSuccess("1.6.1", "Project", "getcustomeraccessbyid", "Complete Success", array("customer_token" => $hash, "project_id" => $project, "name" => $name, "creation_date" => $createdAt));
+		return $this->setSuccess("1.6.1", "Project", "getcustomeraccessbyid", "Complete Success", $customerAccess->objectToArray());
 	}
 
+	/**
+	* @api {get} /0.3/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+	* @apiName getCustomerAccessByProject
+	* @apiGroup Project
+	* @apiDescription Get a customer access by it's poject id
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Object[]} array Array of customer access
+	* @apiSuccess {String} array.name Name of the customer access
+	* @apiSuccess {String} array.customer_token Customer access token
+	* @apiSuccess {Number} array.id Id of the customer access
+	* @apiSuccess {int} array.project_id Id of the project
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getcustomeraccessbyproject - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"name": "access for client X",
+	*					"customer_token": "dizjflqfq41c645w",
+	*					"id": 2,
+	*					"project_id": 3
+	*				}
+	*			]
+	*		}
+	*	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.3",
+	*			"return_message": "Project - getcustomeraccessbyproject - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.8.3",
+	*			"return_message": "Project - getcustomeraccessbyproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.8.4",
+	*			"return_message": "Project - getcustomeraccessbyproject - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.8.9",
+	*			"return_message": "Project - getcustomeraccessbyproject - Insufficient Rights"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
 	* @apiName getCustomerAccessByProject
@@ -983,17 +1603,57 @@ class ProjectController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.6.3", "Project", "getcustomeraccessbyproject");
 
 		foreach ($customerAccess as $ca) {
-			$id = $ca->getId();
-			$name = $ca->getName();
-			$hash = $ca->getHash();
-			$createdAt = $ca->getCreatedAt();
-
-			$arr[] = array("name" => $name, "customer_token" => $hash, "id" => $id, "creation_date" => $createdAt);
+			$arr[] = $ca->objectToArray();
 		}
 
 		return $this->setSuccess("1.6.1", "Project", "getcustomeraccessbyproject", "Complete Success", array("array" => $arr));
 	}
 
+	/**
+	* @api {delete} /0.3/projects/delcustomeraccess/:token/:projectId/:customerAccessId Delete a customer access
+	* @apiName delCustomerAccess
+	* @apiGroup Project
+	* @apiDescription Delete the given customer access
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} customerAccessId Id of the customer access
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - delcustomeraccess - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.9.3",
+	*			"return_message": "Project - delcustomeraccess - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.9.9",
+	*			"return_message": "Project - delcustomeraccess - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: customerAccessId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.9.4",
+	*			"return_message": "Project - delcustomeraccess - Bad Parameter: customerAccessId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {delete} /V0.2/projects/delcustomeraccess/:token/:projectId/:customerAccessId Delete a customer access
 	* @apiName delCustomerAccess
@@ -1062,6 +1722,95 @@ class ProjectController extends RolesAndTokenVerificationController
 		return new JsonResponse($response);
 	}
 
+	/**
+	* @api {post} /0.3/projects/addusertoproject Add a user to a project
+	* @apiName addUserToProject
+	* @apiGroup Project
+	* @apiDescription Add a given user to the project wanted
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the project
+	* @apiParam {String} email Email of the user
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "nfeq34efbfkqf54",
+	*			"id": 2,
+	*			"email": "toto@titi.com"
+	*		}
+	*	}
+	*
+	* @apiSuccess id Id of the user add
+	* @apiSuccess firstname First name of the user add
+	* @apiSuccess lastname Last name of the user add
+	* @apiSuccess avatar Avatar of the user add
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - addusertoproject - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*			"firstname": "john",
+	*			"lastname": "doe"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.3",
+	*			"return_message": "Project - addusertoproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.6",
+	*			"return_message": "Project - addusertoproject - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.9",
+	*			"return_message": "Project - addusertoproject - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.4",
+	*			"return_message": "Project - addusertoproject - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: email
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.4",
+	*			"return_message": "Project - addusertoproject - Bad Parameter: email"
+	*		}
+	*	}
+	* @apiErrorExample Already In Database
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.10.7",
+	*			"return_message": "Project - addusertoproject - Already In Database"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {post} /V0.2/projects/addusertoproject Add a user to a project
 	* @apiName addUserToProject
@@ -1203,7 +1952,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
-			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate()));
+			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname()));
 	}
 
 	/**
@@ -1310,7 +2059,67 @@ class ProjectController extends RolesAndTokenVerificationController
 		return new JsonResponse($response);
 	}
 
-
+	/**
+	* @api {delete} /0.3/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
+	* @apiName removeUserToProject
+	* @apiGroup Project
+	* @apiDescription Remove a given user to the project wanted
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} userId Id of the user
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - removeusertoproject - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.12.3",
+	*			"return_message": "Project - removeusertoproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "6.12.9",
+	*			"return_message": "Project - removeusertoproject - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.12.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.12.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: userId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't remove the project creator
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.12.4",
+	*			"return_message": "Project - removeusertoproject - Bad Parameter: You can't remove the project creator"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {delete} /V0.2/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
 	* @apiName removeUserToProject
@@ -1432,6 +2241,67 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {get} /0.3/projects/getusertoproject/:token/:projectId Get all the users on a project
+	* @apiName getUserToProject
+	* @apiGroup Project
+	* @apiDescription Get all the users on the given project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Object[]} array Array of users
+	* @apiSuccess {Number} id Id of the user
+	* @apiSuccess {String} firstname First name of the user
+	* @apiSuccess {String} lastname Last name of the user
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getusertoproject - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 3,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				}
+	*			]
+	*		}
+	*	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.3",
+	*			"return_message": "Project - getusertoproject - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.3",
+	*			"return_message": "Project - getusertoproject - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.13.4",
+	*			"return_message": "Project - getusertoproject - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {get} /V0.2/projects/getusertoproject/:token/:projectId Get all the users on a project
 	* @apiName getUserToProject
 	* @apiGroup Project
@@ -1523,6 +2393,60 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {put} /0.3/projects/changeprojectcolor Change the color of a project
+	* @apiName changeProjectColor
+	* @apiGroup Project
+	* @apiDescription Change the color of a project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} color Color of the project, in hexadecimal
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "nfeq34efbfkqf54",
+	*			"projectId": 2,
+	*			"color": "bd2487"
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - changeprojectcolor - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.14.3",
+	*			"return_message": "Project - changeprojectcolor - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.14.6",
+	*			"return_message": "Project - changeprojectcolor - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.14.4",
+	*			"return_message": "Project - changeprojectcolor - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {put} /V0.2/projects/changeprojectcolor Change the color of a project
 	* @apiName changeProjectColor
 	* @apiGroup Project
@@ -1613,6 +2537,50 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {delete} /0.3/projects/resetprojectcolor/:token/:projectId Reset the color of the project
+	* @apiName resetProjectColor
+	* @apiGroup Project
+	* @apiDescription Reset the color of the given project to the default one
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - resetprojectcolor - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.15.3",
+	*			"return_message": "Project - resetprojectcolor - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.15.4",
+	*			"return_message": "Project - resetprojectcolor - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: No color for the user
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.15.4",
+	*			"return_message": "Project - resetprojectcolor - Bad Parameter: No color for the user"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {delete} /V0.2/projects/resetprojectcolor/:token/:projectId Reset the color of the project
 	* @apiName resetProjectColor
 	* @apiGroup Project
@@ -1680,6 +2648,47 @@ class ProjectController extends RolesAndTokenVerificationController
 		return new JsonResponse($response);
 	}
 
+	/**
+	* @api {get} /0.3/projects/getprojectlogo/:token/:projectId Get project logo
+	* @apiName getProjectLogo
+	* @apiGroup Project
+	* @apiDescription Get the logo of the given project
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Text} logo Logo of the project
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.6.1",
+	*			"return_message": "Project - getProjectLogo - Complete Success"
+	*		},
+	*		"data": {
+	*			"logo": "10100011000011001"
+	*		},
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "6.16.3",
+	*			"return_message": "Project - getProjectLogo - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.16.4",
+	*			"return_message": "Project - getProjectLogo - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/projects/getprojectlogo/:token/:projectId Get project logo
 	* @apiName getProjectLogo

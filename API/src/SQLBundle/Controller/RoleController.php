@@ -28,101 +28,7 @@ use DateInterval;
 class RoleController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /V0.2/roles/addprojectroles Add a project role
-	* @apiName addProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Add a project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam {String} name Name of the role
-	* @apiParam {Number} teamTimeline Access rights on the project's team timeline
-	* @apiParam {Number} customerTimeline Access rights on the project's customer timeline
-	* @apiParam {Number} gantt Access rights on the project's gantt
-	* @apiParam {Number} whiteboard Access rights on the project's whiteboard
-	* @apiParam {Number} bugtracker Access rights on the project's bugracker
-	* @apiParam {Number} event Access rights on the project's meetings
-	* @apiParam {Number} task Access rights on the project's tasks
-	* @apiParam {Number} projectSettings Access rights on the project's settings
-	* @apiParam {Number} cloud Access rights on the project's cloud
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"projectId": 1,
-	*			"name": "Intern",
-	*			"teamTimeline": 2,
-	*			"customerTimeline": 0,
-	*			"gantt": 0,
-	*			"whiteboard": 2,
-	*			"bugtracker": 1,
-	*			"event": 1,
-	*			"task": 1,
-	*			"projectSettings": 1,
-	*			"cloud": 1
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the role created
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - addprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.3",
-	*			"return_message": "Role - addprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.6",
-	*			"return_message": "Role - addprojectroles - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.9",
-	*			"return_message": "Role - addprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.1.4",
-	*			"return_message": "Role - addprojectroles - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't create a role named Admin
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - addprojectroles - Bad Parameter: You can't create a role named Admin"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {post} /V0.3/roles/addprojectroles Create a role
+	* @api {post} /0.3/roles/addprojectroles Create a role
 	* @apiName addProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Create a role for a project, 0: NONE, 1: READ ONLY, 2: READ & WRITE
@@ -245,6 +151,100 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {post} /V0.2/roles/addprojectroles Add a project role
+	* @apiName addProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Add a project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam {String} name Name of the role
+	* @apiParam {Number} teamTimeline Access rights on the project's team timeline
+	* @apiParam {Number} customerTimeline Access rights on the project's customer timeline
+	* @apiParam {Number} gantt Access rights on the project's gantt
+	* @apiParam {Number} whiteboard Access rights on the project's whiteboard
+	* @apiParam {Number} bugtracker Access rights on the project's bugracker
+	* @apiParam {Number} event Access rights on the project's meetings
+	* @apiParam {Number} task Access rights on the project's tasks
+	* @apiParam {Number} projectSettings Access rights on the project's settings
+	* @apiParam {Number} cloud Access rights on the project's cloud
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"projectId": 1,
+	*			"name": "Intern",
+	*			"teamTimeline": 2,
+	*			"customerTimeline": 0,
+	*			"gantt": 0,
+	*			"whiteboard": 2,
+	*			"bugtracker": 1,
+	*			"event": 1,
+	*			"task": 1,
+	*			"projectSettings": 1,
+	*			"cloud": 1
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the role created
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - addprojectroles - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.3",
+	*			"return_message": "Role - addprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.6",
+	*			"return_message": "Role - addprojectroles - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.9",
+	*			"return_message": "Role - addprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.1.4",
+	*			"return_message": "Role - addprojectroles - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't create a role named Admin
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - addprojectroles - Bad Parameter: You can't create a role named Admin"
+	*		}
+	*	}
+	*/
 	public function addProjectRolesAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -296,59 +296,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delprojectroles/:token/:id Delete a project role
-	* @apiName delProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Delete the given role of the project wanted
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the role
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - delprojectroles - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.3",
-	*			"return_message": "Role - delprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.9",
-	*			"return_message": "Role - delprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - delprojectroles - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't remove the Admin role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.2.4",
-	*			"return_message": "Role - delprojectroles - Bad Parameter: You can't remove the Admin role"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {delete} /V0.3/roles/delprojectroles/:token/:id Delete role
+	* @api {delete} /0.3/roles/delprojectroles/:token/:id Delete role
 	* @apiName delProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Delete the given role of the project wanted
@@ -407,6 +355,58 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {delete} /V0.2/roles/delprojectroles/:token/:id Delete a project role
+	* @apiName delProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Delete the given role of the project wanted
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} id Id of the role
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - delprojectroles - Complete Success"
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.3",
+	*			"return_message": "Role - delprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.9",
+	*			"return_message": "Role - delprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - delprojectroles - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't remove the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.2.4",
+	*			"return_message": "Role - delprojectroles - Bad Parameter: You can't remove the Admin role"
+	*		}
+	*	}
+	*/
 	public function delProjectRolesAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
@@ -438,122 +438,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/roles/putprojectroles Update a project role
-	* @apiName updateProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Update a given project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} roleId Id of the role
-	* @apiParam {String} [name] Name of the role
-	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
-	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
-	* @apiParam {Number} [gantt] Access rights on the project's gantt
-	* @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
-	* @apiParam {Number} [bugtracker] Access rights on the project's bugracker
-	* @apiParam {Number} [event] Access rights on the project's meetings
-	* @apiParam {Number} [task] Access rights on the project's tasks
-	* @apiParam {Number} [projectSettings] Access rights on the project's settings
-	* @apiParam {Number} [cloud] Access rights on the project's cloud
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
-	*			"name": "Graphists",
-	*			"teamTimeline": 2,
-	*			"customerTimeline": 0,
-	*			"gantt": 0,
-	*			"whiteboard": 1,
-	*			"bugtracker": 0,
-	*			"event": 1,
-	*			"task": 1,
-	*			"projectSettings": 1,
-	*			"cloud": 2
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
-	*			"teamTimeline": 1,
-	*			"customerTimeline": 0,
-	*			"whiteboard": 2,
-	*			"event": 1,
-	*			"task": 1
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the role updated
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - putprojectroles - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.3",
-	*			"return_message": "Role - putprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.6",
-	*			"return_message": "Role - putprojectroles - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.9",
-	*			"return_message": "Role - putprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.4",
-	*			"return_message": "Role - putprojectroles - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: You can't update the Admin role
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.3.4",
-	*			"return_message": "Role - putprojectroles - Bad Parameter: You can't update the Admin role"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {put} /V0.3/roles/putprojectroles Update role
+	* @api {put} /0.3/roles/putprojectroles Update role
 	* @apiName updateProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Update role caracteristics, 0: NONE, 1: READ ONLY, 2: READ & WRITE
@@ -697,6 +582,121 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {put} /V0.2/roles/putprojectroles Update a project role
+	* @apiName updateProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Update a given project role, 0: NONE, 1: READ ONLY, 2: READ & WRITE
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} roleId Id of the role
+	* @apiParam {String} [name] Name of the role
+	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
+	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
+	* @apiParam {Number} [gantt] Access rights on the project's gantt
+	* @apiParam {Number} [whiteboard] Access rights on the project's whiteboard
+	* @apiParam {Number} [bugtracker] Access rights on the project's bugracker
+	* @apiParam {Number} [event] Access rights on the project's meetings
+	* @apiParam {Number} [task] Access rights on the project's tasks
+	* @apiParam {Number} [projectSettings] Access rights on the project's settings
+	* @apiParam {Number} [cloud] Access rights on the project's cloud
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2,
+	*			"name": "Graphists",
+	*			"teamTimeline": 2,
+	*			"customerTimeline": 0,
+	*			"gantt": 0,
+	*			"whiteboard": 1,
+	*			"bugtracker": 0,
+	*			"event": 1,
+	*			"task": 1,
+	*			"projectSettings": 1,
+	*			"cloud": 2
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"roleId": 2,
+	*			"teamTimeline": 1,
+	*			"customerTimeline": 0,
+	*			"whiteboard": 2,
+	*			"event": 1,
+	*			"task": 1
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the role updated
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - putprojectroles - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.3",
+	*			"return_message": "Role - putprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.6",
+	*			"return_message": "Role - putprojectroles - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.9",
+	*			"return_message": "Role - putprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.4",
+	*			"return_message": "Role - putprojectroles - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: You can't update the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.4",
+	*			"return_message": "Role - putprojectroles - Bad Parameter: You can't update the Admin role"
+	*		}
+	*	}
+	*/
 	public function updateProjectRolesAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -753,93 +753,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getprojectroles/:token/:projectId Get all project roles
-	* @apiName GetProjectRoles
-	* @apiGroup Roles
-	* @apiDescription Get all the roles for the wanted project
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	*
-	* @apiSuccess {Object[]} array Array of roles
-	* @apiSuccess {Number} array.id Role id
-	* @apiSuccess {String} array.name Role name
-	* @apiSuccess {Number} array.team_timeline Team timeline role
-	* @apiSuccess {Number} array.customer_timeline Customer timeline role
-	* @apiSuccess {Number} array.gantt Gantt role
-	* @apiSuccess {Number} array.whiteboard Whiteboard role
-	* @apiSuccess {Number} array.bugtracker Bugtracker role
-	* @apiSuccess {Number} array.event Event role
-	* @apiSuccess {Number} array.task Task role
-	* @apiSuccess {Number} array.project_settings Project settings role
-	* @apiSuccess {Number} array.cloud Cloud role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getprojectroles - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"name": "Intern roles",
-	*					"team_timeline": 1,
-	*					"customer_timeline": 0,
-	*					"gantt": 0,
-	*					"whiteboard": 0,
-	*					"bugtracker": 1,
-	*					"event": 0,
-	*					"task": 0,
-	*					"project_settings": 0,
-	*					"cloud": 1
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getprojectroles - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.3",
-	*			"return_message": "Role - getprojectroles - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.9",
-	*			"return_message": "Role - getprojectroles - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.4.4",
-	*			"return_message": "Role - getprojectroles - Bad Parameter: projectId"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.3/roles/getprojectroles/:token/:projectId Get roles by project
+	* @api {get} /0.3/roles/getprojectroles/:token/:projectId Get roles by project
 	* @apiName GetProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Get all the roles of the given project
@@ -927,6 +841,92 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {get} /V0.2/roles/getprojectroles/:token/:projectId Get all project roles
+	* @apiName GetProjectRoles
+	* @apiGroup Roles
+	* @apiDescription Get all the roles for the wanted project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	*
+	* @apiSuccess {Object[]} array Array of roles
+	* @apiSuccess {Number} array.id Role id
+	* @apiSuccess {String} array.name Role name
+	* @apiSuccess {Number} array.team_timeline Team timeline role
+	* @apiSuccess {Number} array.customer_timeline Customer timeline role
+	* @apiSuccess {Number} array.gantt Gantt role
+	* @apiSuccess {Number} array.whiteboard Whiteboard role
+	* @apiSuccess {Number} array.bugtracker Bugtracker role
+	* @apiSuccess {Number} array.event Event role
+	* @apiSuccess {Number} array.task Task role
+	* @apiSuccess {Number} array.project_settings Project settings role
+	* @apiSuccess {Number} array.cloud Cloud role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getprojectroles - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10,
+	*					"name": "Intern roles",
+	*					"team_timeline": 1,
+	*					"customer_timeline": 0,
+	*					"gantt": 0,
+	*					"whiteboard": 0,
+	*					"bugtracker": 1,
+	*					"event": 0,
+	*					"task": 0,
+	*					"project_settings": 0,
+	*					"cloud": 1
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getprojectroles - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.3",
+	*			"return_message": "Role - getprojectroles - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.9",
+	*			"return_message": "Role - getprojectroles - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.4.4",
+	*			"return_message": "Role - getprojectroles - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
 	public function getProjectRolesAction(Request $request, $token, $projectId)
 	{
 		$user = $this->checkToken($token);
@@ -954,91 +954,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.2/roles/assignpersontorole Assign a person to a role
-	* @apiName assignPersonToRole
-	* @apiGroup Roles
-	* @apiDescription Assign the given user to the role wanted
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user
-	* @apiParam {Number} roleId Id of the role
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"userId": 6,
-	*			"roleId": 2
-	*		}
-	*	}
-	*
-	* @apiSuccess {Number} id Id of the project user role created
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - assignpersontorole - Complete Success"
-	*		},
-	*		"data":
-	*		{
-	*			"id": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.3",
-	*			"return_message": "Role - assignpersontorole - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.9",
-	*			"return_message": "Role - assignpersontorole - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.6",
-	*			"return_message": "Role - assignpersontorole - Missing Parameter"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.4",
-	*			"return_message": "Role - assignpersontorole - Bad Parameter: userId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: roleId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.4",
-	*			"return_message": "Role - assignpersontorole - Bad Parameter: roleId"
-	*		}
-	*	}
-	* @apiErrorExample Already In Database
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.5.7",
-	*			"return_message": "Role - assignpersontorole - Already In Database"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {post} /V0.3/roles/assignpersontorole Assign user to role
+	* @api {post} /0.3/roles/assignpersontorole Assign user to role
 	* @apiName assignPersonToRole
 	* @apiGroup Roles
 	* @apiDescription Assign the given user to the role for the related project
@@ -1129,6 +1045,90 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {post} /V0.2/roles/assignpersontorole Assign a person to a role
+	* @apiName assignPersonToRole
+	* @apiGroup Roles
+	* @apiDescription Assign the given user to the role wanted
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user
+	* @apiParam {Number} roleId Id of the role
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"token": "aeqf231ced651qcd",
+	*			"userId": 6,
+	*			"roleId": 2
+	*		}
+	*	}
+	*
+	* @apiSuccess {Number} id Id of the project user role created
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 201 Created
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - assignpersontorole - Complete Success"
+	*		},
+	*		"data":
+	*		{
+	*			"id": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.3",
+	*			"return_message": "Role - assignpersontorole - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.9",
+	*			"return_message": "Role - assignpersontorole - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.6",
+	*			"return_message": "Role - assignpersontorole - Missing Parameter"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.4",
+	*			"return_message": "Role - assignpersontorole - Bad Parameter: userId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: roleId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.4",
+	*			"return_message": "Role - assignpersontorole - Bad Parameter: roleId"
+	*		}
+	*	}
+	* @apiErrorExample Already In Database
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.7",
+	*			"return_message": "Role - assignpersontorole - Already In Database"
+	*		}
+	*	}
+	*/
 	public function assignPersonToRoleAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -1181,11 +1181,11 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.2/roles/putpersonrole Update a person role
+	* @api {put} /0.3/roles/putpersonrole Change user role
 	* @apiName updatePersonRole
 	* @apiGroup Roles
-	* @apiDescription Update a person role
-	* @apiVersion 0.2.0
+	* @apiDescription Change the role of a user ofr the realted project
+	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project for searching
@@ -1204,7 +1204,7 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the project user role
+	* @apiSuccess {Number} id Id of the project_user_role
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1261,11 +1261,11 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {put} /V0.3/roles/putpersonrole Change user role
+	* @api {put} /V0.2/roles/putpersonrole Update a person role
 	* @apiName updatePersonRole
 	* @apiGroup Roles
-	* @apiDescription Change the role of a user ofr the realted project
-	* @apiVersion 0.3.0
+	* @apiDescription Update a person role
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project for searching
@@ -1284,7 +1284,7 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the project_user_role
+	* @apiSuccess {Number} id Id of the project user role
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1379,60 +1379,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getuserroles/:token Get the roles of the user connected
-	* @apiName getuserroles
-	* @apiGroup Roles
-	* @apiDescription Get the all the roles of all the projects of the user connected
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	*
-	* @apiSuccess {Object[]} array Array of user roles
-	* @apiSuccess {Number} array.id Project user role id
-	* @apiSuccess {Number} array.project_id Id of the project
-	* @apiSuccess {Number} array.role_id Id of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getuserroles - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10,
-	*					"project_id": 5,
-	*					"role_id": 1
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getuserroles - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.7.3",
-	*			"return_message": "Role - getuserroles - Bad ID"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.3/roles/getuserroles/:token Get connected user roles
+	* @api {get} /0.3/roles/getuserroles/:token Get connected user roles
 	* @apiName getuserroles
 	* @apiGroup Roles
 	* @apiDescription Get the all roles linked to the connected user
@@ -1503,6 +1450,59 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {get} /V0.2/roles/getuserroles/:token Get the roles of the user connected
+	* @apiName getuserroles
+	* @apiGroup Roles
+	* @apiDescription Get the all the roles of all the projects of the user connected
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	*
+	* @apiSuccess {Object[]} array Array of user roles
+	* @apiSuccess {Number} array.id Project user role id
+	* @apiSuccess {Number} array.project_id Id of the project
+	* @apiSuccess {Number} array.role_id Id of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getuserroles - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10,
+	*					"project_id": 5,
+	*					"role_id": 1
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getuserroles - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.7.3",
+	*			"return_message": "Role - getuserroles - Bad ID"
+	*		}
+	*	}
+	*/
 	public function getUserRolesAction(Request $request, $token)
 	{
 		$user = $this->checkToken($token);
@@ -1526,11 +1526,11 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/roles/delpersonrole/:token/:projectId/:userId/:roleId Delete a person role
+	* @api {delete} /0.3/roles/delpersonrole/:token/:projectId/:userId/:roleId Unassign user to role
 	* @apiName delPersonRole
 	* @apiGroup Roles
-	* @apiDescription Delete a person role
-	* @apiVersion 0.2.0
+	* @apiDescription Unlink given user and role
+	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1596,11 +1596,11 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {delete} /V0.3/roles/delpersonrole/:token/:projectId/:userId/:roleId Unassign user to role
+	* @api {delete} /V0.2/roles/delpersonrole/:token/:projectId/:userId/:roleId Delete a person role
 	* @apiName delPersonRole
 	* @apiGroup Roles
-	* @apiDescription Unlink given user and role
-	* @apiVersion 0.3.0
+	* @apiDescription Delete a person role
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
@@ -1705,74 +1705,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get the roles id for a given user on a given project
-	* @apiName getRoleByProjectAndUser
-	* @apiGroup Roles
-	* @apiDescription Get the roles id for a given user on a given project
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
-	* @apiParam [Number] userId Id of the user
-	*
-	* @apiSuccess {Object[]} array Array of user roles
-	* @apiSuccess {Number} array.id Id of the role
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getrolebyprojectanduser - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 10
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.3",
-	*			"return_message": "Role - getrolebyprojectanduser - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.3",
-	*			"return_message": "Role - getrolebyprojectanduser - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.9",
-	*			"return_message": "Role - getrolebyprojectanduser - Insufficient Rights"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.9.4",
-	*			"return_message": "Role - getrolebyprojectanduser - Bad Parameters"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role by project
+	* @api {get} /0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role by project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
 	* @apiDescription Get user role for a given project, if userId not specified assumed reference user is the connected user
@@ -1856,6 +1789,73 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
+	/**
+	* @api {get} /V0.2/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get the roles id for a given user on a given project
+	* @apiName getRoleByProjectAndUser
+	* @apiGroup Roles
+	* @apiDescription Get the roles id for a given user on a given project
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} projectId Id of the project
+	* @apiParam [Number] userId Id of the user
+	*
+	* @apiSuccess {Object[]} array Array of user roles
+	* @apiSuccess {Number} array.id Id of the role
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getrolebyprojectanduser - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 10
+	*				}
+	*			]
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.3",
+	*			"return_message": "Role - getrolebyprojectanduser - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.3",
+	*			"return_message": "Role - getrolebyprojectanduser - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.9",
+	*			"return_message": "Role - getrolebyprojectanduser - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.9.4",
+	*			"return_message": "Role - getrolebyprojectanduser - Bad Parameters"
+	*		}
+	*	}
+	*/
 	public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
 	{
 		$user = $this->checkToken($token);
@@ -1885,11 +1885,11 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
+	* @api {get} /0.3/roles/getusersforrole/:token/:roleId Get (un)assigned users by role
 	* @apiName getUsersForRole
 	* @apiGroup Roles
 	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} roleId Id of the role
@@ -1957,11 +1957,11 @@ class RoleController extends RolesAndTokenVerificationController
 	*	}
 	*/
 	/**
-	* @api {get} /V0.3/roles/getusersforrole/:token/:roleId Get (un)assigned users by role
+	* @api {get} /V0.2/roles/getusersforrole/:token/:roleId Get the users assigned and non assigned on the role
 	* @apiName getUsersForRole
 	* @apiGroup Roles
 	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
-	* @apiVersion 0.3.0
+	* @apiVersion 0.2.0
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} roleId Id of the role
@@ -2070,6 +2070,61 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
+	* @api {get} /0.3/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights by named part
+	* @apiName getUserRoleForPArt
+	* @apiGroup Roles
+	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
+	* @apiVersion 0.3.0
+	*
+	* @apiParam {String} token Token of the person connected
+	* @apiParam {Number} userId Id of the user you want the roles
+	* @apiParam {Number} projectId Id of the projectId concerned
+	* @apiParam {string} part name of the part ['team_timeline', 'customer_timeline', 'gantt', 'whiteboard', 'bugtracker', 'event', 'task', 'project_settings', 'cloud']
+	*
+	* @apiSuccess {int} userId user id
+	* @apiSuccess {int} name part name
+	* @apiSuccess {int} value part rights
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.13.1",
+	*			"return_message": "Role - getUserRoleForPart - Complete Success"
+	*		},
+	*		"data": {
+	*					"userId": 10,
+	*					"name": "bugtracker",
+	*					"value": 1
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Authentication Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "13.11.3",
+	*			"return_message": "Role - getUserRoleForPart - Bad ID"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId or projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.11.4",
+	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: userId or projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: part
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.11.4",
+	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: part"
+	*		}
+	*	}
+	*/
+	/**
 	* @api {get} /V0.2/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights for a specific part
 	* @apiName getUserRoleForPArt
 	* @apiGroup Roles
@@ -2120,61 +2175,6 @@ class RoleController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "13.13.4",
-	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: part"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.3/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights by named part
-	* @apiName getUserRoleForPArt
-	* @apiGroup Roles
-	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
-	* @apiVersion 0.3.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user you want the roles
-	* @apiParam {Number} projectId Id of the projectId concerned
-	* @apiParam {string} part name of the part ['team_timeline', 'customer_timeline', 'gantt', 'whiteboard', 'bugtracker', 'event', 'task', 'project_settings', 'cloud']
-	*
-	* @apiSuccess {int} userId user id
-	* @apiSuccess {int} name part name
-	* @apiSuccess {int} value part rights
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.13.1",
-	*			"return_message": "Role - getUserRoleForPart - Complete Success"
-	*		},
-	*		"data": {
-	*					"userId": 10,
-	*					"name": "bugtracker",
-	*					"value": 1
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "13.11.3",
-	*			"return_message": "Role - getUserRoleForPart - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId or projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.11.4",
-	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: userId or projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: part
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "13.11.4",
 	*			"return_message": "Role - getUserRoleForPart - Bad Parameter: part"
 	*		}
 	*	}
@@ -2344,16 +2344,16 @@ class RoleController extends RolesAndTokenVerificationController
 	*						"id": 6,
 	*						"name": "Admin",
 	*						"values": {
-  *							"teamTimeline": 2,
-  *							"customerTimeline": 2,
-  *							"gantt": 2,
-  *							"whiteboard": 2,
-  *							"bugtracker": 2,
-  *							"event": 2,
-  *							"task": 2,
-  *							"projectSettings": 2,
-  *							"cloud": 2
-  *							}
+	*							"teamTimeline": 2,
+	*							"customerTimeline": 2,
+	*							"gantt": 2,
+	*							"whiteboard": 2,
+	*							"bugtracker": 2,
+	*							"event": 2,
+	*							"task": 2,
+	*							"projectSettings": 2,
+	*							"cloud": 2
+	*							}
 	*					}
 	*				},
 	*				{
@@ -2366,16 +2366,16 @@ class RoleController extends RolesAndTokenVerificationController
 	*						"id": 6,
 	*						"name": "Graphists",
 	*						"values": {
-  *							"teamTimeline": 2,
-  *							"customerTimeline": 2,
-  *							"gantt": 2,
-  *							"whiteboard": 2,
-  *							"bugtracker": 2,
-  *							"event": 2,
-  *							"task": 2,
-  *							"projectSettings": 2,
-  *							"cloud": 2
-  *							}
+	*							"teamTimeline": 2,
+	*							"customerTimeline": 2,
+	*							"gantt": 2,
+	*							"whiteboard": 2,
+	*							"bugtracker": 2,
+	*							"event": 2,
+	*							"task": 2,
+	*							"projectSettings": 2,
+	*							"cloud": 2
+	*							}
 	*					}
 	*				}
 	*			]

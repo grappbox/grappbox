@@ -29,7 +29,7 @@ use SQLBundle\Entity\Task;
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /V0.3/dashboard/getteamoccupation/:token/:id Get team occupation
+	* @api {get} /0.3/dashboard/getteamoccupation/:token/:id Get team occupation
 	* @apiName getTeamOccupation
 	* @apiGroup Dashboard
 	* @apiDescription Getting a team occupation for a project for the user connected
@@ -208,7 +208,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/dashboard/getnextmeetings/:token/:id Get next meetings
+	* @api {get} /0.3/dashboard/getnextmeetings/:token/:id Get next meetings
 	* @apiName getNextMeetings
 	* @apiGroup Dashboard
 	* @apiDescription Get all next meetings, in 7 days, of the connected user
@@ -375,7 +375,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/dashboard/getprojectsglobalprogress/:token Get projects global progress
+	* @api {get} /0.3/dashboard/getprojectsglobalprogress/:token Get projects global progress
 	* @apiName getProjectsGlobalProgress
 	* @apiGroup Dashboard
 	* @apiDescription Get the global progress of the projects of a user

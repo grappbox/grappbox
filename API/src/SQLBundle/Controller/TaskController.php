@@ -30,7 +30,7 @@ use Datetime;
  */
 class TaskController extends RolesAndTokenVerificationController
 {
-	private function checkDependencies(Task $task)
+	private function checkDependencies($task)
 	{
 		$dependencies = $task->getDependence();
 		foreach ($dependencies as $dep) {
@@ -65,7 +65,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.3/tasks/taskcreation Create a task
+	* @api {post} /0.3/tasks/taskcreation Create a task
 	* @apiName taskCreation
 	* @apiGroup Task
 	* @apiDescription Create a task
@@ -75,7 +75,8 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Number} projecId Id of the project
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
-	* @apiParam {Datetime} due_date Due date of the task
+	* @apiParam {string} due_date Due date of the task
+	* @apiParam {string} started_at Date of start of the task
 	* @apiParam {Boolean} is_milestone If true, set the task to a milestone. If is_container is true, then set is_containre to false.
 	* @apiParam {Boolean} is_container If true, set the task as a container. If is_milestone is true, then set is_milestone to false.
 	* @apiParam {Int[]} [tasksAdd] Array of tasks id to add. To set all the tasks contains in the container (is_container must be true for that)
@@ -83,8 +84,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {Object[]} [dependencies] Array of infos on the dependencies
 	* @apiParam {String} dependencies.name name of the dependence, it should be: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
 	* @apiParam {Number} dependencies.id Id of the task the new task dependes on
-	* @apiParam {Datetime} [started_at] Date of start of the task
-	* @apiParam {Datetime} [finished_at] Date of finish of the task
+	* @apiParam {string} [finished_at] Date of finish of the task
 	* @apiParam {Number} [advance] Advance percent of the task
 	* @apiParam {Object[]} [usersAdd] Array of users to add
 	* @apiParam {Int} usersAdd.id Id of the user to add
@@ -100,15 +100,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
-	*			"due_date": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date":  "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-15 11:00:00",
 	*			"is_milstone": false,
 	*			"is_container": true,
 	*			"tasksAdd": [1, 50, 13],
-	*			"tasksRemove": [],
+	*			"tasksRemove": [6],
 	*			"dependencies":
 	*			[
 	*				{
@@ -120,16 +117,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 3
 	*				}
 	*			],
-	*			"started_at": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"finished_at": "2015-10-15 11:00:00",
 	*			"advance": 20,
 	*			"usersAdd": [
 	*				{
@@ -154,11 +142,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
-	*			"due_date": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-15 11:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false
 	*		}
@@ -171,19 +156,11 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
-	*			"due_date": {
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-15 11:00:00",
 	*			"is_milestone": false,
 	*			"is_container": true,
 	*			"tasksAdd": [1, 50, 13],
-	*			"started_at":{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
 	*			"usersAdd": {
 	*				{
 	*					"id": 1,
@@ -200,32 +177,43 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
-	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {string} due_date Due date of the task
+	* @apiSuccess {string} started_at Date of start of the task
+	* @apiSuccess {string} finished_at Date of finish of the task
+	* @apiSuccess {string} created_at Date of creation of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Boolean} is_container Is the task a container
 	* @apiSuccess {Object[]} tasks Array of tasks for the container
 	* @apiSuccess {Number} tasks.id Id of the task
 	* @apiSuccess {String} task.title Title of the task
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Datetime} finished_at Date of finish of the task
-	* @apiSuccess {Datetime} created_at Date of creation of the task
+	* @apiSuccess {string} tasks.started_at Date of start of the task
+	* @apiSuccess {string} tasks.due_date Due date of the task
 	* @apiSuccess {Number} advance Advance percent of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
 	* @apiSuccess {String} creator.lastname Last name of the creator
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
-	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
-	* @apiSuccess {Number} users_assigned.percent Percent of the user assigned
+	* @apiSuccess {Object[]} users Array of users assigned to the task
+	* @apiSuccess {Number} users.id Id of the user assigned
+	* @apiSuccess {String} users.firstname Frist name of the user assigned
+	* @apiSuccess {String} users.lastname Last name of the user assigned
+	* @apiSuccess {Number} users.percent Percent of the user assigned
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
+	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
-	* @apiSuccess {Number} dependencies.id Id of the task the task dependes on
-	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
+	* @apiSuccess {Object[]} dependencies.task Task depende infos
+	* @apiSuccess {int} dependencies.task.id Task depende id
+	* @apiSuccess {string} dependencies.task.title Task depende title
+	* @apiSuccess {string} dependencies.task.started_at Task depende started date
+	* @apiSuccess {string} dependencies.task.due_date Task depende due date
+	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
+	* @apiSuccess {Number} tasks_modified.id Id of the task modified
+	* @apiSuccess {String} tasks_modified.title Title of the task modified
+	* @apiSuccess {string} tasks_modified.started_at Date of start of the task modified
+	* @apiSuccess {string} tasks_modified.due_date Due date of the task modified
 	*
 	* @apiSuccessExample Success-Full-Data-Response
 	*	HTTP/1.1 201 Created
@@ -239,64 +227,71 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-10 11:00:00",
+	*			"finished_at": "2015-10-15 18:23:00",
+	*			"created_at": "2015-10-09 11:00:00",
 	*			"is_milestone": false,
 	*			"is_container": true,
 	*			"tasks":
 	*			[
 	*				{
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"title": "Add users to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				},
 	*				{
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"title": "Add customers to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				}
 	*			],
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at":
-	*			{
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
 	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [],
-	*			"tags": [],
+	*			"users": [
+	*				{
+	*					"id": 13,
+	*					"firstname": "Jane",
+	*					"lastname": "Doe",
+	*					"percent": 50
+	*				}
+	*			],
+	*			"tags": [
+	*				{
+	*					"id": 2,
+	*					"name": "Urgent"
+	*				}
+	*			],
 	*			"dependencies":
 	*			[
 	*				{
-	*					"name": "fs",
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"name": "fs",
+	*					"task": {
+	*						"id": 12,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
 	*				},
 	*				{
-	*					"name": "ss",
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"name": "ss",
+	*					"task": {
+	*						"id": 10,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-15 11:00:00",
+	*						"due_date": "2015-10-20 18:23:00"
+	*					}
 	*				}
-	*			]
+	*			],
+	*			"tasks_modified": []
 	*		}
 	*	}
 	*
@@ -312,32 +307,23 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false,
 	*			"tasks": [],
 	*			"started_at": null,
 	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"created_at": "2015-10-09 11:00:00",
 	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [],
+	*			"users": [],
 	*			"tags": [],
 	*			"dependencies": [],
+	*			"tasks_modified": []
 	*		}
 	*	}
 	*
@@ -659,7 +645,8 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('title', $content)
-			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('is_milestone', $content) || !array_key_exists('is_container', $content)))
+			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('started_at', $content)
+			|| !array_key_exists('is_milestone', $content) || !array_key_exists('is_container', $content)))
 			return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -680,34 +667,17 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setProjects($project);
 		$task->setCreatedAt(new \Datetime);
 		$task->setCreatorUser($user);
+		$task->setDueDate(new \Datetime($content->due_date));
+		$task->setStartedAt(new \Datetime($content->started_at));
 
-		//due date
-		if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "") {
-			$dueDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-		}
-		else
-			$dueDate = new \Datetime($content->due_date->date);
-		$dueDate->setTimeZone(new \DateTimeZone('UTC'));
-		$task->setDueDate($dueDate);
-
-		//started at
-		if (array_key_exists('started_at', $content)) {
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
-				$startedAt = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-			else
-				$startedAt = new \Datetime($content->started_at->date);
-			$startedAt->setTimeZone(new \DateTimeZone('UTC'));
-			$task->setStartedAt($startedAt);
-		}
+		if ($task->getStartedAt() >= $task->getDueDate())
+			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
 
 		//finished at
 		if (array_key_exists('finished_at', $content)) {
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
-				$finishedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
-			else
-				$finishedAt = new \Datetime($content->finished_at->date);
-			$finishedAt->setTimeZone(new \DateTimeZone('UTC'));
-			$task->setFinishedAt($finishedAt);
+			$task->setFinishedAt(new \Datetime($content->finished_at));
+			if ($task->getStartedAt() >= $task->getFinishedAt())
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: finished_at can't be prior to started_at");
 		}
 
 		//advance
@@ -753,7 +723,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$task->addDependence($newDep);
 				}
 			}
-			$this->checkDependencies($task);
+			$task = $this->checkDependencies($task);
 		}
 
 		//milestone
@@ -965,66 +935,19 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 
-		//data for json
 		$em->flush();
-		$id = $task->getId();
-		$title = $task->getTitle();
-		$description = $task->getDescription();
-		$dueDate = $task->getDueDate();
-		$startedAt = $task->getStartedAt();
-		$finishedAt = $task->getFinishedAt();
-		$createdAt = $task->getCreatedAt();
-		$deletedAt = $task->getDeletedAt();
-		$advance = $task->getAdvance();
-		$creator = $task->getCreatorUser();
-		$dependencies = $task->getDependence();
 
-		$creator_id = $creator->getId();
-		$creator_firstname = $creator->getFirstname();
-		$creator_lastname = $creator->getLastname();
-		$creatorInfos = array("id" => $creator_id, "firstname" => $creator_firstname, "lastname" => $creator_lastname);
-
-		$userArray = array();
-		foreach ($users as $res) {
-			$percent = $res->getResource();
-			$u = $res->getUser();
-			$uid = $u->getId();
-			$firstname = $u->getFirstname();
-			$lastname = $u->getLastname();
-
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
-		}
-		$tagArray = array();
-		foreach ($tags as $t) {
-			$tid = $t->getId();
-			$name = $t->getName();
-
-			$tagArray[] = array("id" => $tid, "name" => $name);
-		}
-
-		$depArray = array();
-		if ($dependencies != null)
-		{
-			foreach ($dependencies as $d) {
-				$dname = $d->getName();
-				$did = $d->getDependenceTask()->getId();
-				$dtitle = $d->getDependenceTask()->getTitle();
-
-				$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-			}
-		}
+		$taskDep = $task->getTaskDepended();
 
 		$this->get('service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
 		$this->get('service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
 		$this->get('service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
 
-		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description,
-			"due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt,
-			"created_at" => $createdAt, "deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
+		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", $task->objectToArray(array()));
 	}
 
 	/**
-	* @api {put} /V0.3/tasks/taskupdate Update a task
+	* @api {put} /0.3/tasks/taskupdate Update a task
 	* @apiName taskUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
@@ -1130,35 +1053,43 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
-	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {string} due_date Due date of the task
+	* @apiSuccess {string} started_at Date of start of the task
+	* @apiSuccess {string} finished_at Date of finish of the task
+	* @apiSuccess {string} created_at Date of creation of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Boolean} is_container Is the task a container
 	* @apiSuccess {Object[]} tasks Array of tasks for the container
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Datetime} finished_at Date of finish of the task
-	* @apiSuccess {Datetime} created_at Date of creation of the task
+	* @apiSuccess {Number} tasks.id Id of the task
+	* @apiSuccess {String} task.title Title of the task
+	* @apiSuccess {string} tasks.started_at Date of start of the task
+	* @apiSuccess {string} tasks.due_date Due date of the task
 	* @apiSuccess {Number} advance Advance percent of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
 	* @apiSuccess {String} creator.lastname Last name of the creator
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
-	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
-	* @apiSuccess {String} users_assigned.percent Percent of charge of the user assigned
+	* @apiSuccess {Object[]} users Array of users assigned to the task
+	* @apiSuccess {Number} users.id Id of the user assigned
+	* @apiSuccess {String} users.firstname Frist name of the user assigned
+	* @apiSuccess {String} users.lastname Last name of the user assigned
+	* @apiSuccess {Number} users.percent Percent of the user assigned
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
+	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
-	* @apiSuccess {Number} dependencies.id Id of the task the task dependes on
-	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
+	* @apiSuccess {Object[]} dependencies.task Task depende infos
+	* @apiSuccess {int} dependencies.task.id Task depende id
+	* @apiSuccess {string} dependencies.task.title Task depende title
+	* @apiSuccess {string} dependencies.task.started_at Task depende started date
+	* @apiSuccess {string} dependencies.task.due_date Task depende due date
 	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
 	* @apiSuccess {Number} tasks_modified.id Id of the task modified
 	* @apiSuccess {String} tasks_modified.title Title of the task modified
-	* @apiSuccess {Datetime} tasks_modified.started_at Date of start of the task modified
-	* @apiSuccess {Datetime} tasks_modified.due_date Due date of the task modified
+	* @apiSuccess {string} tasks_modified.started_at Date of start of the task modified
+	* @apiSuccess {string} tasks_modified.due_date Due date of the task modified
 	*
 	* @apiSuccessExample Success-Full-Data-Response
 	*	HTTP/1.1 200 OK
@@ -1172,79 +1103,68 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-10 11:00:00",
+	*			"finished_at": "2015-10-15 18:23:00",
+	*			"created_at": "2015-10-09 11:00:00",
 	*			"is_milestone": false,
 	*			"is_container": true,
 	*			"tasks":
 	*			[
 	*				{
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"title": "Add users to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				},
 	*				{
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"title": "Add customers to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				}
 	*			],
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at":
-	*			{
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"advance": 30,
+	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [
+	*			"users": [
 	*				{
-	*					"id": 1,
-	*					"firstname": "john",
-	*					"lastname": "doe",
-	*					"percent": 150
-	*				},
-	*				{
-	*					"id": 3,
-	*					"firstname": "jane",
-	*					"lastname": "doe"
+	*					"id": 13,
+	*					"firstname": "Jane",
+	*					"lastname": "Doe",
+	*					"percent": 50
 	*				}
 	*			],
 	*			"tags": [
 	*				{
-	*					"id": 1,
-	*					"name": "To Do"
+	*					"id": 2,
+	*					"name": "Urgent"
 	*				}
 	*			],
 	*			"dependencies":
 	*			[
 	*				{
-	*					"name": "fs",
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"name": "fs",
+	*					"task": {
+	*						"id": 12,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
 	*				},
 	*				{
-	*					"name": "ss",
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"name": "ss",
+	*					"task": {
+	*						"id": 10,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-15 11:00:00",
+	*						"due_date": "2015-10-20 18:23:00"
+	*					}
 	*				}
 	*			],
 	*			"tasks_modified":
@@ -1252,34 +1172,14 @@ class TaskController extends RolesAndTokenVerificationController
 	*				{
 	*					"id": 1,
 	*					"title": "Add users to project",
-	*					"started_at":
-	*					{
-	*						"date":"2015-10-10 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"due_date":
-	*					{
-	*						"date":"2015-10-15 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					}
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 11:00:00",
 	*				},
 	*				{
 	*					"id": 3,
 	*					"title": "Add customers to project",
-	*					"started_at":
-	*					{
-	*						"date":"2015-10-10 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"due_date":
-	*					{
-	*						"date":"2015-10-15 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					}
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 11:00:00"
 	*				}
 	*			]
 	*		}
@@ -1297,30 +1197,20 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false,
 	*			"tasks": [],
 	*			"started_at": null,
 	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"advance": 30,
+	*			"created_at": "2015-10-09 11:00:00",
+	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [],
+	*			"users": [],
 	*			"tags": [],
 	*			"dependencies": [],
 	*			"tasks_modified": []
@@ -1700,7 +1590,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$task = $em->getRepository('SQLBundle:Task')->find($content->taskId);
 
-		if ($task === null)
+		if ($task === null || $task->getDeletedAt() != null)
 			return $this->setBadRequest("12.2.4", "Task", "taskupdate", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
@@ -1718,17 +1608,15 @@ class TaskController extends RolesAndTokenVerificationController
 		if (array_key_exists('description', $content))
 			$task->setDescription($content->description);
 
+		$task = $this->checkDependencies($task);
+
 		//due_date
 		if (array_key_exists('due_date', $content))
 		{
 			$dueDate = $task->getDueDate();
-
-			if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "") {
-				$newDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-			}
-			else
-				$newDate = new \Datetime($content->due_date->date);
-			$newDate->setTimeZone(new \DateTimeZone('UTC'));
+			$newDate = new \Datetime($content->due_date);
+			if ($task->getStartedAt() >= $newDate)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
 
 			if ($dueDate != null)
 				$diff = date_diff($dueDate, $newDate);
@@ -1737,16 +1625,22 @@ class TaskController extends RolesAndTokenVerificationController
 				if ($td->getName() == "fs")
 				{
 					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setStartedAt($date);
+					$td->getTask()->setDueDate($end);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 				else if ($td->getName() == "ff")
 				{
-					$date = $td->getTask()->getDueDate();
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 			}
 			$task->setDueDate($newDate);
@@ -1756,32 +1650,33 @@ class TaskController extends RolesAndTokenVerificationController
 		if (array_key_exists('started_at', $content))
 		{
 			$startedAt = $task->getStartedAt();
-
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "") {
-				$newDate = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-			}
-			else
-				$newDate = new \Datetime($content->started_at->date);
-			$newDate->setTimeZone(new \DateTimeZone('UTC'));
+			$newDate = new \Datetime($content->started_at);
+			if ($newDate >= $task->getDueDate())
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: started_at can't be after to due_date");
 
 			if ($startedAt != null)
 				$diff = date_diff($startedAt, $newDate);
-			$startedAt = $newDate;
 
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "ss")
 				{
 					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
 				}
 				else if ($td->getName() == "sf")
 				{
-					$date = $td->getTask()->getDueDate();
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
 				}
 			}
 			$task->setStartedAt($newDate);
@@ -1790,13 +1685,39 @@ class TaskController extends RolesAndTokenVerificationController
 		//finished at
 		if (array_key_exists('finished_at', $content))
 		{
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "") {
-				$newDate = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
+			$dueDate = $task->getDueDate();
+			$newDate = new \Datetime($content->finished_at);
+			if ($task->getStartedAt() >= $newDate)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: finished_at can't be prior to started_at");
+
+			if ($dueDate != null)
+				$diff = date_diff($dueDate, $newDate);
+
+			foreach ($taskDep as $td) {
+				if ($td->getName() == "fs")
+				{
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
+					date_add($date, $diff);
+					date_add($end, $diff);
+					$td->getTask()->setStartedAt($date);
+					$td->getTask()->setDueDate($end);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
+				}
+				else if ($td->getName() == "ff")
+				{
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
+					date_add($date, $diff);
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
+				}
 			}
-			else
-				$newDate = new \Datetime($content->finished_at->date);
-			$newDate->setTimeZone(new \DateTimeZone('UTC'));
+
 			$task->setFinishedAt($newDate);
+			$task->setDueDate($newDate);
 		}
 
 		//advance
@@ -1838,7 +1759,7 @@ class TaskController extends RolesAndTokenVerificationController
 					$task->addDependence($newDep);
 				}
 			}
-			$this->checkDependencies($task);
+			$task = $this->checkDependencies($task);
 		}
 
 		//dependencies update
@@ -1851,7 +1772,7 @@ class TaskController extends RolesAndTokenVerificationController
 					}
 				}
 			}
-			$this->checkDependencies($task);
+			$task = $this->checkDependencies($task);
 		}
 
 		//remove dependencies
@@ -2103,55 +2024,15 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		$id = $task->getId();
-		$title = $task->getTitle();
-		$description = $task->getDescription();
-		$dueDate = $task->getDueDate();
-		$startedAt = $task->getStartedAt();
-		$finishedAt = $task->getFinishedAt();
-		$createdAt = $task->getCreatedAt();
-		$deletedAt = $task->getDeletedAt();
-		$advance = $task->getAdvance();
-		$creator = $task->getCreatorUser();
-		$users = $task->getRessources();
-		$tags = $task->getTags();
-		$dependencies = $task->getDependence();
-
-		$creator_id = $creator->getId();
-		$creator_firstname = $creator->getFirstname();
-		$creator_lastname = $creator->getLastname();
-		$creatorInfos = array("id" => $creator_id, "firstname" => $creator_firstname, "lastname" => $creator_lastname);
+		$creator_id = $task->getCreatorUser()->getId();
 		$userNotif[] = $creator_id;
 
 		$userArray = array();
 
-		foreach ($users as $res) {
-			$percent = $res->getResource();
-			$u = $res->getUser();
-			$uid = $u->getId();
-			$firstname = $u->getFirstname();
-			$lastname = $u->getLastname();
-
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
+		foreach ($task->getRessources() as $res) {
+			$uid = $res->getUser()->getId();
 			if ($uid != $creator_id)
 				$userNotif[] = $uid;
-		}
-
-		$tagArray = array();
-		foreach ($tags as $t) {
-			$tid = $t->getId();
-			$name = $t->getName();
-
-			$tagArray[] = array("id" => $tid, "name" => $name);
-		}
-
-		$depArray = array();
-		foreach ($dependencies as $d) {
-			$dname = $d->getName();
-			$did = $d->getDependenceTask()->getId();
-			$dtitle = $d->getDependenceTask()->getTitle();
-
-			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 		}
 
 		// Notifications
@@ -2169,13 +2050,11 @@ class TaskController extends RolesAndTokenVerificationController
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 		}
 
-		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate,
-			"is_milestone" => $task->getIsMilestone(),"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt,"created_at" => $createdAt,
-			"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray, "tasks_modified" => $taskModified));
+		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
 	}
 
 	/**
-	* @api {get} /V0.3/tasks/taskinformations/:token/:taskId Get a task informations
+	* @api {get} /0.3/tasks/taskinformations/:token/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
@@ -2187,30 +2066,43 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
-	* @apiSuccess {Datetime} due_date Due date of the task
+	* @apiSuccess {string} due_date Due date of the task
+	* @apiSuccess {string} started_at Date of start of the task
+	* @apiSuccess {string} finished_at Date of finish of the task
+	* @apiSuccess {string} created_at Date of creation of the task
 	* @apiSuccess {Boolean} is_milestone Is the task a milestone
 	* @apiSuccess {Boolean} is_container Is the task a container
 	* @apiSuccess {Object[]} tasks Array of tasks for the container
-	* @apiSuccess {Datetime} started_at Date of start of the task
-	* @apiSuccess {Datetime} finished_at Date of finish of the task
-	* @apiSuccess {Datetime} created_at Date of creation of the task
+	* @apiSuccess {Number} tasks.id Id of the task
+	* @apiSuccess {String} task.title Title of the task
+	* @apiSuccess {string} tasks.started_at Date of start of the task
+	* @apiSuccess {string} tasks.due_date Due date of the task
 	* @apiSuccess {Number} advance Advance percent of the task
 	* @apiSuccess {Object[]} creator Creator informations
 	* @apiSuccess {Number} creator.id Id of the creator
 	* @apiSuccess {String} creator.firstname Frist name of the creator
 	* @apiSuccess {String} creator.lastname Last name of the creator
-	* @apiSuccess {Object[]} users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} users_assigned.id Id of the user assigned
-	* @apiSuccess {String} users_assigned.firstname Frist name of the user assigned
-	* @apiSuccess {String} users_assigned.lastname Last name of the user assigned
-	* @apiSuccess {String} users_assigned.percent Percent of charge of the user assigned
+	* @apiSuccess {Object[]} users Array of users assigned to the task
+	* @apiSuccess {Number} users.id Id of the user assigned
+	* @apiSuccess {String} users.firstname Frist name of the user assigned
+	* @apiSuccess {String} users.lastname Last name of the user assigned
+	* @apiSuccess {Number} users.percent Percent of the user assigned
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
+	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
-	* @apiSuccess {Number} dependencies.id Id of the task the task dependes on
-	* @apiSuccess {String} dependencies.title Title of the task the task dependes on
+	* @apiSuccess {Object[]} dependencies.task Task depende infos
+	* @apiSuccess {int} dependencies.task.id Task depende id
+	* @apiSuccess {string} dependencies.task.title Task depende title
+	* @apiSuccess {string} dependencies.task.started_at Task depende started date
+	* @apiSuccess {string} dependencies.task.due_date Task depende due date
+	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
+	* @apiSuccess {Number} tasks_modified.id Id of the task modified
+	* @apiSuccess {String} tasks_modified.title Title of the task modified
+	* @apiSuccess {string} tasks_modified.started_at Date of start of the task modified
+	* @apiSuccess {string} tasks_modified.due_date Due date of the task modified
 	*
 	* @apiSuccessExample Success-Full-Data-Response
 	*	HTTP/1.1 200 OK
@@ -2224,82 +2116,71 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
+	*			"started_at": "2015-10-10 11:00:00",
+	*			"finished_at": "2015-10-15 18:23:00",
+	*			"created_at": "2015-10-09 11:00:00",
 	*			"is_milestone": false,
 	*			"is_container": true,
 	*			"tasks":
 	*			[
 	*				{
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"title": "Add users to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				},
 	*				{
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"title": "Add customers to project",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"due_date": "2015-10-15 18:23:00"
 	*				}
 	*			],
-	*			"started_at":
-	*			{
-	*				"date":"2015-10-10 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"finished_at":
-	*			{
-	*				"date":"2015-10-15 18:23:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"advance": 30,
+	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [
+	*			"users": [
 	*				{
-	*					"id": 1,
-	*					"firstname": "john",
-	*					"lastname": "doe"
-	*					"percent": 150
-	*				},
-	*				{
-	*					"id": 3,
-	*					"firstname": "jane",
-	*					"lastname": "doe"
+	*					"id": 13,
+	*					"firstname": "Jane",
+	*					"lastname": "Doe",
 	*					"percent": 50
 	*				}
 	*			],
 	*			"tags": [
 	*				{
-	*					"id": 1,
-	*					"name": "To Do"
+	*					"id": 2,
+	*					"name": "Urgent"
 	*				}
 	*			],
 	*			"dependencies":
 	*			[
 	*				{
-	*					"name": "fs",
 	*					"id": 1,
-	*					"title": "Add users to project"
+	*					"name": "fs",
+	*					"task": {
+	*						"id": 12,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
 	*				},
 	*				{
-	*					"name": "ss",
 	*					"id": 3,
-	*					"title": "Add customers to project"
+	*					"name": "ss",
+	*					"task": {
+	*						"id": 10,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-15 11:00:00",
+	*						"due_date": "2015-10-20 18:23:00"
+	*					}
 	*				}
-	*			]
+	*			],
+	*			"tasks_modified": []
 	*		}
 	*	}
 	*
@@ -2315,32 +2196,23 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
-	*			"due_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
+	*			"due_date": "2015-10-15 11:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false,
 	*			"tasks": [],
 	*			"started_at": null,
 	*			"finished_at": null,
-	*			"created_at":
-	*			{
-	*				"date":"2015-10-09 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			},
-	*			"advance": 30,
+	*			"created_at": "2015-10-09 11:00:00",
+	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
 	*				"firstname": "john",
 	*				"lastname": "doe"
 	*			},
-	*			"users_assigned": [],
+	*			"users": [],
 	*			"tags": [],
-	*			"dependencies": []
+	*			"dependencies": [],
+	*			"tasks_modified": []
 	*		}
 	*	}
 	*
@@ -2582,68 +2454,11 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.3.9", "Task", "taskinformations"));
 
-		$arrTasks = array();
-		foreach ($task->getTasksContainer() as $t) {
-			$arrTasks[] = array("id" => $t->getId(), "title" => $t->getTitle());
-		}
-
-		$id = $task->getId();
-		$title = $task->getTitle();
-		$description = $task->getDescription();
-		$dueDate = $task->getDueDate();
-		$startedAt = $task->getStartedAt();
-		$finishedAt = $task->getFinishedAt();
-		$createdAt = $task->getCreatedAt();
-		$deletedAt = $task->getDeletedAt();
-		$advance = $task->getAdvance();
-		$creator = $task->getCreatorUser();
-		$users = $task->getRessources();
-		$tags = $task->getTags();
-		$dependencies = $task->getDependence();
-
-		$creator_id = $creator->getId();
-		$creator_firstname = $creator->getFirstname();
-		$creator_lastname = $creator->getLastname();
-		$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
-
-		$userArray = array();
-		foreach ($users as $res) {
-			$percent = $res->getResource();
-			$u = $res->getUser();
-			$uid = $u->getId();
-			$firstname = $u->getFirstname();
-			$lastname = $u->getLastname();
-
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
-			if ($uid != $creator_id)
-				$userNotif[] = $uid;
-		}
-
-		$tagArray = array();
-		foreach ($tags as $t) {
-			$tid = $t->getId();
-			$name = $t->getName();
-
-			$tagArray[] = array("id" => $tid, "name" => $name);
-		}
-
-		$depArray = array();
-		foreach ($dependencies as $d) {
-			$dname = $d->getName();
-			$did = $d->getDependenceTask()->getId();
-			$dtitle = $d->getDependenceTask()->getTitle();
-
-			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-		}
-
-		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
-				"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt,
-				"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
+		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success", $task->objectToArray(array()));
 	}
 
 	/**
-	* @api {put} /V0.3/tasks/archivetask Archive a task
+	* @api {put} /0.3/tasks/archivetask Archive a task
 	* @apiName archiveTask
 	* @apiGroup Task
 	* @apiDescription Archive the given task
@@ -2808,7 +2623,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/tasks/taskdelete/:token/:taskId Delete a task
+	* @api {delete} /0.3/tasks/taskdelete/:token/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiDescription Delete definitely the given task
@@ -2924,7 +2739,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /V0.3/tasks/tagcreation Create a tag
+	* @api {post} /0.3/tasks/tagcreation Create a tag
 	* @apiName tagCreation
 	* @apiGroup Task
 	* @apiDescription Create a tag
@@ -3091,7 +2906,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /V0.3/tasks/tagupdate Update a tag
+	* @api {put} /0.3/tasks/tagupdate Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
@@ -3259,7 +3074,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/tasks/taginformations/:token/:tagId Get a tag informations
+	* @api {get} /0.3/tasks/taginformations/:token/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given tag
@@ -3379,7 +3194,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/tasks/deletetag/:token/:tagId Delete a tag
+	* @api {delete} /0.3/tasks/deletetag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiDescription Delete the given tag
@@ -3491,7 +3306,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
+	* @api {get} /0.3/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiDescription Get all the tasks for a given project
@@ -3500,34 +3315,46 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	*
-	* @apiSuccess {Object[]} array Array of tasks
-	* @apiSuccess {Number} array.id Id of the task
-	* @apiSuccess {String} array.title Title of the task
-	* @apiSuccess {String} array.description Description of the task
-	* @apiSuccess {Datetime} array.due_date Due date of the task
-	* @apiSuccess {Boolean} array.is_milestone Is the task a milestone
-	* @apiSuccess {Boolean} array.is_container Is the task a container
-	* @apiSuccess {Object[]} array.tasks Array of tasks for the container
-	* @apiSuccess {Datetime} array.started_at Date of start of the task
-	* @apiSuccess {Datetime} array.finished_at Date of finish of the task
-	* @apiSuccess {Datetime} array.created_at Date of creation of the task
-	* @apiSuccess {Number} array.advance Advance percent of the task
-	* @apiSuccess {Object[]} array.creator Creator informations
-	* @apiSuccess {Number} array.creator.id Id of the creator
-	* @apiSuccess {String} array.creator.first_name Frist name of the creator
-	* @apiSuccess {String} array.creator.last_name Last name of the creator
-	* @apiSuccess {Object[]} array.users_assigned Array of users assigned to the task
-	* @apiSuccess {Number} array.users_assigned.id Id of the user assigned
-	* @apiSuccess {String} array.users_assigned.first_name Frist name of the user assigned
-	* @apiSuccess {String} array.users_assigned.last_name Last name of the user assigned
-	* @apiSuccess {String} array.users_assigned.percent Percent of charge of the user assigned
-	* @apiSuccess {Object[]} array.tags Array of tags assigned to the task
-	* @apiSuccess {Number} array.tags.id Id of the tag
-	* @apiSuccess {String} array.tags.name Name of the tag
-	* @apiSuccess {Object[]} array.dependencies Array of infos on the dependencies
-	* @apiSuccess {String} array.dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
-	* @apiSuccess {Number} array.dependencies.id Id of the task the task dependes on
-	* @apiSuccess {String} array.dependencies.title Title of the task the task dependes on
+	* @apiSuccess {Number} id Id of the task
+	* @apiSuccess {String} title Title of the task
+	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {string} due_date Due date of the task
+	* @apiSuccess {string} started_at Date of start of the task
+	* @apiSuccess {string} finished_at Date of finish of the task
+	* @apiSuccess {string} created_at Date of creation of the task
+	* @apiSuccess {Boolean} is_milestone Is the task a milestone
+	* @apiSuccess {Boolean} is_container Is the task a container
+	* @apiSuccess {Object[]} tasks Array of tasks for the container
+	* @apiSuccess {Number} tasks.id Id of the task
+	* @apiSuccess {String} task.title Title of the task
+	* @apiSuccess {string} tasks.started_at Date of start of the task
+	* @apiSuccess {string} tasks.due_date Due date of the task
+	* @apiSuccess {Number} advance Advance percent of the task
+	* @apiSuccess {Object[]} creator Creator informations
+	* @apiSuccess {Number} creator.id Id of the creator
+	* @apiSuccess {String} creator.firstname Frist name of the creator
+	* @apiSuccess {String} creator.lastname Last name of the creator
+	* @apiSuccess {Object[]} users Array of users assigned to the task
+	* @apiSuccess {Number} users.id Id of the user assigned
+	* @apiSuccess {String} users.firstname Frist name of the user assigned
+	* @apiSuccess {String} users.lastname Last name of the user assigned
+	* @apiSuccess {Number} users.percent Percent of the user assigned
+	* @apiSuccess {Object[]} tags Array of tags assigned to the task
+	* @apiSuccess {Number} tags.id Id of the tag
+	* @apiSuccess {String} tags.name Name of the tag
+	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
+	* @apiSuccess {Number} dependencies.id Id of the task the dependence
+	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
+	* @apiSuccess {Object[]} dependencies.task Task depende infos
+	* @apiSuccess {int} dependencies.task.id Task depende id
+	* @apiSuccess {string} dependencies.task.title Task depende title
+	* @apiSuccess {string} dependencies.task.started_at Task depende started date
+	* @apiSuccess {string} dependencies.task.due_date Task depende due date
+	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
+	* @apiSuccess {Number} tasks_modified.id Id of the task modified
+	* @apiSuccess {String} tasks_modified.title Title of the task modified
+	* @apiSuccess {string} tasks_modified.started_at Date of start of the task modified
+	* @apiSuccess {string} tasks_modified.due_date Due date of the task modified
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -3543,82 +3370,71 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"id": 2,
 	*					"title": "Update servers",
 	*					"description": "update all the servers",
-	*					"due_date":
-	*					{
-	*						"date":"2015-10-15 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
+	*					"due_date": "2015-10-15 11:00:00",
+	*					"started_at": "2015-10-10 11:00:00",
+	*					"finished_at": "2015-10-15 18:23:00",
+	*					"created_at": "2015-10-09 11:00:00",
 	*					"is_milestone": false,
 	*					"is_container": true,
 	*					"tasks":
 	*					[
 	*						{
 	*							"id": 1,
-	*							"title": "Add users to project"
+	*							"title": "Add users to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
 	*						},
 	*						{
 	*							"id": 3,
-	*							"title": "Add customers to project"
+	*							"title": "Add customers to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
 	*						}
 	*					],
-	*					"started_at":
-	*					{
-	*						"date":"2015-10-10 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"finished_at":
-	*					{
-	*						"date":"2015-10-15 18:23:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"created_at":
-	*					{
-	*						"date":"2015-10-09 11:00:00",
-	*						"timezone_type":3,
-	*						"timezone":"Europe\/Paris"
-	*					},
-	*					"advance": 30,
+	*					"advance": 20,
 	*					"creator": {
 	*						"id": 1,
 	*						"firstname": "john",
 	*						"lastname": "doe"
 	*					},
-	*					"users_assigned": [
+	*					"users": [
 	*						{
-	*							"id": 1,
-	*							"firstname": "john",
-	*							"lastname": "doe"
-	*							"percent": 150
-	*						},
-	*						{
-	*							"id": 3,
-	*							"firstname": "jane",
-	*							"lastname": "doe"
+	*							"id": 13,
+	*							"firstname": "Jane",
+	*							"lastname": "Doe",
 	*							"percent": 50
 	*						}
 	*					],
 	*					"tags": [
 	*						{
-	*							"id": 1,
-	*							"name": "To Do"
+	*							"id": 2,
+	*							"name": "Urgent"
 	*						}
 	*					],
 	*					"dependencies":
 	*					[
 	*						{
-	*							"name": "fs",
 	*							"id": 1,
-	*							"title": "Add users to project"
+	*							"name": "fs",
+	*							"task": {
+	*								"id": 12,
+	*								"title": "Add users to project",
+	*								"started_at": "2015-10-10 11:00:00",
+	*								"due_date": "2015-10-15 18:23:00"
+	*							}
 	*						},
 	*						{
-	*							"name": "ss",
 	*							"id": 3,
-	*							"title": "Add customers to project"
+	*							"name": "ss",
+	*							"task": {
+	*								"id": 10,
+	*								"title": "Add customers to project",
+	*								"started_at": "2015-10-15 11:00:00",
+	*								"due_date": "2015-10-20 18:23:00"
+	*							}
 	*						}
-	*					]
+	*					],
+	*					"tasks_modified": []
 	*				}
 	*			]
 	*		}
@@ -3931,7 +3747,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/tasks/getprojecttags/:token/:projectId Get all the tags for a project
+	* @api {get} /0.3/tasks/getprojecttags/:token/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiDescription Get all the tags for a given project

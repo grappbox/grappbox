@@ -20,6 +20,11 @@ class CustomerAccess
     private $hash;
 
     /**
+     * @var string
+     */
+    private $name;
+
+    /**
      * @var \DateTime
      */
     private $createdAt;
@@ -33,6 +38,21 @@ class CustomerAccess
      * @var \SQLBundle\Entity\Project
      */
     private $projects;
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+        return array(
+            "id" => $this->id,
+            "token" => $this->hash,
+            "name" => $this->name,
+            "project_id" => $this->projects
+        );
+    }
 
 
     /**
@@ -136,11 +156,6 @@ class CustomerAccess
     {
         return $this->projects;
     }
-    /**
-     * @var string
-     */
-    private $name;
-
 
     /**
      * Set name

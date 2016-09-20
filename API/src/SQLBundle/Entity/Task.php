@@ -9,18 +9,71 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task
 {
-    public function objectToArray()
+    public function objectToArray($taskModified)
     {
-      return array(
-        'id' => $this->id,
-        'creator' => $this->creator_user->getId() ,
-        'title' => $this->title ,
-        'description' => $this->description ,
-        'dueDate' => $this->dueDate ,
-        'startedAt' => $this->startedAt ,
-        'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->getId()
-      );
+        $tasks = array();
+        print(count($this->tasks_container));
+        foreach ($this->tasks_container as $t) {
+            $start = $t->getStartedAt();
+            if ($start != null)
+                $start = $start->format('Y-m-d H:i:s');
+            $due = $t->getDueDate();
+            if ($due != null)
+                $due = $due->format('Y-m-d H:i:s');
+            $tasks[] = array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $start, "due_date" => $due);
+        }
+        $users = array();
+        foreach ($this->ressources as $res) {
+            $u = $res->getUser();
+            $users[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname(), "percent" => $res->getResource());
+        }
+        $tags = array();
+        foreach ($this->tags as $t) {
+            $tags[] = array("id" => $t->getId(), "name" => $t->getName());
+        }
+        $deps = array();
+        foreach ($this->dependence as $d) {
+            $t = $d->getDependenceTask();
+            $start = $t->getStartedAt();
+            if ($start != null)
+                $start = $start->format('Y-m-d H:i:s');
+            $due = $t->getDueDate();
+            if ($due != null)
+                $due = $due->format('Y-m-d H:i:s');
+
+            $deps[] = array("id" => $d->getId(), "name" => $d->getName(), "task" => array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $start, "due_date" => $due));
+        }
+        $due = null;
+        $create = null;
+        $start = null;
+        $finish = null;
+        if ($this->dueDate != null)
+            $due = $this->dueDate->format('Y-m-d H:i:s');
+        if ($this->createdAt != null)
+            $create = $this->createdAt->format('Y-m-d H:i:s');
+        if ($this->startedAt != null)
+            $start = $this->startedAt->format('Y-m-d H:i:s');
+        if ($this->finishedAt != null)
+            $finish = $this->finishedAt->format('Y-m-d H:i:s');
+        return array(
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'project_id' => $this->projects->getId(),
+            'due_date' => $due,
+            'started_at' => $start,
+            'finished_at' => $finish,
+            'created_at' => $create,
+            'is_milestone' => $this->isMilestone,
+            'is_container' => $this->isContainer,
+            'tasks' => $tasks,
+            'advance' => $this->advance,
+            'creator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'users' => $users,
+            'tags' => $tags,
+            'dependencies' => $deps,
+            'tasks_modified' => $taskModified
+        );
     }
     /**
      * @var integer

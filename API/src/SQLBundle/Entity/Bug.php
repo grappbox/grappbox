@@ -95,7 +95,7 @@ class Bug
             $edit = $this->editedAt->format('Y-m-d H:i:s');
         return array(
             "id" => $this->id,
-            "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+            "creator" => array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
             "projectId" => $this->projects->getId(),
             "title" => $this->title,
             "description" => $this->description,

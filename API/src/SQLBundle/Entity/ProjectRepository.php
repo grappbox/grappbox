@@ -112,9 +112,14 @@ class ProjectRepository extends EntityRepository
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
 			$projectLogo = $project->getLogoDate();
+			if ($projectLogo != null)
+				$projectLogo = $projectLogo->format('Y-m-d H:i:s');
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
+			$createdAt = $project->getCreatedAt();
+			if ($createdAt != null)
+				$createdAt = $createdAt->format('Y-m-d H:i:s');
 			$deletedAt = $project->getDeletedAt();
 			if ($deletedAt != null)
 				$deletedAt = $deletedAt->format('Y-m-d H:i:s');
@@ -152,9 +157,9 @@ class ProjectRepository extends EntityRepository
 				}
 			}
 
-			$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "phone" => $phone, "company" => $company , "logo" => $projectLogo, "contact_mail" => $contactMail,
-				"facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks,
-				"number_bugs" => $nbBugs, "number_messages" => $nbMessages);
+			$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription , "logo" => $projectLogo, "phone" => $phone, "company" => $company, "contact_mail" => $contactMail,
+				"facebook" => $facebook, "twitter" => $twitter, "color" => $project->getColor(), "created_at" => $createdAt, "deleted_at" => $deletedAt, "number_finished_tasks" => $nbFinishedTasks,
+				"number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
 
 			$i++;
 		}
@@ -194,21 +199,7 @@ class ProjectRepository extends EntityRepository
 
 			if ($creatorId == $id)
 			{
-				$projectId = $project->getId();
-				$projectName = $project->getName();
-				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogoDate();
-				$projectPhone = $project->getPhone();
-				$projectCompany = $project->getCompany();
-				$contactMail = $project->getContactEmail();
-				$facebook = $project->getFacebook();
-				$twitter = $project->getTwitter();
-				$deletedAt = $project->getDeletedAt();
-				$creator = $project->getCreatorUser();
-				$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
-
-				$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
-					"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
+				$arr[] = $project->objectToArray();
 			}
 			else
 			{
@@ -219,21 +210,7 @@ class ProjectRepository extends EntityRepository
 
 					if ($userId == $id)
 					{
-						$projectId = $project->getId();
-						$projectName = $project->getName();
-						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogoDate();
-						$projectPhone = $project->getPhone();
-						$projectCompany = $project->getCompany();
-						$contactMail = $project->getContactEmail();
-						$facebook = $project->getFacebook();
-						$twitter = $project->getTwitter();
-						$deletedAt = $project->getDeletedAt();
-						$creator = $project->getCreatorUser();
-						$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
-
-						$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
-							"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
+						$arr[] = $project->objectToArray();
 					}
 				}
 			}

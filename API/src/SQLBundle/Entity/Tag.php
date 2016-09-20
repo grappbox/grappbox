@@ -134,4 +134,32 @@ class Tag
         "projectId" => $this->project->getId()
       );
     }
+    /**
+     * @var string
+     */
+    private $color;
+
+
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return Tag
+     */
+    public function setColor($color)
+    {
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string 
+     */
+    public function getColor()
+    {
+        return $this->color;
+    }
 }

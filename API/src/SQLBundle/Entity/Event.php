@@ -25,11 +25,6 @@ class Event
     private $description;
 
     /**
-     * @var string
-     */
-    private $icon;
-
-    /**
      * @var \DateTime
      */
     private $beginDate;
@@ -48,11 +43,6 @@ class Event
      * @var \DateTime
      */
     private $editedAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $deletedAt;
 
     /**
      * @var \SQLBundle\Entity\Project
@@ -84,9 +74,21 @@ class Event
 
     public function objectToArray()
     {
-      $projectId = null;
-      if ($this->projects)
-        $projectId = $this->projects->getId();
+        $projectId = null;
+        $create = null;
+        $edit = null;
+        $begin = null;
+        $end = null;
+        if ($this->createdAt != null)
+            $create = $this->createdAt->format('Y-m-d H:i:s');
+        if ($this->editedAt != null)
+            $edit = $this->editedAt->format('Y-m-d H:i:s');
+        if ($this->beginDate != null)
+            $begin = $this->beginDate->format('Y-m-d H:i:s');
+        if ($this->endDate != null)
+            $end = $this->endDate->format('Y-m-d H:i:s');
+        if ($this->projects)
+            $projectId = $this->projects->getId();
         return array(
             'id' => $this->id,
             'projectId' => $projectId,
@@ -101,12 +103,10 @@ class Event
             ),
             'title' => $this->title,
             'description' => $this->description,
-            'icon' => $this->icon,
-            'beginDate' => $this->beginDate,
-            'endDate' => $this->endDate,
-            'createdAt' => $this->createdAt,
-            'editedAt' => $this->editedAt,
-            'deletedAt' => $this->deletedAt
+            'beginDate' => $begin,
+            'endDate' => $end,
+            'createdAt' => $create,
+            'editedAt' => $edit
         );
     }
 
@@ -259,29 +259,6 @@ class Event
     }
 
     /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Event
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set projects
      *
      * @param \SQLBundle\Entity\Project $projects
@@ -382,6 +359,11 @@ class Event
     {
         return $this->users;
     }
+    /**
+     * @var string
+     */
+    private $icon;
+
 
     /**
      * Set icon
@@ -399,7 +381,7 @@ class Event
     /**
      * Get icon
      *
-     * @return string
+     * @return string 
      */
     public function getIcon()
     {
