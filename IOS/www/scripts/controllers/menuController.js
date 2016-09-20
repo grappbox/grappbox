@@ -24,7 +24,7 @@ angular.module('GrappBox.controllers')
                 console.error('Disconnection failed ! Reason: ' + error);
             })
     }
-
+    // used in editProfileController.js
     $scope.$on('reloadAvatar', function (event, args) {
         $scope.GetUserAvatar();
     });

@@ -155,13 +155,15 @@ angular.module('GrappBox.api', ['ngResource'])
         UserRolesId: function () {
             return $resource($rootScope.API + 'roles/getrolebyprojectanduser/:token/:projectId/:userId', { token: "@token", projectId: "@projectId", userId: "@userId" });
         },
-        // Get all roles for connected user
+        // Get all roles for connected user | V0.2 (16/09/2016)
         UserConnectedRoles: function () {
-            return $resource($rootScope.API + 'roles/getuserrolesinformations/:token', { token: "@token" });
+            //return $resource($rootScope.API + 'roles/getuserrolesinformations/:token', { token: "@token" });  | V0.2 (< 16/09/2016)
+            return $resource($rootScope.API + 'roles/getuserroles/:token', { token: "@token" });
         },
         // Get member roles
         MemberRoles: function () {
-            return $resource($rootScope.API + 'roles/getuserrolesinformations/:token/:id', { token: "@token" });
+            //return $resource($rootScope.API + 'roles/getuserrolesinformations/:token/:id', { token: "@token" }); | V0.2 (< 16/09/2016)
+            return $resource($rootScope.API + 'roles/getrolebyprojectanduser/:token/:projectId/:userId', { token: "@token", projectId: "@projectId" });
         },
         // Get all users assigned and not assigned on a specific role
         UsersAssignedOrNot: function () {

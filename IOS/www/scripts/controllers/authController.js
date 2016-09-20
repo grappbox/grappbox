@@ -10,7 +10,6 @@ angular.module('GrappBox.controllers')
     $scope.$on('$ionicView.enter', function () {
         $ionicHistory.clearCache();
     });
-
     $scope.user.email = "pierre.hofman@epitech.eu";
     $scope.user.password = "hofman_p";
     $scope.login = function () {

@@ -16,7 +16,9 @@ textarea {
     right: 10px;
 }
 
-/* Stylizing action sheets on Android */
+/*
+** Stylizing action sheets on Android
+*/
 .platform-android .action-sheet-backdrop.active {
     background-color: rgba(0, 0, 0, 0.1);
 }
@@ -96,18 +98,39 @@ ion-popover-view {
 */
 
 /* Nav bars */
-.gb-nav-bar {
-    background-color: #c0392b !important;
+.gb-dashboard-nav-bar {
+    background-color: #FC575E !important;
 }
+
+.gb-cloud-nav-bar {
+    background-color: #FC575E !important;
+}
+
+.gb-calendar-nav-bar {
+    background-color: #FC575E !important;
+}
+
+.gb-bugtracker-nav-bar {
+    background-color: #FC575E !important;
+}
+
+.gb-timeline-nav-bar {
+    background-color: #FC575E !important;
+}
+
+.gb-whiteboard-nav-bar {
+    background-color: #FC575E !important;
+}
+
 /* Tab text container and container of this container */
 .tabs, .gb-tab {
-    background-color: #bdbdbd !important;
+    background-color: #BDBDBD !important;
 }
 
 /* Active tab */
 .tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
     opacity: 1 !important;
-    border-top-color: #c0392b !important;
+    border-top-color: #FC575E !important;
 }
 
 /* Text in tabs */
@@ -116,12 +139,12 @@ ion-popover-view {
 }
 
 .tab-item.tab-item-active .tab-title, .tab-item.active .tab-title, .tab-item.activated .tab-title {
-    color: #c0392b !important;
+    color: #FC575E !important;
 }
 
 /* Buttons */
 .button-positive {
-    background-color: #c0392b !important;
+    background-color: #FC575E !important;
     border-color: white !important;
 }
 
@@ -140,4 +163,30 @@ ion-popover-view {
     position: relative;
     top: -1.5em;
     margin-left: 50%;
+}
+
+/*
+**  Calendar
+*/
+
+.odd-cell {
+    background-color: pink !important;
+}
+
+.cal-year-box [class*=span] {
+    min-height: 60px !important;
+}
+
+.cal-year-box [class*=span]:nth-child(1), .cal-year-box [class*=span]:nth-child(2) {
+    border-bottom: none;
+}
+
+.col-md-3 {
+    width: 30% !important;
+    padding-left: 0px;
+    padding-right: 0px;
+}
+
+.col-xs-6 {
+    width: 50% !important;
 }

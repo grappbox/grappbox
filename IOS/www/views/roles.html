@@ -16,7 +16,7 @@
             <ion-item ng-show="noRole">{{noRole}}</ion-item>
             <ion-item ng-show="!noRole"
                       ng-repeat="role in projectRoles"
-                      ui-sref="app.usersOnRole({projectId: projectId, roleId: role.id, role: role})">
+                      ui-sref="app.usersOnRole({projectId: projectId, roleId: role.roleId, role: role})">
                 <h2>{{ role.name }}</h2>
             </ion-item>
         </ion-list>

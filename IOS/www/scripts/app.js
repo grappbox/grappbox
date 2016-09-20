@@ -3,7 +3,7 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar', 'ngAnimate', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
+angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar', 'ngAnimate', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
 
 // on starting
 .run(function ($ionicPlatform, $rootScope, $ionicLoading) {
@@ -18,7 +18,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar',
         }*/
     });
     $rootScope.API_VERSION = '0.2'; //actual API's version
-    $rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
+    //$rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
+    $rootScope.API = 'http://api.grappbox.com/V' + $rootScope.API_VERSION + '/';
 
     $rootScope.hasProject = false;
 
@@ -52,7 +53,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar',
     }
 })
 
-.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider) {
+.config(function ($ionicConfigProvider, $stateProvider, $urlRouterProvider, $httpProvider, calendarConfig) {
 
     //$ionicConfigProvider.views.maxCache(0);
     //$ionicConfigProvider.views.swipeBackEnabled(false);
@@ -61,6 +62,14 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar',
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
     $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
     $httpProvider.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
+
+    //Calendar
+    calendarConfig.dateFormatter = "moment";
+    calendarConfig.allDateFormats.moment.date.hour = "HH:mm";
+    calendarConfig.allDateFormats.moment.title.day = "ddd D MMM";
+    calendarConfig.displayAllMonthEvents = true;
+    calendarConfig.displayEventEndTimes = true;
+    calendarConfig.showTimesOnWeekView = true;
 
     $stateProvider
 
@@ -239,7 +248,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'ui.rCalendar',
 
     // user view
     .state('app.user', {
-        url: "/user/:userId",
+        url: ":projectId/user/:userId",
         views: {
             'menuList': {
                 templateUrl: "views/user.html",

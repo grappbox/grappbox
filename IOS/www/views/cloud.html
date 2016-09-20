@@ -76,7 +76,7 @@
 <!-- Create dir modal -->
 <script id="createDirModal.html" type="text/ng-template">
     <ion-modal-view>
-        <ion-header-bar class="bar-dark">
+        <ion-header-bar class="bar-dark gb-dashboard-nav-bar" ng-style="background-image: "transparent" !important;">
             <h1 class="title">Add folder</h1>
             <button class="button button-clear button-primary"
                     ng-click="dirModal.hide()">
@@ -90,9 +90,10 @@
                     <input type="text"
                            placeholder="My folder name"
                            name="createDirectory_title"
-                           ng-model="dir.dirName" />
+                           ng-model="dir.dirName" required/>
                 </ion-input>
-                <button class="button button-block button-positive"
+                <button ng-disabled="createDirectory_form.$invalid"
+                        class="button button-block button-positive"
                         ng-click="CloudCreateDir()">
                     Create
                 </button>

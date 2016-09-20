@@ -20,7 +20,6 @@ angular.module('GrappBox.controllers')
     $scope.userInfo = {};
     $scope.GetUserInfo = function () {
         //$rootScope.showLoading();
-        console.log("userId: " + $stateParams.userId);
         Users.UserInfo().get({
             token: $rootScope.userDatas.token,
             userId: $stateParams.userId
@@ -48,19 +47,20 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Roles.MemberRoles().get({
             token: $rootScope.userDatas.token,
+            projectId: $stateParams.projectId,
             userId: $stateParams.userId
         }).$promise
             .then(function (data) {
                 console.log('Get member roles successful !');
-                $scope.memberRoles = data.data.array;
-                if (data.data.array.length == 0)
+                $scope.memberRoles = data.data;
+                if (!data.data)
                     $scope.noRole = "This user hasn't any role.";
                 else
                     $scope.noRole = false;
                 console.log(data);
             })
             .catch(function (error) {
-                console.error('Get member roles failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Get member role failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
             })
             .finally(function () {

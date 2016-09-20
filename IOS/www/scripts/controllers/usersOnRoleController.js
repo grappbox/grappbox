@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Toast, Roles) {
+.controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory, Toast, Roles) {
 
     //Refresher
     $scope.doRefresh = function () {
@@ -32,7 +32,9 @@ angular.module('GrappBox.controllers')
             console.log('Delete role successful !');
             Toast.show("Role deleted");
             $scope.deleteRoleData = data;
-            $state.go('app.roles', { projectId: $scope.projectId });
+            $ionicHistory.clearCache().then(function () {
+                $state.go('app.roles', { projectId: $scope.projectId });
+            });
         })
         .catch(function (error) {
             console.error('Delete role failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -155,15 +157,15 @@ angular.module('GrappBox.controllers')
                 token: $rootScope.userDatas.token,
                 roleId: $scope.roleId,
                 projectId: $scope.projectId,
-                name: $scope.role.name,
-                teamTimeline: $scope.role.team_timeline,
-                customerTimeline: $scope.role.customer_timeline,
+                //name: $scope.role.name,
+                teamTimeline: $scope.role.teamTimeline,
+                customerTimeline: $scope.role.customerTimeline,
                 gantt: $scope.role.gantt,
                 whiteboard: $scope.role.whiteboard,
                 bugtracker: $scope.role.bugtracker,
                 event: $scope.role.event,
                 task: $scope.role.task,
-                projectSettings: $scope.role.project_settings,
+                projectSettings: $scope.role.projectSettings,
                 cloud: $scope.role.cloud
             }
         }).$promise

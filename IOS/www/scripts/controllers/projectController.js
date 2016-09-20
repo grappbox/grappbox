@@ -16,6 +16,7 @@ angular.module('GrappBox.controllers')
     }
 
     $scope.projectId = $stateParams.projectId;
+    console.log("PROJECT_ID on projectController = " + $scope.projectId);
 
     /*
     ** Get project logo
@@ -424,7 +425,7 @@ angular.module('GrappBox.controllers')
             titleText: 'Member action',
             cancelText: 'Cancel',
             buttonClicked: function (index) {
-                $state.go('app.user', { userId: $scope.user_id });
+                $state.go('app.user', { userId: $scope.user_id, projectId: $scope.projectId });
                 return true;
             },
             destructiveButtonClicked: function () {

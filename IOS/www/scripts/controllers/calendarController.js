@@ -4,76 +4,38 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CalendarCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt) {
-    'use strict';
+.controller('CalendarCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt, moment, calendarConfig) {
     $scope.calendar = {};
-    $scope.changeMode = function (mode) {
-        $scope.calendar.mode = mode;
-    };
-
-    $scope.loadEvents = function () {
-        $scope.calendar.eventSource = createRandomEvents();
-    };
-
-    $scope.onEventSelected = function (event) {
-        console.log('Event selected:' + event.startTime + '-' + event.endTime + ',' + event.title);
-    };
-
-    $scope.onViewTitleChanged = function (title) {
-        $scope.viewTitle = title;
-    };
-
-    $scope.today = function () {
-        $scope.calendar.currentDate = new Date();
-    };
-
-    $scope.isToday = function () {
-        var today = new Date(),
-            currentCalendarDate = new Date($scope.calendar.currentDate);
-
-        today.setHours(0, 0, 0, 0);
-        currentCalendarDate.setHours(0, 0, 0, 0);
-        return today.getTime() === currentCalendarDate.getTime();
-    };
-
-    $scope.onTimeSelected = function (selectedTime, events) {
-        console.log('Selected time: ' + selectedTime + ', hasEvents: ' + (events !== undefined && events.length !== 0));
-    };
-
-    function createRandomEvents() {
-        var events = [];
-        for (var i = 0; i < 50; i += 1) {
-            var date = new Date();
-            var eventType = Math.floor(Math.random() * 2);
-            var startDay = Math.floor(Math.random() * 90) - 45;
-            var endDay = Math.floor(Math.random() * 2) + startDay;
-            var startTime;
-            var endTime;
-            if (eventType === 0) {
-                startTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + startDay));
-                if (endDay === startDay) {
-                    endDay += 1;
-                }
-                endTime = new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate() + endDay));
-                events.push({
-                    title: 'All Day - ' + i,
-                    startTime: startTime,
-                    endTime: endTime,
-                    allDay: true
-                });
-            } else {
-                var startMinute = Math.floor(Math.random() * 24 * 60);
-                var endMinute = Math.floor(Math.random() * 180) + startMinute;
-                startTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + startDay, 0, date.getMinutes() + startMinute);
-                endTime = new Date(date.getFullYear(), date.getMonth(), date.getDate() + endDay, 0, date.getMinutes() + endMinute);
-                events.push({
-                    title: 'Event - ' + i,
-                    startTime: startTime,
-                    endTime: endTime,
-                    allDay: false
-                });
-            }
+    $scope.calendar.typeView = 'month';
+    $scope.calendar.date = new Date();
+    $scope.calendar.cellOpen = true;
+    $scope.calendar.cellEdit = function (cell) {
+        console.log(cell);
+        if (cell.inYear) {
+            cell.cssClass = 'odd-cell';
         }
-        return events;
-    }
+    };
+
+    $scope.calendar.events = [{
+      title: 'My event title', // The title of the event
+      startsAt: moment("2016-08-14 09:00:00").toDate(),
+      endsAt: moment("2016-08-14 23:00:00").toDate(), // A javascript date object for when the event starts
+      color: { // can also be calendarConfig.colorTypes.warning for shortcuts to the deprecated event types
+          primary: '#e3bc08', // the primary event color (should be darker than secondary)
+          secondary: '#fdf1ba' // the secondary event color (should be lighter than primary)
+      },
+      actions: [{ // an array of actions that will be displayed next to the event title
+          label: '<i class=\'glyphicon glyphicon-pencil\'></i>', // the label of the action
+          cssClass: 'edit-action', // a CSS class that will be added to the action element so you can implement custom styling
+          onClick: function (args) { // the action that occurs when it is clicked. The first argument will be an object containing the parent event
+              console.log('Edit event', args.calendarEvent);
+          }
+      }],
+      draggable: false, //Allow an event to be dragged and dropped
+      resizable: false, //Allow an event to be resizable
+      //incrementsBadgeTotal: true, //If set to false then will not count towards the badge total amount on the month and year view
+      //recursOn: 'year', // If set the event will recur on the given period. Valid values are year or month
+      //cssClass: 'a-css-class-name', //A CSS class (or more, just separate with spaces) that will be added to the event when it is displayed on each view. Useful for marking an event as selected / active etc
+      //allDay: false // set to true to display the event as an all day event on the day view
+  }];
 })

@@ -47,7 +47,7 @@
             </div>
             <ion-list>
                 <!-- List of all links in menu if one is selected -->
-                <ion-item nav-clear menu-close ui-sref="app.projects">Projects</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.projects">Projects</ion-item>
                 <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.dashboard({projectId: projectId})">Dashboard</ion-item>
                 <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.calendar({projectId: projectId})">Calendar</ion-item>
                 <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.cloud({projectId: projectId})">Cloud</ion-item>
@@ -84,7 +84,7 @@
                 <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.projects">Projects</ion-item>
                 <!--<ion-item nav-clear style="background-color:grey">Dashboard</ion-item>
                 <ion-item nav-clear style="background-color:grey">BugTracker</ion-item>-->
-                <ion-item nav-clear ui-sref="app.calendar">Calendar</ion-item>
+                <ion-item nav-clear menu-close ui-sref-active="active" ui-sref="app.calendar">Calendar</ion-item>
                 <!--<ion-item nav-clear style="background-color:grey">Cloud</ion-item>
                 <ion-item nav-clear style="background-color:grey">Tasks</ion-item>
                 <ion-item nav-clear style="background-color:grey">Timelines</ion-item>
@@ -99,7 +99,7 @@
     <!-- Contains buttons on the top bar also, because they never change so we can inherit -->
     <ion-side-menu-content edge-drag-threshold="true">
         <!-- Make the possibility to swipe -->
-        <ion-nav-bar class="bar-dark nav-title-slide-ios7 gb-nav-bar">
+        <ion-nav-bar class="bar-dark nav-title-slide-ios7 gb-dashboard-nav-bar">
             <ion-nav-back-button class="button-clear"></ion-nav-back-button><!-- Configuration of back-button in app.js -->
             <ion-nav-buttons side="left">
                 <!-- Menu button on top left -->
