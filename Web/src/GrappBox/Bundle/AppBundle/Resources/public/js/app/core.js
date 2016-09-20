@@ -27,13 +27,13 @@ var app = angular.module("grappbox", [
   'gantt.movable',
   'gantt.drawtask',
   'gantt.tooltips',
-  'gantt.bounds',
+  //'gantt.bounds',
   'gantt.progress',
   'gantt.table',
   'gantt.tree',
   'gantt.groups',
   'gantt.dependencies',
-  'gantt.overlap',
+  //'gantt.overlap',
   'gantt.resizeSensor'//,
   //'mgcrea.ngStrap'
 ]);
