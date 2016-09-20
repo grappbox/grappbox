@@ -84,7 +84,6 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
           if (value.dependencies.length)
             elem.tasks[0].dependencies = [];
 
-
         angular.forEach(value.dependencies, function(value2, key2) {
           switch (value2.name) {
             case 'fs':
@@ -204,20 +203,20 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
             console.info('[Event] ' + eventName);
         };
 
-        // // Event handler
-        // var logTaskEvent = function(eventName, task) {
-        //     console.info('[Event] ' + eventName + ': ' + task.model.name);
-        // };
-        //
-        // // Event handler
-        // var logRowEvent = function(eventName, row) {
-        //     console.info('[Event] ' + eventName + ': ' + row.model.name);
-        // };
+        // Event handler
+        var logTaskEvent = function(eventName, task) {
+            console.info('[Event] ' + eventName + ': ' + task.model.name);
+        };
 
-        // // Event handler
-        // var logTimespanEvent = function(eventName, timespan) {
-        //     console.info('[Event] ' + eventName + ': ' + timespan.model.name);
-        // };
+        // Event handler
+        var logRowEvent = function(eventName, row) {
+            console.info('[Event] ' + eventName + ': ' + row.model.name);
+        };
+
+        // Event handler
+        var logTimespanEvent = function(eventName, timespan) {
+            console.info('[Event] ' + eventName + ': ' + timespan.model.name);
+        };
 
         // Event handler
         var logLabelsEvent = function(eventName, width) {
@@ -284,7 +283,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       labelsEnabled: true,
       maxHeight: false,
       mode: 'custom',
-      readOnly: ($scope.data.canEdit ? false : true),
+      readOnly: true, //($scope.data.canEdit ? false : true),
       // rowContent: '<i class="material-icons">storage</i> {[{row.model.name}]}',
       // rowContentEnabled:false,
       scale: 'day',
@@ -324,26 +323,26 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
               // api.data.on.clear($scope, addEventName('data.on.clear', logDataEvent));
               api.data.on.change($scope, addEventName('data.on.change', logDataEvent));
 
-              // api.tasks.on.add($scope, addEventName('tasks.on.add', logTaskEvent));
-              // api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
-              // api.tasks.on.rowChange($scope, addEventName('tasks.on.rowChange', logTaskEvent));
-              // api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent));
-              //
-              // if (api.tasks.on.moveBegin) {
-              //     api.tasks.on.moveBegin($scope, addEventName('tasks.on.moveBegin', logTaskEvent));
-              //     //api.tasks.on.move($scope, addEventName('tasks.on.move', logTaskEvent));
-              //     api.tasks.on.moveEnd($scope, addEventName('tasks.on.moveEnd', logTaskEvent));
-              //
-              //     api.tasks.on.resizeBegin($scope, addEventName('tasks.on.resizeBegin', logTaskEvent));
-              //     //api.tasks.on.resize($scope, addEventName('tasks.on.resize', logTaskEvent));
-              //     api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent));
-              // }
-              //
-              // api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
-              // api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
-              // api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
-              // api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
-              //
+              api.tasks.on.add($scope, addEventName('tasks.on.add', logTaskEvent));
+              api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
+              api.tasks.on.rowChange($scope, addEventName('tasks.on.rowChange', logTaskEvent));
+              api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent));
+
+              if (api.tasks.on.moveBegin) {
+                  api.tasks.on.moveBegin($scope, addEventName('tasks.on.moveBegin', logTaskEvent));
+                  //api.tasks.on.move($scope, addEventName('tasks.on.move', logTaskEvent));
+                  api.tasks.on.moveEnd($scope, addEventName('tasks.on.moveEnd', logTaskEvent));
+
+                  api.tasks.on.resizeBegin($scope, addEventName('tasks.on.resizeBegin', logTaskEvent));
+                  //api.tasks.on.resize($scope, addEventName('tasks.on.resize', logTaskEvent));
+                  api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent));
+              }
+
+              api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
+              api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
+              api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
+              api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
+
               api.side.on.resizeBegin($scope, addEventName('labels.on.resizeBegin', logLabelsEvent));
               api.side.on.resize($scope, addEventName('labels.on.resize', logLabelsEvent));
               api.side.on.resizeEnd($scope, addEventName('labels.on.resizeEnd', logLabelsEvent));
@@ -415,10 +414,10 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
                       });
                   }
               });
-              //
-              // api.tasks.on.rowChange($scope, function(task) {
-              //     $scope.live.row = task.row.model;
-              // });
+
+              api.tasks.on.rowChange($scope, function(task) {
+                  $scope.live.row = task.row.model;
+              });
 
               objectModel = new ObjectModel(api);
           });
@@ -487,9 +486,11 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
   //     dataToRemove = undefined;
   // };
   //
-  // $scope.reload = function() {
-  //     $scope.load();
-  // };
+  $scope.reload = function() {
+    $scope.data.gantt = [];
+    getTask();
+      //$scope.load();
+  };
   //
   // // Remove data action
   // $scope.remove = function() {
@@ -504,82 +505,82 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
 
 
   // Visual two way binding.
-  // $scope.live = {};
-  //
-  // var debounceValue = 1000;
-  //
-  // var listenTaskJson = debounce(function(taskJson) {
-  //     if (taskJson !== undefined) {
-  //         var task = angular.fromJson(taskJson);
-  //         objectModel.cleanTask(task);
-  //         var model = $scope.live.task;
-  //         angular.extend(model, task);
-  //     }
-  // }, debounceValue);
-  // $scope.$watch('live.taskJson', listenTaskJson);
-  //
-  // var listenRowJson = debounce(function(rowJson) {
-  //     if (rowJson !== undefined) {
-  //         var row = angular.fromJson(rowJson);
-  //         objectModel.cleanRow(row);
-  //         var tasks = row.tasks;
-  //
-  //         delete row.tasks;
-  //         var rowModel = $scope.live.row;
-  //
-  //         angular.extend(rowModel, row);
-  //
-  //         var newTasks = {};
-  //         var i, l;
-  //
-  //         if (tasks !== undefined) {
-  //             for (i = 0, l = tasks.length; i < l; i++) {
-  //                 objectModel.cleanTask(tasks[i]);
-  //             }
-  //
-  //             for (i = 0, l = tasks.length; i < l; i++) {
-  //                 newTasks[tasks[i].id] = tasks[i];
-  //             }
-  //
-  //             if (rowModel.tasks === undefined) {
-  //                 rowModel.tasks = [];
-  //             }
-  //             for (i = rowModel.tasks.length - 1; i >= 0; i--) {
-  //                 var existingTask = rowModel.tasks[i];
-  //                 var newTask = newTasks[existingTask.id];
-  //                 if (newTask === undefined) {
-  //                     rowModel.tasks.splice(i, 1);
-  //                 } else {
-  //                     objectModel.cleanTask(newTask);
-  //                     angular.extend(existingTask, newTask);
-  //                     delete newTasks[existingTask.id];
-  //                 }
-  //             }
-  //         } else {
-  //             delete rowModel.tasks;
-  //         }
-  //
-  //         angular.forEach(newTasks, function(newTask) {
-  //             rowModel.tasks.push(newTask);
-  //         });
-  //     }
-  // }, debounceValue);
-  // $scope.$watch('live.rowJson', listenRowJson);
-  //
-  // $scope.$watchCollection('live.task', function(task) {
-  //     $scope.live.taskJson = angular.toJson(task, true);
-  //     $scope.live.rowJson = angular.toJson($scope.live.row, true);
-  // });
-  //
-  // $scope.$watchCollection('live.row', function(row) {
-  //     $scope.live.rowJson = angular.toJson(row, true);
-  //     if (row !== undefined && row.tasks !== undefined && row.tasks.indexOf($scope.live.task) < 0) {
-  //         $scope.live.task = row.tasks[0];
-  //     }
-  // });
-  //
-  // $scope.$watchCollection('live.row.tasks', function() {
-  //     $scope.live.rowJson = angular.toJson($scope.live.row, true);
-  // });
+  $scope.live = {};
+
+  var debounceValue = 1000;
+
+  var listenTaskJson = debounce(function(taskJson) {
+      if (taskJson !== undefined) {
+          var task = angular.fromJson(taskJson);
+          objectModel.cleanTask(task);
+          var model = $scope.live.task;
+          angular.extend(model, task);
+      }
+  }, debounceValue);
+  $scope.$watch('live.taskJson', listenTaskJson);
+
+  var listenRowJson = debounce(function(rowJson) {
+      if (rowJson !== undefined) {
+          var row = angular.fromJson(rowJson);
+          objectModel.cleanRow(row);
+          var tasks = row.tasks;
+
+          delete row.tasks;
+          var rowModel = $scope.live.row;
+
+          angular.extend(rowModel, row);
+
+          var newTasks = {};
+          var i, l;
+
+          if (tasks !== undefined) {
+              for (i = 0, l = tasks.length; i < l; i++) {
+                  objectModel.cleanTask(tasks[i]);
+              }
+
+              for (i = 0, l = tasks.length; i < l; i++) {
+                  newTasks[tasks[i].id] = tasks[i];
+              }
+
+              if (rowModel.tasks === undefined) {
+                  rowModel.tasks = [];
+              }
+              for (i = rowModel.tasks.length - 1; i >= 0; i--) {
+                  var existingTask = rowModel.tasks[i];
+                  var newTask = newTasks[existingTask.id];
+                  if (newTask === undefined) {
+                      rowModel.tasks.splice(i, 1);
+                  } else {
+                      objectModel.cleanTask(newTask);
+                      angular.extend(existingTask, newTask);
+                      delete newTasks[existingTask.id];
+                  }
+              }
+          } else {
+              delete rowModel.tasks;
+          }
+
+          angular.forEach(newTasks, function(newTask) {
+              rowModel.tasks.push(newTask);
+          });
+      }
+  }, debounceValue);
+  $scope.$watch('live.rowJson', listenRowJson);
+
+  $scope.$watchCollection('live.task', function(task) {
+      $scope.live.taskJson = angular.toJson(task, true);
+      $scope.live.rowJson = angular.toJson($scope.live.row, true);
+  });
+
+  $scope.$watchCollection('live.row', function(row) {
+      $scope.live.rowJson = angular.toJson(row, true);
+      if (row !== undefined && row.tasks !== undefined && row.tasks.indexOf($scope.live.task) < 0) {
+          $scope.live.task = row.tasks[0];
+      }
+  });
+
+  $scope.$watchCollection('live.row.tasks', function() {
+      $scope.live.rowJson = angular.toJson($scope.live.row, true);
+  });
 
 }]);

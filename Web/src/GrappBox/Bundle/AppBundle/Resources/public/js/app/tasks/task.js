@@ -63,6 +63,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
           $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
           $scope.data.onLoad = false;
+          formatTasksforTagInput();
         },
         function errorCallback(response) {
           $scope.data.task = null;
@@ -147,6 +148,13 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   //-----------------DATE FORMATING----------------------//
   $scope.formatObjectDate = function(dateToFormat) {
     return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(" ")) : "N/A");
+  };
+
+  //----------------TASKS FORMATING---------------------//
+  var formatTasksforTagInput = function() {
+    angular.forEach($scope.data.task.tasks, function(task) {
+      task['name'] = task.title;
+    });
   };
 
   //------------------EDITION SWITCH-----------------------//
@@ -515,7 +523,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "advance": $scope.data.toUpdate.advance
                 };
     if ($scope.data.toUpdate.started_at.getTime() != (new Date($scope.data.task.started_at.date).getTime()))
-      elem['started_at'] = new Date($scope.data.toUpdate.started_at);
+      elem['started_at'] = $scope.data.toUpdate.started_at;
 
     if ($scope.data.toUpdate.type == "container") {
       elem['is_container'] = true;
@@ -534,7 +542,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     else if ($scope.data.toUpdate.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
     else if ($scope.data.toUpdate.due_date.getTime() != (new Date($scope.data.task.due_date.date).getTime()))
-      elem['due_date'] = new Date($scope.data.toUpdate.due_date);
+      elem['due_date'] = $scope.data.toUpdate.due_date;
 
     var data = {"data": elem};
 
