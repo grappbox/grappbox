@@ -137,7 +137,7 @@ class DashboardController extends RolesAndTokenVerificationController
 
 		$name = $project->getName();
 		$description = $project->getDescription();
-		$logo = $project->getLogoDate();
+		$logo = $project->getLogo();
 		$phone = $project->getPhone();
 		$company = $project->getCompany();
 		$contactMail = $project->getContactEmail();

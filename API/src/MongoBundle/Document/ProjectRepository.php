@@ -167,7 +167,7 @@ class ProjectRepository extends DocumentRepository
 			$projectDescription = $project->getDescription();
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
-			$projectLogo = $project->getLogoDate();
+			$projectLogo = $project->getLogo();
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
@@ -244,7 +244,7 @@ class ProjectRepository extends DocumentRepository
 			$projectDescription = $project->getDescription();
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
-			$projectLogo = $project->getLogoDate();
+			$projectLogo = $project->getLogo();
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
@@ -319,7 +319,7 @@ class ProjectRepository extends DocumentRepository
 				$projectId = $project->getId();
 				$projectName = $project->getName();
 				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogoDate();
+				$projectLogo = $project->getLogo();
 				$projectPhone = $project->getPhone();
 				$projectCompany = $project->getCompany();
 				$contactMail = $project->getContactEmail();
@@ -341,7 +341,7 @@ class ProjectRepository extends DocumentRepository
 						$projectId = $project->getId();
 						$projectName = $project->getName();
 						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogoDate();
+						$projectLogo = $project->getLogo();
 						$projectPhone = $project->getPhone();
 						$projectCompany = $project->getCompany();
 						$contactMail = $project->getContactEmail();
@@ -393,7 +393,7 @@ class ProjectRepository extends DocumentRepository
 				$projectId = $project->getId();
 				$projectName = $project->getName();
 				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogoDate();
+				$projectLogo = $project->getLogo();
 				$projectPhone = $project->getPhone();
 				$projectCompany = $project->getCompany();
 				$contactMail = $project->getContactEmail();
@@ -418,7 +418,7 @@ class ProjectRepository extends DocumentRepository
 						$projectId = $project->getId();
 						$projectName = $project->getName();
 						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogoDate();
+						$projectLogo = $project->getLogo();
 						$projectPhone = $project->getPhone();
 						$projectCompany = $project->getCompany();
 						$contactMail = $project->getContactEmail();
