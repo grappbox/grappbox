@@ -929,9 +929,9 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		// $this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		// $this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		// $this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - removeusertotask - Complete Success";
@@ -1012,7 +1012,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$tag->setName($content->name);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		// $this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}

@@ -1030,7 +1030,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tag->setName($content->name);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		//$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "tagUpdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
 	}
@@ -1086,7 +1086,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->remove($tag);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
+		// $this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - deleteTag - Complete Success";

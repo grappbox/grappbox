@@ -205,7 +205,7 @@ class CloudController extends Controller
 		$em->persist($stream);
 		$em->flush();
 
-		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		// $this->get('service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - openStreamAction - Complete Success";
