@@ -181,7 +181,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			if (!array_key_exists('object', $content))
 	 			return $this->setBadRequest("10.4.6", "Whiteboard", "push", "Missing Parameter");
 			$object = new WhiteboardObject();
-			$object->setWhiteboardId($id);
 			$object->setWhiteboard($whiteboard);
 			$object->setObject(json_encode($content->object));
 			$object->setCreatedAt(new DateTime('now'));
