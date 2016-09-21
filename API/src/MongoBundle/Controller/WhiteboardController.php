@@ -230,20 +230,30 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		$date = new \DateTime($content->lastUpdate);
 
-		$toAddQuery = $em->createQuery(
-									    'SELECT objects
-									    FROM MongoBundle\Document\WhiteboardObject objects
-									    WHERE objects.whiteboardId = :id AND objects.createdAt > :date AND objects.deletedAt IS NULL')
+		// $toAddQuery = $em->createQuery(
+		// 							    'SELECT objects
+		// 							    FROM MongoBundle\Document\WhiteboardObject objects
+		// 							    WHERE objects.whiteboardId = :id AND objects.createdAt > :date AND objects.deletedAt IS NULL')
+		// 									->setParameters(array('date' => $date, 'id' => $id));
+		$toAddQuery = $em->getRepository('MongBundle:WhiteboardObject')->createQueryBuilder('obj')
+											->where("obj.whiteboardId == :id")
+											->andWhere("obj.createdAt > :date")
+											->andWhere("obj.deletedAt IS NULL")
 											->setParameters(array('date' => $date, 'id' => $id));
-		$to_add = $toAddQuery->getResult();
+		$to_add = $toAddQuery->getQuery()->getResult();;
 		$toAdd = array();
 		foreach ($to_add as $key => $value) {
 			$toAdd[] = $value->objectToArray();
 		}
-		$toDelQuery = $em->createQuery(
-									    'SELECT objects
-									    FROM MongoBundle\Document\WhiteboardObject objects
-									    WHERE objects.whiteboardId = :id AND objects.deletedAt > :date AND objects.deletedAt IS NOT NULL')
+		// $toDelQuery = $em->createQuery(
+		// 							    'SELECT objects
+		// 							    FROM MongoBundle\Document\WhiteboardObject objects
+		// 							    WHERE objects.whiteboardId = :id AND objects.deletedAt > :date AND objects.deletedAt IS NOT NULL')
+		// 									->setParameters(array('date' => $date, 'id' => $id));
+		$toAddQuery = $em->getRepository('MongBundle:WhiteboardObject')->createQueryBuilder('obj')
+											->where("obj.whiteboardId == :id")
+											->andWhere("obj.deletedAt > :date")
+											->andWhere("obj.deletedAt IS NOT NULL")
 											->setParameters(array('date' => $date, 'id' => $id));
 		$to_del = $toDelQuery->getResult();
 		$toDel = array();
