@@ -235,7 +235,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		// 							    FROM MongoBundle\Document\WhiteboardObject objects
 		// 							    WHERE objects.whiteboardId = :id AND objects.createdAt > :date AND objects.deletedAt IS NULL')
 		// 									->setParameters(array('date' => $date, 'id' => $id));
-		$toAddQuery = $em->getRepository('MongBundle:WhiteboardObject')->createQueryBuilder('obj')
+		$toAddQuery = $em->getRepository('MongoBundle:WhiteboardObject')->createQueryBuilder('obj')
 											->where("obj.whiteboardId == :id")
 											->andWhere("obj.createdAt > :date")
 											->andWhere("obj.deletedAt IS NULL")
@@ -250,7 +250,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		// 							    FROM MongoBundle\Document\WhiteboardObject objects
 		// 							    WHERE objects.whiteboardId = :id AND objects.deletedAt > :date AND objects.deletedAt IS NOT NULL')
 		// 									->setParameters(array('date' => $date, 'id' => $id));
-		$toAddQuery = $em->getRepository('MongBundle:WhiteboardObject')->createQueryBuilder('obj')
+		$toAddQuery = $em->getRepository('MongoBundle:WhiteboardObject')->createQueryBuilder('obj')
 											->where("obj.whiteboardId == :id")
 											->andWhere("obj.deletedAt > :date")
 											->andWhere("obj.deletedAt IS NOT NULL")
