@@ -32,8 +32,10 @@ public class BugtrackerFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_bugtracker, container, false);
         mViewPager = (ViewPager) v.findViewById(R.id.viewPager);
+
         mPagesAdapter = new BugListFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(mPagesAdapter);
+        mViewPager.setOffscreenPageLimit(2);
 
         return v;
     }

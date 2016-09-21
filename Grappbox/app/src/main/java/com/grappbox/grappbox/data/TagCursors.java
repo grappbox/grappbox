@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.data;
 
+import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
@@ -44,5 +45,17 @@ public class TagCursors {
 
     public static Cursor query_TagByGrappboxProjectId(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return sQueryBuilder.query(openHelper.getReadableDatabase(), projection, sProjectGrappboxIdSelection, new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
+    }
+
+    public static Uri insert(Uri uri, ContentValues contentValues, GrappboxDBHelper mOpenHelper) {
+        long id = mOpenHelper.getWritableDatabase().insert(TagEntry.TABLE_NAME, null, contentValues);
+
+        if (id < 0)
+            return null;
+    return TagEntry.buildTagWithLocalIdUri(id);
+    }
+
+    public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
+        return mOpenHelper.getWritableDatabase().update(TagEntry.TABLE_NAME, contentValues, selection, args);
     }
 }

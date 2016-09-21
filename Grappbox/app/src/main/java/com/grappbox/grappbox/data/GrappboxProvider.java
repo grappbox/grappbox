@@ -348,6 +348,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.EventEntry.TABLE_NAME;
             case EVENT_TYPE:
                 return GrappboxContract.EventTypeEntry.TABLE_NAME;
+            case TAG:
+                return GrappboxContract.TagEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -580,6 +582,9 @@ public class GrappboxProvider extends ContentProvider {
             case ROLE_ASSIGNATION:
                 returnedUri = RoleAssignationCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case TAG:
+                returnedUri = TagCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             case BUG:
                 returnedUri = BugCursors.insert(uri, contentValues, mOpenHelper);
                 break;
@@ -639,6 +644,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case ROLE_ASSIGNATION:
                 ret = RoleAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TAG:
+                ret = TagCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             case BUG:
                 ret = BugCursors.update(uri, contentValues, selection, args, mOpenHelper);

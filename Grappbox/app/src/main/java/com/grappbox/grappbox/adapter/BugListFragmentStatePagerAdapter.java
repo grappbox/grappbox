@@ -14,6 +14,7 @@ import com.grappbox.grappbox.bugtracker_fragments.BugListFragment;
  */
 public class BugListFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
     private Context mContext;
+
     public BugListFragmentStatePagerAdapter(Context context, FragmentManager fm) {
         super(fm);
         mContext = context;
@@ -21,11 +22,11 @@ public class BugListFragmentStatePagerAdapter extends FragmentStatePagerAdapter 
 
     @Override
     public Fragment getItem(int position) {
-        Fragment newFrag = new BugListFragment();
+        Fragment page = new BugListFragment();
         Bundle arg = new Bundle();
         arg.putInt(BugListFragment.ARG_LIST_TYPE, position);
-        newFrag.setArguments(arg);
-        return newFrag;
+        page.setArguments(arg);
+        return page;
     }
 
     @Override

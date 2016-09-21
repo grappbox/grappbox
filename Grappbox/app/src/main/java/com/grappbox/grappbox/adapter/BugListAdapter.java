@@ -43,9 +43,6 @@ public class BugListAdapter extends CursorAdapter {
     private static final String LOG_TAG = BugListAdapter.class.getSimpleName();
 
     private Context mContext;
-    private ArrayList<Cursor> tags;
-    private ArrayList<Long> nbAssignee;
-    private ArrayList<Long> nbComments;
 
     public class BugEntryViewHolder{
         ImageView mAvatar;
@@ -56,34 +53,31 @@ public class BugListAdapter extends CursorAdapter {
             mAvatar = (ImageView) v.findViewById(R.id.avatar);
             mTitle = (TextView) v.findViewById(R.id.title);
             mDateStatus = (TextView) v.findViewById(R.id.date_status);
-            mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
+            /*mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
             mNbComments = (TextView) v.findViewById(R.id.nb_comments);
-            mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);
+            mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);*/
         }
     }
 
     public BugListAdapter(Context context, Cursor c, int flags) {
         super(context, c, flags);
         mContext = context;
-        nbAssignee = new ArrayList<>();
-        nbComments = new ArrayList<>();
-        tags = new ArrayList<>();
     }
 
     @Override
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-        Trace.beginSection("Create list view");
-        View v = LayoutInflater.from(context).inflate(R.layout.list_item_bugtracker_list, viewGroup, false);
 
+        View v = LayoutInflater.from(context).inflate(R.layout.list_item_bugtracker_list, viewGroup, false);
+/*
         BugEntryViewHolder vh = new BugEntryViewHolder(v);
         v.setTag(vh);
-        Trace.endSection();
+        */
         return v;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        Trace.beginSection("Bind view");
+        /*Trace.beginSection("Bind view #" + cursor.getPosition());
         BugEntryViewHolder vh = (BugEntryViewHolder) view.getTag();
         boolean isClosed = !cursor.isNull(COLUMN_DELETED_UTC);
 
@@ -91,54 +85,13 @@ public class BugListAdapter extends CursorAdapter {
         Date date = null;
         try {
             date = Utils.Date.convertUTCToPhone(cursor.getString(isClosed ? COLUMN_DELETED_UTC : COLUMN_LAST_EDIT_UTC));
-            /*vh.mNbAssignee.setText(String.valueOf(nbAssignee.get(cursor.getPosition())));
-            vh.mNbComments.setText(String.valueOf(nbComments.get(cursor.getPosition())));
-            if (tags.get(cursor.getPosition()) != null && tags.get(cursor.getPosition()).moveToFirst()){
-                TextView newTag = (TextView) LayoutInflater.from(mContext).inflate(R.layout.list_item_bugtracker_tagitem, vh.mTagContainer);
-                newTag.setText(tags.get(cursor.getPosition()).getString(0));
-            }*/
             vh.mDateStatus.setText(mContext.getString(R.string.bug_status_date, mContext.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance().format(date)));
         } catch (ParseException e) {
             e.printStackTrace();
         } finally {
             Trace.endSection();
-        }
-
+        }*/
     }
 
 
-
-    @Override
-    public Cursor swapCursor(Cursor newCursor) {
-        Trace.beginSection("Swap Cursor");
-        tags.clear();
-        nbComments.clear();
-        nbAssignee.clear();
-        if (newCursor == null|| !newCursor.moveToFirst())
-            return super.swapCursor(null);
-        do {
-            Trace.beginSection("Load additionnal cursors");
-            /*Cursor nbAssigneeCursor = mContext.getContentResolver().query(BugAssignationEntry.CONTENT_URI, new String[]{"COUNT(" + BugAssignationEntry._ID + ") AS count_assignee"},
-                    BugAssignationEntry.COLUMN_LOCAL_BUG_ID + "=?", new String[]{String.valueOf(newCursor.getLong(COLUMN_BUG_ID))}, null);
-            Cursor nbCommentsCursor = mContext.getContentResolver().query(BugEntry.CONTENT_URI, new String[]{"COUNT(" + BugEntry._ID + ") AS count_assignee"},
-                    BugEntry.COLUMN_LOCAL_PARENT_ID + "=?", new String[]{String.valueOf(newCursor.getLong(COLUMN_BUG_ID))}, null);
-            Cursor tagsCursor = mContext.getContentResolver().query(BugEntry.buildBugWithTag(), new String[]{TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_NAME},
-                    GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=?", new String[]{String.valueOf(newCursor.getLong(COLUMN_BUG_ID))}, null);
-
-            if (nbAssigneeCursor == null || nbCommentsCursor == null || !nbAssigneeCursor.moveToFirst() || !nbCommentsCursor.moveToFirst()){
-                nbComments.add((long) 0);
-                nbAssignee.add((long) 0);
-            } else {
-                nbAssignee.add(nbAssigneeCursor.getLong(0));
-                nbComments.add(nbCommentsCursor.getLong(0));
-                nbAssigneeCursor.close();
-                nbCommentsCursor.close();
-            }
-            tags.add(tagsCursor);*/
-            Trace.endSection();
-        } while (newCursor.moveToNext());
-        newCursor.moveToFirst();
-        Trace.endSection();
-        return super.swapCursor(newCursor);
-    }
 }

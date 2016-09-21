@@ -5,11 +5,13 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DatabaseUtils;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -17,6 +19,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CursorAdapter;
 import android.widget.ListView;
 
 import com.grappbox.grappbox.ProjectActivity;
@@ -36,7 +39,6 @@ import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
  * A simple {@link Fragment} subclass.
  */
 public class BugListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
-    public static final int LOADER_LIST = 0;
 
     public static final String ARG_LIST_TYPE = "com.grappbox.grappbox.bugtracker_fragment.ARG_LIST_TYPE";
     public static final int TYPE_OPEN = 0;
@@ -57,7 +59,10 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        getLoaderManager().initLoader(LOADER_LIST, getArguments(), this);
+        if (savedInstanceState == null)
+            getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
+        else
+            getLoaderManager().restartLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
     }
 
     @Override
@@ -69,30 +74,28 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
         mAdapter = new BugListAdapter(getActivity(), null, 0);
         mBuglist.setAdapter(mAdapter);
-
+        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
         mRefresher.setOnRefreshListener(this);
         return v;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.d(LOG_TAG, "onCreateLoader");
-        if (mRefreshReceiver == null)
-            mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
         String selection, sortOrder = "datetime("+BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
         String[] selectionArgs;
+        long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
-        switch (args.getInt(ARG_LIST_TYPE)){
+        switch (id){
             case TYPE_OPEN:
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL";
                 selectionArgs = new String[]{
-                        String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1))
+                        String.valueOf(lpid)
                 };
                 break;
             case TYPE_CLOSE:
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NOT NULL";
                 selectionArgs = new String[]{
-                        String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1))
+                        String.valueOf(lpid)
                 };
                 break;
             case TYPE_YOURS:
@@ -101,7 +104,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL AND " +
                         UserEntry.TABLE_NAME + "." + UserEntry._ID + "=?";
                 selectionArgs = new String[]{
-                        String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)),
+                        String.valueOf(lpid),
                         String.valueOf(uid)
                 };
                 return new CursorLoader(getActivity(), BugEntry.buildBugWithAssignation(), BugListAdapter.projection, selection, selectionArgs, sortOrder);
@@ -113,7 +116,9 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
+
+        ExpandCursor expander = new ExpandCursor(mAdapter);
+        expander.execute(data);
     }
 
     @Override
@@ -134,5 +139,27 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         if (getArguments().getInt(ARG_LIST_TYPE) == TYPE_CLOSE)
             bugSync.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
         getActivity().startService(bugSync);
+    }
+
+    public class ExpandCursor extends AsyncTask<Cursor, Void, Cursor>{
+        CursorAdapter mAdapter;
+
+        public ExpandCursor(CursorAdapter adapter){
+            mAdapter = adapter;
+        }
+
+        @Override
+        protected Cursor doInBackground(Cursor... cursors) {
+            if (cursors.length < 1)
+                return null;
+            Cursor cursor = cursors[0];
+            cursor.getCount();
+            return cursor;
+        }
+
+        @Override
+        protected void onPostExecute(Cursor cursor) {
+            mAdapter.swapCursor(cursor);
+        }
     }
 }

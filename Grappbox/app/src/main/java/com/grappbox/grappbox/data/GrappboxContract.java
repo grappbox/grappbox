@@ -2,6 +2,7 @@ package com.grappbox.grappbox.data;
 
 import android.content.ContentResolver;
 import android.content.ContentUris;
+import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
 
@@ -356,6 +357,8 @@ public class GrappboxContract {
         public static Uri buildTagWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
+
+
     }
 
     public static final class BugEntry implements BaseColumns {

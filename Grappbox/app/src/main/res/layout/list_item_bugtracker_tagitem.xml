@@ -9,6 +9,8 @@
     android:paddingBottom="2dp"
     android:paddingEnd="5dp"
     android:paddingStart="5dp"
-    android:layout_marginEnd="5dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginStart="10dp"
     app:backgroundTint="@color/GrappPurple"
-    xmlns:android="http://schemas.android.com/apk/res/android" />
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:textAlignment="center"/>
