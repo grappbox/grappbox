@@ -11,6 +11,7 @@ import android.view.ViewGroup;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.BugListFragmentStatePagerAdapter;
+import com.grappbox.grappbox.adapter.TimelineFragmentStatePagerAdapter;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -32,7 +33,7 @@ public class TimelineFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_bugtracker, container, false);
         mViewPager = (ViewPager) v.findViewById(R.id.viewPager);
 
-        mPagesAdapter = new BugListFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
+        mPagesAdapter = new TimelineFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(mPagesAdapter);
         mViewPager.setOffscreenPageLimit(2);
 
