@@ -39,7 +39,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	private static $channelName = "joashp"; // TODO to change
 
 	/**
-	* @api {post} /0.3/notification/registerdevice Register user device
+	* @api {post} /0.3/notification/device Register user device
 	* @apiName registerDevice
 	* @apiGroup Notification
 	* @apiDescription Register user mobile device for mobile notification send process
@@ -173,7 +173,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/notification/unregisterdevice/:token/:id Unregister user device
+	* @api {delete} /0.3/notification/device/:token/:id Unregister user device
 	* @apiName unregisterDevice
 	* @apiGroup Notification
 	* @apiDescription Unregister user mobile device to mobile notification send process
@@ -263,7 +263,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/notification/getuserdevices/:token Get user registered devices
+	* @api {get} /0.3/notification/devices/:token Get user registered devices
 	* @apiName getuserDevices
 	* @apiGroup Notification
 	* @apiDescription Get user registered devices informations
@@ -412,7 +412,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/notification/getnotifications/:token/:read/:offset/:limit Get user notifications
+	* @api {get} /0.3/notification/:token/:read/:offset/:limit Get user notifications
 	* @apiName getNotifications
 	* @apiGroup Notification
 	* @apiDescription Get user notifications

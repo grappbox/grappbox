@@ -50,11 +50,6 @@ class TimelineMessage
     private $editedAt;
 
     /**
-     * @var DateTime
-     */
-    private $deletedAt;
-
-    /**
      * @var \SQLBundle\Entity\User
      */
     private $creator;
@@ -70,6 +65,24 @@ class TimelineMessage
     public function __construct()
     {
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+        "timelineId" => $this->timelineId,
+        "title" => $this->title,
+        "message" => $this->message,
+        "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+        "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null
+      );
     }
 
     /**
@@ -221,29 +234,6 @@ class TimelineMessage
     }
 
     /**
-     * Set deletedAt
-     *
-     * @param DateTime $deletedAt
-     * @return TimelineMessage
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set timelines
      *
      * @param \SQLBundle\Entity\Timeline $timelines
@@ -287,25 +277,6 @@ class TimelineMessage
     public function getCreator()
     {
         return $this->creator;
-    }
-
-    /**
-     * Get object content into array
-     *
-     * @return array
-     */
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
-        "timelineId" => $this->timelineId,
-        "title" => $this->title,
-        "message" => $this->message,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt
-      );
     }
 
     /**

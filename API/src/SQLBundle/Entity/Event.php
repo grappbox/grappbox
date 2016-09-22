@@ -50,11 +50,6 @@ class Event
     private $projects;
 
     /**
-     * @var \SQLBundle\Entity\EventType
-     */
-    private $eventtypes;
-
-    /**
      * @var \SQLBundle\Entity\User
      */
     private $creator_user;
@@ -74,39 +69,29 @@ class Event
 
     public function objectToArray()
     {
-        $projectId = null;
-        $create = null;
-        $edit = null;
-        $begin = null;
-        $end = null;
-        if ($this->createdAt != null)
-            $create = $this->createdAt->format('Y-m-d H:i:s');
-        if ($this->editedAt != null)
-            $edit = $this->editedAt->format('Y-m-d H:i:s');
-        if ($this->beginDate != null)
-            $begin = $this->beginDate->format('Y-m-d H:i:s');
-        if ($this->endDate != null)
-            $end = $this->endDate->format('Y-m-d H:i:s');
-        if ($this->projects)
-            $projectId = $this->projects->getId();
+        $participants = array();
+        foreach ($event->getUsers() as $key => $value) {
+            $participants[] = array(
+                "id" => $value->getId(),
+                "firstname" => $value->getFirstname(),
+                "lastname" => $value->getLastname()
+            );
+        }
         return array(
             'id' => $this->id,
-            'projectId' => $projectId,
+            'projectId' => $this->projects ? $this->projects->getId() : null,
             'creator' => array(
                 'id' => $this->creator_user->getId(),
                 'firstname' => $this->creator_user->getFirstName(),
                 'lastname' => $this->creator_user->getLastName()
             ),
-            'type' => array(
-                'id' => $this->eventtypes->getId(),
-                'name' => $this->eventtypes->getName()
-            ),
             'title' => $this->title,
             'description' => $this->description,
-            'beginDate' => $begin,
-            'endDate' => $end,
-            'createdAt' => $create,
-            'editedAt' => $edit
+            'beginDate' => $this->beginDate ? $this->beginDate->format('Y-m-d H:i:s') : null,
+            'endDate' => $this->endDate ? $this->endDate->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'editedAt' => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+            'users' =>$participants
         );
     }
 
@@ -282,29 +267,6 @@ class Event
     }
 
     /**
-     * Set eventtypes
-     *
-     * @param \SQLBundle\Entity\EventType $eventtypes
-     * @return Event
-     */
-    public function setEventtypes(\SQLBundle\Entity\EventType $eventtypes = null)
-    {
-        $this->eventtypes = $eventtypes;
-
-        return $this;
-    }
-
-    /**
-     * Get eventtypes
-     *
-     * @return \SQLBundle\Entity\EventType
-     */
-    public function getEventtypes()
-    {
-        return $this->eventtypes;
-    }
-
-    /**
      * Set creator_user
      *
      * @param \SQLBundle\Entity\User $creatorUser
@@ -358,33 +320,5 @@ class Event
     public function getUsers()
     {
         return $this->users;
-    }
-    /**
-     * @var string
-     */
-    private $icon;
-
-
-    /**
-     * Set icon
-     *
-     * @param string $icon
-     * @return Event
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Get icon
-     *
-     * @return string 
-     */
-    public function getIcon()
-    {
-        return $this->icon;
     }
 }

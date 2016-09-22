@@ -12,15 +12,8 @@ class Task
     public function objectToArray($taskModified)
     {
         $tasks = array();
-        print(count($this->tasks_container));
         foreach ($this->tasks_container as $t) {
-            $start = $t->getStartedAt();
-            if ($start != null)
-                $start = $start->format('Y-m-d H:i:s');
-            $due = $t->getDueDate();
-            if ($due != null)
-                $due = $due->format('Y-m-d H:i:s');
-            $tasks[] = array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $start, "due_date" => $due);
+            $tasks[] = array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null);
         }
         $users = array();
         foreach ($this->ressources as $res) {
@@ -29,41 +22,22 @@ class Task
         }
         $tags = array();
         foreach ($this->tags as $t) {
-            $tags[] = array("id" => $t->getId(), "name" => $t->getName());
+            $tags[] = $t->objectToArray();
         }
         $deps = array();
         foreach ($this->dependence as $d) {
             $t = $d->getDependenceTask();
-            $start = $t->getStartedAt();
-            if ($start != null)
-                $start = $start->format('Y-m-d H:i:s');
-            $due = $t->getDueDate();
-            if ($due != null)
-                $due = $due->format('Y-m-d H:i:s');
-
-            $deps[] = array("id" => $d->getId(), "name" => $d->getName(), "task" => array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $start, "due_date" => $due));
+            $deps[] = array("id" => $d->getId(), "name" => $d->getName(), "task" => array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null));
         }
-        $due = null;
-        $create = null;
-        $start = null;
-        $finish = null;
-        if ($this->dueDate != null)
-            $due = $this->dueDate->format('Y-m-d H:i:s');
-        if ($this->createdAt != null)
-            $create = $this->createdAt->format('Y-m-d H:i:s');
-        if ($this->startedAt != null)
-            $start = $this->startedAt->format('Y-m-d H:i:s');
-        if ($this->finishedAt != null)
-            $finish = $this->finishedAt->format('Y-m-d H:i:s');
         return array(
             'id' => $this->id,
             'title' => $this->title,
             'description' => $this->description,
             'project_id' => $this->projects->getId(),
-            'due_date' => $due,
-            'started_at' => $start,
-            'finished_at' => $finish,
-            'created_at' => $create,
+            'due_date' => $this->dueDate ? $this->dueDate->format('Y-m-d H:i:s') : null,
+            'started_at' => $this->startedAt ? $this->startedAt->format('Y-m-d H:i:s') : null,
+            'finished_at' => $this->finishedAt ? $this->finishedAt->format('Y-m-d H:i:s') : null,
+            'created_at' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
             'is_milestone' => $this->isMilestone,
             'is_container' => $this->isContainer,
             'tasks' => $tasks,

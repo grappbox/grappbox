@@ -30,7 +30,7 @@ use DateTime;
 class EventController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /0.3/event/postevent Post event
+	* @api {post} /0.3/event Post event
 	* @apiName postEvent
 	* @apiGroup Event
 	* @apiDescription Post an event/meeting
@@ -40,7 +40,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {int} [projectId] project's id (if related to a project)
 	* @apiParam {string} title event title
 	* @apiParam {string} description event description
-	* @apiParam {int} typeId event type id
 	* @apiParam {string} begin beginning date & hour of the event
 	* @apiParam {string} end ending date & hour of the event
 	* @apiParam {int[]} users array of users id invited to the event
@@ -52,7 +51,6 @@ class EventController extends RolesAndTokenVerificationController
 	*			"token": "ThisIsMyToken",
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
-	*			"typeId":  1,
 	*			"begin": "1945-06-18 06:00:00",
 	*			"end": "1945-06-18 08:00:00",
 	*			"users": [1,26,...]
@@ -66,7 +64,6 @@ class EventController extends RolesAndTokenVerificationController
 	*			"projectId": 21,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
-	*			"typeId":  1,
 	*			"begin": "1945-06-18 06:00:00",
 	*			"end": "1945-06-18 08:00:00",
 	*			"users": []
@@ -79,9 +76,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} creator.firstname author firstname
 	* @apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
 	* @apiSuccess {string} title event title
 	* @apiSuccess {string} description event description
 	* @apiSuccess {string} beginDate beginning date of the event
@@ -103,10 +97,8 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
-	*			"type": {"id": 1, "name": "Event"},
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
-	*			"icon": "DATA",
 	*			"beginDate": "1945-06-18 06:00:00",
 	*			"endDate": "1945-06-18 08:00:00",
 	*			"createdAt": "1945-02-18 06:00:00",
@@ -263,7 +255,7 @@ class EventController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content) || !array_key_exists("users", $content))
+			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content) || !array_key_exists("users", $content))
 			return $this->setBadRequest("5.4.6", "Calendar", "postEvent", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -282,8 +274,6 @@ class EventController extends RolesAndTokenVerificationController
 		$event->setCreatorUser($user);
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("SQLBundle:EventType")->find($content->typeId);
-		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
 		$event->setBeginDate(new DateTime($content->begin));
@@ -313,17 +303,6 @@ class EventController extends RolesAndTokenVerificationController
 			}
 		}
 
-		$participants = array();
-		foreach ($event->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$object = $event->objectToArray();
-		$object["users"] = $participants;
-
 		$class = new NotificationController();
 
 		$mdata['mtitle'] = "Event - Event Created";
@@ -341,22 +320,21 @@ class EventController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		return $this->setSuccess("1.5.1", "Calendar", "postEvent", "Complete Success", $object);
+		return $this->setSuccess("1.5.1", "Calendar", "postEvent", "Complete Success", $event->objectToArray());
 	}
 
 	/**
-	* @api {put} /0.3/event/editevent Edit event
+	* @api {put} /0.3/event/:token/:id Edit event
 	* @apiName editEvent
 	* @apiGroup Event
 	* @apiDescription Edit an event/meeting
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {int} eventId event id
-	* @apiParam {string} token user authentication token
+	* @apiParam {int} id event id
+	* @apiParam {string} token duser authentication token
 	* @apiParam {int} [projectId] project's id (if related to a project)
 	* @apiParam {string} title event title
 	* @apiParam {string} description event description
-	* @apiParam {int} typeId event type id
 	* @apiParam {string} begin beginning date & hour of the event
 	* @apiParam {string} end ending date & hour of the event
 	* @apiParam {int[]} toAddUsers array of users id to add to the event
@@ -370,7 +348,6 @@ class EventController extends RolesAndTokenVerificationController
 	*			"eventId": 15,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
-	*			"typeId":  1,
 	*			"begin": "1945-06-18 06:00:00",
 	*			"end": "1945-06-18 08:00:00",
 	*			"toAddUsers": [1,25,...],
@@ -386,7 +363,6 @@ class EventController extends RolesAndTokenVerificationController
 	*			"eventId": 15,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
-	*			"typeId":  1,
 	*			"begin": "1945-06-18 06:00:00",
 	*			"end": "1945-06-18 08:00:00",
 	*			"toAddUsers": [],
@@ -400,9 +376,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} creator.firstname author firstname
 	* @apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
 	* @apiSuccess {string} title event title
 	* @apiSuccess {string} description event description
 	* @apiSuccess {string} beginDate beginning date of the event
@@ -424,7 +397,6 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
-	*			"type": {"id": 1, "name": "Event"},
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
 	*			"beginDate": "1945-06-18 06:00:00",
@@ -590,30 +562,30 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"info": {
 	*			"return_code": "5.5.4",
-	*			"return_message": "Calendar - editEvent - Bad Parameter: eventId"
+	*			"return_message": "Calendar - editEvent - Bad Parameter: event id"
 	*		}
 	* 	}
 	*
 	*/
-	public function editEventAction(Request $request)
+	public function editEventAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("typeId", $content) || !array_key_exists("begin", $content)|| !array_key_exists("end", $content)
+		if (!array_key_exists("title", $content) || !array_key_exists("description", $content)
+			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content)
 			|| !array_key_exists("toAddUsers", $content) || !array_key_exists("toRemoveUsers", $content))
 			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("5.5.3", "Calendar", "editEvent"));
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("SQLBundle:Event")->find($content->eventId);
+		$event = $em->getRepository("SQLBundle:Event")->find($id);
 		if (!($event instanceof Event))
-			return $this->setBadRequest("5.5.9", "Calendar", "editEvent", "Bad Parameter: eventId");
+			return $this->setBadRequest("5.5.9", "Calendar", "editEvent", "Bad Parameter: event id");
 
 		if ($event->getProjects() instanceof Project)
 		{
@@ -638,8 +610,6 @@ class EventController extends RolesAndTokenVerificationController
 
 		if (array_key_exists("projectId", $content))
 			$event->setProjects($project);
-		$type = $em->getRepository("SQLBundle:EventType")->find($content->typeId);
-		$event->setEventtypes($type);
 		$event->setTitle($content->title);
 		$event->setDescription($content->description);
 		$event->setBeginDate(new DateTime($content->begin));
@@ -699,15 +669,6 @@ class EventController extends RolesAndTokenVerificationController
 				}
 		}
 
-		$participants = array();
-		foreach ($event->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-
 		$class = new NotificationController();
 
 		$mdata['mtitle'] = "Event - Event Edited";
@@ -725,14 +686,11 @@ class EventController extends RolesAndTokenVerificationController
 		if (count($userNotif) > 0)
 			$class->pushNotification($userNotif, $mdata, $wdata, $em);
 
-		$object = $event->objectToArray();
-		$object["users"] = $participants;
-
-		return $this->setSuccess("1.5.1", "Calendar", "editEvent", "Complete Success", $object);
+		return $this->setSuccess("1.5.1", "Calendar", "editEvent", "Complete Success", $event->objectToArray());
 	}
 
 	/**
-	* @api {delete} /0.3/event/delevent/:token/:id Delete event
+	* @api {delete} /0.3/event/:token/:id Delete event
 	* @apiName delEvent
 	* @apiGroup Event
 	* @apiDescription Delete an event/meeting
@@ -857,125 +815,7 @@ class EventController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /0.3/event/gettypes/:token Get event types
-	* @apiName getTypes
-	* @apiGroup Event
-	* @apiDescription Get all event types
-	* @apiVersion 0.3.0
-	*
-	* @apiParam {string} token user authentication token
-	*
-	* @apiSuccess {int} id type id
-	* @apiSuccess {string} name type name
-	*
-	* @apiSuccessExample Complete Success:
-	* 	{
-	*		"info": {
-	*			"return_code": "1.5.1",
-	*			"return_message": "Calendar - getTypes - Complete success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": [
-	*				{"id": 1, "name": "Event"},
-	*				{"id": 2, "name": "Meeting"},
-	*				{"id": 3, "name": "Private"}
-	*			]
-	*		}
-	* 	}
-	* @apiSuccessExample Success But No Data:
-	* 	{
-	*		"info": {
-	*			"return_code": "1.5.3",
-	*			"return_message": "Calendar - getTypes - No Data Success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": []
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token:
-	* 	HTTP/1.1 401 Unauthorized
-	*	{
-	*	  "info": {
-	*	    "return_code": "5.1.3",
-	*	    "return_message": "Dashboard - getteamoccupation - Bad ID"
-	*	  }
-	*	}
-	*
-	*/
-	/**
-	* @api {get} /V0.2/event/gettypes/:token Get event types
-	* @apiName getTypes
-	* @apiGroup Event
-	* @apiDescription Get all event types
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user authentication token
-	*
-	* @apiSuccess {int} id type id
-	* @apiSuccess {string} name type name
-	*
-	* @apiSuccessExample Complete Success:
-	* 	{
-	*		"info": {
-	*			"return_code": "1.5.1",
-	*			"return_message": "Calendar - getTypes - Complete success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": [
-	*				{"id": 1, "name": "Event"},
-	*				{"id": 2, "name": "Meeting"},
-	*				{"id": 3, "name": "Private"}
-	*			]
-	*		}
-	* 	}
-	* @apiSuccessExample Success But No Data:
-	* 	{
-	*		"info": {
-	*			"return_code": "1.5.3",
-	*			"return_message": "Calendar - getTypes - No Data Success"
-	*		},
-	*		"data":
-	*		{
-	*			"array": []
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token:
-	* 	HTTP/1.1 401 Unauthorized
-	*	{
-	*	  "info": {
-	*	    "return_code": "5.1.3",
-	*	    "return_message": "Dashboard - getteamoccupation - Bad ID"
-	*	  }
-	*	}
-	*
-	*/
-	public function getTypesAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("5.1.3", "Calendar", "getTypes"));
-
-		$em = $this->getDoctrine()->getManager();
-		$types = $em->getRepository("SQLBundle:EventType")->findAll();
-
-		if (count($types) <= 0)
-			return $this->setNoDataSuccess("1.5.3", "Calendar", "getTypes");
-
-		$types_array = array();
-		foreach ($types as $key => $value) {
-			$types_array[] = $value->objectToArray();
-		}
-
-		return $this->setSuccess("1.5.1", "Calendar", "getTypes", "Complete Success", array("array" => $types_array));
-	}
-
-	/**
-	* @api {get} /0.3/event/getevent/:token/:id Get event
+	* @api {get} /0.3/event/:token/:id Get event
 	* @apiName getEvent
 	* @apiGroup Event
 	* @apiDescription Get an event informations
@@ -990,9 +830,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} creator.firstname author firstname
 	* @apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
 	* @apiSuccess {string} title event title
 	* @apiSuccess {string} description event description
 	* @apiSuccess {string} beginDate beginning date of the event
@@ -1014,7 +851,6 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
-	*			"type": {"id": 1, "name": "Event"},
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
 	*			"beginDate": "1945-06-18 06:00:00",
@@ -1152,34 +988,23 @@ class EventController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("5.2.4", "Calendar", "getEvent", "Bad Parameter: id");
 
 		if ($event->getProjects() instanceof Project)
-			{
-				$project = $event->getProjects();
-				if ($this->checkRoles($user, $project->getId(), "event") < 1)
-					return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
-			}
-		else
-			{
-				$check = false;
-				foreach ($event->getUsers() as $key => $value) {
-					 if ($user->getId() == $value->getId())
-					 		$check = true;
-				}
-				if (!$check)
-					return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
-			}
-
-		$participants = array();
-		foreach ($event->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
+		{
+			$project = $event->getProjects();
+			if ($this->checkRoles($user, $project->getId(), "event") < 1)
+				return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
 		}
-		$object = $event->objectToArray();
-		$object["users"] = $participants;
+		else
+		{
+			$check = false;
+			foreach ($event->getUsers() as $key => $value) {
+				if ($user->getId() == $value->getId())
+		 			$check = true;
+			}
+			if (!$check)
+				return ($this->setNoRightsError("5.2.9", "Calendar", "getEvent"));
+		}
 
-		return $this->setSuccess("1.5.1", "Calendar", "getEvent", "Complete Success", $object);
+		return $this->setSuccess("1.5.1", "Calendar", "getEvent", "Complete Success", $event->objectToArray());
 	}
 
 
@@ -1190,22 +1015,20 @@ class EventController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {put} /0.3/event/setparticipants Set participants
+	* @api {put} /0.3/event/users/:token/:id Set participants
 	* @apiName setParticipants
 	* @apiGroup Event
 	* @apiDescription Add/remove users to the event
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {string} token user authentication token
-	* @apiParam {int} eventId event id
+	* @apiParam {int} id event id
 	* @apiParam {int[]} toAdd list of users' id to add
 	* @apiParam {int[]} toRemove list of users' id to remove
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	* 	"data": {
-	* 		"token": "ThisIsMyToken",
-	* 		"eventId": 1,
 	* 		"toAdd": [1, 15, 6],
 	* 		"toRemove": []
 	* 	}
@@ -1217,9 +1040,6 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} creator.firstname author firstname
 	* @apiSuccess {string} creator.lastname author lastname
 	* @apiSuccess {int} projectId project id
-	* @apiSuccess {Object} type Event type object
-	* @apiSuccess {int} type.id Event type id
-	* @apiSuccess {string} type.name Event type name
 	* @apiSuccess {string} title event title
 	* @apiSuccess {string} description event description
 	* @apiSuccess {string} beginDate beginning date of the event
@@ -1241,7 +1061,6 @@ class EventController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 12, "projectId": 21,
 	*			"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
-	*			"type": {"id": 1, "name": "Event"},
 	*			"title": "Brainstorming", "description": "blablabla",
 	*			"beginDate": "1945-06-18 06:00:00",
 	*			"endDate": "1945-06-18 08:00:00",
@@ -1275,7 +1094,7 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"info": {
 	*			"return_code": "5.3.4",
-	*			"return_message": "Calendar - setParticipants - Bad Parameter: eventId"
+	*			"return_message": "Calendar - setParticipants - Bad Parameter: event id"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -1421,23 +1240,23 @@ class EventController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*/
-	public function setParticipantsAction(Request $request)
+	public function setParticipantsAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("eventId", $content) || !array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
+		if (!array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
 			return $this->setBadRequest("5.3.6", "Calendar", "setParticipants", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("5.3.3", "Calendar", "setParticipants"));
 
 		$em = $this->getDoctrine()->getManager();
-		$event = $em->getRepository("SQLBundle:Event")->find($content->eventId);
+		$event = $em->getRepository("SQLBundle:Event")->find($id);
 		if (!($event instanceof Event))
-			return $this->setBadRequest("5.3.4", "Calendar", "setParticipants", "Bad Parameter: eventId");
+			return $this->setBadRequest("5.3.4", "Calendar", "setParticipants", "Bad Parameter: event id");
 
 		if ($event->getProjects() instanceof Project)
 		{
@@ -1447,8 +1266,8 @@ class EventController extends RolesAndTokenVerificationController
 		else {
 			$check = false;
 			foreach ($event->getUsers() as $key => $value) {
-				 if ($user->getId() == $value->getId())
-						$check = true;
+				if ($user->getId() == $value->getId())
+					$check = true;
 			}
 			if (!$check)
 				return ($this->setNoRightsError("5.3.9", "Calendar", "setParticipants"));
@@ -1503,18 +1322,7 @@ class EventController extends RolesAndTokenVerificationController
 		$em->persist($event);
 		$em->flush();
 
-		$participants = array();
-		foreach ($event->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$object = $event->objectToArray();
-		$object["users"] = $participants;
-
-		return $this->setSuccess("1.5.1", "Calendar", "setParticipants", "Complete Success", $object);
+		return $this->setSuccess("1.5.1", "Calendar", "setParticipants", "Complete Success", $event->objectToArray());
 	}
 
 }

@@ -19,10 +19,6 @@ SQLBundle\Entity\TimelineMessage:
         createdAt:
             type: datetime
             column: created_at
-        deletedAt:
-            type: datetime
-            column: deleted_at
-            nullable: TRUE
         editedAt:
             type: datetime
             column: edited_at

@@ -45,9 +45,6 @@ class EventRepository extends EntityRepository
 
 			if ($creatorId == $id)
 			{
-				$eventType = $meeting->getEventtypes();
-
-			 	$typeName = $eventType->getName();
 				$eventTitle = $meeting->getTitle();
 				$eventDescription = $meeting->getDescription();
 				$beginDate = $meeting->getBeginDate();
@@ -56,7 +53,7 @@ class EventRepository extends EntityRepository
 		        if ($endDate != null)
 		            $endDate = $endDate->format('Y-m-d H:i:s');
 
-				$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
+				$arr[] = array("id" => $meeting->getId(), "title" => $eventTitle,
 					"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 			}
 			else
@@ -68,9 +65,6 @@ class EventRepository extends EntityRepository
 
 					if ($userId == $id)
 					{
-						$eventType = $meeting->getEventtypes();
-
-					 	$typeName = $eventType->getName();
 						$eventTitle = $meeting->getTitle();
 						$eventDescription = $meeting->getDescription();
 						$beginDate = $meeting->getBeginDate();
@@ -79,7 +73,7 @@ class EventRepository extends EntityRepository
 				        if ($endDate != null)
 				            $endDate = $endDate->format('Y-m-d H:i:s');
 
-						$arr[] = array("id" => $meeting->getId(), "type" => $typeName, "title" => $eventTitle,
+						$arr[] = array("id" => $meeting->getId(), "title" => $eventTitle,
 							"description" => $eventDescription, "begin_date" => $beginDate, "end_date" => $endDate);
 					}
 				}

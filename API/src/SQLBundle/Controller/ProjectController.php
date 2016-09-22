@@ -34,7 +34,7 @@ use SQLBundle\Entity\Color;
 class ProjectController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /0.3/projects/projectcreation Create a project for the user connected
+	* @api {post} /0.3/project Create a project for the user connected
 	* @apiName projectCreation
 	* @apiGroup Project
 	* @apiDescription Create a project for the user connected
@@ -347,14 +347,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/projects/updateinformations Update a project informations
+	* @api {put} /0.3/project/:token/:id Update a project informations
 	* @apiName updateInformations
 	* @apiGroup Project
 	* @apiDescription Update the given project informations
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	* @apiParam {Number} [creatorId] Id of the new creator
 	* @apiParam {String} [name] name of the project
 	* @apiParam {String} [description] Description of the project
@@ -370,8 +370,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
-	*			"projectId": 2,
 	*			"creatorId": 18,
 	*			"name": "Grappbox",
 	*			"description": "grappbox est un projet de gestion de projets",
@@ -388,8 +386,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Minimum-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
-	*			"projectId": 2
 	*		}
 	*	}
 	*
@@ -623,16 +619,13 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateInformationsAction(Request $request)
+	public function updateInformationsAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.2.3", "Project", "updateinformations"));
 
@@ -640,7 +633,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
 			return $this->setBadRequest("6.2.4", "Project", "updateinformations", "Bad Parameter: projectId");
@@ -654,7 +647,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			$repository = $em->getRepository('SQLBundle:Role');
 
-			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $content->projectId)->getQuery();
+			$qb = $repository->createQueryBuilder('r')->join('r.projects', 'p')->where('r.name = :name', 'p.id = :id')->setParameter('name', "Admin")->setParameter('id', $id)->getQuery();
 			$role = $qb->getResult();
 
 			if (count($role) == 0)
@@ -667,7 +660,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$roleId = $role->getId();
 
 			$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-			->setParameter('projectId', $content->projectId)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId)->getQuery();
+			->setParameter('projectId', $id)->setParameter('userId', $creatorUserId)->setParameter('roleId', $roleId)->getQuery();
 			$ProjectUserRoles = $qb->getResult();
 
 			if (count($ProjectUserRoles) == 0)
@@ -715,14 +708,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/projects/getinformations/:token/:projectId Get a project basic informations
+	* @api {get} /0.3/project/:token/:id Get a project basic informations
 	* @apiName getInformations
 	* @apiGroup Project
 	* @apiDescription Get the given project basic informations
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {String} name Name of the project
 	* @apiSuccess {String} description Description of the project
@@ -776,12 +769,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - getinformations - Bad ID"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.3.4",
-	*			"return_message": "Project - getinformations - Bad Parameter: projectId"
+	*			"return_message": "Project - getinformations - Bad Parameter: id"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -868,31 +861,31 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getInformationsAction(Request $request, $token, $projectId)
+	public function getInformationsAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: id");
 
 
 		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
 
 	/**
-	* @api {delete} /0.3/projects/delproject/:token/:projectId Delete a project 7 days after the call
+	* @api {delete} /0.3/project/:token/:id Delete a project 7 days after the call
 	* @apiName delProject
 	* @apiGroup Project
 	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -919,12 +912,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - delproject - Insufficient Rights"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.4.4",
-	*			"return_message": "Project - delproject - Bad Parameter: projectId"
+	*			"return_message": "Project - delproject - Bad Parameter: id"
 	*		}
 	*	}
 	*/
@@ -972,20 +965,20 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delProjectAction(Request $request, $token, $projectId)
+	public function delProjectAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
+		if ($this->checkRoles($user, $id, "projectSettings") < 2)
 			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.4.4", "Project", "delproject", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.4.4", "Project", "delproject", "Bad Parameter: id");
 
 		$delDate = new \DateTime;
 		$delDate->add(new \DateInterval('P7D'));
@@ -999,7 +992,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/projects/retrieveproject/:token/:projectId Retreive a project before the 7 days are passed, after delete
+	* @api {get} /0.3/project/retrieve/:token/:projectId Retreive a project before the 7 days are passed, after delete
 	* @apiName retrieveProject
 	* @apiGroup Project
 	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
@@ -1116,7 +1109,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /0.3/projects/generatecustomeraccess Generate or Regenerate a customer access for a project
+	* @api {post} /0.3/project/customeraccess Generate or Regenerate a customer access for a project
 	* @apiName generateCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Generate or regenerate a customer access for the given project
@@ -1311,137 +1304,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
-	* @apiName getCustomerAccessById
-	* @apiGroup Project
-	* @apiDescription Get a customer access by it's id
-	* @apiVersion 0.3.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the customer access
-	*
-	* @apiSuccess {int} id Id of the customer access
-	* @apiSuccess {String} token Customer access token
-	* @apiSuccess {Number} project_id Id of the project
-	* @apiSuccess {String} name Name of the customer access
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getcustomeraccessbyid - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 18,
-	*			"token": "dizjflqfq41c645w",
-	*			"project_id": 2,
-	*			"name": "access for X company"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.3",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.4",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.9",
-	*			"return_message": "Project - getcustomeraccessbyid - Insufficient Rights"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.2/projects/getcustomeraccessbyid/:token/:id Get a customer access by it's id
-	* @apiName getCustomerAccessById
-	* @apiGroup Project
-	* @apiDescription Get a customer access by it's id
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} id Id of the customer access
-	*
-	* @apiSuccess {String} customer_token Customer access token
-	* @apiSuccess {Number} project_id Id of the project
-	* @apiSuccess {String} name Name of the customer access
-	* @apiSuccess {Datetime} creation_date Date of creation of the customer access
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.6.1",
-	*			"return_message": "Project - getcustomeraccessbyid - Complete Success"
-	*		},
-	*		"data": {
-	*			"customer_token": "dizjflqfq41c645w",
-	*			"project_id": 2,
-	*			"name": "access for X company",
-	*			"creation_date":
-	*			{
-	*				"date":"2015-10-15 11:00:00",
-	*				"timezone_type":3,
-	*				"timezone":"Europe\/Paris"
-	*			}
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.3",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.4",
-	*			"return_message": "Project - getcustomeraccessbyid - Bad Parameter: id"
-	*		}
-	*	}
-	* @apiErrorExample Insufficient Rights
-	*	HTTP/1.1 403 Forbidden
-	*	{
-	*		"info": {
-	*			"return_code": "6.7.9",
-	*			"return_message": "Project - getcustomeraccessbyid - Insufficient Rights"
-	*		}
-	*	}
-	*/
-	public function getCustomerAccessByIdAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("6.7.3", "Project", "getcustomeraccessbyid"));
-
-		$em = $this->getDoctrine()->getManager();
-		$customerAccess = $em->getRepository('SQLBundle:CustomerAccess')->find($id);
-
-		if ($customerAccess === null)
-			return $this->setBadRequest("6.7.4", "Project", "getcustomeraccessbyid", "Bad Parameter: id");
-
-		return $this->setSuccess("1.6.1", "Project", "getcustomeraccessbyid", "Complete Success", $customerAccess->objectToArray());
-	}
-
-	/**
-	* @api {get} /0.3/projects/getcustomeraccessbyproject/:token/:projectId Get a customer accesses by it's project
+	* @api {get} /0.3/project/customeraccesses/:token/:projectId Get a customer accesses by it's project
 	* @apiName getCustomerAccessByProject
 	* @apiGroup Project
 	* @apiDescription Get a customer access by it's poject id
@@ -1610,7 +1473,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/projects/delcustomeraccess/:token/:projectId/:customerAccessId Delete a customer access
+	* @api {delete} /0.3/project/customeraccess/:token/:projectId/:customerAccessId Delete a customer access
 	* @apiName delCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Delete the given customer access
@@ -1723,7 +1586,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /0.3/projects/addusertoproject Add a user to a project
+	* @api {post} /0.3/project/user Add a user to a project
 	* @apiName addUserToProject
 	* @apiGroup Project
 	* @apiDescription Add a given user to the project wanted
@@ -1956,7 +1819,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/projects/removeuserconnected/:token/:projectId Remove the user connected from the project
+	* @api {delete} /V0.3/project/userconnected/:token/:projectId Remove the user connected from the project
 	* @apiName removeUserConnected
 	* @apiGroup Project
 	* @apiDescription Remove the user connected from the project
@@ -2060,7 +1923,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/projects/removeusertoproject/:token/:projectId/:userId Remove a user from the project
+	* @api {delete} /0.3/project/user/:token/:projectId/:userId Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
 	* @apiDescription Remove a given user to the project wanted
@@ -2241,14 +2104,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/projects/getusertoproject/:token/:projectId Get all the users on a project
+	* @api {get} /0.3/project/users/:token/:id Get all the users on a project
 	* @apiName getUserToProject
 	* @apiGroup Project
 	* @apiDescription Get all the users on the given project
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of users
 	* @apiSuccess {Number} id Id of the user
@@ -2292,12 +2155,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - getusertoproject - Bad ID"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.13.4",
-	*			"return_message": "Project - getusertoproject - Bad Parameter: projectId"
+	*			"return_message": "Project - getusertoproject - Bad Parameter: id"
 	*		}
 	*	}
 	*/
@@ -2362,17 +2225,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserToProjectAction(Request $request, $token, $projectId)
+	public function getUserToProjectAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.13.3", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.13.4", "Project", "getusertoproject", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.13.4", "Project", "getusertoproject", "Bad Parameter: id");
 
 		$arr = array();
 
@@ -2393,21 +2256,19 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/projects/changeprojectcolor Change the color of a project
+	* @api {put} /0.3/project/color/:token/:id Change the color of a project
 	* @apiName changeProjectColor
 	* @apiGroup Project
 	* @apiDescription Change the color of a project
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	* @apiParam {String} color Color of the project, in hexadecimal
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "nfeq34efbfkqf54",
-	*			"projectId": 2,
 	*			"color": "bd2487"
 	*		}
 	*	}
@@ -2437,12 +2298,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - changeprojectcolor - Missing Parameter"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.14.4",
-	*			"return_message": "Project - changeprojectcolor - Bad Parameter: projectId"
+	*			"return_message": "Project - changeprojectcolor - Bad Parameter: id"
 	*		}
 	*	}
 	*/
@@ -2500,24 +2361,24 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function changeProjectColorAction(Request $request)
+	public function changeProjectColorAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('color', $content))
+		if (!array_key_exists('color', $content))
 			return $this->setBadRequest("6.14.6", "Project", "changeprojectcolor", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.14.3", "Project", "changeprojectcolor"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.14.4", "Project", "changeprojectcolor", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.14.4", "Project", "changeprojectcolor", "Bad Parameter: id");
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
@@ -2537,14 +2398,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/projects/resetprojectcolor/:token/:projectId Reset the color of the project
+	* @api {delete} /0.3/project/color/:token/:id Reset the color of the project
 	* @apiName resetProjectColor
 	* @apiGroup Project
 	* @apiDescription Reset the color of the given project to the default one
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -2563,12 +2424,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - resetprojectcolor - Bad ID"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.15.4",
-	*			"return_message": "Project - resetprojectcolor - Bad Parameter: projectId"
+	*			"return_message": "Project - resetprojectcolor - Bad Parameter: id"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: No color for the user
@@ -2624,17 +2485,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function resetProjectColorAction(Request $request, $token, $projectId)
+	public function resetProjectColorAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.15.3", "Project", "resetprojectcolor"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.15.4", "Project", "resetprojectcolor", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.15.4", "Project", "resetprojectcolor", "Bad Parameter: id");
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
@@ -2649,14 +2510,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/projects/getprojectlogo/:token/:projectId Get project logo
+	* @api {get} /0.3/project/logo/:token/:id Get project logo
 	* @apiName getProjectLogo
 	* @apiGroup Project
 	* @apiDescription Get the logo of the given project
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project
+	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Text} logo Logo of the project
 	*
@@ -2680,12 +2541,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - getProjectLogo - Bad ID"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: projectId
+	* @apiErrorExample Bad Parameter: id
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "6.16.4",
-	*			"return_message": "Project - getProjectLogo - Bad Parameter: projectId"
+	*			"return_message": "Project - getProjectLogo - Bad Parameter: id"
 	*		}
 	*	}
 	*/
@@ -2730,17 +2591,17 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getProjectLogoAction(Request $request, $token, $projectId)
+	public function getProjectLogoAction(Request $request, $token, $id)
 	{
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("6.16.3", "Project", "getProjectLogo"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($id);
 
 		if ($project === null)
-			return $this->setBadRequest("6.16.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
+			return $this->setBadRequest("6.16.4", "Project", "getProjectLogo", "Bad Parameter: id");
 
 		return $this->setSuccess("1.6.1", "Project", "getProjectLogo", "Complete Success", array("logo" => $project->getLogo()));
 	}

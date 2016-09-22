@@ -56,8 +56,8 @@ class BugComment
         "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastName()),
         "parentId" => $this->bugs->getId(),
         "comment" => $this->comment,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
+        "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+        "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
         "deletedAt" => $this->deletedAt
       );
     }

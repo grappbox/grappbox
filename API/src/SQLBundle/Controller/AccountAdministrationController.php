@@ -31,7 +31,7 @@ use DateInterval;
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /0.3/accountadministration/login/:token Client login
+	* @-api {get} /0.3/account/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -75,7 +75,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*
 	*/
 	/**
-	* @api {get} /V0.2/accountadministration/login/:token Client login
+	* @-api {get} /V0.2/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -126,7 +126,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
  	/**
- 	* @api {post} /0.3/accountadministration/login Login
+ 	* @api {post} /0.3/account/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -383,7 +383,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
-	* @api {get} /0.3/accountadministration/logout/:token Logout
+	* @api {get} /0.3/account/logout/:token Logout
 	* @apiName logout
 	* @apiGroup AccountAdministration
 	* @apiDescription unvalid user's token
@@ -466,7 +466,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	}
 
 	/**
-	* @api {post} /0.3/accountadministration/register Register
+	* @api {post} /0.3/account/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him

@@ -45,8 +45,8 @@ class WhiteboardObject
             'id' => $this->id,
             'whiteboardId' => $this->whiteboardId,
             'object' => json_decode($this->object),
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'deletedAt' => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
         );
     }
 

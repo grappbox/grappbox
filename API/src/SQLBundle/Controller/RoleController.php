@@ -28,7 +28,7 @@ use DateInterval;
 class RoleController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {post} /0.3/roles/addprojectroles Create a role
+	* @api {post} /0.3/role Create a role
 	* @apiName addProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Create a role for a project, 0: NONE, 1: READ ONLY, 2: READ & WRITE
@@ -296,7 +296,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/roles/delprojectroles/:token/:id Delete role
+	* @api {delete} /0.3/role/:token/:id Delete role
 	* @apiName delProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Delete the given role of the project wanted
@@ -438,14 +438,14 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/roles/putprojectroles Update role
+	* @api {put} /0.3/role/:token/:id Update role
 	* @apiName updateProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Update role caracteristics, 0: NONE, 1: READ ONLY, 2: READ & WRITE
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} roleId Id of the role
+	* @apiParam {Number} id Id of the role
 	* @apiParam {String} [name] Name of the role
 	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
 	* @apiParam {Number} [customerTimeline] Access rights on the project's customer timeline
@@ -460,8 +460,6 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
 	*			"name": "Graphists",
 	*			"teamTimeline": 2,
 	*			"customerTimeline": 0,
@@ -478,16 +476,12 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Minimum-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2
 	*		}
 	*	}
 	*
 	* @apiParamExample {json} Request-Partial-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"roleId": 2,
 	*			"teamTimeline": 1,
 	*			"customerTimeline": 0,
 	*			"whiteboard": 2,
@@ -697,24 +691,21 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateProjectRolesAction(Request $request)
+	public function updateProjectRolesAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('roleId', $content) || !array_key_exists('token', $content))
-			return $this->setBadRequest("13.3.6", "Role", "putprojectroles", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
 
 		$em = $this->getDoctrine()->getManager();
-		$role = $em->getRepository('SQLBundle:Role')->find($content->roleId);
+		$role = $em->getRepository('SQLBundle:Role')->find($id);
 
 		if ($role === null)
-			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: roleId");
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: id");
 
 		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.3.9", "Role", "putprojectroles");
@@ -753,7 +744,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/getprojectroles/:token/:projectId Get roles by project
+	* @api {get} /0.3/roles/:token/:projectId Get roles by project
 	* @apiName GetProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Get all the roles of the given project
@@ -954,7 +945,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /0.3/roles/assignpersontorole Assign user to role
+	* @api {post} /0.3/role/user Assign user to role
 	* @apiName assignPersonToRole
 	* @apiGroup Roles
 	* @apiDescription Assign the given user to the role for the related project
@@ -1181,24 +1172,22 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/roles/putpersonrole Change user role
+	* @api {put} /0.3/role/user/:token/:userId Change user role
 	* @apiName updatePersonRole
 	* @apiGroup Roles
 	* @apiDescription Change the role of a user ofr the realted project
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the project for searching
 	* @apiParam {Number} userId Id of the user for searching
+	* @apiParam {Number} projectId Id of the project for searching
 	* @apiParam {Number} old_roleId Old id of the role for searching
 	* @apiParam {Number} roleId new role id
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1,
-	*			"userId": 1,
 	*			"old_roleId": 2,
 	*			"roleId": 3
 	*		}
@@ -1340,17 +1329,16 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updatePersonRoleAction(Request $request)
+	public function updatePersonRoleAction(Request $request, $token, $userId)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('roleId', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content)
-			|| !array_key_exists('projectId', $content) || !array_key_exists('old_roleId', $content))
+		if (!array_key_exists('roleId', $content) || !array_key_exists('projectId', $content) || !array_key_exists('old_roleId', $content))
 			return $this->setBadRequest("13.6.6", "Role", "putpersonrole", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
@@ -1361,7 +1349,7 @@ class RoleController extends RolesAndTokenVerificationController
 		$repository = $em->getRepository('SQLBundle:ProjectUserRole');
 
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
-		->setParameter('projectId', $content->projectId)->setParameter('userId', $content->userId)->setParameter('roleId', $content->old_roleId)->getQuery();
+		->setParameter('projectId', $content->projectId)->setParameter('userId', $userId)->setParameter('roleId', $content->old_roleId)->getQuery();
 		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
 
 		if ($pur === null)
@@ -1379,7 +1367,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/getuserroles/:token Get connected user roles
+	* @api {get} /0.3/roles/user/:token Get connected user roles
 	* @apiName getuserroles
 	* @apiGroup Roles
 	* @apiDescription Get the all roles linked to the connected user
@@ -1460,13 +1448,9 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	*
 	* @apiSuccess {Object[]} array Array of user roles
-<<<<<<< HEAD
 	* @apiSuccess {Number} array.id Project user role id
 	* @apiSuccess {Number} array.project_id Id of the project
-	* @apiSuccess {Number} array.role_id Id of the role
-=======
-	* @apiSuccess {Number} array.projectId project id
-	* @apiSuccess {Number} array.roleId Role id
+	* @apiSuccess {Number} array.role_id Id of the rol
 	* @apiSuccess {String} array.name Role name
 	* @apiSuccess {Number} array.teamTimeline Team timeline role
 	* @apiSuccess {Number} array.customerTimeline Customer timeline role
@@ -1477,7 +1461,6 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} array.task Task role
 	* @apiSuccess {Number} array.projectSettings Project settings role
 	* @apiSuccess {Number} array.cloud Cloud role
->>>>>>> a65f14e0014c123637387a0cca5b02583e7c8c21
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1489,12 +1472,6 @@ class RoleController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"array": [
 	*				{
-<<<<<<< HEAD
-	*					"id": 10,
-	*					"project_id": 5,
-	*					"role_id": 1
-	*				}
-=======
 	*					"projectId": 1,
 	*					"roleId": 10,
 	*					"name": "Intern roles",
@@ -1509,7 +1486,6 @@ class RoleController extends RolesAndTokenVerificationController
 	*					"cloud": 1
 	*				},
 	*				...
->>>>>>> a65f14e0014c123637387a0cca5b02583e7c8c21
 	*			]
 	*		}
 	*	}
@@ -1558,7 +1534,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/roles/delpersonrole/:token/:projectId/:userId/:roleId Unassign user to role
+	* @api {delete} /0.3/role/user/:token/:projectId/:userId/:roleId Unassign user to role
 	* @apiName delPersonRole
 	* @apiGroup Roles
 	* @apiDescription Unlink given user and role
@@ -1737,7 +1713,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/getrolebyprojectanduser/:token/:projectId/[:userId] Get user role by project
+	* @api {get} /0.3/roles/project/user/:token/:projectId/[:userId] Get user role by project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
 	* @apiDescription Get user role for a given project, if userId not specified assumed reference user is the connected user
@@ -1917,7 +1893,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/getusersforrole/:token/:roleId Get (un)assigned users by role
+	* @api {get} /0.3/role/users/:token/:roleId Get (un)assigned users by role
 	* @apiName getUsersForRole
 	* @apiGroup Roles
 	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
@@ -2102,7 +2078,7 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights by named part
+	* @api {get} /0.3/role/user/part/:token/:userId/:projectId/:part Get user's rights by named part
 	* @apiName getUserRoleForPArt
 	* @apiGroup Roles
 	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)

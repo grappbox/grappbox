@@ -45,6 +45,18 @@ class Notification
     private $user;
 
 
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            "type" => $this->type,
+            "targetId" => $this->targetId,
+            "message" => $this->message,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'isRead' => $this->isRead
+        );
+    }
+
     /**
      * Get id
      *
@@ -168,21 +180,6 @@ class Notification
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    public function objectToArray()
-    {
-        $create = null;
-        if ($this->createdAt != null)
-            $create = $this->createdAt->format('Y-m-d H:i:s');
-        return array(
-            'id' => $this->id,
-            "type" => $this->type,
-            "targetId" => $this->targetId,
-            "message" => $this->message,
-            'createdAt' => $create,
-            'isRead' => $this->isRead
-        );
     }
 
     /**

@@ -15,9 +15,6 @@ SQLBundle\Entity\Event:
         description:
             type: text
             nullable: TRUE
-        icon:
-            type: text
-            nullable: TRUE
         beginDate:
             type: datetime
             column: begin_date
@@ -39,12 +36,6 @@ SQLBundle\Entity\Event:
             name: project_id
             referencedColumnName: id
             nullable: TRUE
-        eventtypes:
-          targetEntity: EventType
-          inversedBy: events
-          joinColumn:
-            name: type_id
-            referencedColumnName: id
         creator_user:
           targetEntity: User
           inveredBy: event_creator

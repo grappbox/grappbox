@@ -181,16 +181,33 @@ class User implements UserInterface
     {
     }
 
+    public function fullObjectToArray() {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'country' => $this->country,
+            'linkedin' => $this->linkedin,
+            'viadeo' => $this->viadeo,
+            'twitter' => $this->twitter,
+            'is_client' => $this->isClient
+        );
+    }
+
     public function objectToArray()
     {
-      return array(
-          'id' => $this->id,
-          'firstname' => $this->firstname,
-          'lastname' => $this->lastname,
-          'email' => $this->email,
-          'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
-          'is_client' => $this->isClient
-      );
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'is_client' => $this->isClient
+        );
     }
 
     /**

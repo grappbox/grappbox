@@ -40,7 +40,7 @@ class StatisticController extends RolesAndTokenVerificationController
   // -----------------------------------------------------------------------
 
 	/**
-	* @api {get} /0.3/statistics/getall/:token/:projectId Get all statistics
+	* @api {get} /0.3/statistics/:token/:projectId Get all statistics
 	* @apiName getAllStat
 	* @apiGroup Stat
 	* @apiDescription Get all statistics of a project.
@@ -217,7 +217,7 @@ class StatisticController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/statistics/getStat/:token/:projectId/:statName Get a stat info
+	* @api {get} /0.3/statistic/:token/:projectId/:statName Get a stat info
 	* @apiName getStat
 	* @apiGroup Stat
 	* @apiDescription Get a particaular statistics info.

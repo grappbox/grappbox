@@ -65,7 +65,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /0.3/tasks/taskcreation Create a task
+	* @api {post} /0.3/task Create a task
 	* @apiName taskCreation
 	* @apiGroup Task
 	* @apiDescription Create a task
@@ -201,6 +201,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
+	* @apiSuccess {string} tags.color Color of the tag in hexa
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
 	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
@@ -265,7 +266,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"tags": [
 	*				{
 	*					"id": 2,
-	*					"name": "Urgent"
+	*					"name": "Urgent",
+	*					"color": "FFFFFF"
 	*				}
 	*			],
 	*			"dependencies":
@@ -947,14 +949,14 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/tasks/taskupdate Update a task
+	* @api {put} /0.3/task/:token/:id Update a task
 	* @apiName taskUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} taskId Id of the task
+	* @apiParam {Number} id Id of the task
 	* @apiParam {String} [title] Title of the task
 	* @apiParam {String} [description] Description of the task
 	* @apiParam {Datetime} [due_date] Due date of the task
@@ -985,8 +987,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10,
 	*			"title": "User management",
 	*			"description": "User: creation, uptade and delete",
 	*			"due_date": "2015-10-10 11:00:00",
@@ -1035,16 +1035,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Minimum-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10
 	*		}
 	*	}
 	*
 	* @apiParamExample {json} Request-Partial-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10,
 	*			"started_at": "2015-10-10 12:00:00",
 	*			"finished_at": "2015-10-15 18:23:00"
 	*		}
@@ -1077,6 +1073,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
+	* @apiSuccess {string} tags.color Color of the tag in hexa
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
 	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
@@ -1119,11 +1116,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*				},
 	*				{
 	*					"id": 3,
-	*					"title": "Add customers to project",
+	*					"title": "Add cidject",
 	*					"started_at": "2015-10-10 11:00:00",
-	*					"due_date": "2015-10-15 18:23:00"
-	*				}
-	*			],
+	*					"due_date": "2015-10-15 18:23:0id	],
 	*			"advance": 20,
 	*			"creator": {
 	*				"id": 1,
@@ -1141,7 +1136,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"tags": [
 	*				{
 	*					"id": 2,
-	*					"name": "Urgent"
+	*					"name": "Urgent",
+	*					"color": "FFFFFF"
 	*				}
 	*			],
 	*			"dependencies":
@@ -1574,21 +1570,21 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateTaskAction(Request $request)
+	public function updateTaskAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
+		if ($content === null ||)
 			return $this->setBadRequest("12.2.6", "Task", "taskupdate", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("12.2.3", "Task", "taskupdate"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('SQLBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('SQLBundle:Task')->find($id);
 
 		if ($task === null || $task->getDeletedAt() != null)
 			return $this->setBadRequest("12.2.4", "Task", "taskupdate", "Bad Parameter: taskId");
@@ -2054,7 +2050,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/taskinformations/:token/:taskId Get a task informations
+	* @api {get} /0.3/task/:token/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
@@ -2090,6 +2086,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
+	* @apiSuccess {string} tags.color Color of the tag in hexa
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
 	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
@@ -2154,7 +2151,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"tags": [
 	*				{
 	*					"id": 2,
-	*					"name": "Urgent"
+	*					"name": "Urgent",
+	*					"color": "FFFFFF"
 	*				}
 	*			],
 	*			"dependencies":
@@ -2458,7 +2456,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/tasks/archivetask Archive a task
+	* @api {put} /0.3/task/archive/:token/:id Archive a task
 	* @apiName archiveTask
 	* @apiGroup Task
 	* @apiDescription Archive the given task
@@ -2466,14 +2464,6 @@ class TaskController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} taskId Id of the task
-	*
-	* @apiParamExample {json} Request-Example:
-	* 	{
-	*		"data": {
-	*			"token": "13135",
-	*			"taskId": 10
-	*		}
-	* 	}
 	*
 	* @apiSuccess {Number} id Id of the task archived
 	*
@@ -2589,21 +2579,14 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function archiveTaskAction(Request $request)
+	public function archiveTaskAction(Request $request, $token, $id)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if ($content === null || (!array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
-			return $this->setBadRequest("12.4.6", "Task", "archivetask", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("12.4.3", "Task", "archivetask"));
 
 		$em = $this->getDoctrine()->getManager();
-		$task = $em->getRepository('SQLBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('SQLBundle:Task')->find($id);
 		if ($task === null)
 			return $this->setBadRequest("12.4.4", "Task", "archivetask", "Bad Parameter: taskId");
 
@@ -2623,7 +2606,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/tasks/taskdelete/:token/:taskId Delete a task
+	* @api {delete} /0.3/task/:token/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiDescription Delete definitely the given task
@@ -2739,7 +2722,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /0.3/tasks/tagcreation Create a tag
+	* @api {post} /0.3/tasks/tag Create a tag
 	* @apiName tagCreation
 	* @apiGroup Task
 	* @apiDescription Create a tag
@@ -2748,17 +2731,21 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParam {String} token Token of the person connected
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {String} name Name of the tag
+	* @apiParam {string} color Color of the tag
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
 	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
-	*			"name": "Urgent"
+	*			"name": "Urgent",
+	*			"color": "FFFFFF"
 	*		}
 	*	}
 	*
-	* @apiSuccess {Number} id Id of the tag created
+	* @apiSuccess {Number} id Id of the tag
+	* @apiSuccess {String} name Name of the tag
+	* @apiSuccess {string} color Color of the tag in hexa
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 201 Created
@@ -2768,7 +2755,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"return_message": "Task - tagcreation - Complete Success"
 	*		},
 	*		"data": {
-	*			"id": 1
+	*			"id": 1,
+	*			"name": "Urgent",
+	*			"color": "FFFFFF"
 	*		}
 	*	}
 	*
@@ -2878,7 +2867,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.8.6", "Task", "tagcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
@@ -2896,37 +2885,39 @@ class TaskController extends RolesAndTokenVerificationController
 		$tag = new Tag();
 		$tag->setName($content->name);
 		$tag->setProject($project);
+		$tag->setColor($content->color);
 
 		$em->persist($tag);
 		$em->flush();
 
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
-		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", array("id" => $tag->getId()));
+		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {put} /0.3/tasks/tagupdate Update a tag
+	* @api {put} /0.3/tasks/:token/:id Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
 	* @apiVersion 0.3.0
 	*
 	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} tagId Id of the tag
+	* @apiParam {Number} id Id of the tag
 	* @apiParam {String} name Name of the tag
+	* @apiParam {string} color Color of the tag
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
-	*			"tagId": 1,
-	*			"name": "ASAP"
+	*			"name": "ASAP",
+	*			"color": "FFFFFF"
 	*		}
 	*	}
 	*
 	* @apiSuccess {Number} id Id of the tag
 	* @apiSuccess {String} name Name of the tag
+	* @apiSuccess {string} color Color of the tag
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 Ok
@@ -2937,7 +2928,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*		},
 	*		"data": {
 	*			"id" : 1,
-	*			"name": "ASAP"
+	*			"name": "ASAP",
+	*			"color": "FFFFFF"
 	*		}
 	*	}
 	*
@@ -3043,21 +3035,21 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function tagUpdateAction(Request $request)
+	public function tagUpdateAction(Request $request, $token, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('tagId', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.9.6", "Task", "tagupdate", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("12.9.3", "Task", "tagupdate"));
 
 		$em = $this->getDoctrine()->getManager();
-		$tag = $em->getRepository('SQLBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('SQLBundle:Tag')->find($id);
 		if ($tag === null)
 			return $this->setBadRequest("12.9.4", "Task", "tagupdate", "Bad Parameter: tagId");
 
@@ -3066,15 +3058,16 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.9.9", "Task", "tagupdate"));
 
 		$tag->setName($content->name);
+		$tag->setColor($content->color);
 		$em->flush();
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
-		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
+		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {get} /0.3/tasks/taginformations/:token/:tagId Get a tag informations
+	* @api {get} /0.3/tasks/tag/:token/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given tag
@@ -3085,6 +3078,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Number} id Id of the tag
 	* @apiSuccess {String} name Name of the tag
+	* @apiSuccess {string} color Color of the tag
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 Ok
@@ -3095,7 +3089,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*		},
 	*		"data": {
 	*			"id" : 1,
-	*			"name": "ASAP"
+	*			"name": "ASAP",
+	*			"color": "FFFFFF"
 	*		}
 	*	}
 	*
@@ -3190,11 +3185,11 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.10.9", "Task", "taginformations"));
 
-		return $this->setSuccess("1.12.1", "Task", "taginformations", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
+		return $this->setSuccess("1.12.1", "Task", "taginformations", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {delete} /0.3/tasks/deletetag/:token/:tagId Delete a tag
+	* @api {delete} /0.3/tasks/tag/:token/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiDescription Delete the given tag
@@ -3306,7 +3301,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
+	* @api {get} /0.3/tasks/project/:token/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiDescription Get all the tasks for a given project
@@ -3342,6 +3337,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} tags Array of tags assigned to the task
 	* @apiSuccess {Number} tags.id Id of the tag
 	* @apiSuccess {String} tags.name Name of the tag
+	* @apiSuccess {String} tags.color Color of the tag
 	* @apiSuccess {Object[]} dependencies Array of infos on the dependencies
 	* @apiSuccess {Number} dependencies.id Id of the task the dependence
 	* @apiSuccess {String} dependencies.name Name of the dependence, it's: fs (Finish to Start), ss (Start to Start), ff (Finish to Finish) or sf (Start to Finish)
@@ -3408,7 +3404,8 @@ class TaskController extends RolesAndTokenVerificationController
 	*					"tags": [
 	*						{
 	*							"id": 2,
-	*							"name": "Urgent"
+	*							"name": "Urgent",
+	*							"color": "FFFFFF"
 	*						}
 	*					],
 	*					"dependencies":
@@ -3670,74 +3667,8 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.12.3", "Task", "getprojecttasks");
 
 		$arr = array();
-
 		foreach ($tasks as $task) {
-			$id = $task->getId();
-			$title = $task->getTitle();
-			$description = $task->getDescription();
-			$dueDate = $task->getDueDate();
-			$startedAt = $task->getStartedAt();
-			$finishedAt = $task->getFinishedAt();
-			$createdAt = $task->getCreatedAt();
-			$deletedAt = $task->getDeletedAt();
-			$advance = $task->getAdvance();
-			$creator = $task->getCreatorUser();
-			$users = $task->getRessources();
-			$tags = $task->getTags();
-			$dependencies = $task->getDependence();
-
-			$creator_id = $creator->getId();
-			$creator_firstname = $creator->getFirstname();
-			$creator_lastname = $creator->getLastname();
-			$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
-
-			$arrTasks = array();
-			foreach ($task->getTasksContainer() as $t) {
-				$arrTasks[] = array("id" => $t->getId(), "title" => $t->getTitle());
-			}
-
-			$userArray = array();
-			if ($users != null)
-			{
-				foreach ($users as $res) {
-					$percent = $res->getResource();
-					$u = $res->getUser();
-					$uid = $u->getId();
-					$firstname = $u->getFirstname();
-					$lastname = $u->getLastname();
-
-					$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
-					if ($uid != $creator_id)
-						$userNotif[] = $uid;
-				}
-			}
-
-			$tagArray = array();
-			if ($tags != null)
-			{
-				foreach ($tags as $t) {
-					$tid = $t->getId();
-					$name = $t->getName();
-
-					$tagArray[] = array("id" => $tid, "name" => $name);
-				}
-			}
-
-			$depArray = array();
-			if ($dependencies != null)
-			{
-				foreach ($dependencies as $d) {
-					$dname = $d->getName();
-					$did = $d->getDependenceTask()->getId();
-					$dtitle = $d->getDependenceTask()->getTitle();
-
-					$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-				}
-			}
-
-			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
-				"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt,
-				"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray);
+			$arr[] = $task->objectToArray());
 		}
 
 		if (count($arr) == 0)
@@ -3747,7 +3678,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/getprojecttags/:token/:projectId Get all the tags for a project
+	* @api {get} /0.3/tasks/tags/project/:token/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiDescription Get all the tags for a given project
@@ -3759,6 +3690,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Object[]} array Array of tag
 	* @apiSuccess {Number} array.id Id of the tag
 	* @apiSuccess {String} array.name Name of the tag
+	* @apiSuccess {string} array.color Color of the tag
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -3772,19 +3704,23 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"array": [
 	*				{
 	*					"id": 1,
-	*					"name": "To Do"
+	*					"name": "To Do",
+	*					"color": "FFFFFF"
 	*				},
 	*				{
 	*					"id": 2,
-	*					"name": "Doing"
+	*					"name": "Doing",
+	*					"color": "FFFFFF"
 	*				},
 	*				{
 	*					"id": 3,
-	*					"name": "Done"
+	*					"name": "Done",
+	*					"color": "FFFFFF"
 	*				},
 	*				{
 	*					"id": 15,
-	*					"name": "Urgent"
+	*					"name": "Urgent",
+	*					"color": "FFFFFF"
 	*				}
 	*			]
 	*		}
@@ -3929,10 +3865,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$arr = array();
 		foreach ($tags as $t) {
-			$id = $t->getId();
-			$name = $t->getName();
-
-			$arr[] = array("id" => $id, "name" => $name);
+			$arr[] = $t->objectToArray();
 		}
 
 		if (count($arr) == 0)

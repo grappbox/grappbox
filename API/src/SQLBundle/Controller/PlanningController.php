@@ -28,7 +28,7 @@ use DateInterval;
 class PlanningController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /0.3/planning/getday/:token/:date Get day planning
+	* @api {get} /0.3/planning/day/:token/:date Get day planning
 	* @apiName getDayPlanning
 	* @apiGroup Planning
 	* @apiDescription Get a one day planning
@@ -53,6 +53,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} events.endDate ending date of the event
 	* @apiSuccess {string} events.createdAt date of creation of the event
 	* @apiSuccess {string} events.editedAt date of edition of the event
+	* @apiSuccess {Object[]} users list of participants
+	* @apiSuccess {int} users.id user id
+	* @apiSuccess {string} users.firstname user firstname
+	* @apiSuccess {string} users.lastname user lastname
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -74,7 +78,8 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"beginDate": "1945-06-18 06:00:00",
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
-	*					"editedAt": "1945-06-18 08:00:00"
+	*					"editedAt": "1945-06-18 08:00:00",
+	*					"users": []
 	*					},
 	*					...
 	*				]
@@ -216,11 +221,11 @@ class PlanningController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('SQLBundle:Event');
 		$query = $repository->createQueryBuilder('e')
-    	->innerJoin('e.users', 'u')
-    	->where('u.id = :user_id')
-			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
-    	->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
-    	->getQuery()->getResult();
+    						->innerJoin('e.users', 'u')
+    						->where('u.id = :user_id')
+							->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
+    						->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+    						->getQuery()->getResult();
 
 		$events = array();
 		foreach ($query as $key => $value) {
@@ -234,7 +239,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/planning/getweek/:token/:date Get week planning
+	* @api {get} /0.3/planning/week/:token/:date Get week planning
 	* @apiName getWeekPlanning
 	* @apiGroup Planning
 	* @apiDescription Get planning of a week
@@ -259,6 +264,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} events.endDate ending date of the event
 	* @apiSuccess {string} events.createdAt date of creation of the event
 	* @apiSuccess {string} events.editedAt date of edition of the event
+	* @apiSuccess {Object[]} users list of participants
+	* @apiSuccess {int} users.id user id
+	* @apiSuccess {string} users.firstname user firstname
+	* @apiSuccess {string} users.lastname user lastname
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -280,7 +289,8 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"beginDate": "1945-06-18 06:00:00",
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
-	*					"editedAt": "1945-06-18 08:00:00"
+	*					"editedAt": "1945-06-18 08:00:00",
+	*					"users": []
 	*					},
 	*					...
 	*				]
@@ -441,7 +451,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/planning/getmonth/:token/:date Get month planning
+	* @api {get} /0.3/planning/month/:token/:date Get month planning
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
 	* @apiDescription Get planning of a month
@@ -466,6 +476,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} events.endDate ending date of the event
 	* @apiSuccess {string} events.createdAt date of creation of the event
 	* @apiSuccess {string} events.editedAt date of edition of the event
+	* @apiSuccess {Object[]} users list of participants
+	* @apiSuccess {int} users.id user id
+	* @apiSuccess {string} users.firstname user firstname
+	* @apiSuccess {string} users.lastname user lastname
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -487,7 +501,8 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"beginDate": "1945-06-18 06:00:00",
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
-	*					"editedAt": "1945-06-18 08:00:00"
+	*					"editedAt": "1945-06-18 08:00:00",
+	*					"users": []
 	*					},
 	*					...
 	*				]

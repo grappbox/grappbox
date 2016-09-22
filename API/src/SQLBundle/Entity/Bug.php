@@ -87,20 +87,14 @@ class Bug
      */
     public function objectToArray()
     {
-        $create = null;
-        $edit = null;
-        if ($this->createdAt != null)
-            $create = $this->createdAt->format('Y-m-d H:i:s');
-        if ($this->editedAt != null)
-            $edit = $this->editedAt->format('Y-m-d H:i:s');
         return array(
             "id" => $this->id,
             "creator" => array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
             "projectId" => $this->projects->getId(),
             "title" => $this->title,
             "description" => $this->description,
-            "createdAt" => $create,
-            "editedAt" => $edit,
+            "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
             "clientOrigin" => $this->clientOrigin,
             "state" => $this->state
         );

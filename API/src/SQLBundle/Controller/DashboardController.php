@@ -29,7 +29,7 @@ use SQLBundle\Entity\Task;
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /0.3/dashboard/getteamoccupation/:token/:id Get team occupation
+	* @api {get} /0.3/dashboard/team/occupation/:token/:id Get team occupation
 	* @apiName getTeamOccupation
 	* @apiGroup Dashboard
 	* @apiDescription Getting a team occupation for a project for the user connected
@@ -208,7 +208,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/dashboard/getnextmeetings/:token/:id Get next meetings
+	* @api {get} /0.3/dashboard/meetings/:token/:id Get next meetings
 	* @apiName getNextMeetings
 	* @apiGroup Dashboard
 	* @apiDescription Get all next meetings, in 7 days, of the connected user
@@ -219,7 +219,6 @@ class DashboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {Object[]} array Array of events
 	* @apiSuccess {Number} array.Id Id of the event
-	* @apiSuccess {String} array.type Type of the event
 	* @apiSuccess {String} array.title Title of the event
 	* @apiSuccess {String} array.description Description of the event
 	* @apiSuccess {string} array.begin_date Begin date of the event
@@ -236,7 +235,6 @@ class DashboardController extends RolesAndTokenVerificationController
 	*			"array": [
 	*				{
 	*					"id": 1,
-	*					"type": "Customer",
 	*					"title": "Project presentation",
 	*					"description": "Project presentation to the customer",
 	*					"begin_date": "2015-10-15 11:00:00",
@@ -244,7 +242,6 @@ class DashboardController extends RolesAndTokenVerificationController
 	*				},
 	*				{
 	*					"id": 3,
-	*					"type": "Internal",
 	*					"title": "Weekly meeting",
 	*					"description": "Weekly meeting with the team",
 	*					"begin_date": "2015-10-17 11:30:00",
@@ -375,7 +372,7 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/dashboard/getprojectsglobalprogress/:token Get projects global progress
+	* @api {get} /0.3/dashboard/projects/:token Get projects global progress
 	* @apiName getProjectsGlobalProgress
 	* @apiGroup Dashboard
 	* @apiDescription Get the global progress of the projects of a user

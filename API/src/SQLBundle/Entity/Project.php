@@ -229,35 +229,26 @@ class Project
      */
     public function objectToArray($em, $user)
     {
-        $create = null;
-        $logoDate = null;
-        $delete = null;
         $color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $this, "user" => $user));
         if ($color === null)
             $color = $this->getColor();
         else
             $color = $color->getColor();
-        if ($this->createdAt != null)
-            $create = $this->createdAt->format('Y-m-d H:i:s');
-        if ($this->deletedAt != null)
-            $delete = $this->deletedAt->format('Y-m-d H:i:s');
-        if ($this->logoDate != null)
-            $logoDate = $this->logoDate->format('Y-m-d H:i:s');
         $creator = array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname());
         return array(
             "id" => $this->id,
             "name" => $this->name,
             "description" => $this->description,
             "creator" => $creator,
-            "logo" => $logoDate,
+            "logo" => $this->logoDate ? $this->logoDate->format('Y-m-d H:i:s') : null,
             "phone" => $this->phone,
             "company" => $this->company,
             "contact_mail" => $this->contactEmail,
             "facebook" => $this->facebook,
             "twitter" => $this->twitter,
             "color" => $color,
-            "created_at" => $create,
-            "deleted_at" => $delete
+            "created_at" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            "deleted_at" => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
         );
     }
 

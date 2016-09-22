@@ -17,9 +17,9 @@ class Whiteboard
             'user' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
             'name' => $this->name,
             'updator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
-            'updatedAt' => $this->updatedAt,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
+            'updatedAt' => $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'deletedAt' => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
         );
     }
 
