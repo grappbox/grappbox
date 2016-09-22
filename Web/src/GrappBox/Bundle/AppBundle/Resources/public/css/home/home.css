@@ -79,7 +79,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .btn.btn-default { border: 1px solid #666666; color: #666666; }
 .btn.btn-default:active,
 .btn.btn-default:hover,
-.btn.btn-default:focus { background: #666666!important; color: #fafafa; }
+.btn.btn-default:focus { background: #666666; color: #fafafa; }
 
 
 /* ==================================================== */
@@ -243,3 +243,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 
 #login .alert { display: none; }
 #login .alert.show { display: block; }
+
+#login .btn.btn-default:active,
+#login .btn.btn-default:hover,
+#login .btn.btn-default:focus { background: #666666!important; color: #fafafa; }
