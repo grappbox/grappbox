@@ -28,9 +28,9 @@ $(document).ready(function() {
   // Hide navbar on page top
   $(window).scroll(function () {
     if ($(this).scrollTop() > 200)
-      $('.navbar').fadeIn();
+      $('.navbar-home').fadeIn();
     else
-      $('.navbar').fadeOut();
+      $('.navbar-home').fadeOut();
   });
 
 
@@ -39,7 +39,8 @@ $(document).ready(function() {
 /* ==================== PARALLAX ================== */
 /* ================================================ */
 
-  $('#home').parallax("100%", 0.3);
+  $('#separation-home').parallax("100%", 0.3);
+  $('#separation-contact').parallax("100%", 0.3);
 
 
 

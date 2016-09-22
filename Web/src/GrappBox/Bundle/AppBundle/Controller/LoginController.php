@@ -65,7 +65,7 @@ class LoginController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return onCriticalError($data);
+      return $this->onCriticalError($data);
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -100,7 +100,7 @@ class LoginController extends Controller
       }
     }
     else
-      return onCriticalError($data);
+      return $this->onCriticalError($data);
     
     return $redirect;
   }
@@ -146,7 +146,7 @@ class LoginController extends Controller
       }
     }
     else
-      return onCriticalError($data);
+      return $this->onCriticalError($data);
     return $redirect;
   }
 
