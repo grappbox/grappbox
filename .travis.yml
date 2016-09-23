@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 sudo: required
 script:
-  - cd ..
+  - cd ./Grappbox
   - chmod +x ./gradlew && ./gradlew build && ./gradlew test && ./gradlew cAT
 android:
   components:
