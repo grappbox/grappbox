@@ -1,10 +1,7 @@
 language: android
 jdk:
   - oraclejdk8
-before_script:
-  - cd ./Grappbox
-  - echo y | android update sdk --no-ui --filter build-tools-24.0.0,build-tools-24.0.1,build-tools-24.0.2,android-24,extra-android-m2repository
-after_script:
+script:
   - cd ..
   - git update-index --chmod=+x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
 
