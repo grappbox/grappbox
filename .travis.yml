@@ -1,7 +1,10 @@
 language: android
+jdk:
+  - oraclejdk8
 before_script:
   - cd ./Grappbox
 after_script:
+  - cd ..
   - git update-index --chmod=+x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
 
 android:
