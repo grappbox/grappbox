@@ -1,4 +1,6 @@
 language: android
+before_script:
+  - cd ./Grappbox
 after_script:
   - git update-index --chmod=+x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
 
