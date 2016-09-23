@@ -1,6 +1,6 @@
 language: android
 before_script:
-  - git update-index --chmod=+x ./Grappbox/gradlew build connectedCheck && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
+  - git update-index --chmod=+x ./Grappbox/gradlew && ./Grappbox/gradlew build connectedCheck && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
 
 android:
   components:
