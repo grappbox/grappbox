@@ -1,10 +1,10 @@
 language: android
 jdk:
   - oraclejdk8
+sudo: required
 script:
   - cd ..
-  - git update-index --chmod=+x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
-
+  - chmod +x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
 android:
   components:
     # Uncomment the lines below if you want to
