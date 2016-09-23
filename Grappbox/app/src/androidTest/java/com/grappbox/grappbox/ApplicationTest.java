@@ -20,7 +20,6 @@ import static junit.framework.Assert.assertTrue;
 @RunWith(AndroidJUnit4.class)
 @LargeTest
 public class ApplicationTest {
-    @Rule
     public ActivityTestRule<ChooseProjectActivity> mMainActivityTestRule = new ActivityTestRule<>(ChooseProjectActivity.class);
 
     @Test
