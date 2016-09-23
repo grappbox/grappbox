@@ -4,7 +4,7 @@ jdk:
 sudo: required
 script:
   - cd ..
-  - chmod +x ./Grappbox/gradlew && ./Grappbox/gradlew build && ./Grappbox/gradlew test && ./Grappbox/gradlew cAT
+  - chmod +x ./gradlew && ./gradlew build && ./gradlew test && ./gradlew cAT
 android:
   components:
     # Uncomment the lines below if you want to
