@@ -25,7 +25,7 @@ class LoginController extends Controller
 
 
   // Routine definition
-  // UserController constructor
+  // LoginController constructor
   public function __construct() {
     $this->cookies = array(
       "time" => time() + 2592000,
@@ -39,12 +39,11 @@ class LoginController extends Controller
 
   // Routine definition
   // On API critical error behavior
-  private function onCriticalError($data)
+  private function onCriticalError()
   {
     $redirect = new RedirectResponse("/login");
     $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-    curl_close($data);
 
     return $redirect;
   }
@@ -65,7 +64,7 @@ class LoginController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return $this->onCriticalError($data);
+      return $this->onCriticalError();
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -87,12 +86,6 @@ class LoginController extends Controller
         case "14.1.4":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("ID", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         default:
@@ -100,7 +93,7 @@ class LoginController extends Controller
       }
     }
     else
-      return $this->onCriticalError($data);
+      return $this->onCriticalError();
     
     return $redirect;
   }
@@ -119,7 +112,7 @@ class LoginController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return onCriticalError($data);
+      return onCriticalError();
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -133,12 +126,6 @@ class LoginController extends Controller
         case "7.1.3":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("ID", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         default:
@@ -146,7 +133,7 @@ class LoginController extends Controller
       }
     }
     else
-      return $this->onCriticalError($data);
+      return $this->onCriticalError();
     return $redirect;
   }
 

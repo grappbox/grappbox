@@ -12,6 +12,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\BirthdayType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -26,7 +27,7 @@ class RegisterController extends Controller
 
 
   // Routine definition
-  // UserController constructor
+  // RegisterController constructor
   public function __construct() {
     $this->cookies = array(
       "time" => time() + 2592000,
@@ -40,12 +41,23 @@ class RegisterController extends Controller
 
   // Routine definition
   // On API critical error behavior
-  private function onCriticalError($data)
+  private function onCriticalError()
   {
     $redirect = new RedirectResponse("/register");
     $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-    curl_close($data);
+
+    return $redirect;
+  }
+
+
+  // Routine definition
+  // On password mismatch error behavior
+  private function onPasswordMismatchError()
+  {
+    $redirect = new RedirectResponse("/register");
+    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_mismatch"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
     return $redirect;
   }
@@ -53,11 +65,11 @@ class RegisterController extends Controller
 
   // Routine definition
   // Get initial user data from GrappBox API
-  private function getLoginData($formData)
+  private function getUserData($formData)
   {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/accountadministration/login");
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/accountadministration/register");
     curl_setopt($data, CURLOPT_POST, 1);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
@@ -66,11 +78,11 @@ class RegisterController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return onCriticalError($data);
+      return onCriticalError();
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
-    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.14.1" ? "/app" : "/login") : null);
+    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.14.1" ? "/app" : "/register") : null);
 
     if ($response["info"]["return_code"]) {
       switch ($response["info"]["return_code"]) {
@@ -85,14 +97,8 @@ class RegisterController extends Controller
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
-        case "14.1.4":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("ID", null,
+        case "14.3.7":
+        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_already"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
@@ -101,85 +107,46 @@ class RegisterController extends Controller
       }
     }
     else
-      return onCriticalError($data);
+      return onCriticalError();
     
     return $redirect;
   }
 
 
-  // Routine definition
-  // Check stored user data before login   
-  private function setLoginState($token)
-  {
-    $data = curl_init();
-
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/user/basicinformations/".$token);
-    curl_setopt($data, CURLOPT_TIMEOUT, 30);
-    curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
-
-    $JSON_data = curl_exec($data);
-
-    if (curl_error($data))
-      return onCriticalError($data);
-    curl_close($data);
-
-    $response = json_decode($JSON_data, true);
-    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.7.1" ? "/app" : "/login") : null);
-
-    if ($response["info"]["return_code"]) {
-      switch ($response["info"]["return_code"]) {
-        case "1.7.1":
-        break;
-
-        case "7.1.3":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("TOKEN", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-
-        $redirect->headers->setCookie(new Cookie("ID", null,
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        break;
-
-        default:
-        break;
-      }
-    }
-    else
-      return onCriticalError($data);
-    return $redirect;
-  }
-
-
   // Routine definition (public)
-  // Load APP login page  
+  // Load APP register page  
   public function indexAction(Request $request)
   {
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
-
-    if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
-      return $this->setLoginState(base64_decode($cookieData->get("TOKEN")));
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)
     ->add("firstname", TextType::class)
     ->add("lastname", TextType::class)
     ->add("email", EmailType::class)
-    ->add("password", PasswordType::class)
-    ->add("Birthday", BirthdayType::class)
+    ->add('password', PasswordType::class)
+    ->add('password_confirmation', PasswordType::class)
+    ->add("birthday", BirthdayType::class, array("widget" => "single_text", "required" => false))
     ->add("submit", SubmitType::class, array("label" => "Create account"))
     ->getForm();
 
     $form->handleRequest($request);
 
-    if ($form->isValid())
-      return $this->getLoginData(json_encode(array("data" => array(
-        "login" => strtolower($form["email"]->getData()),
-        "password" => $form["password"]->getData()))));
+    if ($form->isValid()) {
+      if (strcmp($form["password"]->getData(), $form["password_confirmation"]->getData()) !== 0)
+        return $this->onPasswordMismatchError();
 
-    return $this->render("AppBundle:Home:login.html.twig", array("form" => $form->createView()));   
+      return $this->getUserData(json_encode(array("data" => array(
+        "firstname" => $form["firstname"]->getData(),
+        "lastname" => $form["lastname"]->getData(),
+        "email" => strtolower($form["email"]->getData()),
+        "password" => $form["password"]->getData(),
+        "birthday" => ($form["birthday"]->getData() != null ? date_format($form["birthday"]->getData(), "Y-m-d") : ""),
+        "is_client" => false))));
+    }
+
+    return $this->render("AppBundle:Home:register.html.twig", array("form" => $form->createView()));   
   }
 
 }

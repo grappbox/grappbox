@@ -4,11 +4,12 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/* =============================================== */
-/* ==================== LOGIN ==================== */
-/* =============================================== */
+/* ======================================================== */
+/* ==================== LOGIN/REGISTER ==================== */
+/* ======================================================== */
 
 $(document).ready(function() {
+  "use strict";
 
   // IE WORKAROUND
   if (!window.btoa) {
@@ -25,14 +26,18 @@ $(document).ready(function() {
   }
 
   // Routine definition
-  // Set login behavior depending on cookies
-  function getLoginState() {
-    var loginState = Cookies.get("LOGIN");
+  // Set alert message depending on cookies content
+  function getUserStatus() {
+    var status = Cookies.get("LOGIN");
 
     $("#form-message").removeClass("show");
-    if (loginState != undefined && window.atob(loginState) != "_success") {
-      switch(window.atob(loginState)) {
-        case "_badlogin":
+    if (status != undefined && window.atob(status) != "_success") {
+      switch(window.atob(status)) {
+        case "_already":
+        $("#form-message p").text("This email is already registered. Please login to your account, or try with another email adress.");
+        break;
+
+        case "_badalert":
         $("#form-message p").text("Sorry, GrappBox didn't recognize the email you entered.");
         break;
 
@@ -40,8 +45,16 @@ $(document).ready(function() {
         $("#form-message p").text("The email and password you entered don't match.");
         break;
 
+        case "_critical":
+        $("#form-message p").text("Something is wrong with GrappBox. Please give us a minute, and try again.");
+        break;
+
         case "_denied":
         $("#form-message p").text("You must login to GrappBox to continue.");
+        break;
+
+        case "_mismatch":
+        $("#form-message p").text("You password and confirmation password do not match. Please try again.");
         break;
 
         default:
@@ -56,6 +69,6 @@ $(document).ready(function() {
   }
 
   // Start point
-  getLoginState();
+  getUserStatus();
 
 });

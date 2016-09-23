@@ -13,10 +13,10 @@ body { width: 100%!important; height: 100%!important; -webkit-font-smoothing: an
 body { background: #f0f0f0; }
 
 h1 { font-weight: 700; }
-h2 { text-transform: uppercase; line-height: 20px; font-weight: 600; margin: 0; color: #333333; }
+h2 { text-transform: uppercase; line-height: 20px; font-weight: 600; margin: 0; color: #333; }
 
 h3,
-h4 { font-weight: 500; color: #666666; }
+h4 { font-weight: 500; color: #666; }
 h3 { font-size: 20px; }
 h4 { font-size: 18px; }
 
@@ -32,11 +32,11 @@ ul,
 ol { padding: 0; webkit-padding: 0; moz-padding: 0; }
 hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0 auto; margin-bottom: 30px; border: 0; }
 
-::-webkit-selection { color: #ffffff; background: #44BBFF; }
-::-moz-selection { color: #ffffff; background: #44BBFF; }
-::-o-selection { color: #ffffff; background: #44BBFF; }
-::-ms-selection { color: #ffffff; background: #44BBFF; }
-::selection { color: #ffffff; background: #44BBFF; }
+::-webkit-selection { color: #fff; background: #44BBFF; }
+::-moz-selection { color: #fff; background: #44BBFF; }
+::-o-selection { color: #fff; background: #44BBFF; }
+::-ms-selection { color: #fff; background: #44BBFF; }
+::selection { color: #fff; background: #44BBFF; }
 
 .red { color: #FC575E; }
 .yellow { color: #F1C40F; }
@@ -71,15 +71,24 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .form-group.is-focused:not(.has-error) label,
 .form-group.is-focused:not(.has-error) label.control-label { color: #44BBFF; }
 
-.alert { margin: 0; }
+.alert { display:none; margin: 0; }
+.alert.show { display: block; }
 .alert p { color: #fafafa; font-weight: 400!important; }
 .alert button.close { color: #fafafa; opacity: 1; font-weight: 400; margin-top: -2px; }
-.well.well-lg { border-radius: 0!important; }
 
-.btn.btn-default { border: 1px solid #666666; color: #666666; }
-.btn.btn-default:active,
-.btn.btn-default:hover,
-.btn.btn-default:focus { background: #666666; color: #fafafa; }
+.form-horizontal .form-group { margin: 28px 0 0 0; }
+.form-group label.control-label { text-align: left; }
+.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: menulist; width: 33%; }
+.form-group.submit { text-align: center; }
+
+.well-title { background: #666; color: #fafafa; padding: 20px 20px 20px 26px; margin-bottom: -5px; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
+.well.well-lg { border-radius: 0!important; margin-bottom: 60px; }
+
+.well .btn.btn-default { border: 1px solid #666; background: #666; color: #fafafa!important; }
+.well .btn.btn-default:active,
+.well .btn.btn-default:hover,
+.well .btn.btn-default:focus { background: #fafafa!important; color: #44BBFF!important; }
+
 
 
 /* ==================================================== */
@@ -193,7 +202,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 #separation-contact { width: 100%; height: auto; min-height: 420px; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 
 #contact { padding: 60px 0; background: #fafafa; }
-#contact ul li a { display: block; color: #333333; transition-duration: .2s; }
+#contact ul li a { display: block; color: #333; transition-duration: .2s; }
 #contact ul li a i { display: block; color: #fafafa; height: 45px; width: 45px; margin: 0 auto; padding-top: 8px; font-size: 30px; border-radius: 5px; }
 #contact ul li a i,
 #contact ul li a img { margin-bottom: 10px; }
@@ -224,7 +233,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== FOOTER ==================== */
 /* ================================================ */
 
-.footer { background: #333333; color: #cccccc; padding: 20px 0; text-align: center; }
+.footer { background: #333; color: #cccccc; padding: 20px 0; text-align: center; }
 .footer p { font-size: 14px; padding: 10px; margin-top: 10px; }
 
 .footer.footer-reverse { background: #f0f0f0; color: #333; }
@@ -237,13 +246,10 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 
 #login { width: 100%; height: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 200px; }
 
-#login h3 { background: #666666; color: #fafafa; padding: 20px; margin-bottom: -5px; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
-#login .form-group label.control-label { text-align: left; }
-#login .form-group .submit { text-align: right; }
 
-#login .alert { display: none; }
-#login .alert.show { display: block; }
 
-#login .btn.btn-default:active,
-#login .btn.btn-default:hover,
-#login .btn.btn-default:focus { background: #666666!important; color: #fafafa; }
+/* ================================================== */
+/* ==================== REGISTER ==================== */
+/* ================================================== */
+
+#register { width: 100%; height: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 100px; }

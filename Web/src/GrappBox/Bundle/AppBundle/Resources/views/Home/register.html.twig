@@ -6,7 +6,7 @@
 
 {% extends 'AppBundle:Home:base.html.twig' %}
 
-{% block title %}Sign in to GrappBox{% endblock %}
+{% block title %}Sign up to GrappBox{% endblock %}
 
 {% block body %}
 
@@ -29,10 +29,10 @@
 </nav>
 
 <!-- Login -->
-<div id="login">
+<div id="register">
   <div class="container">
-    <div class="col-md-6 col-md-offset-3 col-sm-12 col-xs-12">
-      <h3 class="well-title">Sign in</h3>
+    <div class="col-md-12 col-sm-12 col-xs-12">
+      <h3 class="well-title">Create account</h3>
       <div class="well well-lg">
         <div class="alert alert-danger" id="form-message">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -40,15 +40,31 @@
         </div>
         {{ form_start(form, {'attr': {'class': 'form-horizontal' }}) }}
           <fieldset>
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="firstname" class="control-label">Firstname</label>
+              {{ form_widget(form.firstname, {'attr': { 'placeholder': 'John', 'class': 'form-control' }}) }}
+            </div>
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="lastname" class="control-label">Lastname</label>
+              {{ form_widget(form.lastname, {'attr': { 'placeholder': 'Doe', 'class': 'form-control' }}) }}
+            </div>
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
               <label for="email" class="control-label">Email</label>
               {{ form_widget(form.email, {'attr': { 'placeholder': 'grappbox@awesome.com', 'class': 'form-control' }}) }}
             </div>
-            <div class="form-group col-md-12">
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="birthday" class="control-label">Birthday</label>
+              {{ form_widget(form.birthday, {'attr': { 'class': 'form-control' }}) }}
+            </div>
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
               <label for="password" class="control-label">Password</label>
               {{ form_widget(form.password, {'attr': { 'placeholder': 'Password', 'class': 'form-control' }}) }}
             </div>
-            <div class="form-group col-md-12 submit">
+            <div class="form-group col-md-6 col-sm-12 col-xs-12">
+              <label for="password_confirmation" class="control-label">Password confirmation</label>
+              {{ form_widget(form.password_confirmation, {'attr': { 'placeholder': 'Password confirmation', 'class': 'form-control' }}) }}
+            </div>
+            <div class="form-group col-md-12 col-sm-12 col-xs-12 submit">
               {{ form_widget(form.submit, {'attr': {'title': 'Log in to your GrappBox account', 'class': 'btn btn-default', 'id': 'form-submit' }}) }}
               {{ form_rest(form) }}
             </div>
