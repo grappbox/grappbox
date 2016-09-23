@@ -8,6 +8,7 @@ import android.database.DatabaseUtils;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -22,6 +23,7 @@ import android.view.ViewGroup;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 
+import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
@@ -68,6 +70,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_bug_list, container, false);
         mBuglist = (ListView) v.findViewById(R.id.buglist);
@@ -117,8 +120,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 
-        ExpandCursor expander = new ExpandCursor(mAdapter);
-        expander.execute(data);
+        mAdapter.swapCursor(data);
     }
 
     @Override
@@ -141,25 +143,4 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         getActivity().startService(bugSync);
     }
 
-    public class ExpandCursor extends AsyncTask<Cursor, Void, Cursor>{
-        CursorAdapter mAdapter;
-
-        public ExpandCursor(CursorAdapter adapter){
-            mAdapter = adapter;
-        }
-
-        @Override
-        protected Cursor doInBackground(Cursor... cursors) {
-            if (cursors.length < 1)
-                return null;
-            Cursor cursor = cursors[0];
-            cursor.getCount();
-            return cursor;
-        }
-
-        @Override
-        protected void onPostExecute(Cursor cursor) {
-            mAdapter.swapCursor(cursor);
-        }
-    }
 }

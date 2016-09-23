@@ -8,5 +8,7 @@
     <ListView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/buglist"/>
+        android:id="@+id/buglist"
+        android:animationCache="false"
+        android:scrollingCache="false"/>
 </android.support.v4.widget.SwipeRefreshLayout>

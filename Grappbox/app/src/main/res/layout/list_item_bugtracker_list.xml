@@ -2,16 +2,15 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
-    android:descendantFocusability="blocksDescendants">
+    >
 
     <ImageView
         android:layout_width="77dp"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
         android:id="@+id/avatar"
         android:src="@drawable/default_logo_avatar"
         android:paddingStart="15dp"
@@ -20,12 +19,11 @@
         tools:layout_conversion_absoluteY="15dp"
         tools:layout_conversion_absoluteWidth="77dp"
         tools:layout_conversion_absoluteHeight="537dp"
-        android:cropToPadding="true"
         android:adjustViewBounds="true"
-        tools:layout_editor_absoluteX="0dp"
         app:layout_constraintTop_toTopOf="@+id/title"
         app:layout_constraintBottom_toBottomOf="@+id/date_status"
-        app:layout_constraintVertical_bias="0.35000002" />
+        app:layout_constraintVertical_bias="0.35000002"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
 
     <TextView
@@ -43,7 +41,6 @@
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="parent"
         tools:layout_constraintTop_creator="1"
-        android:layout_marginTop="6dp"
         app:layout_constraintTop_toTopOf="@+id/nb_assignees" />
 
     <TextView
@@ -61,26 +58,6 @@
         app:layout_constraintTop_toBottomOf="@+id/title"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="@+id/title" />
-
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:id="@+id/tag_container"
-        tools:layout_conversion_absoluteX="77dp"
-        tools:layout_conversion_absoluteY="301dp"
-        tools:layout_conversion_absoluteWidth="230dp"
-        tools:layout_conversion_absoluteHeight="0dp"
-        tools:layout_constraintTop_creator="1"
-        tools:layout_constraintRight_creator="1"
-        tools:layout_constraintBottom_creator="1"
-        app:layout_constraintBottom_toBottomOf="@+id/date_status"
-        app:layout_constraintRight_toRightOf="@+id/avatar"
-        app:layout_constraintTop_toBottomOf="@+id/date_status"
-        tools:layout_constraintLeft_creator="1"
-        app:layout_constraintLeft_toRightOf="@+id/avatar">
-
-    </LinearLayout>
 
 
     <TextView
@@ -119,5 +96,24 @@
         app:layout_constraintTop_toBottomOf="@+id/nb_assignees"
         tools:layout_constraintLeft_creator="1"
         app:layout_constraintLeft_toLeftOf="@+id/nb_assignees" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:id="@+id/tag_container"
+        tools:layout_conversion_absoluteX="77dp"
+        tools:layout_conversion_absoluteY="301dp"
+        tools:layout_conversion_absoluteWidth="230dp"
+        tools:layout_conversion_absoluteHeight="0dp"
+        app:layout_constraintLeft_toLeftOf="@+id/date_status"
+        android:layout_height="wrap_content"
+        app:layout_constraintRight_toRightOf="@+id/date_status"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@+id/date_status"
+        app:layout_constraintHorizontal_bias="0.0">
+        <include layout="@layout/list_item_bugtracker_tagitem" />
+        <include layout="@layout/list_item_bugtracker_tagitem" />
+        <include layout="@layout/list_item_bugtracker_tagitem" />
+    </LinearLayout>
 
 </android.support.constraint.ConstraintLayout>

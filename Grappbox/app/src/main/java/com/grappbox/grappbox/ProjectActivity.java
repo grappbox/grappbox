@@ -14,6 +14,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.NavigationView;
@@ -125,7 +126,6 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
 
         Bundle projectId = new Bundle();
         long projectLocalId = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
-
         projectId.putLong(EXTRA_PROJECT_ID, projectLocalId);
         getLoaderManager().initLoader(LOADER_PROJECT_INFOS, projectId, this);
         getLoaderManager().initLoader(LOADER_ADDED_USER_INFOS, null, this);

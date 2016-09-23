@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.widget.AppCompatTextView android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:text="Bug"
-    android:textColor="@color/GrappWhiteLight"
-    android:background="@drawable/bg_rounded_colored"
-    android:paddingTop="2dp"
-    android:paddingBottom="2dp"
-    android:paddingEnd="5dp"
-    android:paddingStart="5dp"
-    android:layout_marginEnd="10dp"
-    android:layout_marginStart="10dp"
-    app:backgroundTint="@color/GrappPurple"
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:textAlignment="center"/>
+<merge>
+    <android.support.v7.widget.AppCompatTextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:text="Bug"
+        android:textColor="@color/GrappWhiteLight"
+        android:background="@drawable/bg_rounded_colored"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:layout_marginEnd="2dp"
+        android:layout_marginStart="2dp"
+        app:backgroundTint="@color/GrappPurple"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:textAlignment="center"/>
+</merge>

@@ -1,9 +1,10 @@
 apply plugin: 'com.android.application'
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 24
     buildToolsVersion "24.0.1"
-
     defaultConfig {
         applicationId "com.grappbox.grappbox"
         minSdkVersion 19
@@ -13,7 +14,7 @@ android {
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'GRAPPBOX_API_URL', '"http://api.grappbox.com/"'
         }
@@ -21,6 +22,13 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'GRAPPBOX_API_URL', '"http://api.grappbox.com/"'
+        }
+        speed {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'GRAPPBOX_API_URL', '"http://beta.api.grappbox.com/app_dev.php/"'
+            debuggable true
+            pseudoLocalesEnabled true
         }
         beta {
             minifyEnabled false
@@ -45,6 +53,6 @@ dependencies {
     compile 'com.android.support:design:24.2.0'
     compile 'com.android.support:support-v4:24.2.0'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
-    compile "com.android.support:gridlayout-v7:24.2.0"
-    compile "com.android.support.constraint:constraint-layout:1.0.0-alpha8"
+    compile 'com.android.support:gridlayout-v7:24.2.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
 }

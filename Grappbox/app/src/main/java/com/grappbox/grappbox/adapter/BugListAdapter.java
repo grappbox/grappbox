@@ -2,7 +2,9 @@ package com.grappbox.grappbox.adapter;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Trace;
+import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,14 +15,10 @@ import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
-import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.data.GrappboxContract.BugAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
-import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 
 /**
@@ -44,7 +42,7 @@ public class BugListAdapter extends CursorAdapter {
 
     private Context mContext;
 
-    public class BugEntryViewHolder{
+    public static class BugEntryViewHolder{
         ImageView mAvatar;
         TextView mTitle, mDateStatus, mNbAssignee, mNbComments;
         LinearLayout mTagContainer;
@@ -53,9 +51,9 @@ public class BugListAdapter extends CursorAdapter {
             mAvatar = (ImageView) v.findViewById(R.id.avatar);
             mTitle = (TextView) v.findViewById(R.id.title);
             mDateStatus = (TextView) v.findViewById(R.id.date_status);
-            /*mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
+            mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
             mNbComments = (TextView) v.findViewById(R.id.nb_comments);
-            mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);*/
+            mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);
         }
     }
 
@@ -68,30 +66,30 @@ public class BugListAdapter extends CursorAdapter {
     public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
 
         View v = LayoutInflater.from(context).inflate(R.layout.list_item_bugtracker_list, viewGroup, false);
-/*
+
         BugEntryViewHolder vh = new BugEntryViewHolder(v);
         v.setTag(vh);
-        */
+
         return v;
     }
 
     @Override
     public void bindView(View view, Context context, Cursor cursor) {
-        /*Trace.beginSection("Bind view #" + cursor.getPosition());
+        Trace.beginSection("Bind view #" + cursor.getPosition());
         BugEntryViewHolder vh = (BugEntryViewHolder) view.getTag();
         boolean isClosed = !cursor.isNull(COLUMN_DELETED_UTC);
 
-        vh.mTitle.setText(cursor.getString(COLUMN_TITLE));
+
         Date date = null;
         try {
             date = Utils.Date.convertUTCToPhone(cursor.getString(isClosed ? COLUMN_DELETED_UTC : COLUMN_LAST_EDIT_UTC));
+            vh.mTitle.setText(cursor.getString(COLUMN_TITLE));
             vh.mDateStatus.setText(mContext.getString(R.string.bug_status_date, mContext.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance().format(date)));
         } catch (ParseException e) {
             e.printStackTrace();
         } finally {
             Trace.endSection();
-        }*/
+        }
     }
-
 
 }
