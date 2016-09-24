@@ -4,6 +4,7 @@ jdk:
 sudo: required
 before_script:
   - ls /usr/local/android-sdk
+  - mkdir /usr/local/android-sdk/licenses
   - cp android-sdk-license /usr/local/android-sdk/licenses/
 script:
   - cd ./Grappbox
