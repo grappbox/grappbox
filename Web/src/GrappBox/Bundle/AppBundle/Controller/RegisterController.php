@@ -78,7 +78,7 @@ class RegisterController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return onCriticalError();
+      return $this->onCriticalError();
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
@@ -107,7 +107,7 @@ class RegisterController extends Controller
       }
     }
     else
-      return onCriticalError();
+      return $this->onCriticalError();
     
     return $redirect;
   }
