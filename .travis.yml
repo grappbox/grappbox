@@ -6,6 +6,7 @@ before_script:
   - ls /usr/local/android-sdk
   - mkdir /usr/local/android-sdk/licenses
   - cp android-sdk-license /usr/local/android-sdk/licenses/
+  - android list targets
   - echo no | android create avd --force -n test -t android-22 --abi armeabi-v7a
   - emulator -avd test -no-audio -no-window &
   - android-wait-for-emulator
