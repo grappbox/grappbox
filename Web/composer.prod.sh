@@ -7,10 +7,12 @@ sudo rm -rf app/logs/prod.log &&
 sudo rm -rf app/logs/dev.log &&
 sudo rm -rf vendor &&
 sudo rm -rf web/bundles &&
-sudo rm -rf web/resources/css &&
-sudo rm -rf web/resources/js &&
-sudo php composer.phar install --no-dev --optimize-autoloader &&
-sudo php app/console cache:clear --env=prod --no-debug &&
-sudo php app/console assetic:dump --env=prod --no-debug &&
+sudo rm -rf web/resources/css/* &&
+sudo rm -rf web/resources/js/* &&
+sudo git checkout web/resources/css/ &&
+sudo git checkout web/resources/js/ &&
+php composer.phar install --no-dev --optimize-autoloader &&
+php app/console cache:clear --env=prod --no-debug &&
+php app/console assetic:dump --env=prod --no-debug &&
 sudo chown www-data.www-data * -R &&
 sudo chown www-data.www-data .* -R
