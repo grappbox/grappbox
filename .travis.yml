@@ -3,8 +3,8 @@ jdk:
   - oraclejdk8
 sudo: required
 before_script:
-  - echo $PATH
-  - cp android-sdk-license $HOME/.android/licenses/
+  - ls /usr/local/android-sdk
+  - cp android-sdk-license /usr/local/android-sdk/licenses/
 script:
   - cd ./Grappbox
   - chmod +x ./gradlew && ./gradlew build connectedCheck && ./gradlew test && ./gradlew cAT
