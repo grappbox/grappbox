@@ -14,6 +14,7 @@ body { background: #f0f0f0; }
 
 h1 { font-weight: 700; }
 h2 { text-transform: uppercase; line-height: 20px; font-weight: 600; margin: 0; color: #333; }
+h1.big { font-size: 145px; }
 
 h3,
 h4 { font-weight: 500; color: #666; }
@@ -78,11 +79,11 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 
 .form-horizontal .form-group { margin: 28px 0 0 0; }
 .form-group label.control-label { text-align: left; }
-.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: menulist; width: 33%; }
-.form-group.submit { text-align: center; }
+.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
+.form-group.submit { text-align: right; }
 
-.well-title { background: #666; color: #fafafa; padding: 20px 20px 20px 26px; margin-bottom: -5px; box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19); }
-.well.well-lg { border-radius: 0!important; margin-bottom: 60px; }
+.well-title { background: #666; color: #fafafa; padding: 20px 20px 20px 26px; margin-bottom: -1px; border-radius: 2px; }
+.well.well-lg { margin-bottom: 60px!important; border: 1px solid #bdbdbd; box-shadow: none!important; }
 
 .well .btn.btn-default { border: 1px solid #666; background: #666; color: #fafafa!important; }
 .well .btn.btn-default:active,
@@ -234,9 +235,12 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ================================================ */
 
 .footer { background: #333; color: #cccccc; padding: 20px 0; text-align: center; }
-.footer p { font-size: 14px; padding: 10px; margin-top: 10px; }
-
+.footer p { font-size: 14px; padding: 10px; }
 .footer.footer-reverse { background: #f0f0f0; color: #333; }
+
+@media (min-width: 992px) {
+	.footer.footer-fixed { position: absolute; bottom: 0; width: 100%; text-align: center; }
+}
 
 
 
@@ -244,7 +248,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== LOGIN ==================== */
 /* =============================================== */
 
-#login { width: 100%; height: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 200px; }
+#login { width: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 200px; }
 
 
 
@@ -252,4 +256,22 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== REGISTER ==================== */
 /* ================================================== */
 
-#register { width: 100%; height: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 100px; }
+#register { width: 100%; min-height: 100%; margin: 0; padding-top: 150px; }
+
+@media (max-width: 992px) {
+	#register { padding-top: 80px; }
+}
+
+@media (min-width: 992px) {
+	#register { padding-top: 150px; }
+}
+
+
+
+
+/* =============================================== */
+/* ==================== ERROR ==================== */
+/* =============================================== */
+
+#error { padding-top: 150px; }
+#error .quote { font-size: 12px; font-style: italic; }

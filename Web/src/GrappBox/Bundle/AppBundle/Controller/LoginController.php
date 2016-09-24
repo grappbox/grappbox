@@ -112,7 +112,7 @@ class LoginController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return onCriticalError();
+      return $this->onCriticalError();
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
