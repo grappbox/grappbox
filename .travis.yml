@@ -2,9 +2,11 @@ language: android
 jdk:
   - oraclejdk8
 sudo: required
+before_script:
+
 script:
   - cd ./Grappbox
-  - chmod +x ./gradlew && ./gradlew build && ./gradlew test && ./gradlew cAT
+  - chmod +x ./gradlew && ./gradlew build connectedCheck && ./gradlew test && ./gradlew cAT
 android:
   components:
     # Uncomment the lines below if you want to
