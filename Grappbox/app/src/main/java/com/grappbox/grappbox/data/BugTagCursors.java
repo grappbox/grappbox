@@ -39,7 +39,9 @@ public class BugTagCursors {
     public static Uri insert(@NonNull Uri uri, ContentValues values, GrappboxDBHelper openHelper){
         Cursor result = openHelper.getReadableDatabase().query(BugTagEntry.TABLE_NAME, new String[]{BugEntry._ID}, BugTagEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + BugTagEntry.COLUMN_LOCAL_TAG_ID + "=?", new String[]{values.getAsString(BugTagEntry.COLUMN_LOCAL_BUG_ID), values.getAsString(BugTagEntry.COLUMN_LOCAL_TAG_ID)}, null, null, null);
         if (result != null && result.moveToFirst()){
-            return BugTagEntry.buildBugTagWithLocalIdUri(result.getLong(0));
+            long id = result.getLong(0);
+            result.close();
+            return BugTagEntry.buildBugTagWithLocalIdUri(id);
         }
         long id = openHelper.getWritableDatabase().insert(BugTagEntry.TABLE_NAME, null, values);
         if (id <= 0)

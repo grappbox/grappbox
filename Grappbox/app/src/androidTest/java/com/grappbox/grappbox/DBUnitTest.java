@@ -2,27 +2,17 @@ package com.grappbox.grappbox;
 
 
 import android.content.ContentValues;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.runner.AndroidJUnit4;
-import android.support.test.runner.AndroidJUnitRunner;
 import android.test.AndroidTestCase;
-import android.test.InstrumentationTestCase;
-import android.test.ProviderTestCase2;
 import android.util.Log;
 
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
-import com.grappbox.grappbox.data.GrappboxDBHelper;
-import com.grappbox.grappbox.data.GrappboxProvider;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
 /**
  * Created by marc on 23/09/2016.

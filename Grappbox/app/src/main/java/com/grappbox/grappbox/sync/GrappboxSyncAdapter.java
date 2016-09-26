@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.sync;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerFuture;
@@ -14,11 +15,13 @@ import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SyncRequest;
 import android.content.SyncResult;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteAbortException;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Pair;
 
@@ -107,8 +110,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         };
         Cursor query_project = getContext().getContentResolver().query(ProjectAccountEntry.CONTENT_URI, null, selection, selectionArgs, null);
 
-        if (query_project == null || query_project.getCount() == 0)
-        {
+        if (query_project == null || query_project.getCount() == 0) {
             ContentValues value = new ContentValues();
             value.put(ProjectAccountEntry.COLUMN_PROJECT_LOCAL_ID, projectId);
             value.put(ProjectAccountEntry.COLUMN_ACCOUNT_NAME, accountName);
@@ -118,8 +120,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             query_project.close();
     }
 
-    public void syncProjects(String apiToken, String accountName)
-    {
+    public void syncProjects(String apiToken, String accountName) {
         //synchronize project's list
         HttpURLConnection connection = null;
         String returnedJson = null;
@@ -131,16 +132,15 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
 
-            if (returnedJson != null && !returnedJson.isEmpty()){
+            if (returnedJson != null && !returnedJson.isEmpty()) {
 
                 JSONObject json = new JSONObject(returnedJson);
-                if (!Utils.Errors.checkAPIError(json)){
+                if (!Utils.Errors.checkAPIError(json)) {
 
                     //update project's list
                     JSONArray projects = json.getJSONObject("data").getJSONArray("array");
-                    if (projects.length() > 0){
-                        for (int i = 0; i < projects.length(); ++i)
-                        {
+                    if (projects.length() > 0) {
+                        for (int i = 0; i < projects.length(); ++i) {
                             JSONObject project = projects.getJSONObject(i);
                             ContentValues projectValue = new ContentValues();
                             ContentValues userValue = new ContentValues();
@@ -155,8 +155,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                             userValue.put(UserEntry.COLUMN_LASTNAME, creator.getString("lastname"));
 
                             Uri insertedUri = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
-                            if (insertedUri != null)
-                            {
+                            if (insertedUri != null) {
                                 long id = Long.valueOf(insertedUri.getLastPathSegment());
                                 if (id <= 0)
                                     continue;
@@ -187,7 +186,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                                 projectValue.put(ProjectEntry.COLUMN_COUNT_TASK, infosCount.second);
                             }
                             long projectId = Long.parseLong(getContext().getContentResolver().insert(ProjectEntry.CONTENT_URI, projectValue).getLastPathSegment());
-                            if (projectId != -1){
+                            if (projectId != -1) {
                                 syncAccountProject(apiToken, projectId, accountName);
                             }
                         }
@@ -275,10 +274,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void syncUsers(String apiToken)
-    {
+    public void syncUsers(String apiToken) {
         //synchronize User's list
-        final String[] projection = new String[] {ProjectEntry.COLUMN_GRAPPBOX_ID};
+        final String[] projection = new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID};
         final int GRAPPBOX_ID = 0;
 
         Cursor allProjects = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, projection, null, null, null);
@@ -290,8 +288,8 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 String apiProjectID = allProjects.getString(GRAPPBOX_ID);
                 syncUserList(apiToken, apiProjectID);
             } while (allProjects.moveToNext());
-            allUsers = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
-            if (allUsers != null && allUsers.moveToFirst()){
+            allUsers = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+            if (allUsers != null && allUsers.moveToFirst()) {
                 do {
                     Intent userDetailLaunch = new Intent(getContext(), GrappboxJustInTimeService.class);
                     userDetailLaunch.addCategory(GrappboxJustInTimeService.CATEGORY_GRAPPBOX_ID);
@@ -370,8 +368,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void syncBug(String apiToken, long projectId, long uid)
-    {
+    public void syncBug(String apiToken, long projectId, long uid) {
         Intent launchBugSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
         launchBugSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
@@ -382,8 +379,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(launchBugSyncing);
     }
 
-    public void syncTimeline(String apiToken, long projectId)
-    {
+    public void syncTimeline(String apiToken, long projectId) {
         //synchronize Timeline's list
         Cursor grappboxProjectIdCursor = getContext().getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(projectId), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         if (grappboxProjectIdCursor == null || !grappboxProjectIdCursor.moveToFirst())
@@ -438,8 +434,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    public void syncNextMeeting(String apiToken, long projectId)
-    {
+    public void syncNextMeeting(String apiToken, long projectId) {
         //synchronize next meeting's informations
         Intent launchNextMeetingSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
         launchNextMeetingSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_NEXT_MEETINGS);
@@ -451,7 +446,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         Log.e(LOG_TAG, "Sync Started");
-        if (!Utils.Network.haveInternetConnection(getContext())){
+        if (!Utils.Network.haveInternetConnection(getContext())) {
             return;
         }
 
@@ -471,8 +466,8 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             syncProjects(token, account.name);
             syncUsers(token);
             syncConnectedUserRole(token, uid);
-            projectsCursor =  getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, null, null, null);
-            if (projectsCursor == null || !projectsCursor.moveToFirst()){
+            projectsCursor = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, null, null, null);
+            if (projectsCursor == null || !projectsCursor.moveToFirst()) {
                 return;
             }
 
@@ -486,7 +481,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
         } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {
             e.printStackTrace();
-        } finally{
+        } finally {
             if (projectsCursor != null)
                 projectsCursor.close();
         }
@@ -511,7 +506,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
     }
 
-    public static Account[] getSyncAccounts(Context context) {
+    public static Account[] getSyncAccounts(Context context) throws SecurityException {
         return AccountManager.get(context).getAccountsByType(context.getString(R.string.sync_account_type));
     }
 

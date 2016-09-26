@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 
 android {
     lintOptions {
-          abortOnError false
+          abortOnError true
       }
     signingConfigs {
     }
     compileSdkVersion 24
-    buildToolsVersion "24.0.1"
+    buildToolsVersion "24.0.2"
     defaultConfig {
         applicationId "com.grappbox.grappbox"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"

@@ -276,6 +276,8 @@ public class GrappboxJustInTimeService extends IntentService {
         } finally {
             if (connection != null)
                 connection.disconnect();
+            if (project != null)
+                project.close();
             if (responseObserver != null)
                 responseObserver.send(Activity.RESULT_OK, null);
         }
@@ -473,6 +475,7 @@ public class GrappboxJustInTimeService extends IntentService {
         } catch (IOException | NetworkErrorException e) {
             e.printStackTrace();
         } finally {
+            project.close();
             fileData.close();
         }
     }
@@ -642,6 +645,8 @@ public class GrappboxJustInTimeService extends IntentService {
         } finally {
             if (connection != null)
                 connection.disconnect();
+            if (project != null)
+                project.close();
             if (responseObserver != null)
                 responseObserver.send(Activity.RESULT_OK, null);
         }
@@ -781,6 +786,7 @@ public class GrappboxJustInTimeService extends IntentService {
         } catch (JSONException | ParseException e) {
             e.printStackTrace();
         } finally {
+            grappboxBugId.close();
             grappboxProjectId.close();
             if (connection != null)
                 connection.disconnect();

@@ -257,7 +257,7 @@ public class CloudFragment extends Fragment implements LoaderManager.LoaderCallb
         if (savedInstanceState != null)
             getLoaderManager().initLoader(LOADER_LOAD_FILELIST, null, this);
         View v =  inflater.inflate(R.layout.fragment_cloud, container, false);
-        View listHeaderView = inflater.inflate(R.layout.cloud_list_header, null, false);
+        View listHeaderView = inflater.inflate(R.layout.cloud_list_header, container, false);
 
         mCloudEntries = (ListView) v.findViewById(R.id.cloud_entries);
         mRefreshLayout = (SwipeRefreshLayout) v.findViewById(R.id.refresh);

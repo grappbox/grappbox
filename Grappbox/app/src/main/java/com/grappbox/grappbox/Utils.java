@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.TimeZone;
 
 /**
@@ -41,7 +42,7 @@ public class Utils {
 
     public static class Date {
         private final static String LOG_TAG = Date.class.getSimpleName();
-        public final static SimpleDateFormat grappboxFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS");
+        public final static SimpleDateFormat grappboxFormatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSS", Locale.getDefault());
         public final static TimeZone grappboxTZ = TimeZone.getTimeZone("UTC");
         public final static TimeZone phoneTZ = TimeZone.getDefault();
         public final static TimeZone utcTZ = TimeZone.getTimeZone("UTC");

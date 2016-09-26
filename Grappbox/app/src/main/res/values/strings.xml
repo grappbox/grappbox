@@ -83,4 +83,5 @@
     <string name="bug_status_opened">Opened</string>
     <string name="bug_status_closed">Closed</string>
     <string name="bug_status_date"><xliff:g>%s</xliff:g> the <xliff:g>%s</xliff:g></string>
+    <string name="word_secured">Secured</string>
 </resources>
