@@ -1,13 +1,19 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.view.ViewPager
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/viewPager"
     tools:context="com.grappbox.grappbox.project_fragments.TimelineFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <android.support.design.widget.TabLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        android:layout_height="wrap_content"
+        app:tabBackground="@color/GrappOrange"
+        app:tabTextColor="@color/GrappWhiteLight"
+        app:tabSelectedTextColor="@color/GrappWhiteLight"
+        app:tabIndicatorColor="@color/GrappWhiteLight">
+    </android.support.design.widget.TabLayout>
 
-</FrameLayout>
+</android.support.v4.view.ViewPager>

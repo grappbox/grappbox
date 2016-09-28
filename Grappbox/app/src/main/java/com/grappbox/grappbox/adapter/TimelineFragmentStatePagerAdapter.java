@@ -1,9 +1,13 @@
 package com.grappbox.grappbox.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+
+import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.timeline_fragment.TimelineListFragment;
 
 
 /**
@@ -21,7 +25,11 @@ public class TimelineFragmentStatePagerAdapter extends FragmentStatePagerAdapter
 
     @Override
     public Fragment getItem(int position) {
-        return null;
+        Fragment page = new TimelineListFragment();
+        Bundle args = new Bundle();
+        args.putInt(TimelineListFragment.ARG_LIST_TYPE, position);
+        page.setArguments(args);
+        return page;
     }
 
     @Override
@@ -32,6 +40,12 @@ public class TimelineFragmentStatePagerAdapter extends FragmentStatePagerAdapter
     @Override
     public CharSequence getPageTitle(int position) {
         switch (position){
+            case TimelineListFragment.TIMELINE_TEAM:
+                return mContext.getString(R.string.timeline_tab_title_team);
+
+            case TimelineListFragment.TIMELINE_CLIENT:
+                return mContext.getString(R.string.timeline_tab_title_client);
+
             default:
                 return super.getPageTitle(position);
         }

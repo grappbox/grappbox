@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="10dp">
+
+        <ImageView
+            android:id="@+id/avatar"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.3"
+            android:src="@drawable/default_logo_avatar"/>
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.7"
+            android:text="This is the Message title"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/messagecontent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="This is the content of the message"
+        android:textAlignment="center"
+        android:layout_margin="10dp"/>
+
+    <TextView
+        android:id="@+id/messagelastupdate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="date of last change"
+        android:textAlignment="textEnd"
+        android:layout_margin="10dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="0.33"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_timeline"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="0.33"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_file"/>
+
+        <ImageButton
+            android:layout_width="0dp"
+            android:layout_weight="0.33"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_delete"/>
+
+    </LinearLayout>
+
+</LinearLayout>
