@@ -23,7 +23,7 @@ public class TimelineListAdapter extends CursorAdapter {
     private static final String LOG_TAG = TimelineListAdapter.class.getSimpleName();
 
     public static final String[] projection = new String[]{
-            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry._ID + " AS _id",
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry._ID,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC
@@ -43,6 +43,10 @@ public class TimelineListAdapter extends CursorAdapter {
             mTitle = (TextView) v.findViewById(R.id.title);
             mMessage = (TextView) v.findViewById(R.id.messagecontent);
             mLastUpdate = (TextView) v.findViewById(R.id.messagelastupdate);
+            mAnswer = (ImageButton) v.findViewById(R.id.answer);
+            mEdit = (ImageButton) v.findViewById(R.id.edit);
+            mDelete = (ImageButton) v.findViewById(R.id.delete);
+
         }
     }
 

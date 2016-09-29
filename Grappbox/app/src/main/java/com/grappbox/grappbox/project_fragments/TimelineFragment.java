@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.adapter.BugListFragmentStatePagerAdapter;
 import com.grappbox.grappbox.adapter.TimelineFragmentStatePagerAdapter;
 
 /**

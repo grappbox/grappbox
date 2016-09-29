@@ -47,18 +47,21 @@
         android:orientation="horizontal">
 
         <ImageButton
+            android:id="@+id/answer"
             android:layout_width="0dp"
             android:layout_weight="0.33"
             android:layout_height="match_parent"
             android:src="@drawable/ic_timeline"/>
 
         <ImageButton
+            android:id="@+id/edit"
             android:layout_width="0dp"
             android:layout_weight="0.33"
             android:layout_height="match_parent"
             android:src="@drawable/ic_file"/>
 
         <ImageButton
+            android:id="@+id/delete"
             android:layout_width="0dp"
             android:layout_weight="0.33"
             android:layout_height="match_parent"
