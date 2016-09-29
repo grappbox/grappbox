@@ -16,6 +16,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.AsyncTaskLoader;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.view.AsyncLayoutInflater;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -41,7 +42,7 @@ import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BugListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class BugListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener, AsyncLayoutInflater.OnInflateFinishedListener {
 
     public static final String ARG_LIST_TYPE = "com.grappbox.grappbox.bugtracker_fragment.ARG_LIST_TYPE";
     public static final int TYPE_OPEN = 0;
@@ -62,14 +63,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        mAdapter = new BugListAdapter(getActivity(), null, 0);
-        mBuglist.setAdapter(mAdapter);
-        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
-        mRefresher.setOnRefreshListener(this);
-        if (savedInstanceState == null)
-            getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
-        else
-            getLoaderManager().restartLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
+
     }
 
     @Override
@@ -77,9 +71,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                              Bundle savedInstanceState) {
         Trace.beginSection("Create BugList View");
         // Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_bug_list, container, false);
-        mBuglist = (ListView) v.findViewById(R.id.buglist);
-        mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
+        new AsyncLayoutInflater(getActivity()).inflate(R.layout.fragment_bug_list, container, this);
+        View v = inflater.inflate(R.layout.activity_critical_error, container, false);
         Trace.endSection();
         return v;
     }
@@ -121,7 +114,6 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-
         mAdapter.swapCursor(data);
     }
 
@@ -145,4 +137,18 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         getActivity().startService(bugSync);
     }
 
+    @Override
+    public void onInflateFinished(View view, int resid, ViewGroup parent) {
+        Log.d(LOG_TAG, "onInflatedFinished");
+        mBuglist = (ListView) view.findViewById(R.id.buglist);
+        mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
+        mAdapter = new BugListAdapter(getActivity(), null, 0);
+        mBuglist.setAdapter(mAdapter);
+        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
+        mRefresher.setOnRefreshListener(this);
+        getLoaderManager().initLoader(0, getArguments(), this);
+
+        ((ViewGroup)getView()).removeViewAt(0);
+        ((ViewGroup)getView()).addView(view);
+    }
 }

@@ -61,5 +61,5 @@ dependencies {
     compile 'com.android.support:support-v4:24.2.1'
     compile 'org.apache.directory.studio:org.apache.commons.io:2.4'
     compile 'com.android.support:gridlayout-v7:24.2.1'
-    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha8'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-alpha9'
 }

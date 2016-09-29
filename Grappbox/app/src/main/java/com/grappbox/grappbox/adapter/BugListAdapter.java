@@ -82,8 +82,9 @@ public class BugListAdapter extends CursorAdapter {
 
         Date date = null;
         try {
+            String title = cursor.getString(COLUMN_TITLE);
             date = Utils.Date.convertUTCToPhone(cursor.getString(isClosed ? COLUMN_DELETED_UTC : COLUMN_LAST_EDIT_UTC));
-            vh.mTitle.setText(cursor.getString(COLUMN_TITLE));
+            vh.mTitle.setText(title.isEmpty() ? "Sans titre" : title);
             vh.mDateStatus.setText(mContext.getString(R.string.bug_status_date, mContext.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance().format(date)));
         } catch (ParseException e) {
             e.printStackTrace();

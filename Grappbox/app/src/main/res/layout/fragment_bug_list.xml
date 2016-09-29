@@ -10,5 +10,6 @@
         android:layout_height="match_parent"
         android:id="@+id/buglist"
         android:animationCache="false"
-        android:scrollingCache="false"/>
+        android:scrollingCache="false"
+        android:entries="@string/action_settings"/>
 </android.support.v4.widget.SwipeRefreshLayout>
