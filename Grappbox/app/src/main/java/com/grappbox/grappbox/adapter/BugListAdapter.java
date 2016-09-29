@@ -53,7 +53,7 @@ public class BugListAdapter extends CursorAdapter {
             mDateStatus = (TextView) v.findViewById(R.id.date_status);
             mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
             mNbComments = (TextView) v.findViewById(R.id.nb_comments);
-            mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);
+            //mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);
         }
     }
 

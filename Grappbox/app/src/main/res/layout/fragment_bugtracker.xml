@@ -13,12 +13,14 @@
         <android.support.design.widget.TabLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:tabBackground="?attr/colorPrimary"
+            android:background="@color/GrappPurple"
+            app:tabBackground="@color/GrappTransparent"
             app:tabTextColor="@color/GrappWhiteLight"
             app:tabSelectedTextColor="@color/GrappWhiteLight"
             app:tabIndicatorColor="@color/GrappWhiteLight">
         </android.support.design.widget.TabLayout>
     </android.support.v4.view.ViewPager>
+
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_width="wrap_content"
@@ -27,5 +29,5 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/GrappWhiteLight"
-        app:backgroundTint="?attr/colorPrimary" />
+        app:backgroundTint="@color/GrappPurple" />
 </android.support.design.widget.CoordinatorLayout>

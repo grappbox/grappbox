@@ -9,6 +9,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.StrictMode;
+import android.os.Trace;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -61,6 +62,10 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        mAdapter = new BugListAdapter(getActivity(), null, 0);
+        mBuglist.setAdapter(mAdapter);
+        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
+        mRefresher.setOnRefreshListener(this);
         if (savedInstanceState == null)
             getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
         else
@@ -70,15 +75,12 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
+        Trace.beginSection("Create BugList View");
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_bug_list, container, false);
         mBuglist = (ListView) v.findViewById(R.id.buglist);
         mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
-        mAdapter = new BugListAdapter(getActivity(), null, 0);
-        mBuglist.setAdapter(mAdapter);
-        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
-        mRefresher.setOnRefreshListener(this);
+        Trace.endSection();
         return v;
     }
 

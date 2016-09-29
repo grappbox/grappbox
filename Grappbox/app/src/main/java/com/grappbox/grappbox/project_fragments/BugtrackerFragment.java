@@ -2,6 +2,8 @@ package com.grappbox.grappbox.project_fragments;
 
 
 import android.os.Bundle;
+import android.os.Trace;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -25,18 +27,24 @@ public class BugtrackerFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        Trace.beginSection("Bugtracker activity created");
+        super.onActivityCreated(savedInstanceState);
+        mPagesAdapter = new BugListFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
+        mViewPager.setAdapter(mPagesAdapter);
+        Trace.endSection();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Trace.beginSection("Bugtracker Fragment");
         View v = inflater.inflate(R.layout.fragment_bugtracker, container, false);
         mViewPager = (ViewPager) v.findViewById(R.id.viewPager);
-
-        mPagesAdapter = new BugListFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
-        mViewPager.setAdapter(mPagesAdapter);
-        mViewPager.setOffscreenPageLimit(2);
-
+        mViewPager.setOffscreenPageLimit(1);
+        Trace.endSection();
         return v;
     }
 

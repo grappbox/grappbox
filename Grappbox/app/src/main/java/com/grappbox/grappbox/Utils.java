@@ -35,6 +35,15 @@ import java.text.SimpleDateFormat;
 import java.util.Locale;
 import java.util.TimeZone;
 
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_BUGTRACKER;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_CALENDAR;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_CLOUD;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_DASHBOARD;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_GANTT;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_TASK;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_TIMELINE;
+import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_WHITEBOARD;
+
 /**
  * Created by marcw on 31/08/2016.
  */
@@ -288,6 +297,53 @@ public class Utils {
             return "com.google.android.apps.photos.content".equals(uri.getAuthority());
         }
 
+    }
+
+    public static class Design{
+        public static int getThemeIDFromMenuID(int menuID){
+            switch (menuID){
+                case R.id.nav_dashboard:
+                    return R.style.DashboardTheme;
+                case R.id.nav_calendar:
+                    return R.style.CalendarTheme;
+                case R.id.nav_cloud:
+                    return R.style.CloudTheme;
+                case R.id.nav_timeline:
+                    return R.style.TimelineTheme;
+                case R.id.nav_bugtracker:
+                    return R.style.BugtrackerTheme;
+                case R.id.nav_tasks:
+                    return R.style.TaskTheme;
+                case R.id.nav_gantt:
+                    return R.style.GanttTheme;
+                case R.id.nav_whiteboard:
+                    return R.style.WhiteboardTheme;
+                default:
+                    throw new IllegalArgumentException("Unexpected menu ID");
+            }
+        }
+       public static int getThemeIDFromFragmentTAG(String tag){
+           switch (tag){
+               case FRAGMENT_TAG_DASHBOARD:
+                   return R.style.DashboardTheme;
+               case FRAGMENT_TAG_CALENDAR:
+                   return R.style.CalendarTheme;
+               case FRAGMENT_TAG_CLOUD:
+                   return R.style.CloudTheme;
+               case FRAGMENT_TAG_TIMELINE:
+                   return R.style.TimelineTheme;
+               case FRAGMENT_TAG_BUGTRACKER:
+                   return R.style.BugtrackerTheme;
+               case FRAGMENT_TAG_TASK:
+                   return R.style.TaskTheme;
+               case FRAGMENT_TAG_GANTT:
+                   return R.style.GanttTheme;
+               case FRAGMENT_TAG_WHITEBOARD:
+                   return R.style.WhiteboardTheme;
+               default:
+                   throw new IllegalArgumentException("Unexpected tag ID");
+           }
+       }
     }
 
 }

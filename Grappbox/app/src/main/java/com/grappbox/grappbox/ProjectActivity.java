@@ -278,38 +278,10 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
     public void onBackStackChanged() {
         String tag = getSupportFragmentManager().findFragmentById(R.id.fragment_container).getTag();
         syncNavDrawer(tag);
-        int newTheme = -1;
-        switch (tag){
-            case FRAGMENT_TAG_DASHBOARD:
-                newTheme = R.style.DashboardTheme;
-                break;
-            case FRAGMENT_TAG_CALENDAR:
-                newTheme = R.style.CalendarTheme;
-                break;
-            case FRAGMENT_TAG_CLOUD:
-                newTheme = R.style.CloudTheme;
-                break;
-            case FRAGMENT_TAG_TIMELINE:
-                newTheme = R.style.TimelineTheme;
-                break;
-            case FRAGMENT_TAG_BUGTRACKER:
-                newTheme = R.style.BugtrackerTheme;
-                break;
-            case FRAGMENT_TAG_TASK:
-                newTheme = R.style.TaskTheme;
-                break;
-            case FRAGMENT_TAG_GANTT:
-                newTheme = R.style.GanttTheme;
-                break;
-            case FRAGMENT_TAG_WHITEBOARD:
-                newTheme = R.style.WhiteboardTheme;
-                break;
-            default:
-                break;
-        }
+
+        int newTheme = Utils.Design.getThemeIDFromFragmentTAG(tag);
         setTheme(newTheme);
         getApplication().setTheme(newTheme);
-
         mNavView.setItemTextColor(ResourcesCompat.getColorStateList(getResources(), R.color.main_menu_colors, getTheme()));
         mNavView.setItemIconTintList(ResourcesCompat.getColorStateList(getResources(), R.color.main_menu_colors, getTheme()));
         mToolbar.setBackgroundColor(Utils.Color.getThemeAccentColor(this));
