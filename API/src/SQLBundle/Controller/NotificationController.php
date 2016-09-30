@@ -45,7 +45,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiDescription Register user mobile device for mobile notification send process
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} device_type device_type: "iOS" | "WP" | "Android"
 	* @apiParam {String} device_token device token : uri, token or reg_id
 	* @apiParam {String} device_name device name
@@ -53,7 +58,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"device_type": "iOS",
 	*			"device_token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
 	*			"device_name": "John Doe's iPhone"
@@ -144,7 +148,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
 		if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
@@ -179,7 +183,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	* @apiDescription Unregister user mobile device to mobile notification send process
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} id device id in DB
 	*
 	* @apiSuccessExample Success-Response
@@ -244,9 +253,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function unregisterDeviceAction(Request $request, $token, $id)
+	public function unregisterDeviceAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
 
@@ -263,14 +272,17 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/notification/devices/:token Get user registered devices
+	* @api {get} /0.3/notification/devices Get user registered devices
 	* @apiName getuserDevices
 	* @apiGroup Notification
 	* @apiDescription Get user registered devices informations
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentication token
-	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -392,9 +404,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserDevicesAction(Request $request, $token)
+	public function getUserDevicesAction(Request $request)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
@@ -412,13 +424,18 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/notification/:token/:read/:offset/:limit Get user notifications
+	* @api {get} /0.3/notification/:read/:offset/:limit Get user notifications
 	* @apiName getNotifications
 	* @apiGroup Notification
 	* @apiDescription Get user notifications
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} read "true" || "false" to get read or unread notifications
 	* @apiParam {int} offset offset from where to get notifications (start to 0)
 	* @apiParam {int} limit number max of notifications to get
@@ -543,9 +560,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)
+	public function getNotificationsAction(Request $request, $read, $offset, $limit)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.4.3", "Notification", "getNotifications"));
 
@@ -569,9 +586,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 
-	public function setNotificationToReadAction(Request $request, $token, $id)
+	public function setNotificationToReadAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 

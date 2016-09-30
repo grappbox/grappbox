@@ -70,7 +70,7 @@ class Event
     public function objectToArray()
     {
         $participants = array();
-        foreach ($event->getUsers() as $key => $value) {
+        foreach ($this->users as $key => $value) {
             $participants[] = array(
                 "id" => $value->getId(),
                 "firstname" => $value->getFirstname(),

@@ -50,7 +50,7 @@ class CustomerAccess
             "id" => $this->id,
             "token" => $this->hash,
             "name" => $this->name,
-            "project_id" => $this->projects
+            "project_id" => $this->projects->getId()
         );
     }
 

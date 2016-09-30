@@ -24,6 +24,8 @@ use DateTime;
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
 *  @IgnoreAnnotation("apiDescription")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 class TimelineController extends RolesAndTokenVerificationController
 {
@@ -34,15 +36,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiDescription Post a new message for the given timeline, to post message see postMessage request
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} title Title of the message
 	* @apiParam {String} message Message to post on the timeline
 	*
 	* @apiParamExample {json} Request-Minimum-Example:
 	* 	{
 	*		"data": {
-	*			"token": "ThisIsMyToken",
 	*			"title": "Project delayed",
 	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
 	*		}
@@ -215,10 +221,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("message", $content))
+		if (!array_key_exists("title", $content) || !array_key_exists("message", $content))
 			return $this->setBadRequest("11.2.6", "Timeline", "postmessage", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.2.3", "Timeline", "postmessage"));
 
@@ -269,13 +275,18 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/timeline/message/:token/:id/:messageId Edit a message or comment
+	* @api {put} /0.3/timeline/message/:id/:messageId Edit a message
 	* @apiName editMessage
 	* @apiGroup Timeline
-	* @apiDescription Edit a given message or comment
+	* @apiDescription Edit a given message
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {int} messageId message's id
 	* @apiParam {String} title message title
@@ -284,7 +295,6 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	* 	{
 	*		"data": {
-	*			"token": "13135",
 	*			"messageId": 15,
 	*			"title": "Hello there!",
 	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
@@ -431,7 +441,7 @@ class TimelineController extends RolesAndTokenVerificationController
   	*		}
 	* 	}
 	*/
-	public function editMessageAction(Request $request, $token, $id, $messageId)
+	public function editMessageAction(Request $request, $id, $messageId)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -440,7 +450,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!array_key_exists("title", $content) || !array_key_exists("message", $content))
 			return $this->setBadRequest("11.3.6", "Timeline", "editmessage", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.3.3", "Timeline", "editmessage"));
 
@@ -471,14 +481,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/timeline/message/:token/:id/:messageId Delete a message and his comments
+	* @api {delete} /0.3/timeline/message/:id/:messageId Delete a message and his comments
 	* @apiName DeleteMessage
 	* @apiGroup Timeline
 	* @apiDescription Delete the given message and his comments
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Client authentification token
 	* @apiParam {int} messageId Id of the message
 	*
 	* @apiSuccess {Number} id Id of the message archived
@@ -524,7 +539,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @api {delete} /V0.2/timeline/archivemessage/:token/:id/:messageId Archive a comment or a message and his comments
 	* @apiName ArchiveMessage
 	* @apiGroup Timeline
-	* @apiDescription Archive the given message and his comments or just a given comment
+	* @apiDescription Archive the given message and his comments or just a given comment. This request no longer exists. See [DeleteMessage](0.3/#api-Timeline-DeleteMessage)
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id Id of the timeline
@@ -570,9 +585,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function archiveMessageAction(Request $request, $token, $id, $messageId)
+	public function archiveMessageAction(Request $request, $id, $messageId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.6.3", "Timeline", "archivemessage"));
 
@@ -605,13 +620,18 @@ class TimelineController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /0.3/timeline/gettimelines/:token/:id List project timelines
+	* @api {get} /0.3/timelines/:id List project timelines
 	* @apiName getTimelines
 	* @apiGroup Timeline
 	* @apiDescription List all the timelines of a project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the project
 	*
 	* @apiSuccess {Object[]} array Array of timeline informations
@@ -736,9 +756,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getTimelinesAction(Request $request, $token, $id)
+	public function getTimelinesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.1.3", "Task", "gettimelines"));
 
@@ -760,14 +780,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/timeline/messages/:token/:id Get timeline's messages
+	* @api {get} /0.3/timeline/messages/:id Get timeline's messages
 	* @apiName getMessages
 	* @apiGroup Timeline
 	* @apiDescription Get all the messages from a timeline without comments
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {Object[]} array Array of all the timeline's messages
 	* @apiSuccess {int} array.id Message id
@@ -950,9 +975,9 @@ class TimelineController extends RolesAndTokenVerificationController
   	*		}
 	* 	}
 	*/
-	public function getMessagesAction(Request $request, $token, $id)
+	public function getMessagesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.4.3", "Timeline", "getmessages"));
 
@@ -968,7 +993,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
-		$messages = $em->getRepository('SQLBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null), array("createdAt" => "DESC"));
+		$messages = $em->getRepository('SQLBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId()), array("createdAt" => "DESC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 
@@ -984,14 +1009,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/timeline/messages/:token/:id/:offset/:limit Get X messages from offset Y
+	* @api {get} /0.3/timeline/messages/:id/:offset/:limit Get X messages from offset Y
 	* @apiName getLastMessages
 	* @apiGroup Timeline
 	* @apiDescription Get the last X messages from offset Y of the given timeline
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Client authentification token
 	* @apiParam {int} offset Message offset from where to get the messages (start to 0)
 	* @apiParam {int} limit Number max of messages to get
 	*
@@ -1193,9 +1223,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getLastMessagesAction(Request $request, $token, $id, $offset, $limit)
+	public function getLastMessagesAction(Request $request, $id, $offset, $limit)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.5.3", "Timeline", "getlastmessages"));
 
@@ -1214,7 +1244,7 @@ class TimelineController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
-		$messages = $em->getRepository('SQLBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null), array("createdAt" => "DESC"), $limit, $offset);
+		$messages = $em->getRepository('SQLBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId()), array("createdAt" => "DESC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$elem = $value->objectToArray();
@@ -1234,12 +1264,17 @@ class TimelineController extends RolesAndTokenVerificationController
 	 * --------------------------------------------------------------------
 	*/
 	/**
-	* @api {get} /0.3/timeline/message/comments/:token/:id/:messageId Get message's comments
+	* @api {get} /0.3/timeline/message/comments/:id/:messageId Get message's comments
 	* @apiName getComments
 	* @apiGroup Timeline
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the timeline
 	* @apiParam {int} messageId commented message id
 	*
@@ -1403,9 +1438,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getCommentsAction(Request $request, $token, $id, $messageId)
+	public function getCommentsAction(Request $request, $id, $messageId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.6.3", "Timeline", "getComments"));
 		$em = $this->getDoctrine()->getManager();
@@ -1428,7 +1463,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($message instanceof TimelineMessage))
 			return $this->setBadRequest("11.6.4", "Timeline", "getComments", "Bad Parameter: messageId");
 
-		$comments = $em->getRepository('SQLBundle:TimelineComment')->findBy(array("deletedAt" => null, "messages" => $message), array("createdAt" => "ASC"));
+		$comments = $em->getRepository('SQLBundle:TimelineComment')->findBy(array("messages" => $message), array("createdAt" => "ASC"));
 		$commentsArray = array();
 		foreach ($comments as $key => $value) {
 			$commentsArray[] = $value->objectToArray();
@@ -1447,8 +1482,13 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiDescription Post a new comment for the given message
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Token of the person connected
 	* @apiParam {String} comment Comment to post
 	* @apiParam {int} commentedId Id of the message you want to comment
 	*
@@ -1536,10 +1576,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
-		if (!array_key_exists("token", $content) || !array_key_exists("comment", $content) || !array_key_exists("commentedId", $content))
+		if (!array_key_exists("comment", $content) || !array_key_exists("commentedId", $content))
 			return $this->setBadRequest("11.8.6", "Timeline", "postcomment", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.8.3", "Timeline", "postcomment"));
 
@@ -1580,15 +1620,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiDescription Edit a given comment
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the timeline
-	* @apiParam {String} token client authentification token
 	* @apiParam {int} commentId comment's id
 	* @apiParam {String} comment comment content
 	*
 	* @apiParamExample {json} Request-Example:
 	* 	{
 	*		"data": {
-	*			"token": "13135",
 	*			"commentId": 10,
 	*			"comment": "Hi, I think we should delay the delivery date of the project, what do you think about it?"
 	*		}
@@ -1610,7 +1654,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.11.1",
 	*			"return_message": "Timeline - editcomment - Complete Success"
-		*		},
+	*		},
 	*		"data": {
 	*			"id": "154",
 	*			"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
@@ -1627,7 +1671,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "11.9.3",
 	*			"return_message": "Timeline - editcomment - Bad ID"
-		*		}
+	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
 	* 	HTTP/1.1 403 Forbidden
@@ -1643,7 +1687,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "11.9.6",
 	*			"return_message": "Timeline - editcomment - Missing Parameter"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
 	* 	HTTP/1.1 400 Bad Request
@@ -1651,7 +1695,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "11.9.4",
 	*			"return_message": "Timeline - editcomment - Bad Parameter: id"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: commentId
 	* 	HTTP/1.1 400 Bad Request
@@ -1659,7 +1703,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "11.9.4",
 	*			"return_message": "Timeline - editcomment - Bad Parameter: commentId"
-  *		}
+	*		}
 	* 	}
 	*/
 	public function editCommentAction(Request $request, $id)
@@ -1669,10 +1713,10 @@ class TimelineController extends RolesAndTokenVerificationController
 		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
-		if (!array_key_exists("token", $content) || !array_key_exists("comment", $content) || !array_key_exists("commentId", $content))
+		if (!array_key_exists("comment", $content) || !array_key_exists("commentId", $content))
 			return $this->setBadRequest("11.9.6", "Timeline", "editcomment", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.3.3", "Timeline", "editcomment"));
 
@@ -1704,14 +1748,19 @@ class TimelineController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/timeline/comment/:token/:id Delete comment
+	* @api {delete} /0.3/timeline/comment/:id Delete comment
 	* @apiName deleteComment
 	* @apiGroup Timeline
 	* @apiDescription Delete the given comment
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Client authentification token
 	* @apiParam {int} commentId Id of the comment
 	*
 	* @apiSuccess {Number} id Id of the message archived
@@ -1753,9 +1802,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function deleteCommentAction(Request $request, $token, $id)
+	public function deleteCommentAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("11.6.3", "Timeline", "deleteComment"));
 
@@ -1773,6 +1822,4 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		return $this->setSuccess("1.11.1", "Timeline", "deleteComment", "Complete Success", array("id" => $id));
 	}
-
-
 }

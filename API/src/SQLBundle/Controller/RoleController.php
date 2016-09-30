@@ -24,6 +24,8 @@ use DateInterval;
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
 *  @IgnoreAnnotation("apiDescription")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 class RoleController extends RolesAndTokenVerificationController
 {
@@ -34,7 +36,12 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiDescription Create a role for a project, 0: NONE, 1: READ ONLY, 2: READ & WRITE
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {String} name Name of the role
 	* @apiParam {Number} teamTimeline Access rights on the project's team timeline
@@ -50,7 +57,6 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"projectId": 1,
 	*			"name": "Intern",
 	*			"teamTimeline": 2,
@@ -251,27 +257,26 @@ class RoleController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('name', $content) || !array_key_exists('teamTimeline', $content)
+		if (!array_key_exists('projectId', $content) || !array_key_exists('name', $content) || !array_key_exists('teamTimeline', $content)
 			|| !array_key_exists('customerTimeline', $content) || !array_key_exists('gantt', $content) || !array_key_exists('whiteboard', $content) || !array_key_exists('bugtracker', $content)
 			|| !array_key_exists('event', $content) || !array_key_exists('task', $content) || !array_key_exists('projectSettings', $content) || !array_key_exists('cloud', $content))
 			return $this->setBadRequest("13.1.6", "Role", "addprojectroles", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.1.3", "Role", "addprojectroles"));
 
 		if ($content->name == "Admin")
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin");
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
-			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
-
 		$em = $this->getDoctrine()->getManager();
-		$role = new Role();
-
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
+		$role = new Role();
 
 		$roles = $em->getRepository("SQLBundle:Role")->findBy(array('projects'=> $project, 'name' => $content->name));
 		if ($roles != null)
@@ -296,13 +301,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/role/:token/:id Delete role
+	* @api {delete} /0.3/role/:id Delete role
 	* @apiName delProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Delete the given role of the project wanted
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the role
 	*
 	* @apiSuccessExample Success-Response
@@ -407,9 +417,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delProjectRolesAction(Request $request, $token, $id)
+	public function delProjectRolesAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.2.3", "Role", "delprojectroles"));
 
@@ -438,13 +448,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/role/:token/:id Update role
+	* @api {put} /0.3/role/:id Update role
 	* @apiName updateProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Update role caracteristics, 0: NONE, 1: READ ONLY, 2: READ & WRITE
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the role
 	* @apiParam {String} [name] Name of the role
 	* @apiParam {Number} [teamTimeline] Access rights on the project's team timeline
@@ -691,13 +706,13 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateProjectRolesAction(Request $request, $token, $id)
+	public function updateProjectRolesAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.3.3", "Role", "putprojectroles"));
 
@@ -744,13 +759,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/:token/:projectId Get roles by project
+	* @api {get} /0.3/roles/:projectId Get roles by project
 	* @apiName GetProjectRoles
 	* @apiGroup Roles
 	* @apiDescription Get all the roles of the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of roles
@@ -918,9 +938,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getProjectRolesAction(Request $request, $token, $projectId)
+	public function getProjectRolesAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
@@ -951,14 +971,18 @@ class RoleController extends RolesAndTokenVerificationController
 	* @apiDescription Assign the given user to the role for the related project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId Id of the user
 	* @apiParam {Number} roleId Id of the role
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"userId": 6,
 	*			"roleId": 2
 	*		}
@@ -1126,10 +1150,10 @@ class RoleController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('roleId', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('roleId', $content) || !array_key_exists('userId', $content))
 			return $this->setBadRequest("13.5.6", "Role", "assignpersontorole", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.5.3", "Role", "assignpersontorole"));
 
@@ -1145,6 +1169,15 @@ class RoleController extends RolesAndTokenVerificationController
 		$projectId = $role->getProjects()->getId();
 		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "assignpersontorole");
+
+		$projectUsers = $role->getProjects()->getUsers();
+		$isInProject = false;
+		foreach ($projectUsers as $u) {
+			if ($u === $userToAdd)
+				$isInProject = true;
+		}
+		if (!$isInProject)
+			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
 		$pur = $em->getRepository('SQLBundle:ProjectUserRole')->findBy(array('projectId'=> $projectId, 'userId'=> $content->userId));
 		if($pur != null)
@@ -1172,13 +1205,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/role/user/:token/:userId Change user role
+	* @api {put} /0.3/role/user/:userId Change user role
 	* @apiName updatePersonRole
 	* @apiGroup Roles
 	* @apiDescription Change the role of a user ofr the realted project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId Id of the user for searching
 	* @apiParam {Number} projectId Id of the project for searching
 	* @apiParam {Number} old_roleId Old id of the role for searching
@@ -1329,7 +1367,7 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updatePersonRoleAction(Request $request, $token, $userId)
+	public function updatePersonRoleAction(Request $request, $userId)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -1338,7 +1376,7 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!array_key_exists('roleId', $content) || !array_key_exists('projectId', $content) || !array_key_exists('old_roleId', $content))
 			return $this->setBadRequest("13.6.6", "Role", "putpersonrole", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
@@ -1367,13 +1405,17 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/user/:token Get connected user roles
+	* @api {get} /0.3/roles/user Get connected user roles
 	* @apiName getuserroles
 	* @apiGroup Roles
 	* @apiDescription Get the all roles linked to the connected user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccess {Object[]} array Array of user roles
 	* @apiSuccess {Number} array.projectId project id
@@ -1511,9 +1553,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserRolesAction(Request $request, $token)
+	public function getUserRolesAction(Request $request)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
 
@@ -1534,13 +1576,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/role/user/:token/:projectId/:userId/:roleId Unassign user to role
+	* @api {delete} /0.3/role/user/:projectId/:userId/:roleId Unassign user to role
 	* @apiName delPersonRole
 	* @apiGroup Roles
 	* @apiDescription Unlink given user and role
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} userd Id of the user
 	* @apiParam {Number} roleId Id of the role
@@ -1673,21 +1720,21 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delPersonRoleAction(Request $request, $token, $projectId, $userId, $roleId)
+	public function delPersonRoleAction(Request $request, $projectId, $userId, $roleId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.8.3", "Role", "delpersonrole"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
-			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-		$role = $em->getRepository('SQLBundle:Role')->find($roleId);
-
 		if ($project === null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
+			return $this->setNoRightsError("13.8.9", "Role", "delpersonrole");
+		$role = $em->getRepository('SQLBundle:Role')->find($roleId);
+
 		if ($role === null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: roleId");
 
@@ -1713,13 +1760,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/roles/project/user/:token/:projectId/[:userId] Get user role by project
+	* @api {get} /0.3/roles/project/user/:projectId/[:userId] Get user role by project
 	* @apiName getRoleByProjectAndUser
 	* @apiGroup Roles
 	* @apiDescription Get user role for a given project, if userId not specified assumed reference user is the connected user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} [userId] Id of the user
 	*
@@ -1864,9 +1916,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getRoleByProjectAndUserAction(Request $request, $token, $projectId, $userId)
+	public function getRoleByProjectAndUserAction(Request $request, $projectId, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
 
@@ -1893,13 +1945,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/role/users/:token/:roleId Get (un)assigned users by role
+	* @api {get} /0.3/role/users/:roleId Get (un)assigned users by role
 	* @apiName getUsersForRole
 	* @apiGroup Roles
 	* @apiDescription Get the users assigned and non assigned on the given role with their basic informations
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} roleId Id of the role
 	*
 	* @apiSuccess {Number} id Id of the role
@@ -2036,9 +2093,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUsersForRoleAction(Request $request, $token, $roleId)
+	public function getUsersForRoleAction(Request $request, $roleId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.10.3", "Role", "getusersforrole"));
 
@@ -2078,13 +2135,18 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/role/user/part/:token/:userId/:projectId/:part Get user's rights by named part
+	* @api {get} /0.3/role/user/part/:userId/:projectId/:part Get user's rights by named part
 	* @apiName getUserRoleForPArt
 	* @apiGroup Roles
 	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId Id of the user you want the roles
 	* @apiParam {Number} projectId Id of the projectId concerned
 	* @apiParam {string} part name of the part ['team_timeline', 'customer_timeline', 'gantt', 'whiteboard', 'bugtracker', 'event', 'task', 'project_settings', 'cloud']
@@ -2187,9 +2249,9 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserRoleForPartAction(Request $request, $token, $userId, $projectId, $part)
+	public function getUserRoleForPartAction(Request $request, $userId, $projectId, $part)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.11.3", "Role", "getUserRoleForPart"));
 
@@ -2307,7 +2369,7 @@ class RoleController extends RolesAndTokenVerificationController
 	* @api {get} - Get roles info of connected user
 	* @apiName getUserConnectedRolesInformations
 	* @apiGroup Roles
-	* @apiDescription This request no longer exists. See [getUserRoles](/#api-Roles-getuserroles) or [getUserRoleByProject](/#api-Roles-getRoleByProjectAndUser)
+	* @apiDescription This request no longer exists. See [getUserRoles](0.3/#api-Roles-getuserroles) or [getUserRoleByProject](0.3/#api-Roles-getRoleByProjectAndUser)
 	* @apiVersion 0.3.0
 	*
 	*/
@@ -2414,7 +2476,7 @@ class RoleController extends RolesAndTokenVerificationController
 	* @api {get} - Get roles info of given user
 	* @apiName getUserRolesInformations
 	* @apiGroup Roles
-	* @apiDescription This request no longer exists. See [getUserRoleByProject](/#api-Roles-getRoleByProjectAndUser)
+	* @apiDescription This request no longer exists. See [getUserRoleByProject](0.3/#api-Roles-getRoleByProjectAndUser)
 	* @apiVersion 0.3.0
 	*/
 

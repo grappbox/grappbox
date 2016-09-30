@@ -22,6 +22,8 @@ use SQLBundle\Controller\User;
  *  @IgnoreAnnotation("apiParam")
  *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class UserController extends RolesAndTokenVerificationController
 {
@@ -38,12 +40,12 @@ class UserController extends RolesAndTokenVerificationController
     return new JsonResponse("Success: Password encoded for user ".$user->getFirstname()." ".$user->getLastname());
   }
 
-	public function basicInformationsAction(Request $request, $token)
+	public function basicInformationsAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.1.3", "User", "basicinformations"));
 
@@ -57,13 +59,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/:token Request the basic informations of the connected user
+	* @api {get} /0.3/user Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
 	* @apiDescription Request the basic informations of the connected user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	*
 	* @apiSuccess {int} id Id of the person
 	* @apiSuccess {String} firstname First name of the person
@@ -166,13 +173,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/:token/:userId Request the basic informations for a user
+	* @api {get} /0.3/user/:userId Request the basic informations for a user
 	* @apiName getUserBasicInformations
 	* @apiGroup Users
 	* @apiDescription Request the basic informations for the given user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId id of the user you want some informations
 	*
 	* @apiSuccess {int} id Id of the person
@@ -287,9 +299,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserBasicInformationsAction(Request $request, $token, $userId)
+	public function getUserBasicInformationsAction(Request $request, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.2.3", "User", "getuserbasicinformations"));
 
@@ -301,13 +313,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/user/:token Update the basic informations of the user connected
+	* @api {put} /0.3/user Update the basic informations of the user connected
 	* @apiName putBasicInformations
 	* @apiGroup Users
 	* @apiDescription Update the basic informations of the user connected
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} [firstname] First name of the person
 	* @apiParam {String} [lastname] Last name of the person
 	* @apiParam {Date} [birthday] Birthday of the person
@@ -551,13 +568,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/id/:token/:firstName/:lastName Request the user Id with the first and last name
+	* @api {get} /0.3/user/id/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
 	* @apiGroup Users
 	* @apiDescription Request the user Id with the first name and the last name
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user's authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} firstName first name of the user
 	* @apiParam {String} lastName last name of the user
 	*
@@ -676,9 +698,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getIdByNameAction(Request $request, $token, $firstname, $lastname)
+	public function getIdByNameAction(Request $request, $firstname, $lastname)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.4.3", "User", "getidbyname"));
 
@@ -704,13 +726,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/id/:token/:email Request the user Id with the email
+	* @api {get} /0.3/user/id/:email Request the user Id with the email
 	* @apiName getIdByEmail
 	* @apiGroup Users
 	* @apiDescription Request the user Id with the email
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user's authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} email email of the user
 	*
 	* @apiSuccess {Number} id id of the person
@@ -793,9 +820,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getIdByEmailAction(Request $request, $token, $email)
+	public function getIdByEmailAction(Request $request, $email)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.5.3", "User", "getidbyemail"));
 
@@ -812,13 +839,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/avatar/:token/:userId Get user avatar
+	* @api {get} /0.3/user/avatar/:userId Get user avatar
 	* @apiName getUserAvatar
 	* @apiGroup Users
 	* @apiDescription Get the avatar of the given user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId Id of the user
 	*
 	* @apiSuccess {Text} avatar avatar of the user
@@ -893,9 +925,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserAvatarAction(Request $request, $token, $userId)
+	public function getUserAvatarAction(Request $request, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.9.3", "User", "getUserAvatar"));
 
@@ -909,13 +941,18 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/user/project/avatars/:token/:projectId Get all project user avatar
+	* @api {get} /0.3/user/project/avatars/:projectId Get all project user avatar
 	* @apiName getAllProjectUserAvatar
 	* @apiGroup Users
 	* @apiDescription Get the avatar of all the users of the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the user
 	*
 	* @apiSuccess {Object[]} array users list
@@ -996,9 +1033,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getAllProjectUserAvatarAction(Request $request, $token, $projectId)
+	public function getAllProjectUserAvatarAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.10.3", "User", "getAllProjectUserAvatar"));
 
@@ -1008,9 +1045,9 @@ class UserController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("7.10.4", "User", "getAllProjectUserAvatar", "Bad Parameter: projectId");
 
-			foreach ($project->getUsers() as $key => $user) {
-				$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
-			}
+		foreach ($project->getUsers() as $key => $user) {
+			$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
+		}
 
 		return $this->setSuccess("1.7.1", "User", "getAllProjectUserAvatar", "Complete Success", array("array" => $data));
 	}

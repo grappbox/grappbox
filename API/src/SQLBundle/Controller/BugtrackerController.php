@@ -27,6 +27,8 @@ use DateTime;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class BugtrackerController extends RolesAndTokenVerificationController
 {
@@ -37,7 +39,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiDescription Post a ticket
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} projectId id of the project
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
@@ -48,7 +55,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*   {
 	* 		"data": {
-  	* 			"token": "ThisIsMyToken",
   	* 			"projectId": 1,
   	* 			"title": "J'ai un petit problème",
   	* 			"description": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?",
@@ -252,22 +258,21 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
-		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content)
-			|| !array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("clientOrigin", $content) || !array_key_exists("tags", $content)
-			|| !array_key_exists("users", $content))
+		if (!array_key_exists("projectId", $content) || !array_key_exists("title", $content)
+			|| !array_key_exists("description", $content) || !array_key_exists("clientOrigin", $content)
+			|| !array_key_exists("tags", $content) || !array_key_exists("users", $content))
 				return $this->setBadRequest("4.2.6", "Bugtracker", "postTicket", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.2.3", "Bugtracker", "postTicket"));
-
-		if (($this->checkRoles($user, $content->projectId, "bugtracker")) < 2)
-			return ($this->setNoRightsError("4.2.9", "Bugtracker", "postTicket"));
 
 		$project = $em->getRepository("SQLBundle:Project")->find($content->projectId);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.2.4", "Bugtracker", "postTicket", "Bad Parameter: projectId");
+
+		if (($this->checkRoles($user, $content->projectId, "bugtracker")) < 2)
+			return ($this->setNoRightsError("4.2.9", "Bugtracker", "postTicket"));
 
 		$bug = new Bug();
 		$bug->setProjects($project);
@@ -317,26 +322,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				}
 		}
 
-		$ticket = $bug->objectToArray();
-
-		$tags = array();
-		if ($bugTags = $bug->getTags() != NULL) {
-			foreach ($bugTags as $key => $value) {
-				$tags[] = $tag_value->objectToArray();
-			}
-		}
-		$ticket['tags'] = $tags;
-
-		$participants = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$ticket["users"] = $participants;
-
 		$class = new NotificationController();
 
 		$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
@@ -358,17 +343,22 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
-		return $this->setCreated("1.4.1", "Bugtracker", "postTicket", "Complete Success", $ticket);
+		return $this->setCreated("1.4.1", "Bugtracker", "postTicket", "Complete Success", $bug->objectToArray());
 	}
 
 	/**
-	* @api {put} /0.3/bugtracker/ticket/:token/:id Edit ticket
+	* @api {put} /0.3/bugtracker/ticket/:id Edit ticket
 	* @apiName editTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Edit ticket
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the bug ticket
 	* @apiParam {String} title Ticket title
 	* @apiParam {String} description Ticket content
@@ -577,7 +567,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
  	*		}
 	* 	}
 	*/
-	public function editTicketAction(Request $request, $token, $id)
+	public function editTicketAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -589,7 +579,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			|| !array_key_exists("removeUsers", $content))
 				return $this->setBadRequest("4.3.6", "Bugtracker", "editTicket", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.3.3", "Bugtracker", "editTicket"));
 
@@ -694,25 +684,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			}
 		}
 
-		$ticket = $bug->objectToArray();
-
-		$tags = array();
-		foreach ($bug->getTags() as $key => $tag_value) {
-			$tags = $tag_value->objectToArray();
-		}
-		$ticket['tags'] = $tags;
-
-		$participants = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$ticket["users"] = $participants;
-
-
 		$class = new NotificationController();
 
 		$mdata['mtitle'] = "Bugtracker - Ticket edited";
@@ -734,18 +705,23 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
-		return $this->setSuccess("1.4.1", "Bugtracker", "editTicket", "Complete Success", $ticket);
+		return $this->setSuccess("1.4.1", "Bugtracker", "editTicket", "Complete Success", $bug->objectToArray());
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/ticket/close/:token/:id Close ticket
+	* @api {delete} /0.3/bugtracker/ticket/closed/:id Close ticket
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Close a ticket, to delete a comment see [deleteComment](/#api-Bugtracker-deleteComment) request
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -825,11 +801,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function closeTicketAction(Request $request, $token, $id)
+	public function closeTicketAction(Request $request, $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.8.3", "Bugtracker", "closeTicket"));
 
@@ -872,14 +848,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/ticket/:token/:id Delete ticket
+	* @api {delete} /0.3/bugtracker/ticket/:id Delete ticket
 	* @apiName deleteTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a ticket
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -915,11 +896,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function deleteTicketAction(Request $request, $token, $id)
+	public function deleteTicketAction(Request $request, $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.25.3", "Bugtracker", "deleteTicket"));
 
@@ -943,14 +924,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/ticket/reopen/:token/:id Reopen closed ticket
+	* @api {get} /0.3/bugtracker/ticket/reopen/:id Reopen closed ticket
 	* @apiName reopenTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Reopen a closed ticket
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -1030,11 +1016,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function reopenTicketAction(Request $request, $token, $id)
+	public function reopenTicketAction(Request $request, $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.23.3", "Bugtracker", "reopenTicket"));
 
@@ -1083,14 +1069,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /0.3/bugtracker/ticket/:token/:id Get ticket
+	* @api {get} /0.3/bugtracker/ticket/:id Get ticket
 	* @apiName getTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Get ticket informations, tags and assigned users
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id ticket's id
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
@@ -1255,9 +1246,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getTicketAction(Request $request, $token, $id)
+	public function getTicketAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.1.3", "Bugtracker", "getTicket"));
 
@@ -1269,33 +1260,23 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker")) < 1)
 			return ($this->setNoRightsError("4.1.9", "Bugtracker", "getTicket"));
 
-		$object = $ticket->objectToArray();
-		$object['tags'] = array();
-		foreach ($ticket->getTags() as $key => $tag_value) {
-			$object['tags'][] = $tag_value->objectToArray();
-		}
-		$participants = array();
-		foreach ($ticket->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$object["users"] = $participants;
-
-		return $this->setSuccess("1.4.1", "Bugtracker", "getTicket", "Complete Success", $object);
+		return $this->setSuccess("1.4.1", "Bugtracker", "getTicket", "Complete Success", $ticket->objectToArray());
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tickets/open/:token/:id Get open tickets
+	* @api {get} /0.3/bugtracker/tickets/opened/:id Get open tickets
 	* @apiName getTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get all open tickets of a project
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
@@ -1529,9 +1510,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getTicketsAction(Request $request, $token, $id)
+	public function getTicketsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.9.3", "Bugtracker", "getTickets"));
 
@@ -1546,23 +1527,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => true));
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"firstname" => $user_value->getFirstname(),
-					"lastname" => $user_value->getLastname()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
+			$ticketsArray[] = $value->objectToArray();
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -1571,14 +1536,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tickets/close/:token/:id Get closed tickets
+	* @api {get} /0.3/bugtracker/tickets/closed/:id Get closed tickets
 	* @apiName getClosedTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get all closed tickets of a project
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
@@ -1811,9 +1781,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getClosedTicketsAction(Request $request, $token, $id)
+	public function getClosedTicketsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.22.3", "Bugtracker", "getClosedTickets"));
 
@@ -1829,23 +1799,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"firstname" => $user_value->getFirstname(),
-					"lastname" => $user_value->getLastname()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
+			$ticketsArray[] = $value->objectToArray();
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -1854,14 +1808,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tickets/open/:token/:id/:offset/:limit Get last tickets
-	* @apiName getLastTickets
+	* @api {get} /0.3/bugtracker/tickets/opened/:id/:offset/:limit Get last opened tickets
+	* @apiName getLastOpenedTickets
 	* @apiGroup Bugtracker
-	* @apiDescription Get X last tickets from offset Y
+	* @apiDescription Get X last opened tickets from offset Y
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
 	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
 	* @apiParam {int} limit number max of tickets to get
 	*
@@ -2099,9 +2058,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getLastTicketsAction(Request $request, $token, $id, $offset, $limit)
+	public function getLastTicketsAction(Request $request, $id, $offset, $limit)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.10.3", "Bugtracker", "getLastTickets"));
 
@@ -2116,23 +2075,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => true), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"firstname" => $user_value->getFirstname(),
-					"lastname" => $user_value->getLastname()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
+			$ticketsArray[] = $value->objectToArray();
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -2141,14 +2084,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tickets/close/:token/:id/:offset/:limit Get last closed tickets
+	* @api {get} /0.3/bugtracker/tickets/closed/:id/:offset/:limit Get last closed tickets
 	* @apiName getLastClosedTickets
 	* @apiGroup Bugtracker
 	* @apiDescription Get X last closed tickets from offset Y
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the project
-	* @apiParam {String} token client authentification token
 	* @apiParam {int} offset ticket offset from where to get the tickets (start to 0)
 	* @apiParam {int} limit number max of tickets to get
 	*
@@ -2387,9 +2335,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getLastClosedTicketsAction(Request $request, $token, $id, $offset, $limit)
+	public function getLastClosedTicketsAction(Request $request, $id, $offset, $limit)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.11.3", "Bugtracker", "getLastClosedTickets"));
 
@@ -2404,24 +2352,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tickets = $em->getRepository("SQLBundle:Bug")->findBy(array("projects" => $project, "state" => false), array(), $limit, $offset);
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-
-				$object = $value->objectToArray();
-				$object['tags'] = array();
-				foreach ($value->getTags() as $key => $tag_value) {
-					$object['tags'][] = $tag_value->objectToArray();
-				}
-
-				$participants = array();
-				foreach ($value->getUsers() as $key => $user_value) {
-					$participants[] = array(
-						"id" => $user_value->getId(),
-						"firstname" => $user_value->getFirstname(),
-						"lastname" => $user_value->getLastname()
-					);
-				}
-				$object["users"] = $participants;
-
-				$ticketsArray[] = $object;
+				$ticketsArray[] = $value->objectToArray();
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -2430,15 +2361,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tickets/user/:token/:id/:user Get tickets by user
+	* @api {get} /0.3/bugtracker/tickets/user/:id/:user Get opened tickets by user
 	* @apiName getTicketsByUser
 	* @apiGroup Bugtracker
-	* @apiDescription Get Tickets asssigned to a user for a project
+	* @apiDescription Get open tickets asssigned to a user for a project
 	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiParam {int} id id of the project
 	* @apiParam {int} user id of the user
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccess {int} id Ticket id
 	* @apiSuccess {Object} creator author
@@ -2667,9 +2603,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getTicketsByUserAction(Request $request, $token, $id, $userId)
+	public function getTicketsByUserAction(Request $request, $id, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.12.3", "Bugtracker", "getTicketsByUser"));
 
@@ -2689,23 +2625,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$ticketsArray = array();
 		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['tags'] = array();
-			foreach ($value->getTags() as $key => $tag_value) {
-				$object['tags'][] = $tag_value->objectToArray();
-			}
-
-			$participants = array();
-			foreach ($value->getUsers() as $key => $user_value) {
-				$participants[] = array(
-					"id" => $user_value->getId(),
-					"firstname" => $value->getFirstname(),
-					"lastname" => $value->getLastname()
-				);
-			}
-			$object["users"] = $participants;
-
-			$ticketsArray[] = $object;
+			$ticketsArray[] = $value->objectToArray();
 		}
 
 		if (count($ticketsArray) <= 0)
@@ -2718,10 +2638,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	// --------------------------------------------------------------------------------------------------
 
 	/**
-	* @api {get} /V0.2/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit Get tickets by status
+	* @api {get} /V0.2/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit /!\ DEPRECATED /!\ Get tickets by status
 	* @apiName getTicketsByStatus
 	* @apiGroup Bugtracker
-	* @apiDescription Get X last tickets from offset Y with status Z
+	* @apiDescription /!\ DEPRECATED /!\ Get X last tickets from offset Y with status Z
 	* @apiVersion 0.2.0
 	*
 	* @apiParam {int} id id of the project
@@ -2886,7 +2806,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/bugtracker/getstates/:token Get status
+	* @api {get} /V0.2/bugtracker/getstates/:token /!\ DEPRECATED /!\ Get status
 	* @apiName getStates
 	* @apiGroup Bugtracker
 	* @apiDescription Get tickets status
@@ -2958,13 +2878,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {put} /0.3/bugtracker/users/:token/:id Set participants
+	* @api {put} /0.3/bugtracker/users/:id Set participants
 	* @apiName setParticipants
 	* @apiGroup Bugtracker
 	* @apiDescription Assign/unassign users to a ticket
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id bug id
 	* @apiParam {int[]} toAdd list of users' id to assign
 	* @apiParam {int[]} toRemove list of users' id to unassign
@@ -3186,7 +3111,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function setParticipantsAction(Request $request, $token, $id)
+	public function setParticipantsAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -3196,7 +3121,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
 			return $this->setBadRequest("4.7.6", "Bugtracker", "setParticipants", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.7.3", "Bugtracker", "setParticipants"));
 
@@ -3255,27 +3180,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		$object = $bug->objectToArray();
-		$object['state'] = $em->getRepository("SQLBundle:BugState")->find($bug->getState())->objectToArray();
-		$object['tags'] = array();
-		foreach ($bug->getTags() as $key => $tag_value) {
-			$object['tags'][] = $tag_value->objectToArray();
-		}
-
-		$participants = array();
-		foreach ($bug->getUsers() as $key => $value) {
-			$participants[] = array(
-				"id" => $value->getId(),
-				"firstname" => $value->getFirstname(),
-				"lastname" => $value->getLastname()
-			);
-		}
-		$object["users"] = $participants;
-
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
 
-		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $object);
+		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $bug->objectToArray());
 	}
 
 	/*
@@ -3285,14 +3193,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /0.3/bugtracker/comments/:token/:projectId/:ticketId Get comments by bug
+	* @api {get} /0.3/bugtracker/comments/:ticketId Get comments by bug
 	* @apiName getComments
 	* @apiGroup Bugtracker
 	* @apiDescription Get all comments of a bug ticket
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {int} projectId project id
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} ticketId commented ticket id
 	*
 	* @apiSuccess {int} id comment id
@@ -3350,14 +3262,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "4.4.3",
 	*			"return_message": "Bugtracker - getComments - Bad id"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "4.4.4",
-	*			"return_message": "Bugtracker - getComments - Bad Parameter: id"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: ticketId
@@ -3472,25 +3376,21 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getCommentsAction(Request $request, $token, $projectId, $ticketId)
+	public function getCommentsAction(Request $request, $ticketId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.4.3", "Bugtracker", "getComments"));
 
-		if ($this->checkRoles($user, $projectId, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
-
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository("SQLBundle:Project")->find($projectId);
-		if (!($project instanceof Project))
-			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: projectId");
-
 		$ticket = $em->getRepository("SQLBundle:Bug")->find($ticketId);
 		if (!($ticket instanceof Bug))
 			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: ticketId");
 
-		$comments = $em->getRepository("SQLBundle:BugComment")->findBy(array("projects" => $project, "bugs" => $ticket));
+		if ($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker") < 1)
+			return ($this->setNoRightsError("4.4.9", "Bugtracker", "getComments"));
+
+		$comments = $em->getRepository("SQLBundle:BugComment")->findByBugs($ticket);
 		$commentsArray = array();
 		foreach ($comments as $key => $value) {
 			$commentsArray[] = $value->objectToArray();
@@ -3508,14 +3408,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiDescription Post comment on a bug ticket
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} parentId commented ticket id
 	* @apiParam {String} comment Comment content
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	* 		"data": {
-	* 			"token": "ThisIsMyToken",
 	* 			"parentId": 1,
 	* 			"comment": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
 	* 		}
@@ -3679,11 +3583,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
-		if (!array_key_exists("token", $content) || !array_key_exists("projectId", $content) || !array_key_exists("parentId", $content)
-			|| !array_key_exists("comment", $content))
+		if (!array_key_exists("parentId", $content) || !array_key_exists("comment", $content))
 				return $this->setBadRequest("4.5.6", "Bugtracker", "postComment", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.5.3", "Bugtracker", "postComments"));
 
@@ -3727,21 +3630,24 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/bugtracker/comment/:token/:id Edit comment
+	* @api {put} /0.3/bugtracker/comment/:id Edit comment
 	* @apiName EditComment
 	* @apiGroup Bugtracker
 	* @apiDescription Edit a comment
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id comment id to edit
 	* @apiParam {String} comment Comment content
 	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	* 		"data": {
-	* 			"token": "ThisIsMyToken",
-	* 			"commentId": 1,
 	* 			"comment": "J'ai un petit problème dans ma plantation, pourquoi ça pousse pas ?"
 	* 		}
 	*   }
@@ -3897,7 +3803,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function editCommentAction(Request $request, $token, $id)
+	public function editCommentAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -3907,7 +3813,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!array_key_exists("comment", $content))
 			return $this->setBadRequest("4.6.6", "Bugtracker", "editComments", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.6.3", "Bugtracker", "editComments"));
 
@@ -3928,14 +3834,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/comment/:token/:id Delete comment
+	* @api {delete} /0.3/bugtracker/comment/:id Delete comment
 	* @apiName deletecomment
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a comment (creator allowed only)
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id id of the ticket
-	* @apiParam {String} token client authentification token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	{
@@ -3971,11 +3882,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function deleteCommentAction(Request $request, $token, $id)
+	public function deleteCommentAction(Request $request, $id)
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.24.3", "Bugtracker", "deleteComment"));
 
@@ -4007,7 +3918,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiDescription Create a tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {String} name Name of the tag
 	* @apiParam {string} color Color of the tag in hexa
@@ -4015,7 +3931,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "ThisIsMyToken",
 	*			"projectId": 2,
 	*			"name": "Urgent",
 	*			"color": "FFFFFF"
@@ -4146,20 +4061,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content))
+		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content))
 			return $this->setBadRequest("4.15.6", "Bugtracker", "tagCreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.15.3", "Bugtracker", "tagCreation"));
-
-		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 2)
-			return ($this->setNoRightsError("4.15.9", "Bugtracker", "tagCreation"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
 		if (!($project instanceof Project))
 			return $this->setBadRequest("4.15.4", "Bugtracker", "tagCreation", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "bugtracker") < 2)
+			return ($this->setNoRightsError("4.15.9", "Bugtracker", "tagCreation"));
 
 		$tag = new BugtrackerTag();
 		$tag->setName($content->name);
@@ -4175,13 +4090,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/bugtracker/tag/:token/:id Update tag
+	* @api {put} /0.3/bugtracker/tag/:id Update tag
 	* @apiName tagUpdate
 	* @apiGroup Bugtracker
 	* @apiDescription Update a tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the tag
 	* @apiParam {String} name Name of the tag
 	* @apiParam {string} color Color of the tag in hexa
@@ -4320,10 +4240,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('tagId', $content) || !array_key_exists('color', $content))
+		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('tagId', $content) || !array_key_exists('color', $content))
 			return $this->setBadRequest("4.16.6", "Bugtracker", "tagUpdate", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.16.3", "Bugtracker", "tagUpdate"));
 
@@ -4346,13 +4266,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/tag/:token/:id Get tag info
+	* @api {get} /0.3/bugtracker/tag/:id Get tag info
 	* @apiName tagInformations
 	* @apiGroup Bugtracker
 	* @apiDescription Get a tag informations
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} tagId Id of the tag
 	*
 	* @apiSuccess {Number} id Id of the tag
@@ -4449,9 +4374,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getTagInfosAction(Request $request, $token, $id)
+	public function getTagInfosAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.17.3", "Bugtracker", "tagInformations"));
 
@@ -4460,21 +4385,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tag id");
 
-		$projectId = $tag->getProject()->getId();
-		if ($this->checkRoles($user, $projectId, "bugtracker") < 1)
+		if ($this->checkRoles($user, $tag->getProject()->getId(), "bugtracker") < 1)
 			return ($this->setNoRightsError("4.17.9", "Bugtracker", "tagInformations"));
 
 		return $this->setSuccess("4.17.3", "Bugtracker", "tagInformations", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/tag/:token/:id Delete tag
+	* @api {delete} /0.3/bugtracker/tag/:id Delete tag
 	* @apiName deleteTag
 	* @apiGroup Bugtracker
 	* @apiDescription Delete a tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the tag
 	*
 	* @apiSuccessExample Success-Response
@@ -4555,9 +4484,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function deleteTagAction(Request $request, $token, $id)
+	public function deleteTagAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.18.3", "Bugtracker", "deleteTag"));
 
@@ -4580,13 +4509,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/bugtracker/tag/assign/:token/:bugId Assign tag
+	* @api {put} /0.3/bugtracker/tag/assign/:bugId Assign tag
 	* @apiName assignTagToBug
 	* @apiGroup Bugtracker
 	* @apiDescription Assign a tag to a bug
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} bugId Id of the bug
 	* @apiParam {Number} tagId Id of the tag
 	*
@@ -4761,7 +4695,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function assignTagAction(Request $request, $token, $bugId)
+	public function assignTagAction(Request $request, $bugId)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -4770,7 +4704,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($content === null || !array_key_exists('tagId', $content))
 			return $this->setBadRequest("4.19.6", "Bugtracker", "assignTagToBug", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.19.3", "Bugtracker", "assignTagToBug"));
 
@@ -4804,13 +4738,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/tag/remove/:token/:bugId/:tagId Remove tag
+	* @api {delete} /0.3/bugtracker/tag/remove/:bugId/:tagId Remove tag
 	* @apiName removeTagToBug
 	* @apiGroup Bugtracker
 	* @apiDescription Remove a tag to a bug
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} bugId Id of the bug
 	* @apiParam {Number} tagId Id of the tag
 	*
@@ -4909,9 +4848,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function removeTagAction(Request $request, $token, $bugId, $tagId)
+	public function removeTagAction(Request $request, $bugId, $tagId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.20.3", "Bugtracker", "removeTagToBug"));
 
@@ -4952,13 +4891,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/bugtracker/project/tags/:token/:projectId Get tags by project
+	* @api {get} /0.3/bugtracker/project/tags/:projectId Get tags by project
 	* @apiName getProjectTags
 	* @apiGroup Bugtracker
 	* @apiDescription Get all the tags for a project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {int} id Id of the tag
@@ -5070,9 +5014,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getProjectTagsAction(Request $request, $token, $projectId)
+	public function getProjectTagsAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.21.3", "Bugtracker", "getProjectTags"));
 

@@ -16,7 +16,7 @@ use SQLBundle\Entity\Task;
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
- * @IgnoreAnnotation("apiDescription")
+ *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiVersion")
  *  @IgnoreAnnotation("apiSuccess")
  *  @IgnoreAnnotation("apiSuccessExample")
@@ -25,17 +25,24 @@ use SQLBundle\Entity\Task;
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
  *	@IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class DashboardController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /0.3/dashboard/team/occupation/:token/:id Get team occupation
+	* @api {get} /0.3/dashboard/occupation/:id Get team occupation
 	* @apiName getTeamOccupation
 	* @apiGroup Dashboard
 	* @apiDescription Getting a team occupation for a project for the user connected
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of user occupation
@@ -192,9 +199,9 @@ class DashboardController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getTeamOccupationAction(Request $request, $token, $id)
+	public function getTeamOccupationAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("2.1.3", "Dashboard", "getteamoccupation"));
 
@@ -208,13 +215,18 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/dashboard/meetings/:token/:id Get next meetings
+	* @api {get} /0.3/dashboard/meetings/:id Get next meetings
 	* @apiName getNextMeetings
 	* @apiGroup Dashboard
 	* @apiDescription Get all next meetings, in 7 days, of the connected user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of events
@@ -362,9 +374,9 @@ class DashboardController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getNextMeetingsAction(Request $request, $token, $id)
+	public function getNextMeetingsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("2.2.3", "Dashboard", "getnextmeetings"));
 
@@ -372,13 +384,18 @@ class DashboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/dashboard/projects/:token Get projects global progress
+	* @api {get} /0.3/dashboard/projects Get projects global progress
 	* @apiName getProjectsGlobalProgress
 	* @apiGroup Dashboard
 	* @apiDescription Get the global progress of the projects of a user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	*
 	* @apiSuccess {Number} id Id of the project
 	* @apiSuccess {String} name Name of the project
@@ -529,9 +546,9 @@ class DashboardController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getProjectsGlobalProgressAction(Request $request, $token)
+	public function getProjectsGlobalProgressAction(Request $request)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("2.3.3", "Dashboard", "getProjectsGlobalProgress"));
 

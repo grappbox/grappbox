@@ -24,6 +24,8 @@ use DateTime;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 
 
@@ -36,7 +38,12 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiDescription Post an event/meeting
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} [projectId] project's id (if related to a project)
 	* @apiParam {string} title event title
 	* @apiParam {string} description event description
@@ -48,7 +55,6 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"data":
 	*		{
-	*			"token": "ThisIsMyToken",
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
 	*			"begin": "1945-06-18 06:00:00",
@@ -60,7 +66,6 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"data":
 	*		{
-	*			"token": "ThisIsMyToken",
 	*			"projectId": 21,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
@@ -254,11 +259,11 @@ class EventController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists("token", $content) || !array_key_exists("title", $content) || !array_key_exists("description", $content)
+		if (!array_key_exists("title", $content) || !array_key_exists("description", $content)
 			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content) || !array_key_exists("users", $content))
 			return $this->setBadRequest("5.4.6", "Calendar", "postEvent", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.4.3", "Calendar", "postEvent"));
 
@@ -324,14 +329,19 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/event/:token/:id Edit event
+	* @api {put} /0.3/event/:id Edit event
 	* @apiName editEvent
 	* @apiGroup Event
 	* @apiDescription Edit an event/meeting
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id event id
-	* @apiParam {string} token duser authentication token
 	* @apiParam {int} [projectId] project's id (if related to a project)
 	* @apiParam {string} title event title
 	* @apiParam {string} description event description
@@ -344,8 +354,6 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"data":
 	*		{
-	*			"token": "ThisIsMyToken",
-	*			"eventId": 15,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
 	*			"begin": "1945-06-18 06:00:00",
@@ -358,9 +366,7 @@ class EventController extends RolesAndTokenVerificationController
 	* 	{
 	*		"data":
 	*		{
-	*			"token": "ThisIsMyToken",
 	*			"projectId": 21,
-	*			"eventId": 15,
 	*			"title": "Brainstorming",
 	*			"description": "blablabla",
 	*			"begin": "1945-06-18 06:00:00",
@@ -567,7 +573,7 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function editEventAction(Request $request, $token, $id)
+	public function editEventAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -578,7 +584,7 @@ class EventController extends RolesAndTokenVerificationController
 			|| !array_key_exists("toAddUsers", $content) || !array_key_exists("toRemoveUsers", $content))
 			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.5.3", "Calendar", "editEvent"));
 
@@ -690,14 +696,19 @@ class EventController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/event/:token/:id Delete event
+	* @api {delete} /0.3/event/:id Delete event
 	* @apiName delEvent
 	* @apiGroup Event
 	* @apiDescription Delete an event/meeting
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
 	*
 	* @apiSuccessExample Complete Success:
 	* 	{
@@ -777,9 +788,9 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function delEventAction(Request $request, $token, $id)
+	public function delEventAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.6.3", "Calendar", "delEvent"));
 
@@ -789,15 +800,15 @@ class EventController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("5.6.4", "Calendar", "delEvent", "Bad Parameter: id");
 
 		if ($event->getProjects() instanceof Project)
-			{
-				$project = $event->getProjects();
-				if ($this->checkRoles($user, $project->getId(), "event") < 2)
-					return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
-			}
-		else if ($user->getId() != $event->getCreatorUser()->getId())
-			{
+		{
+			$project = $event->getProjects();
+			if ($this->checkRoles($user, $project->getId(), "event") < 2)
 				return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
-			}
+		}
+		else if ($user->getId() != $event->getCreatorUser()->getId())
+		{
+			return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
+		}
 
 		$em->remove($event);
 
@@ -815,14 +826,19 @@ class EventController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {get} /0.3/event/:token/:id Get event
+	* @api {get} /0.3/event/:id Get event
 	* @apiName getEvent
 	* @apiGroup Event
 	* @apiDescription Get an event informations
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id event id
-	* @apiParam {string} token user authentication token
 	*
 	* @apiSuccess {int} id Event id
 	* @apiSuccess {Object} creator creator object
@@ -976,9 +992,9 @@ class EventController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*/
-	public function getEventAction(Request $request, $token, $id)
+	public function getEventAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.2.3", "Calendar", "getEvent"));
 
@@ -1015,13 +1031,18 @@ class EventController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {put} /0.3/event/users/:token/:id Set participants
+	* @api {put} /0.3/event/users/:id Set participants
 	* @apiName setParticipants
 	* @apiGroup Event
 	* @apiDescription Add/remove users to the event
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id event id
 	* @apiParam {int[]} toAdd list of users' id to add
 	* @apiParam {int[]} toRemove list of users' id to remove
@@ -1240,7 +1261,7 @@ class EventController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*/
-	public function setParticipantsAction(Request $request, $token, $id)
+	public function setParticipantsAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -1249,7 +1270,7 @@ class EventController extends RolesAndTokenVerificationController
 		if (!array_key_exists("toAdd", $content) || !array_key_exists("toRemove", $content))
 			return $this->setBadRequest("5.3.6", "Calendar", "setParticipants", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.3.3", "Calendar", "setParticipants"));
 

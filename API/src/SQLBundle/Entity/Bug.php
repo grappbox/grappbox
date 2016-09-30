@@ -76,7 +76,7 @@ class Bug
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugtracker_tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -87,6 +87,20 @@ class Bug
      */
     public function objectToArray()
     {
+        $tags = array();
+        $i = 0;
+        foreach ($this->bugtracker_tags as $key => $value) {
+            $tags[$i] = $value->objectToArray();
+            $i++;
+        }
+        $participants = array();
+        foreach ($this->users as $key => $value) {
+         $participants[] = array(
+             "id" => $value->getId(),
+             "firstname" => $value->getFirstname(),
+             "lastname" => $value->getLastname()
+         );
+        }
         return array(
             "id" => $this->id,
             "creator" => array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
@@ -96,7 +110,9 @@ class Bug
             "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
             "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
             "clientOrigin" => $this->clientOrigin,
-            "state" => $this->state
+            "state" => $this->state,
+            'tags' => $tags,
+            'users' => $participants
         );
     }
 

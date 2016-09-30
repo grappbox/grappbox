@@ -27,17 +27,23 @@ use DateInterval;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
 	/**
-	* @-api {get} /0.3/account/login/:token Client login
+	* @-api {get} /0.3/account/login Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {token} client token access
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccess {int} id whiteboard id
 	* @apiSuccess {string} firstname user's firstname
@@ -116,10 +122,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
-	public function clientLoginAction(Request $request, $token)
+	public function clientLoginAction(Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('token' => $token));
+		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('token' => $request->headers->get('Authorization')));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError("14.4.3", "AccountAdministration", "clientLogin");
 
@@ -383,13 +389,17 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
-	* @api {get} /0.3/account/logout/:token Logout
+	* @api {get} /0.3/account/logout Logout
 	* @apiName logout
 	* @apiGroup AccountAdministration
 	* @apiDescription unvalid user's token
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user's authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccess {string} message	success message
 	*
@@ -446,8 +456,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
- 	public function logoutAction(Request $request, $token)
+ 	public function logoutAction(Request $request)
  	{
+ 		$token = $request->headers->get('Authorization');
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
@@ -458,8 +469,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
 
 		$auth->setToken(null);
+		if ($auth->getDeviceFlag() == "web")
+			$em->remove($auth);
 
-		$em->persist($auth);
 		$em->flush();
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
@@ -489,10 +501,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*				"is_client": false,
-	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
-	*				"flag": "desk",
-	*				"device_name": "John's Desktop"
+	*			"is_client": false,
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Partial:
@@ -506,9 +518,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"avatar": "100100111010011110100100.......",
 	*   		"phone": "010-1658-9520",
 	*   		"country": "New Caledonia",
-	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
-	*				"flag": "desk",
-	*				"device_name": "John's Desktop"
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Full:
@@ -526,9 +538,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"linkedin": "linkedin.com/janne.doe"
 	*   		"viadeo": "viadeo.com/janne.doe",
 	*   		"twitter": "twitter.com/janne.doe",
-	*				"mac": "XXXXXXXXXXXXXXXXXXXXXX",
-	*				"flag": "desk",
-	*				"device_name": "John's Desktop"
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	*

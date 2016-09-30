@@ -19,6 +19,8 @@ use DateTime;
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiDescription")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 class WhiteboardController extends RolesAndTokenVerificationController
 {
@@ -32,13 +34,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/whiteboards/:token/:projectId List whiteboards
+	* @api {get} /0.3/whiteboards/:projectId List whiteboards
 	* @apiName listWhiteboard
 	* @apiGroup Whiteboard
 	* @apiDescription Get the list of whiteboards for the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client Authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} projectId Id of the selected project
 	*
 	* @apiSuccess {Object[]} array Array of whiteboards informations
@@ -211,9 +218,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function listWhiteboardAction(Request $request, $token, $projectId)
+	public function listWhiteboardAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.1.3", "Whiteboard", "list"));
 		if (!$this->checkRoles($user, $projectId, "whiteboard"))
@@ -238,14 +245,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiDescription Create a new whiteboard
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} projectId id of the selected project
 	* @apiParam {string} whiteboardName name of the new whiteboard
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "f1a3f1ea35fae31f",
 	*			"projectId": 2,
 	*			"whiteboardName": "Brainstorming #5"
 	*		}
@@ -426,17 +437,17 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content))
 			return $this->setBadRequest("10.2.6", "Whiteboard", "new", "Missing Parameter");
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.2.3", "Whiteboard", "new"));
-		if ($this->checkRoles($user, $content->projectId, "whiteboard") < 2)
-			return ($this->setNoRightsError("10.2.9", "Whiteboard", "new"));
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository("SQLBundle:Project")->find($content->projectId);
 		if ($project instanceof Project)
 			$this->setBadRequest("10.2.4", "Whiteboard", "new", "Bad Parameter: projectId");
+		if ($this->checkRoles($user, $content->projectId, "whiteboard") < 2)
+			return ($this->setNoRightsError("10.2.9", "Whiteboard", "new"));
 		$whiteboard = new Whiteboard();
 		$whiteboard->setProjects($project);
 		$whiteboard->setCreatorUser($user);
@@ -450,13 +461,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/whiteboard/:token/:id Open a whiteboard
+	* @api {get} /0.3/whiteboard/:id Open a whiteboard
 	* @apiName openWhiteboard
 	* @apiGroup Whiteboard
 	* @apiDescription Open the given whiteboard
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the whiteboard
 	*
 	* @apiSuccess {int} id Whiteboard id
@@ -675,9 +691,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function openWhiteboardAction(Request $request, $token, $id)
+	public function openWhiteboardAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.3.3", "Whiteboard", "open"));
 		$em = $this->getDoctrine()->getManager();
@@ -689,6 +705,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		if ($whiteboard->getDeletedAt())
 			return $this->setBadRequest("10.3.4", "Whiteboard", "open", "Bad Parameter: Whiteboard Deleted");
 		$arr = $whiteboard->objectToArray();
+		$arr["content"] = array();
 		foreach ($whiteboard->getObjects() as $key => $obj) {
 			if ($obj->getDeletedAt() == null)
 			{
@@ -696,7 +713,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 				$arr["content"][] = $object;
 			}
 		}
-		//$arr["content"] =  $this->serializeInArray($whiteboard->getObjects());
 		return $this->setSuccess("1.10.1", "Whiteboard", "open", "Complete Success", $arr);
 	}
 
@@ -707,17 +723,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiDescription Push a whiteboard modification
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the whiteboard
-	* @apiParam {String} token Client authentification token
 	* @apiParam {object} object Whiteboard's object add (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	*
-	* @apiParamExample {json} Request-Delete-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"objectId": 3
-	*		}
-	*	}
 	* @apiParamExample {json} Request-Add-Example:
 	*	{
 	*		"data": {
@@ -885,9 +899,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		if (!array_key_exists('object', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('object', $content))
 		 	return $this->setBadRequest("10.4.6", "Whiteboard", "push", "Missing Parameter");
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.4.3", "Whiteboard", "push"));
 		$em = $this->getDoctrine()->getManager();
@@ -915,8 +929,13 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiDescription Pull whiteboard modifications
 	* @apiVersion 0.3.0
 	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the whiteboard
-	* @apiParam {String} token Client authentification token
 	* @apiParam {string} lastUpdate Date of the last update
 	*
 	* @apiParamExample {json} Request-Delete-Example:
@@ -1121,9 +1140,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		if (!array_key_exists('lastUpdate', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('lastUpdate', $content))
  			return $this->setBadRequest("10.5.6", "Whiteboard", "pull", "Missing Parameter");
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.5.3", "Whiteboard", "pull"));
 		$em = $this->getDoctrine()->getManager();
@@ -1153,13 +1172,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/whiteboard/:token/:id Delete a Whiteboard
+	* @api {delete} /0.3/whiteboard/:id Delete a Whiteboard
 	* @apiName deleteWhiteboard
 	* @apiGroup Whiteboard
 	* @apiDescription Delete a whiteboard
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the whiteboard
 	*
 	* @apiSuccessExample {json} Success-Response:
@@ -1240,9 +1264,9 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delWhiteboardAction(Request $request, $token, $id)
+	public function delWhiteboardAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.6.3", "Whiteboard", "delete"));
 		$em = $this->getDoctrine()->getManager();
@@ -1264,13 +1288,18 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/whiteboard/object/:token/:id Delete object
+	* @api {delete} /0.3/whiteboard/object/:id Delete object
 	* @apiName deleteObject
 	* @apiGroup Whiteboard
 	* @apiDescription Get the last object created to delete from rubber position and radius
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Client authentification token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} id Id of the whiteboard
 	* @apiParam {Object} center position in X and Y of the rubber center
 	* @apiParam {float}  center.x postion in x of the center
@@ -1280,8 +1309,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"whiteboardId": 15,
 	*			"center": {"x": 15.2, "y": 16.78},
 	*			"radius": 15.6
 	*		}
@@ -1457,14 +1484,14 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function deleteObjectAction(Request $request, $token, $id)
+	public function deleteObjectAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 		if (!array_key_exists('center', $content) || !array_key_exists('radius', $content))
 			return $this->setBadRequest("10.7.6", "Whiteboard", "deleteObject", "Missing Parameter");
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.7.3", "Whiteboard", "deleteObject"));
 		$em = $this->getDoctrine()->getManager();

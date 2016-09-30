@@ -28,8 +28,10 @@ use SQLBundle\Entity\Color;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
-*	@IgnoreAnnotation("apiIgnore")
-*	@IgnoreAnnotation("apiDescription")
+*  @IgnoreAnnotation("apiIgnore")
+*  @IgnoreAnnotation("apiDescription")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 class ProjectController extends RolesAndTokenVerificationController
 {
@@ -40,7 +42,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiDescription Create a project for the user connected
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} name Name of the project
 	* @apiParam {String} [description] Description of the project
 	* @apiParam {Text} [logo] Logo of the project
@@ -54,7 +61,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
 	*			"name": "Grappbox",
 	*			"description": "grappbox est un projet de gestion de projets",
 	*			"logo": "10001111001100110010101010",
@@ -70,7 +76,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Minimum-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
 	*			"name": "Grappbox"
 	*		}
 	*	}
@@ -78,7 +83,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Partial-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
 	*			"name": "Grappbox",
 	*			"description": "grappbox est un projet de gestion de projets",
 	*			"phone": "+335 65 23 45 94",
@@ -244,10 +248,10 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('password', $content))
+		if (!array_key_exists('name', $content) || !array_key_exists('password', $content))
 			return $this->setBadRequest("6.1.6", "Project", "projectcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return $this->setBadTokenError("6.1.3", "Project", "projectcreation");
 
@@ -310,6 +314,7 @@ class ProjectController extends RolesAndTokenVerificationController
 				$newTag = new Tag();
 				$newTag->setName($t->getName());
 				$newTag->setProject($project);
+				$newTag->setColor($t->getColor());
 
 				$em->persist($newTag);
 			}
@@ -336,7 +341,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->persist($customerTimeline);
 		$em->flush();
 
-		$this->get('service_stat')->initiateStatistics($project, $content->token, $request);
+		$this->get('service_stat')->initiateStatistics($project, $request->headers->get('Authorization'), $request);
 
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", $project->objectToArray($em, $user));
 	}
@@ -347,13 +352,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/project/:token/:id Update a project informations
+	* @api {put} /0.3/project/:id Update a project informations
 	* @apiName updateInformations
 	* @apiGroup Project
 	* @apiDescription Update the given project informations
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	* @apiParam {Number} [creatorId] Id of the new creator
 	* @apiParam {String} [name] name of the project
@@ -392,7 +402,6 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Partial-Example:
 	*	{
 	*		"data": {
-	*			"token": "13135",
 	*			"projectId": 2,
 	*			"description": "grappbox est un projet de gestion de projets",
 	*			"logo": "10001111001100110010101010",
@@ -619,24 +628,23 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateInformationsAction(Request $request, $token, $id)
+	public function updateInformationsAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.2.3", "Project", "updateinformations"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.2.4", "Project", "updateinformations", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $id, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.2.9", "Project", "updateinformations"));
 
 		if (array_key_exists('creatorId', $content))
 		{
@@ -708,13 +716,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/project/:token/:id Get a project basic informations
+	* @api {get} /0.3/project/:id Get a project basic informations
 	* @apiName getInformations
 	* @apiGroup Project
 	* @apiDescription Get the given project basic informations
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {String} name Name of the project
@@ -861,15 +874,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getInformationsAction(Request $request, $token, $id)
+	public function getInformationsAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: id");
 
@@ -878,13 +890,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/project/:token/:id Delete a project 7 days after the call
+	* @api {delete} /0.3/project/:id Delete a project 7 days after the call
 	* @apiName delProject
 	* @apiGroup Project
 	* @apiDescription Set the deleted at of the given project to 7 days after the call of the function
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccessExample Success-Response
@@ -965,20 +982,19 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delProjectAction(Request $request, $token, $id)
+	public function delProjectAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.4.3", "Project", "delproject"));
 
-		if ($this->checkRoles($user, $id, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.4.4", "Project", "delproject", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $id, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.4.9", "Project", "delproject"));
 
 		$delDate = new \DateTime;
 		$delDate->add(new \DateInterval('P7D'));
@@ -992,13 +1008,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/project/retrieve/:token/:projectId Retreive a project before the 7 days are passed, after delete
+	* @api {get} /0.3/project/retrieve/:projectId Retreive a project before the 7 days are passed, after delete
 	* @apiName retrieveProject
 	* @apiGroup Project
 	* @apiDescription Retreive a project set to be deleted, but have to be called before the 7 days are passed
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {Number} id Id of the project retrieve
@@ -1087,9 +1108,9 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function retrieveProjectAction(Request $request, $token, $projectId)
+	public function retrieveProjectAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.5.3", "Project", "retrieveproject"));
 
@@ -1098,14 +1119,15 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-
 		if ($project === null)
 			return $this->setBadRequest("6.5.4", "Project", "retrieveproject", "Bad Parameter: projectId");
 
 		$project->setDeletedAt(null);
 		$em->flush();
 
-		return $this->setSuccess("1.6.1", "Project", "retrieveproject", "Complete Success", null);
+		$response["info"]["return_code"] = "1.6.1";
+		$response["info"]["return_message"] = "Project - retrieveproject - Complete Success";
+		return new JsonResponse($response);
 	}
 
 	/**
@@ -1115,14 +1137,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiDescription Generate or regenerate a customer access for the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {String} projectId Id of the project
 	* @apiParam {String} name Name of the customer access
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "13cqs43c54vqd3",
 	*			"projectId": 2,
 	*			"name": "access for Toyota"
 	*		}
@@ -1256,21 +1282,20 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('name', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('name', $content))
 			return $this->setBadRequest("6.6.6", "Project", "generatecustomeraccess", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.6.3", "Project", "generatecustomeraccess"));
 
-		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
-
 		if ($project === null)
 			return $this->setBadRequest("6.6.4", "Project", "generatecustomeraccess", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.6.9", "Project", "generatecustomeraccess"));
 
 		$repository = $em->getRepository('SQLBundle:CustomerAccess');
 
@@ -1304,13 +1329,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/project/customeraccesses/:token/:projectId Get a customer accesses by it's project
+	* @api {get} /0.3/project/customeraccesses/:projectId Get a customer accesses by it's project
 	* @apiName getCustomerAccessByProject
 	* @apiGroup Project
 	* @apiDescription Get a customer access by it's poject id
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of customer access
@@ -1449,9 +1479,9 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getCustomerAccessByProjectAction(Request $request, $token, $projectId)
+	public function getCustomerAccessByProjectAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
@@ -1473,13 +1503,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/project/customeraccess/:token/:projectId/:customerAccessId Delete a customer access
+	* @api {delete} /0.3/project/customeraccess/:projectId/:customerAccessId Delete a customer access
 	* @apiName delCustomerAccess
 	* @apiGroup Project
 	* @apiDescription Delete the given customer access
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} customerAccessId Id of the customer access
 	*
@@ -1562,9 +1597,9 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function delCustomerAccessAction(Request $request, $token, $projectId, $customerAccessId)
+	public function delCustomerAccessAction(Request $request, $projectId, $customerAccessId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
@@ -1592,14 +1627,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiDescription Add a given user to the project wanted
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	* @apiParam {String} email Email of the user
 	*
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "nfeq34efbfkqf54",
 	*			"id": 2,
 	*			"email": "toto@titi.com"
 	*		}
@@ -1770,21 +1809,20 @@ class ProjectController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('id', $content) || !array_key_exists('token', $content) || !array_key_exists('email', $content))
+		if (!array_key_exists('id', $content) || !array_key_exists('email', $content))
 			return $this->setBadRequest("6.10.6", "Project", "addusertoproject", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.10.3", "Project", "addusertoproject"));
 
-		if ($this->checkRoles($user, $content->id, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.10.4", "Project", "addusertoproject", "Bad Parameter: id");
+
+		if ($this->checkRoles($user, $content->id, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.10.9", "Project", "addusertoproject"));
 
 		$userToAdd = $em->getRepository('SQLBundle:User')->findOneByemail($content->email);
 		if ($userToAdd === null)
@@ -1819,13 +1857,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.3/project/userconnected/:token/:projectId Remove the user connected from the project
+	* @api {delete} /V0.3/project/userconnected/:projectId Remove the user connected from the project
 	* @apiName removeUserConnected
 	* @apiGroup Project
 	* @apiDescription Remove the user connected from the project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccessExample Success-Response
@@ -1870,15 +1913,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function removeUserConnectedAction(Request $request, $token, $projectId)
+	public function removeUserConnectedAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.11.3", "Project", "removeuserconnected"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-
 		if ($project === null)
 			return $this->setBadRequest("6.11.4", "Project", "removeuserconnected", "Bad Parameter: projectId");
 
@@ -1923,13 +1965,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/project/user/:token/:projectId/:userId Remove a user from the project
+	* @api {delete} /0.3/project/user/:projectId/:userId Remove a user from the project
 	* @apiName removeUserToProject
 	* @apiGroup Project
 	* @apiDescription Remove a given user to the project wanted
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {Number} userId Id of the user
 	*
@@ -2044,20 +2091,19 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function removeUserToProjectAction(Request $request, $token, $projectId, $userId)
+	public function removeUserToProjectAction(Request $request, $projectId, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.12.3", "Project", "removeusertoproject"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.12.9", "Project", "removeusertoproject"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-
 		if ($project === null)
 			return $this->setBadRequest("6.12.4", "Project", "removeusertoproject", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.12.9", "Project", "removeusertoproject"));
 
 		$userToRemove = $em->getRepository('SQLBundle:User')->find($userId);
 		if ($userToRemove === null)
@@ -2104,13 +2150,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/project/users/:token/:id Get all the users on a project
+	* @api {get} /0.3/project/users/:id Get all the users on a project
 	* @apiName getUserToProject
 	* @apiGroup Project
 	* @apiDescription Get all the users on the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of users
@@ -2225,15 +2276,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserToProjectAction(Request $request, $token, $id)
+	public function getUserToProjectAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.13.3", "Project", "getusertoproject"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.13.4", "Project", "getusertoproject", "Bad Parameter: id");
 
@@ -2256,13 +2306,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/project/color/:token/:id Change the color of a project
+	* @api {put} /0.3/project/color/:id Change the color of a project
 	* @apiName changeProjectColor
 	* @apiGroup Project
 	* @apiDescription Change the color of a project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	* @apiParam {String} color Color of the project, in hexadecimal
 	*
@@ -2361,7 +2416,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function changeProjectColorAction(Request $request, $token, $id)
+	public function changeProjectColorAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -2370,15 +2425,14 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!array_key_exists('color', $content))
 			return $this->setBadRequest("6.14.6", "Project", "changeprojectcolor", "Missing Parameter");
 
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("6.14.3", "Project", "changeprojectcolor"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.14.4", "Project", "changeprojectcolor", "Bad Parameter: id");
+
+		$user = $this->checkToken($request->headers->get('Authorization'));
+		if (!$user)
+			return ($this->setBadTokenError("6.14.3", "Project", "changeprojectcolor"));
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
@@ -2398,13 +2452,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/project/color/:token/:id Reset the color of the project
+	* @api {delete} /0.3/project/color/:id Reset the color of the project
 	* @apiName resetProjectColor
 	* @apiGroup Project
 	* @apiDescription Reset the color of the given project to the default one
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccessExample Success-Response:
@@ -2485,17 +2544,16 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function resetProjectColorAction(Request $request, $token, $id)
+	public function resetProjectColorAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("6.15.3", "Project", "resetprojectcolor"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.15.4", "Project", "resetprojectcolor", "Bad Parameter: id");
+
+		$user = $this->checkToken($request->headers->get('Authorization'));
+		if (!$user)
+			return ($this->setBadTokenError("6.15.3", "Project", "resetprojectcolor"));
 
 		$color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $project, "user" => $user));
 		if ($color === null)
@@ -2510,13 +2568,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/project/logo/:token/:id Get project logo
+	* @api {get} /0.3/project/logo/:id Get project logo
 	* @apiName getProjectLogo
 	* @apiGroup Project
 	* @apiDescription Get the logo of the given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the project
 	*
 	* @apiSuccess {Text} logo Logo of the project
@@ -2591,17 +2654,16 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getProjectLogoAction(Request $request, $token, $id)
+	public function getProjectLogoAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("6.16.3", "Project", "getProjectLogo"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($id);
-
 		if ($project === null)
 			return $this->setBadRequest("6.16.4", "Project", "getProjectLogo", "Bad Parameter: id");
+
+		$user = $this->checkToken($request->headers->get('Authorization'));
+		if (!$user)
+			return ($this->setBadTokenError("6.16.3", "Project", "getProjectLogo"));
 
 		return $this->setSuccess("1.6.1", "Project", "getProjectLogo", "Complete Success", array("logo" => $project->getLogo()));
 	}

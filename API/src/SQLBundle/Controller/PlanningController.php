@@ -23,18 +23,25 @@ use DateInterval;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 
 class PlanningController extends RolesAndTokenVerificationController
 {
 	/**
-	* @api {get} /0.3/planning/day/:token/:date Get day planning
+	* @api {get} /0.3/planning/day/:date Get day planning
 	* @apiName getDayPlanning
 	* @apiGroup Planning
 	* @apiDescription Get a one day planning
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {string} date date of event to list (into YYYY-MM-DD format)
 	*
 	* @apiSuccess {Object[]} events list of events
@@ -208,9 +215,9 @@ class PlanningController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getDayPlanningAction(Request $request, $token, $date)
+	public function getDayPlanningAction(Request $request, $date)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.1.3", "Calendar", "getDayPlanning"));
 
@@ -245,7 +252,12 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiDescription Get planning of a week
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {string} date date of the first day of the week (into YYYY-MM-DD format)
 	*
 	* @apiSuccess {Object[]} events list of events
@@ -420,9 +432,9 @@ class PlanningController extends RolesAndTokenVerificationController
 	*
 	*/
 
-	public function getWeekPlanningAction(Request $request, $token, $date)
+	public function getWeekPlanningAction(Request $request, $date)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.2.3", "Calendar", "getWeekPlanning"));
 
@@ -457,7 +469,12 @@ class PlanningController extends RolesAndTokenVerificationController
 	* @apiDescription Get planning of a month
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {string} date date of the first day of the month (into YYYY-MM-DD format)
 	*
 	* @apiSuccess {Object[]} events list of events
@@ -631,9 +648,9 @@ class PlanningController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	public function getMonthPlanningAction(Request $request, $token, $date)
+	public function getMonthPlanningAction(Request $request, $date)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("5.3.3", "Calendar", "getMonthPlanning"));
 

@@ -31,6 +31,8 @@ use DateTime;
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiDescription")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiHeader")
+*  @IgnoreAnnotation("apiHeaderExample")
 */
 class StatisticController extends RolesAndTokenVerificationController
 {
@@ -40,14 +42,19 @@ class StatisticController extends RolesAndTokenVerificationController
   // -----------------------------------------------------------------------
 
 	/**
-	* @api {get} /0.3/statistics/:token/:projectId Get all statistics
+	* @api {get} /0.3/statistics/:projectId Get all statistics
 	* @apiName getAllStat
 	* @apiGroup Stat
 	* @apiDescription Get all statistics of a project.
 	* See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about the return content related to each statistic
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} projectId id of the related project
 	*
 	* @apiSuccess {Object[]/Integer} statName stat data asked
@@ -127,17 +134,17 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getAllStatAction(Request $request, $token, $projectId)
+	public function getAllStatAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		if ($project === null)
+			return $this->setBadRequest("16.1.4", "Stat", "getAll", "Bad Parameter: projectId");
+
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return $this->setBadTokenError("16.1.3", "Stat", "getAll");
 
-		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-
-		if ($project === null)
-			return $this->setBadRequest("16.1.4", "Stat", "getAll", "Bad Parameter: projectId");
 
 		$stat["projectTimeLimits"] = $this->getProjectTimeLimits($project);
 
@@ -217,14 +224,19 @@ class StatisticController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/statistic/:token/:projectId/:statName Get a stat info
+	* @api {get} /0.3/statistic/:projectId/:statName Get a stat info
 	* @apiName getStat
 	* @apiGroup Stat
 	* @apiDescription Get a particaular statistics info.
 	* See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about statName and return content related to each statistic
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {int} projectId id of the related project
 	* @apiParam {string} statName name of the statistic
 	*
@@ -340,17 +352,16 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getStatAction(Request $request, $token, $projectId, $statName)
+	public function getStatAction(Request $request, $projectId, $statName)
 	{
-		$user = $this->checkToken($token);
-		if (!$user)
-		  	return $this->setBadTokenError("16.2.3", "Stat", "getStat");
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
-
 		if ($project === null)
-		  	return $this->setBadRequest("16.2.4", "Stat", "getStat", "Bad Parameter: projectId");
+			return $this->setBadRequest("16.2.4", "Stat", "getStat", "Bad Parameter: projectId");
+
+		$user = $this->checkToken($request->headers->get('Authorization'));
+		if (!$user)
+			return $this->setBadTokenError("16.2.3", "Stat", "getStat");
 
 		$stat = array();
 		switch ($statName) {
@@ -877,13 +888,13 @@ class StatisticController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return "Error: Bad project Id";
 
-		$this->updateStorageSize($project, $token, $request);
+		$this->updateStorageSize($project, $request);
 		return "Success: Stat 'StorrageSize' updated.";
 	}
 
-	private function updateStorageSize($project, $token, Request $request)
+	private function updateStorageSize($project, Request $request)
 	{
-		$res = $this->calculateStorageSize($project, $token, ",", $request);
+		$res = $this->calculateStorageSize($project, ",", $request);
 
 		$em = $this->getDoctrine()->getManager();
 		$statStorageSize = $em->getRepository('SQLBundle:StatStorageSize')->findOneBy(array('project' => $project));
@@ -905,9 +916,9 @@ class StatisticController extends RolesAndTokenVerificationController
 		return "Data updated";
 	}
 
-	private function calculateStorageSize($project, $token, $path, Request $request)
+	private function calculateStorageSize($project, $path, Request $request)
 	{
-		$response = $this->get('service_cloud')->getListAction($token, $project->getId(), $path, $project->getSafePassword(), $request);
+		$response = $this->get('service_cloud')->getListAction($project->getId(), $path, $project->getSafePassword(), $request);
 		$response = json_decode($response->getContent());
 
 		if ($response->info->return_code != "1.3.1")
@@ -920,7 +931,7 @@ class StatisticController extends RolesAndTokenVerificationController
 			if ($result->type == "dir")
 			{
 				$newPath = $path.$result->filename.",";
-				$subResult = $this->calculateStorageSize($project, $token, $newPath, $request);
+				$subResult = $this->calculateStorageSize($project, $newPath, $request);
 
 				if ($subResult['result'] == "error")
 				  return $subResult;
@@ -1124,7 +1135,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		$this->updateBugsTagsRepartition($project);
 
 		// INITIATE CLOUD UPDATE STAT
-		$this->updateStorageSize($project, $token, $request);
+		$this->updateStorageSize($project, $request);
 
 		// INITIATE DAILY UPDATE STAT
 		$this->updateBugsEvolution($project);

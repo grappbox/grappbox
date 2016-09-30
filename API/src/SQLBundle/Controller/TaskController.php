@@ -27,6 +27,8 @@ use Datetime;
  *  @IgnoreAnnotation("apiParamExample")
  *	@IgnoreAnnotation("apiDescription")
  *	@IgnoreAnnotation("apiIgnore")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class TaskController extends RolesAndTokenVerificationController
 {
@@ -71,7 +73,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiDescription Create a task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projecId Id of the project
 	* @apiParam {String} title Title of the task
 	* @apiParam {String} description Description of the task
@@ -96,7 +103,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
@@ -138,7 +144,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Minimum-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
@@ -152,7 +157,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Partial-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
 	*			"title": "Update server",
 	*			"description": "update the server apache to a newer version",
@@ -646,22 +650,22 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('title', $content)
+		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('title', $content)
 			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('started_at', $content)
 			|| !array_key_exists('is_milestone', $content) || !array_key_exists('is_container', $content)))
 			return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.1.3", "Task", "taskcreation"));
-
-		if ($this->checkRoles($user, $content->projectId, "task") < 2)
-			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
+			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$task = new Task();
 		$task->setTitle($content->title);
@@ -715,7 +719,7 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('SQLBundle:Task')->find($dep->id);
-				if ($dependence != null)
+				if ($dependence != null && $dependence->getProjects() === $task->getProjects())
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
@@ -750,7 +754,7 @@ class TaskController extends RolesAndTokenVerificationController
 			{
 				foreach ($content->tasksAdd as $ta) {
 					$taskAdd = $em->getRepository("SQLBundle:Task")->find($ta);
-					if ($taskAdd instanceof Task)
+					if ($taskAdd instanceof Task && $taskAdd->getIsMilestone() === false && $taskAdd->getProjects() === $task->getProjects())
 					{
 						$isInArray = false;
 						foreach ($task->getTasksContainer() as $t) {
@@ -949,13 +953,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/task/:token/:id Update a task
+	* @api {put} /0.3/task/:id Update a task
 	* @apiName taskUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the task
 	* @apiParam {String} [title] Title of the task
 	* @apiParam {String} [description] Description of the task
@@ -1570,16 +1579,16 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function updateTaskAction(Request $request, $token, $id)
+	public function updateTaskAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null ||)
+		if ($content === null)
 			return $this->setBadRequest("12.2.6", "Task", "taskupdate", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.2.3", "Task", "taskupdate"));
 
@@ -1745,7 +1754,7 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('SQLBundle:Task')->find($dep->id);
-				if ($dependence != null)
+				if ($dependence != null && $dependence->getProjects() === $task->getProjects())
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
@@ -1805,7 +1814,7 @@ class TaskController extends RolesAndTokenVerificationController
 			{
 				foreach ($content->tasksAdd as $ta) {
 					$taskAdd = $em->getRepository("SQLBundle:Task")->find($ta);
-					if ($taskAdd instanceof Task)
+					if ($taskAdd instanceof Task && $taskAdd->getIsMilestone() === false && $taskAdd->getProjects() === $task->getProjects())
 					{
 						$isInArray = false;
 						foreach ($task->getTasksContainer() as $t) {
@@ -2050,13 +2059,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/task/:token/:taskId Get a task informations
+	* @api {get} /0.3/task/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} taskId Id of the task
 	*
 	* @apiSuccess {Number} id Id of the task
@@ -2437,9 +2451,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getTaskInfosAction(Request $request, $token, $taskId)
+	public function getTaskInfosAction(Request $request, $taskId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.3.3", "Task", "taskinformations"));
 
@@ -2456,13 +2470,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/task/archive/:token/:id Archive a task
+	* @api {put} /0.3/task/archive/:id Archive a task
 	* @apiName archiveTask
 	* @apiGroup Task
 	* @apiDescription Archive the given task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} taskId Id of the task
 	*
 	* @apiSuccess {Number} id Id of the task archived
@@ -2579,9 +2598,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function archiveTaskAction(Request $request, $token, $id)
+	public function archiveTaskAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.4.3", "Task", "archivetask"));
 
@@ -2606,13 +2625,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/task/:token/:taskId Delete a task
+	* @api {delete} /0.3/task/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiDescription Delete definitely the given task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} taskId Id of the task
 	*
 	* @apiSuccessExample Success-Response
@@ -2693,9 +2717,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function deleteTaskAction(Request $request, $token, $taskId)
+	public function deleteTaskAction(Request $request, $taskId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.5.3", "Task", "taskdelete"));
 
@@ -2728,7 +2752,12 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiDescription Create a tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	* @apiParam {String} name Name of the tag
 	* @apiParam {string} color Color of the tag
@@ -2736,7 +2765,6 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Example:
 	*	{
 	*		"data": {
-	*			"token": "1fez4c5ze31e5f14cze31fc",
 	*			"projectId": 2,
 	*			"name": "Urgent",
 	*			"color": "FFFFFF"
@@ -2867,20 +2895,20 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.8.6", "Task", "tagcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.8.3", "Task", "tagcreation"));
-
-		if ($this->checkRoles($user, $content->projectId, "task") < 2)
-			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.8.4", "Task", "tagcreation", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
+			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
 
 		$tag = new Tag();
 		$tag->setName($content->name);
@@ -2896,13 +2924,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/tasks/:token/:id Update a tag
+	* @api {put} /0.3/tasks/:id Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} id Id of the tag
 	* @apiParam {String} name Name of the tag
 	* @apiParam {string} color Color of the tag
@@ -3035,7 +3068,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function tagUpdateAction(Request $request, $token, $id)
+	public function tagUpdateAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
@@ -3044,7 +3077,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.9.6", "Task", "tagupdate", "Missing Parameter");
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.9.3", "Task", "tagupdate"));
 
@@ -3067,13 +3100,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/tag/:token/:tagId Get a tag informations
+	* @api {get} /0.3/tasks/tag/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} tagId Id of the tag
 	*
 	* @apiSuccess {Number} id Id of the tag
@@ -3170,9 +3208,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getTagInfosAction(Request $request, $token, $tagId)
+	public function getTagInfosAction(Request $request, $tagId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.10.3", "Task", "taginformations"));
 
@@ -3189,13 +3227,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/tasks/tag/:token/:tagId Delete a tag
+	* @api {delete} /0.3/tasks/tag/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiDescription Delete the given tag
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} tagId Id of the tag
   	*
 	* @apiSuccessExample Success-Response
@@ -3276,9 +3319,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function deleteTagAction(Request $request, $token, $tagId)
+	public function deleteTagAction(Request $request, $tagId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.11.3", "Task", "deletetag"));
 
@@ -3301,13 +3344,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/project/:token/:projectId Get all the tasks for a project
+	* @api {get} /0.3/tasks/project/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiDescription Get all the tasks for a given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {Number} id Id of the task
@@ -3647,9 +3695,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getProjectTasksAction(Request $request, $token, $projectId)
+	public function getProjectTasksAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
@@ -3668,7 +3716,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$arr = array();
 		foreach ($tasks as $task) {
-			$arr[] = $task->objectToArray());
+			$arr[] = $task->objectToArray(array());
 		}
 
 		if (count($arr) == 0)
@@ -3678,13 +3726,18 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/tasks/tags/project/:token/:projectId Get all the tags for a project
+	* @api {get} /0.3/tasks/tags/project/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiDescription Get all the tags for a given project
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token Token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} projectId Id of the project
 	*
 	* @apiSuccess {Object[]} array Array of tag
@@ -3844,9 +3897,9 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getProjectTagsAction(Request $request, $token, $projectId)
+	public function getProjectTagsAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.15.3", "Task", "getprojecttags"));
 
