@@ -1,7 +1,7 @@
 {
     "name": "Grappbox",
-    "version": "0.2.0",
-    "description": "GrappBox API documentation version 0.2.0",
+    "version": "0.3.0",
+    "description": "GrappBox API documentation",
     "title": "Grappbox API documentation",
     "url" : "http://api.grappbox.com"
 }

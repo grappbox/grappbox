@@ -392,7 +392,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @api {get} /0.3/account/logout Logout
 	* @apiName logout
 	* @apiGroup AccountAdministration
-	* @apiDescription unvalid user's token
+	* @apiDescription Log out user
 	* @apiVersion 0.3.0
 	*
 	* @apiHeader {string} Authorization user's authentication token
