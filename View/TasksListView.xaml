@@ -1,0 +1,68 @@
+﻿<Page
+    x:Class="GrappBox.View.TasksListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:slideMenu="using:GrappBox.CustomControler.SlidingMenu"
+    xmlns:valueconverter="using:GrappBox.ViewModel"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:customControler="using:GrappBox.CustomControler">
+
+    <Page.BottomAppBar>
+        <CommandBar>
+            <AppBarButton Name="AddTask" Label="Add" Click="Add_Click" Icon="Add"/>
+            <AppBarButton Name="EditTask" Label="Edit" Click="EditTask_Click" Icon="Edit"/>
+            <AppBarButton Name="RemoveTask" Label="Delete" Click="Remove_Click" Icon="Delete"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <slideMenu:SlideInMenuContentControl x:Name="slideInMenuContentControl" PageTitle="Tasks" BarColor="{StaticResource RedGrappBoxBrush}">
+        <Grid Margin="0,0,0,-2">
+            <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+            <ListBox ItemsSource="{Binding TaskList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="taskListView_SelectionChanged">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Background="White">
+                            <StackPanel.Resources>
+                                <valueconverter:DateTimeToStringConverter x:Key="DateConverter"/>
+                            </StackPanel.Resources>
+                            <TextBlock Text="{Binding Title}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="20" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5"/>
+                            <TextBlock Text="{Binding Description}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+                            <ListView ItemsSource="{Binding Tags}" SelectionMode="None" ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <Border Background="Red" Margin="10,5,0,0">
+                                            <TextBlock Text="{Binding Name}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="6"/>
+                                        </Border>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <ListView.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListView.ItemsPanel>
+                            </ListView>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Started date:" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
+                                <TextBlock Text="{Binding StartedAt, Converter={StaticResource DateConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="Due date:" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
+                                <TextBlock Text="{Binding DueDate, Converter={StaticResource DateConverter}}" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="10" Margin="5"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="ListBoxItem">
+                        <Setter Property="Padding" Value="15"></Setter>
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+            </ListBox>
+        </Grid>
+    </slideMenu:SlideInMenuContentControl>
+</Page>
