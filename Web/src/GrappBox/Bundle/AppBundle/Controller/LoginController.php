@@ -19,7 +19,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 
 class LoginController extends Controller
 {
-  private $api_baseURL = "http://api.grappbox.com/";
+  private $api_baseURL = "https://api.grappbox.com/";
   private $api_version = "V0.2";
   private $cookies;
 
