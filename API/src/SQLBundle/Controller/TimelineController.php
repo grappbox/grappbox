@@ -84,12 +84,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	* 	}
 	*
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	* 	{
 	*		"info": {
 	*			"return_code": "11.2.3",
-	*			"return_message": "Timeline - postmessage - Bad ID"
+	*			"return_message": "Timeline - postmessage - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -330,12 +330,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	* 	{
 	*		"info": {
 	*			"return_code": "11.3.3",
-	*			"return_message": "Timeline - editmessage - Bad ID"
+	*			"return_message": "Timeline - editmessage - Bad Token"
   	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -510,12 +510,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"id" : 3
 	*		}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "11.6.3",
-	*			"return_message": "Timeline - archivemessage - Bad ID"
+	*			"return_message": "Timeline - archivemessage - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -681,12 +681,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "11.1.3",
-	*			"return_message": "Timeline - gettimelines - Bad ID"
+	*			"return_message": "Timeline - gettimelines - Bad Token"
 	*		}
 	*	}
 	*/
@@ -852,12 +852,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	* 	{
 	*		"info": {
 	*			"return_code": "11.4.3",
-	*			"return_message": "Timeline - getmessages - Bad ID"
+	*			"return_message": "Timeline - getmessages - Bad Token"
   	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -1083,12 +1083,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "11.5.3",
-	*			"return_message": "Timeline - getlastmessages - Bad ID"
+	*			"return_message": "Timeline - getlastmessages - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1324,12 +1324,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "11.6.3",
-	*			"return_message": "Timeline - getComments - Bad ID"
+	*			"return_message": "Timeline - getComments - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1528,12 +1528,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	* 	{
 	*		"info": {
 	*			"return_code": "11.8.3",
-	*			"return_message": "Timeline - postcomment - Bad ID"
+	*			"return_message": "Timeline - postcomment - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Missing Parameter
@@ -1665,12 +1665,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	* 	{
 	*		"info": {
 	*			"return_code": "11.9.3",
-	*			"return_message": "Timeline - editcomment - Bad ID"
+	*			"return_message": "Timeline - editcomment - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -1777,12 +1777,12 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"id" : 3
 	*		}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "11.10.3",
-	*			"return_message": "Timeline - deleteComment - Bad ID"
+	*			"return_message": "Timeline - deleteComment - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights

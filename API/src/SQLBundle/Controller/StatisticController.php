@@ -73,12 +73,12 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "16.1.3",
-	*			"return_message": "Stat - getAll - Bad ID"
+	*			"return_message": "Stat - getAll - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId
@@ -265,12 +265,12 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "16.2.3",
-	*			"return_message": "Stat - getStat - Bad ID"
+	*			"return_message": "Stat - getStat - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId

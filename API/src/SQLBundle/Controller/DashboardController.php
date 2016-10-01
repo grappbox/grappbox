@@ -99,12 +99,12 @@ class DashboardController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "2.1.3",
-	*	    "return_message": "Dashboard - getteamoccupation - Bad ID"
+	*	    "return_message": "Dashboard - getteamoccupation - Bad Token"
 	*	  }
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -275,12 +275,12 @@ class DashboardController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "2.2.3",
-	*	    "return_message": "Dashboard - getnextmeetings - Bad ID"
+	*	    "return_message": "Dashboard - getnextmeetings - Bad Token"
 	*	  }
 	*	}
 	*
@@ -455,12 +455,12 @@ class DashboardController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "2.3.3",
-	*	    "return_message": "Dashboard - getProjectsGlobalProgress - Bad ID"
+	*	    "return_message": "Dashboard - getProjectsGlobalProgress - Bad Token"
 	*	  }
 	*	}
 	*

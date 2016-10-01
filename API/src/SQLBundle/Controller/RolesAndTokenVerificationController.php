@@ -77,7 +77,7 @@ class RolesAndTokenVerificationController extends Controller
 
 	protected function setBadTokenError($code, $part, $function)
 	{
-		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Bad ID");
+		$ret["info"] = array("return_code" => $code, "return_message" => $part." - ".$function." - Bad Token");
 		$response = new JsonResponse($ret);
 		$response->setStatusCode(JsonResponse::HTTP_UNAUTHORIZED);
 

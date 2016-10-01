@@ -111,12 +111,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.1.3",
-	*			"return_message": "Whiteboard - list - Bad ID"
+	*			"return_message": "Whiteboard - list - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -304,12 +304,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  }
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.2.3",
-	*			"return_message": "Whiteboard - new - Bad ID"
+	*			"return_message": "Whiteboard - new - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -545,12 +545,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  }
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.3.3",
-	*			"return_message": "Whiteboard - open - Bad ID"
+	*			"return_message": "Whiteboard - open - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -771,12 +771,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.4.3",
-	*			"return_message": "Whiteboard - push - Bad ID"
+	*			"return_message": "Whiteboard - push - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -998,12 +998,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  }
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.5.3",
-	*			"return_message": "Whiteboard - pull - Bad ID"
+	*			"return_message": "Whiteboard - pull - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1195,12 +1195,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.6.3",
-	*			"return_message": "Whiteboard - delete - Bad ID"
+	*			"return_message": "Whiteboard - delete - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1362,12 +1362,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"return_message": "Whiteboard - deleteObject - Missing Parameter"
 	*		}
 	*	}
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "10.7.3",
-	*			"return_message": "Whiteboard - deleteObject - Bad ID"
+	*			"return_message": "Whiteboard - deleteObject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: whiteboardId

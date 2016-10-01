@@ -108,12 +108,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.1.3",
-	*			"return_message": "Role - addprojectroles - Bad ID"
+	*			"return_message": "Role - addprojectroles - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -324,12 +324,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.2.3",
-	*			"return_message": "Role - delprojectroles - Bad ID"
+	*			"return_message": "Role - delprojectroles - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -827,12 +827,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.4.3",
-	*			"return_message": "Role - getprojectroles - Bad ID"
+	*			"return_message": "Role - getprojectroles - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1003,12 +1003,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.5.3",
-	*			"return_message": "Role - assignpersontorole - Bad ID"
+	*			"return_message": "Role - assignpersontorole - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1246,12 +1246,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.6.3",
-	*			"return_message": "Role - putpersonrole - Bad ID"
+	*			"return_message": "Role - putpersonrole - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1471,12 +1471,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.7.3",
-	*			"return_message": "Role - getuserroles - Bad ID"
+	*			"return_message": "Role - getuserroles - Bad Token"
 	*		}
 	*	}
 	*/
@@ -1601,12 +1601,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.8.3",
-	*			"return_message": "Role - delpersonrole - Bad ID"
+	*			"return_message": "Role - delpersonrole - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1824,12 +1824,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.9.3",
-	*			"return_message": "Role - getrolebyprojectanduser - Bad ID"
+	*			"return_message": "Role - getrolebyprojectanduser - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1996,12 +1996,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.10.3",
-	*			"return_message": "Role - getusersforrole - Bad ID"
+	*			"return_message": "Role - getusersforrole - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -2169,12 +2169,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "13.11.3",
-	*			"return_message": "Role - getUserRoleForPart - Bad ID"
+	*			"return_message": "Role - getUserRoleForPart - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: userId or projectId

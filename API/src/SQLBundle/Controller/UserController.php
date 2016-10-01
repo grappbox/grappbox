@@ -108,12 +108,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.1.3",
-	*			"return_message": "User - getbasicinformations - Bad ID"
+	*			"return_message": "User - getbasicinformations - Bad Token"
 	*		}
 	*	}
 	*/
@@ -223,12 +223,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.2.3",
-	*			"return_message": "User - getuserbasicinformations - Bad ID"
+	*			"return_message": "User - getuserbasicinformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: userId
@@ -407,12 +407,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.1.3",
-	*			"return_message": "User - putbasicinformations - Bad ID"
+	*			"return_message": "User - putbasicinformations - Bad Token"
 	*		}
 	*	}
 	*/
@@ -618,12 +618,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.4.3",
-	*			"return_message": "User - getidbyname - Bad ID"
+	*			"return_message": "User - getidbyname - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameters
@@ -758,12 +758,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.5.3",
-	*			"return_message": "User - getidbyemail - Bad ID"
+	*			"return_message": "User - getidbyemail - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: email
@@ -867,12 +867,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		},
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.9.3",
-	*			"return_message": "User - getUserAvatar - Bad ID"
+	*			"return_message": "User - getUserAvatar - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: userId
@@ -972,12 +972,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		},
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.9.3",
-	*			"return_message": "User - getAllProjectUserAvatar - Bad ID"
+	*			"return_message": "User - getAllProjectUserAvatar - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId

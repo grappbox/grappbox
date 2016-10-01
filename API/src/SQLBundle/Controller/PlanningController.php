@@ -105,12 +105,12 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "5.1.3",
-	*	    "return_message": "Calendar - getDayPlanning - Bad ID"
+	*	    "return_message": "Calendar - getDayPlanning - Bad Token"
 	*	  }
 	*	}
 	*
@@ -321,12 +321,12 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "5.2.3",
-	*	    "return_message": "Calendar - getWeekPlanning - Bad ID"
+	*	    "return_message": "Calendar - getWeekPlanning - Bad Token"
 	*	  }
 	*	}
 	*
@@ -538,12 +538,12 @@ class PlanningController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "5.3.3",
-	*	    "return_message": "Calendar - getMonthPlanning - Bad ID"
+	*	    "return_message": "Calendar - getMonthPlanning - Bad Token"
 	*	  }
 	*	}
 	*

@@ -120,12 +120,12 @@ class EventController extends RolesAndTokenVerificationController
 	*			"return_message": "Calendar - postEvent - Missing Parameter"
 	*		}
 	* 	}
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "5.4.3",
-	*			"return_message": "Calendar - postEvent - Bad id"
+	*			"return_message": "Calendar - postEvent - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -421,12 +421,12 @@ class EventController extends RolesAndTokenVerificationController
 	*			"return_message": "Calendar - editEvent - Missing Parameter"
 	*		}
 	* 	}
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "5.5.3",
-	*			"return_message": "Calendar - editEvent - Bad id"
+	*			"return_message": "Calendar - editEvent - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -718,12 +718,12 @@ class EventController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "5.6.3",
-	*			"return_message": "Calendar - delEvent - Bad id"
+	*			"return_message": "Calendar - delEvent - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Insufficient Rights
@@ -880,12 +880,12 @@ class EventController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token:
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
 	*	{
 	*	  "info": {
 	*	    "return_code": "5.2.3",
-	*	    "return_message": "Calendar - getEvent - Bad ID"
+	*	    "return_message": "Calendar - getEvent - Bad Token"
 	*	  }
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -1102,12 +1102,12 @@ class EventController extends RolesAndTokenVerificationController
 	*			"return_message": "Calendar - setParticipants - Missing Parameter"
 	*		}
 	* 	}
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "5.3.3",
-	*			"return_message": "Calendar - setParticipants - Bad id"
+	*			"return_message": "Calendar - setParticipants - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: eventId

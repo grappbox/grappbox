@@ -74,12 +74,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		"data": {}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "15.1.3",
-	*			"return_message": "Notification - registerDevice - Bad ID"
+	*			"return_message": "Notification - registerDevice - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -200,12 +200,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "15.2.3",
-	*			"return_message": "Notification - unregisterDevice - Bad ID"
+	*			"return_message": "Notification - unregisterDevice - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -330,12 +330,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "15.3.3",
-	*			"return_message": "Notification - getuserdevices - Bad ID"
+	*			"return_message": "Notification - getuserdevices - Bad Token"
 	*		}
 	*	}
 	*/
@@ -481,12 +481,12 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "15.4.3",
-	*			"return_message": "Notification - getNotifications - Bad ID"
+	*			"return_message": "Notification - getNotifications - Bad Token"
 	*		}
 	*	}
 	*/

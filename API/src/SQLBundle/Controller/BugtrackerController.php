@@ -106,12 +106,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.2.3",
-	*			"return_message": "Bugtracker - postTicket - Bad id"
+	*			"return_message": "Bugtracker - postTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: projectId
@@ -424,12 +424,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.3.3",
-	*			"return_message": "Bugtracker - editTicket - Bad id"
+	*			"return_message": "Bugtracker - editTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: bugId
@@ -731,12 +731,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.8.3",
-	*			"return_message": "Bugtracker - closeTicket - Bad id"
+	*			"return_message": "Bugtracker - closeTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -870,12 +870,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.25.3",
-	*			"return_message": "Bugtracker - deleteTicket - Bad id"
+	*			"return_message": "Bugtracker - deleteTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -946,12 +946,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.23.3",
-	*			"return_message": "Bugtracker - reopenTicket - Bad id"
+	*			"return_message": "Bugtracker - reopenTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -1131,12 +1131,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.1.3",
-	*			"return_message": "Bugtracker - getTicket - Bad id"
+	*			"return_message": "Bugtracker - getTicket - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -1361,12 +1361,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*  }
 	* }
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.9.3",
-	*			"return_message": "Bugtracker - getTickets - Bad id"
+	*			"return_message": "Bugtracker - getTickets - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -1632,12 +1632,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.22.3",
-	*			"return_message": "Bugtracker - getClosedTickets - Bad id"
+	*			"return_message": "Bugtracker - getClosedTickets - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -1907,12 +1907,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.10.3",
-	*			"return_message": "Bugtracker - getLastTickets - Bad id"
+	*			"return_message": "Bugtracker - getLastTickets - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -2184,12 +2184,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.11.3",
-	*			"return_message": "Bugtracker - getLastClosedTickets - Bad id"
+	*			"return_message": "Bugtracker - getLastClosedTickets - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -2453,12 +2453,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.12.3",
-	*			"return_message": "Bugtracker - getTicketsByUser - Bad id"
+	*			"return_message": "Bugtracker - getTicketsByUser - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -2961,12 +2961,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - setParticipants - Missing Parameter"
 	*		}
 	* 	}
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.7.3",
-	*			"return_message": "Bugtracker - setParticipants - Bad id"
+	*			"return_message": "Bugtracker - setParticipants - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: bugId
@@ -3256,12 +3256,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.4.3",
-	*			"return_message": "Bugtracker - getComments - Bad id"
+	*			"return_message": "Bugtracker - getComments - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: ticketId
@@ -3452,12 +3452,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.5.3",
-	*			"return_message": "Bugtracker - postComments - Bad id"
+	*			"return_message": "Bugtracker - postComments - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: parentId
@@ -3679,12 +3679,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.6.3",
-	*			"return_message": "Bugtracker - editComments - Bad id"
+	*			"return_message": "Bugtracker - editComments - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: projectId
@@ -3856,12 +3856,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "4.24.3",
-	*			"return_message": "Bugtracker - deleteComment - Bad id"
+	*			"return_message": "Bugtracker - deleteComment - Bad Token"
 	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: id
@@ -3955,12 +3955,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.15.3",
-	*			"return_message": "Bugtracker - tagCreation - Bad ID"
+	*			"return_message": "Bugtracker - tagCreation - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -4132,12 +4132,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.16.3",
-	*			"return_message": "Bugtracker - tagUpdate - Bad ID"
+	*			"return_message": "Bugtracker - tagUpdate - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -4298,12 +4298,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.17.3",
-	*			"return_message": "Bugtracker - tagInformations - Bad Id"
+	*			"return_message": "Bugtracker - tagInformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -4415,12 +4415,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.18.3",
-	*			"return_message": "Bugtracker - deleteTag - Bad Id"
+	*			"return_message": "Bugtracker - deleteTag - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -4555,12 +4555,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.19.3",
-	*			"return_message": "Bugtracker - assignTagToBug - Bad ID"
+	*			"return_message": "Bugtracker - assignTagToBug - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -4762,12 +4762,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.20.3",
-	*			"return_message": "Bugtracker - removeTagToBug - Bad ID"
+	*			"return_message": "Bugtracker - removeTagToBug - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -4937,12 +4937,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "4.21.3",
-	*			"return_message": "Bugtracker - getProjectTags - Bad ID"
+	*			"return_message": "Bugtracker - getProjectTags - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights

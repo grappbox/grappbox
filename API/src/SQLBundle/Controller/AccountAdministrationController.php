@@ -70,12 +70,12 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			}
  	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "14.4.3",
-	*			"return_message": "AccountAdministration - clientlogin - Bad id"
+	*			"return_message": "AccountAdministration - clientlogin - Bad Token"
 	*		}
 	* 	}
 	*
@@ -414,12 +414,12 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			}
 	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "14.2.3",
-	*			"return_message": "AccountAdministration - logout - Bad id"
+	*			"return_message": "AccountAdministration - logout - Bad Token"
 	*		}
 	* 	}
 	*

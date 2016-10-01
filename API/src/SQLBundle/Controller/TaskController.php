@@ -333,12 +333,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.1.3",
-	*			"return_message": "Task - taskcreation - Bad ID"
+	*			"return_message": "Task - taskcreation - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -1222,12 +1222,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.2.3",
-	*			"return_message": "Task - taskupdate - Bad ID"
+	*			"return_message": "Task - taskupdate - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -2228,12 +2228,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.3.3",
-	*			"return_message": "Task - taskinformations - Bad ID"
+	*			"return_message": "Task - taskinformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -2499,12 +2499,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.4.3",
-	*			"return_message": "Task - archivetask - Bad ID"
+	*			"return_message": "Task - archivetask - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -2648,12 +2648,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.5.3",
-	*			"return_message": "Task - taskdelete - Bad ID"
+	*			"return_message": "Task - taskdelete - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -2789,12 +2789,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.8.3",
-	*			"return_message": "Task - tagcreation - Bad ID"
+	*			"return_message": "Task - tagcreation - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -2966,12 +2966,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.9.3",
-	*			"return_message": "Task - tagupdate - Bad ID"
+	*			"return_message": "Task - tagupdate - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -3132,12 +3132,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.10.3",
-	*			"return_message": "Task - taginformations - Bad ID"
+	*			"return_message": "Task - taginformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -3250,12 +3250,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.11.3",
-	*			"return_message": "Task - deletetag - Bad ID"
+	*			"return_message": "Task - deletetag - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -3497,12 +3497,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.14.3",
-	*			"return_message": "Task - getprojecttasks - Bad ID"
+	*			"return_message": "Task - getprojecttasks - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -3791,12 +3791,12 @@ class TaskController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "12.15.3",
-	*			"return_message": "Task - getprojecttags - Bad ID"
+	*			"return_message": "Task - getprojecttags - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights

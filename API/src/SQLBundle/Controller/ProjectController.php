@@ -138,12 +138,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.1.3",
-	*			"return_message": "Project - projectcreation - Bad ID"
+	*			"return_message": "Project - projectcreation - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -456,12 +456,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.2.3",
-	*			"return_message": "Project - updateinformations - Bad ID"
+	*			"return_message": "Project - updateinformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -774,12 +774,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.3.3",
-	*			"return_message": "Project - getinformations - Bad ID"
+	*			"return_message": "Project - getinformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -913,12 +913,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.4.3",
-	*			"return_message": "Project - delproject - Bad ID"
+	*			"return_message": "Project - delproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1033,12 +1033,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.5.3",
-	*			"return_message": "Project - retrieveproject - Bad ID"
+	*			"return_message": "Project - retrieveproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1175,12 +1175,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.6.3",
-	*			"return_message": "Project - generatecustomeraccess - Bad ID"
+	*			"return_message": "Project - generatecustomeraccess - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -1379,12 +1379,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.8.3",
-	*			"return_message": "Project - getcustomeraccessbyproject - Bad ID"
+	*			"return_message": "Project - getcustomeraccessbyproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId
@@ -1527,12 +1527,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.9.3",
-	*			"return_message": "Project - delcustomeraccess - Bad ID"
+	*			"return_message": "Project - delcustomeraccess - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -1664,12 +1664,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.10.3",
-	*			"return_message": "Project - addusertoproject - Bad ID"
+	*			"return_message": "Project - addusertoproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -1880,12 +1880,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.11.3",
-	*			"return_message": "Project - removeuserconnected - Bad ID"
+	*			"return_message": "Project - removeuserconnected - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId
@@ -1989,12 +1989,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.12.3",
-	*			"return_message": "Project - removeusertoproject - Bad ID"
+	*			"return_message": "Project - removeusertoproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -2198,12 +2198,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.13.3",
-	*			"return_message": "Project - getusertoproject - Bad ID"
+	*			"return_message": "Project - getusertoproject - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -2337,12 +2337,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.14.3",
-	*			"return_message": "Project - changeprojectcolor - Bad ID"
+	*			"return_message": "Project - changeprojectcolor - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Missing Parameters
@@ -2475,12 +2475,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.15.3",
-	*			"return_message": "Project - resetprojectcolor - Bad ID"
+	*			"return_message": "Project - resetprojectcolor - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -2596,12 +2596,12 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		},
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "6.16.3",
-	*			"return_message": "Project - getProjectLogo - Bad ID"
+	*			"return_message": "Project - getProjectLogo - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
