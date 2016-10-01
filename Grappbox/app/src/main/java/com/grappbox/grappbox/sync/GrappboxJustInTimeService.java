@@ -827,7 +827,6 @@ public class GrappboxJustInTimeService extends IntentService {
                 }
                 else {
                     JSONArray bugsData = json.getJSONObject("data").getJSONArray("array");
-                    Log.d(LOG_TAG, "BugData length : " + bugsData.length());
 
                     if (bugsData.length() != 0){
 
@@ -865,6 +864,8 @@ public class GrappboxJustInTimeService extends IntentService {
                             if (bugUri == null)
                                 continue;
                             long bugId = Long.parseLong(bugUri.getLastPathSegment());
+                            if (bugId < 0)
+                                continue;
                             Intent syncComments = new Intent(this, GrappboxJustInTimeService.class);
                             syncComments.setAction(ACTION_SYNC_BUG_COMMENT);
                             syncComments.putExtra(EXTRA_PROJECT_ID, localPID);

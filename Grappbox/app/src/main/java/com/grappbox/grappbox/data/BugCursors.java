@@ -36,9 +36,7 @@ public class BugCursors {
 
         sBugWithAssignationBuilder = new SQLiteQueryBuilder();
         sBugWithAssignationBuilder.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugAssignationEntry.TABLE_NAME +
-        " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID +
-        " INNER JOIN " + UserEntry.TABLE_NAME +
-        " ON " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_USER_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
+        " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID);
 
         sBugWithTag = new SQLiteQueryBuilder();
         sBugWithTag.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugTagEntry.TABLE_NAME +

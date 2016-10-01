@@ -1,95 +1,133 @@
 package com.grappbox.grappbox.adapter;
 
+import android.app.Activity;
 import android.content.Context;
-import android.database.Cursor;
-import android.os.AsyncTask;
-import android.os.Trace;
-import android.support.annotation.NonNull;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v7.widget.AppCompatTextView;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
-import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
+import com.grappbox.grappbox.model.BugModel;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * Created by marcw on 17/09/2016.
  */
-public class BugListAdapter extends CursorAdapter {
+public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+    boolean showLoadingMore = false;
 
-    public static final String[] projection = new String[]{
-            BugEntry.TABLE_NAME + "." + BugEntry._ID + " AS _id",
-            BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
-            BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC,
-            BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
-            BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID
-    };
+    private Activity mContext;
+    private List<BugModel> mDataset;
+    private LayoutInflater inflater;
 
-    public static final int COLUMN_BUG_ID = 0;
-    public static final int COLUMN_TITLE = 1;
-    public static final int COLUMN_DELETED_UTC = 2;
-    public static final int COLUMN_LAST_EDIT_UTC = 3;
-    private static final String LOG_TAG = BugListAdapter.class.getSimpleName();
+    public static final int TYPE_BUG_ENTRY = 0;
 
-    private Context mContext;
+    public BugListAdapter(Activity context){
+        super();
+        mContext = context;
+        mDataset = new ArrayList<>(0);
+        inflater = LayoutInflater.from(context);
+    }
 
-    public static class BugEntryViewHolder{
-        ImageView mAvatar;
-        TextView mTitle, mDateStatus, mNbAssignee, mNbComments;
-        LinearLayout mTagContainer;
+    private RecyclerView.ViewHolder createBugEntryHolder(ViewGroup parent){
+        final BugHolder holder = new BugHolder(inflater.inflate(R.layout.list_item_bugtracker_list, parent, false), parent);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
 
-        public BugEntryViewHolder(View v){
-            mAvatar = (ImageView) v.findViewById(R.id.avatar);
-            mTitle = (TextView) v.findViewById(R.id.title);
-            mDateStatus = (TextView) v.findViewById(R.id.date_status);
-            mNbAssignee = (TextView) v.findViewById(R.id.nb_assignees);
-            mNbComments = (TextView) v.findViewById(R.id.nb_comments);
-            //mTagContainer = (LinearLayout) v.findViewById(R.id.tag_container);
+            }
+        });
+        return holder;
+    }
+
+
+    public void add(BugModel item){
+        mDataset.add(item);
+        notifyDataSetChanged();
+    }
+
+    public void add(Collection<? extends BugModel> items){
+        mDataset.addAll(items);
+        notifyDataSetChanged();
+    }
+
+    @Override
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        switch (viewType){
+            case TYPE_BUG_ENTRY:
+                return createBugEntryHolder(parent);
+        }
+        return null;
+    }
+
+    public void bindBugEntry(BugModel item, BugHolder holder){
+        holder.title.setText(item.title);
+        holder.desc.setText(item.desc);
+        holder.assignee.setText(String.valueOf(item.assigneeCount));
+        holder.comments.setText(String.valueOf(item.commentsCount));
+        for (Pair<String, String> tag : item.tags){
+            View tagView = inflater.inflate(R.layout.list_item_bugtracker_tagitem, holder.parent, false);
+            ((TextView)tagView.findViewById(R.id.tagname)).setText(tag.first);
+            holder.tagContainer.addView(tagView);
         }
     }
 
-    public BugListAdapter(Context context, Cursor c, int flags) {
-        super(context, c, flags);
-        mContext = context;
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        switch(getItemViewType(position)){
+            case TYPE_BUG_ENTRY:
+                bindBugEntry(getItemAt(position), (BugHolder) holder);
+                break;
+        }
+    }
+
+    public BugModel getItemAt(int position){
+        return mDataset.get(position);
     }
 
     @Override
-    public View newView(Context context, Cursor cursor, ViewGroup viewGroup) {
-
-        View v = LayoutInflater.from(context).inflate(R.layout.list_item_bugtracker_list, viewGroup, false);
-
-        BugEntryViewHolder vh = new BugEntryViewHolder(v);
-        v.setTag(vh);
-
-        return v;
+    public int getItemViewType(int position){
+        return TYPE_BUG_ENTRY;
     }
 
     @Override
-    public void bindView(View view, Context context, Cursor cursor) {
-        Trace.beginSection("Bind view #" + cursor.getPosition());
-        BugEntryViewHolder vh = (BugEntryViewHolder) view.getTag();
-        boolean isClosed = !cursor.isNull(COLUMN_DELETED_UTC);
+    public int getItemCount() {
+        return mDataset.size();
+    }
 
+    public boolean isEmpty() {
+        return mDataset.isEmpty();
+    }
 
-        Date date = null;
-        try {
-            String title = cursor.getString(COLUMN_TITLE);
-            date = Utils.Date.convertUTCToPhone(cursor.getString(isClosed ? COLUMN_DELETED_UTC : COLUMN_LAST_EDIT_UTC));
-            vh.mTitle.setText(title.isEmpty() ? "Sans titre" : title);
-            vh.mDateStatus.setText(mContext.getString(R.string.bug_status_date, mContext.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance().format(date)));
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } finally {
-            Trace.endSection();
+    public void clear() {
+        mDataset.clear();
+        notifyDataSetChanged();
+    }
+
+    private static class BugHolder extends RecyclerView.ViewHolder{
+        TextView title, desc, assignee, comments;
+        LinearLayout tagContainer;
+        ViewGroup parent;
+
+         BugHolder(View itemView, ViewGroup root) {
+            super(itemView);
+            title = (TextView) itemView.findViewById(R.id.title);
+            desc = (TextView) itemView.findViewById(R.id.date_status);
+            assignee = (TextView) itemView.findViewById(R.id.nb_assignees);
+            comments = (TextView) itemView.findViewById(R.id.nb_comments);
+            tagContainer = (LinearLayout) itemView.findViewById(R.id.tag_container);
+            parent = root;
         }
     }
 

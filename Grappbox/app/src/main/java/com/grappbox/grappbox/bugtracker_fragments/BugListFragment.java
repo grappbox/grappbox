@@ -4,45 +4,47 @@ package com.grappbox.grappbox.bugtracker_fragments;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.StrictMode;
+import android.os.SystemClock;
 import android.os.Trace;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.view.AsyncLayoutInflater;
+import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.AdapterDataObserver;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.CursorAdapter;
-import android.widget.ListView;
+import android.widget.ProgressBar;
 
-import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.BugListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.data.GrappboxContract.BugAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
-import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
+import java.util.Collection;
+import java.util.HashSet;
+
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BugListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener, AsyncLayoutInflater.OnInflateFinishedListener {
+public class BugListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String ARG_LIST_TYPE = "com.grappbox.grappbox.bugtracker_fragment.ARG_LIST_TYPE";
     public static final int TYPE_OPEN = 0;
@@ -51,9 +53,10 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     private static final String LOG_TAG = BugListFragment.class.getSimpleName();
 
     private BugListAdapter mAdapter;
-    private ListView mBuglist;
+    private RecyclerView mBuglist;
     private SwipeRefreshLayout mRefresher;
     private RefreshReceiver mRefreshReceiver = null;
+    private ProgressBar mLoader;
 
     public BugListFragment() {
         // Required empty public constructor
@@ -63,27 +66,38 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-
+        if (savedInstanceState == null)
+            getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
+        else
+            getLoaderManager().restartLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        Trace.beginSection("Create BugList View");
         // Inflate the layout for this fragment
-        new AsyncLayoutInflater(getActivity()).inflate(R.layout.fragment_bug_list, container, this);
-        View v = inflater.inflate(R.layout.activity_critical_error, container, false);
+        mAdapter = new BugListAdapter(getActivity());
+        View v = inflater.inflate(R.layout.fragment_bug_list, container, false);
+        mBuglist = (RecyclerView) v.findViewById(R.id.buglist);
+        mBuglist.setAdapter(mAdapter);
+        mBuglist.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
+        mLoader = (ProgressBar) v.findViewById(R.id.loader);
+        mAdapter.registerAdapterDataObserver(new AdapterObserver());
+
+        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
+        mRefresher.setOnRefreshListener(this);
         Trace.endSection();
         return v;
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection, sortOrder = "datetime("+BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
+        String selection, sortOrder = "datetime(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
-        switch (id){
+        switch (id) {
             case TYPE_OPEN:
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL";
                 selectionArgs = new String[]{
@@ -96,30 +110,45 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                         String.valueOf(lpid)
                 };
                 break;
+
             case TYPE_YOURS:
+                String[] projection = {
+                    BugEntry.TABLE_NAME + "." + BugEntry._ID,
+                    BugEntry.COLUMN_GRAPPBOX_ID,
+                    BugEntry.COLUMN_TITLE,
+                    BugEntry.COLUMN_DESCRIPTION,
+                    BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
+                    BugEntry.COLUMN_DATE_DELETED_UTC
+                };
                 long uid = Long.parseLong(AccountManager.get(getActivity()).getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-                Log.d(LOG_TAG, "UID = " + uid);
+
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL AND " +
-                        UserEntry.TABLE_NAME + "." + UserEntry._ID + "=?";
+                        GrappboxContract.BugAssignationEntry.TABLE_NAME + "." + GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
                         String.valueOf(uid)
                 };
-                return new CursorLoader(getActivity(), BugEntry.buildBugWithAssignation(), BugListAdapter.projection, selection, selectionArgs, sortOrder);
+                return new CursorLoader(getActivity(), BugEntry.buildBugWithAssignation(), projection, selection, selectionArgs, sortOrder);
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-        return new CursorLoader(getActivity(), BugEntry.CONTENT_URI, BugListAdapter.projection, selection, selectionArgs, sortOrder);
+        return new CursorLoader(getActivity(), BugEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        mAdapter.swapCursor(data);
+        if (!data.moveToFirst())
+            return;
+        Collection<BugModel> models = new HashSet<>();
+        do {
+            models.add(new BugModel(getActivity(), data));
+        } while (data.moveToNext());
+        AdditionalDataLoader task = new AdditionalDataLoader();
+        task.execute(models);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
     }
 
     @Override
@@ -137,18 +166,70 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         getActivity().startService(bugSync);
     }
 
-    @Override
-    public void onInflateFinished(View view, int resid, ViewGroup parent) {
-        Log.d(LOG_TAG, "onInflatedFinished");
-        mBuglist = (ListView) view.findViewById(R.id.buglist);
-        mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
-        mAdapter = new BugListAdapter(getActivity(), null, 0);
-        mBuglist.setAdapter(mAdapter);
-        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
-        mRefresher.setOnRefreshListener(this);
-        getLoaderManager().initLoader(0, getArguments(), this);
+    class AdapterObserver extends AdapterDataObserver{
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            if (!mAdapter.isEmpty()){
+                mLoader.setVisibility(View.GONE);
+                mRefresher.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
-        ((ViewGroup)getView()).removeViewAt(0);
-        ((ViewGroup)getView()).addView(view);
+    private class AdditionalDataLoader extends AsyncTask<Collection<BugModel>, Void, Collection<BugModel>>{
+
+        @SafeVarargs
+        @Override
+        protected final Collection<BugModel> doInBackground(Collection<BugModel>... params) {
+            if (params == null || params.length < 1)
+                throw new IllegalArgumentException();
+            String[] projectionAssignee = {
+                GrappboxContract.BugAssignationEntry._ID
+            };
+            String selectionAssignee = GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID+"=?";
+            String[] projectionComments = {
+                    BugEntry.COLUMN_GRAPPBOX_ID
+            };
+            String selectionComments = BugEntry.COLUMN_LOCAL_PARENT_ID + "=?";
+            String[] projectionTags = {
+                    GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry.COLUMN_NAME
+            };
+            String selectionTags = GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=?";
+            for (BugModel model : params[0]){
+                String[] args = {
+                        String.valueOf(model._id)
+                };
+                long countAssignee = 0, countComments = 0;
+                Cursor resultAssignee = getActivity().getContentResolver().query(GrappboxContract.BugAssignationEntry.CONTENT_URI, projectionAssignee, selectionAssignee, args, null);
+                if (resultAssignee != null){
+                    countAssignee = resultAssignee.getCount();
+                    resultAssignee.close();
+                }
+                Cursor resultComments = getActivity().getContentResolver().query(GrappboxContract.BugEntry.CONTENT_URI, projectionComments, selectionComments, args, null);
+                if (resultComments != null && resultComments.moveToFirst()){
+                    countComments = resultComments.getCount();
+                    resultComments.close();
+                }
+
+                Cursor resultTags = getActivity().getContentResolver().query(GrappboxContract.BugEntry.buildBugWithTag(), projectionTags, selectionTags, args, null);
+                Collection<Pair<String, String>> tags = new HashSet<>();
+                if (resultTags != null && resultTags.moveToFirst()){
+                    do{
+                        tags.add(new Pair<>(resultTags.getString(0), Integer.toHexString(ContextCompat.getColor(getActivity(), R.color.GrappPurple))));
+                    } while (resultTags.moveToNext());
+                    resultTags.close();
+                }
+                model.setAdditionalData(countAssignee, countComments, tags);
+            }
+            return params[0];
+        }
+
+        @Override
+        protected void onPostExecute(Collection<BugModel> data) {
+            super.onPostExecute(data);
+            mAdapter.clear();
+            mAdapter.add(data);
+        }
     }
 }

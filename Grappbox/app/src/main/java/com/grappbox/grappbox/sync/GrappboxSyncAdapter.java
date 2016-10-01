@@ -451,6 +451,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
 
         AccountManager am = AccountManager.get(getContext());
+        am.invalidateAuthToken(getContext().getString(R.string.sync_account_type), Utils.Account.getAuthTokenService(getContext(), account));
         Calendar today = Calendar.getInstance();
         Calendar dateExpiration = Calendar.getInstance();
         Cursor projectsCursor = null;

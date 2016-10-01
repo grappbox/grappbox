@@ -28,5 +28,8 @@
         android:layout_margin="@dimen/fab_margin"
         android:src="@android:drawable/ic_input_add"
         android:tint="@color/GrappWhiteLight"
-        app:backgroundTint="@color/GrappPurple" />
+        app:backgroundTint="@color/GrappPurple"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"/>
 </android.support.design.widget.CoordinatorLayout>

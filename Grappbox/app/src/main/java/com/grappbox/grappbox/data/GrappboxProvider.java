@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 
@@ -557,9 +558,9 @@ public class GrappboxProvider extends ContentProvider {
 
         //Pre-detect conflict and handle with update method
         if (contentValues.containsKey(GrappboxContract.GENERAL_GRAPPBOX_ID)){
-
             Cursor value = query(uri, new String[]{ getTableName(uri) + "." + BaseColumns._ID}, getTableName(uri) + "." + GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
             if (value != null && value.moveToFirst()){
+                Log.d("GProvider", "Conflict detected with : " + uri + " (" + contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID) + ")");
                 Uri newUri = uri.buildUpon().appendPath(String.valueOf(value.getLong(0))).build();
                 update(uri, contentValues, BaseColumns._ID + "=?", new String[]{String.valueOf(value.getLong(0))});
                 value.close();
