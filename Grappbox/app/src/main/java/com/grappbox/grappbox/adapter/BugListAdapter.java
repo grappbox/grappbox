@@ -72,15 +72,19 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     }
 
     public void bindBugEntry(BugModel item, BugHolder holder){
+        boolean tagPassed = false;
         holder.title.setText(item.title);
         holder.desc.setText(item.desc);
         holder.assignee.setText(String.valueOf(item.assigneeCount));
         holder.comments.setText(String.valueOf(item.commentsCount));
+
         for (Pair<String, String> tag : item.tags){
+            tagPassed = true;
             View tagView = inflater.inflate(R.layout.list_item_bugtracker_tagitem, holder.parent, false);
             ((TextView)tagView.findViewById(R.id.tagname)).setText(tag.first);
             holder.tagContainer.addView(tagView);
         }
+        holder.tagContainer.setVisibility(tagPassed ? View.VISIBLE : View.GONE);
     }
 
     @Override
