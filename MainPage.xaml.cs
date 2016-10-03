@@ -1,7 +1,4 @@
-﻿using GrappBox.ApiCom;
-using GrappBox.Ressources;
-using GrappBox.ViewModel;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -22,10 +19,20 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
+using Grappbox.HttpRequest;
+using Grappbox.Resources;
+using System.Net.NetworkInformation;
+using Windows.Networking.Connectivity;
+using Windows.Networking.NetworkOperators;
+using Windows.System.Profile;
+using Windows.Storage.Streams;
+using Windows.Security.Cryptography.Core;
+using Windows.Security.Cryptography;
+using Grappbox.Utils;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace GrappBox
+namespace Grappbox
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
@@ -53,11 +60,14 @@ namespace GrappBox
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            ApiCommunication api = ApiCommunication.Instance;
+            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("login", loginBlock.Text);
             props.Add("password", pwdBlock.Password);
-            HttpResponseMessage res = await api.Post(props, "accountadministration/login");
+            props.Add("mac", SystemInformation.GetUniqueIdentifier());
+            props.Add("flag", "wph");
+            props.Add("device_name", "WindowsPhone");
+            HttpResponseMessage res = await api.Post(props, "account/login");
             if (res.IsSuccessStatusCode)
             {
                 api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
@@ -67,7 +77,7 @@ namespace GrappBox
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
 
-                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
+//                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
             }
             else {
                 LoadingBar.IsEnabled = false;

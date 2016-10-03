@@ -10,7 +10,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace GrappBox.Model.Global
+namespace Grappbox.Model
 {
     public static class BytesToImage
     {
@@ -42,7 +42,7 @@ namespace GrappBox.Model.Global
         public static BitmapImage GetDefaultLogo()
         {
             BitmapImage bmi = new BitmapImage();
-            Uri uri = new Uri("ms-appx:///Assets/grappbox-logo.png");
+            Uri uri = new Uri("ms-appx:///Assets/Grappbox-logo.png");
             bmi.UriSource = uri;
             return bmi;
         }

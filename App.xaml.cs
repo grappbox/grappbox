@@ -1,8 +1,6 @@
-﻿using GrappBox.Ressources;
-using GrappBox.View;
+﻿using Grappbox.View;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -10,51 +8,36 @@ using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
-using Windows.UI;
-using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 
-// Pour plus d'informations sur le modèle Application vide, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
-
-namespace GrappBox
+namespace Grappbox
 {
     /// <summary>
-    /// Fournit un comportement spécifique à l'application afin de compléter la classe Application par défaut.
+    /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
-    public sealed partial class App : Application
+    sealed partial class App : Application
     {
-        private TransitionCollection transitions;
-
         /// <summary>
-        /// Initialise l'objet d'application de singleton.  Il s'agit de la première ligne du code créé
-        /// à être exécutée. Elle correspond donc à l'équivalent logique de main() ou WinMain().
+        /// Initializes the singleton application object.  This is the first line of authored code
+        /// executed, and as such is the logical equivalent of main() or WinMain().
         /// </summary>
         public App()
         {
             this.InitializeComponent();
-            this.UnhandledException += App_UnhandledException;
-            this.Suspending += this.OnSuspending;
-        }
-
-        private void App_UnhandledException(object sender, UnhandledExceptionEventArgs e)
-        {
-            Debug.WriteLine("ExceptionStackTrace {0}", e.Exception.StackTrace);
-            e.Handled = true;
+            this.Suspending += OnSuspending;
         }
 
         /// <summary>
-        /// Invoqué lorsque l'application est lancée normalement par l'utilisateur final.  D'autres points d'entrée
-        /// sont utilisés lorsque l'application est lancée pour ouvrir un fichier spécifique, pour afficher
-        /// des résultats de recherche, etc.
+        /// Invoked when the application is launched normally by the end user.  Other entry points
+        /// will be used such as when the application is launched to open a specific file.
         /// </summary>
-        /// <param name="e">Détails concernant la requête et le processus de lancement.</param>
+        /// <param name="e">Details about the launch request and process.</param>
         protected override void OnLaunched(LaunchActivatedEventArgs e)
         {
 #if DEBUG
@@ -63,92 +46,61 @@ namespace GrappBox
                 this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            if (SettingsManager.OptionExist("ProjectIdChoosen") == true)
-                SettingsManager.setOption("ProjectIdChoosen", -1);
-            Debug.WriteLine("ID = {0}", SettingsManager.getOption("ProjectIdChoosen"));
-            if (SettingsManager.OptionExist("ProjectNameChoosen") == true)
-                SettingsManager.setOption("ProjectNameChoosen", null);/*
-            StatusBar statusBar = Windows.UI.ViewManagement.StatusBar.GetForCurrentView();
-            statusBar.BackgroundColor = (Color)App.Current.Resources["RedGrappBox"];
-            statusBar.ForegroundColor = (Color)App.Current.Resources["LightWhiteGrappBox"];
-            statusBar.BackgroundOpacity = 1;*/
-
             Frame rootFrame = Window.Current.Content as Frame;
 
-            // Ne répétez pas l'initialisation de l'application lorsque la fenêtre comporte déjà du contenu,
-            // assurez-vous juste que la fenêtre est active
+            // Do not repeat app initialization when the Window already has content,
+            // just ensure that the window is active
             if (rootFrame == null)
             {
-                // Créez un Frame utilisable comme contexte de navigation et naviguez jusqu'à la première page
+                // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
 
-                // TODO: modifier cette valeur à une taille de cache qui contient à votre application
-                rootFrame.CacheSize = 5;
-
-                // Définir la page par défaut
-                rootFrame.Language = Windows.Globalization.ApplicationLanguages.Languages[0];
+                rootFrame.NavigationFailed += OnNavigationFailed;
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
-                    // TODO: chargez l'état de l'application précédemment suspendue
+                    //TODO: Load state from previously suspended application
                 }
 
-                // Placez le frame dans la fenêtre active
+                // Place the frame in the current Window
                 Window.Current.Content = rootFrame;
             }
 
-            if (rootFrame.Content == null)
+            if (e.PrelaunchActivated == false)
             {
-                // Supprime la navigation tourniquet pour le démarrage.
-                if (rootFrame.ContentTransitions != null)
+                if (rootFrame.Content == null)
                 {
-                    this.transitions = new TransitionCollection();
-                    foreach (var c in rootFrame.ContentTransitions)
-                    {
-                        this.transitions.Add(c);
-                    }
+                    // When the navigation stack isn't restored navigate to the first page,
+                    // configuring the new page by passing required information as a navigation
+                    // parameter
+                    rootFrame.Navigate(typeof(GenericDahsboard), e.Arguments);
                 }
-
-                rootFrame.ContentTransitions = null;
-                rootFrame.Navigated += this.RootFrame_FirstNavigated;
-
-                // Quand la pile de navigation n'est pas restaurée, accédez à la première page,
-                // puis configurez la nouvelle page en transmettant les informations requises en tant que
-                // paramètre
-                if (!rootFrame.Navigate(typeof(MainPage), e.Arguments))
-                {
-                    throw new Exception("Failed to create initial page");
-                }
+                // Ensure the current window is active
+                Window.Current.Activate();
             }
-            ApplicationView.GetForCurrentView().SetDesiredBoundsMode(ApplicationViewBoundsMode.UseVisible);
-            // Vérifiez que la fenêtre actuelle est active
-            Window.Current.Activate();
         }
 
         /// <summary>
-        /// Restaure les transitions de contenu une fois l'application lancée.
+        /// Invoked when Navigation to a certain page fails
         /// </summary>
-        /// <param name="sender">Objet où le gestionnaire est attaché.</param>
-        /// <param name="e">Détails sur l'événement de navigation.</param>
-        private void RootFrame_FirstNavigated(object sender, NavigationEventArgs e)
+        /// <param name="sender">The Frame which failed navigation</param>
+        /// <param name="e">Details about the navigation failure</param>
+        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
-            var rootFrame = sender as Frame;
-            rootFrame.ContentTransitions = this.transitions ?? new TransitionCollection() { new NavigationThemeTransition() };
-            rootFrame.Navigated -= this.RootFrame_FirstNavigated;
+            throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }
 
         /// <summary>
-        /// Appelé lorsque l'exécution de l'application est suspendue.  L'état de l'application est enregistré
-        /// sans savoir si l'application pourra se fermer ou reprendre sans endommager
-        /// le contenu de la mémoire.
+        /// Invoked when application execution is being suspended.  Application state is saved
+        /// without knowing whether the application will be terminated or resumed with the contents
+        /// of memory still intact.
         /// </summary>
-        /// <param name="sender">Source de la requête de suspension.</param>
-        /// <param name="e">Détails de la requête de suspension.</param>
+        /// <param name="sender">The source of the suspend request.</param>
+        /// <param name="e">Details about the suspend request.</param>
         private void OnSuspending(object sender, SuspendingEventArgs e)
         {
             var deferral = e.SuspendingOperation.GetDeferral();
-
-            // TODO: enregistrez l'état de l'application et arrêtez toute activité en arrière-plan
+            //TODO: Save application state and stop any background activity
             deferral.Complete();
         }
     }

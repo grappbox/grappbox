@@ -1,5 +1,5 @@
-﻿using GrappBox.ApiCom;
-using GrappBox.Model;
+﻿using Grappbox.HttpRequest;
+using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     class GenericDashboardViewModel : ViewModelBase
     {
@@ -23,9 +23,9 @@ namespace GrappBox.ViewModel
 
         public async Task<bool> getProjectList()
         {
-            ApiCommunication api = ApiCommunication.Instance;
+            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { User.GetUser().Token };
-            HttpResponseMessage res = await api.Get(token, "dashboard/getprojectsglobalprogress");
+            HttpResponseMessage res = await api.Get(token, "dashboard/projects");
             if (res == null)
                 return false;
             if (res.IsSuccessStatusCode)

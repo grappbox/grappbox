@@ -6,23 +6,20 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
-using Microsoft.Xaml.Interactions.Core;
-using Microsoft.Xaml.Interactivity;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.Foundation;
 using System.Diagnostics;
 using Windows.UI.Xaml.Media;
-using GrappBox.CustomControler;
 using Windows.UI.Text;
 using System.IO;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using GrappBox.Model;
+using Grappbox.Model;
 using Windows.UI;
 using System.Globalization;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     public enum MenuEnum
     {
@@ -37,28 +34,6 @@ namespace GrappBox.ViewModel
         BUGTRACKER
     }
     #region Converter
-    public class DateTimeToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            try
-            {
-                DateModel dm = (DateModel)value;
-                DateTime date = dm;
-                return date.ToString(CultureInfo.CurrentCulture);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return "No date";
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return null;
-        }
-    }
     public class OccupationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)
@@ -86,56 +61,6 @@ namespace GrappBox.ViewModel
         public object ConvertBack(object value, Type targetType, object parameter, string language)
         {
             return null;
-        }
-    }
-    public class DateModelToStringConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            if (value != null)
-            {
-                DateModel dm = (DateModel)value;
-                String date = dm.date.Split(' ')[0];
-                String hour = dm.date.Split(' ')[1];
-                hour = hour.Remove(hour.LastIndexOf(':'));
-                String final = "On " + date + " At " + hour;
-                return final;
-            }
-            return null;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            return null;
-        }
-    }
-    public class DateTimeToDateConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, string language)
-        {
-            try
-            {
-                DateTime date = (DateTime)value;
-                return new DateTimeOffset(date);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return DateTimeOffset.MinValue;
-            }
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            try
-            {
-                DateTimeOffset dto = (DateTimeOffset)value;
-                return dto.DateTime;
-            }
-            catch (Exception ex)
-            {
-                return DateTime.MinValue;
-            }
         }
     }
     public class SenderParameterConverter : IValueConverter
@@ -192,49 +117,6 @@ namespace GrappBox.ViewModel
             var element = (FrameworkElement)parameter;
 
             return args.GetPosition(element);
-        }
-
-        public object ConvertBack(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class DoubleInputConverter : IValueConverter
-    {
-        public object Convert(
-        object value,
-        Type targetType,
-        object parameter,
-        string language)
-        {
-            var elem = (BrushPan)parameter;
-            return elem.SelectedThickness;
-        }
-
-        public object ConvertBack(
-            object value,
-            Type targetType,
-            object parameter,
-            string language)
-        {
-            throw new NotImplementedException();
-        }
-    }
-    public class BrushTappedConverter : IValueConverter
-    {
-        public object Convert(
-        object value,
-        Type targetType,
-        object parameter,
-        string language)
-        {
-            var element = (Colorpan)parameter;
-
-            return element.SelectedColor;
         }
 
         public object ConvertBack(
