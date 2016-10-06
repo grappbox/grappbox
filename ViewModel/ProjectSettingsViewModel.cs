@@ -8,9 +8,8 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Text.RegularExpressions;
-using Grappbox.ViewModel;
-using Grappbox.HttpRequest;
-using Grappbox.Resources;
+using GrappBox.HttpRequest;
+using GrappBox.Resources;
 
 namespace GrappBox.ViewModel
 {

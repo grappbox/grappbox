@@ -15,11 +15,11 @@ using System.Collections.ObjectModel;
 using Windows.UI.Popups;
 using Windows.UI.Core;
 using Windows.UI;
-using Grappbox.Resources;
+using GrappBox.Resources;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
-namespace Grappbox.View
+namespace GrappBox.View
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

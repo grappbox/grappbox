@@ -1,10 +1,6 @@
-﻿using Grappbox.Resources;
-using Grappbox.ViewModel;
+﻿using GrappBox.ViewModel;
 using Newtonsoft.Json;
-using System;
-using System.Diagnostics;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.Web.Http;
 
 namespace GrappBox.Model
 {

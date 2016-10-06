@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grappbox
+namespace GrappBox
 {
     public static class DateTimeFormator
     {

@@ -1,23 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
-using Windows.Foundation;
-using System.Diagnostics;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
-using System.IO;
-using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Media.Imaging;
-using GrappBox.Model;
 using Windows.UI;
-using System.Globalization;
 
 namespace GrappBox.ViewModel
 {
