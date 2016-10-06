@@ -10,30 +10,12 @@
 
 {% block body %}
 
-<!-- Navbar -->
-<nav class="navbar navbar-fixed-top navbar-custom navbar-reverse" role="navigation">
-  <div class="container">
-    <div class="navbar-header">
-      <a class="navbar-brand page-scroll" href="/"><img src="resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo">Grapp<span class="red">Box</span></a>
-    </div>
-
-    <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
-      <ul class="nav navbar-nav">
-        <li><a href="/#about">About</a></li>
-        <li><a href="/#services">Services</a></li>
-        <li><a href="/#contact">Contact</a></li>
-        <li><a class="login" href="/login"><i class="material-icons">open_in_new</i>Login</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
 <!-- Register -->
 <div id="register">
   <div class="container">
     <div class="col-md-12 col-sm-12 col-xs-12">
-      <h3 class="well-title">Create account</h3>
-      <div class="well well-lg">
+      <h4 class="well-title"><a class="well-logo" href="/"><img src="/resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo"></a>Create GrappBox account</h4>
+      <div class="well">
         <div class="alert alert-danger" id="form-message">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <p></p>
@@ -71,13 +53,15 @@
           </fieldset>
         {{ form_end(form) }}
       </div>
+      <div class="well text-center">Already registered to GrappBox ?<br><a href="/login"><i class="material-icons">open_in_new</i>Login</a></div>
+      <div class="well-link"><a href="/"><i class="material-icons">keyboard_backspace</i>Back to GrappBox.com</a></div>      
     </div>
   </div>
 </div>
 
 <!-- Footer -->
 <div class="footer footer-reverse footer-fixed">
-  <p>Copyright &copy; GrappBox 2016. All rights reserved.</p>
+  <p>Copyright &copy; GrappBox 2016.<br>All rights reserved.</p>
 </div>
 
 {% endblock %}

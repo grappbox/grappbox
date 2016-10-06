@@ -9,8 +9,7 @@
 /* ================================================= */
 
 html,
-body { width: 100%!important; height: 100%!important; -webkit-font-smoothing: antialiased!important; -moz-osx-font-smoothing: grayscale!important; text-rendering: optimizeLegibility!important; font-feature-settings: 'liga'!important; font-weight: 400; }
-body { background: #f0f0f0; }
+body { width: 100%!important; height: 100%!important; -webkit-font-smoothing: antialiased!important; -moz-osx-font-smoothing: grayscale!important; text-rendering: optimizeLegibility!important; font-feature-settings: 'liga'!important; font-weight: 400; background: #f0f0f0; }
 
 h1 { font-weight: 700; }
 h2 { text-transform: uppercase; line-height: 20px; font-weight: 600; margin: 0; color: #333; }
@@ -22,10 +21,11 @@ h3 { font-size: 20px; }
 h4 { font-size: 18px; }
 
 p { font-size: 14px; }
-a { color: #FC575E; }
+a { color: #333; }
 
-a:hover,
-a:focus { text-decoration: none; color: #44BBFF; }
+a:active,
+a:focus,
+a:hover { text-decoration: none; color: #44BBFF; }
 
 ul,
 ol { list-style: none; }
@@ -39,12 +39,27 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 ::-ms-selection { color: #fff; background: #44BBFF; }
 ::selection { color: #fff; background: #44BBFF; }
 
+.alert.alert-danger { background: #FC575E; }
+.has-error .form-control { border-color: #FC575E; }
+.has-error .help-block,
+.has-error .control-label,
+.has-error .radio,
+.has-error .checkbox,
+.has-error .radio-inline,
+.has-error .checkbox-inline,
+.has-error.radio label,
+.has-error.checkbox label,
+.has-error.radio-inline label,
+.has-error.checkbox-inline label { color: #FC575E; }
+
 .red { color: #FC575E; }
 .yellow { color: #F1C40F; }
 .green { color: #27AE60; }
 .orange { color: #FF9F55; }
 .purple { color: #9E58DC; }
 .blue { color: #44BBFF; }
+
+.btn { font-weight: 400; }
 
 .bg-red { background: #FC575E; }
 .bg-yellow { background: #F1C40F; }
@@ -75,20 +90,24 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .alert { display:none; margin: 0; }
 .alert.show { display: block; }
 .alert p { color: #fafafa; font-weight: 400!important; }
-.alert button.close { color: #fafafa; opacity: 1; font-weight: 400; margin-top: -2px; }
+.alert button.close { color: #fafafa; opacity: 1; font-weight: 400; margin-top: -2px; padding-right: 10px; }
 
-.form-horizontal .form-group { margin: 28px 0 0 0; }
+.form-horizontal .form-group { margin: 20px 0 0 0; }
 .form-group label.control-label { text-align: left; }
 .form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
 .form-group.submit { text-align: right; }
 
-.well-title { background: #666; color: #fafafa; padding: 20px 20px 20px 26px; margin-bottom: -1px; border-radius: 2px; }
-.well.well-lg { margin-bottom: 60px!important; border: 1px solid #bdbdbd; box-shadow: none!important; }
+.well { border: 1px solid #ccc!important; box-shadow: none!important; }
+.well a i,
+.well-link a i { padding-right: 5px; margin-left: -20px; }
+.well-title { background: #666; color: #f0f0f0; padding: 15px 0; margin-bottom: -1px; border-radius: 2px; text-align: center; font-weight: 400; }
+.well-logo { padding-right: 10px; margin-left: -20px; }
+.well-link { text-align: center; }
 
-.well .btn.btn-default { border: 1px solid #666; background: #666; color: #fafafa!important; }
+.well .btn.btn-default { background: #666; color: #fafafa!important; }
 .well .btn.btn-default:active,
 .well .btn.btn-default:hover,
-.well .btn.btn-default:focus { background: #fafafa!important; color: #44BBFF!important; }
+.well .btn.btn-default:focus { color: #fafafa!important; background: #44BBFF!important; }
 
 
 
@@ -112,13 +131,6 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .navbar-custom .nav li a.login:hover,
 .navbar-custom .nav li a.login:focus { background: #fafafa; }
 
-.navbar-reverse { background: #f0f0f0; color: #333; }
-.navbar-reverse .nav li a { color: #333; }
-.navbar-reverse .nav li a.login { background: #f0f0f0; color: #FC575E; height: 60px; }
-.navbar-reverse .nav li a.login:active,
-.navbar-reverse .nav li a.login:hover,
-.navbar-reverse .nav li a.login:focus { background: #FC575E; color: #f0f0f0; }
-
 @media (max-width: 768px) {
 	.navbar .navbar-brand { width: 100%; text-align: center; }
 }
@@ -134,11 +146,11 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== HOME ==================== */
 /* ============================================== */
 
-#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: #333; }
+#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(/resources/img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 #home .home-body { display: table-cell; vertical-align: middle; }
+#home .home-body .container { padding: 100px 0; background: #333; text-align: center; width: 100%!important; }
 #home .home-body h1 { font-size: 88px; font-weight: 700; text-transform: uppercase; }
 #home .home-body .home-text { font-size: 18px; font-weight: 300; }
-#home .home-body .container { padding: 40px 0; border-radius: 6px; }
 
 @media (max-width: 640px) {
 	#home .home-body h1 { font-size: 4em; }
@@ -179,8 +191,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 #about .about-text { margin-left: 10px; }
 #about p { margin-top: 20px; margin-bottom: 30px; }
 #about li i { font-size: 14px; }
-#about img { margin: 0 auto; -webkit-transition: -webkit-transform .8s ease-in-out; -moz-transition: -moz-transform .8s ease-in-out; -o-transition: -o-transform .8s ease-in-out; -ms-transition: -ms-transform .8s ease-in-out;transition: transform .8s ease-in-out; }
-#about img:hover { -webkit-transform: rotate(360deg); -moz-transform: rotate(360deg); -o-transform: rotate(360deg); -ms-transform: rotate(360deg); transform: rotate(360deg); }
+#about img { margin: 0 auto; }
 
 
 
@@ -199,8 +210,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== CONTACT ==================== */
 /* ================================================= */
 
-#separation-home,
-#separation-contact { width: 100%; height: auto; min-height: 420px; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#separation { width: 100%; height: auto; min-height: 420px; background: url(/resources/img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 
 #contact { padding: 60px 0; background: #fafafa; }
 #contact ul li a { display: block; color: #333; transition-duration: .2s; }
@@ -236,11 +246,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 
 .footer { background: #333; color: #cccccc; padding: 20px 0; text-align: center; }
 .footer p { font-size: 14px; padding: 10px; }
-.footer.footer-reverse { background: #f0f0f0; color: #333; }
-
-@media (min-width: 992px) {
-	.footer.footer-fixed { position: absolute; bottom: 0; width: 100%; text-align: center; }
-}
+.footer.footer-reverse { background: #f0f0f0; color: #333; margin: 20px 0; padding: 0; }
 
 
 
@@ -248,7 +254,8 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== LOGIN ==================== */
 /* =============================================== */
 
-#login { width: 100%; min-height: 100%; margin: 0 0 -100px 0; padding-top: 200px; }
+#login { width: 100%; min-height: 95%; margin: 0 0 -100px 0; padding-top: 5%; }
+#login .submit { text-align: center; }
 
 
 
@@ -256,16 +263,12 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 /* ==================== REGISTER ==================== */
 /* ================================================== */
 
-#register { width: 100%; min-height: 100%; margin: 0; padding-top: 150px; }
-
-@media (max-width: 992px) {
-	#register { padding-top: 80px; }
-}
+#register { width: 100%; min-height: 95%; margin: 0; padding-top: 5%; }
+#register .submit { text-align: center; }
 
 @media (min-width: 992px) {
-	#register { padding-top: 150px; }
+  #register { margin: 0 0 -80px 0; } 
 }
-
 
 
 
