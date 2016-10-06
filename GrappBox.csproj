@@ -107,14 +107,28 @@
     <Compile Include="Model\MeetingDashBoard.cs" />
     <Compile Include="Model\Occupations.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
+    <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectRoleModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
+    <Compile Include="Model\ProjectSettings\ProjectUserModel.cs" />
+    <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
+    <Compile Include="Model\ProjectSettings\Users.cs" />
+    <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Resources\NavigationHelper.cs" />
     <Compile Include="Resources\RelayCommand.cs" />
     <Compile Include="Resources\SuspensionManager.cs" />
     <Compile Include="Utils\SystemInformation.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
+    <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\GenericDahsboard.xaml.cs">
       <DependentUpon>GenericDahsboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ProjectSettingsView.xaml.cs">
+      <DependentUpon>ProjectSettingsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\RoleView.xaml.cs">
+      <DependentUpon>RoleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\Test.xaml.cs">
       <DependentUpon>Test.xaml</DependentUpon>
@@ -195,6 +209,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\GenericDahsboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\ProjectSettingsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\RoleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

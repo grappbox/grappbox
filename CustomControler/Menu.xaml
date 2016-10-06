@@ -16,7 +16,7 @@
             <RowDefinition Height="65"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource GrayGrappboxBrush}">
+        <StackPanel Grid.Row="0" Orientation="Horizontal" Background="{StaticResource Grey1GrappboxBrush}">
             <Ellipse Height="48" Width="48" Stroke="Transparent" VerticalAlignment="Center" >
                 <Ellipse.Fill>
                     <ImageBrush x:Name="Avatar" Stretch="Uniform" ImageSource="ms-appx:///Assets/user.png"/>

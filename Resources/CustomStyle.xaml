@@ -3,25 +3,33 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Grappbox">
     <Color x:Key="RedGrappbox">#FC575E</Color>
-    <Color x:Key="WhiteGrappbox">#ffffff</Color>
-    <Color x:Key="GrayGrappbox">#bdbdbd</Color>
-    <Color x:Key="LightWhiteGrappbox">#EEEEEE</Color>
-    <Color x:Key="LightBlackGrappbox">#333333</Color>
-    <Color x:Key="BlackGrappbox">#000000</Color>
-    <Color x:Key="GreenGrappbox">#27AE60</Color>
-    <Color x:Key="BlueGrappbox">#44BBFF</Color>
-    <Color x:Key="VioletGrappbox">#9E58DC</Color>
-    <Color x:Key="YellowGrappbox">#F1C40F</Color>
-    <Color x:Key="OrangeGrappbox">#FF9F55</Color>
+    <Color x:Key="White1Grappbox">#ffffff</Color>
+    <Color x:Key="White2Grappbox">#fafafa</Color>
+    <Color x:Key="White3Grappbox">#f0f0f0</Color>
+    <Color x:Key="Grey1Grappbox">#e0e0E0</Color>
+    <Color x:Key="Grey2Grappbox">#cccccc</Color>
+    <Color x:Key="Grey3Grappbox">#bdbdbd</Color>
+    <Color x:Key="Black1Grappbox">#666666</Color>
+    <Color x:Key="Black2Grappbox">#333333</Color>
+    <Color x:Key="Black3Grappbox">#000000</Color>
+    <Color x:Key="BlueGrappbox">#44bbff</Color>
+    <Color x:Key="PurpleGrappbox">#9e58dc</Color>
+    <Color x:Key="OrangeGrappbox">#ff9f55</Color>
+    <Color x:Key="GreenGrappbox">#27ae60</Color>
+    <Color x:Key="YellowGrappbox">#f1c40f</Color>
     <SolidColorBrush x:Key="RedGrappboxBrush" Color="{StaticResource RedGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="WhiteGrappboxBrush" Color="{StaticResource WhiteGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="GrayGrappboxBrush" Color="{StaticResource GrayGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="BackgroundGrayBrush" Color="{StaticResource LightWhiteGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="BackgroundBlackBrush" Color="{StaticResource LightBlackGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="BlackGrappboxBrush" Color="{StaticResource BlackGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White1GrappboxBrush" Color="{StaticResource White1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White2GrappboxBrush" Color="{StaticResource White2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White3GrappboxBrush" Color="{StaticResource White3Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey1GrappboxBrush" Color="{StaticResource Grey1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey2GrappboxBrush" Color="{StaticResource Grey2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey3GrappboxBrush" Color="{StaticResource Grey3Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black1GrappboxBrush" Color="{StaticResource Black1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black2GrappboxBrush" Color="{StaticResource Black2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black3GrappboxBrush" Color="{StaticResource Black3Grappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="GreenGrappboxBrush" Color="{StaticResource GreenGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="BlueGrappboxBrush" Color="{StaticResource BlueGrappbox}"></SolidColorBrush>
-    <SolidColorBrush x:Key="VioletGrappboxBrush" Color="{StaticResource VioletGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="VioletGrappboxBrush" Color="{StaticResource PurpleGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="YellowGrappboxBrush" Color="{StaticResource YellowGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="OrangeGrappboxBrush" Color="{StaticResource OrangeGrappbox}"></SolidColorBrush>
     <!--WhiteboardColors-->
@@ -77,28 +85,28 @@
     <SolidColorBrush x:Key="Color_25Brush" Color="{StaticResource Color_25}"></SolidColorBrush>
     <!--WhiteboardColors-->
     <Style TargetType="MenuFlyoutPresenter">
-        <Setter Property="Background" Value="{StaticResource GrayGrappbox}"/>
+        <Setter Property="Background" Value="{StaticResource Grey1Grappbox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="MenuFlyoutItem">
-        <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
+        <Setter Property="Foreground" Value="{StaticResource Black1Grappbox}"/>
     </Style>
     <Style x:Key="DefaultPivotStyle" TargetType="Pivot">
         <Setter Property="Margin" Value="0,27,0,0" />
-        <Setter Property="Background" Value="{StaticResource GrayGrappbox}"/>
+        <Setter Property="Background" Value="{StaticResource Grey1Grappbox}"/>
     </Style>
     <Style TargetType="Button">
         <Setter Property="Background" Value="{StaticResource RedGrappbox}"/>
-        <Setter Property="Foreground" Value="{StaticResource WhiteGrappbox}"/>
+        <Setter Property="Foreground" Value="{StaticResource White1Grappbox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style x:Key="LeftMenuButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent"/>
-        <Setter Property="Foreground" Value="{StaticResource BlackGrappbox}"/>
+        <Setter Property="Foreground" Value="{StaticResource Black1Grappbox}"/>
         <Setter Property="BorderBrush" Value="Transparent"/>
     </Style>
     <Style TargetType="PivotItem">
-        <Setter Property="Background" Value="{StaticResource LightWhiteGrappbox}" />
+        <Setter Property="Background" Value="{StaticResource White2Grappbox}" />
         <Setter Property="Margin" Value="0"/>
     </Style>
     <Style x:Key="MenuButtonStyle" TargetType="Button">
@@ -155,28 +163,28 @@
         </Setter>
     </Style>
     <Style TargetType="TextBlock">
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="24" />
     </Style>
     <Style TargetType="TextBox">
-        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontSize" Value="24" />
     </Style>
 
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light" >
-            <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource GrayGrappbox}" />
-            <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource GrayGrappbox}" />
-            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource BlackGrappbox}" />
+            <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource Grey1Grappbox}" />
+            <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource Grey1Grappbox}" />
+            <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource Black1Grappbox}" />
             <SolidColorBrush x:Key="PivotHeaderForegroundUnselectedBrush" Color="DarkGray" />
 
             <SolidColorBrush x:Key="ButtonPressedBackgroundThemeBrush" Color="White" />
             <SolidColorBrush x:Key="ButtonPressedForegroundThemeBrush" Color="{StaticResource RedGrappbox}" />
-            <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource BlackGrappbox}" />
-            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource GrayGrappbox}"/>
-            <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="{StaticResource LightBlackGrappbox}"/>
-            <SolidColorBrush x:Key="ListBoxItemSelectedForegroundThemeBrush" Color="{StaticResource BlackGrappbox}"/>
-            <SolidColorBrush x:Key="CheckBoxForegroundThemeBrush" Color="{StaticResource WhiteGrappbox}"/>
-            <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="{StaticResource WhiteGrappbox}"/>
-            <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="{StaticResource WhiteGrappbox}"/>
+            <SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource Black1Grappbox}" />
+            <SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{StaticResource Grey1Grappbox}"/>
+            <SolidColorBrush x:Key="ListBoxItemSelectedBackgroundThemeBrush" Color="{StaticResource Black2Grappbox}"/>
+            <SolidColorBrush x:Key="ListBoxItemSelectedForegroundThemeBrush" Color="{StaticResource Black1Grappbox}"/>
+            <SolidColorBrush x:Key="CheckBoxForegroundThemeBrush" Color="{StaticResource White1Grappbox}"/>
+            <SolidColorBrush x:Key="CheckBoxBorderThemeBrush" Color="{StaticResource White1Grappbox}"/>
+            <SolidColorBrush x:Key="CheckBoxContentForegroundThemeBrush" Color="{StaticResource White1Grappbox}"/>
 
             <SolidColorBrush x:Key="CheckBoxPressedBackgroundThemeBrush" Color="{StaticResource RedGrappbox}"/>
             <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="{StaticResource RedGrappbox}"/>

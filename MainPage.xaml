@@ -8,23 +8,23 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Border Padding="15,0">
-        <Grid>
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*"/>
                 <RowDefinition Height="1*"/>
-                <RowDefinition Height="2*"/>
+                <RowDefinition Height="1*"/>
+                <RowDefinition Height="1*"/>
                 <RowDefinition Height="1*"/>
                 <RowDefinition Height="2*"/>
-                <RowDefinition Height="2*"/>
-                <RowDefinition Height="4*"/>
+                <RowDefinition Height="3*"/>
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="1" FontSize="24" Text="Login" Foreground="Black"></TextBlock>
-            <TextBox Name="loginBlock" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu" ></TextBox>
-            <TextBlock Grid.Row="3" FontSize="24" Text="Password" Foreground="Black"></TextBlock>
-            <PasswordBox Name="pwdBlock" Grid.Row="4" PlaceholderText="Password" Password="feytou_p" PasswordRevealMode="Peek" ></PasswordBox>
-            <Button Name="DashBoardButton" Content="Log In" HorizontalAlignment="Center" Grid.Row="5" VerticalAlignment="Center" Click="DashBoardButton_Click"/>
+            <TextBlock Grid.Row="1" Text="Login" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
+            <TextBox Name="loginBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu" ></TextBox>
+            <TextBlock Grid.Row="3" Text="Password" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
+            <PasswordBox Name="pwdBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="4" PlaceholderText="Password" Password="feytou_p" PasswordRevealMode="Peek" ></PasswordBox>
+            <Button Name="DashBoardButton" Content="Log In" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="5" Click="DashBoardButton_Click"/>
             <Grid Grid.Row="0">
-            <Image Name="image" Height="200" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/Grappbox-logo.png"/>
+                <Image Name="image" Height="200" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/Grappbox-logo.png"/>
             </Grid>
             <ProgressBar Grid.Row="3" VerticalAlignment="Top" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
         </Grid>
