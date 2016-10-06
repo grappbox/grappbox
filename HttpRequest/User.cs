@@ -9,7 +9,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 
-namespace Grappbox.HttpRequest
+namespace GrappBox.HttpRequest
 {
     class User
     {
@@ -85,7 +85,8 @@ namespace Grappbox.HttpRequest
         {
             if (instance != null)
                 return instance;
-            return new User();
+            else
+                return null;
         }
         public User()
         {

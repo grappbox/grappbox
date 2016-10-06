@@ -1,6 +1,6 @@
-﻿using Grappbox.HttpRequest;
-using Grappbox.Model.Global;
-using Grappbox.Resources;
+﻿using GrappBox.HttpRequest;
+using GrappBox.Model.Global;
+using GrappBox.Resources;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using Windows.Storage;
 using Windows.Storage.Streams;
 using Windows.Web.Http;
 
-namespace Grappbox.Model
+namespace GrappBox.Model
 {
     public class Occupations
     {

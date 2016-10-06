@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 
-namespace Grappbox.Model
+namespace GrappBox.Model
 {
     public class MeetingDashBoard
     {

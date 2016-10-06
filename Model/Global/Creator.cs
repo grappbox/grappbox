@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 
-namespace Grappbox.Model
+namespace GrappBox.Model
 {
     public class Creator
     {

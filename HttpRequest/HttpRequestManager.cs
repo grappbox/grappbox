@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using GrappBox.Resources;
+using GrappBox.Utils;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -6,14 +8,15 @@ using System.Diagnostics;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.Web.Http;
+using Windows.Web.Http.Headers;
 
-namespace Grappbox.HttpRequest
+namespace GrappBox.HttpRequest
 {
     //This class is a singleton
     class HttpRequestManager
     {
         #region Private members
-        private const string baseAdress = "https://api.Grappbox.com/";
+        private const string baseAdress = "https://api.grappbox.com/";
         private const string version = "0.3/";
 
 
@@ -107,6 +110,50 @@ namespace Grappbox.HttpRequest
             }
             return res;
         }
+        public async Task<bool> Login(string username, string password)
+        {
+            JObject post = new JObject();
+            JObject data = new JObject();
+            data.Add("login", JToken.FromObject(username));
+            data.Add("password", JToken.FromObject(password));
+            data.Add("mac", SystemInformation.GetUniqueIdentifier());
+            data.Add("flag", JToken.FromObject("wph"));
+            data.Add("is_client", JToken.FromObject(false));
+            data.Add("device_name", JToken.FromObject("WindowsPhone"));
+
+            post.Add("data", JToken.FromObject(data));
+            Debug.WriteLine(post.ToString());
+            HttpStringContent sc = new HttpStringContent(post.ToString());
+            HttpResponseMessage res = null;
+            Debug.WriteLine(RequestUri("account/login"));
+            try
+            {
+                res = await webclient.PostAsync(RequestUri("account/login"), sc);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return false;
+            }
+            if (res.IsSuccessStatusCode)
+            {
+                try
+                {
+                    DeserializeJson<User>(await res.Content.ReadAsStringAsync());
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    return false;
+                }
+                string token = User.GetUser().Token;
+                Debug.WriteLine(token);
+                webclient.DefaultRequestHeaders.Authorization = new HttpCredentialsHeaderValue(token);
+                return true;
+            }
+            else
+                return false;
+        }
         public async Task<HttpResponseMessage> Put(Dictionary<string, object> properties, string url)
         {
             JObject put = new JObject();
@@ -134,13 +181,18 @@ namespace Grappbox.HttpRequest
             HttpResponseMessage res = null;
             try
             {
-                StringBuilder get = new StringBuilder("/");
-                for (int i = 0; i < values.Length; ++i)
+                StringBuilder get = new StringBuilder("");
+                if (values != null)
                 {
-                    get.Append(values[i]);
-                    if (i + 1 < values.Length)
-                        get.Append("/");
+                    get.Append("/");
+                    for (int i = 0; i < values.Length; ++i)
+                    {
+                        get.Append(values[i]);
+                        if (i + 1 < values.Length)
+                            get.Append("/");
+                    }
                 }
+                Debug.WriteLine(RequestUri(url + get));
                 res = await webclient.GetAsync(RequestUri(url + get));
             }
             catch (Exception ex)

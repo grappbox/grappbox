@@ -10,7 +10,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 using System.Runtime.InteropServices.WindowsRuntime;
 
-namespace Grappbox.Model
+namespace GrappBox.Model
 {
     public static class BytesToImage
     {

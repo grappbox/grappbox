@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Grappbox.Resources
+namespace GrappBox.Resources
 {
     class SettingsManager
     {
