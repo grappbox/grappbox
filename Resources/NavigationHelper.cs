@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Grappbox.Resources
+namespace GrappBox.Resources
 {
     [Windows.Foundation.Metadata.WebHostHidden]
     public class NavigationHelper : DependencyObject

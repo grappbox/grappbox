@@ -15,11 +15,11 @@ using Windows.UI.Text;
 using System.IO;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using Grappbox.Model;
+using GrappBox.Model;
 using Windows.UI;
 using System.Globalization;
 
-namespace Grappbox.ViewModel
+namespace GrappBox.ViewModel
 {
     public enum MenuEnum
     {

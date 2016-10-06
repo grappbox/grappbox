@@ -8,7 +8,7 @@ using Windows.Security.Cryptography.Core;
 using Windows.Storage.Streams;
 using Windows.System.Profile;
 
-namespace Grappbox.Utils
+namespace GrappBox.Utils
 {
     class SystemInformation
     {

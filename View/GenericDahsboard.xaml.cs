@@ -1,13 +1,13 @@
-﻿using Grappbox.Model;
-using Grappbox.Resources;
-using Grappbox.ViewModel;
+﻿using GrappBox.Model;
+using GrappBox.Resources;
+using GrappBox.ViewModel;
 using System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace Grappbox.View
+namespace GrappBox.View
 {
     public sealed partial class GenericDahsboard : Page
     {
@@ -25,17 +25,17 @@ namespace Grappbox.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             GenericDashboardViewModel vmdl = this.DataContext as GenericDashboardViewModel;
-            //LoadingBar.IsEnabled = true;
-            //LoadingBar.Visibility = Visibility.Visible;
-            //if (await vmdl.getProjectList() == false)
-            //{
-            //    LoadingBar.IsEnabled = false;
-            //    LoadingBar.Visibility = Visibility.Collapsed;
-            //    this.navigationHelper.GoBack();
-            //}
-            //await vmdl.getProjectsLogo();
-            //LoadingBar.IsEnabled = false;
-            //LoadingBar.Visibility = Visibility.Collapsed;
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+            if (await vmdl.getProjectList() == false)
+            {
+                LoadingBar.IsEnabled = false;
+                LoadingBar.Visibility = Visibility.Collapsed;
+                this.navigationHelper.GoBack();
+            }
+            await vmdl.getProjectsLogo();
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
         private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -43,7 +43,7 @@ namespace Grappbox.View
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
             SettingsManager.setOption("ProjectIdChoosen", plm.Id);
             SettingsManager.setOption("ProjectNameChoosen", plm.Name);
-            //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
         }
 
         private async void CreateProject_Click(object sender, RoutedEventArgs e)

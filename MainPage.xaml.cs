@@ -19,8 +19,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Shapes;
-using Grappbox.HttpRequest;
-using Grappbox.Resources;
+using GrappBox.HttpRequest;
+using GrappBox.Resources;
 using System.Net.NetworkInformation;
 using Windows.Networking.Connectivity;
 using Windows.Networking.NetworkOperators;
@@ -28,11 +28,11 @@ using Windows.System.Profile;
 using Windows.Storage.Streams;
 using Windows.Security.Cryptography.Core;
 using Windows.Security.Cryptography;
-using Grappbox.Utils;
+using GrappBox.Utils;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace Grappbox
+namespace GrappBox
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
@@ -61,29 +61,20 @@ namespace Grappbox
             LoadingBar.Visibility = Visibility.Visible;
 
             HttpRequestManager api = HttpRequestManager.Instance;
-            Dictionary<string, object> props = new Dictionary<string, object>();
-            props.Add("login", loginBlock.Text);
-            props.Add("password", pwdBlock.Password);
-            props.Add("mac", SystemInformation.GetUniqueIdentifier());
-            props.Add("flag", "wph");
-            props.Add("device_name", "WindowsPhone");
-            HttpResponseMessage res = await api.Post(props, "account/login");
-            if (res.IsSuccessStatusCode)
+            bool result = await api.Login(loginBlock.Text, pwdBlock.Password);
+            if (result == true)
             {
-                api.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("login", loginBlock.Text);
                 SettingsManager.setOption("password", pwdBlock.Password);
-                Debug.WriteLine(User.GetUser().Token);
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-
-//                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
             }
-            else {
+            else
+            {
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog("Can't login");
                 await msgbox.ShowAsync();
             }
         }

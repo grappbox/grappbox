@@ -13,13 +13,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
+// Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace GrappBox.CustomControler
 {
-    public sealed partial class Menu : UserControl
+    public sealed partial class MeetingDashBoardPanel : UserControl
     {
-        public Menu()
+        public MeetingDashBoardPanel()
         {
             this.InitializeComponent();
         }

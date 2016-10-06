@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace Grappbox.Model.Global
+namespace GrappBox.Model.Global
 {
     class LogoModel
     {

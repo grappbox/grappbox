@@ -1,6 +1,6 @@
-﻿using Grappbox.HttpRequest;
-using Grappbox.Model;
-using Grappbox.ViewModel;
+﻿using GrappBox.HttpRequest;
+using GrappBox.Model;
+using GrappBox.ViewModel;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -13,7 +13,7 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 
-namespace Grappbox.Model
+namespace GrappBox.Model
 {
     public class ProjectListModel : ViewModelBase
     {

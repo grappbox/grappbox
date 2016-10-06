@@ -1,5 +1,5 @@
-﻿using Grappbox.HttpRequest;
-using Grappbox.Model;
+﻿using GrappBox.HttpRequest;
+using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Popups;
 
-namespace Grappbox.ViewModel
+namespace GrappBox.ViewModel
 {
     class GenericDashboardViewModel : ViewModelBase
     {
@@ -24,17 +24,18 @@ namespace Grappbox.ViewModel
         public async Task<bool> getProjectList()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token };
-            HttpResponseMessage res = await api.Get(token, "dashboard/projects");
+            HttpResponseMessage res = await api.Get(null, "dashboard/projects");
             if (res == null)
                 return false;
+            string response = await res.Content.ReadAsStringAsync();
+            Debug.WriteLine("response= " + response);
             if (res.IsSuccessStatusCode)
             {
-                ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(await res.Content.ReadAsStringAsync());
+                ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(response);
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(response));
                 await msgbox.ShowAsync();
                 return false;
             }

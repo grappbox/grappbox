@@ -1,5 +1,7 @@
-﻿using System;
+﻿using GrappBox.Model;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -13,13 +15,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
+// Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page http://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace GrappBox.CustomControler
 {
-    public sealed partial class Menu : UserControl
+    public sealed partial class TeamDashBoard : UserControl
     {
-        public Menu()
+
+        public TeamDashBoard()
         {
             this.InitializeComponent();
         }

@@ -11,7 +11,7 @@ using Windows.Storage.Streams;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace Grappbox.Resources
+namespace GrappBox.Resources
 {
     /// <summary>
     /// SuspensionManager captures global session state to simplify process lifetime management

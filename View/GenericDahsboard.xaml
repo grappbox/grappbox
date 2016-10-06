@@ -1,12 +1,12 @@
 ﻿<Page
-    x:Class="Grappbox.View.GenericDahsboard"
+    x:Class="GrappBox.View.GenericDahsboard"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Grappbox.View"
+    xmlns:local="using:GrappBox.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:customControl="using:Grappbox.CustomControler"
+    xmlns:customControl="using:GrappBox.CustomControler"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
@@ -30,7 +30,6 @@
                 </StackPanel>
                 <ListView
                     Grid.Row="1"
-                    d:UseSampleData="True"
                     Padding="15,0,15,0"
                     ItemsSource="{Binding ProjectList}"
                     SelectionChanged="ListView_SelectionChanged"
