@@ -1,20 +1,17 @@
 package com.grappbox.grappbox.adapter;
 
 import android.app.Activity;
-import android.content.Context;
-import android.support.v4.content.ContextCompat;
+import android.content.Intent;
 import android.support.v4.util.Pair;
-import android.support.v7.widget.AppCompatTextView;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.bugtracker_fragments.BugDetailsActivity;
 import com.grappbox.grappbox.model.BugModel;
 
 import java.util.ArrayList;
@@ -42,12 +39,7 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private RecyclerView.ViewHolder createBugEntryHolder(ViewGroup parent){
         final BugHolder holder = new BugHolder(inflater.inflate(R.layout.list_item_bugtracker_list, parent, false), parent);
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
 
-            }
-        });
         return holder;
     }
 
@@ -71,7 +63,7 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
         return null;
     }
 
-    public void bindBugEntry(BugModel item, BugHolder holder){
+    public void bindBugEntry(final BugModel item, BugHolder holder){
         boolean tagPassed = false;
         holder.title.setText(item.title);
         holder.desc.setText(item.desc);
@@ -84,6 +76,14 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             ((TextView)tagView.findViewById(R.id.tagname)).setText(tag.first);
             holder.tagContainer.addView(tagView);
         }
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent launchDetail = new Intent(mContext, BugDetailsActivity.class);
+                launchDetail.putExtra(BugDetailsActivity.EXTRA_BUG_MODEL, item);
+                mContext.startActivity(launchDetail);
+            }
+        });
         holder.tagContainer.setVisibility(tagPassed ? View.VISIBLE : View.GONE);
     }
 
