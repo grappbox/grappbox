@@ -729,8 +729,16 @@ class RoleController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Admin role");
 
 		$roles = $em->getRepository("SQLBundle:Role")->findBy(array('projects'=> $role->getProjects(), 'name' => $content->name));
-		if ($roles != null)
-			return $this->setBadRequest("13.3.4", "Role", "addprojectroles", "Bad Parameter: Role name already register for this project");
+		if ($roles != null) {
+			$isSame = false;
+			foreach ($roles as $r) {
+				if ($r->getId() == $id)
+					$isSame = true;
+			}
+			if ($isSame == true)
+				break;
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Role name already register for this project");
+		}
 
 		if (array_key_exists('name', $content))
 			$role->setName($content->name);
