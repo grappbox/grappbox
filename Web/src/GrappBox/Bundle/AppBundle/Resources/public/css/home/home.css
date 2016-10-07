@@ -172,7 +172,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== HOME ==================== */
 /* ============================================== */
 
-#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(/resources/img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 #home .home-body { display: table-cell; vertical-align: middle; }
 #home .home-body h1 { font-size: 88px; font-weight: 700; text-transform: uppercase; }
 #home .home-body .home-text { font-size: 18px; font-weight: 300; }
@@ -247,7 +247,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== CONTACT ==================== */
 /* ================================================= */
 
-#separation { width: 100%; height: auto; min-height: 420px; background: url(/resources/img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#separation { width: 100%; height: auto; min-height: 420px; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 
 #contact { padding: 60px 0; background: #fff; }
 #contact ul li a { display: block; color: #333; transition-duration: .2s; }
