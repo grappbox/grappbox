@@ -48,6 +48,10 @@ $(document).ready(function() {
 /* ==================== MATERIAL DESIGN ==================== */
 /* ========================================================= */
 
+  // Global Bootstrap Material Design
   $.material.init();
+
+  // Material Design date picker
+  $('#form_birthday').datepicker();
 
 });

@@ -127,7 +127,7 @@ class RegisterController extends Controller
     ->add("email", EmailType::class)
     ->add('password', PasswordType::class)
     ->add('password_confirmation', PasswordType::class)
-    ->add("birthday", BirthdayType::class, array("widget" => "single_text", "required" => false))
+    ->add("birthday", BirthdayType::class, array("widget" => "single_text", "html5" => false, "required" => false))
     ->add("submit", SubmitType::class, array("label" => "Create account"))
     ->getForm();
 

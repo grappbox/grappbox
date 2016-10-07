@@ -1,0 +1,143 @@
+.no-select {
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+.material-datepicker {
+  position: absolute;
+  width: 275px;
+  background: #fff;
+  border: 1px solid #ccc;
+  z-index: 1000000;
+  top: 40px;
+}
+
+.material-datepicker:focus {
+  outline: none;
+}
+
+.material-datepicker.hide {
+  display: none;
+}
+
+.material-datepicker section.top-day {
+  text-align: center;
+  font-weight: 300;
+  font-size: 14px;
+  background-color: #007366;
+  height: 32px;
+  line-height: 32px;
+  color: #fff;
+}
+
+.material-datepicker section.middle-date {
+  background-color: #333;
+  height: 75px;
+  color: #fafafa;
+  position: relative;
+}
+
+.material-datepicker section.middle-date p {
+  display: inline-block;
+  font-size: 18px;
+  font-weight: 300;
+  margin: 0;
+  padding: 0;
+}
+
+.material-datepicker section.middle-date > .date {
+  padding: 0 0px 0 20px;
+}
+
+.material-datepicker section.middle-date > .year {
+  display: block;
+  text-align: left;
+  padding: 10px 20px 0 20px;
+}
+
+.material-datepicker a.control {
+  font-size: 15px;
+  font-weight: 300;
+  position: absolute;
+  cursor: pointer;
+  top: 7px;
+}
+
+.material-datepicker a i {
+  padding: 0!important;
+  margin: 0!important;
+  color: #333;
+}
+
+.material-datepicker a i:active,
+.material-datepicker a i:focus,
+.material-datepicker a i:hover {
+  color: #44BBFF;
+}
+
+.material-datepicker a.prev {
+  left: 0;
+  margin-left: 15px;
+}
+
+.material-datepicker a.next {
+  right: 0;
+  margin-right: 20px;
+}
+
+.material-datepicker section.calendar {
+  position: relative;
+  padding-bottom: 15px;
+}
+
+.material-datepicker section.calendar > .title {
+  margin-top: 8px;
+  padding: 7px;
+  text-align: center;
+  font-size: 14px;
+}
+
+.material-datepicker section.calendar .days, .material-datepicker section.calendar .headings {
+  width: 250px;
+  margin: auto;
+}
+
+.material-datepicker section.calendar .day.heading {
+  color: grey;
+  font-weight: 400;
+}
+
+.material-datepicker section.calendar .day {
+  font-size: 12px;
+  display: inline-block;
+  width: 32px;
+  line-height: 32px;
+  text-align: center;
+  font-weight: 300;
+}
+
+.material-datepicker section.calendar a.day.today {
+  color: #44BBFF;
+  font-weight: 700;
+}
+
+.material-datepicker section.calendar a.day {
+  cursor: pointer;
+  border-radius: 40px;
+  color: #333;
+  font-weight: 400;
+}
+
+.material-datepicker section.calendar a.day.selected {
+  background-color: #44BBFF;
+  color: #fafafa;
+}
+
+.material-datepicker section.calendar a.day:hover {
+  background-color: #bdbdbd;
+  text-decoration: none;
+}

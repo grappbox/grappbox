@@ -13,32 +13,32 @@
 <!-- Login -->
 <div id="login">
   <div class="container">
-    <div class="col-md-4 col-md-offset-4 col-sm-offset-2 col-sm-8 col-xs-12">
+    <div class="col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2 col-xs-12">
       <h4 class="well-title"><a class="well-logo" href="/"><img src="/resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo"></a>Sign in to GrappBox</h4>
       <div class="well">
         <div class="alert alert-danger" id="form-message">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
           <p></p>
         </div>
-        {{ form_start(form, {'attr': {'class': 'form-horizontal' }}) }}
+        {{ form_start(form) }}
           <fieldset>
-            <div class="form-group col-md-12">
-              <label for="email" class="control-label">Email</label>
-              {{ form_widget(form.email, {'attr': { 'placeholder': 'grappbox@awesome.com', 'class': 'form-control' }}) }}
+            <div class="form-group label-floating">
+              <label for="form_email" class="control-label">Email</label>
+              {{ form_widget(form.email, {'attr': { 'class': 'form-control' }}) }}
             </div>
-            <div class="form-group col-md-12">
-              <label for="password" class="control-label">Password</label>
-              {{ form_widget(form.password, {'attr': { 'placeholder': 'Password', 'class': 'form-control' }}) }}
+            <div class="form-group label-floating">
+              <label for="form_password" class="control-label">Password</label>
+              {{ form_widget(form.password, {'attr': { 'class': 'form-control' }}) }}
             </div>
-            <div class="form-group col-md-12 submit">
+            <div class="form-group submit">
               {{ form_widget(form.submit, {'attr': {'title': 'Log in to your GrappBox account', 'class': 'btn btn-default', 'id': 'form-submit' }}) }}
               {{ form_rest(form) }}
             </div>
           </fieldset>
         {{ form_end(form) }}
       </div>
-      <div class="well text-center">New to GrappBox ?<br><a href="/register"><i class="material-icons">add_circle_outline</i>Create an account.</a></div>
-      <div class="well-link"><a href="/"><i class="material-icons">keyboard_backspace</i>Back to GrappBox.com</a></div>
+      <div class="well text-center">New to GrappBox? <a href="/register" title="Create a new GrappBox account">Create an account.</a></div>
+      <div class="well-link"><a href="/" title="Return to GrappBox website"><i class="material-icons">keyboard_backspace</i>Back to GrappBox.com</a></div>
     </div>
   </div>
 </div>
