@@ -231,15 +231,27 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 
 
 
+/* ============================================== */
+/* ==================== TEAM ==================== */
+/* ============================================== */
+
+#team { padding: 60px 0; background: #fafafa; }
+#team .thumbnail .caption { padding: 0; text-align: center; }
+#team .thumbnail .team-img { width: 150px; height: 150px; border: 0; border-radius: 50%; background: none; transition: none; }
+#team .thumbnail { background: none; border: none; border-radius: 0; transition: none; }
+#team .thumbnail .linkedin { width: 20px; height: auto; display: inline-block; margin-right: 10px; margin-top: -3px; }
+
+
+
 /* ================================================= */
 /* ==================== CONTACT ==================== */
 /* ================================================= */
 
 #separation { width: 100%; height: auto; min-height: 420px; background: url(/resources/img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 
-#contact { padding: 60px 0; background: #fafafa; }
+#contact { padding: 60px 0; background: #fff; }
 #contact ul li a { display: block; color: #333; transition-duration: .2s; }
-#contact ul li a i { display: block; color: #fafafa; height: 45px; width: 45px; margin: 0 auto; padding-top: 8px; font-size: 30px; border-radius: 5px; }
+#contact ul li a i { display: block; color: #fafafa; height: 45px; width: 45px; margin: 0 auto; padding-top: 8px; font-size: 30px; border-radius: 2px; }
 #contact ul li a i,
 #contact ul li a img { margin-bottom: 10px; }
 
