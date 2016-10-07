@@ -9,37 +9,16 @@ namespace GrappBox.Model
 {
     class CustomerAccessModel
     {
-        private string _name;
-        private string _token;
-        private int _id;
-        private string _creationDate;
-
         [JsonProperty("name")]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
-        [JsonProperty("customer_token")]
-        public string Token
-        {
-            get { return _token; }
-            set { _token = value; }
-        }
+        [JsonProperty("token")]
+        public string Token { get; set; }
 
         [JsonProperty("id")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
-        [JsonProperty("creation_date")]
-        public string CreationDate
-        {
-            get { return _creationDate; }
-            set { _creationDate = value; }
-        }
+        [JsonProperty("project_id")]
+        public string ProjectId { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace GrappBox.View
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
             SettingsManager.setOption("ProjectIdChoosen", plm.Id);
             SettingsManager.setOption("ProjectNameChoosen", plm.Name);
-            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
+            //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
         }
 
         private async void CreateProject_Click(object sender, RoutedEventArgs e)

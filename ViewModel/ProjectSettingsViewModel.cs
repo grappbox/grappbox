@@ -10,6 +10,7 @@ using Windows.UI.Xaml.Media.Imaging;
 using System.Text.RegularExpressions;
 using GrappBox.HttpRequest;
 using GrappBox.Resources;
+using System.Diagnostics;
 
 namespace GrappBox.ViewModel
 {
@@ -19,13 +20,9 @@ namespace GrappBox.ViewModel
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
         private ObservableCollection<ProjectRoleModel> _projectRoleModel = new ObservableCollection<ProjectRoleModel>();
         private ProjectSettingsModel _projectSettingsModel = new ProjectSettingsModel();
-        private ObservableCollection<ProjectUserModel> _projectUserModel = new ObservableCollection<ProjectUserModel>();
-        private ObservableCollection<ProjectUserModel> _userAssigned = new ObservableCollection<ProjectUserModel>();
-        private ObservableCollection<ProjectUserModel> _userNonAssigned = new ObservableCollection<ProjectUserModel>();
+        private ObservableCollection<UserModel> _projectUserModel = new ObservableCollection<UserModel>();
         private RoleUserModel _roleUser = new RoleUserModel();
-        private ProjectUserModel _userSelected = new ProjectUserModel();
-        private ProjectUserModel _userAssignSelected = new ProjectUserModel();
-        private ProjectUserModel _userNonAssignSelected = new ProjectUserModel();
+        private UserModel _userSelected = new UserModel();
         private CustomerAccessModel _customerSelected = new CustomerAccessModel();
         private ProjectRoleModel _roleSelected = new ProjectRoleModel();
         private ProjectRoleModel _role = new ProjectRoleModel();
@@ -48,10 +45,9 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
             props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
             props.Add("name", name);
-            HttpResponseMessage res = await api.Post(props, "projects/generatecustomeraccess");
+            HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
@@ -70,10 +66,9 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
             props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
             props.Add("name", _customerSelected.Name);
-            HttpResponseMessage res = await api.Post(props, "projects/generatecustomeraccess");
+            HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
@@ -90,8 +85,8 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "projects/getcustomeraccessbyproject");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "project/customeraccesses");
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel = api.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
@@ -110,8 +105,8 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _customerSelected.Id };
-                HttpResponseMessage res = await api.Delete(token, "projects/delcustomeraccess");
+                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _customerSelected.Id };
+                HttpResponseMessage res = await api.Delete(token, "project/customeraccess");
                 if (res.IsSuccessStatusCode)
                 {
                     _customerAccessModel.Remove(_customerSelected);
@@ -150,7 +145,6 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
             props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
             props.Add("name", _role.Name);
             props.Add("teamTimeline", _role.TeamTimeline);
@@ -162,13 +156,12 @@ namespace GrappBox.ViewModel
             props.Add("task", _role.Task);
             props.Add("projectSettings", _role.ProjectSettings);
             props.Add("cloud", _role.Cloud);
-            HttpResponseMessage res = await api.Post(props, "roles/addprojectroles");
+            HttpResponseMessage res = await api.Post(props, "role");
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel.Clear();
                 await getRoles();
                 _role = _projectRoleModel.Last();
-                await getUsersAssigned(_role.Id);
             }
             else
             {
@@ -183,8 +176,6 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
-            props.Add("roleId", _role.Id);
             props.Add("name", _role.Name);
             props.Add("teamTimeline", _role.TeamTimeline);
             props.Add("customerTimeline", _role.CustomerTimeline);
@@ -195,7 +186,7 @@ namespace GrappBox.ViewModel
             props.Add("task", _role.Task);
             props.Add("projectSettings", _role.ProjectSettings);
             props.Add("cloud", _role.Cloud);
-            HttpResponseMessage res = await api.Put(props, "roles/putprojectroles");
+            HttpResponseMessage res = await api.Put(props, "role/" + _role.RoleId);
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel.Clear();
@@ -225,83 +216,41 @@ namespace GrappBox.ViewModel
             notifySimpleRole();
         }
 
-        public async System.Threading.Tasks.Task getUsersAssigned(int id)
+        public async System.Threading.Tasks.Task<bool> assignUserRole(int userId, int roleId)
         {
-            if (id == 0)
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("roleId", roleId);
+            props.Add("userId", userId);
+            HttpResponseMessage res = await api.Post(props, "role/user");
+            if (res.IsSuccessStatusCode)
             {
-                _userNonAssigned = _projectUserModel;
-                NotifyPropertyChanged("UserAssignedList");
+                return true;
             }
             else
             {
-                HttpRequestManager api = HttpRequestManager.Instance;
-                object[] token = { User.GetUser().Token, id };
-                HttpResponseMessage res = await api.Get(token, "roles/getusersforrole");
-                if (res.IsSuccessStatusCode)
-                {
-                    _roleUser = api.DeserializeJson<RoleUserModel>(await res.Content.ReadAsStringAsync());
-                    _userAssigned = new ObservableCollection<ProjectUserModel>(_roleUser.UsersAssigned);
-                    _userNonAssigned = new ObservableCollection<ProjectUserModel>(_roleUser.UsersNonAssigned);
-                    NotifyPropertyChanged("UserAssignedList");
-                    NotifyPropertyChanged("UserNonAssignedList");
-                }
-                else
-                {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                    await msgbox.ShowAsync();
-                }
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+                return false;
             }
         }
 
-        public async System.Threading.Tasks.Task assignUserRole()
+        public async System.Threading.Tasks.Task<bool> removeUserRole(int userId, int roleId)
         {
-            if (_userNonAssignSelected != null)
-            {
-                HttpRequestManager api = HttpRequestManager.Instance;
-                Dictionary<string, object> props = new Dictionary<string, object>();
+            HttpRequestManager api = HttpRequestManager.Instance;
 
-                props.Add("token", User.GetUser().Token);
-                props.Add("roleId", _role.Id);
-                props.Add("userId", _userNonAssignSelected.Id);
-                HttpResponseMessage res = await api.Post(props, "roles/assignpersontorole");
-                if (res.IsSuccessStatusCode)
-                {
-                    _userAssigned.Add(_userNonAssignSelected);
-                    _userNonAssigned.Remove(_userNonAssignSelected);
-                    _userNonAssignSelected = null;
-                    NotifyPropertyChanged("UserAssignedList");
-                    NotifyPropertyChanged("UserNonAssignedList");
-                }
-                else
-                {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                    await msgbox.ShowAsync();
-                }
-                props.Clear();
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), userId, roleId };
+            HttpResponseMessage res = await api.Delete(token, "role/user");
+            if (res.IsSuccessStatusCode)
+            {
+                return true;
             }
-        }
-
-        public async System.Threading.Tasks.Task removeUserRole()
-        {
-            if (_userAssignSelected != null)
+            else
             {
-                HttpRequestManager api = HttpRequestManager.Instance;
-
-                object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _userAssignSelected.Id, _role.Id };
-                HttpResponseMessage res = await api.Delete(token, "roles/delpersonrole");
-                if (res.IsSuccessStatusCode)
-                {
-                    _userNonAssigned.Add(_userAssignSelected);
-                    _userAssigned.Remove(_userAssignSelected);
-                    _userAssignSelected = null;
-                    NotifyPropertyChanged("UserAssignedList");
-                    NotifyPropertyChanged("UserNonAssignedList");
-                }
-                else
-                {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                    await msgbox.ShowAsync();
-                }
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+                return false;
             }
         }
 
@@ -327,8 +276,8 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getRoles()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "roles/getprojectroles");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "roles");
             if (res.IsSuccessStatusCode)
             {
                 _projectRoleModel = api.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
@@ -347,8 +296,8 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { User.GetUser().Token, _roleSelected.Id };
-                HttpResponseMessage res = await api.Delete(token, "roles/delprojectroles");
+                object[] token = { _roleSelected.RoleId };
+                HttpResponseMessage res = await api.Delete(token, "role");
                 if (res.IsSuccessStatusCode)
                 {
                     _projectRoleModel.Remove(_roleSelected);
@@ -369,18 +318,6 @@ namespace GrappBox.ViewModel
             set { _projectRoleModel = value; NotifyPropertyChanged("RoleList"); }
         }
 
-        public ObservableCollection<ProjectUserModel> UserAssignedList
-        {
-            get { return _userAssigned; }
-            set { _userAssigned = value; NotifyPropertyChanged("UserAssignedList"); }
-        }
-
-        public ObservableCollection<ProjectUserModel> UserNonAssignedList
-        {
-            get { return _userNonAssigned; }
-            set { _userNonAssigned = value; NotifyPropertyChanged("UserNonAssignedList"); }
-        }
-
         public ProjectRoleModel RoleSelected
         {
             get { return _roleSelected; }
@@ -389,30 +326,6 @@ namespace GrappBox.ViewModel
                 if (value != _roleSelected)
                 {
                     _roleSelected = value;
-                }
-            }
-        }
-
-        public ProjectUserModel UserAssignedSelected
-        {
-            get { return _userAssignSelected; }
-            set
-            {
-                if (value != _userAssignSelected)
-                {
-                    _userAssignSelected = value;
-                }
-            }
-        }
-
-        public ProjectUserModel UserNonAssignedSelected
-        {
-            get { return _userNonAssignSelected; }
-            set
-            {
-                if (value != _userNonAssignSelected)
-                {
-                    _userNonAssignSelected = value;
                 }
             }
         }
@@ -561,8 +474,6 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
             if (_projectSettingsModel.Name != null && _projectSettingsModel.Name != "")
                 props.Add("name", _projectSettingsModel.Name);
             if (_projectSettingsModel.Description != null && _projectSettingsModel.Description != "")
@@ -590,7 +501,7 @@ namespace GrappBox.ViewModel
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
                 props.Add("twitter", _projectSettingsModel.Twitter);
-            HttpResponseMessage res = await api.Put(props, "projects/updateinformations");
+            HttpResponseMessage res = await api.Put(props, "project/" + SettingsManager.getOption<int>("ProjectIdChoosen"));
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
@@ -616,7 +527,6 @@ namespace GrappBox.ViewModel
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             SettingsManager.setOption("ProjectIdChoosen", 0);
-            props.Add("token", User.GetUser().Token);
             if (_projectSettingsModel.Name != null && _projectSettingsModel.Name != "")
                 props.Add("name", _projectSettingsModel.Name);
             else
@@ -658,19 +568,11 @@ namespace GrappBox.ViewModel
                 await msgbox.ShowAsync();
                 return;
             }
-            HttpResponseMessage res = await api.Post(props, "projects/projectcreation");
+            HttpResponseMessage res = await api.Post(props, "project");
             if (res.IsSuccessStatusCode)
             {
                 _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("ProjectIdChoosen", _projectSettingsModel.Id);
-                ContentDialog cd = new ContentDialog();
-                cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
-                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
-                var t = cd.ShowAsync();
-                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
-                t.Cancel();
             }
             else
             {
@@ -683,8 +585,8 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectSettings()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "projects/getinformations");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "project");
             if (res.IsSuccessStatusCode)
             {
                 _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
@@ -700,8 +602,8 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task deleteProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Delete(token, "projects/delproject");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Delete(token, "project");
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
@@ -723,8 +625,8 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task retrieveProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "projects/retrieveproject");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "project/retrieve");
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
@@ -887,12 +789,12 @@ namespace GrappBox.ViewModel
 
         public DateTime CreationDate
         {
-            get { if (_projectSettingsModel == null) return DateTime.Today; DateTime name = DateTime.Parse(_projectSettingsModel.CreationDate).ToLocalTime(); if (name != null) { return name; } else return DateTime.Today; }
+            get { if (_projectSettingsModel == null) return DateTime.Today; DateTime name = DateTime.Parse(_projectSettingsModel.CreatedAt).ToLocalTime(); if (name != null) { return name; } else return DateTime.Today; }
             set
             {
-                if (value != DateTime.Parse(_projectSettingsModel.CreationDate))
+                if (value != DateTime.Parse(_projectSettingsModel.CreatedAt))
                 {
-                    _projectSettingsModel.CreationDate = value.ToUniversalTime().ToString("yyyy-MM-dd hh-mm-ss");
+                    _projectSettingsModel.CreatedAt = value.ToUniversalTime().ToString("yyyy-MM-dd hh-mm-ss");
                     NotifyPropertyChanged("CreationDate");
                 }
             }
@@ -919,13 +821,12 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("token", User.GetUser().Token);
             props.Add("id", SettingsManager.getOption<int>("ProjectIdChoosen"));
             props.Add("email", email);
-            HttpResponseMessage res = await api.Post(props, "projects/addusertoproject");
+            HttpResponseMessage res = await api.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
             {
-                ProjectUserModel newUser = api.DeserializeJson<ProjectUserModel>(await res.Content.ReadAsStringAsync());
+                UserModel newUser = api.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
@@ -940,11 +841,11 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectUsers()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "projects/getusertoproject");
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            HttpResponseMessage res = await api.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _projectUserModel = api.DeserializeArrayJson<ObservableCollection<ProjectUserModel>>(await res.Content.ReadAsStringAsync());
+                _projectUserModel = api.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
@@ -954,14 +855,32 @@ namespace GrappBox.ViewModel
             }
         }
 
+        public async System.Threading.Tasks.Task<ProjectRoleModel> getUserRole(int id)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), id };
+            HttpResponseMessage res = await api.Get(token, "roles/project/user");
+            if (res.IsSuccessStatusCode)
+            {
+                Debug.WriteLine(await res.Content.ReadAsStringAsync());
+                return api.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+                return null;
+            }
+        }
+
         public async System.Threading.Tasks.Task removeProjectUser()
         {
             if (_userSelected != null)
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
-                
-                object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen"), _userSelected.Id };
-                HttpResponseMessage res = await api.Delete(token, "projects/removeusertoproject");
+
+                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _userSelected.Id };
+                HttpResponseMessage res = await api.Delete(token, "project/user");
                 if (res.IsSuccessStatusCode)
                 {
                     _projectUserModel.Remove(_userSelected);
@@ -976,13 +895,13 @@ namespace GrappBox.ViewModel
             }
         }
 
-        public ObservableCollection<ProjectUserModel> UserList
+        public ObservableCollection<UserModel> UserList
         {
             get { return _projectUserModel; }
             set { _projectUserModel = value; NotifyPropertyChanged("UserList"); }
         }
 
-        public ProjectUserModel UserSelected
+        public UserModel UserSelected
         {
             set
             {

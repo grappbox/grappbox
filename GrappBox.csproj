@@ -101,12 +101,15 @@
     <Compile Include="CustomControler\Menu.xaml.cs">
       <DependentUpon>Menu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControler\TabHeader.xaml.cs">
+      <DependentUpon>TabHeader.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControler\TeamDashBoard.xaml.cs">
       <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControler\TopBar.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
-    <Compile Include="Model\Global\Creator.cs" />
+    <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
     <Compile Include="Model\Global\LogoModel.cs" />
     <Compile Include="Model\Global\Position.cs" />
@@ -116,9 +119,7 @@
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
     <Compile Include="Model\ProjectSettings\ProjectRoleModel.cs" />
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
-    <Compile Include="Model\ProjectSettings\ProjectUserModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
-    <Compile Include="Model\ProjectSettings\Users.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Resources\NavigationHelper.cs" />
     <Compile Include="Resources\RelayCommand.cs" />
@@ -213,6 +214,10 @@
     <Page Include="CustomControler\Menu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControler\TabHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControler\TeamDashBoard.xaml">
       <Generator>MSBuild:Compile</Generator>

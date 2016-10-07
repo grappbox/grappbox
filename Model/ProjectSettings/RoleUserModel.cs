@@ -9,37 +9,13 @@ namespace GrappBox.Model
 {
     class RoleUserModel
     {
-        private int _id;
-        private string _name;
-        private List<ProjectUserModel> _userAssigned;
-        private List<ProjectUserModel> _userNonAssigned;
-
         [JsonProperty("id")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
-
+        public int Id { get; set; }
         [JsonProperty("name")]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
+        public string Name { get; set; }
         [JsonProperty("users_assigned")]
-        public List<ProjectUserModel> UsersAssigned
-        {
-            get { return _userAssigned; }
-            set { _userAssigned = value; }
-        }
-
+        public List<UserModel> UsersAssigned { get; set; }
         [JsonProperty("users_non_assigned")]
-        public List<ProjectUserModel> UsersNonAssigned
-        {
-            get { return _userNonAssigned; }
-            set { _userNonAssigned = value; }
-        }
+        public List<UserModel> UsersNonAssigned { get; set; }
     }
 }

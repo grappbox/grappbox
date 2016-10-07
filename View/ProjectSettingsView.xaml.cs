@@ -16,6 +16,9 @@ using Windows.UI.Popups;
 using Windows.UI.Core;
 using Windows.UI;
 using GrappBox.Resources;
+using Windows.Foundation.Metadata;
+using Windows.UI.ViewManagement;
+using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -101,6 +104,17 @@ namespace GrappBox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            //Mobile customization
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                if (statusBar != null)
+                {
+                    statusBar.BackgroundOpacity = 1;
+                    statusBar.BackgroundColor = (Color)Application.Current.Resources["RedGrappbox"];
+                    statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
+                }
+            }
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
@@ -156,8 +170,6 @@ namespace GrappBox.View
                 vm.UserList = null;
                 vm.CustomerList = null;
                 vm.RoleList = null;
-                vm.UserAssignedList = null;
-                vm.UserNonAssignedList = null;
 
                 UpdatePassword.Visibility = Visibility.Collapsed;
                 NewPassword.Visibility = Visibility.Visible;
@@ -265,14 +277,7 @@ namespace GrappBox.View
             {
                 await vm.createProject(password.Password);
                 if (SettingsManager.getOption("ProjectIdChoosen") != -1)
-                {
-                    UpdatePassword.Visibility = Visibility.Visible;
-                    NewPassword.Visibility = Visibility.Collapsed;
-                    User.IsEnabled = false;
-                    CustomerAccess.IsEnabled = false;
-                    Roles.IsEnabled = false;
-                    isNew = false;
-                }
+                    Frame.GoBack();
             }
 
             LoadingBar.IsEnabled = false;
@@ -337,12 +342,12 @@ namespace GrappBox.View
 
         private void userListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.UserSelected = (sender as ListBox).SelectedItem as ProjectUserModel;
+            vm.UserSelected = (sender as ListView).SelectedItem as UserModel;
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            int num = ((sender as PivotItem).Parent as Pivot).SelectedIndex;
+            int num = PivotPS.SelectedIndex;
 
             if (num == 0)
             {
@@ -454,45 +459,28 @@ namespace GrappBox.View
 
         private void customerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.CustomerSelected = (sender as ListBox).SelectedItem as CustomerAccessModel;
+            vm.CustomerSelected = (sender as ListView).SelectedItem as CustomerAccessModel;
         }
 
         private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
-            await vm.getUsersAssigned(0);
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.RoleView), null));
         }
 
         private void roleListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.RoleSelected = (sender as ListBox).SelectedItem as ProjectRoleModel;
+            vm.RoleSelected = (sender as ListView).SelectedItem as ProjectRoleModel;
         }
 
         private async void ModifyRole_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (vm.RoleSelected != null)
             {
-                await vm.getUsersAssigned(vm.RoleSelected.Id);
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
                 if (vm.RoleSelected != null)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.Id));
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.RoleId));
                 }
             }
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
@@ -510,6 +498,32 @@ namespace GrappBox.View
         private void MenuButton_Click(object sender, RoutedEventArgs e)
         {
             Menu.IsPaneOpen = !Menu.IsPaneOpen;
+        }
+
+        private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if ((sender as ComboBox).Parent != null)
+            {
+                UserModel md = ((sender as ComboBox).Parent as Grid).DataContext as UserModel;
+                ProjectRoleModel role = await vm.getUserRole((((sender as ComboBox).Parent as Grid).DataContext as UserModel).Id);
+                int newRole = (int)(sender as ComboBox).SelectedValue;
+                if (role.RoleId != newRole)
+                {
+                    if (await vm.removeUserRole(md.Id, role.RoleId) == true)
+                        await vm.assignUserRole(md.Id, newRole);
+                }
+            }
+        }
+
+        private async void ComboBox_Loaded(object sender, RoutedEventArgs e)
+        {
+            if ((sender as ComboBox).Parent != null)
+            {
+                UserModel md = ((sender as ComboBox).Parent as Grid).DataContext as UserModel;
+                ProjectRoleModel role = await vm.getUserRole(md.Id);
+                if (role != null)
+                    (sender as ComboBox).SelectedValue = role.RoleId;
+            }
         }
     }
 }

@@ -181,8 +181,6 @@ namespace GrappBox.View
             }
             else
             {
-                vm.UserAssignedList = null;
-                vm.UserNonAssignedList = null;
                 Update.Visibility = Visibility.Collapsed;
                 Add.Visibility = Visibility.Visible;
             }
@@ -240,40 +238,6 @@ namespace GrappBox.View
                 default:
                     break;
             }
-        }
-
-        private async void Remove_Click(object sender, RoutedEventArgs e)
-        {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
-            vm.UserAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
-            await vm.removeUserRole();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
-        }
-
-        private async void Add_Click(object sender, RoutedEventArgs e)
-        {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
-            vm.UserNonAssignedSelected = (sender as Button).DataContext as ProjectUserModel;
-            await vm.assignUserRole();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
-        }
-
-        private void userAssign_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.UserAssignedSelected = (sender as ListBox).SelectedItem as ProjectUserModel;
-        }
-
-        private void userNonAssign_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            vm.UserNonAssignedSelected = (sender as ListBox).SelectedItem as ProjectUserModel;
         }
 
         private async void Update_Click(object sender, RoutedEventArgs e)
@@ -390,20 +354,6 @@ namespace GrappBox.View
                 vm.Cloud = 1;
             else
                 vm.Cloud = 2;
-        }
-
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            int num = Pivot.SelectedIndex;
-
-            if (num == 0)
-            {
-                CB.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                CB.Visibility = Visibility.Collapsed;
-            }
         }
 
         private void MenuButton_Click(object sender, RoutedEventArgs e)

@@ -2,13 +2,61 @@
     x:Class="GrappBox.View.ProjectSettingsView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Grappbox.View"
+    xmlns:local="using:GrappBox.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:customControl="using:GrappBox.CustomControler"
+    xmlns:root="using:GrappBox.ViewModel"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <!-- Default style for Windows.UI.Xaml.Controls.ListViewItem -->
+        <Style TargetType="ListViewItem">
+            <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+            <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
+            <Setter Property="TabNavigation" Value="Local"/>
+            <Setter Property="IsHoldingEnabled" Value="True"/>
+            <Setter Property="Padding" Value="12,0,12,0"/>
+            <Setter Property="HorizontalContentAlignment" Value="Left"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+            <Setter Property="MinWidth" Value="{ThemeResource ListViewItemMinWidth}"/>
+            <Setter Property="MinHeight" Value="{ThemeResource ListViewItemMinHeight}"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <ListViewItemPresenter
+          ContentTransitions="{TemplateBinding ContentTransitions}"
+          SelectionCheckMarkVisualEnabled="True"
+          CheckBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+          CheckBoxBrush="{ThemeResource SystemControlForegroundBaseMediumHighBrush}"
+          DragBackground="{ThemeResource ListViewItemDragBackgroundThemeBrush}"
+          DragForeground="{ThemeResource ListViewItemDragForegroundThemeBrush}"
+          FocusBorderBrush="{ThemeResource SystemControlForegroundAltHighBrush}"
+          FocusSecondaryBorderBrush="{ThemeResource SystemControlForegroundBaseHighBrush}"
+          PlaceholderBackground="{ThemeResource ListViewItemPlaceholderBackgroundThemeBrush}"
+          PointerOverBackground="{ThemeResource SystemControlHighlightListLowBrush}"
+          PointerOverForeground="{ThemeResource SystemControlHighlightAltBaseHighBrush}"
+          SelectedBackground="{StaticResource RedGrappboxBrush}"
+          SelectedForeground="{StaticResource White1GrappboxBrush}"
+          SelectedPointerOverBackground="{ThemeResource SystemControlHighlightListAccentMediumBrush}"
+          PressedBackground="{StaticResource RedGrappboxBrush}"
+          SelectedPressedBackground="{StaticResource RedGrappboxBrush}"
+          DisabledOpacity="{ThemeResource ListViewItemDisabledThemeOpacity}"
+          DragOpacity="{ThemeResource ListViewItemDragThemeOpacity}"
+          ReorderHintOffset="{ThemeResource ListViewItemReorderHintThemeOffset}"
+          HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+          VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+          ContentMargin="{TemplateBinding Padding}"
+          CheckMode="Inline"/>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Page.Resources>
+    
     <Page.BottomAppBar>
         <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
@@ -34,96 +82,113 @@
                     <RowDefinition Height="65"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <StackPanel x:Name="Menubar" ManipulationMode="TranslateX" Grid.Row="0" Orientation="Horizontal" Background="{StaticResource YellowGrappboxBrush}">
-                    <Button x:Name="MenuButton" Width="48" Height="48" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MenuButtonStyle}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Foreground="{StaticResource Black2GrappboxBrush}" Click="MenuButton_Click"/>
-                    <TextBlock Margin="15,0,0,0" FontSize="24" Text="Project settings" Foreground="{StaticResource Black2GrappboxBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+                <StackPanel x:Name="Menubar" ManipulationMode="TranslateX" Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappboxBrush}">
+                    <Button x:Name="MenuButton" Width="48" Height="48" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MenuButtonStyle}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Foreground="{StaticResource White1GrappboxBrush}" Click="MenuButton_Click"/>
+                    <TextBlock Margin="15,0,0,0" FontSize="24" Text="Project settings" Foreground="{StaticResource White1GrappboxBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" />
                 </StackPanel>
                 <Grid Grid.Row="1">
                     <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                    <Pivot Name="PivotPS" Background="{StaticResource Grey3GrappboxBrush}" SelectionChanged="Pivot_SelectionChanged">
-                        <PivotItem Header="Settings" VerticalAlignment="Stretch" Background="{StaticResource Grey1GrappboxBrush}">
-                        <StackPanel ScrollViewer.BringIntoViewOnFocusChange="True" ScrollViewer.VerticalScrollMode="Auto" ScrollViewer.IsDeferredScrollingEnabled="True" Margin="15">
-                            <!--<StackPanel.Resources>
-                                        <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
-                                    </StackPanel.Resources>-->
+                    <Pivot Name="PivotPS" SelectionChanged="Pivot_SelectionChanged">
+                        <PivotItem Margin="0" VerticalAlignment="Stretch">
+                            <PivotItem.Header>
+                                <customControl:TabHeader Label="Settings" Glyph="&#xE115;"/>
+                            </PivotItem.Header>
+                            <ScrollViewer>
+                                <StackPanel Margin="15">
+                                    <StackPanel.Resources>
+                                        <Style TargetType="TextBox">
+                                            <Setter Property="Margin" Value="0,5,0,15"/>
+                                            <Setter Property="FontSize" Value="15"/>
+                                        </Style>
+                                    </StackPanel.Resources>
 
-                            <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
 
-                            <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="ProjectName" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
+                                    <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="ProjectName" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="ProjectDescription" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                                    <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="ProjectDescription" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
 
-                            <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100"/>
-                                <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
-                                <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100"/>
-                            </Grid>
+                                    <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+                                        <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100"/>
+                                        <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
+                                        <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100"/>
+                                    </Grid>
 
-                            <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
+                                    <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
+                                    <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="Mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress"/>
+                                    <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="Mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress"/>
 
-                            <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
+                                    <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}"/>
 
-                            <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
-                            <TextBox Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
+                                    <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15"/>
+                                    <TextBox Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
 
-                            <StackPanel Name="NewPassword" Visibility="Collapsed">
-                                <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
-                                <PasswordBox x:Name="password" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
-                            </StackPanel>
-                            <StackPanel Name="UpdatePassword" Visibility="Collapsed">
-                                <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" FontFamily="Segoe WP" FontSize="15"/>
-                                <PasswordBox x:Name="oldPassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" FontFamily="Segoe WP" FontSize="15"/>
-                                <PasswordBox x:Name="newPassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
-                                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" FontFamily="Segoe WP" FontSize="15"/>
-                                <PasswordBox x:Name="retypePassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
-                            </StackPanel>
-                        </StackPanel>
-                    </PivotItem>
-                    <PivotItem Name="User" Header="Users">
+                                    <StackPanel Name="NewPassword" Visibility="Collapsed">
+                                        <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
+                                        <PasswordBox x:Name="password" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
+                                    </StackPanel>
+                                    <StackPanel Name="UpdatePassword" Visibility="Collapsed">
+                                        <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17"/>
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" FontFamily="Segoe WP" FontSize="15"/>
+                                        <PasswordBox x:Name="oldPassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" FontFamily="Segoe WP" FontSize="15"/>
+                                        <PasswordBox x:Name="newPassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
+                                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" FontFamily="Segoe WP" FontSize="15"/>
+                                        <PasswordBox x:Name="retypePassword" BorderBrush="Transparent" VerticalAlignment="Stretch"/>
+                                    </StackPanel>
+                                </StackPanel>
+                            </ScrollViewer>
+                        </PivotItem>
+                        <PivotItem Name="User">
+                            <PivotItem.Header>
+                                <customControl:TabHeader Label="Users" Glyph="&#xE125;" />
+                            </PivotItem.Header>
                             <StackPanel Margin="15">
-                                <ListBox x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
-                                    <ListBox.ItemTemplate>
+                                <ListView x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                                <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                            <Grid Margin="0,0,0,10">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*"/>
+                                                    <RowDefinition Height="*"/>
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                    <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+                                                </StackPanel>
+                                                <ComboBox Grid.Row="1" ItemsSource="{Binding DataContext.RoleList,ElementName=userListView}" DisplayMemberPath="Name" SelectedValuePath="RoleId" SelectionChanged="ComboBox_SelectionChanged" Loaded="ComboBox_Loaded"/>
                                             </Grid>
                                         </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                                <Grid>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Grid Margin="0,20,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="8*"/>
                                         <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="UserMail" Grid.Column="0" PlaceholderText="Email"/>
-                                    <Button Content="Add" Click="AddUser_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                                    <TextBox x:Name="UserMail" FontSize="15" Margin="0,0,5,0" PlaceholderText="Email" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                    <Button Content="Add" FontSize="15" Margin="5,0,0,0" Click="AddUser_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                                 </Grid>
                             </StackPanel>
                         </PivotItem>
-                        <PivotItem Name="CustomerAccess" Header="Customer access">
+                        <PivotItem Name="CustomerAccess">
+                            <PivotItem.Header>
+                                <customControl:TabHeader Label="Customer access" Glyph="&#xE136;" />
+                            </PivotItem.Header>
                             <StackPanel Margin="15">
-                                <ListBox x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
-                                    <ListBox.ItemTemplate>
+                                <ListView x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid>
+                                            <Grid Margin="0,0,0,10">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition Width="*" />
                                                     <ColumnDefinition Width="*" />
@@ -132,28 +197,31 @@
                                                 <TextBlock Text="{Binding Token}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
                                             </Grid>
                                         </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                                <Grid>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Grid Margin="0,20,0,0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="8*"/>
                                         <ColumnDefinition Width="2*"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBox x:Name="CustomerName" Grid.Column="0" PlaceholderText="Customer name"/>
-                                    <Button Content="Add" Click="AddCU_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                                    <TextBox x:Name="CustomerName" FontSize="15" Margin="0,0,5,0" PlaceholderText="Customer name" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
+                                    <Button Content="Add" FontSize="15" Margin="5,0,0,0" Click="AddCU_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                                 </Grid>
                             </StackPanel>
                         </PivotItem>
-                        <PivotItem Name="Roles" Header="Roles">
+                        <PivotItem Name="Roles">
+                            <PivotItem.Header>
+                                <customControl:TabHeader Label="Roles" Glyph="&#xE192;" />
+                            </PivotItem.Header>
                             <StackPanel Margin="15">
-                                <ListBox x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
-                                    <ListBox.ItemTemplate>
+                                <ListView x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
+                                    <ListView.ItemTemplate>
                                         <DataTemplate>
                                             <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
                                         </DataTemplate>
-                                    </ListBox.ItemTemplate>
-                                </ListBox>
-                                <Button Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Center" Width="70" Height="50" MinWidth="70" MinHeight="60"/>
+                                    </ListView.ItemTemplate>
+                                </ListView>
+                                <Button Margin="0,20,0,0" Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center"/>
                             </StackPanel>
                         </PivotItem>
                     </Pivot>

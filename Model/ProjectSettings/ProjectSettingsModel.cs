@@ -6,38 +6,17 @@ namespace GrappBox.Model
 {
     class ProjectSettingsModel : ViewModelBase
     {
-        private int _id;
-        private string _name;
-        private string _description;
-        private string _phone;
-        private string _company;
-        private string _contactMail;
-        private string _facebook;
-        private string _twitter;
-        private string _color;
-        private string _creationDate;
-        private string _deletedAt;
-
         [JsonProperty("id")]
-        public int Id
-        {
-            get { return _id; }
-            set { _id = value; }
-        }
+        public int Id { get; set; }
 
         [JsonProperty("name")]
-        public string Name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
+        public string Name { get; set; }
 
         [JsonProperty("description")]
-        public string Description
-        {
-            get { return _description; }
-            set { _description = value; }
-        }
+        public string Description { get; set; }
+
+        [JsonProperty("creator")]
+        public UserModel Creator { get; set; }
 
         [JsonProperty("logo")]
         public string LogoDate { get; set; }
@@ -45,60 +24,28 @@ namespace GrappBox.Model
         public string LogoString { get; set; }
 
         [JsonProperty("phone")]
-        public string Phone
-        {
-            get { return _phone; }
-            set { _phone = value; }
-        }
+        public string Phone { get; set; }
 
         [JsonProperty("company")]
-        public string Company
-        {
-            get { return _company; }
-            set { _company = value; }
-        }
+        public string Company { get; set; }
 
         [JsonProperty("contact_mail")]
-        public string ContactMail
-        {
-            get { return _contactMail; }
-            set { _contactMail = value; }
-        }
+        public string ContactMail { get; set; }
 
         [JsonProperty("facebook")]
-        public string Facebook
-        {
-            get { return _facebook; }
-            set { _facebook = value; }
-        }
+        public string Facebook { get; set; }
 
         [JsonProperty("twitter")]
-        public string Twitter
-        {
-            get { return _twitter; }
-            set { _twitter = value; }
-        }
+        public string Twitter { get; set; }
 
         [JsonProperty("color")]
-        public string Color
-        {
-            get { return _color; }
-            set { _color = value; }
-        }
+        public string Color { get; set; }
 
-        [JsonProperty("creation_date")]
-        public string CreationDate
-        {
-            get { return _creationDate; }
-            set { _creationDate = value; }
-        }
+        [JsonProperty("created_at")]
+        public string CreatedAt { get; set; }
 
         [JsonProperty("deleted_at")]
-        public string DeletedAt
-        {
-            get { return _deletedAt; }
-            set { _deletedAt = value; }
-        }
+        public string DeletedAt { get; set; }
         
         public BitmapImage Logo { get; set; }
 
@@ -148,15 +95,5 @@ namespace GrappBox.Model
         //    string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
         //    Logo = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         //}
-        public ProjectSettingsModel()
-        {
-            _name = "";
-            _description = "";
-            _phone = "";
-            _company = "";
-            _contactMail = "";
-            _facebook = "";
-            _twitter = "";
-        }
     }
 }

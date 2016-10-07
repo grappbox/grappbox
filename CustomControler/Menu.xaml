@@ -74,7 +74,7 @@
 
             <StackPanel x:Name="ProjectSettingsPanel" Orientation="Horizontal">
                 <Image Source="/Assets/folder.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                <Button Style="{StaticResource LeftMenuButton}" x:Name="ProjectSettingsButton" MinHeight="33" Content="Project Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                <Button Style="{StaticResource LeftMenuButton}" x:Name="ProjectSettingsButton" MinHeight="33" Content="Project Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0" Click="ProjectSettingsButton_Click"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
