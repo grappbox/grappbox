@@ -735,9 +735,8 @@ class RoleController extends RolesAndTokenVerificationController
 				if ($r->getId() == $id)
 					$isSame = true;
 			}
-			if ($isSame == true)
-				break;
-			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Role name already register for this project");
+			if ($isSame == false)
+				return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Role name already register for this project");
 		}
 
 		if (array_key_exists('name', $content))
