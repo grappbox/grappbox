@@ -85,7 +85,8 @@ app.config(["NotificationProvider", function(NotificationProvider) {
 
 // Controller definition
 // GrappBox (main)
-app.controller("grappboxController", ["$rootScope", "$scope", "localStorageService", "$location", function($rootScope, $scope, localStorageService, $location) {
+app.controller("grappboxController", ["$rootScope", "$scope", "localStorageService", "$location",
+    function($rootScope, $scope, localStorageService, $location) {
 
   $scope.app = { routeList: "", iconList: "" };
 
