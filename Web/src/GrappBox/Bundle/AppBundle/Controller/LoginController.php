@@ -106,7 +106,13 @@ class LoginController extends Controller
   {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/user/basicinformations/".$token);
+    $header = array();
+    $header[] = "Content-length: 0";
+    $header[] = "Content-type: application/json";
+    $header[] = "Authorization: ".$token;
+
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/user");
+    curl_setopt($data, CURLOPT_HTTPHEADER, $header);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
 
