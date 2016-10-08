@@ -76,6 +76,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <h4>Containers</h4>
                   <a class="btn btn-raised" data-ng-click="expandAll()">Expand all</a>
                   <a class="btn btn-raised" data-ng-click="collapseAll()">Collapse all</a>
+                  <a class="btn btn-raised" data-ng-click="reload()">Reload all</a>
                   <!-- <button class="btn btn-default btn-raised" data-ng-click="reload()">Refresh data</button> -->
                 </div>
               </div>
@@ -88,7 +89,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
       <div class="well">
         <div gantt
-             data="options.data"
+             data="data.gantt"
              show-side="options.labelsEnabled"
              daily="options.daily"
              filter-task="{'name': options.filterTask}"
@@ -153,3 +154,68 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </div>
 </section>
+
+<!-- gantt: task edition modal -->
+<div>
+  <script type="text/ng-template" id="modal_editTask.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTaskEdition()">×</button>
+      <h4 class="modal-title">Task edition</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="edit-task-title" class="col-md-1 control-label">Title</label>
+            <div class="col-md-11">
+              <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="edit-task-description" class="col-md-1 control-label">Description</label>
+            <div class="col-md-11">
+              <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
+            </div>
+          </div>
+
+          <div class="form-group" data-ng-if="data.edit.type == 'regular'">
+            <label for="edit-task-progress" class="col-md-1 control-label">Progress</label>
+            <div class="col-md-11">
+              <select id="edit-task-progress" class="form-control" data-ng-model="data.edit.advance" convert-to-number>
+                <option value="">None</option>
+                <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
+              </select>
+            </div>
+          </div>
+          <!-- <div class="form-group {[{ error.date_begin ? 'has-error' : '' }]}">
+            <label for="edit-event-begin-date" class="col-md-1 control-label">Begin date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="edit-event-begin-date" data-ng-model="edit.date.begin" placeholder="Begin date">
+            </div>
+          </div>
+          <div class="form-group {[{ error.date_end ? 'has-error' : '' }]}">
+            <label for="edit-event-end-date" class="col-md-1 control-label">End date</label>
+            <div class="col-md-11">
+              <input type="datetime-local" class="form-control" id="edit-event-end-date" data-ng-model="edit.date.end" placeholder="End date">
+            </div>
+          </div> -->
+
+          <!-- <div class="form-group {[{ error.members ? 'has-error' : '' }]}">
+            <label for="edit-event-members" class="col-md-1 control-label">Members</label>
+            <div class="col-md-11">
+              <div class="multi-select">
+                <select class="form-control" id="edit-event-members" multiple="true" data-ng-options="member.name for member in current.members track by member.name" data-ng-model="edit.members"></select>
+              </div>
+            </div>
+          </div> -->
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmTaskEdition()">Update</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelTaskEdition()">Cancel</button>
+    </div>
+  </script>
+</div>
+
+</div>

@@ -10,7 +10,8 @@
 *
 */
 
-app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", 'ganttUtils', 'ganttMouseOffset', 'moment', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, utils, mouseOffset, moment) {
+app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", 'ganttUtils', 'ganttMouseOffset', 'moment', "$uibModal",
+function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, utils, mouseOffset, moment, $uibModal) {
 
 
   // ------------------------------------------------------
@@ -64,12 +65,15 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
     var elem = {};
     var dep = {};
     angular.forEach($scope.data.tasks, function(value, key) {
-      console.log('-----------------------------------');
-      console.log(value.id+': '+value.title);
+
       if (!value.is_milestone && !value.is_container) {
-        console.log("regular");
+        console.log('-----------------------------------');
+        console.log(value.id+': '+value.title);
         elem = {id: value.id,
                 name: value.title,
+                description: value.description,
+                progress: value.advance,
+                type: "regular",
                 from: new Date(value.started_at.date),
                 to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
                 tasks: [
@@ -78,7 +82,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
                   color: "#BDBDBD",
                   from: new Date(value.started_at.date),
                   to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
-                  progress: value.advance
+                  progress: value.advance,
                   }
                 ]
               };
@@ -88,23 +92,40 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
         angular.forEach(value.dependencies, function(value2, key2) {
           switch (value2.name) {
             case 'fs':
-              dep = {to: value2.id};
+              dep = {from: value2.id,
+                     connectParameters: { }
+                    };
               this.push(dep);
+              console.log("fs with "+value2.title);
               break;
             case 'sf':
-              dep = {from: value2.id};
+              dep = {to: value2.id,
+                     type: "sf",
+                     connectParameters: { } // Parameters given to jsPlumb.connect() function call.
+                    };
               this.push(dep);
+              console.log("sf with "+value2.title);
               break;
             case 'ss':
-
+              dep = {from: value2.id,
+                     type: "ss",
+                     connectParameters: { } // Parameters given to jsPlumb.connect() function call.
+                    };
+              this.push(dep);
+              console.log("ss with "+value2.title);
               break;
             case 'ff':
-
+              dep = {from: value2.id,
+                     type: "ff",
+                     connectParameters: { } // Parameters given to jsPlumb.connect() function call.
+                    };
+              this.push(dep);
+              console.log("ff with "+value2.title);
               break;
             default:
               dep = {from: value2.id,
-                     connectParameters: {} // Parameters given to jsPlumb.connect() function call.
-                   };
+                     connectParameters: { } // Parameters given to jsPlumb.connect() function call.
+                    };
               this.push(dep);
               break;
           }
@@ -112,9 +133,10 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
 
       }
       else if (value.is_milestone) {
-        console.log("milestone");
         elem = {id: value.id,
                 name: value.title,
+                description: value.description,
+                type: "milestone",
                 from: new Date(value.due_date.date),
                 to: new Date(value.due_date.date),
                 tasks: [
@@ -122,19 +144,18 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
                   name: value.title,
                   color: "#44BBFF",
                   from: new Date(value.due_date.date),
-                  to: new Date(value.due_date.date)}
-                  ]
-                };
+                  to: new Date(value.due_date.date)
+                  }
+                ]
+              };
       }
       else if (value.is_container) {
-        console.log("container");
         elem = {id: value.id,
                 name: value.title,
-                //from: new Date(value.started_at.date),
-                //to: new Date(value.due_date.date),
-                //color: "#FC575E",
+                description: value.description,
+                type: "container",
                 children: []
-                };
+              };
         angular.forEach(value.tasks, function (value2, key2) {
           this.push(value2.id);
         }, elem.children);
@@ -229,7 +250,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       currentDate: 'column', // ['none', 'line', 'column']
       currentDateValue: new Date(2016, 8, 2, 11, 20, 0),
       daily: true,
-      data: $scope.data.gantt,
+      //data: $scope.data.gantt,
       draw: false,
       dependencies: true,
       filterTask: '',
@@ -248,7 +269,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       toDate: "",
       treeHeaderContent: '<i class="material-icons" style="font-size:14px">storage</i> {[{getHeader()}]}',
       treeTableColumns: ['from', 'to'],
-      width: true,
+      width: false,
       zoom: 1,
       canDraw: function(event) {
           var isLeftMouseButton = event.button === 0 || event.button === 1;
@@ -284,9 +305,11 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
               api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
               api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
 
-              api.data.on.change($scope, function(newData) {
-                  console.info('[api.data.on.change] :' + newData);
-              });
+              // api.data.on.change($scope, function(newData) {
+              //     console.info('[api.data.on.change] :' + newData);
+              // });
+
+              //$scope.load();
 
               // Add some DOM events
               api.directives.on.new($scope, function(directiveName, directiveScope, element) {
@@ -303,6 +326,7 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
                   } else if (directiveName === 'ganttRowLabel') {
                       element.bind('click', function() {
                           logRowEvent('row-label-click', directiveScope.row);
+                          onEditTask(directiveScope.row.model);
                       });
                   }
               });
@@ -358,9 +382,79 @@ app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$htt
       return 40 * zoom;
   };
 
-  $scope.reload = function() {
+  $scope.load = function() {
     $scope.data.gantt = [];
     getTask();
+  }
+
+  $scope.reload = function() {
+    $scope.load();
+  }
+
+
+  // ------------------------------------------------------
+  //              MODAL MANAGEMENT
+  // ------------------------------------------------------
+
+  // "Edit task" button handler
+  var onEditTask = function(row) {
+    console.info(row);
+
+    $scope.data.edit = { id: row.id, title: row.name, description: row.description, advance: row.progress, type: row.type};
+
+    var modal_editTask = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_editTask.html", controller: "modal_editTask" });
+
+    modal_editTask.result.then(
+      function onModalConfirm() {
+        var elem = {"token": $rootScope.user.token,
+                    "taskId": $scope.data.edit.id,
+                    "title": $scope.data.edit.title,
+                    "description": $scope.data.edit.description,
+                    "advance": $scope.data.edit.advance
+                    };
+
+        if ($scope.data.edit.advance == 100)
+          elem['finished_at'] = new Date();
+        else if ($scope.data.edit.advance < 100)
+          elem['finished_at'] = null;
+
+        var data = {"data": elem};
+
+        $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+          .then(function successCallback(response) {
+            $scope.reload();
+          },
+          function errorCallback(response) {
+            Notification.warning({ message: "Unable to update task. Please try again.", delay: 5000 });
+            $scope.reload();
+          })
+      },
+      function onModalDismiss() { }
+    );
   };
 
+
+}]);
+
+
+/**
+* Controller definition (from view)
+* TASK EDITION => task message form.
+*
+*/
+app.controller("modal_editTask", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.error = { title: false, description: false };
+
+  $scope.modal_confirmTaskEdition = function() {
+    $scope.error.title = ($scope.data.edit.title && $scope.data.edit.title.length > 0 ? false : true);
+
+    var hasErrors = false;
+    angular.forEach($scope.error, function(value, key) {
+      if (value)
+        hasErrors = true;
+    });
+    if (!hasErrors)
+      $uibModalInstance.close();
+  };
+  $scope.modal_cancelTaskEdition = function() { $uibModalInstance.dismiss(); };
 }]);

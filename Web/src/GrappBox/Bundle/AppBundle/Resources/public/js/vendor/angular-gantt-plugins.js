@@ -1743,6 +1743,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
 
             this.dependenciesFrom = {};
             this.dependenciesTo = {};
+            this.dependenciesWith = {}; // TODO with dependencies
 
             this.tasksList = [];
             this.tasks = {};
@@ -1833,7 +1834,6 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 if (fromTaskId) {
                     this.dependenciesFrom[fromTaskId].push(dependency);
                 }
-
                 if (toTaskId) {
                     this.dependenciesTo[toTaskId].push(dependency);
                 }
@@ -2047,13 +2047,24 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 return self.tasks[taskId];
             };
 
-            var getSourceEndpoints = function(task) {
+            var getSourceEndpoints = function(task, model = null) {
+                if (model && model.type && (model.type == 'sf' || model.type == 'ss')) {
+                  return task.dependencies.endpoints.filter(function(endpoint) {
+                      return endpoint.isTarget;
+                  });
+                }
+
                 return task.dependencies.endpoints.filter(function(endpoint) {
                     return endpoint.isSource;
                 });
             };
 
-            var getTargetEndpoints = function(task) {
+            var getTargetEndpoints = function(task, model = null) {
+              if (model && model.type && (model.type == 'sf'|| model.type == 'ff')) {
+                return task.dependencies.endpoints.filter(function(endpoint) {
+                    return endpoint.isSource;
+                });
+              }
                 return task.dependencies.endpoints.filter(function(endpoint) {
                     return endpoint.isTarget;
                 });
@@ -2068,8 +2079,8 @@ Github: https://github.com/angular-gantt/angular-gantt.git
              * @returns connection object
              */
             this.connect = function(fromTask, toTask, model) {
-                var sourceEndpoints = getSourceEndpoints(fromTask);
-                var targetEndpoints = getTargetEndpoints(toTask);
+                var sourceEndpoints = getSourceEndpoints(fromTask, model);
+                var targetEndpoints = getTargetEndpoints(toTask, model);
                 if (sourceEndpoints && targetEndpoints) {
                     var sourceEndpoint;
                     var targetEndpoint;
@@ -2281,7 +2292,12 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 }
 
                 if (fromTask && toTask) {
-                    var connection = this.manager.connect(fromTask, toTask, this.model);
+
+                    if (this.model.type == 'sf') {
+                      var connection = this.manager.connect(toTask, fromTask, this.model);
+                    } else {
+                      var connection = this.manager.connect(fromTask, toTask, this.model);
+                    }
                     if (connection) {
                         connection.$dependency = this;
                         this.connection = connection;
