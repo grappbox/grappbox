@@ -16,11 +16,12 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use BrowscapPHP\Browscap;
 
 class LoginController extends Controller
 {
   private $api_baseURL = "https://api.grappbox.com/";
-  private $api_version = "V0.2";
+  private $api_version = "0.3";
   private $cookies;
 
 
@@ -55,7 +56,7 @@ class LoginController extends Controller
   {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/accountadministration/login");
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/account/login");
     curl_setopt($data, CURLOPT_POST, 1);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
@@ -145,6 +146,9 @@ class LoginController extends Controller
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
 
+    $browscap = new Browscap();
+    $browserData = $browscap->getBrowser();
+
     if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
       return $this->setLoginState(base64_decode($cookieData->get("TOKEN")));
 
@@ -160,7 +164,11 @@ class LoginController extends Controller
     if ($form->isValid())
       return $this->getLoginData(json_encode(array("data" => array(
         "login" => strtolower($form["email"]->getData()),
-        "password" => $form["password"]->getData()))));
+        "password" => $form["password"]->getData(),
+        "is_client" => false,
+        "mac" => null,
+        "flag" => "web",
+        "device_name" => $browserData->parent))));        
 
     return $this->render("AppBundle:Home:login.html.twig", array("form" => $form->createView()));   
   }

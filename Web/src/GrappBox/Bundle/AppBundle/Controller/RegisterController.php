@@ -151,7 +151,7 @@ class RegisterController extends Controller
         "is_client" => false,
         "mac" => null,
         "flag" => "web",
-        "device_name" => $form["firstname"]->getData()." on ".$browserData->parent))));
+        "device_name" => $browserData->parent))));
     }
 
     return $this->render("AppBundle:Home:register.html.twig", array("form" => $form->createView()));   

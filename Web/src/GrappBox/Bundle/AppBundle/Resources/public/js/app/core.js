@@ -57,13 +57,13 @@ app.config(["$httpProvider", function($httpProvider) {
 }]);
 
 // Local storage settings
-app.config(function(localStorageServiceProvider) {
+app.config(["localStorageServiceProvider", function(localStorageServiceProvider) {
   localStorageServiceProvider
     .setPrefix("GRAPPBOX_")
     .setStorageCookie(30, "/")
     .setStorageType("localStorage")
     .setNotify(true, true);
-});
+}]);
 
 // Bootstrap notifications settings
 app.config(["NotificationProvider", function(NotificationProvider) {

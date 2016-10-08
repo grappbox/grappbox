@@ -20,22 +20,23 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
       <div data-ng-if="!view.onLoad">
         <div data-ng-if="view.valid && projects">
-          <div class="each-data col-md-4" data-ng-repeat="project in projects">
+          <div class="each-data col-md-3" data-ng-repeat="project in projects">
             <div class="well">
               <ul>
-                <li class="col-xs-offset-2 avatar" data-ng-if="!project.project_logo">
-                  <img data-ng-src="../resources/images/default-logo.min.png" height="120" width="120">
+                <li class="col-xs-offset-2 avatar" data-ng-if="!project.logo">
+                  <img data-ng-src="resources/img/default_logo.min.png" height="120" width="120">
                 </li>
-                <li class="col-xs-offset-2 avatar" data-ng-if="project.project_logo">
-                  <img data-ng-src="data:image/png;base64,{[{ project.project_logo }]}" data-err-src="../resources/images/default-logo.min.png" height="120" width="120">
+                <li class="col-xs-offset-2 avatar" data-ng-if="project.logo">
+                  <!-- <img data-ng-src="data:image/png;base64,{[{ project.logo }]}" data-err-src="resources/img/default_logo.min.png" height="120" width="120"> -->
+                  <img data-ng-src="resources/img/default_logo.min.png" height="120" width="120">
                 </li>
-                <li class="col-xs-offset-2 ellipsis title">"{[{ project.project_name }]}"</li>
+                <li class="col-xs-offset-2 ellipsis title">"{[{ project.name }]}"</li>
                 <li class="col-xs-offset-2"><i class="material-icons">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</li>
                 <li class="col-xs-offset-2"><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
                 <li class="col-xs-offset-2"><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
               </ul>
               <a href="" title="Use this project" class="btn btn-default" data-ng-click="method.loadProject(project)">Open</a>
-              <a href="settings/{[{ project.project_id }]}" title="Edit this project" class="btn">Edit</a>
+              <a href="settings/{[{ project.id }]}" title="Edit this project" class="btn">Edit</a>
               <div class="clearfix"></div>
             </div>
           </div>
