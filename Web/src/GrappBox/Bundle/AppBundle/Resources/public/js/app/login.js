@@ -26,7 +26,7 @@ redirectOnLogin["$inject"] = ["$q", "$location"];
 var redirectOnLogout = function($q, $http, $rootScope, $cookies, localStorageService, $window) {
 	var deferred = $q.defer();
 
-	$http.get($rootScope.api.url + "/account/logout", headers: { 'Authorization': $rootScope.user.token }).then(
+	$http.get($rootScope.api.url + "/account/logout", { headers: { 'Authorization': $rootScope.user.token }}).then(
 		function onLogoutSuccess() {
 	    $cookies.remove("LOGIN", { path: "/" });
 	    $cookies.remove("TOKEN", { path: "/" });

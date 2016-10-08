@@ -71,7 +71,7 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
 
     if (!$cookies.get("LOGIN") || !$cookies.get("ID")) {
       if ($cookies.get("TOKEN"))
-        $http.get($rootScope.api.url + "/account/logout", headers: { 'Authorization': $rootScope.user.token });
+        $http.get($rootScope.api.url + "/account/logout", { headers: { 'Authorization': $rootScope.user.token }});
       $rootScope.onUserTokenError();
     }
   });
@@ -83,7 +83,7 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
       $rootScope.page.title = current.$$route.title;
       $rootScope.page.isHome = current.$$route.homepage;
     }
-    $http.get($rootScope.api.url + "/user", headers: { 'Authorization': $rootScope.user.token }).then(
+    $http.get($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetBasicInformationsSuccess(response) {
         var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
 

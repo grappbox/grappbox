@@ -42,7 +42,7 @@ app.controller("dashboardListController", ["$rootScope", "$scope", "localStorage
   /* ==================== GLOBAL PROGRESS ==================== */
 
   // Get user current projects (and progress)
-  $http.get($rootScope.api.url + "/dashboard/projects", headers: { 'Authorization': $rootScope.user.token }).then(
+  $http.get($rootScope.api.url + "/dashboard/projects", { headers: { 'Authorization': $rootScope.user.token }}).then(
     function onGetGlobalProgressSuccess(response) {
       if (response.data.info && response.data.info.return_code == "1.2.1")
         $scope.projects = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
