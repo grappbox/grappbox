@@ -115,6 +115,7 @@ namespace GrappBox.View
                     statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
                 }
             }
+            PivotPS.SelectedIndex = 0;
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
@@ -182,6 +183,7 @@ namespace GrappBox.View
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             this.navigationHelper.OnNavigatedFrom(e);
+            vm.RoleList = null;
         }
         #endregion
 
@@ -502,14 +504,16 @@ namespace GrappBox.View
 
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if ((sender as ComboBox).Parent != null)
+            var parent = (sender as ComboBox).Parent;
+            var value = (sender as ComboBox).SelectedValue;
+            if (parent != null && value != null)
             {
-                UserModel md = ((sender as ComboBox).Parent as Grid).DataContext as UserModel;
-                ProjectRoleModel role = await vm.getUserRole((((sender as ComboBox).Parent as Grid).DataContext as UserModel).Id);
-                int newRole = (int)(sender as ComboBox).SelectedValue;
+                UserModel md = (parent as Grid).DataContext as UserModel;
+                ProjectRoleModel role = await vm.getUserRole(((parent as Grid).DataContext as UserModel).Id);
+                int newRole = (int)value;
                 if (role.RoleId != newRole)
                 {
-                    if (await vm.removeUserRole(md.Id, role.RoleId) == true)
+                    if (role.RoleId == 0 || await vm.removeUserRole(md.Id, role.RoleId) == true)
                         await vm.assignUserRole(md.Id, newRole);
                 }
             }
@@ -517,13 +521,10 @@ namespace GrappBox.View
 
         private async void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if ((sender as ComboBox).Parent != null)
-            {
-                UserModel md = ((sender as ComboBox).Parent as Grid).DataContext as UserModel;
-                ProjectRoleModel role = await vm.getUserRole(md.Id);
-                if (role != null)
-                    (sender as ComboBox).SelectedValue = role.RoleId;
-            }
+            UserModel md = (sender as ComboBox).DataContext as UserModel;
+            ProjectRoleModel role = await vm.getUserRole(md.Id);
+            if (role != null)
+                (sender as ComboBox).SelectedValue = role.RoleId;
         }
     }
 }

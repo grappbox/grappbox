@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GrappBox.Model
 {
-    class ProjectRoleModel
+    public class ProjectRoleModel
     {
         [JsonProperty("roleId")]
         public int RoleId { get; set; }

@@ -1,4 +1,6 @@
-﻿using Newtonsoft.Json;
+﻿using GrappBox.ViewModel;
+using Newtonsoft.Json;
+using System.Collections.ObjectModel;
 
 namespace GrappBox.Model
 {
@@ -12,5 +14,12 @@ namespace GrappBox.Model
         public string Lastname { get; set; }
         [JsonProperty("percent")]
         public int Percent { get; set; }
+        public ObservableCollection<ProjectRoleModel> RoleList
+        {
+            get
+            {
+                return ProjectSettingsViewModel.GetViewModel().RoleList;
+            }
+        }
     }
 }

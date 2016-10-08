@@ -621,6 +621,7 @@
             <SolidColorBrush x:Key="ProgressBarIndeterminateForegroundThemeBrush" Color="{StaticResource RedGrappbox}"/>
 
             <SolidColorBrush x:Key="TextSelectionHighlightColorThemeBrush" Color="{StaticResource RedGrappbox}"/>
+            <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="{StaticResource Grey1Grappbox}"/>
 
             <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
         </ResourceDictionary>
