@@ -316,5 +316,5 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== ERROR ==================== */
 /* =============================================== */
 
-#error { width: 100%; min-height: 95%; margin: 0 0 -100px 0; padding-top: 5%; }
+#error { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
 #error .quote { font-size: 12px; font-style: italic; }
