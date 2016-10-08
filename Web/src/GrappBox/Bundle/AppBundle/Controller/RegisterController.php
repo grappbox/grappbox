@@ -18,11 +18,13 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use BrowscapPHP\Browscap;
+
 
 class RegisterController extends Controller
 {
-  private $api_baseURL = "http://api.grappbox.com/";
-  private $api_version = "V0.2";
+  private $api_baseURL = "https://api.grappbox.com/";
+  private $api_version = "0.3";
   private $cookies;
 
 
@@ -69,7 +71,7 @@ class RegisterController extends Controller
   {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/accountadministration/register");
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/account/register");
     curl_setopt($data, CURLOPT_POST, 1);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
@@ -119,6 +121,9 @@ class RegisterController extends Controller
   {
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
+    
+    $browscap = new Browscap();
+    $browserData = $browscap->getBrowser();
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)
@@ -143,7 +148,10 @@ class RegisterController extends Controller
         "email" => strtolower($form["email"]->getData()),
         "password" => $form["password"]->getData(),
         "birthday" => ($form["birthday"]->getData() != null ? date_format($form["birthday"]->getData(), "Y-m-d") : ""),
-        "is_client" => false))));
+        "is_client" => false,
+        "mac" => null,
+        "flag" => "web",
+        "device_name" => $form["firstname"]->getData()." on ".$browserData->parent))));
     }
 
     return $this->render("AppBundle:Home:register.html.twig", array("form" => $form->createView()));   

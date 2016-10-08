@@ -37,7 +37,7 @@ $(document).ready(function() {
         $("#form-message p").text("This email is already registered. Please login to your account, or try with another email adress.");
         break;
 
-        case "_badalert":
+        case "_badlogin":
         $("#form-message p").text("Sorry, GrappBox didn't recognize the email you entered.");
         break;
 

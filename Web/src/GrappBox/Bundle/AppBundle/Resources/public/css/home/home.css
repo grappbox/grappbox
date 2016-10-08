@@ -284,6 +284,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 .footer { background: #333; color: #cccccc; padding: 20px 0; text-align: center; }
 .footer p { font-size: 14px; padding: 10px; }
 .footer.footer-reverse { background: #f0f0f0; color: #333; margin: 20px 0; padding: 0; }
+.footer.footer-reverse p { padding: 0; }
 
 
 
@@ -291,7 +292,11 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== LOGIN ==================== */
 /* =============================================== */
 
-#login { width: 100%; min-height: 95%; margin: 0 0 -100px 0; padding-top: 5%; }
+#login { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
+
+@media (max-width: 640px) {
+  #login .submit { text-align: center; }
+}
 
 
 
@@ -299,10 +304,10 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== REGISTER ==================== */
 /* ================================================== */
 
-#register { width: 100%; min-height: 95%; margin: 0; padding-top: 5%; }
+#register { width: 100%; min-height: 90%; margin: 0; padding-top: 2%; }
 
-@media (min-width: 992px) {
-  #register { margin: 0 0 -80px 0; } 
+@media (max-width: 640px) {
+  #register .submit { text-align: center; }
 }
 
 

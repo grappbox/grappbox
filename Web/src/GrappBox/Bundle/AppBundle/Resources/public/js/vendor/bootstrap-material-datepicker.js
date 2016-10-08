@@ -27,7 +27,7 @@ $.fn.datepicker = function(options) {
   var field = this;
   var picker = $(pickerHtml);
   // insert picker after the field in the DOM
-  $(field).after(picker);
+  $(field).before(picker);
 
   // show picker when field is in focus
   $(field).focus(function() {
@@ -45,19 +45,19 @@ $.fn.datepicker = function(options) {
 
   });
 
-    picker.focusout(function(){
-      $("#form_birthday").parent().removeClass("is-empty");      
-      setTimeout(function() {
-        if (!($(field).is(":focus"))) {
-          picker.addClass('hide');
-        }
-      }, 10);
-    });
+  picker.focusout(function(){
+    $("#form_birthday").parent().removeClass("is-empty");
+    setTimeout(function() {
+      if (!($(field).is(":focus"))) {
+        picker.addClass('hide');
+      }
+    }, 10);
+  });
   
 
   // setup option values
   var defaults = {
-    format: "DD/MM/YYYY",
+    format: "YYYY-MM-DD",
     colour: "#009688"
   };
   var options = $.extend(defaults, options);
@@ -87,7 +87,7 @@ $.fn.datepicker = function(options) {
 
     self.processDate = function(day) {
       if (day) {
-        var date = moment(self.viewingYear() + '-' + self.viewingMonth() + '-' + day);
+        var date = moment(self.viewingYear() + '-' + self.viewingMonth() + '-' + day, "YYYY-MM-DD");
         self.datePickerValue(date);
         var year = self.viewingYear();
         var month = self.viewingMonth();
@@ -110,7 +110,7 @@ $.fn.datepicker = function(options) {
       self.monthStruct.removeAll();
       var month = self.viewingMonth();
       var year = self.viewingYear();
-      var startOfMonth = moment(year + '-' + month + '-01').startOf('month');
+      var startOfMonth = moment(year + '-' + month + '-01', "YYYY-MM-DD").startOf('month');
       var startDay = startOfMonth.format('dddd');
       var startingPoint = startOfMonth.day();
       var daysInMonth = startOfMonth.endOf('month').date();

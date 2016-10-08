@@ -52,6 +52,6 @@ $(document).ready(function() {
   $.material.init();
 
   // Material Design date picker
-  $('#form_birthday').datepicker();
+  $('#form_birthday').datepicker({ "format": "YYYY-MM-DD" });
 
 });
