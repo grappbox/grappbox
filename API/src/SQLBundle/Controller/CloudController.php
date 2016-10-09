@@ -867,7 +867,8 @@ class CloudController extends Controller
 				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
 				return new JsonResponse($response, 206);
 			}
-		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+	 	header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download"), true, 204);
+		return new Response();
 	}
 
 	/**
