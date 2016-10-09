@@ -392,6 +392,10 @@ public class GrappboxContract {
         public static Uri buildBugWithTag(){
             return CONTENT_URI.buildUpon().appendPath("tags").build();
         }
+
+        public static Uri buildBugWithCreator(){
+            return CONTENT_URI.buildUpon().appendEncodedPath("creator").build();
+        }
     }
 
     public static final class BugTagEntry implements BaseColumns {

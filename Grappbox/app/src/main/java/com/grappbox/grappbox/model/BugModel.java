@@ -4,7 +4,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.util.Pair;
 import android.util.Log;
 
 import com.grappbox.grappbox.R;
@@ -13,7 +12,8 @@ import com.grappbox.grappbox.data.GrappboxContract;
 
 import java.text.DateFormat;
 import java.text.ParseException;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -23,16 +23,16 @@ import java.util.Locale;
 public class BugModel implements Parcelable {
     private static final String LOG_TAG = BugModel.class.getSimpleName();
     public int _id;
-    public String grappboxId, title, desc;
+    public String grappboxId, title, date, desc;
     public boolean isClosed;
-
     /*
         The following data are considered as additional data.
         It's recommended to lazy load it.
-        Additional data have to be set with the setAdditionalData function.
      */
     public long assigneeCount, commentsCount;
-    public Collection<Pair<String, String>> tags;
+    public List<BugTagModel> tags;
+    public List<UserModel> assignees;
+    public List<BugCommentModel> comments;
 
     public BugModel(Context context, Cursor cursor){
         isClosed = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)) != null && !cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)).isEmpty();
@@ -40,30 +40,58 @@ public class BugModel implements Parcelable {
         grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_GRAPPBOX_ID));
         title = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_TITLE));
         try {
-            desc = context.getString(R.string.bug_status_date, context.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(cursor.getString(cursor.getColumnIndex(isClosed ? GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC : GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC)))));
+            date = context.getString(R.string.bug_status_date, context.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(cursor.getString(cursor.getColumnIndex(isClosed ? GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC : GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC)))));
+            desc = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DESCRIPTION));
         } catch (ParseException e) {
             e.printStackTrace();
-            desc = context.getString(R.string.error_unknown_last_modified);
+            date = context.getString(R.string.error_unknown_last_modified);
         }
         assigneeCount = 0;
         commentsCount = 0;
+        tags = new ArrayList<>();
+        assignees = new ArrayList<>();
+        comments = new ArrayList<>();
     }
 
     protected BugModel(Parcel in) {
         _id = in.readInt();
         grappboxId = in.readString();
         title = in.readString();
+        date = in.readString();
         desc = in.readString();
         assigneeCount = in.readLong();
         commentsCount = in.readLong();
+        Parcelable[] arrTags = in.readParcelableArray(BugTagModel.class.getClassLoader());
+        Log.e(LOG_TAG, "Tag model in parcel : " + arrTags.length);
+        tags = new ArrayList<>();
+        for (Parcelable tag : arrTags){
+            tags.add((BugTagModel) tag);
+        }
+        Parcelable[] arrAssignee = in.readParcelableArray(UserModel.class.getClassLoader());
+        assignees = new ArrayList<>();
+        for (Parcelable ass : arrAssignee){
+            assignees.add((UserModel) ass);
+        }
+        Parcelable[] arrComm = in.readParcelableArray(BugCommentModel.class.getClassLoader());
+        comments = new ArrayList<>();
+        for (Parcelable com : arrComm){
+            comments.add((BugCommentModel) com);
+        }
     }
 
-    public void setAdditionalData(long assigneeCount, long commentsCount, Collection<Pair<String, String>> tags){
-        this.assigneeCount = assigneeCount;
-        this.commentsCount = commentsCount;
+    public void setAssigneesData(List<UserModel> assigneesData){
+        assignees = assigneesData;
+        assigneeCount = assignees == null ? 0 : assignees.size();
+    }
+
+    public void setCommentsData(List<BugCommentModel> commentsData){
+        comments = commentsData;
+        this.commentsCount = commentsData == null ? 0 : commentsData.size();
+    }
+
+    public void setTagsData(List<BugTagModel> tags){
         this.tags = tags;
     }
-
 
     @Override
     public int describeContents() {
@@ -75,9 +103,13 @@ public class BugModel implements Parcelable {
         dest.writeInt(_id);
         dest.writeString(grappboxId);
         dest.writeString(title);
+        dest.writeString(date);
         dest.writeString(desc);
         dest.writeLong(assigneeCount);
         dest.writeLong(commentsCount);
+        dest.writeParcelableArray(tags.toArray(new BugTagModel[tags.size()]), 0);
+        dest.writeParcelableArray(assignees.toArray(new UserModel[assignees.size()]), 0);
+        dest.writeParcelableArray(comments.toArray(new BugCommentModel[comments.size()]), 0);
     }
 
     public static final Creator<BugModel> CREATOR = new Creator<BugModel>() {

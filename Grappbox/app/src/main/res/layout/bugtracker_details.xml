@@ -14,9 +14,11 @@
         android:textColor="@color/GrappWhiteLight"
         android:textAppearance="@style/EmphasisTextView"
         android:text="this is a loooooonnnnng description and you will accept it"
-        android:layout_marginBottom="15dp"/>
+        android:id="@+id/description"
+        />
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent"
+        android:id="@+id/scrollable_content"/>
 </LinearLayout>

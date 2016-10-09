@@ -175,4 +175,9 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="word_comments">Comments</string>
+    <string name="word_assignee">Assignee</string>
+    <string name="word_reply">Reply</string>
+    <string name="empty_single_line_tag">There is no <xliff:g>tag</xliff:g></string>
+    <string name="empty_single_line_assignee">There is no <xliff:g>assignee</xliff:g></string>
 </resources>

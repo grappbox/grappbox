@@ -13,9 +13,9 @@
         android:paddingBottom="2dp"
         android:paddingEnd="5dp"
         android:paddingStart="5dp"
-        android:layout_marginEnd="2dp"
-        android:layout_marginStart="2dp"
-        app:backgroundTint="@color/GrappPurple"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:backgroundTint="@color/GrappPurple"
         android:textAlignment="center"
         android:id="@+id/tagname"/>
 </FrameLayout>

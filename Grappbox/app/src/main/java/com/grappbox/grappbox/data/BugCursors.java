@@ -21,6 +21,7 @@ public class BugCursors {
     private static final SQLiteQueryBuilder sCompleteQueryBuilder;
     private static final SQLiteQueryBuilder sBugWithAssignationBuilder;
     private static final SQLiteQueryBuilder sBugWithTag;
+    private static final SQLiteQueryBuilder sBugWithCreator;
 
 
     static {
@@ -43,6 +44,10 @@ public class BugCursors {
         " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_BUG_ID +
         " INNER JOIN " + TagEntry.TABLE_NAME +
         " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_TAG_ID + " = " + TagEntry.TABLE_NAME + "." + TagEntry._ID);
+
+        sBugWithCreator = new SQLiteQueryBuilder();
+        sBugWithCreator.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + UserEntry.TABLE_NAME +
+        " ON " + BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_CREATOR_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
     }
 
 
@@ -97,5 +102,9 @@ public class BugCursors {
 
     public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
         return mOpenHelper.getWritableDatabase().update(BugEntry.TABLE_NAME, contentValues, selection, args);
+    }
+
+    public static Cursor query_BugWithCreator(Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper mOpenHelper) {
+        return sBugWithCreator.query(mOpenHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 }

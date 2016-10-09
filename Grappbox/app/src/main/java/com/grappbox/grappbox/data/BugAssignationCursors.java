@@ -30,7 +30,7 @@ public class BugAssignationCursors {
     }
 
     public static Cursor query_BugAssignation(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
-        return openHelper.getReadableDatabase().query(BugAssignationEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
+        return sBugAssignationQueryBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static Cursor query_BugAssignationByBugId(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){

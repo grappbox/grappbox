@@ -154,6 +154,9 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
             case FRAGMENT_TAG_WHITEBOARD:
                 mCurrentNavSelected = R.id.nav_whiteboard;
                 break;
+            case FRAGMENT_TAG_BUGTRACKER:
+                mCurrentNavSelected = R.id.nav_bugtracker;
+                break;
         }
         mNavView.setCheckedItem(mCurrentNavSelected);
     }

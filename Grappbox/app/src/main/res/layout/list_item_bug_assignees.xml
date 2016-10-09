@@ -7,15 +7,24 @@
         android:padding="10dp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Assignee"
+        android:text="@string/word_assignee"
         android:textAppearance="@style/Base.TextAppearance.AppCompat.Medium"/>
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <LinearLayout
+            android:orientation="horizontal"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content">
-
+            android:layout_height="wrap_content"
+            android:id="@+id/container">
+            <TextView
+                android:id="@+id/emptyview"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:text="@string/empty_single_line_assignee"
+                android:layout_gravity="center"
+                android:padding="20dp"
+                android:visibility="gone"/>
         </LinearLayout>
     </HorizontalScrollView>
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.grappbox.grappbox.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.support.v4.util.Pair;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +12,7 @@ import android.widget.TextView;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.bugtracker_fragments.BugDetailsActivity;
 import com.grappbox.grappbox.model.BugModel;
+import com.grappbox.grappbox.model.BugTagModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,7 +39,6 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
 
     private RecyclerView.ViewHolder createBugEntryHolder(ViewGroup parent){
         final BugHolder holder = new BugHolder(inflater.inflate(R.layout.list_item_bugtracker_list, parent, false), parent);
-
         return holder;
     }
 
@@ -66,14 +65,14 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
     public void bindBugEntry(final BugModel item, BugHolder holder){
         boolean tagPassed = false;
         holder.title.setText(item.title);
-        holder.desc.setText(item.desc);
+        holder.desc.setText(item.date);
         holder.assignee.setText(String.valueOf(item.assigneeCount));
         holder.comments.setText(String.valueOf(item.commentsCount));
 
-        for (Pair<String, String> tag : item.tags){
+        for (BugTagModel tag : item.tags){
             tagPassed = true;
             View tagView = inflater.inflate(R.layout.list_item_bugtracker_tagitem, holder.parent, false);
-            ((TextView)tagView.findViewById(R.id.tagname)).setText(tag.first);
+            ((TextView)tagView.findViewById(R.id.tagname)).setText(tag.name);
             holder.tagContainer.addView(tagView);
         }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -81,6 +80,7 @@ public class BugListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder
             public void onClick(View v) {
                 Intent launchDetail = new Intent(mContext, BugDetailsActivity.class);
                 launchDetail.putExtra(BugDetailsActivity.EXTRA_BUG_MODEL, item);
+                BugModel model = launchDetail.getParcelableExtra(BugDetailsActivity.EXTRA_BUG_MODEL);
                 mContext.startActivity(launchDetail);
             }
         });
