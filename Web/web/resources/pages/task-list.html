@@ -67,8 +67,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <tr ng-repeat="task in data.todos" ng-click="openTask(projectId, task.id)" title="Go the task page">
                             <td>{[{ task.title }]}</td>
                             <td>{[{ formatTagsinString(task.tags) }]}</td>
-                            <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                            <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                            <td>{[{ formatUsersinString(task.users) }]}</td>
+                            <td>{[{ formatObjectDate(task.due_date) }]}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -94,8 +94,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <tr ng-repeat="task in data.doings" ng-click="openTask(projectId, task.id)" title="Go the task page">
                             <td>{[{ task.title }]}</td>
                             <td>{[{ formatTagsinString(task.tags) }]}</td>
-                            <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                            <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                            <td>{[{ formatUsersinString(task.users) }]}</td>
+                            <td>{[{ formatObjectDate(task.due_date) }]}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -121,8 +121,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <tr ng-repeat="task in data.dones" ng-click="openTask(projectId, task.id)" title="Go the task page">
                             <td>{[{ task.title }]}</td>
                             <td>{[{ formatTagsinString(task.tags) }]}</td>
-                            <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                            <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                            <td>{[{ formatUsersinString(task.users) }]}</td>
+                            <td>{[{ formatObjectDate(task.due_date) }]}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -148,8 +148,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                           <tr ng-repeat="task in data.users" ng-click="openTask(projectId, task.id)" title="Go the task page">
                             <td>{[{ task.title }]}</td>
                             <td>{[{ formatTagsinString(task.tags) }]}</td>
-                            <td>{[{ formatUsersinString(task.users_assigned) }]}</td>
-                            <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                            <td>{[{ formatUsersinString(task.users) }]}</td>
+                            <td>{[{ formatObjectDate(task.due_date) }]}</td>
                           </tr>
                         </tbody>
                       </table>
@@ -195,7 +195,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         <tbody>
                           <tr ng-repeat="task in data.milestones" ng-click="openTask(projectId, task.id)" title="Go the task page">
                             <td>{[{ task.title }]}</td>
-                            <td>{[{ formatObjectDate(task.due_date.date) }]}</td>
+                            <td>{[{ formatObjectDate(task.due_date) }]}</td>
                           </tr>
                         </tbody>
                       </table>

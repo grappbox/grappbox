@@ -26,7 +26,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
   // Get all tasks of the project
   var getTask = function() {
-    $http.get($rootScope.api.url + "/tasks/getprojecttasks/" + $rootScope.user.token + "/" + $scope.projectID)
+    $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function projectsReceived(response) {
         $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
@@ -74,14 +74,14 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
                 description: value.description,
                 progress: value.advance,
                 type: "regular",
-                from: new Date(value.started_at.date),
-                to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
+                from: new Date(value.started_at),
+                to: new Date(value.finished_at ? value.finished_at : value.due_date),
                 tasks: [
                   {id:  value.id,
                   name: value.title,
                   color: "#BDBDBD",
-                  from: new Date(value.started_at.date),
-                  to: new Date(value.finished_at ? value.finished_at.date : value.due_date.date),
+                  from: new Date(value.started_at),
+                  to: new Date(value.finished_at ? value.finished_at : value.due_date),
                   progress: value.advance,
                   }
                 ]
@@ -137,14 +137,14 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
                 name: value.title,
                 description: value.description,
                 type: "milestone",
-                from: new Date(value.due_date.date),
-                to: new Date(value.due_date.date),
+                from: new Date(value.due_date),
+                to: new Date(value.due_date),
                 tasks: [
                   {id: value.id,
                   name: value.title,
                   color: "#44BBFF",
-                  from: new Date(value.due_date.date),
-                  to: new Date(value.due_date.date)
+                  from: new Date(value.due_date),
+                  to: new Date(value.due_date)
                   }
                 ]
               };
@@ -400,18 +400,20 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
   var onEditTask = function(row) {
     console.info(row);
 
-    $scope.data.edit = { id: row.id, title: row.name, description: row.description, advance: row.progress, type: row.type};
+    $scope.data.edit = { id: row.id, title: row.name, description: row.description, advance: row.progress, type: row.type, dependencies: []};
 
     var modal_editTask = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_editTask.html", controller: "modal_editTask" });
 
     modal_editTask.result.then(
       function onModalConfirm() {
-        var elem = {"token": $rootScope.user.token,
-                    "taskId": $scope.data.edit.id,
+        var elem = {"id": $scope.data.edit.id,
                     "title": $scope.data.edit.title,
                     "description": $scope.data.edit.description,
                     "advance": $scope.data.edit.advance
                     };
+
+
+        //TODO add users, tasks, dependencies, tags, dates
 
         if ($scope.data.edit.advance == 100)
           elem['finished_at'] = new Date();
@@ -420,7 +422,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
         var data = {"data": elem};
 
-        $http.put($rootScope.api.url + "/tasks/taskupdate", data)
+        $http.put($rootScope.api.url + "/task/" + $scope.data.edit.id, data, {headers: { 'Authorization': $rootScope.user.token }})
           .then(function successCallback(response) {
             $scope.reload();
           },
@@ -443,6 +445,8 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 *
 */
 app.controller("modal_editTask", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+
+
   $scope.error = { title: false, description: false };
 
   $scope.modal_confirmTaskEdition = function() {
@@ -457,4 +461,11 @@ app.controller("modal_editTask", ["$scope", "$uibModalInstance", function($scope
       $uibModalInstance.close();
   };
   $scope.modal_cancelTaskEdition = function() { $uibModalInstance.dismiss(); };
+
+  $scope.tab.index = 1;
+
+  $scope.onTabSelected = function(tabIndex) {
+    $scope.tab.index = tabIndex;
+  }
+
 }]);

@@ -37,7 +37,7 @@ app.controller("dashboardController", ["$rootScope", "$scope", "$route", "$http"
   // Routine definition (local)
 	// Get current team occupation
   var _getTeamOccupation = function() {
-  	$http.get($rootScope.api.url + "/dashboard/getteamoccupation/" + $rootScope.user.token + "/" + $scope.data.project_id).then(
+  	$http.get($rootScope.api.url + "/dashboard/occupation/" + $scope.data.project_id, {headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetTeamOccupationSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -98,7 +98,7 @@ app.controller("dashboardController", ["$rootScope", "$scope", "$route", "$http"
   // Routine definition (local)
 	// Get next meetings
   var _getNextMeetings = function() {
-  	$http.get($rootScope.api.url + "/dashboard/getnextmeetings/" + $rootScope.user.token + "/" + $scope.data.project_id).then(
+  	$http.get($rootScope.api.url + "/dashboard/meetings/" + $scope.data.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetMeetingsSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {

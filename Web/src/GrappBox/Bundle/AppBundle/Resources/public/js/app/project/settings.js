@@ -26,7 +26,7 @@ var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $route, $l
     return deferred.promise;
   }
 
-  $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $route.current.params.project_id)
+  $http.get($rootScope.api.url + "/project/" + $route.current.params.project_id, {headers: {"Authorization": $rootScope.user.token}})
     .then(function onGetSuccess(response) {
       deferred.resolve();
     },
@@ -121,8 +121,8 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     var encrypted_password = project.password;
     var elem = {
-      "token": $rootScope.user.token,
-      "projectId": $scope.projectID,
+      //"token": $rootScope.user.token,
+      //"projectId": $scope.projectID,
       "name": project.name,
       "description": project.description,
       //"logo": logo,
@@ -137,7 +137,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     var data = {"data": elem};
 
     Notification.info({ message: "Updating project...", delay: 5000 });
-    $http.put($rootScope.api.url + "/projects/updateinformations", data)
+    $http.put($rootScope.api.url + "/projects/"+ $scope.projectID, data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Project updated", delay: 5000 });
         $location.path("/settings/" + $scope.projectID);
@@ -171,7 +171,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     var encrypted_password = project.password;
     var elem = {
-      "token": $rootScope.user.token,
+      //"token": $rootScope.user.token,
       "name": project.name,
       "description": project.description,
       //"logo": logo,
@@ -185,7 +185,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     var data = {"data": elem};
 
     Notification.info({ message: "Creating project...", delay: 5000 });
-    $http.post($rootScope.api.url + "/projects/projectcreation", data)
+    $http.post($rootScope.api.url + "/project", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.project_error = false;
         $scope.data.project_new = false;
@@ -201,7 +201,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.retrieveProject = function(){
     Notification.info({ message: "Retrieving project...", delay: 5000 });
-    $http.get($rootScope.api.url + "/projects/retrieveproject/" + $rootScope.user.token + "/" + $scope.projectID)
+    $http.get($rootScope.api.url + "/project/retrieve/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Project retrieved", delay: 5000 });
         $route.reload();
@@ -238,15 +238,15 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     var encrypted_password = project.password;
     var elem = {
-      "token": $rootScope.user.token,
-      "projectId": $scope.projectID,
+      //"token": $rootScope.user.token,
+      //"projectId": $scope.projectID,
       "password": encrypted_password,
       "oldPassword": project.old_password
     };
     var data = {"data": elem};
 
     Notification.info({ message: "Updating password...", delay: 5000 });
-    $http.put($rootScope.api.url + "/projects/updateinformations", data)
+    $http.put($rootScope.api.url + "/project/"+ $scope.projectID, data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Password updated", delay: 5000 });
         $location.path("/settings/" + $scope.projectID);
@@ -277,7 +277,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     modal_deleteProject.result.then(
       function onModalConfirm(data) {
         Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
-        $http.delete($rootScope.api.url + "/projects/delproject/" + $rootScope.user.token + "/" + $scope.projectID).then(
+        $http.delete($rootScope.api.url + "/project/" + $scope.projectID,{headers: {"Authorization": $rootScope.user.token}}).then(
           function onDeleteProjectSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.6.1")
               Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -312,7 +312,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     if ($scope.projectID != 0) {
       $scope.data.project_new = false;
 
-      $http.get($rootScope.api.url + "/projects/getinformations/" + $rootScope.user.token + "/" + $scope.projectID)
+      $http.get($rootScope.api.url + "/project/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
           $scope.data.project = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
           $scope.data.message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
@@ -351,7 +351,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   var getRights = function() {
 
-    $http.get($rootScope.api.url + "/roles/getuserroleforpart/" + $rootScope.user.token + "/" + $scope.user.id + "/" + $scope.projectID + "/project_settings")
+    $http.get($rootScope.api.url + "/role/user/part/" + $scope.user.id + "/" + $scope.projectID + "/project_settings", {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.userRights = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value ? response.data.data.value : false);
       },
@@ -369,7 +369,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $scope.data.customersLoad = true;
 
-    $http.get($rootScope.api.url + "/projects/getcustomeraccessbyproject/" + $rootScope.user.token + "/" + $scope.projectID)
+    $http.get($rootScope.api.url + "/project/customeraccesses/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.customers = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.customers_message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
@@ -399,13 +399,13 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.createCustomersAccess = function(new_customer) {
     Notification.info({ message: "Creating customer access...", delay: 5000 });
     var elem = {
-      "token": $rootScope.user.token,
+      //"token": $rootScope.user.token,
       "projectId": $scope.projectID,
       "name": new_customer.name
     };
     var data = {"data": elem};
 
-    $http.post($rootScope.api.url + "/projects/generatecustomeraccess", data)
+    $http.post($rootScope.api.url + "/project/customeraccess", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Customer access created", delay: 5000 });
         getCustomers();
@@ -431,7 +431,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.deleteCustomerAccess = function(customer) {
     Notification.info({ message: "Deleting customer access...", delay: 5000 });
-    $http.delete($rootScope.api.url + "/projects/delcustomeraccess/" + $rootScope.user.token + "/" + $scope.projectID + "/" + customer.id)
+    $http.delete($rootScope.api.url + "/project/customeraccess/" + $scope.projectID + "/" + customer.id, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Customer access deleted", delay: 5000 });
         getCustomers();
@@ -462,7 +462,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   var getUsersRoles = function() {
     for (var i = 0; i < ($scope.data.roles).length; i++) {
-      $http.get($rootScope.api.url + "/roles/getusersforrole/" + $rootScope.user.token + "/" + $scope.data.roles[i].roleId)
+      $http.get($rootScope.api.url + "/role/users/" + $scope.data.roles[i].roleId, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
           $scope.data.usersroles = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : {});
           $scope.data.users_message = (response.data.info && response.data.info.return_code == "1.13.1" ? "_valid" : "_empty");
@@ -499,7 +499,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $scope.data.usersLoad = true;
 
-    $http.get($rootScope.api.url + "/projects/getusertoproject/" + $rootScope.user.token + "/" + $scope.projectID)
+    $http.get($rootScope.api.url + "/project/users/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.users = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.users_message = (response.data.info && response.data.info.return_code == "1.6.1" ? "_valid" : "_empty");
@@ -529,11 +529,11 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.addUser = function(new_user) {
     Notification.info({ message: "Adding user...", delay: 5000 });
-    var elem = {"token": $rootScope.user.token,
+    var elem = {//"token": $rootScope.user.token,
                 "id": $scope.projectID,
                 "email": new_user};
     var data = {"data": elem};
-    $http.post($rootScope.api.url + "/projects/addusertoproject", data)
+    $http.post($rootScope.api.url + "/project/user", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         getUsers();
         Notification.success({ message: "User added", delay: 5000 });
@@ -559,7 +559,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.removeUser = function(user) {
     Notification.info({ message: "Removing user...", delay: 5000 });
-    $http.delete($rootScope.api.url + "/projects/removeusertoproject/" + $rootScope.user.token + "/" + $scope.projectID + "/" + user.id)
+    $http.delete($rootScope.api.url + "/project/user/" + $scope.projectID + "/" + user.id, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         getUsers();
         Notification.success({ message: "User removed", delay: 5000 });
@@ -590,13 +590,13 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.assignRoleToUser = function(user) {
     Notification.info({ message: "Changing user role...", delay: 5000 });
     if (user.actualRole) {
-      var elem = {"token": $rootScope.user.token,
+      var elem = {//"token": $rootScope.user.token,
                   "userId": user.id,
                   "roleId": user.role};
       var data = {"data": elem};
-      $http.post($rootScope.api.url + "/roles/assignpersontorole", data)
+      $http.post($rootScope.api.url + "/role/user", data, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
-          $http.delete($rootScope.api.url + "/roles/delpersonrole/" + $rootScope.user.token + "/" + $scope.projectID + "/" + user.id + "/" + user.actualRole)
+          $http.delete($rootScope.api.url + "/role/user/" + $scope.projectID + "/" + user.id + "/" + user.actualRole, {headers: {"Authorization": $rootScope.user.token}})
             .then(function successCallback(response) {
               getUsersRoles();
               Notification.success({ message: "User role changed", delay: 5000 });
@@ -626,11 +626,11 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         }, $scope);
     }
     else {
-      var elem = {"token": $rootScope.user.token,
+      var elem = {//"token": $rootScope.user.token,
                   "userId": user.id,
                   "roleId": user.role};
       var data = {"data": elem};
-      $http.post($rootScope.api.url + "/roles/assignpersontorole", data)
+      $http.post($rootScope.api.url + "/role/user", data, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
           getUsersRoles();
           Notification.success({ message: "User role changed", delay: 5000 });
@@ -679,7 +679,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $scope.data.rolesLoad = true;
 
-    $http.get($rootScope.api.url + "/roles/getprojectroles/" + $rootScope.user.token + "/" + $scope.projectID)
+    $http.get($rootScope.api.url + "/roles/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.roles = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.roles_message = (response.data.info && response.data.info.return_code == "1.13.1" ? "_valid" : "_empty");
@@ -711,8 +711,8 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.editRole = function(role) {
     Notification.info({ message: "Editing role...", delay: 5000 });
     var elem = {
-      "token": $rootScope.user.token,
-		  "roleId": role.roleId,
+      //"token": $rootScope.user.token,
+		  //"roleId": role.roleId,
 		  "name": role.name,
 		  "teamTimeline": role.team_timeline,
 	    "customerTimeline": role.customer_timeline,
@@ -726,7 +726,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     };
     var data = {"data": elem };
 
-    $http.put($rootScope.api.url + "/roles/putprojectroles", data)
+    $http.put($rootScope.api.url + "/role/" + role.roleId, data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Role edited", delay: 5000 });
 
@@ -758,7 +758,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     console.log(new_role);
     Notification.info({ message: "Creating role...", delay: 5000 });
 
-    var elem = {"token": $rootScope.user.token,
+    var elem = {//"token": $rootScope.user.token,
 	              "projectId": $scope.projectID,
 	              "name": new_role.name,
 	              "teamTimeline": new_role.team_timeline,
@@ -772,7 +772,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
                 "cloud": new_role.cloud  };
     var data = {"data": elem };
 
-    $http.post($rootScope.api.url + "/roles/addprojectroles", data)
+    $http.post($rootScope.api.url + "/role", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Role created", delay: 5000 });
         getRoles();
@@ -800,7 +800,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
   $scope.deleteRole = function(role) {
     Notification.info({ message: "Deleting role...", delay: 5000 });
-    $http.delete($rootScope.api.url + "/roles/delprojectroles/" + $rootScope.user.token + "/" + role.roleId)
+    $http.delete($rootScope.api.url + "/role/" + role.roleId, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         Notification.success({ message: "Role deleted", delay: 5000 });
         // TODO remove users assign to role

@@ -64,13 +64,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <!-- <div class="form-group">
-                <label for="color" class="col-md-1 control-label">Color</label>
-                <div class="col-md-11">
-                  <input type="color" class="form-control" data-ng-model="data.task.color" id="color">
-                </div>
-              </div> -->
-
               <!-- OBJECT TYPE SELECTION -->
               <div class="form-group">
                 <label class="col-md-1 control-label">Object type</label>
@@ -101,16 +94,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <input type="date" class="form-control" data-ng-model="data.task.due_date" id="due_date">
                 </div>
               </div>
-
-              <!-- <div class="form-group" data-ng-if="data.task.type == 'regular'">
-                <label for="progress" class="col-md-1 control-label">Progress</label>
-                <div class="col-md-11">
-                  <select id="progress" class="form-control" data-ng-model="data.task.advance">
-                    <option value="" selected>None</option>
-                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                  </select>
-                </div>
-              </div> -->
 
               <div class="form-group" data-ng-if="data.task.type == 'regular'">
                 <label for="tags" class="col-md-1 control-label">Tag(s)</label>
@@ -145,7 +128,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <a href="" class="btn btn-default" data-ng-click="addUser(user, user_percent)">Add</a>
                 </div>
               </div>
-              <div class="form-group" data-ng-if="data.task.type == 'regular'" data-ng-repeat="user in data.task.users_assigned">
+              <div class="form-group" data-ng-if="data.task.type == 'regular'" data-ng-repeat="user in data.task.users">
                 <div class="col-md-4 col-md-offset-1">
                   <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
                 </div>
@@ -156,15 +139,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </select>
                 </div>
                 <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default" data-ng-click="updateUser(user)">Update</a>
-                </div>
-                <div class="col-md-1 col-xs-6">
                   <a href="" class="btn btn-default" data-ng-click="removeUser(user)">Remove</a>
                 </div>
               </div>
 
               <!-- CONTAINER CREATION -->
-              <div class="form-group" data-ng-if="data.task.type == 'container'">
+              <div class="form-group {[{tasksList.length ? '' : 'has-warning'}]}" data-ng-if="data.task.type == 'container'">
                 <label for="tags" class="col-md-1 control-label">Task(s)</label>
                 <div class="col-md-11">
                   <tags-input ng-model="tasks"
@@ -173,9 +153,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                               replace-spaces-with-dashes="false"
                               add-from-autocomplete-only="true"
                               on-tag-added="taskAdded($tag)"
-                              on-tag-removed="taskRemoved($tag)">
+                              on-tag-removed="taskRemoved($tag)"
+                              >
                     <auto-complete source="tasksList"></auto-complete>
                   </tags-input>
+                  <p ng-if="!tasksList.length" class="help-block">No task in the project for the moment</p>
                 </div>
               </div>
 
@@ -213,9 +195,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
                     <option value="" disabled selected>Select a type of dependencies</option>
                   </select>
-                </div>
-                <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default" data-ng-click="updateDependency(dependency)">Update</a>
                 </div>
                 <div class="col-md-1 col-xs-6">
                   <a href="" class="btn btn-default" data-ng-click="removeDependency(dependency)">Remove</a>
@@ -263,13 +242,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <textarea class="form-control" rows="3" data-ng-model="data.toUpdate.description" id="description" placeholder="Description"></textarea>
                   </div>
                 </div>
-
-                <!-- <div class="form-group">
-                  <label for="color" class="col-md-1 control-label">Color</label>
-                  <div class="col-md-11">
-                    <input type="color" class="form-control" data-ng-model="data.toUpdate.color" id="color">
-                  </div>
-                </div> -->
 
                 <!-- OBJECT TYPE SELECTION -->
                 <div class="form-group">
@@ -346,7 +318,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <a href="" class="btn btn-default" data-ng-click="addUser(new_user, user_percent)">Add</a>
                   </div>
                 </div>
-                <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'" data-ng-repeat="user in data.task.users_assigned">
+                <div class="form-group" data-ng-if="data.toUpdate.type == 'regular'" data-ng-repeat="user in data.task.users">
                   <div class="col-md-4 col-md-offset-1">
                     <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
                   </div>
@@ -476,20 +448,20 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div> -->
                 <div class="col-md-12">
                   <h1>{[{data.task.title}]}</h1>
-                  <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">from {[{ data.task.started_at ? formatObjectDate(data.task.started_at.date) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
-                  <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
+                  <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">from {[{ data.task.started_at ? formatObjectDate(data.task.started_at) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date) }]}</h4>
+                  <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date) }]}</h4>
                   <p>{[{data.task.description}]}</p>
                 </div>
               </div>
 
               <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4>Task progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at.date) }]})</span></h4>
+                <h4>Task progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></h4>
                 <div class="progress">
                   <div class="progress-bar progress-bar-info" style="width: {[{data.task.advance}]}%"></div>
                 </div>
               </div>
               <div class="col-md-12" data-ng-if="data.task.is_milestone">
-                <h4>Milestone at {[{ formatObjectDate(data.task.due_date.date) }]}</h4>
+                <h4>Milestone at {[{ formatObjectDate(data.task.due_date) }]}</h4>
               </div>
               <div class="col-md-12" data-ng-if="data.task.is_container">
                 <h4>Container</h4>
@@ -508,10 +480,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
               <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
                 <h4>Assigned user(s)</h4>
-                <div class="panel panel-default col-md-3" ng-repeat="user in data.task.users_assigned">
+                <div class="panel panel-default col-md-3" ng-repeat="user in data.task.users">
                   <div class="panel-body">{[{user.firstname + " " + user.lastname + " (" + user.percent + "%)"}]}</div>
                 </div>
-                <div class="col-md-12" data-ng-if="!((data.task.users_assigned).length)">
+                <div class="col-md-12" data-ng-if="!((data.task.users).length)">
                   <div class="">No Assigned user </div>
                 </div>
               </div>

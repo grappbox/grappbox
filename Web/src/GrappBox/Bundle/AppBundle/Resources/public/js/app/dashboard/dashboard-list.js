@@ -27,14 +27,14 @@ app.controller("dashboardListController", ["$rootScope", "$scope", "localStorage
   // Check and initialize local storage
   $scope.method.loadProject = function(project) {
     localStorageService.set("HAS_PROJECT", true);
-    localStorageService.set("PROJECT_ID", $base64.encode(project.project_id));
-    localStorageService.set("PROJECT_NAME", $base64.encode(project.project_name));
+    localStorageService.set("PROJECT_ID", $base64.encode(project.id));
+    localStorageService.set("PROJECT_NAME", $base64.encode(project.name));
 
-    $rootScope.project.id = project.project_id;
-    $rootScope.project.name = project.project_name;
+    $rootScope.project.id = project.id;
+    $rootScope.project.name = project.name;
     $rootScope.project.set = true;
 
-    $location.path("/dashboard/" + project.project_id);
+    $location.path("/dashboard/" + project.id);
   };
 
 

@@ -18,7 +18,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
   $scope.data = { onLoad: true, tasks: { }, todos: [], doings: [], dones: [], users: [], containers: [], milestones: [], message: "_invalid" };
 
   // Get all tasks of the project
-  $http.get($rootScope.api.url + "/tasks/getprojecttasks/" + $rootScope.user.token + "/" + $scope.projectId)
+  $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
     .then(function projectsReceived(response) {
       $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
@@ -232,7 +232,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
         else {
           $scope.data.doings.push(item);
         }
-        if ($filter('filter')(item.users_assigned, {id: $rootScope.user.id})[0]) {
+        if ($filter('filter')(item.users, {id: $rootScope.user.id})[0]) {
           $scope.data.users.push(item);
         }
       }
@@ -277,7 +277,7 @@ var isTaskAccessible = function($q, $http, $rootScope, $route, $location, Notifi
     return deferred.promise;
   }
 
-  $http.get($rootScope.api.url + "/tasks/taskinformations/" + $rootScope.user.token + "/" + $route.current.params.id)
+  $http.get($rootScope.api.url + "/task/" + $route.current.params.id, {headers: { 'Authorization': $rootScope.user.token }})
     .then(function successCallback(response) {
       deferred.resolve();
     },
