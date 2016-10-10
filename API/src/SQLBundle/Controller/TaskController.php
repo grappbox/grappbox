@@ -2924,7 +2924,7 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /0.3/tasks/:id Update a tag
+	* @api {put} /0.3/tasks/tag/:id Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
