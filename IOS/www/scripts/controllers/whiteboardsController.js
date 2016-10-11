@@ -28,7 +28,6 @@ angular.module('GrappBox.controllers')
     $scope.ListWhiteboards = function () {
         //$rootScope.showLoading();
         Whiteboard.List().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -60,7 +59,6 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Whiteboard.Create().save({
             data: {
-                token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
                 whiteboardName: $scope.whiteboardName.name
             }
@@ -121,7 +119,6 @@ angular.module('GrappBox.controllers')
     $scope.DeleteWhiteboard = function (whiteboard) {
         //$rootScope.showLoading();
         Whiteboard.Delete().delete({
-            token: $rootScope.userDatas.token,
             id: whiteboard.id
         }).$promise
             .then(function (data) {

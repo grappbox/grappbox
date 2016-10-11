@@ -427,33 +427,33 @@ angular.module('GrappBox.api', ['ngResource'])
     return {
         // Create a new whiteboard
         Create: function () {
-            return $resource($rootScope.API + 'whiteboard/new', { token: "@token", projectId: "@projectId", whiteboardName: "@whiteboardName" });
+            return $resource($rootScope.API + 'whiteboard');
         },
         // Delete a whiteboard
         Delete: function () {
-            return $resource($rootScope.API + 'whiteboard/delete/:token/:id', { token: "@token", id: "@id" });
+            return $resource($rootScope.API + 'whiteboard/:id', { id: "@id" });
         },
         // Delete an object on a whiteboard
         DeleteObject: function () {
-            return $resource($rootScope.API + 'whiteboard/deleteobject', null, {
+            return $resource($rootScope.API + 'whiteboard/object/:id', { id: "@id"}, {
                 'update': { method: 'PUT' }
             });
         },
         // List all whiteboards
         List: function () {
-            return $resource($rootScope.API + 'whiteboard/list/:token/:projectId', { token: "@token", projectId: "@projectId" });
+            return $resource($rootScope.API + 'whiteboards/:projectId', { projectId: "@projectId" });
         },
         // Open a whiteboard
         Open: function () {
-            return $resource($rootScope.API + 'whiteboard/open/:token/:id', { token: "@token", id: "@id" });
+            return $resource($rootScope.API + 'whiteboard/:id', { id: "@id" });
         },
         // Pull whiteboard modifications
         Pull: function () {
-            return $resource($rootScope.API + 'whiteboard/pulldraw/:id', { id: "@id", token: "@token", lastUpdate: "@lastUpdate" });
+            return $resource($rootScope.API + 'whiteboard/draw/:id', { id: "@id", lastUpdate: "@lastUpdate" });
         },
         // Push whiteboard modification
         Push: function () {
-            return $resource($rootScope.API + 'whiteboard/pushdraw/:id', { id: "@id", token: "@token", modification: "@modification", objectId: "@objectId", object: "@object" }, {
+            return $resource($rootScope.API + 'whiteboard/draw/:id', { id: "@id" }, {
                 'update': { method: 'PUT' }
             });
         }

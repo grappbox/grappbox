@@ -484,9 +484,8 @@ angular.module('GrappBox.controllers')
     $scope.DeleteObject = function (mouse_pos) {
         //$rootScope.showLoading();
         Whiteboard.DeleteObject().update({
+            id: $scope.whiteboardId,
             data: {
-                whiteboardId: $scope.whiteboardId,
-                token: $rootScope.userDatas.token,
                 center: { x: mouse_pos.x, y: mouse_pos.y },
                 radius: 10
             }
@@ -515,8 +514,7 @@ angular.module('GrappBox.controllers')
     $scope.OpenWhiteboard = function () {
         //$rootScope.showLoading();
         Whiteboard.Open().get({
-            id: $scope.whiteboardId,
-            token: $rootScope.userDatas.token,
+            id: $scope.whiteboardId
         }).$promise
             .then(function (data) {
                 console.log('Open whiteboard successful !');
@@ -656,9 +654,6 @@ angular.module('GrappBox.controllers')
         Whiteboard.Push().update({
             id: $scope.whiteboardId,
             data: {
-                id: $scope.whiteboardId,
-                token: $rootScope.userDatas.token,
-                modification: "add",
                 object: {
                     type: type,
                     color: color,
