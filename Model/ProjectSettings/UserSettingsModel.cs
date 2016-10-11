@@ -6,6 +6,8 @@ namespace GrappBox.Model
 {
     class UserSettingsModel
     {
+        [JsonProperty("id")]
+        public string Id { get; set; }
         [JsonProperty("firstname")]
         public string Firstname { get; set; }
         [JsonProperty("lastname")]

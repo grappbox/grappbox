@@ -7,6 +7,8 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Text;
 using Windows.UI;
+using System.Globalization;
+using System.Diagnostics;
 
 namespace GrappBox.ViewModel
 {
@@ -23,6 +25,35 @@ namespace GrappBox.ViewModel
         BUGTRACKER
     }
     #region Converter
+    public class DateTimeToDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTime date = (DateTime)value;
+                return new DateTimeOffset(date);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return DateTimeOffset.MinValue;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTimeOffset dto = (DateTimeOffset)value;
+                return dto.DateTime;
+            }
+            catch (Exception ex)
+            {
+                return DateTime.MinValue;
+            }
+        }
+    }
     public class OccupationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, string language)

@@ -30,5 +30,10 @@ namespace GrappBox.CustomControler
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.ProjectSettingsView)));
         }
+
+        private async void UserSettingsButton_Click(object sender, RoutedEventArgs e)
+        {
+            await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.UserView)));
+        }
     }
 }

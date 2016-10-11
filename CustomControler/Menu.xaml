@@ -79,7 +79,7 @@
 
             <StackPanel Orientation="Horizontal">
                 <Image Source="/Assets/user.png" HorizontalAlignment="Center" Height="24" VerticalAlignment="Center" Width="24"/>
-                <Button Style="{StaticResource LeftMenuButton}" x:Name="UserSettingsButton" MinHeight="33" Content="User Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0"/>
+                <Button Style="{StaticResource LeftMenuButton}" x:Name="UserSettingsButton" MinHeight="33" Content="User Settings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0" FontSize="15" Padding="9.5,0" Click="UserSettingsButton_Click"/>
             </StackPanel>
 
             <StackPanel Orientation="Horizontal">
