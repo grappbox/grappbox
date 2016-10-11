@@ -86,7 +86,7 @@
             <ion-checkbox ng-repeat="user in usersOnTicket"
                           ng-model="user.checked"
                           ng-change="AddOrRemoveUser(user.id, user.checked, $index)">
-                {{ user.name }}
+                <!--{{ user.name }}-->{{ user.firstname }} {{ user.lastname }}
             </ion-checkbox>
         </ion-list>
         <a class="button button-block button-positive" ng-click="SetUsersToTicket()">

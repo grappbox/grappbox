@@ -6,6 +6,11 @@ angular.module('GrappBox.controllers')
 
 .controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Dashboard, Users, Projects) {
     
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
+
     $scope.doRefreshTeamOccupation = function () {
         $scope.GetTeamOccupation();
         console.log("View refreshed !");
@@ -38,7 +43,6 @@ angular.module('GrappBox.controllers')
     $scope.GetTeamOccupation = function () {
         //$rootScope.showLoading();
         Dashboard.TeamOccupation().get({
-            token: $rootScope.userDatas.token,
             id: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -66,7 +70,6 @@ angular.module('GrappBox.controllers')
     $scope.GetNextMeetings = function () {
         //$rootScope.showLoading();
         Dashboard.NextMeetings().get({
-            token: $rootScope.userDatas.token,
             id: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -120,7 +123,6 @@ angular.module('GrappBox.controllers')
     $scope.GetUsersAvatars = function () {
         //$rootScope.showLoading();
         Users.Avatars().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -156,8 +158,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectLogo = function () {
         //$rootScope.showLoading();
         Projects.Logo().get({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
+            id: $scope.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get project logo successful !');

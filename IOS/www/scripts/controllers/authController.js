@@ -4,28 +4,50 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('AuthCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Auth) {
+.controller('AuthCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $ionicHistory, $cordovaDevice, $http, Toast, Auth) {
+
+    $scope.device = {};
+
+    $ionicPlatform.ready(function() {
+      if (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1) {
+        $scope.device = $cordovaDevice.getDevice();
+        console.log($scope.device);
+      }
+    });
+
     $scope.user = {};
 
     $scope.$on('$ionicView.enter', function () {
         $ionicHistory.clearCache();
     });
+
+    /*
+    ** TO REMOVE FOR PROD
+    */
     $scope.user.email = "pierre.hofman@epitech.eu";
     $scope.user.password = "hofman_p";
+    $scope.device.model = "";
+    $scope.device.platform = "ios";
+    $scope.device.mac = "";
+
     $scope.login = function () {
         $rootScope.showLoading();
         Auth.Login().save({
             data: {
                 login: $scope.user.email,
-                password: $scope.user.password
+                password: $scope.user.password,
+                mac: $scope.device.uuid,
+                flag: $scope.device.platform,
+                device_name: $scope.device.model
             }
         }).$promise
             .then(function (data) {
                 console.log('Connexion successful !');
-                $rootScope.hideLoading();
-                Toast.show("Connected");
                 console.log(data);
                 $rootScope.userDatas = data.data;
+                $http.defaults.headers.common.Authorization = $rootScope.userDatas.token;
+                $rootScope.hideLoading();
+                Toast.show("Connected");
                 $state.go('app.projects');
             })
             .catch(function (error) {

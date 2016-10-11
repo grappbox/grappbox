@@ -4,28 +4,35 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Create Ticket</ion-nav-title>
-    <ion-content overflow-scroll="false">
+    <ion-content overflow-scroll="false" scroll="false">
         <form name="createTicket_form">
             <ion-input class="item item-input">
                 <ion-label>Title</ion-label>
                 <input type="text"
                        placeholder="Bug when I..."
                        name="createTicket_title"
-                       ng-model="ticket.title" required/>
+                       ng-model="ticket.title" required />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Description</ion-label>
                 <textarea name="createTicket_description"
                           rows="6"
                           placeholder="Here is exactly how I can reproduce the bug, and where it is"
-                          ng-model="ticket.description" required>
-                </textarea>
+                          ng-model="ticket.description" required></textarea>
             </ion-input>
-            <button ng-disabled="createTicket_form.$invalid"
-                    class="button button-block button-positive"
-                    ng-click="CreateTicket()">
-                Add
-            </button>
         </form>
+        <!--<div class="item item-divider"> Members assignable</div>
+        <select ng-model="selectedUsers" multiple>
+            <option ng-repeat="user in userList" value="{{user.id}}" ng-click="logUserList()">{{user.firstname}} {{user.lastname}}</option>
+        </select>-->
+        <!--<div class="item item-divider"> Tags on this ticket</div>
+        <select ng-model="selectedTags" multiple>
+            <option ng-repeat="tag in tagsOnProject" value="{{tag.id}}">{{tag.name}}</option>
+        </select>-->
+        <button ng-disabled="createTicket_form.$invalid"
+                class="button button-block button-positive"
+                ng-click="CreateTicket()">
+            Create ticket
+        </button>
     </ion-content>
 </ion-view>

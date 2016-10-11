@@ -6,11 +6,39 @@ angular.module('GrappBox.controllers')
 
 .controller('EditProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Projects) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProjectInfo();
         console.log("View refreshed !");
     }
+
+    /*
+    ** Get project logo
+    ** Method: GET
+    */
+    $scope.projectLogo = {};
+    $scope.GetProjectLogo = function () {
+        //$rootScope.showLoading();
+        Projects.Logo().get({
+            id: $stateParams.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get project logo successful !');
+                $scope.projectLogo.logo = data.data.logo;
+            })
+            .catch(function (error) {
+                console.error('Get project logo failed ! Reason: ' + error.status + ' ' + error.statusText);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetProjectLogo();
 
     /*
     ** Get project information
@@ -20,8 +48,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectInfo = function () {
         //$rootScope.showLoading();
         Projects.Info().get({
-            token: $rootScope.userDatas.token,
-            projectId: $stateParams.projectId
+            id: $stateParams.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get project info successful !');
@@ -53,7 +80,7 @@ angular.module('GrappBox.controllers')
                 logo: $scope.projectLogo.logo ? $scope.projectLogo.logo.base64 : "",
                 phone: $scope.project.phone ? $scope.project.phone : "",
                 company: $scope.project.company ? $scope.project.company : "",
-                email: $scope.project.email ? $scope.project.email : "",
+                contact_mail: $scope.project.contact_mail ? $scope.project.contact_mail : "",
                 facebook: $scope.project.facebook ? $scope.project.facebook : "",
                 twitter: $scope.project.twitter ? $scope.project.twitter : "",
                 password: $scope.project.password && $scope.project.oldPassword ? $scope.project.password : "",

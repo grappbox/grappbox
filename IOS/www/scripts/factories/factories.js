@@ -15,7 +15,7 @@ angular.module('GrappBox.factories', [])
             position = position || 'bottom';
 
             if (document.URL.indexOf('http://') === -1 && document.URL.indexOf('https://') === -1) {
-                console.log("NO CORDOVA !");
+                console.log("CORDOVA PHONE CONNECTED!");
                 // Use the Cordova Toast plugin
                 $cordovaToast.show(message, duration, position);
             }

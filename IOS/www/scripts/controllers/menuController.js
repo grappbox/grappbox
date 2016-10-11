@@ -8,7 +8,8 @@ angular.module('GrappBox.controllers')
     $scope.userDatas = $rootScope.userDatas;
 
     $scope.logout = function () {
-        Auth.Logout().get({ token: $rootScope.userDatas.token }).$promise
+        Auth.Logout().get()
+            .$promise
             .then(function (data) {
                 console.log('Disconnection successful !');
                 $ionicLoading.show({ template: 'Logging out....' });
@@ -21,7 +22,8 @@ angular.module('GrappBox.controllers')
                 });
             })
             .catch(function (error) {
-                console.error('Disconnection failed ! Reason: ' + error);
+                console.error('Disconnection failed ! Reason: ');
+                console.error(error);
             })
     }
     // used in editProfileController.js
@@ -37,7 +39,6 @@ angular.module('GrappBox.controllers')
     $scope.GetUserAvatar = function () {
         //$rootScope.showLoading();
         Users.Avatar().get({
-            token: $rootScope.userDatas.token,
             userId: $rootScope.userDatas.id
         }).$promise
             .then(function (data) {

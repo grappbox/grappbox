@@ -13,7 +13,7 @@
         <!-- Project information -->
         <div class="item item-divider">Project information</div>
         <p>Type your project information</p>
-        <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo.base64}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+        <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <form name="project_form">
             <ion-input class="item item-input">
@@ -57,7 +57,7 @@
                 <input type="text"
                        placeholder="My Project's email"
                        name="project_email"
-                       ng-model="project.email" />
+                       ng-model="project.contact_mail" />
             </ion-input>
             <ion-input class="item item-input">
                 <ion-label>Facebook</ion-label>

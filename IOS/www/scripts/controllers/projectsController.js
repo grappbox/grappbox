@@ -4,7 +4,11 @@
 
 angular.module('GrappBox.controllers')
 // PROJECTS LIST
-.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, $stateParams, Projects, Users) {
+.controller('ProjectsListCtrl', function ($scope, $rootScope, $state, $stateParams, Dashboard, Users, Projects) {
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
 
     $scope.doRefresh = function () {
         $scope.GetProjects();
@@ -20,7 +24,8 @@ angular.module('GrappBox.controllers')
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
         //$rootScope.showLoading();
-        Projects.List().get({ token: $rootScope.userDatas.token }).$promise
+        Dashboard.List().get()
+            .$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 console.log(data.data);
@@ -30,7 +35,7 @@ angular.module('GrappBox.controllers')
                 else {
                     $scope.noProject = false;
                     for (var i = 0; i < $scope.projectsTab.length; i++) {
-                        $scope.GetProjectLogo(i, $scope.projectsTab[i].project_id);
+                        $scope.GetProjectLogo(i, $scope.projectsTab[i].id);
                     }
                 }
             })
@@ -51,9 +56,9 @@ angular.module('GrappBox.controllers')
     $scope.profileLogo = {};
     $scope.GetProjectLogo = function (index, projectId) {
         //$rootScope.showLoading();
+        console.log("projectId in projects controller = " + projectId);
         Projects.Logo().get({
-            token: $rootScope.userDatas.token,
-            projectId: projectId
+            id: projectId
         }).$promise
             .then(function (data) {
                 console.log('Get logo successful !');

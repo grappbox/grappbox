@@ -7,6 +7,10 @@ angular.module('GrappBox.controllers')
 // WHITEBOARD
 .controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.whiteboard;
+    });
+
     $scope.projectId = $stateParams.projectId;
     $scope.whiteboardName = $stateParams.whiteboardName;
     $scope.whiteboardId = $stateParams.whiteboardId;

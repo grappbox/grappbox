@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('ProfileCtrl', function ($scope, $rootScope, $state, Dashboard, Projects, Users, Roles) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProfileInfo();
@@ -48,7 +52,6 @@ angular.module('GrappBox.controllers')
     $scope.GetUserAvatar = function () {
         //$rootScope.showLoading();
         Users.Avatar().get({
-            token: $rootScope.userDatas.token,
             userId: $rootScope.userDatas.id
         }).$promise
             .then(function (data) {
@@ -73,7 +76,8 @@ angular.module('GrappBox.controllers')
     $scope.projectsTab = {};
     $scope.GetProjects = function () {
         //$rootScope.showLoading();
-        Projects.List().get({ token: $rootScope.userDatas.token }).$promise
+        Projects.List().get()
+            .$promise
             .then(function (data) {
                 console.log('Get projects list successful !');
                 $scope.projectsTab = data.data.array;
@@ -91,39 +95,6 @@ angular.module('GrappBox.controllers')
             })
     }
     //$scope.GetProjects();
-
-    /*
-    ** Get Next Meetings
-    ** Method: GET
-    */
-    $scope.nextMeetingsTab = {};
-    $scope.nextMeetingsError = "";
-    $scope.GetNextMeetings = function () {
-        //$rootScope.showLoading();
-        Users.NextMeetings().get({
-            token: $rootScope.userDatas.token
-        }).$promise
-            .then(function (data) {
-                console.log('Get next meetings list successful !');
-                console.log(data);
-                $scope.nextMeetingsTab = data.data.array;
-                if (data.data.array.length == 0)
-                    $scope.noMeeting = "You don't have any meeting.";
-                else
-                    $scope.noMeeting = false;
-                /*if (Object.keys(data.toJSON()).length < 1)
-                    $scope.nextMeetingsError = "You don't have meeting.";*/
-            })
-            .catch(function (error) {
-                console.error('Get next meetings list failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
-            })
-    }
-    //$scope.GetNextMeetings();
 
     /*
     ** Get current tasks

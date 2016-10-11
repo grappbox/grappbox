@@ -48,6 +48,10 @@
         <div class="item item-divider">Update role</div>
         <form name="form_roleType">
             <ion-list>
+                <ion-item class="item-input">
+                    <ion-label class="input-label">Role name: </ion-label>
+                    <input type="text" name="name" ng-model="role.name" placeholder="New role name">
+                </ion-item>
                 <ion-item>
                     <h2 style="text-align:center">Team Timeline</h2>
                     <ion-radio name="teamTimeline" ng-model="role.teamTimeline" ng-value="0">None</ion-radio>
@@ -102,15 +106,6 @@
                     <ion-radio name="cloud" ng-model="role.cloud" ng-value="1">Read</ion-radio>
                     <ion-radio name="cloud" ng-model="role.cloud" ng-value="2">Read & Write</ion-radio>
                 </ion-item>
-                <!--<ion-checkbox ng-model="role.team_timeline">Team Timeline</ion-checkbox>
-                <ion-checkbox ng-model="role.customer_timeline">Customer Timeline</ion-checkbox>
-                <ion-checkbox ng-model="role.gantt">Gantt</ion-checkbox>
-                <ion-checkbox ng-model="role.whiteboard">Whiteboard</ion-checkbox>
-                <ion-checkbox ng-model="role.bugtracker">Bugtracker</ion-checkbox>
-                <ion-checkbox ng-model="role.event">Event</ion-checkbox>
-                <ion-checkbox ng-model="role.task">Task</ion-checkbox>
-                <ion-checkbox ng-model="role.project_settings">Project settings</ion-checkbox>
-                <ion-checkbox ng-model="role.cloud">Cloud</ion-checkbox>-->
             </ion-list>
             <!-- Update role button-->
             <button ng-disabled="form_roleType.$invalid"

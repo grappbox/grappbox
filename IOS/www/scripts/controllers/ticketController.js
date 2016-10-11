@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.bugtracker;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetTicketInfo();
@@ -26,8 +30,7 @@ angular.module('GrappBox.controllers')
     $scope.GetTicketInfo = function () {
         //$rootScope.showLoading();
         Bugtracker.GetTicketInfo().get({
-            id: $scope.ticketId,
-            token: $rootScope.userDatas.token
+            id: $scope.ticketId
         }).$promise
             .then(function (data) {
                 console.log('Get ticket info successful !');
@@ -52,8 +55,6 @@ angular.module('GrappBox.controllers')
     $scope.GetCommentsOnTicket = function () {
         //$rootScope.showLoading();
         Bugtracker.GetCommentsOnTicket().get({
-            id: $scope.projectId,
-            token: $rootScope.userDatas.token,
             ticketId: $scope.ticketId
         }).$promise
             .then(function (data) {
@@ -80,10 +81,7 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Bugtracker.PostComment().save({
             data: {
-                projectId: $scope.projectId,
-                token: $rootScope.userDatas.token,
-                title: "",
-                description: $scope.comment.description,
+                comment: $scope.comment.description,
                 parentId: $scope.ticketId
             }
         }).$promise
@@ -113,8 +111,7 @@ angular.module('GrappBox.controllers')
     $scope.ReopenTicket = function () {
         //$rootScope.showLoading();
         Bugtracker.ReopenTicket().update({
-            id: $scope.ticketId,
-            token: $rootScope.userDatas.token
+            id: $scope.ticketId
         }).$promise
             .then(function (data) {
                 console.log('Reopen ticket successful !');
@@ -140,9 +137,8 @@ angular.module('GrappBox.controllers')
     $scope.closeTicketData = {};
     $scope.CloseTicket = function () {
         //$rootScope.showLoading();
-        Bugtracker.CloseTicketOrComment().delete({
-            id: $scope.ticketId,
-            token: $rootScope.userDatas.token
+        Bugtracker.CloseTicket().delete({
+            id: $scope.ticketId
         }).$promise
         .then(function (data) {
             console.log('Close ticket successful !');
@@ -161,15 +157,14 @@ angular.module('GrappBox.controllers')
     }
 
     /*
-    ** Close comment
+    ** Delete comment
     ** Method: DELETE
     */
     $scope.closedCommentData = {};
     $scope.CloseComment = function (com) {
         //$rootScope.showLoading();
-        Bugtracker.CloseTicketOrComment().delete({
-            id: com.id,
-            token: $rootScope.userDatas.token
+        Bugtracker.DeleteComment().delete({
+            id: com.id
         }).$promise
         .then(function (data) {
             console.log('Close comment successful !');
@@ -195,12 +190,9 @@ angular.module('GrappBox.controllers')
     $scope.EditCommentOnTicket = function (com) {
         //$rootScope.showLoading();
         Bugtracker.EditCommentOnTicket().update({
+            id: com.id,
             data: {
-                token: $rootScope.userDatas.token,
-                projectId: $scope.projectId,
-                commentId: com.id,
-                title: "",
-                description: com.description
+                comment: com.comment
             }
         }).$promise
             .then(function (data) {

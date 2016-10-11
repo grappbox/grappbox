@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('CreateMessageCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Timeline) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.timeline;
+    });
+
     $scope.timelineId = $stateParams.timelineId;
     console.log($scope.timelineId);
 
@@ -17,9 +21,8 @@ angular.module('GrappBox.controllers')
     $scope.PostMessage = function () {
         //$rootScope.showLoading();
         Timeline.PostMessage().save({
+            id: $scope.timelineId,
             data: {
-                id: $scope.timelineId,
-                token: $rootScope.userDatas.token,
                 title: $scope.message.title,
                 message: $scope.message.message
             }

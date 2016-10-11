@@ -7,6 +7,10 @@ angular.module('GrappBox.controllers')
 // WHITEBOARD LIST
 .controller('WhiteboardsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Whiteboard) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.whiteboard;
+    });
+
     // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
     $scope.projectId = $stateParams.projectId;
 

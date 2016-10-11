@@ -5,6 +5,11 @@
 angular.module('GrappBox.controllers')
 
 .controller('CalendarCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt, moment, calendarConfig) {
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.calendar;
+    });
+
     $scope.calendar = {};
     $scope.calendar.typeView = 'month';
     $scope.calendar.date = new Date();

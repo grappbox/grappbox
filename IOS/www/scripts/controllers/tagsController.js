@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('TagsCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Toast, Bugtracker) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.bugtracker;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetTagsOnProject();
@@ -22,7 +26,6 @@ angular.module('GrappBox.controllers')
     $scope.GetTagsOnProject = function () {
         //$rootScope.showLoading();
         Bugtracker.GetTagsOnProject().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -53,8 +56,7 @@ angular.module('GrappBox.controllers')
     $scope.DeleteTagFromProject = function (tagId) {
         //$rootScope.showLoading();
         Bugtracker.DeleteTagFromProject().delete({
-            token: $rootScope.userDatas.token,
-            tagId: tagId
+            id: tagId
         }).$promise
             .then(function (data) {
                 console.log('Delete tag from project successful !');
@@ -83,9 +85,9 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Bugtracker.CreateTag().save({
             data: {
-                token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
-                name: $scope.createTag.name
+                name: $scope.createTag.name,
+                color: ""
             }
         }).$promise
             .then(function (data) {

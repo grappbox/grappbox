@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('EditProfileCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Users) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProfileInfo();

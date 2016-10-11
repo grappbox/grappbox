@@ -22,13 +22,13 @@
                     </button>
                     <ion-item ng-show="noMessageTeam">{{noMessageTeam}}</ion-item>
                     <div class="list card"
-                         ng-repeat="message in lastMessagesTeam"
-                         ng-if="message.deletedAt === null"><!-- ng-show="!noMessageTeam" -->
+                         ng-repeat="message in lastMessagesTeam">
+                         <!--ng-if="message.deletedAt === null">--><!-- ng-show="!noMessageTeam" -->
                         <div class="item item-avatar">
                             <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
-                            <h2>{{ message.creator.fullname }}</h2>
-                            <p>Created: {{ message.createdAt.date }}<br>
-                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
+                            <h2>{{ message.creator.firstname }} {{ message.creator.lastname }}</h2>
+                            <p>Created: {{ message.createdAt }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt }}</span></p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
@@ -64,10 +64,10 @@
                                       ng-repeat="com in comments">
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
-                                          ng-model="com.message"></textarea>
+                                          ng-model="com.comment"></textarea>
                                 <p>By {{ com.creator.fullname }}<br>
-                                Created: {{ com.createdAt.date }}<br>
-                                <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
+                                Created: {{ com.createdAt }}<br>
+                                <span ng-show="com.editedAt">Edited: {{ com.editedAt }}</span></p>
                                 <div class="button-bar" ng-show="com.creator.id == userConnectedId">
                                     <!-- Delete button if comment is by user connected only -->
                                     <a class="button button-block icon ion-ios-trash button-small button-assertive"
@@ -125,13 +125,14 @@
 
                     <ion-item ng-show="noMessageCustomer">{{noMessageCustomer}}</ion-item>
                     <div class="list card"
-                         ng-repeat="message in lastMessagesCustomer"
-                         ng-if="message.deletedAt === null"> <!-- ng-show="!noMessageCustomer" -->
+                         ng-repeat="message in lastMessagesCustomer">
+                         <!--ng-if="message.deletedAt === null">--> <!-- ng-show="!noMessageCustomer" -->
                         <div class="item item-avatar">
-                            <img src="mcfly.jpg">
-                            <h2>{{ message.creator.fullname }}</h2>
-                            <p>Created: {{ message.createdAt.date }}<br>
-                            <span ng-show="message.editedAt">Edited: {{ message.editedAt.date }}</span></p>
+                            <!--<img src="mcfly.jpg">-->
+                            <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
+                            <h2>{{ message.creator.firstname }} {{ message.creator.lastname }}</h2>
+                            <p>Created: {{ message.createdAt }}<br>
+                            <span ng-show="message.editedAt">Edited: {{ message.editedAt }}</span></p>
                         </div>
                         <div class="item item-body">
                             <!--- Message -->
@@ -166,7 +167,7 @@
                                       ng-repeat="com in comments">
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
-                                          ng-model="com.message"></textarea>
+                                          ng-model="com.comment"></textarea>
                                 <p>By {{ com.creator.fullname }}<br>
                                 Created: {{ com.createdAt.date }}<br>
                                 <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>

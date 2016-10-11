@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('EditTagCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Bugtracker) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.bugtracker;
+    });
+
     $scope.doRefresh = function () {
         $scope.GetTagInfo();
         console.log("View refreshed !");
@@ -21,8 +25,7 @@ angular.module('GrappBox.controllers')
     $scope.GetTagInfo = function () {
         $rootScope.showLoading();
         Bugtracker.GetTagInfo().get({
-            token: $rootScope.userDatas.token,
-            tagId: $scope.tagId
+            id: $scope.tagId
         }).$promise
             .then(function (data) {
                 console.log('Get tag info successful !');
@@ -49,15 +52,16 @@ angular.module('GrappBox.controllers')
     $scope.UpdateTag = function () {
         //$rootScope.showLoading();
         Bugtracker.UpdateTag().update({
+            id: $scope.tagId,
             data: {
-                token: $rootScope.userDatas.token,
-                tagId: $scope.tagId,
-                name: $scope.tagInfo.name
+                name: $scope.tagInfo.name,
+                color: ""
             }
         }).$promise
             .then(function (data) {
                 console.log('Update tag successful !');
                 $scope.project = data.data;
+                Toast.show("Tag updated");
                 $ionicHistory.clearCache().then(function () {
                     $state.go('app.tags', { projectId: $stateParams.projectId });
                 });
@@ -65,6 +69,7 @@ angular.module('GrappBox.controllers')
             .catch(function (error) {
                 console.error('Update tag failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
+                Toast.show("Tag edition error");
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');

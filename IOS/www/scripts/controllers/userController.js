@@ -5,6 +5,11 @@
 angular.module('GrappBox.controllers')
 
 .controller('UserCtrl', function ($scope, $rootScope, $state, $stateParams, Roles, Users) {
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetUserInfo();
@@ -21,7 +26,6 @@ angular.module('GrappBox.controllers')
     $scope.GetUserInfo = function () {
         //$rootScope.showLoading();
         Users.UserInfo().get({
-            token: $rootScope.userDatas.token,
             userId: $stateParams.userId
         }).$promise
             .then(function (data) {
@@ -42,11 +46,10 @@ angular.module('GrappBox.controllers')
     ** Get member roles
     ** Method: GET
     */
-    $scope.memberRoles = {};
+    /*$scope.memberRoles = {};
     $scope.GetMemberRoles = function () {
         //$rootScope.showLoading();
         Roles.MemberRoles().get({
-            token: $rootScope.userDatas.token,
             projectId: $stateParams.projectId,
             userId: $stateParams.userId
         }).$promise
@@ -68,7 +71,7 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetMemberRoles();
+    $scope.GetMemberRoles();*/
 
     /*
     ** Get user avatar

@@ -97,29 +97,9 @@ ion-popover-view {
 ** GrappBox colors
 */
 
-/* Nav bars */
-.gb-dashboard-nav-bar {
-    background-color: #FC575E !important;
-}
-
-.gb-cloud-nav-bar {
-    background-color: #FC575E !important;
-}
-
-.gb-calendar-nav-bar {
-    background-color: #FC575E !important;
-}
-
-.gb-bugtracker-nav-bar {
-    background-color: #FC575E !important;
-}
-
-.gb-timeline-nav-bar {
-    background-color: #FC575E !important;
-}
-
-.gb-whiteboard-nav-bar {
-    background-color: #FC575E !important;
+/* Nav bars, see app.js $rootScope */
+.nav-bar-block, .bar-header { /* , .bar */
+    background-color: inherit !important;
 }
 
 /* Tab text container and container of this container */
@@ -177,9 +157,9 @@ ion-popover-view {
     min-height: 60px !important;
 }
 
-.cal-year-box [class*=span]:nth-child(1), .cal-year-box [class*=span]:nth-child(2) {
-    border-bottom: none;
-}
+    .cal-year-box [class*=span]:nth-child(1), .cal-year-box [class*=span]:nth-child(2) {
+        border-bottom: none;
+    }
 
 .col-md-3 {
     width: 30% !important;

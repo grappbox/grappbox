@@ -4,7 +4,11 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CloudCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout, Toast, Cloud) {
+.controller('CloudCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicModal, $cordovaFile, $cordovaFileTransfer, $timeout, $http, Toast, Cloud) {
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.cloud;
+    });
 
     $scope.projectId = $stateParams.projectId;
     $scope.userConnectedId = $rootScope.userDatas.id;
@@ -57,7 +61,6 @@ angular.module('GrappBox.controllers')
             $scope.path = $scope.path;
         //$rootScope.showLoading();
         Cloud.List().get({
-            token: $rootScope.userDatas.token,
             idProject: $scope.projectId,
             path: $scope.path.replace(/\//g, ","),
             passwordSafe: $scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""
@@ -69,17 +72,37 @@ angular.module('GrappBox.controllers')
                     console.error(data.info.return_message);
                     $scope.GoBack();
                 }
-                else
+                else {
                     $scope.cloudData = data.data.array;
-                if (data.data.array.length == 0)
-                    $scope.noFileOrDir = "There is no content.";
-                else
-                    $scope.noFileOrDir = false;
+                    // Check if completely empty
+                    if (data.data.array.length == 0) {
+                        $scope.noDir = "There is no folder.";
+                        $scope.noFile = "There is no file.";
+                    }
+                    else {
+                        // Check if there is no files
+                        for (var i = 0; i < data.data.array.length; i++) {
+                            if (data.data.array[i].type == "file") {
+                                $scope.noFile = false;
+                                break;
+                            }
+                            $scope.noFile = "There is no file.";
+                        }
+                        // Check if there is no folder
+                        for (var i = 0; i < data.data.array.length; i++) {
+                            if (data.data.array[i].type == "dir") {
+                                $scope.noDir = false;
+                                break;
+                            }
+                            $scope.noDir = "There is no folder.";
+                        }
+                    }
+                }
             })
             .catch(function (error) {
                 console.error('Cloud LS failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
-                $scope.GoBack();
+                //$scope.GoBack();
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -99,7 +122,6 @@ angular.module('GrappBox.controllers')
         console.log("token = '" + $rootScope.userDatas.token + "' , project_id = '" + $scope.projectId + "' , path = '" + $scope.path + "' , dir_name = '" + $scope.dir.dirName + "'");
         Cloud.CreateDir().save({
             data: {
-                token: $rootScope.userDatas.token,
                 project_id: $scope.projectId,
                 path: $scope.path.replace(/,/g, "/"),
                 dir_name: $scope.dir.dirName,
@@ -112,8 +134,9 @@ angular.module('GrappBox.controllers')
                 $scope.createDirData = data.data;
                 Toast.show("Folder created");
                 $scope.noFileOrDir = false;
+                $scope.noDir = false;
                 $scope.CloudLS(true);
-                $scope.dirModal.hide();
+                //$scope.dirModal.hide();
             })
             .catch(function (error) {
                 console.error('Cloud create dir failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -126,7 +149,7 @@ angular.module('GrappBox.controllers')
     };
 
     //Search for createDirModal.html ng-template in cloud.html
-    $ionicModal.fromTemplateUrl('createDirModal.html', {
+    /*$ionicModal.fromTemplateUrl('createDirModal.html', {
         scope: $scope,
         animation: 'slide-in-up'
     }).then(function (modal) {
@@ -136,7 +159,7 @@ angular.module('GrappBox.controllers')
     //Destroy the modal
     $scope.$on('$destroy', function () {
         $scope.dirModal.remove();
-    });
+    });*/
 
     /*
     ** Download file with $cordovaFileTransfer
@@ -149,18 +172,56 @@ angular.module('GrappBox.controllers')
     ** http://ngcordova.com/docs/plugins/fileTransfer/
     */
     $scope.downloadFile = function (fileName) {
+        //$rootScope.showLoading();
+        if ($scope.filePassword.pass) {
+            Cloud.DownloadSecure().get({
+                cloudPath: $scope.path.replace(/\//g, ",") + fileName,
+                idProject: $scope.projectId,
+                password: $scope.filePassword.pass ? "/" + $scope.filePassword.pass : "",
+                passwordSafe: $scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""
+            }).$promise
+                .then(function (data) {
+                    console.log('Get secured download redirection successful !');
+                    $scope.downloadFileAfterRedirect(fileName, data.headers.location);
+                })
+                .catch(function (error) {
+                    console.error('Get secured download redirection failed ! Reason: ' + error.status + ' ' + error.statusText);
+                    console.error(error);
+                })
+                .finally(function () {
+                    $scope.$broadcast('scroll.refreshComplete');
+                    //$scope.hideLoading();
+                })
+        }
+        else {
+            Cloud.Download().get({
+                cloudPath: $scope.path.replace(/\//g, ",") + fileName,
+                idProject: $scope.projectId,
+                passwordSafe: $scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""
+            }).$promise
+                .then(function (data) {
+                    console.log('Get download redirection successful !');
+                    $scope.downloadFileAfterRedirect(fileName, data.headers.location);
+                })
+                .catch(function (error) {
+                    console.error('Get download redirection failed ! Reason: ' + error.status + ' ' + error.statusText);
+                    console.error(error);
+                })
+                .finally(function () {
+                    $scope.$broadcast('scroll.refreshComplete');
+                    //$scope.hideLoading();
+                })
+        }
+    };
+
+    $scope.downloadFileAfterRedirect = function (fileName, url) {
         document.addEventListener('deviceready', function () {
-            //console.log("DOWNLOADING ! token = " + $rootScope.userDatas.token + " | path = " + $scope.path.replace(/\//g, ",") + " | fileName = " + fileName + " | projectId = " + $scope.projectId + " | filePassword = " + ($scope.filePassword.pass ? "/" + $scope.filePassword.pass : "") + " | safePassword = " + ($scope.isPathInSafeFolder($scope.path) ? "/" + $scope.safePassword.pass : ""));
-            if ($scope.filePassword.pass)
-                var url = $rootScope.API + 'cloud/filesecured/' + $scope.path.replace(/\//g, ",") + fileName + "/" + $rootScope.userDatas.token + "/" + $scope.projectId + ($scope.filePassword.pass ? "/" + $scope.filePassword.pass : "") + ($scope.isPathInSafeFolder($scope.path) ? "/" + $scope.safePassword.pass : "");
-            else
-                var url = $rootScope.API + 'cloud/file/' + $scope.path.replace(/\//g, ",") + fileName + "/" + $rootScope.userDatas.token + "/" + $scope.projectId + ($scope.isPathInSafeFolder($scope.path) ? "/" + $scope.safePassword.pass : "");
             // Save location
             var targetPath = cordova.file.externalDataDirectory + fileName;
             console.log("targetPath = " + "'" + targetPath + "'");
             // Trust every host certificate SSL
             var trustHosts = true;
-            // Options to send (if any, but now for now)
+            // Options to send
             var options = {};
             $cordovaFileTransfer.download(url, targetPath, options, trustHosts)
               .then(function (data) {
@@ -201,7 +262,6 @@ angular.module('GrappBox.controllers')
                 "filename": fileUpload.filename,
                 "password": $scope.wantPassword.pass ? $scope.wantPassword.pass : ""
             },
-            token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
             safe_password: $scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""
         }).$promise
@@ -221,7 +281,6 @@ angular.module('GrappBox.controllers')
                 for (var i = 0; i < $scope.fileChunks.length; ++i) {
                     Cloud.UploadChunks().update({
                         data: {
-                            token: $rootScope.userDatas.token,
                             project_id: $scope.projectId,
                             stream_id: $scope.streamId,
                             chunk_numbers: $scope.fileChunks.length,
@@ -234,7 +293,6 @@ angular.module('GrappBox.controllers')
                             $scope.uploadProgress = i / $scope.fileChunks.length * 100;
                             if (i === $scope.fileChunks.length) {
                                 Cloud.CloseStream().delete({
-                                    token: $rootScope.userDatas.token,
                                     project_id: $scope.projectId,
                                     stream_id: $scope.streamId
                                 }).$promise
@@ -242,7 +300,8 @@ angular.module('GrappBox.controllers')
                                     // We close stream
                                     console.log('Cloud close stream successful !');
                                     Toast.show("File uploaded");
-                                    $scope.noFileOrDir = false;
+                                    $scope.noFile = false;
+                                    $scope.noDir = false;
                                     $scope.closeStreamData = data.data;
                                     resetUploadFileField();
                                     $scope.CloudLS(true);
@@ -289,7 +348,6 @@ angular.module('GrappBox.controllers')
         console.log("DEL ! path = " + $scope.path.replace(/\//g, ",") + fileName + " | safePassword = " + ($scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""));
         //$rootScope.showLoading();
         Cloud.DelFileOrDir().delete({
-            token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
             path: $scope.path.replace(/\//g, ",") + fileName,
             passwordSafe: $scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""
@@ -325,7 +383,6 @@ angular.module('GrappBox.controllers')
         console.log("DEL SECURED ! path = " + $scope.path.replace(/\//g, ",") + fileName + " | fileDeletePassword = " + $scope.fileDeletePassword.pass + " | safePassword = " + ($scope.isPathInSafeFolder($scope.path) ? $scope.safePassword.pass : ""));
         //$rootScope.showLoading();
         Cloud.DelSecuredFile().delete({
-            token: $rootScope.userDatas.token,
             project_id: $scope.projectId,
             path: $scope.path.replace(/\//g, ",") + fileName,
             password: $scope.fileDeletePassword.pass ? $scope.fileDeletePassword.pass : "",
@@ -449,6 +506,32 @@ angular.module('GrappBox.controllers')
                   type: 'button-positive',
                   onTap: function (e) {
                       $scope.UploadFile(fileUpload);
+                  }
+              }]
+        })
+    };
+
+    // Create directory popup
+    $scope.showCreateDirPopup = function () {
+        var myPopup = $ionicPopup.show({
+            template: '<ion-checkbox ng-model="wantPassword.choice">Password on file ?</ion-checkbox>'
+                + '<input ng-show="wantPassword.choice == true" type="password" placeholder="Your password" ng-model="wantPassword.pass">',
+            template: '<ion-input class="item item-input">'
+                + '<ion-label>Name</ion-label>'
+                + '<input type="text" placeholder="My folder name" name="createDirectory_title" ng-model="dir.dirName" required/>'
+                + '</ion-input>',
+            title: 'Create directory',
+            scope: $scope,
+            buttons: [
+              { text: 'Cancel' },
+              {
+                  text: '<b>Create</b>',
+                  type: 'button-positive',
+                  onTap: function (e) {
+                      if (!$scope.dir.dirName)
+                          e.preventDefault();
+                      else
+                          $scope.CloudCreateDir();
                   }
               }]
         })

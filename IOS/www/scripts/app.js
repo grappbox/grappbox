@@ -3,10 +3,10 @@
     Every pages mentionned here are stocked in Templates folder
 */
 
-angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar', 'ngAnimate', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
+angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
 
 // on starting
-.run(function ($ionicPlatform, $rootScope, $ionicLoading) {
+.run(function ($ionicPlatform, $rootScope, $ionicLoading, $http) {
     $ionicPlatform.ready(function () {
         // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
         // for form inputs)
@@ -17,9 +17,19 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar',
             StatusBar.styleDefault();
         }*/
     });
-    $rootScope.API_VERSION = '0.2'; //actual API's version
-    //$rootScope.API = 'http://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
-    $rootScope.API = 'http://api.grappbox.com/V' + $rootScope.API_VERSION + '/';
+    $rootScope.API_VERSION = '0.3'; //actual API's version
+    //$rootScope.API = 'https://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
+    $rootScope.API = 'https://api.grappbox.com/' + $rootScope.API_VERSION + '/';
+
+    $rootScope.userDatas = {
+        id: "",
+        firstname: "",
+        lastname: "",
+        email: "",
+        avatar: "",
+        is_client: "",
+        token: ""
+    }
 
     $rootScope.hasProject = false;
 
@@ -50,6 +60,15 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar',
         }
         return angular.toJson(newData);
 
+    }
+
+    $rootScope.GBNavColors = {
+        dashboard: "#FC575E",
+        cloud: "#F1C40F",
+        calendar: "#44BBFF",
+        bugtracker: "#9E58DC",
+        timeline: "#FF9F55",
+        whiteboard: "#27AE60"
     }
 })
 
@@ -374,7 +393,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar',
 
     // Tasks view
     .state('app.calendar', {
-        url: "/projects/:projectId/calendar/",
+        url: "/projects/:projectId/calendar",
         views: {
             'menuList': {
                 templateUrl: "views/calendar.html",
@@ -389,7 +408,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'naif.base64', 'mwl.calendar',
 
     // Tasks view
     .state('app.tasks', {
-        url: "/projects/:projectId/tasks/",
+        url: "/projects/:projectId/tasks",
         views: {
             'menuList': {
                 templateUrl: "views/tasks.html",

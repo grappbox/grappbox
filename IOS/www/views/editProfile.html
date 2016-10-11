@@ -13,7 +13,7 @@
         <!-- Profile information -->
         <div class="item item-divider"></div>
         <p>Type your personal informations</p>
-        <img ng-if="userAvatar.avatar" id="profileAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar.base64}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+        <img ng-if="userAvatar.avatar" id="profileAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <img ng-if="!userAvatar.avatar" id="profileAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <form name="profile_form">
             <ion-input class="item item-input">

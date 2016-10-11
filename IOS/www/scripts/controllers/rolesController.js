@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('RolesCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Roles) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
 
@@ -23,7 +27,6 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectRoles = function () {
         //$rootScope.showLoading();
         Roles.List().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -63,7 +66,6 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Roles.Add().save({
             data: {
-                token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
                 name: $scope.roleType.name,
                 teamTimeline: $scope.roleType.teamTimeline,

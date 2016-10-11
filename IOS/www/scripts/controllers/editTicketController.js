@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('EditTicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicActionSheet, Bugtracker, Toast, Projects) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.bugtracker;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.usersOnTicket = [];
@@ -33,8 +37,7 @@ angular.module('GrappBox.controllers')
     $scope.GetTicketInfo = function () {
         //$rootScope.showLoading();
         Bugtracker.GetTicketInfo().get({
-            id: $scope.ticketId,
-            token: $rootScope.userDatas.token,
+            id: $scope.ticketId
         }).$promise
             .then(function (data) {
                 console.log('Get ticket info successful !');
@@ -43,15 +46,16 @@ angular.module('GrappBox.controllers')
                 for (var i = 0; i < $scope.ticket.users.length; i++) { // push all users assigned to ticket in usersOnTicket
                     $scope.usersOnTicket.push({
                         id: $scope.ticket.users[i].id,
-                        name: $scope.ticket.users[i].name,
+                        firstname: $scope.ticket.users[i].firstname,
+                        lastname: $scope.ticket.users[i].lastname,
+                        //name: $scope.ticket.users[i].name,
                         email: $scope.ticket.users[i].email,
                         avatar: $scope.ticket.users[i].avatar,
                         checked: true
                     });
                 }
                 Projects.Users().get({
-                    token: $rootScope.userDatas.token,
-                    projectId: $scope.projectId
+                    id: $scope.projectId
                 }).$promise
                 .then(function (data) {
                     $scope.userList = data.data.array;
@@ -68,7 +72,9 @@ angular.module('GrappBox.controllers')
                         if (!isIn) { // if he isn't, push him in users on ticket tab
                             $scope.usersOnTicket.push({
                                 id: $scope.userList[i].id,
-                                name: $scope.userList[i].firstname + " " + $scope.userList[i].lastname,
+                                firstname: $scope.userList[i].firstname,
+                                lastname: $scope.userList[i].lastname,
+                                //name: $scope.userList[i].firstname + " " + $scope.userList[i].lastname,
                                 email: "",
                                 avatar: "",
                                 checked: false
@@ -100,13 +106,14 @@ angular.module('GrappBox.controllers')
     $scope.EditTicket = function () {
         //$rootScope.showLoading();
         Bugtracker.EditTicket().update({
+            id: $scope.ticketId,
             data: {
-                token: $rootScope.userDatas.token,
-                bugId: $scope.ticketId,
                 title: $scope.ticket.title,
                 description: $scope.ticket.description,
-                stateId: $scope.ticket.state.id,
-                stateName: $scope.ticket.state.name,
+                addTags: [],
+                removeTags: [],
+                addUsers: [],
+                removeUsers: [],
                 clientOrigin: false
             }
         }).$promise
@@ -134,7 +141,6 @@ angular.module('GrappBox.controllers')
     $scope.GetTagsOnProject = function () {
         //$rootScope.showLoading();
         Bugtracker.GetTagsOnProject().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -168,9 +174,9 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Bugtracker.CreateTag().save({
             data: {
-                token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
-                name: $scope.createTag.name
+                name: $scope.createTag.name,
+                color: ""
             }
         }).$promise
             .then(function (data) {
@@ -199,10 +205,9 @@ angular.module('GrappBox.controllers')
     $scope.AssignTag = function () {
         //$rootScope.showLoading();
         Bugtracker.AssignTag().update({
+            bugId: $scope.ticketId,
             data: {
-                token: $rootScope.userDatas.token,
-                bugId: $scope.ticketId,
-                tagId: $scope.tagToAdd.id,
+                tagId: $scope.tagToAdd.id
             }
         }).$promise
             .then(function (data) {
@@ -246,7 +251,6 @@ angular.module('GrappBox.controllers')
     $scope.RemoveTagFromTicket = function () {
         //$rootScope.showLoading();
         Bugtracker.RemoveTagFromTicket().delete({
-            token: $rootScope.userDatas.token,
             bugId: $scope.ticketId,
             tagId: $scope.tagToRemove.id
         }).$promise
@@ -311,9 +315,8 @@ angular.module('GrappBox.controllers')
     $scope.SetUsersToTicket = function () {
         //$rootScope.showLoading();
         Bugtracker.SetUsersToTicket().update({
+            id: $scope.ticketId,
             data: {
-                token: $rootScope.userDatas.token,
-                bugId: $scope.ticketId,
                 toAdd: $scope.usersToAdd,
                 toRemove: $scope.usersToRemove
             }

@@ -5,6 +5,11 @@
 angular.module('GrappBox.controllers')
 
 .controller('CreateProjectCtrl', function ($scope, $rootScope, $state, $ionicHistory, Toast, Projects) {
+
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     $scope.project = {};
 
     $scope.projectLogo = {};
@@ -13,7 +18,6 @@ angular.module('GrappBox.controllers')
         $rootScope.showLoading();
         Projects.Create().save({
             data: {
-                token: $rootScope.userDatas.token,
                 name: $scope.project.name,
                 description: $scope.project.description ? $scope.project.description : "",
                 logo: $scope.projectLogo.logo ? $scope.projectLogo.logo.base64 : "",

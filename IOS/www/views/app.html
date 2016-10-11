@@ -99,7 +99,7 @@
     <!-- Contains buttons on the top bar also, because they never change so we can inherit -->
     <ion-side-menu-content edge-drag-threshold="true">
         <!-- Make the possibility to swipe -->
-        <ion-nav-bar class="bar-dark nav-title-slide-ios7 gb-dashboard-nav-bar">
+        <ion-nav-bar class="bar-positive nav-title-slide-ios7" ng-style="{'background-color': viewColor}">
             <ion-nav-back-button class="button-clear"></ion-nav-back-button><!-- Configuration of back-button in app.js -->
             <ion-nav-buttons side="left">
                 <!-- Menu button on top left -->
@@ -107,8 +107,8 @@
             </ion-nav-buttons>
             <ion-nav-buttons side="right">
                 <!-- Notification button & Settings button on top right -->
-                <ion-nav-button class="button button-icon button-clear ion-android-notifications-none"></ion-nav-button>
-                <ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>
+                <button class="button button-icon button-clear ion-android-notifications-none"></button>
+                <!--<ion-nav-button class="button button-icon ion-ios-settings"></ion-nav-button>-->
             </ion-nav-buttons>
         </ion-nav-bar>
         <!-- On this line, "menuList" allows to proceed inheritance, see in app.js -->

@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('UsersOnRoleCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, $ionicHistory, Toast, Roles) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
 
@@ -25,7 +29,6 @@ angular.module('GrappBox.controllers')
     $scope.DeleteProjectRole = function () {
         //$rootScope.showLoading();
         Roles.Delete().delete({
-            token: $rootScope.userDatas.token,
             id: $scope.roleId
         }).$promise
         .then(function (data) {
@@ -53,7 +56,6 @@ angular.module('GrappBox.controllers')
     $scope.GetUsersForRole = function () {
         $rootScope.showLoading();
         Roles.UsersAssignedOrNot().get({
-            token: $rootScope.userDatas.token,
             roleId: $scope.roleId
         }).$promise
             .then(function (data) {
@@ -89,9 +91,9 @@ angular.module('GrappBox.controllers')
     $scope.AssignToRole = function () {
         //$rootScope.showLoading();
         console.log($scope.userToAdd.userId);
+        console.log($scope.roleId);
         Roles.Assign().save({
             data: {
-                token: $rootScope.userDatas.token,
                 userId: $scope.userToAdd.userId,
                 roleId: $scope.roleId
             }
@@ -123,7 +125,6 @@ angular.module('GrappBox.controllers')
     $scope.RemoveUserFromRole = function () {
         //$rootScope.showLoading();
         Roles.RemoveUser().delete({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             userId: $scope.user_id,
             roleId: $scope.roleId
@@ -153,11 +154,9 @@ angular.module('GrappBox.controllers')
     $scope.UpdateProjectRole = function () {
         //$rootScope.showLoading();
         Roles.Update().update({
+            roleId: $scope.roleId,
             data: {
-                token: $rootScope.userDatas.token,
-                roleId: $scope.roleId,
-                projectId: $scope.projectId,
-                //name: $scope.role.name,
+                name: $scope.role.name,
                 teamTimeline: $scope.role.teamTimeline,
                 customerTimeline: $scope.role.customerTimeline,
                 gantt: $scope.role.gantt,

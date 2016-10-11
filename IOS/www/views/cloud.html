@@ -1,5 +1,5 @@
 ﻿<!--
-    Summary: Single project view
+    Summary: Cloud view
 -->
 
 <ion-view>
@@ -19,7 +19,7 @@
             </a>
             <!-- New folder button -->
             <a class="button ion-ios-folder button-positive"
-               ng-click="dirModal.show()">
+               ng-click="showCreateDirPopup()"><!--ng-click="dirModal.show()"-->
             </a>
             <!-- Upload file button -->
             <input type="file"
@@ -35,7 +35,7 @@
         <!-- FOLDERS -->
         <div class="item item-divider"> Folders</div>
         <ion-list can-swipe="true">
-            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
+            <ion-item ng-show="noDir">{{noDir}}</ion-item>
             <ion-item ng-repeat="dir in cloudData"
                       ng-show="dir.type == 'dir'"
                       ng-click="checkSafe(dir.is_secured, dir.filename)">
@@ -49,7 +49,7 @@
         <!-- FILES -->
         <div class="item item-divider"> Files</div>
         <ion-list can-swipe="true">
-            <ion-item ng-show="noFileOrDir">{{noFileOrDir}}</ion-item>
+            <ion-item ng-show="noFile">{{noFile}}</ion-item>
             <ion-item ng-repeat="file in cloudData"
                       ng-show="file.type == 'file'"
                       ng-click="checkFileProtected(file.is_secured, file.filename)">
@@ -74,9 +74,9 @@
 </ion-view>
 
 <!-- Create dir modal -->
-<script id="createDirModal.html" type="text/ng-template">
+<!--<script id="createDirModal.html" type="text/ng-template">
     <ion-modal-view>
-        <ion-header-bar class="bar-dark gb-dashboard-nav-bar" ng-style="background-image: "transparent" !important;">
+        <ion-header-bar class="bar-positive" ng-style="{'background-color': viewColor}">
             <h1 class="title">Add folder</h1>
             <button class="button button-clear button-primary"
                     ng-click="dirModal.hide()">
@@ -100,4 +100,4 @@
             </form>
         </ion-content>
     </ion-modal-view>
-</script>
+</script>-->

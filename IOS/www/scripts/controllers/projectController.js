@@ -6,6 +6,10 @@ angular.module('GrappBox.controllers')
 
 .controller('ProjectCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopup, $ionicActionSheet, Projects, Toast, Roles, Users) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    });
+
     //Refresher
     $scope.doRefresh = function () {
         $scope.GetProjectInfo();
@@ -26,8 +30,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectLogo = function () {
         //$rootScope.showLoading();
         Projects.Logo().get({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
+            id: $scope.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get project logo successful !');
@@ -51,8 +54,7 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectInfo = function () {
         //$rootScope.showLoading();
         Projects.Info().get({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
+            id: $scope.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get project info successful !');
@@ -60,6 +62,7 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Get project info failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -76,8 +79,7 @@ angular.module('GrappBox.controllers')
     $scope.GetUsersOnProject = function () {
         //$rootScope.showLoading();
         Projects.Users().get({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
+            id: $scope.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get users on project list successful !');
@@ -92,6 +94,7 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Get users on project list failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -109,7 +112,6 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Projects.AddUser().save({
             data: {
-                token: $rootScope.userDatas.token,
                 id: $scope.projectId,
                 email: $scope.userToAdd.userEmail,
             }
@@ -141,7 +143,6 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         console.log($rootScope.userDatas.token + " " + $scope.projectId + " " + $scope.user_id);
         Projects.RemoveUser().delete({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             userId: $scope.user_id
         }).$promise
@@ -171,12 +172,12 @@ angular.module('GrappBox.controllers')
     $scope.GetCustomersOnProject = function () {
         //$rootScope.showLoading();
         Projects.CustomersAccesses().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
                 console.log('Get customers on project list successful !');
                 $scope.customersList = data.data.array;
+                console.log(data.data.array);
                 if (data.data.array.length == 0)
                     $scope.noCustomer = "There is no customer accesses on the project."
                 else
@@ -204,7 +205,6 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Projects.GenCustomerAccess().save({
             data: {
-                token: $rootScope.userDatas.token,
                 projectId: $scope.projectId,
                 name: $scope.customerAccessToAdd.accessName
             }
@@ -237,7 +237,6 @@ angular.module('GrappBox.controllers')
     $scope.DeleteCustomerAccessBeforeRegen = function (customerName) {
         //$rootScope.showLoading();
         Projects.DeleteCustomerAccess().delete({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
             customerAccessId: $scope.customer_id
         }).$promise
@@ -294,8 +293,7 @@ angular.module('GrappBox.controllers')
     $scope.DeleteProject = function () {
         //$rootScope.showLoading();
         Projects.Delete().delete({
-            token: $rootScope.userDatas.token,
-            projectId: $scope.projectId
+            id: $scope.projectId
         }).$promise
         .then(function (data) {
             console.log('Delete project successful !');
@@ -322,7 +320,6 @@ angular.module('GrappBox.controllers')
     $scope.RetreiveProject = function () {
         //$rootScope.showLoading();
         Projects.Retreive().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -354,7 +351,6 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectRoles = function () {
         //$rootScope.showLoading();
         Roles.List().get({
-            token: $rootScope.userDatas.token,
             projectId: $scope.projectId
         }).$promise
             .then(function (data) {

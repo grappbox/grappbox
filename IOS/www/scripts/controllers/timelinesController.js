@@ -5,6 +5,10 @@
 angular.module('GrappBox.controllers')
 .controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Timeline) {
 
+    $scope.$on('$ionicView.beforeEnter', function () {
+        $rootScope.viewColor = $rootScope.GBNavColors.timeline;
+    });
+
     $scope.offsetMax = 25;
     $scope.limitMax = 25;
 
@@ -45,7 +49,6 @@ angular.module('GrappBox.controllers')
     $scope.GetTimelines = function () {
         //$rootScope.showLoading();
         Timeline.List().get({
-            token: $rootScope.userDatas.token,
             id: $scope.projectId
         }).$promise
             .then(function (data) {
@@ -77,13 +80,15 @@ angular.module('GrappBox.controllers')
             $rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[0],
-            token: $rootScope.userDatas.token,
             offset: $scope.offsetTeam,
             limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last messages team info successful !');
-                if (data.data.array[0] != null) {
+                if (data.data.array.length == 0 && $scope.lastMessagesTeam.length == 0) {
+                    $scope.noMessageTeam = "There is no message in team timeline."
+                }
+                else {
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesTeam.push(data.data.array[i]);
                     }
@@ -97,8 +102,6 @@ angular.module('GrappBox.controllers')
                     //$scope.offsetTeam += $scope.offsetMax;
                     //$scope.limitTeam += $scope.limitMax;
                 }
-                else
-                    $scope.noMessageTeam = "There is no message in team timeline."
                 console.log(data.data.array);
             })
             .catch(function (error) {
@@ -120,13 +123,15 @@ angular.module('GrappBox.controllers')
             $rootScope.showLoading();
         Timeline.LastMessages().get({
             id: $scope.timelineIds[1],
-            token: $rootScope.userDatas.token,
             offset: $scope.offsetCustomer,
             limit: $scope.limitMax
         }).$promise
             .then(function (data) {
                 console.log('Get last messages customer info successful !');
-                if (data.data.array[0] != null) {
+                if (data.data.array.length == 0 && $scope.lastMessagesCustomer.length == 0) {
+                    $scope.noMessageCustomer = "There is no message in customer timeline."
+                }
+                else {
                     for (var i = 0; i < data.data.array.length; i++) {
                         $scope.lastMessagesCustomer.push(data.data.array[i]);
                     }
@@ -140,8 +145,6 @@ angular.module('GrappBox.controllers')
                     //$scope.offsetCustomer += $scope.offsetMax;
                     //$scope.limitCustomer += $scope.limitMax;
                 }
-                else
-                    $scope.noMessageCustomer = "There is no message in customer timeline."
             })
             .catch(function (error) {
                 console.error('Get last messages customer info failed ! Reason: ' + error.status + ' ' + error.statusText);
@@ -160,10 +163,9 @@ angular.module('GrappBox.controllers')
     $scope.editMessageData = {};
     $scope.EditMessage = function (mess) {
         //$rootScope.showLoading();
-        Timeline.EditMessageOrComment().update({
+        Timeline.EditMessage().update({
+            id: mess.timelineId,
             data: {
-                id: mess.timelineId,
-                token: $rootScope.userDatas.token,
                 messageId: mess.id,
                 title: mess.title,
                 message: mess.message
@@ -192,13 +194,11 @@ angular.module('GrappBox.controllers')
     $scope.editCommentData = {};
     $scope.EditCommentOnTimeline = function (com) {
         //$rootScope.showLoading();
-        Timeline.EditMessageOrComment().update({
+        Timeline.EditComment().update({
+            id: com.timelineId,
             data: {
-                id: com.timelineId,
-                token: $rootScope.userDatas.token,
-                messageId: com.id,
-                title: '',
-                message: com.message
+                commentId: com.id,
+                comment: com.message
             }
         }).$promise
             .then(function (data) {
@@ -217,22 +217,6 @@ angular.module('GrappBox.controllers')
             })
     }
 
-    // Remove confirm popup for deleting role
-    $scope.PopupDeleteMessage = function (message) {
-        var confirmPopup = $ionicPopup.confirm({
-            title: 'Delete Message',
-            template: 'Are you sure you want to delete this message ?'
-        })
-        .then(function (res) {
-            if (res) {
-                $scope.ArchiveMessage(message);
-                console.log("Chose to delete message");
-            } else {
-                console.log("Chose to keep message");
-            }
-        })
-    }
-
     /*
     ** Archive message and all its comments
     ** Method: DELETE
@@ -240,20 +224,19 @@ angular.module('GrappBox.controllers')
     $scope.archiveMessageData = {};
     $scope.ArchiveMessage = function (message) {
         //$rootScope.showLoading();
-        Timeline.ArchiveMessageOrComment().delete({
+        Timeline.ArchiveMessageAndComments().delete({
             id: message.timelineId,
-            token: $rootScope.userDatas.token,
             messageId: message.id
         }).$promise
             .then(function (data) {
                 console.log('Archive message successful !');
-                Toast.show("Message archived");
+                Toast.show("Message deleted");
                 $scope.archiveMessageData = data.data;
-                $state.go($state.currentState, {}, { reload: true });
+                //$state.go($state.currentState, { projectId: $stateParams.projectId }, { reload: true });
             })
             .catch(function (error) {
                 console.error('Archive message failed ! Reason: ' + error.status + ' ' + error.statusText);
-                Toast.show("Message archive error");
+                Toast.show("Message delete error");
                 console.error(error);
             })
             .finally(function () {
@@ -263,25 +246,24 @@ angular.module('GrappBox.controllers')
     }
 
     /*
-    ** Archive comment
+    ** Delete comment
     ** Method: DELETE
     */
     $scope.archiveCommentData = {};
     $scope.ArchiveComment = function (com, mess) {
         //$rootScope.showLoading();
-        Timeline.ArchiveMessageOrComment().delete({
+        Timeline.DeleteComment().delete({
             id: com.timelineId,
-            token: $rootScope.userDatas.token,
             messageId: com.id
         }).$promise
             .then(function (data) {
-                console.log('Archive comment successful !');
+                console.log('Delete comment successful !');
                 Toast.show("Comment archived");
                 $scope.archiveMessageData = data.data;
                 $scope.GetCommentsOnTimeline(mess);
             })
             .catch(function (error) {
-                console.error('Archive comment failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Delete comment failed ! Reason: ' + error.status + ' ' + error.statusText);
                 Toast.show("Comment archive error");
                 console.error(error);
             })
@@ -300,11 +282,11 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Timeline.Comments().get({
             id: message.timelineId,
-            token: $rootScope.userDatas.token,
-            message: message.id
+            messageId: message.id
         }).$promise
             .then(function (data) {
                 console.log('Get comments on timeline successful !');
+                console.log(data.data.array);
                 $scope.comments = data.data.array;
             })
             .catch(function (error) {
@@ -323,13 +305,11 @@ angular.module('GrappBox.controllers')
     */
     $scope.comment = {};
     $scope.PostComment = function (mess) {
-        $rootScope.showLoading();
-        Timeline.PostMessage().save({
+        //$rootScope.showLoading();
+        Timeline.PostComment().save({
+            id: mess.timelineId,
             data: {
-                id: mess.timelineId,
-                token: $rootScope.userDatas.token,
-                title: '',
-                message: $scope.comment.message,
+                comment: $scope.comment.message,
                 commentedId: mess.id
             }
         }).$promise
@@ -339,12 +319,31 @@ angular.module('GrappBox.controllers')
                 $scope.GetCommentsOnTimeline(mess);
             })
             .catch(function (error) {
-                console.error('Post message failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Post comment failed ! Reason: ' + error.status + ' ' + error.statusText);
                 Toast.show("Comment post error");
                 console.error(error);
             })
             .finally(function () {
-                $rootScope.hideLoading();
+                //$rootScope.hideLoading();
             })
+    }
+
+    /*
+    ** POPUS
+    */
+    // Remove confirm popup for deleting message
+    $scope.PopupDeleteMessage = function (message) {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete Message',
+            template: 'Are you sure you want to delete this message ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.ArchiveMessage(message);
+                console.log("Chose to delete message");
+            } else {
+                console.log("Chose to keep message");
+            }
+        })
     }
 })

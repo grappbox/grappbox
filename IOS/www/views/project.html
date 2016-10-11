@@ -98,13 +98,13 @@
         <ion-list>
             <ion-item ng-show="noCustomer">{{noCustomer}}</ion-item>
             <ion-item ng-show="!noCustomer"
-                      class="item-avatar item-text-wrap"
+                      class="item item-text-wrap"
                       ng-repeat="customerOnProject in customersList"
                       ng-click="showCustomerActionSheet(customerOnProject.id, customerOnProject.name)">
-                <img ng-src="" />
+                <!--<img ng-src="" />-->
                 <h2>{{ customerOnProject.name }}</h2>
-                <p><strong>Created: </strong>{{ customerOnProject.creation_date.date }}</p>
-                <p><strong>Token: </strong>{{ customerOnProject.customer_token }}</p>
+                <!--<p><strong>Created: </strong>{{ customerOnProject.creation_date.date }}</p>-->
+                <p><strong>Token: </strong>{{ customerOnProject.token }}</p>
             </ion-item>
         </ion-list>
 
