@@ -1,33 +1,45 @@
 package com.grappbox.grappbox.timeline_fragment;
 
+
 import android.accounts.AccountManager;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import android.widget.ListView;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.TimelineListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
+import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
 
 public class TimelineListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -37,10 +49,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public static final int TIMELINE_TEAM = 0;
     public static final int TIMELINE_CLIENT = 1;
 
-    private ListView    mTimelineList;
-    private SwipeRefreshLayout  mRefresher;
-    private RefreshReceiver mRefreshReceiver = null;
+    private FloatingActionButton mAddMessage;
+
     private TimelineListAdapter mAdapter;
+    private SwipeRefreshLayout mRefresher;
+    private ProgressBar mLoader;
+    private RefreshReceiver mRefreshReceiver = null;
+    private RecyclerView mTimelineList;
 
     public TimelineListFragment(){
         // Required empty public constructor
@@ -50,106 +65,188 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        if (savedInstanceState == null){
-            getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
-        } else {
-            getLoaderManager().restartLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
-        }
+        getLoaderManager().initLoader(getArguments().getInt(ARG_LIST_TYPE), null, this);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.fragment_timeline_list, container, false);
 
-        mTimelineList = (ListView) v.findViewById(R.id.timelinelist);
-        mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
-        mAdapter = new TimelineListAdapter(getActivity(), null, 0);
+        mAdapter = new TimelineListAdapter(getActivity());
+        View v = inflater.inflate(R.layout.fragment_timeline_list, container, false);
+        mTimelineList = (RecyclerView) v.findViewById(R.id.timelinelist);
         mTimelineList.setAdapter(mAdapter);
+        mTimelineList.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
+        mLoader = (ProgressBar) v.findViewById(R.id.loader);
+        mAdapter.registerAdapterDataObserver(new AdapterObserver());
+
         mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
         mRefresher.setOnRefreshListener(this);
+        Log.d(LOG_TAG, "Saved Instance State : " + savedInstanceState);
+        if (savedInstanceState != null)
+            mRefresher.setVisibility(View.VISIBLE);
+        mAddMessage = (FloatingActionButton) getActivity().findViewById(R.id.fab);
+        mAddMessage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_timeline_add_message, null);
+                AccountManager am = AccountManager.get(getActivity());
+                final String token = am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
+                
+                builder.setTitle(R.string.add_message);
+                builder.setView(dialogView);
+                builder.setPositiveButton(getActivity().getString(R.string.positive_response), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        AlertDialog dialog = (AlertDialog) dialogInterface;
+                        EditText title = (EditText) dialog.findViewById(R.id.input_title);
+                        EditText message = (EditText) dialog.findViewById(R.id.input_content);
+
+                        if (title == null || message == null) {
+                            dialog.cancel();
+                            return;
+                        }
+                        Intent addMessage = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                        addMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_MESSAGE);
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, title.getText().toString());
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
+//                        getActivity().startService(addMessage);
+                    }
+                });
+                builder.setNegativeButton(getActivity().getString(R.string.negative_response), new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+            }
+        });
         return v;
-    }
-
-    @Override
-    public void onRefresh() {
-        AccountManager am = AccountManager.get(getActivity());
-        long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-        Intent bugSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
-        bugSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
-
-        bugSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-        bugSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
-        bugSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
-        getActivity().startService(bugSync);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String sortOrder = "datetime(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC";
-        String select = null;
-        String[] selectionArgs = null;
-
+        String selection;
+        String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
         switch (id){
             case TIMELINE_TEAM:
-                select = GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
-                + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=? AND " +
-                TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=" + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID;
+                selection = GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_TEAM)
+                        String.valueOf(TIMELINE_TEAM + 1)
                 };
                 break;
 
             case TIMELINE_CLIENT:
-                select = GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " +
-                        GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=? AND " +
-                        TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=" + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID;
+                selection = GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_CLIENT)
+                        String.valueOf(TIMELINE_CLIENT + 1)
                 };
                 break;
 
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-        return new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, TimelineListAdapter.projection, select, selectionArgs, sortOrder);
+        CursorLoader cursorLoader = new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onRefresh() {
+        Log.v(LOG_TAG, "onRefresh : Sync");
+        AccountManager am = AccountManager.get(getActivity());
+        long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+        Intent timelineSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_MESSAGES);
+
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+        getActivity().startService(timelineSync);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        ExpandCursor expander = new ExpandCursor(mAdapter);
-        expander.execute(data);
+        Log.v(LOG_TAG, "onLoadFinished");
+        if (!data.moveToFirst())
+            return;
+        Collection<TimelineModel> models = new HashSet<>();
+        do {
+            models.add(new TimelineModel(getActivity(), data));
+        } while (data.moveToNext());
+        AdditionalDataLoader task = new AdditionalDataLoader();
+        task.execute(models);
     }
-
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.swapCursor(null);
+
     }
 
-    public class ExpandCursor  extends AsyncTask<Cursor, Void, Cursor> {
-        CursorAdapter mAdapter;
+    class AdapterObserver extends RecyclerView.AdapterDataObserver {
+        @Override
+        public void onChanged() {
+            super.onChanged();
+            if (!mAdapter.isEmpty()){
+                mLoader.setVisibility(View.GONE);
+                mRefresher.setVisibility(View.VISIBLE);
+            }
+        }
+    }
 
-        public ExpandCursor(CursorAdapter adapter){
-            mAdapter = adapter;
+    private class AdditionalDataLoader extends AsyncTask<Collection<TimelineModel>, Void, Collection<TimelineModel>> {
+
+        @Override
+        protected void onPostExecute(Collection<TimelineModel> timelineModels) {
+            super.onPostExecute(timelineModels);
+            mAdapter.clear();
+            mAdapter.add(timelineModels);
         }
 
         @Override
-        protected Cursor doInBackground(Cursor... cursors) {
-            if (cursors.length < 1)
-                return null;
-            Cursor cursor = cursors[0];
-            cursor.getCount();
-            return cursor;
-        }
+        protected Collection<TimelineModel> doInBackground(Collection<TimelineModel>... params) {
+            if (params == null || params.length < 1)
+                throw new IllegalArgumentException();
 
-        @Override
-        protected void onPostExecute(Cursor cursor) {
-            mAdapter.swapCursor(cursor);
+            String[] projectionMessage = {
+                    GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
+                    GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_NAME,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry._ID,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID,
+                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC
+            };
+            String selectionMessage = TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=?";
+
+            Log.v(LOG_TAG, String.valueOf(params.length));
+            for (TimelineModel model : params[0]){
+                String[] args = {
+                        String.valueOf(model._id)
+                };
+                Cursor resultMessage = getActivity().getContentResolver().query(TimelineMessageEntry.CONTENT_URI, projectionMessage, selectionMessage, args, null);
+                List<TimelineModel> message = new ArrayList<>();
+                if (resultMessage != null && resultMessage.moveToFirst()){
+                    do {
+                        message.add(new TimelineModel(resultMessage));
+                    } while (resultMessage.moveToNext());
+                    resultMessage.close();
+                }
+                Log.d(LOG_TAG, model.toString());
+            }
+            return params[0];
         }
     }
 }

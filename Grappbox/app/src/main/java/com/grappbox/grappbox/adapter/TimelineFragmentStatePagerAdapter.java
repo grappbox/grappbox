@@ -9,13 +9,10 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.timeline_fragment.TimelineListFragment;
 
-
 /**
  * Created by tan_f on 21/09/2016.
  */
-
 public class TimelineFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
-
     private Context mContext;
 
     public TimelineFragmentStatePagerAdapter(Context context, FragmentManager fm) {

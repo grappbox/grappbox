@@ -80,6 +80,15 @@
             android:theme="@style/DashboardTheme">
 
         </activity>
+
+        <activity android:name=".timeline_fragment.TimelineMessageCommentActivity"
+            android:label="@string/title_activity_timeline_message_comments"
+            android:theme="@style/TimelineTheme"
+            android:parentActivityName=".ProjectActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity" />
+        </activity>
     </application>
 
 </manifest>

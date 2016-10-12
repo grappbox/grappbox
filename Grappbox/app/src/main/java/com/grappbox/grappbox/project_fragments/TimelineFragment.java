@@ -2,6 +2,8 @@ package com.grappbox.grappbox.project_fragments;
 
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -19,11 +21,16 @@ public class TimelineFragment extends Fragment {
 
     private FragmentStatePagerAdapter mPagesAdapter;
     private ViewPager mViewPager;
+    private FloatingActionButton mAddMessage;
 
     public TimelineFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -31,11 +38,9 @@ public class TimelineFragment extends Fragment {
         // Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_timeline, container, false);
         mViewPager = (ViewPager) v.findViewById(R.id.viewPager);
-
         mPagesAdapter = new TimelineFragmentStatePagerAdapter(getActivity(), getActivity().getSupportFragmentManager());
         mViewPager.setAdapter(mPagesAdapter);
         mViewPager.setOffscreenPageLimit(2);
-
         return v;
     }
 
