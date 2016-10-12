@@ -17,13 +17,15 @@ public class UserModel implements Parcelable {
     public String mLastname;
     public String mBirthday;
     public String mAvatarURI;
+    public String mEmail;
 
-    public UserModel(String _id, String mFirstname, String mLastname, String mBirthday, String mAvatarURI) {
+    public UserModel(String _id, String mFirstname, String mLastname, String mBirthday, String mAvatarURI, String email) {
         this._id = _id;
         this.mFirstname = mFirstname;
         this.mLastname = mLastname;
         this.mBirthday = mBirthday;
         this.mAvatarURI = mAvatarURI;
+        this.mEmail = email;
         mAvatarLoaded = false;
     }
 
@@ -34,6 +36,7 @@ public class UserModel implements Parcelable {
         mLastname = data.getString(data.getColumnIndex(UserEntry.COLUMN_LASTNAME));
         mBirthday = data.getString(data.getColumnIndex(UserEntry.COLUMN_DATE_BIRTHDAY_UTC));
         mAvatarURI = data.getString(data.getColumnIndex(UserEntry.COLUMN_URI_AVATAR));
+        mEmail = data.getString(data.getColumnIndex(UserEntry.COLUMN_CONTACT_EMAIL));
     }
 
     protected UserModel(Parcel in) {
@@ -43,6 +46,7 @@ public class UserModel implements Parcelable {
         mLastname = in.readString();
         mBirthday = in.readString();
         mAvatarURI = in.readString();
+        mEmail = in.readString();
     }
 
     public boolean isAvatarLoaded(){
@@ -74,5 +78,6 @@ public class UserModel implements Parcelable {
         dest.writeString(mLastname);
         dest.writeString(mBirthday);
         dest.writeString(mAvatarURI);
+        dest.writeString(mEmail);
     }
 }

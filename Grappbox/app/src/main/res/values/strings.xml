@@ -180,4 +180,7 @@
     <string name="word_reply">Reply</string>
     <string name="empty_single_line_tag">There is no <xliff:g>tag</xliff:g></string>
     <string name="empty_single_line_assignee">There is no <xliff:g>assignee</xliff:g></string>
+    <string name="edit_title_dialog_title">Edit comment</string>
+    <string name="erase_confirm_comment_long">Do you really want to erase this comment ?</string>
+    <string name="confirm_erase_comment_title">Erase comment</string>
 </resources>

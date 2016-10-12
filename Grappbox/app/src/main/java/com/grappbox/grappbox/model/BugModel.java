@@ -2,6 +2,7 @@ package com.grappbox.grappbox.model;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -22,13 +23,14 @@ import java.util.Locale;
 
 public class BugModel implements Parcelable {
     private static final String LOG_TAG = BugModel.class.getSimpleName();
-    public int _id;
+    public long _id = -1;
     public String grappboxId, title, date, desc;
     public boolean isClosed;
     /*
         The following data are considered as additional data.
         It's recommended to lazy load it.
      */
+    public long projectID = -1;
     public long assigneeCount, commentsCount;
     public List<BugTagModel> tags;
     public List<UserModel> assignees;
@@ -36,7 +38,7 @@ public class BugModel implements Parcelable {
 
     public BugModel(Context context, Cursor cursor){
         isClosed = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)) != null && !cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)).isEmpty();
-        _id = cursor.getInt(cursor.getColumnIndex(GrappboxContract.BugEntry._ID));
+        _id = cursor.getLong(cursor.getColumnIndex(GrappboxContract.BugEntry._ID));
         grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_GRAPPBOX_ID));
         title = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_TITLE));
         try {
@@ -54,7 +56,7 @@ public class BugModel implements Parcelable {
     }
 
     protected BugModel(Parcel in) {
-        _id = in.readInt();
+        _id = in.readLong();
         grappboxId = in.readString();
         title = in.readString();
         date = in.readString();
@@ -77,6 +79,11 @@ public class BugModel implements Parcelable {
         for (Parcelable com : arrComm){
             comments.add((BugCommentModel) com);
         }
+        projectID = in.readLong();
+    }
+
+    public void setProjectID(long projectID){
+        this.projectID = projectID;
     }
 
     public void setAssigneesData(List<UserModel> assigneesData){
@@ -100,7 +107,7 @@ public class BugModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
+        dest.writeLong(_id);
         dest.writeString(grappboxId);
         dest.writeString(title);
         dest.writeString(date);
@@ -110,6 +117,7 @@ public class BugModel implements Parcelable {
         dest.writeParcelableArray(tags.toArray(new BugTagModel[tags.size()]), 0);
         dest.writeParcelableArray(assignees.toArray(new UserModel[assignees.size()]), 0);
         dest.writeParcelableArray(comments.toArray(new BugCommentModel[comments.size()]), 0);
+        dest.writeLong(projectID);
     }
 
     public static final Creator<BugModel> CREATOR = new Creator<BugModel>() {

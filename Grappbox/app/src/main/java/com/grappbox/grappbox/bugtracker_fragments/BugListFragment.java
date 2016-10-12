@@ -7,14 +7,12 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Trace;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.util.Pair;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -96,7 +94,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String selection, sortOrder = "datetime(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
+        String selection;
+        String sortOrder = "datetime(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
@@ -117,11 +116,11 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
             case TYPE_YOURS:
                 String[] projection = {
                     BugEntry.TABLE_NAME + "." + BugEntry._ID,
-                    BugEntry.COLUMN_GRAPPBOX_ID,
-                    BugEntry.COLUMN_TITLE,
-                    BugEntry.COLUMN_DESCRIPTION,
-                    BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
-                    BugEntry.COLUMN_DATE_DELETED_UTC
+                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
+                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
+                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
+                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
+                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
                 };
                 long uid = Long.parseLong(AccountManager.get(getActivity()).getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
 
@@ -187,26 +186,28 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         protected final Collection<BugModel> doInBackground(Collection<BugModel>... params) {
             if (params == null || params.length < 1)
                 throw new IllegalArgumentException();
-            String[] projectionAssignee = {
+            final String[] projectionAssignee = {
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_DATE_BIRTHDAY_UTC,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL
             };
             String selectionAssignee = GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID+"=?";
-            String[] projectionComments = {
+            final String[] projectionComments = {
                     BugEntry.TABLE_NAME + "." + BugEntry._ID,
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
                     GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL,
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC
 
             };
             String selectionComments = BugEntry.COLUMN_LOCAL_PARENT_ID + "=?";
-            String[] projectionTags = {
+            final String[] projectionTags = {
                     GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry._ID,
                     GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry.COLUMN_NAME
             };
@@ -218,32 +219,38 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                 long countComments = 0;
                 Cursor resultAssignee = getActivity().getContentResolver().query(GrappboxContract.BugAssignationEntry.CONTENT_URI, projectionAssignee, selectionAssignee, args, null);
                 List<UserModel> assignees = new ArrayList<>();
-                if (resultAssignee != null && resultAssignee.moveToFirst()){
-                    do{
-                        assignees.add(new UserModel(resultAssignee));
-                    } while (resultAssignee.moveToNext());
+                if (resultAssignee != null){
+                    if (resultAssignee.moveToFirst()){
+                        do{
+                            assignees.add(new UserModel(resultAssignee));
+                        } while (resultAssignee.moveToNext());
+                    }
                     resultAssignee.close();
                 }
                 model.setAssigneesData(assignees);
                 Cursor resultComments = getActivity().getContentResolver().query(GrappboxContract.BugEntry.buildBugWithCreator(), projectionComments, selectionComments, args, null);
                 List<BugCommentModel> comments = new ArrayList<>();
-                if (resultComments != null && resultComments.moveToFirst()){
-                    do {
-                        comments.add(new BugCommentModel(resultComments));
-                    } while (resultComments.moveToNext());
+                if (resultComments != null){
+                    if (resultComments.moveToFirst()){
+                        do {
+                            comments.add(new BugCommentModel(resultComments));
+                        } while (resultComments.moveToNext());
+                    }
                     resultComments.close();
                 }
                 model.setCommentsData(comments);
                 Cursor resultTags = getActivity().getContentResolver().query(GrappboxContract.BugEntry.buildBugWithTag(), projectionTags, selectionTags, args, null);
                 List<BugTagModel> tags = new ArrayList<>();
-                if (resultTags != null && resultTags.moveToFirst()){
-                    do{
-                        tags.add(new BugTagModel(resultTags));
-                    } while (resultTags.moveToNext());
+                if (resultTags != null){
+                    if (resultTags.moveToFirst()){
+                        do{
+                            tags.add(new BugTagModel(resultTags));
+                        } while (resultTags.moveToNext());
+                    }
                     resultTags.close();
                 }
-                Log.d(LOG_TAG, "Tag count : " + tags.size());
                 model.setTagsData(tags);
+                model.setProjectID(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
             }
             return params[0];
         }

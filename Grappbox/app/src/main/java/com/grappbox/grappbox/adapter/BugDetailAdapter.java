@@ -1,18 +1,24 @@
 package com.grappbox.grappbox.adapter;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.os.Handler;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.util.Pair;
 import android.support.v4.view.AsyncLayoutInflater;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -24,6 +30,9 @@ import com.grappbox.grappbox.model.BugCommentModel;
 import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.model.BugTagModel;
 import com.grappbox.grappbox.model.UserModel;
+import com.grappbox.grappbox.receiver.ErrorReceiver;
+import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +57,7 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
     private LayoutInflater mInflater;
     private Context mContext;
+    private View.OnClickListener mReplyListener;
 
     public BugDetailAdapter(Context context) {
         mContext = context;
@@ -123,14 +133,101 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         }
     }
 
-    private void bindComment(CommentHolder holder, BugCommentModel data){
+    public void setReplyClickListener(View.OnClickListener clickListener){
+        mReplyListener = clickListener;
+    }
+
+    private void bindComment(CommentHolder holder, final BugCommentModel data){
         holder.comment.setText(data.mDescription);
         holder.date.setText(data.mDate);
         holder.username.setText(data.mAuthor.mFirstname + " " + data.mAuthor.mLastname);
+        holder.itemView.setOnClickListener(new onListItemClicked(holder));
+        if (data.mAuthor.mEmail.equals(Session.getInstance(mContext).getCurrentAccount().name)){
+            holder.edit.setVisibility(View.VISIBLE);
+            holder.delete.setVisibility(View.VISIBLE);
+            holder.edit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+
+                    builder.setTitle(R.string.edit_title_dialog_title);
+                    builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface idialog, int which) {
+                            AlertDialog dialog = (AlertDialog) idialog;
+
+                            TextView comView = ((TextView)dialog.findViewById(R.id.comment));
+                            assert comView != null;
+                            String comment = comView.getText().toString();
+                            Intent edit = new Intent(mContext, GrappboxJustInTimeService.class);
+                            edit.setAction(GrappboxJustInTimeService.ACTION_EDIT_COMMENT);
+                            edit.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, new ErrorReceiver(new Handler(), (Activity) mContext));
+                            edit.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, mBug._id);
+                            edit.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, mBug.projectID);
+                            edit.putExtra(GrappboxJustInTimeService.EXTRA_COMMENT_ID, data._id);
+                            edit.putExtra(GrappboxJustInTimeService.EXTRA_MESSAGE, comment);
+                            mContext.startService(edit);
+                        }
+                    });
+                    builder.setView(R.layout.dialog_edit_bug_comment);
+                    ((TextView)builder.show().findViewById(R.id.comment)).setText(data.mDescription);
+                }
+            });
+
+            holder.delete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    AlertDialog.Builder confirm = new AlertDialog.Builder(mContext);
+                    confirm.setTitle(R.string.confirm_erase_comment_title);
+                    confirm.setMessage(R.string.erase_confirm_comment_long);
+                    confirm.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            Intent delete = new Intent(mContext, GrappboxJustInTimeService.class);
+                            delete.setAction(GrappboxJustInTimeService.ACTION_DELETE_COMMENT);
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_COMMENT_ID, data._id);
+                            delete.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, new ErrorReceiver(new Handler(), (Activity) mContext));
+                            mContext.startService(delete);
+                        }
+                    });
+                    confirm.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.cancel();
+                        }
+                    });
+                    confirm.show();
+                }
+            });
+        } else {
+            holder.edit.setVisibility(View.GONE);
+            holder.delete.setVisibility(View.GONE);
+        }
+        holder.reply.setOnClickListener(mReplyListener);
+
     }
 
-    private void bindReply(CommentReplyHolder holder){
-
+    private void bindReply(final CommentReplyHolder holder){
+        holder.send.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.e("test", String.valueOf(mBug.grappboxId));
+                Intent postComment = new Intent(mContext, GrappboxJustInTimeService.class);
+                postComment.setAction(GrappboxJustInTimeService.ACTION_POST_COMMENT);
+                postComment.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID ,mBug.projectID);
+                postComment.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID ,mBug._id);
+                postComment.putExtra(GrappboxJustInTimeService.EXTRA_MESSAGE ,holder.comment.getText().toString());
+                postComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, new ErrorReceiver(new Handler(), (Activity) mContext));
+                mContext.startService(postComment);
+                holder.comment.setText("");
+            }
+        });
     }
 
     @Override
@@ -174,6 +271,7 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public TextView username, comment, date;
         public ImageButton reply, edit, delete;
         public ImageView avatar;
+        public LinearLayout actionContainer;
 
         public CommentHolder(View itemView) {
             super(itemView);
@@ -184,6 +282,7 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             edit = (ImageButton) itemView.findViewById(R.id.edit);
             delete = (ImageButton) itemView.findViewById(R.id.delete);
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
+            actionContainer = (LinearLayout) itemView.findViewById(R.id.action_container);
         }
     }
 
@@ -192,7 +291,7 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public ImageButton send;
         public TextInputEditText comment;
 
-        public CommentReplyHolder(View itemView) {
+        CommentReplyHolder(View itemView) {
             super(itemView);
             avatar = (ImageView) itemView.findViewById(R.id.avatar);
             send = (ImageButton) itemView.findViewById(R.id.reply);
@@ -203,7 +302,7 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     private static class SubtitleHolder extends RecyclerView.ViewHolder{
         public TextView title;
 
-        public SubtitleHolder(View itemView) {
+        SubtitleHolder(View itemView) {
             super(itemView);
             title = (TextView) itemView.findViewById(R.id.title);
         }
@@ -233,6 +332,9 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         protected void onPostExecute(List<Pair<View, BugTagModel>> pairs) {
+            holder.emptycontainer.setVisibility(View.GONE);
+            holder.container.removeAllViewsInLayout();
+            holder.container.addView(holder.emptycontainer);
             for(Pair<View, BugTagModel> viewModel : pairs){
                 ((TextView)viewModel.first.findViewById(R.id.tagname)).setText(viewModel.second.name);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
@@ -242,7 +344,6 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                 }
                 holder.container.addView(viewModel.first);
             }
-            holder.emptycontainer.setVisibility(View.GONE);
         }
     }
 
@@ -270,11 +371,48 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
 
         @Override
         protected void onPostExecute(List<Pair<View, UserModel>> pairs) {
+            holder.emptycontainer.setVisibility(View.GONE);
+            holder.container.removeAllViewsInLayout();
+            holder.container.addView(holder.emptycontainer);
             for (Pair<View, UserModel> viewModel : pairs){
                 ((TextView)viewModel.first.findViewById(R.id.username)).setText(viewModel.second.mFirstname + " " + viewModel.second.mLastname);
                 holder.container.addView(viewModel.first);
             }
-            holder.emptycontainer.setVisibility(View.GONE);
+
+        }
+    }
+
+    private static class onListItemClicked implements View.OnClickListener{
+        private CommentHolder data;
+        private static View lastExpanded = null;
+
+        onListItemClicked(CommentHolder holder){
+            data = holder;
+        }
+
+        @Override
+        public void onClick(View v) {
+            if (lastExpanded != null && lastExpanded != v && lastExpanded.findViewById(R.id.action_container).getVisibility() == View.VISIBLE)
+                lastExpanded.callOnClick();
+            v.setOnClickListener(new onExpandedListItemClicked(data));
+            data.actionContainer.setVisibility(View.VISIBLE);
+            lastExpanded = v;
+        }
+    }
+
+
+
+    private static class onExpandedListItemClicked implements View.OnClickListener{
+        private CommentHolder data;
+
+        onExpandedListItemClicked(CommentHolder holder){
+            data = holder;
+        }
+
+        @Override
+        public void onClick(View v) {
+            v.setOnClickListener(new onListItemClicked(data));
+            data.actionContainer.setVisibility(View.GONE);
         }
     }
 }

@@ -16,24 +16,24 @@ import java.util.Locale;
  */
 
 public class BugCommentModel implements Parcelable {
-    public String _id;
+    public long _id;
     public String mDescription;
     public String mDate;
     public UserModel mAuthor;
 
     public BugCommentModel(Cursor data){
-        _id = data.getString(data.getColumnIndex(GrappboxContract.BugEntry._ID));
+        _id = data.getLong(data.getColumnIndex(GrappboxContract.BugEntry._ID));
         mDescription = data.getString(data.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DESCRIPTION));
         try {
             mDate = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(data.getString(data.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC))));
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mAuthor = new UserModel("", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)),data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME)), "", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_URI_AVATAR)));
+        mAuthor = new UserModel("", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)),data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME)), "", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_URI_AVATAR)), data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL)));
     }
 
     protected BugCommentModel(Parcel in) {
-        _id = in.readString();
+        _id = in.readLong();
         mDescription = in.readString();
         mDate = in.readString();
         mAuthor = in.readParcelable(UserModel.class.getClassLoader());
@@ -58,7 +58,7 @@ public class BugCommentModel implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id);
+        dest.writeLong(_id);
         dest.writeString(mDescription);
         dest.writeString(mDate);
         dest.writeParcelable(mAuthor, flags);
