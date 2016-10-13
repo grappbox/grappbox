@@ -14,7 +14,7 @@ var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Not
   var deferred = $q.defer();
 
 
-  $http.get($rootScope.api.url + "/project/"+ $route.current.params.project_id, {headers: {"Authorization": $rootScope.user.token}}).then(
+  $http.get($rootScope.api.url + "/project/"+ $route.current.params.project_id, { headers: {"Authorization": $rootScope.user.token }}).then(
   	function onGetProjectInformationsSuccess(response) {
       deferred.resolve();
     },
@@ -70,7 +70,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	$routeProvider
 	// Homepage
 	.when("/", {
-		title: "Welcome to GrappBox",
+		title: "GrappBox",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
@@ -78,7 +78,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		resolve: { factory: isProjectSelected }
 	})
 	.when("/dashboard/", {
-		title: "Welcome to GrappBox",
+		title: "GrappBox",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
@@ -109,7 +109,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	})
 	// Bugtracker-related pages
 	.when("/bugtracker/:project_id", {
-		title: "Bugtracker list",
+		title: "Bugtracker",
 		templateUrl : "../resources/pages/bugtracker-list.html",
 		controller  : "bugtrackerListController",
 		caseInsensitiveMatch : true,
@@ -135,7 +135,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	})
   // Task-related pages
 	.when("/tasks/:project_id", {
-		title: "Tasks list",
+		title: "Tasks",
 		templateUrl : "../resources/pages/task-list.html",
 		controller  : "taskListController",
 		caseInsensitiveMatch : true,
@@ -143,7 +143,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		resolve: { factory: isProjectAccessible }
 	})
 	.when("/task/:project_id/:id", {
-		title: "Task",
+		title: "Tasks",
 		templateUrl : "../resources/pages/task.html",
 		controller  : "taskController",
 		caseInsensitiveMatch : true,
@@ -203,7 +203,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 	})
 	// Whiteboard-related pages
 	.when("/whiteboard/:project_id", {
-		title: "Whiteboard list",
+		title: "Whiteboard",
 		templateUrl : "../resources/pages/whiteboard-list.html",
 		controller  : "whiteboardListController",
 		caseInsensitiveMatch : true,

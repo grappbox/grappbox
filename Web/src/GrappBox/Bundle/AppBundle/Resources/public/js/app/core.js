@@ -88,62 +88,82 @@ app.config(["NotificationProvider", function(NotificationProvider) {
 app.controller("grappboxController", ["$rootScope", "$scope", "localStorageService", "$location",
     function($rootScope, $scope, localStorageService, $location) {
 
-  $scope.app = { routeList: "", iconList: "" };
-
-  $scope.app.routeList = {
-    "/notifications": false,
-    "/dashboard": false,
-    "/bugtracker": false,
-    "/calendar": false,
-    "/cloud": false,
-    "/profile": false,
-    "/settings": false,
-    "/timeline": false,
-    "/whiteboard": false,
-    "/tasks": false,
-    "/gantt":false,
-    "/logout": false
+  $scope.app = {
+    current: "/",
+    colors: {
+      "/": "default",
+      "/notifications": "default",
+      "/dashboard": "red",
+      "/bugtracker": "purple",
+      "/calendar": "blue",
+      "/cloud": "yellow",
+      "/profile": "red",
+      "/settings": "red",
+      "/timeline": "orange",
+      "/whiteboard": "green",
+      "/tasks": "blue",
+      "/gantt":"blue",
+      "/logout": "default"
+    },
+    icons: {
+      "/": "default",
+      "/notifications": "notifications",
+      "/dashboard": "dashboard",
+      "/bugtracker": "bug_report",
+      "/calendar": "event",
+      "/cloud": "cloud_upload",
+      "/profile": "person",
+      "/settings": "settings",
+      "/timeline": "forum",
+      "/whiteboard": "create",
+      "/tasks": "view_list",
+      "/gantt": "sort",
+      "/logout": "exit_to_app"
+    },     
+    routes: {
+      "/notifications": false,
+      "/dashboard": false,
+      "/bugtracker": false,
+      "/calendar": false,
+      "/cloud": false,
+      "/profile": false,
+      "/settings": false,
+      "/timeline": false,
+      "/whiteboard": false,
+      "/tasks": false,
+      "/gantt":false,
+      "/logout": false
+    }
   };
 
-  $scope.app.iconList = {
-    "/notifications": "notifications",
-    "/dashboard": "dashboard",
-    "/bugtracker": "bug_report",
-    "/calendar": "event",
-    "/cloud": "cloud_upload",
-    "/profile": "person",
-    "/settings": "settings",
-    "/timeline": "forum",
-    "/whiteboard": "create",
-    "/tasks": "view_list",
-    "/gantt": "sort",
-    "/logout": "exit_to_app"
-  };
 
-  // Routine definition
+  // Routine definition (local)
   // Check if the request route is not a subsection of another one
   var _isRouteFrom = function(routeToTest, routeToLoad) {
     var isRouteKnown = false;
 
     if (routeToLoad.indexOf(routeToTest) > -1) {
-      $scope.app.routeList["/" + routeToTest] = true;
+      $scope.app.routes["/" + routeToTest] = true;
       isRouteKnown = true;
     }
     return isRouteKnown;
   };
 
+
   // On route change (start)
   $scope.$on("$routeChangeStart", function() {
     var routeToLoad = $location.path();
 
-    angular.forEach($scope.app.routeList, function(key, value) {
-      if (value === routeToLoad)
-        $scope.app.routeList[value] = true;
-      else if (_isRouteFrom(value, routeToLoad))
-        $scope.app.routeList[value] = true;
-      else
-        $scope.app.routeList[value] = false;
-    });
+    $scope.app.current = "/";
+    angular.forEach($scope.app.routes, function(key, value) {
+      if (value === routeToLoad || _isRouteFrom(value, routeToLoad)) {
+        this.app.routes[value] = true;
+        this.app.current = value;
+      }
+      else {
+        this.app.routes[value] = false;
+      }
+    }, $scope);
   });
 
 }]);

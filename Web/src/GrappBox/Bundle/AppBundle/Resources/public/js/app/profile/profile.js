@@ -9,7 +9,8 @@
 * APP profile page content
 *
 */
-app.controller("profileController", ["$scope", "$http", "$rootScope", "Notification", function($scope, $http, $rootScope, Notification) {
+app.controller("profileController", ["$scope", "$http", "$rootScope", "Notification",
+    function($scope, $http, $rootScope, Notification) {
 
 	/* ==================== INITIALIZATION ==================== */
 
@@ -18,7 +19,7 @@ app.controller("profileController", ["$scope", "$http", "$rootScope", "Notificat
 	$scope.data.toUpdate = { firstname: "", lastname: "", birthday: "", avatar: "", email: "", phone: "", country: "", linkedin: "", viadeo: "", twitter: "" };
 
 	// Get information for current user
-	$http.get($rootScope.api.url + "/user/basicinformations/" + $rootScope.user.token)
+  $http.get($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }})
 	.then(function userInformationReceived(response) {
 		$scope.data.userInformation = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
 		$scope.data.isValid = true;
@@ -50,9 +51,7 @@ app.controller("profileController", ["$scope", "$http", "$rootScope", "Notificat
 
 	// "Update" button handler
 	$scope.view_updateUserProfile = function() {
-
-		Notification.info({ message: "Loading...", delay: 5000 });
-		$http.put($rootScope.api.url + "/user/basicinformations/" + $rootScope.user.token, {
+		$http.put($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }}, {
 			data: {
 				firstname: ($scope.data.toUpdate.firstname != "" ? $scope.data.toUpdate.firstname : null),
 				lastname: ($scope.data.toUpdate.lastname != "" ? $scope.data.toUpdate.lastname : null),
