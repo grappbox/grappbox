@@ -3,7 +3,10 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- grappbox.data : dashboard information -->
-<section class="centered">
+
+<h1 class="text-center">Welcome to GrappBox</h1>
+
+<section class="text-center">
   <p>Choose a project to begin, or create one.</p>
   <a href="settings/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
   <a href="settings/0" class="btn btn-danger btn-fab btn-fixed" title="Create a new project"><i class="material-icons">add</i></a>
@@ -24,11 +27,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="well">
               <ul>
                 <li class="col-xs-offset-2 avatar" data-ng-if="!project.logo">
-                  <img data-ng-src="resources/img/default_logo.min.png" height="120" width="120">
+                  <img data-ng-src="../resources/img/default_logo.min.png" height="120" width="120">
                 </li>
                 <li class="col-xs-offset-2 avatar" data-ng-if="project.logo">
-                  <!-- <img data-ng-src="data:image/png;base64,{[{ project.logo }]}" data-err-src="resources/img/default_logo.min.png" height="120" width="120"> -->
-                  <img data-ng-src="resources/img/default_logo.min.png" height="120" width="120">
+                  <img data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" data-err-src="../resources/img/default_logo.min.png" height="120" width="120">
                 </li>
                 <li class="col-xs-offset-2 ellipsis title">"{[{ project.name }]}"</li>
                 <li class="col-xs-offset-2"><i class="material-icons">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</li>
