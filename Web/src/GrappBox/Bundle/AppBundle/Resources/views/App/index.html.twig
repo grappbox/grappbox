@@ -159,51 +159,51 @@
             <div class="sidebar-content">
               <ul>
                 <li>
-                  <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routes['/dashboard'] ? app.colors['/dashboard'] + '-color' : '' }]}">
+                  <a href="notifications" title="See all your notifications" class="btn {[{ app.routes['/notifications'] ? app.colors['/notifications'] + '-color active' : '' }]}">
+                    <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i>Notifications</a>
+                </li>              
+                <li>
+                  <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routes['/dashboard'] ? app.colors['/dashboard'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/dashboard'] }]}</i>Dashboard</a>
                 </li>
                 <li>
-                  <a href="calendar" title="Go to your calendar" class="btn {[{ app.routes['/calendar'] ? app.colors['/calendar'] + '-color' : '' }]}">
+                  <a href="calendar" title="Go to your calendar" class="btn {[{ app.routes['/calendar'] ? app.colors['/calendar'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/calendar'] }]}</i>Calendar</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ app.routes['/cloud'] ? app.colors['/cloud'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ app.routes['/cloud'] ? app.colors['/cloud'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/cloud'] }]}</i>Cloud</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ app.routes['/timeline'] ? app.colors['/timeline'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ app.routes['/timeline'] ? app.colors['/timeline'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/timeline'] }]}</i>Timeline</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routes['/bugtracker'] ? app.colors['/bugtracker'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routes['/bugtracker'] ? app.colors['/bugtracker'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/bugtracker'] }]}</i>Bugtracker</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ app.routes['/tasks'] ? app.colors['/tasks'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ app.routes['/tasks'] ? app.colors['/tasks'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/tasks'] }]}</i>Tasks</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ app.routes['/gantt'] ? app.colors['/gantt'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ app.routes['/gantt'] ? app.colors['/gantt'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/gantt'] }]}</i>Gantt</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routes['/whiteboard'] ? app.colors['/whiteboard'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routes['/whiteboard'] ? app.colors['/whiteboard'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/whiteboard'] }]}</i>Whiteboard</a>
                 </li>
                 <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ app.routes['/settings'] ? app.colors['/settings'] + '-color' : '' }]}">
+                  <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ app.routes['/settings'] ? app.colors['/settings'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/settings'] }]}</i>Project settings</a>
                 </li>
                 <li>
-                  <a href="profile" title="View and edit your profile" class="btn {[{ app.routes['/profile'] ? app.colors['/profile'] + '-color' : '' }]}">
+                  <a href="profile" title="View and edit your profile" class="btn {[{ app.routes['/profile'] ? app.colors['/profile'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i>Profile</a>
                 </li>
                 <li>
-                  <a href="notifications" title="See all your notifications" class="btn {[{ app.routes['/notifications'] ? app.colors['/notifications'] + '-color' : '' }]} visible-xs">
-                    <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i>Notifications</a>
-                </li>
-                <li>
-                  <a href="logout" title="Sign out of GrappBox" class="btn {[{ app.routes['/logout'] ? app.colors['/logout'] + '-color' : '' }]} visible-xs">
+                  <a href="logout" title="Sign out of GrappBox" class="btn {[{ app.routes['/logout'] ? app.colors['/logout'] + '-color active' : '' }]}">
                     <i class="material-icons">{[{ ::app.icons['/logout'] }]}</i>Logout</a>
                 </li>
               </ul>
