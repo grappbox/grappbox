@@ -1,5 +1,5 @@
-﻿using GrappBox.Resources;
-using GrappBox.Model;
+﻿using GrappBox.Model;
+using GrappBox.Resources;
 using GrappBox.ViewModel;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -16,7 +16,7 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class RoleView : Page
     {
-        ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
+        private ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
@@ -34,7 +34,9 @@ namespace GrappBox.View
         }
 
         //Required for navigation
+
         #region NavigationHelper
+
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
         /// </summary>
@@ -56,7 +58,6 @@ namespace GrappBox.View
         /// session. The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -69,17 +70,16 @@ namespace GrappBox.View
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-
         }
 
         /// <summary>
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
         /// <para>
-        /// Page specific logic should be placed in event handlers for the  
+        /// Page specific logic should be placed in event handlers for the
         /// <see cref="NavigationHelper.LoadState"/>
         /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
+        /// The navigation parameter is available in the LoadState method
         /// in addition to page state preserved during an earlier session.
         /// </para>
         /// </summary>
@@ -193,7 +193,8 @@ namespace GrappBox.View
         {
             this.navigationHelper.OnNavigatedFrom(e);
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         private void Button_Checked(object sender, RoutedEventArgs e)
         {
@@ -211,30 +212,39 @@ namespace GrappBox.View
                 case "TeamTimeline":
                     vm.TeamTimeline = res;
                     break;
+
                 case "CustomerTimeline":
                     vm.CustomerTimeline = res;
                     break;
+
                 case "Gantt":
                     vm.Gantt = res;
                     break;
+
                 case "Whiteboard":
                     vm.Whiteboard = res;
                     break;
+
                 case "Bugtracker":
                     vm.Bugtracker = res;
                     break;
+
                 case "Event":
                     vm.Event = res;
                     break;
+
                 case "Task":
                     vm.Task = res;
                     break;
+
                 case "ProjectSettings":
                     vm.ProjectSettings = res;
                     break;
+
                 case "Cloud":
                     vm.Cloud = res;
                     break;
+
                 default:
                     break;
             }
@@ -354,11 +364,6 @@ namespace GrappBox.View
                 vm.Cloud = 1;
             else
                 vm.Cloud = 2;
-        }
-
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            Menu.IsPaneOpen = !Menu.IsPaneOpen;
         }
     }
 }

@@ -13,16 +13,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkId=234238
+// Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace GrappBox.View
+namespace GrappBox.CustomControls
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class Test : Page
+    public sealed partial class MeetingDashBoardPanel : UserControl
     {
-        public Test()
+        public MeetingDashBoardPanel()
         {
             this.InitializeComponent();
         }

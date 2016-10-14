@@ -95,14 +95,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\Menu.xaml.cs">
-      <DependentUpon>Menu.xaml</DependentUpon>
+    <Compile Include="AppShell.xaml.cs">
+      <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\TabHeader.xaml.cs">
+    <Compile Include="CustomControls\MeetingDashBoardPanel.xaml.cs">
+      <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\NavMenuItem.cs" />
+    <Compile Include="CustomControls\NavMenuListView.cs" />
+    <Compile Include="CustomControls\PageHeader.xaml.cs">
+      <DependentUpon>PageHeader.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\TabHeader.xaml.cs">
       <DependentUpon>TabHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControler\TopBar.cs" />
-    <Compile Include="CustomControler\UserRoleCB.xaml.cs">
+    <Compile Include="CustomControls\TeamDashBoard.xaml.cs">
+      <DependentUpon>TeamDashBoard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
     <Compile Include="Model\Global\BytesToImage.cs" />
@@ -127,17 +137,20 @@
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\DashBoardView.xaml.cs">
+      <DependentUpon>DashBoardView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\GenericDahsboard.xaml.cs">
       <DependentUpon>GenericDahsboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\ProjectSettingsView.xaml.cs">
       <DependentUpon>ProjectSettingsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\Test.xaml.cs">
-      <DependentUpon>Test.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
@@ -146,9 +159,6 @@
     <Compile Include="HttpRequest\HttpRequestManager.cs" />
     <Compile Include="Resources\SettingsManager.cs" />
     <Compile Include="HttpRequest\User.cs" />
-    <Compile Include="MainPage.xaml.cs">
-      <DependentUpon>MainPage.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -205,21 +215,29 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Page Include="CustomControler\Menu.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="CustomControler\TabHeader.xaml">
+    <Page Include="AppShell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="CustomControler\UserRoleCB.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="CustomControls\MeetingDashBoardPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
-    <Page Include="MainPage.xaml">
+    <Page Include="CustomControls\PageHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\TabHeader.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\TeamDashBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\UserRoleCB.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\Converters.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -229,11 +247,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Themes\Generic.xaml">
+    <Page Include="Resources\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\DashBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\GenericDahsboard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\Login.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -244,10 +270,6 @@
     <Page Include="View\RoleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\Test.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\UserView.xaml">
       <Generator>MSBuild:Compile</Generator>

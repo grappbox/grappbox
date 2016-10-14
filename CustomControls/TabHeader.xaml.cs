@@ -15,7 +15,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace GrappBox.CustomControler
+namespace GrappBox.CustomControls
 {
     public sealed partial class TabHeader : UserControl
     {
@@ -34,7 +34,6 @@ namespace GrappBox.CustomControler
             get { return GetValue(LabelProperty) as string; }
             set { SetValue(LabelProperty, value); }
         }
-
 
         public TabHeader()
         {

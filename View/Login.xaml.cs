@@ -9,20 +9,18 @@ using GrappBox.Resources;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace GrappBox
+namespace GrappBox.View
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
     /// </summary>
-    public sealed partial class MainPage : Page
+    public sealed partial class LoginPage : Page
     {
         // Constructor
-        public MainPage()
+        public LoginPage()
         {
             this.InitializeComponent();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
-
 
         /// <summary>
         /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.

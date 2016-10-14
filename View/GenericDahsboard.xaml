@@ -6,7 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:customControl="using:GrappBox.CustomControler"
+    xmlns:customControl="using:GrappBox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
@@ -14,21 +14,8 @@
             <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add"/>
         </CommandBar>
     </Page.BottomAppBar>
-    <SplitView DisplayMode="Inline" x:Name="Menu" OpenPaneLength="200">
-        <SplitView.Pane>
-            <customControl:Menu/>
-        </SplitView.Pane>
-        <SplitView.Content>
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="65"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel x:Name="Menubar" ManipulationMode="TranslateX" Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappboxBrush}">
-                    <Button x:Name="MenuButton" Width="48" Height="48" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MenuButtonStyle}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Foreground="White" Click="MenuButton_Click"/>
-                    <TextBlock Margin="15,0,0,0" FontSize="24" Text="Dashboard" Foreground="White" VerticalAlignment="Center" HorizontalAlignment="Left" />
-                </StackPanel>
-                <ListView
+    <Grid>
+        <ListView
                     Grid.Row="1"
                     Padding="15,0,15,0"
                     ItemsSource="{Binding ProjectList}"
@@ -97,6 +84,4 @@
                 </ListView>
                 <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
             </Grid>
-        </SplitView.Content>
-    </SplitView>
 </Page>

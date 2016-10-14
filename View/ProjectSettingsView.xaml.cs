@@ -1,24 +1,24 @@
-﻿using System;
+﻿using GrappBox.Model;
+using GrappBox.Resources;
+using GrappBox.ViewModel;
+using System;
+using System.Collections.ObjectModel;
+using System.Diagnostics;
+using System.Threading.Tasks;
+using Windows.ApplicationModel.Activation;
+using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.Storage;
+using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using Windows.UI;
+using Windows.UI.Core;
+using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using GrappBox.ViewModel;
-using Windows.Storage.Pickers;
-using Windows.ApplicationModel.Core;
-using Windows.ApplicationModel.Activation;
-using Windows.Storage;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
-using GrappBox.Model;
-using System.Collections.ObjectModel;
-using Windows.UI.Popups;
-using Windows.UI.Core;
-using Windows.UI;
-using GrappBox.Resources;
-using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
-using System.Diagnostics;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -29,14 +29,15 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class ProjectSettingsView : Page
     {
-        CoreApplicationView view;
-        String ImagePath;
-        ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
-        DateTime defaultDate = DateTime.MinValue;
+        private CoreApplicationView view;
+        private String ImagePath;
+        private ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
+        private DateTime defaultDate = DateTime.MinValue;
         private bool isNew = false;
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
+
         public ProjectSettingsView()
         {
             this.InitializeComponent();
@@ -51,7 +52,9 @@ namespace GrappBox.View
         }
 
         //Required for navigation
+
         #region NavigationHelper
+
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
         /// </summary>
@@ -73,7 +76,6 @@ namespace GrappBox.View
         /// session. The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -86,17 +88,16 @@ namespace GrappBox.View
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-
         }
 
         /// <summary>
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
         /// <para>
-        /// Page specific logic should be placed in event handlers for the  
+        /// Page specific logic should be placed in event handlers for the
         /// <see cref="NavigationHelper.LoadState"/>
         /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
+        /// The navigation parameter is available in the LoadState method
         /// in addition to page state preserved during an earlier session.
         /// </para>
         /// </summary>
@@ -185,9 +186,11 @@ namespace GrappBox.View
             this.navigationHelper.OnNavigatedFrom(e);
             vm.RoleList = null;
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         #region imgClicked
+
         private async void Img_Click(object sender, RoutedEventArgs e)
         {
             ImagePath = string.Empty;
@@ -245,6 +248,7 @@ namespace GrappBox.View
 
             return Base64String;
         }
+
         #endregion imgClicked
 
         private async void ProjectSettingsUpdate_Click(object sender, RoutedEventArgs e)
@@ -495,11 +499,6 @@ namespace GrappBox.View
 
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
-        }
-
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            Menu.IsPaneOpen = !Menu.IsPaneOpen;
         }
 
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

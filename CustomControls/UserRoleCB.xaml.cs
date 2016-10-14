@@ -5,11 +5,10 @@ using Windows.UI.Xaml.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace GrappBox.CustomControler
+namespace GrappBox.CustomControls
 {
     public sealed partial class UserRoleCB : UserControl
     {
-
         public static readonly DependencyProperty UserIdProperty =
             DependencyProperty.Register("UserId", typeof(int), typeof(UserRoleCB), null);
 
@@ -19,11 +18,13 @@ namespace GrappBox.CustomControler
             set { SetValue(UserIdProperty, value); }
         }
 
-        ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
+        private ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
+
         public UserRoleCB()
         {
             this.InitializeComponent();
         }
+
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var value = (sender as ComboBox).SelectedValue;

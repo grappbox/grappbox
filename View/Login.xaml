@@ -1,0 +1,32 @@
+﻿<Page
+    x:Class="GrappBox.View.LoginPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Border Padding="15,0">
+        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="6*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="3*" />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="1" Text="Login" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
+            <TextBox Name="loginBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="2" PlaceholderText="UserName" Text="" ></TextBox>
+            <TextBlock Grid.Row="3" Text="Password" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
+            <PasswordBox Name="pwdBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="4" PlaceholderText="Password" Password="feytou_p" PasswordRevealMode="Peek" ></PasswordBox>
+            <Button Name="DashBoardButton" Content="Log In" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="5" Click="DashBoardButton_Click" />
+            <Grid Grid.Row="0">
+                <Image Name="image" Height="200" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/GrappBox-logo.png" />
+            </Grid>
+            <ProgressBar Grid.Row="3" VerticalAlignment="Top" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+        </Grid>
+    </Border>
+</Page>

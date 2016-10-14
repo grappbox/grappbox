@@ -5,79 +5,61 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:customControl="using:GrappBox.CustomControler"
-    xmlns:valueconverter="using:GrappBox.ViewModel"
+    xmlns:customControl="using:GrappBox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact">
-            <AppBarButton Name="UpdateSettings" Label="Update" Click="Update_Click" Icon="Save"/>
+            <AppBarButton Name="UpdateSettings" Label="Update" Click="Update_Click" Icon="Save" />
         </CommandBar>
     </Page.BottomAppBar>
-
-    <SplitView x:Name="Menu" DisplayMode="Inline" OpenPaneLength="200">
-        <SplitView.Pane>
-            <customControl:Menu/>
-        </SplitView.Pane>
-        <SplitView.Content>
-            <Grid Margin="0,0,0,-2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="65"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <StackPanel x:Name="Menubar" ManipulationMode="TranslateX" Grid.Row="0" Orientation="Horizontal" Background="{StaticResource RedGrappboxBrush}">
-                    <Button x:Name="MenuButton" Width="48" Height="48" MinHeight="48" MinWidth="48" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MenuButtonStyle}" FontFamily="Segoe MDL2 Assets" Content="&#xE700;" Foreground="{StaticResource White1GrappboxBrush}" Click="MenuButton_Click"/>
-                    <TextBlock Margin="15,0,0,0" FontSize="24" Text="User settings" Foreground="{StaticResource White1GrappboxBrush}" VerticalAlignment="Center" HorizontalAlignment="Left" />
+    <Grid>
+        <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
+        <ScrollViewer Padding="15" Grid.Row="1">
+            <StackPanel>
+                <StackPanel.Resources>
+                    <Style TargetType="TextBox">
+                        <Setter Property="FontSize" Value="15" />
+                        <Setter Property="FontFamily" Value="Segoe WP" />
+                    </Style>
+                    <Style TargetType="TextBlock">
+                        <Setter Property="Margin" Value="0,20,0,5" />
+                        <Setter Property="FontFamily" Value="Segoe WP" />
+                        <Setter Property="FontSize" Value="15" />
+                    </Style>
+                </StackPanel.Resources>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Firstname" />
+                <TextBox x:Name="FirstName" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Lastname" />
+                <TextBox x:Name="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Birthday" />
+                <DatePicker Date="{Binding Birthday}" HorizontalAlignment="Stretch" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Avatar" />
+                <Grid>
+                    <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
+                    <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click" />
+                    <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
+                </Grid>
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Phone" />
+                <TextBox x:Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Country" />
+                <TextBox x:Name="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Linkedin" />
+                <TextBox x:Name="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Viadeo" />
+                <TextBox x:Name="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}" />
+                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Twitter" />
+                <TextBox x:Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
+                <StackPanel x:Name="PasswordStackPanel" Visibility="Collapsed" Margin="5,0,5,0">
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" />
+                    <PasswordBox x:Name="oldPassword" VerticalAlignment="Stretch" />
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" />
+                    <PasswordBox x:Name="newPassword" VerticalAlignment="Stretch" />
+                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" />
+                    <PasswordBox x:Name="retypePassword" VerticalAlignment="Stretch" />
                 </StackPanel>
-                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
-                <ScrollViewer Padding="15" Grid.Row="1">
-                    <StackPanel>
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBox">
-                                <Setter Property="FontSize" Value="15"/>
-                                <Setter Property="FontFamily" Value="Segoe WP"/>
-                            </Style>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Margin" Value="0,20,0,5"/>
-                                <Setter Property="FontFamily" Value="Segoe WP"/>
-                                <Setter Property="FontSize" Value="15"/>
-                            </Style>
-                            <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
-                        </StackPanel.Resources>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Firstname"/>
-                        <TextBox x:Name="FirstName" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Lastname"/>
-                        <TextBox x:Name="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Birthday"/>
-                        <DatePicker Date="{Binding Birthday, Converter={StaticResource DateConverter}}" HorizontalAlignment="Stretch"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Avatar"/>
-                        <Grid>
-                            <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
-                            <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click"/>
-                            <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100"/>
-                        </Grid>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Phone"/>
-                        <TextBox x:Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Country"/>
-                        <TextBox x:Name="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Linkedin"/>
-                        <TextBox x:Name="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Viadeo"/>
-                        <TextBox x:Name="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}"/>
-                        <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Twitter"/>
-                        <TextBox x:Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}"/>
-                        <StackPanel x:Name="PasswordStackPanel" Visibility="Collapsed" Margin="5,0,5,0">
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password"/>
-                            <PasswordBox x:Name="oldPassword" VerticalAlignment="Stretch"/>
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password"/>
-                            <PasswordBox x:Name="newPassword" VerticalAlignment="Stretch"/>
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password"/>
-                            <PasswordBox x:Name="retypePassword" VerticalAlignment="Stretch"/>
-                        </StackPanel>
-                        <Button Margin="0,20,0,0" Content="Change Password" HorizontalAlignment="Center" Click="Password_Click"/>
-                    </StackPanel>
-                </ScrollViewer>
-            </Grid>
-        </SplitView.Content>
-    </SplitView>
+                <Button Margin="0,20,0,0" Content="Change Password" HorizontalAlignment="Center" Click="Password_Click" />
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
 </Page>

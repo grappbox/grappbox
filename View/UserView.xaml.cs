@@ -1,20 +1,20 @@
-﻿using GrappBox.ViewModel;
+﻿using GrappBox.Resources;
+using GrappBox.ViewModel;
 using System;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.Storage.Streams;
+using Windows.UI;
+using Windows.UI.Popups;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Windows.UI;
-using GrappBox.Resources;
-using System.Threading.Tasks;
-using Windows.Storage.Streams;
-using Windows.UI.Popups;
-using Windows.Foundation.Metadata;
-using Windows.UI.ViewManagement;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -25,17 +25,18 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class UserView : Page
     {
-        CoreApplicationView view;
-        String ImagePath;
-        bool isPasswordVisible = false;
-        string password = "";
-        string oldPwd = "";
-        UserSettingsViewModel vm = UserSettingsViewModel.GetViewModel();
+        private CoreApplicationView view;
+        private String ImagePath;
+        private bool isPasswordVisible = false;
+        private string password = "";
+        private string oldPwd = "";
+        private UserSettingsViewModel vm = UserSettingsViewModel.GetViewModel();
 
         //Required for navigation
         private readonly NavigationHelper navigationHelper;
 
         static private UserView instance = null;
+
         static public UserView GetUser()
         {
             return instance;
@@ -56,7 +57,9 @@ namespace GrappBox.View
         }
 
         //Required for navigation
+
         #region NavigationHelper
+
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
         /// </summary>
@@ -78,7 +81,6 @@ namespace GrappBox.View
         /// session. The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -91,17 +93,16 @@ namespace GrappBox.View
         /// serializable state.</param>
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
-
         }
 
         /// <summary>
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
         /// <para>
-        /// Page specific logic should be placed in event handlers for the  
+        /// Page specific logic should be placed in event handlers for the
         /// <see cref="NavigationHelper.LoadState"/>
         /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method 
+        /// The navigation parameter is available in the LoadState method
         /// in addition to page state preserved during an earlier session.
         /// </para>
         /// </summary>
@@ -136,7 +137,8 @@ namespace GrappBox.View
         {
             this.navigationHelper.OnNavigatedFrom(e);
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
@@ -294,11 +296,6 @@ namespace GrappBox.View
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-        }
-
-        private void MenuButton_Click(object sender, RoutedEventArgs e)
-        {
-            Menu.IsPaneOpen = !Menu.IsPaneOpen;
         }
     }
 }
