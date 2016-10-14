@@ -53,7 +53,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   var _getTimelineList = function() {
   	var deferred = $q.defer();
 
-  	$http.get($rootScope.api.url + "/timeline/gettimelines/" + $rootScope.user.token + "/" + $scope.timeline.project_id).then(
+  	$http.get($rootScope.api.url + "/timelines/" + $scope.timeline.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
   		function onGetTimelineListSucces(response) {
   			if (response.data.info) {
   				switch(response.data.info.return_code) {
@@ -110,7 +110,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     timeline.valid = false;
     timeline.onLoad = true;
 
-  	$http.get($rootScope.api.url + "/timeline/getmessages/" + $rootScope.user.token + "/" + timeline.id).then(
+  	$http.get($rootScope.api.url + "/timeline/messages/" + timeline.id, { headers: { "Authorization": $rootScope.user.token }}).then(
   		function onGetTimelineMessagesSuccess(response) {
   			if (response.data.info) {
   				switch(response.data.info.return_code) {
@@ -215,7 +215,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   // Routine definition (local)
   // Get message comments
   var _getMessageComments = function(message) {
-    $http.get($rootScope.api.url + "/timeline/getcomments/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message.id).then(
+    $http.get($rootScope.api.url + "/timeline/message/comments" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message.id, { headers: { "Authorization": $rootScope.user.token }}).then(
       function onGetCommentsSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -301,8 +301,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_newMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewMessage.html", controller: "modal_createNewMessage" });
     modal_newMessage.result.then(
       function onModalConfirm() {
-        $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { data: { token: $rootScope.user.token, title: $scope.new.message.title, message: $scope.new.message.message }}).then(
+        $http.post($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { headers: { "Authorization": $rootScope.user.token }},
+        { data: { title: $scope.new.message.title, message: $scope.new.message.message }}).then(
           function onPostMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -343,7 +344,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_newComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_createNewComment.html", controller: "modal_createNewComment" });
     modal_newComment.result.then(
       function onModalConfirm() {
-        $http.post($rootScope.api.url + "/timeline/postmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        $http.post($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { headers: { "Authorization": $rootScope.user.token }},
         { data: { token: $rootScope.user.token, title: $scope.new.comment.title, message: $scope.new.comment.message, commentedId: message.id }}).then(
           function onPostCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
@@ -393,7 +395,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editMessage.html", controller: "modal_editMessage" });
     modal_editMessage.result.then(
       function onModalConfirm() {
-        $http.put($rootScope.api.url + "/timeline/editmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        $http.put($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { headers: { "Authorization": $rootScope.user.token }},
         { data: { token: $rootScope.user.token, messageId: message.id, title: $scope.new.message.title, message: $scope.new.message.message }}).then(
           function onPutMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
@@ -437,7 +440,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editComment.html", controller: "modal_editComment" });
     modal_editMessage.result.then(
       function onModalConfirm() {
-        $http.put($rootScope.api.url + "/timeline/editmessage/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        $http.put($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
+        { headers: { "Authorization": $rootScope.user.token }},
         { data: { token: $rootScope.user.token, messageId: comment.id, title: $scope.new.comment.title, message: $scope.new.comment.message }}).then(
           function onPutCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
@@ -479,7 +483,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_deleteMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteMessage.html", controller: "modal_deleteMessage" });
     modal_deleteMessage.result.then(
       function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/timeline/archivemessage/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message_id).then(
+        $http.delete($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message_id,
+          { headers: { "Authorization": $rootScope.user.token }}).then(
           function onDeleteMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -517,7 +522,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_deleteComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteComment.html", controller: "modal_deleteComment" });
     modal_deleteComment.result.then(
       function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/timeline/archivemessage/" + $rootScope.user.token + "/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + comment_id).then(
+        $http.delete($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + comment_id,
+          { headers: { "Authorization": $rootScope.user.token }}).then(
           function onDeleteCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });

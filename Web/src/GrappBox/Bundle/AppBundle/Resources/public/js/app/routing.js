@@ -14,7 +14,7 @@ var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Not
   var deferred = $q.defer();
 
 
-  $http.get($rootScope.api.url + "/project/"+ $route.current.params.project_id, { headers: {"Authorization": $rootScope.user.token }}).then(
+  $http.get($rootScope.api.url + "/project/"+ $route.current.params.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
   	function onGetProjectInformationsSuccess(response) {
       deferred.resolve();
     },

@@ -10,7 +10,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div class="panel-body">
     <p>
       This dashboard presents you all you need to know about your current project.<br>Scroll down to see an overview of your team members' occupation. You'll also find your next meetings.
-      <br>Use the <strong>menu on the left<strong> to navigate between all the GrappBox tools.
+      <br>Use the <strong>menu on the left</strong> to navigate between all the GrappBox tools.
     </p>
     <p class="panel-link"><a href="" data-ng-if="project.set" data-ng-click="project.switch()" class="btn btn-info">Change project</a></p>
   </div>
@@ -21,7 +21,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div class="row">
     <div class="col-lg-12">
       <div class="row-header">
-        <h4>Team occupation</h4>
+        <h3>Team occupation</h3>
         <p>
           Navigate between your teams members and see their availability.<br>When a team member is <strong>"Available"</strong>, you can choose tasks to assign to him. A <strong>"Busy"</strong> member cannot accept new tasks until its current task is complete.
         </p>
@@ -57,12 +57,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         </div>
         <div data-ng-if="occupation.valid && !occupation.list">
           <div class="well centered">
-            <p><i class="material-icons">people</i><br>{[{ occupation.message }]}</p>
+            <p><i class="material-icons">people</i><br>{[{ ::occupation.message }]}</p>
           </div>
         </div>
         <div data-ng-if="!occupation.valid">
           <div class="well centered">
-            <p><i class="material-icons">clear</i><br>{[{ occupation.message }]}</p>
+            <p><i class="material-icons">clear</i><br>{[{ ::occupation.message }]}</p>
           </div>
         </div>
       </div>
@@ -75,7 +75,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div class="row">
     <div class="col-lg-12">
       <div class="row-header">
-        <h4>Next meetings</h4>
+        <h3>Next meetings</h3>
         <p>
           Hold to see all future appointments.<br>This list only shows the closest meetings. When one of your appointments is over or cancelled, it'll be automatically deleted from this list.
         </p>
