@@ -41,7 +41,10 @@ import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.project_fragments.CloudFragment;
+import com.grappbox.grappbox.receiver.BugReceiver;
+import com.grappbox.grappbox.singleton.Session;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -79,6 +82,10 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_POST_COMMENT = "com.grappbox.grappbox.sync.ACTION_POST_COMMENT";
     public static final String ACTION_EDIT_COMMENT = "com.grappbox.grappbox.sync.ACTION_EDIT_COMMENT";
     public static final String ACTION_DELETE_COMMENT = "com.grappbox.grappbox.sync.ACTION_DELETE_COMMENT";
+    public static final String ACTION_CLOSE_BUG = "com.grappbox.grappbox.sync.ACTION_CLOSE_BUG";
+    public static final String ACTION_REOPEN_BUG = "com.grappbox.grappbox.sync.ACTION_REOPEN_BUG";
+    public static final String ACTION_CREATE_BUG = "com.grappbox.grappboxy.sync.ACTION_CREATE_BUG";
+    public static final String ACTION_EDIT_BUG = "com.grappbox.grappboxy.sync.ACTION_EDIT_BUG";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -98,6 +105,9 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_BUG_ID = "bug_id";
     public static final String EXTRA_MESSAGE = "msg";
     public static final String EXTRA_COMMENT_ID = "comment_id";
+    public static final String EXTRA_TITLE = "title";
+    public static final String EXTRA_DESCRIPTION = "description";
+    public static final String EXTRA_CLIENT_ACTION = "client_action";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -111,7 +121,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
     public static final int NOTIF_CLOUD_FILE_UPLOAD = 2000;
 
-    public static final int CLOUD_DATA_BYTE_READ = 5242880; //5 megabytes are upload in a chunk
+    public static final int CLOUD_DATA_BYTE_READ = 5242880; //Thanks to a quick and simple calculation, this is the good number to upload in a chunk
 
 
 
@@ -182,10 +192,177 @@ public class GrappboxJustInTimeService extends IntentService {
             else if (ACTION_DELETE_COMMENT.equals(action)){
                 handleBugCloseComment(intent.getLongExtra(EXTRA_COMMENT_ID, -1), responseObserver);
             }
+            else if (ACTION_CLOSE_BUG.equals(action)){
+                handleBugClose(intent.getLongExtra(EXTRA_BUG_ID, -1), responseObserver);
+            }
+            else if (ACTION_REOPEN_BUG.equals(action)){
+                handleBugReopenComment(intent.getLongExtra(EXTRA_BUG_ID, -1), responseObserver);
+            }
+            else if (ACTION_CREATE_BUG.equals(action)){
+                handleBugCreate(false, intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getBooleanExtra(EXTRA_CLIENT_ACTION, false), responseObserver);
+            }
+            else if (ACTION_EDIT_BUG.equals(action)){
+                handleBugCreate(true, intent.getLongExtra(EXTRA_BUG_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getBooleanExtra(EXTRA_CLIENT_ACTION, false), responseObserver);
+            }
         }
     }
 
-    private void handleBugCloseComment(long commentID, ResultReceiver responseObserver){
+    private void handleBugCreate(boolean isEditMode, long bugOrProjectID, String title, String description, boolean isClientOrigin, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor bug = null;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException("Invalid api token");
+
+            bug = getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry.COLUMN_GRAPPBOX_ID}, BugEntry._ID + "=?", new String[]{String.valueOf(bugOrProjectID)}, null);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID + "=?", new String[]{String.valueOf(bugOrProjectID)}, null);
+            if ((isEditMode && (bug == null || !bug.moveToFirst())) || (!isEditMode && (project == null || !project.moveToFirst())))
+                throw new NetworkErrorException("Invalid local project ID");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/bugtracker/"+(isEditMode ? "editticket" : "postticket"));
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put("token", apiToken);
+            data.put(isEditMode ? "bugId" : "projectId", isEditMode ? bug.getString(0) : project.getString(0));
+            data.put("title", title);
+            data.put("description", description);
+            data.put("stateId", 0);
+            data.put("stateName", "");
+            data.put("clientOrigin", isClientOrigin);
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod(isEditMode ? "PUT" : "POST");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    if (responseObserver != null){
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
+                    }
+                } else {
+                    data = json.getJSONObject("data");
+                    ContentValues values = new ContentValues();
+                    values.put(BugEntry.COLUMN_TITLE, title);
+                    values.putNull(BugEntry.COLUMN_DATE_DELETED_UTC);
+                    values.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(data.getJSONObject("createdAt").getString("date")));
+                    values.put(BugEntry.COLUMN_DESCRIPTION, data.getString("description"));
+                    values.putNull(BugEntry.COLUMN_LOCAL_PARENT_ID);
+
+                    String grappboxCID = data.getJSONObject("creator").getString("id");
+                    Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+
+                    if (creatorId == null || !creatorId.moveToFirst())
+                    {
+                        handleUserDetailSync(grappboxCID);
+                        creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                        if (creatorId == null || !creatorId.moveToFirst()){
+                            Log.e(LOG_TAG, "creator id not exist");
+                            throw new UnknownError();
+                        }
+                    }
+                    if (!isEditMode)
+                        project.close();
+                    project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{data.getString("projectId")}, null);
+                    if (project == null || !project.moveToFirst())
+                        throw new NetworkErrorException("Returned grappboxID is invalid, try to resynchronize your project");
+                    values.put(BugEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+                    values.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                    values.put(BugEntry.COLUMN_LOCAL_PROJECT_ID, project.getLong(0));
+                    Uri res = getContentResolver().insert(BugEntry.CONTENT_URI, values);
+                    long id = Long.parseLong(res.getLastPathSegment());
+                    creatorId.close();
+                    Cursor user = getContentResolver().query(BugEntry.CONTENT_URI, null, BugEntry._ID+"=?", new String[]{String.valueOf(id)}, null);
+                    if (user != null){
+                        if (user.moveToFirst()){
+                            Bundle answer = new Bundle();
+                            answer.putParcelable(BugReceiver.EXTRA_BUG_MODEL, new BugModel(this, user));
+                            responseObserver.send(Activity.RESULT_OK, answer);
+                        }
+                        user.close();
+                    }
+                }
+            }
+        } catch (IOException | JSONException | NetworkErrorException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (bug != null)
+                bug.close();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    private void handleBugReopenComment(long bugId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor bug = null;
+        Cursor user = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException("Invalid api token");
+
+            bug = getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry.COLUMN_GRAPPBOX_ID, BugEntry.COLUMN_TITLE}, BugEntry._ID + "=?", new String[]{String.valueOf(bugId)}, null);
+            user = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{BugEntry._ID}, UserEntry.COLUMN_CONTACT_EMAIL+"=?", new String[]{Session.getInstance(this).getCurrentAccount().name}, null);
+            if (bug == null || !bug.moveToFirst() || user == null || !user.moveToFirst())
+                throw new NetworkErrorException("Invalid local project ID");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/bugtracker/reopenticket/"+apiToken+"/"+bug.getString(0));
+            JSONObject json = new JSONObject();
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("PUT");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    if (responseObserver != null){
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
+                    }
+                } else {
+                    ContentValues values = new ContentValues();
+                    values.put(BugEntry.COLUMN_GRAPPBOX_ID, bug.getString(0));
+                    values.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, user.getLong(0));
+                    values.putNull(BugEntry.COLUMN_DATE_DELETED_UTC);
+                    values.put(BugEntry.COLUMN_DATE_LAST_EDITED_UTC, Utils.Date.nowUTC());
+                    getContentResolver().insert(BugEntry.CONTENT_URI, values);
+                }
+            }
+        } catch (IOException | JSONException | NetworkErrorException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (bug != null)
+                bug.close();
+            if (user != null)
+                user.close();
+        }
+    }
+
+    private void handleBugClose(long bugID, ResultReceiver responseObserver){
+        handleBugCloseComment(bugID, responseObserver, true);
+    }
+
+    private void handleBugCloseComment(long commentID, ResultReceiver responseObserver, boolean... keepDB){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         HttpURLConnection connection = null;
         String returnedJson;
@@ -217,7 +394,8 @@ public class GrappboxJustInTimeService extends IntentService {
                         responseObserver.send(Activity.RESULT_CANCELED, answer);
                     }
                 } else {
-                    getContentResolver().delete(BugEntry.CONTENT_URI, BugEntry._ID+"=?", new String[]{String.valueOf(commentID)});
+                    if (keepDB == null || !keepDB[0])
+                        getContentResolver().delete(BugEntry.CONTENT_URI, BugEntry._ID+"=?", new String[]{String.valueOf(commentID)});
                 }
             }
         } catch (IOException | JSONException | NetworkErrorException e) {

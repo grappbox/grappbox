@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.bugtracker_fragments;
 
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -34,6 +35,9 @@ public class BugDetailsFragment extends Fragment implements LoaderManager.Loader
     private BugDetailAdapter mAdapter;
     private TextView mBugDescription;
     private BugModel mModel;
+
+    private int LOADER_COMMENT = 0;
+    private int LOADER_BUG = 1;
     public BugDetailsFragment() {
         // Required empty public constructor
     }
@@ -65,40 +69,59 @@ public class BugDetailsFragment extends Fragment implements LoaderManager.Loader
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         getActivity().getSupportLoaderManager().initLoader(0, null, this);
+        getActivity().getSupportLoaderManager().initLoader(LOADER_BUG, null, this);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        final String[] projectionComments = {
-                GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry._ID,
-                GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_GRAPPBOX_ID,
-                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
-                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
-                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
-                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL,
-                GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DESCRIPTION,
-                GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC
+        if (id == LOADER_COMMENT){
+            final String[] projectionComments = {
+                    GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry._ID,
+                    GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_GRAPPBOX_ID,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
+                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL,
+                    GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DESCRIPTION,
+                    GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC
 
-        };
-        String selectionComments = GrappboxContract.BugEntry.COLUMN_LOCAL_PARENT_ID + "=?";
-        String order = "datetime("+GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC+") ASC";
-        Log.e("TEST", String.valueOf(mModel._id));
-        return new CursorLoader(getActivity(), GrappboxContract.BugEntry.buildBugWithCreator(), projectionComments, selectionComments, new String[]{String.valueOf(mModel._id)}, order);
+            };
+            String selectionComments = GrappboxContract.BugEntry.COLUMN_LOCAL_PARENT_ID + "=?";
+            String order = "datetime("+GrappboxContract.BugEntry.TABLE_NAME + "." + GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC+") ASC";
+            Log.e("TEST", String.valueOf(mModel._id));
+            return new CursorLoader(getActivity(), GrappboxContract.BugEntry.buildBugWithCreator(), projectionComments, selectionComments, new String[]{String.valueOf(mModel._id)}, order);
+        }
+        return new CursorLoader(getActivity(), GrappboxContract.BugEntry.CONTENT_URI, null, GrappboxContract.BugEntry._ID+"=?", new String[]{String.valueOf(mModel._id)}, null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        BugModel model = getActivity().getIntent().getParcelableExtra(BugDetailsActivity.EXTRA_BUG_MODEL);
-        List<BugCommentModel> comments = new ArrayList<>();
-        if (data != null){
-            if (data.moveToFirst()){
-                do {
-                    comments.add(new BugCommentModel(data));
-                } while (data.moveToNext());
+        if (loader.getId() == LOADER_COMMENT){
+            BugModel model = getActivity().getIntent().getParcelableExtra(BugDetailsActivity.EXTRA_BUG_MODEL);
+            List<BugCommentModel> comments = new ArrayList<>();
+            if (data != null){
+                if (data.moveToFirst()){
+                    do {
+                        comments.add(new BugCommentModel(data));
+                    } while (data.moveToNext());
+                }
             }
+            model.setCommentsData(comments);
+            mAdapter.setComments(comments);
+        } else{
+            data.moveToFirst();
+            mModel = new BugModel(getActivity(), data);
+            mModel.comments = mAdapter.getComments();
+            mModel.assignees = mAdapter.getAssignees();
+            mModel.tags = mAdapter.getTags();
+            mAdapter.setBugModel(mModel);
+            getActivity().setTitle(mModel.title);
+            mBugDescription.setText(mModel.desc);
+            Intent newInt = getActivity().getIntent();
+            newInt.removeExtra(BugDetailsActivity.EXTRA_BUG_MODEL);
+            newInt.putExtra(BugDetailsActivity.EXTRA_BUG_MODEL, mModel);
+            getActivity().setIntent(newInt);
         }
-        model.setCommentsData(comments);
-        mAdapter.setBugModel(model);
     }
 
     @Override

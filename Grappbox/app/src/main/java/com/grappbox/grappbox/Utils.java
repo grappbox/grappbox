@@ -32,6 +32,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -85,6 +86,15 @@ public class Utils {
             grappboxFormatter.setTimeZone(phoneTZ);
             String tempDate = grappboxFormatter.format(temp);
             return grappboxFormatter.parse(tempDate);
+        }
+
+        public static String nowUTC() throws ParseException {
+            java.util.Date now = new java.util.Date();
+            grappboxFormatter.setTimeZone(phoneTZ);
+            String phoneStr = grappboxFormatter.format(now);
+            grappboxFormatter.setTimeZone(utcTZ);
+            java.util.Date nowUTC = grappboxFormatter.parse(phoneStr);
+            return grappboxFormatter.format(nowUTC);
         }
     }
 

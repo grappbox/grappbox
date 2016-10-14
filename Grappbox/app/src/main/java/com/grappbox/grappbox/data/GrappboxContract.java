@@ -118,6 +118,10 @@ public class GrappboxContract {
             return CONTENT_URI.buildUpon().appendPath(id).build();
         }
 
+        public static Uri buildUserWithProject(){
+            return CONTENT_URI.buildUpon().appendPath("project").build();
+        }
+
         public static Uri buildUserWithArgs(HashMap<String, String> args)
         {
             Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
@@ -357,8 +361,6 @@ public class GrappboxContract {
         public static Uri buildTagWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
-
     }
 
     public static final class BugEntry implements BaseColumns {

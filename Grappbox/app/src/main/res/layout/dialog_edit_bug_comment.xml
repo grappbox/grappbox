@@ -11,7 +11,7 @@
         <android.support.design.widget.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/word_reply"
+            android:hint="@string/comment_word"
             android:id="@+id/comment"
             android:inputType="textMultiLine"
             />

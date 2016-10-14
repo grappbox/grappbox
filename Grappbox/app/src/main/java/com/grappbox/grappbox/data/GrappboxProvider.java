@@ -20,6 +20,7 @@ public class GrappboxProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
 
 
+
     private GrappboxDBHelper mOpenHelper;
     private Context mContext;
 
@@ -33,6 +34,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int USER_BY_ID = 111;
     public static final int USER_BY_GRAPPBOX_ID = 112;
     public static final int USER_BY_EMAIL = 113;
+    public static final int USER_WITH_PROJECT = 114;
 
     public static final int OCCUPATION = 120;
     public static final int OCCUPATION_ALL_BY_PROJECT_ID = 121;
@@ -121,6 +123,7 @@ public class GrappboxProvider extends ContentProvider {
         //Users related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER, USER);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/email/*", USER_BY_EMAIL);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/project", USER_WITH_PROJECT);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/#", USER_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/*", USER_BY_GRAPPBOX_ID);
 
@@ -393,6 +396,8 @@ public class GrappboxProvider extends ContentProvider {
             case USER_BY_EMAIL:
                 retCursor = UserCursors.query_UserByEmail(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case USER_WITH_PROJECT:
+                retCursor = UserCursors.query_UserWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
             case OCCUPATION:
                 retCursor = OccupationCursors.query_Occupation(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;

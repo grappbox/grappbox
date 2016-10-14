@@ -81,7 +81,15 @@
         <activity
             android:name=".bugtracker_fragments.BugDetailsActivity"
             android:label="@string/title_activity_bug_details"
-            android:theme="@style/BugtrackerTheme"
+            android:parentActivityName=".ProjectActivity"
+            android:theme="@style/BugtrackerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity" />
+        </activity>
+        <activity
+            android:name=".bugtracker_fragments.NewBugActivity"
+            android:label="@string/title_activity_new_bug"
             android:parentActivityName=".ProjectActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

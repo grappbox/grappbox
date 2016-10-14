@@ -183,4 +183,13 @@
     <string name="edit_title_dialog_title">Edit comment</string>
     <string name="erase_confirm_comment_long">Do you really want to erase this comment ?</string>
     <string name="confirm_erase_comment_title">Erase comment</string>
+    <string name="edit_issue">Edit issue</string>
+    <string name="title_activity_new_bug">Create issue</string>
+    <string name="comment_word">Comment</string>
+    <string name="title_word">Title</string>
+    <string name="description_word">Description</string>
+    <string name="save_word">Save</string>
+    <string name="dialog_cancel_without_saving">Are you sure to quit without saving your modifications?</string>
+    <string name="dialog_cancel_without_saving_title">Quit without saving?</string>
+    <string name="quit_word">Quit</string>
 </resources>

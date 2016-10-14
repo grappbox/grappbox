@@ -67,11 +67,27 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         mComments = new ArrayList<>();
     }
 
+    public List<BugCommentModel> getComments(){
+        return mComments;
+    }
+
+    public List<BugTagModel> getTags(){
+        return mTags;
+    }
+
+    public List<UserModel> getAssignees(){
+        return mAssignees;
+    }
+
     public void setBugModel(BugModel model){
         mBug = model;
         mTags = model.tags;
         mAssignees = model.assignees;
-        mComments = model.comments;
+        notifyDataSetChanged();
+    }
+
+    public void setComments(List<BugCommentModel> comms){
+        mComments = comms;
         notifyDataSetChanged();
     }
 

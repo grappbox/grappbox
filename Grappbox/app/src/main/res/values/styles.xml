@@ -109,6 +109,18 @@
         <item name="colorAccent">@color/GrappPurple</item>
     </style>
 
+    <style name="BugtrackerEditTheme" parent="BugtrackerTheme">
+        <item name="colorPrimary">@color/GrappPurple</item>
+        <item name="colorAccent">@color/GrappWhiteLight</item>
+        <item name="colorControlNormal">@color/GrappWhiteLight</item>
+        <item name="colorControlActivated">@color/GrappWhiteLight</item>
+        <item name="colorControlHighlight">@color/GrappWhiteLight</item>
+    </style>
+
+    <style name="BugtrackerDialogOverride" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/GrappPurple</item>
+    </style>
+
     <style name="TaskTheme" parent="BaseTheme">
         <item name="colorPrimary">@color/GrappBlue</item>
         <item name="colorAccent">@color/GrappBlue</item>

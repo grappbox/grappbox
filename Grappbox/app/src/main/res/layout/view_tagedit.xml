@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_rounded_colored"
+    android:backgroundTint="@color/GrappPurple">
+    <android.support.v7.widget.AppCompatTextView android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:text="Bug"
+        android:textColor="@color/GrappWhiteLight"
+
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:paddingEnd="5dp"
+        android:paddingStart="5dp"
+        android:layout_marginEnd="5dp"
+        android:layout_marginStart="5dp"
+        android:textAlignment="center"
+        android:id="@+id/tagname"
+        android:layout_gravity="center_vertical"/>
+    <ImageButton
+        android:layout_gravity="center_vertical"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_width="7dp"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_cross"
+        android:background="@color/GrappTransparent"
+        android:id="@+id/delete"
+        android:adjustViewBounds="true" />
+</LinearLayout>

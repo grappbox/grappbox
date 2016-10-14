@@ -25,6 +25,7 @@ import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.BugListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
@@ -37,8 +38,12 @@ import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -95,18 +100,20 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String selection;
-        String sortOrder = "datetime(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
+        String sortOrder = null;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
         switch (id) {
             case TYPE_OPEN:
+                sortOrder = "date(" + BugEntry.COLUMN_GRAPPBOX_ID + ") DESC";
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL";
                 selectionArgs = new String[]{
                         String.valueOf(lpid)
                 };
                 break;
             case TYPE_CLOSE:
+                sortOrder = "datetime(" + BugEntry.COLUMN_DATE_DELETED_UTC + ") DESC";
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NOT NULL";
                 selectionArgs = new String[]{
                         String.valueOf(lpid)
@@ -114,6 +121,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                 break;
 
             case TYPE_YOURS:
+                sortOrder = "date(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
                 String[] projection = {
                     BugEntry.TABLE_NAME + "." + BugEntry._ID,
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
@@ -137,14 +145,29 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         return new CursorLoader(getActivity(), BugEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
     }
 
+    class StringDateComparator implements Comparator<BugModel>
+    {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        public int compare(BugModel lhs, BugModel rhs)
+        {
+            try {
+                return dateFormat.parse(rhs.date.split(" ")[2]).compareTo(dateFormat.parse(lhs.date.split(" ")[2]));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst())
             return;
-        Collection<BugModel> models = new HashSet<>();
+        List<BugModel> models = new ArrayList<>();
         do {
             models.add(new BugModel(getActivity(), data));
         } while (data.moveToNext());
+        Collections.sort(models, new StringDateComparator());
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);
     }
