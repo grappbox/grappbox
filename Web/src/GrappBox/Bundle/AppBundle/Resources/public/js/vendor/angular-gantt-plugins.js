@@ -2047,7 +2047,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 return self.tasks[taskId];
             };
 
-            var getSourceEndpoints = function(task, model = null) {
+            var getSourceEndpoints = function(task, model) {
                 if (model && model.type && (model.type == 'sf' || model.type == 'ss')) {
                   return task.dependencies.endpoints.filter(function(endpoint) {
                       return endpoint.isTarget;
@@ -2059,7 +2059,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 });
             };
 
-            var getTargetEndpoints = function(task, model = null) {
+            var getTargetEndpoints = function(task, model) {
               if (model && model.type && (model.type == 'sf'|| model.type == 'ff')) {
                 return task.dependencies.endpoints.filter(function(endpoint) {
                     return endpoint.isSource;
