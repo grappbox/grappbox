@@ -163,12 +163,16 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   $scope.data.editMode["task"] = false;
 
   var setEditableContent = function(){
+    $scope.tagToAdd = [];
+    $scope.tagToRemove = [];
+    $scope.data.taskToAdd = [];
+    $scope.data.taskToRemove = [];
     $scope.data.toUpdate.title = $scope.data.task.title;
     $scope.data.toUpdate.description = $scope.data.task.description;
     $scope.data.toUpdate.color = $scope.data.task.color;
     $scope.data.toUpdate.type = ($scope.data.task.is_milestone ? 'milestone' : ($scope.data.task.is_container ? 'container': 'regular'));
-    $scope.data.toUpdate.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at.date) : null);
-    $scope.data.toUpdate.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date.date) : null);
+    $scope.data.toUpdate.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at) : null);
+    $scope.data.toUpdate.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date) : null);
     $scope.data.toUpdate.advance = $scope.data.task.advance;
   };
 
@@ -441,7 +445,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
-    var data = {"data": { "id": $scope.taskID, "dependencies": [{"id": dep.id, "name": type}]}};
+    var data = {"data": { "id": $scope.taskID, "dependencies": [{"id": dep.taskO.id, "name": type}]}};
 
     $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
@@ -479,7 +483,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
-    var data = {"data": {"id": $scope.taskID, "dependenciesUpdate": [{"id": dep.id, "oldName": $scope.data.task.dependencies[index].name, "newName": dep.name}]}};
+    var data = {"data": {"id": $scope.taskID, "dependenciesUpdate": [{"id": dep.task.id, "oldName": $scope.data.task.dependencies[index].name, "newName": dep.name}]}};
 
     $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
@@ -496,7 +500,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     if ($scope.data.task_new) {
       var index = -1;
       for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
-        if ($scope.data.task.dependencies[i].id == dependency.id)
+        if ($scope.data.task.dependencies[i].task.id == dependency.task.id)
           index = i;
       }
 
@@ -551,8 +555,26 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       elem['usersAdd'] = task.users;
     }
 
-    // TODO
-    //  - update tags
+    if ($scope.tagToAdd) {
+      var newTags = [];
+      angular.forEach($scope.tagToAdd, function(value, key) {
+        if (!value.id) {
+          var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
+          $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+            .then(function successCallback(response) {
+                //tag.id = (response.data.data.id);
+                this.push(response.data.data.id);
+            },
+            function errorCallback(response) {
+                Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
+            });
+        } else {
+          this.push(value.id);
+        }
+      }, newTags);
+      if (newTags.length)
+        elem['tagsAdd'] = newTags;
+    }
 
     var data = {"data": elem};
 
@@ -582,7 +604,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 "advance": $scope.data.toUpdate.advance,
                 };
 
-
     if ($scope.data.toUpdate.type == "container") {
       elem['is_container'] = true;
       elem["tasksAdd"] = $scope.data.taskToAdd;
@@ -590,7 +611,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     }
     if ($scope.data.toUpdate.type == "milestone") {
       if ($scope.data.toUpdate.due_date.getTime() != (new Date($scope.data.task.due_date).getTime())) {
-        elem['due_date'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
+        elem['due_date'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT"); // add 1h
         elem['started_at'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
       }
       elem['is_milestone'] = true;
@@ -606,8 +627,37 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     else if ($scope.data.toUpdate.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
 
-    // TODO
-    //  - update tags
+    if ($scope.tagToAdd) {
+      var newTags = [];
+      angular.forEach($scope.tagToAdd, function(value, key) {
+        if (!value.id) {
+          var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
+          $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+            .then(function successCallback(response) {
+                //tag.id = (response.data.data.id);
+                newTags.push(response.data.data.id);
+            },
+            function errorCallback(response) {
+                Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
+            });
+        } else {
+          this.push(value.id);
+        }
+      }, newTags);
+      if (newTags.length)
+        elem['tagsAdd'] = newTags;
+    }
+    console.log($scope.tagToAdd);
+    console.log(elem['tagAdd'])
+
+    if ($scope.tagToRemove) {
+      var oldTags = [];
+      angular.forEach($scope.tagToRemove, function(value, key) {
+        this.push(value.id);
+      }, oldTags);
+      if (oldTags.length)
+        elem['tagsRemove'] = oldTags;
+    }
 
     var data = {"data": elem};
 
@@ -648,6 +698,5 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           Notification.warning({ message: "Unable to delete task. Please try again.", delay: 5000 });
       });
   };
-
 
 }]);

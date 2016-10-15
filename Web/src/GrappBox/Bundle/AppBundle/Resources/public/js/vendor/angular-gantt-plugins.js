@@ -203,7 +203,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 });
 
                 api.tasks.on.viewRowChange(scope, function(task) {
-                    manager.setTask(task);
+                     manager.setTask(task);
                 });
 
             }
@@ -599,30 +599,30 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                                 if (taskScope.task.moveMode === 'M') {
                                     var allowRowSwitching = utils.firstProperty([taskMovable, rowMovable], 'allowRowSwitching', scope.allowRowSwitching);
                                     if (allowRowSwitching) {
-                                        var scrollRect = ganttScrollElement[0].getBoundingClientRect();
-                                        var rowCenterLeft = scrollRect.left + scrollRect.width / 2;
-                                        var ganttBody = angular.element($document[0].querySelectorAll('.gantt-body'));
-                                        ganttBody.css('pointer-events', 'auto'); // pointer-events must be enabled for following to work.
-                                        var targetRowElement = dom.findElementFromPoint(rowCenterLeft, evt.clientY, function(element) {
-                                            return angular.element(element).hasClass('gantt-row');
-                                        });
-                                        ganttBody.css('pointer-events', '');
-
-                                        var rows = ganttCtrl.gantt.rowsManager.rows;
-                                        var targetRow;
-                                        for (var i= 0, l=rows.length; i<l; i++) {
-                                            if (targetRowElement === rows[i].$element[0]) {
-                                                targetRow = rows[i];
-                                                break;
-                                            }
-                                        }
-
-                                        var sourceRow = taskScope.task.row;
-
-                                        if (targetRow !== undefined && sourceRow !== targetRow) {
-                                            targetRow.moveTaskToRow(taskScope.task, true);
-                                            taskHasBeenChanged = true;
-                                        }
+                                        // var scrollRect = ganttScrollElement[0].getBoundingClientRect();
+                                        // var rowCenterLeft = scrollRect.left + scrollRect.width / 2;
+                                        // var ganttBody = angular.element($document[0].querySelectorAll('.gantt-body'));
+                                        // ganttBody.css('pointer-events', 'auto'); // pointer-events must be enabled for following to work.
+                                        // var targetRowElement = dom.findElementFromPoint(rowCenterLeft, evt.clientY, function(element) {
+                                        //     return angular.element(element).hasClass('gantt-row');
+                                        // });
+                                        // ganttBody.css('pointer-events', '');
+                                        //
+                                        // var rows = ganttCtrl.gantt.rowsManager.rows;
+                                        // var targetRow;
+                                        // for (var i= 0, l=rows.length; i<l; i++) {
+                                        //     if (targetRowElement === rows[i].$element[0]) {
+                                        //         targetRow = rows[i];
+                                        //         break;
+                                        //     }
+                                        // }
+                                        //
+                                        // var sourceRow = taskScope.task.row;
+                                        //
+                                        // if (targetRow !== undefined && sourceRow !== targetRow) {
+                                        //     targetRow.moveTaskToRow(taskScope.task, true);
+                                        //     taskHasBeenChanged = true;
+                                        // }
                                     }
 
                                     var allowMoving = utils.firstProperty([taskMovable, rowMovable], 'allowMoving', scope.allowMoving);
@@ -2474,7 +2474,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
 
         var removeWatch = $scope.pluginScope.$watch('display', updateTaskGroup);
 
-        $scope.$watchCollection('gantt.rowsManager.filteredRows', updateTaskGroup);
+        $scope.$watchCollection('gantt.sManager.filteredRows', updateTaskGroup);
 
         $scope.gantt.api.columns.on.refresh($scope, updateTaskGroup);
 

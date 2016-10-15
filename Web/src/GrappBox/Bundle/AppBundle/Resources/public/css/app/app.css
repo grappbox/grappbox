@@ -583,3 +583,31 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
 #cloud-content .each-object-data { margin: 0; padding: 5px 10px; border-bottom: 1px solid #e0e0e0; }
 #cloud-content .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content .each-object-data .object-type { margin: 0 -10px 0 10px; }
+
+
+/* =========================================================== */
+/* ============== GENERAL FOR ALL TAGS-INPUT ================= */
+/* =========================================================== */
+tags-input .tags { border: none; border-radius: 0; box-shadow: none; border-bottom: 1px solid #d2d2d2}
+tags-input .tags .tag-item {background: #bdbdbd; border: 1px solid #bdbdbd; border-radius: 0; }
+
+
+/* =========================================================== */
+/* ====================== SECTION: TASK ====================== */
+/* =========================================================== */
+#taskheader { margin-bottom: 5%;padding-bottom: 5%; display: inline}
+.color-marker { background: rgba(0, 0, 0, 0.25); border-radius: 100%; text-align: center; line-height: 56px; font-size: 20px; color: white; width: 56px; height: 56px; margin-left: auto; margin-right: auto; margin-top: 10px; }
+
+/* =========================================================== */
+/* ===================== SECTION: GANTT ====================== */
+/* =========================================================== */
+
+.modal .nav.nav-tabs { background: #bdbdbd; margin: -20px -19px 30px -19px; border: 0; }
+.modal .nav.nav-tabs > li.active > a { padding: 18px; border: 0!important; border-top: solid 4px #c0392b!important; color: #c0392b!important; background: #fff!important; border-radius: 0; }
+.modal .nav.nav-tabs > li.active > a.soft { background: #fafafa!important; }
+.modal .nav.nav-tabs > li > a { padding: 22px 18px 18px 18px; text-align: center; font-weight: 400; }
+.modal .nav.nav-tabs > li > a > i { margin: 0 15px 0 0; }
+.modal .nav.nav-tabs > li { margin: 0; }
+.modal .tab-content > .active { display: table; width: 100%; position: relative; }
+.modal .resource-row.old, .modal .dependency-row .old { background-color: rgba(0, 0, 0, 0.25); }
+>>>>>>> Stashed changes

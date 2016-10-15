@@ -381,7 +381,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="form-group" data-ng-if="data.toUpdate.type != 'container'" data-ng-repeat="dependency in data.task.dependencies">
                   <div class="col-md-4 col-md-offset-1">
-                    <h4>{[{ dependency.title }]}</h4>
+                    <h4>{[{ dependency.task.title }]}</h4>
                   </div>
                   <div class="col-md-4">
                     <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
@@ -491,7 +491,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
                 <h4>Dependencies</h4>
                 <div class="panel panel-default col-md-6" ng-repeat="dependency in data.task.dependencies">
-                  <div class="panel-body">{[{dependency.title + " (" + dependencyToString(dependency.name) + ")" }]}</div>
+                  <div class="panel-body">{[{dependency.task.title + " (" + dependencyToString(dependency.name) + ")" }]}</div>
                 </div>
                 <div class="col-md-12" data-ng-if="!((data.task.dependencies).length)">
                   <div class="">No dependency</div>
