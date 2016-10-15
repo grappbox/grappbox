@@ -29,13 +29,13 @@ use DateTime;
  */
 class NotificationController extends RolesAndTokenVerificationController
 {
-	// (Android)API access key from Google API's Console.
-	private static $API_ACCESS_KEY = 'AIzaSyDG3fYAj1uW7VB-wejaMJyJXiO5JagAsYI'; //TODO to change
+	// (Android)API access key from Firebase API's Console.
+	private static $API_ACCESS_KEY = 'AIzaSyBjB-NKhL-jek8z_H0KYlspRQQOw_A_iUQ';
 
 	// (iOS) Private key's passphrase.
 	private static $passphrase = 'joashp'; // TODO to change
 
-	// (Windows Phone 8) The name of our push channel.
+	// The name of our push channel.
 	private static $channelName = "joashp"; // TODO to change
 
 	/**
@@ -176,99 +176,9 @@ class NotificationController extends RolesAndTokenVerificationController
 		return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
 	}
 
-	/**
-	* @api {delete} /0.3/notification/device/:token/:id Unregister user device
-	* @apiName unregisterDevice
-	* @apiGroup Notification
-	* @apiDescription Unregister user mobile device to mobile notification send process
-	* @apiVersion 0.3.0
-	*
-	* @apiHeader {string} Authorization user's authentication token
-	* @apiHeaderExample Request-Example:
-	*	{
-	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
-	*	}
-	*
-	* @apiParam {String} id device id in DB
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - unregisterDevice - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.3",
-	*			"return_message": "Notification - unregisterDevice - Bad Token"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.4",
-	*			"return_message": "Notification - unregisterDevice - Bad Parameter: id"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {delete} /V0.2/notification/unregisterdevice/:token/:id Unregister user device
-	* @apiName unregisterDevice
-	* @apiGroup Notification
-	* @apiDescription Unregister user mobile device to mobile notification send process
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} id device id in DB
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - unregisterDevice - Complete Success"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.3",
-	*			"return_message": "Notification - unregisterDevice - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.4",
-	*			"return_message": "Notification - unregisterDevice - Bad Parameter: id"
-	*		}
-	*	}
-	*/
-	public function unregisterDeviceAction(Request $request, $id)
+	public function longPollingAction(Request $request)
 	{
-		$user = $this->checkToken($request->headers->get('Authorization'));
-		if (!$user)
-			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
 
-		$em = $this->getDoctrine()->getManager();
-		$device = $em->getRepository("SQLBundle:Devices")->find($id);
-		if (!($device instanceof Devices))
-			return $this->setBadRequest("15.2.4", "Notification", "unregisterDevice", "Bad Parameter: id");
-
-		$em->remove($device);
-		$em->flush();
-		$response["info"]["return_code"] = "1.15.1";
-		$response["info"]["return_message"] = "Notification - unregisterDevice - Complete Success";
-		return new JsonResponse($response);
 	}
 
 	/**
@@ -616,7 +526,7 @@ class NotificationController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 
-		return new JsonResponse($this->pushNotificationAction([1, 2], $mdata, $wdata, $em));
+		return new JsonResponse($this->pushNotification([1], $mdata, $wdata, $em));
 	}
 
 	/*
@@ -639,45 +549,48 @@ class NotificationController extends RolesAndTokenVerificationController
 	*/
 	public function pushNotification($usersIds, $mdata, $wdata, $em)
 	{
-
 		foreach ($usersIds as $userId) {
 			$user = $em->getRepository("SQLBundle:User")->find($userId);
 
 			if ($user != null)
 			{
 				//notificaton for devices
-				// $devices = $em->getRepository("SQLBundle:Devices")->findByuser($user);
+				$devices = $em->getRepository("SQLBundle:Devices")->findByuser($user);
 
-				// foreach ($devices as $device) {
-				// 	$type = $device->getType();
-				// 	$token = $device->getToken();
+				foreach ($devices as $device) {
+					$type = $device->getType();
+					$token = $device->getToken();
 
-				// 	switch ($type) {
-				// 		case 'android':
-				// 			$this->android($mdata, $token)
-				// 			break;
-				// 		case 'ios':
-				// 			$this->iOS($mdata, $token)
-				// 			break,
-				// 		case 'wp':
-				// 			$this->WP($mdata, $token)
-				// 			break;
-				// 		default:
-				// 			break;
-				// 	}
-				// }
+					switch ($type) {
+						case 'android':
+							$ret = json_decode($this->android($mdata, $token));
+							if ($ret->failure == true) {
+								$em->remove($device);
+								$em->flush();
+							}
+							break;
+						// case 'ios':
+						// 	$this->iOS($mdata, $token);
+						// 	break,
+						// case 'wp':
+						// 	$this->WP($mdata, $token);
+						// 	break;
+						default:
+							break;
+					}
+				}
 
 				//notification for web and desktop
-				$notification = new Notification();
-				$notification->setUser($user);
-				$notification->setType($wdata['type']);
-				$notification->setTargetId($wdata['targetId']);
-				$notification->setMessage($wdata['message']);
-				$notification->setIsRead(false);
-				$notification->setCreatedAt(new \Datetime);
+				// $notification = new Notification();
+				// $notification->setUser($user);
+				// $notification->setType($wdata['type']);
+				// $notification->setTargetId($wdata['targetId']);
+				// $notification->setMessage($wdata['message']);
+				// $notification->setIsRead(false);
+				// $notification->setCreatedAt(new \Datetime);
 
-				$em->persist($notification);
-				$em->flush();
+				// $em->persist($notification);
+				// $em->flush();
 			}
 		}
 
@@ -687,24 +600,20 @@ class NotificationController extends RolesAndTokenVerificationController
 	// Sends Push notification for Android users
 	public function android($data, $reg_id)
 	{
-		$url = 'https://android.googleapis.com/gcm/send';
+		$url = 'https://fcm.googleapis.com/fcm/send';
 		$message = array(
 			'title' => $data['mtitle'],
-			'message' => $data['mdesc'],
-			'subtitle' => '',
-			'tickerText' => '',
-			'msgcnt' => 1,
-			'vibrate' => 1
+			'body' => $data['mdesc']
 		);
 
 		$headers = array(
-			'Authorization: key=' .self::$API_ACCESS_KEY,
+			'Authorization: key='.self::$API_ACCESS_KEY,
 			'Content-Type: application/json'
 		);
 
 		$fields = array(
-			'registration_ids' => array($reg_id),
-			'data' => $message,
+			'to' => $reg_id,
+			'data' => $message
 		);
 
 		return $this->useCurl($url, $headers, json_encode($fields));
@@ -787,7 +696,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	// Curl
-	private function useCurl(&$model, $url, $headers, $fields = null)
+	private function useCurl($url, $headers, $fields = null)
 	{
 		// Open connection
 		$ch = curl_init();

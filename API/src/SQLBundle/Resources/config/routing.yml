@@ -6,6 +6,11 @@ user_passwordEncrypt:
   defaults:   { _controller:SQLBundle:User:passwordEncrypt, _format: json }
   methods:    [GET]
 
+test:
+  path: test
+  defaults: {_controller:SQLBundle:Notification:pushTest}
+  methods:  [GET]
+
 
 # -----------------------------------------------------------------------
 #                     ACCOUNT ADMINISTRATION CONTROLLER
@@ -357,13 +362,6 @@ notification_registerDevice:
   defaults:   { _controller: SQLBundle:Notification:registerDevice, _format: json }
   methods: [POST]
 
-notification_unregisterDevice:
-  path:       notification/device/{id}
-  defaults:   { _controller: SQLBundle:Notification:unregisterDevice, _format: json }
-  requirements:
-    id:     \d+
-  methods: [DELETE]
-
 notification_getUserDevices:
   path:       /notification/devices
   defaults:   { _controller: SQLBundle:Notification:getUserDevices, _format: json }
@@ -641,7 +639,7 @@ task_taskCreation:
   methods: [POST]
 
 task_taskUpdate:
-  path:       task/{id}
+  path:       tasks/{id}
   defaults:   { _controller: SQLBundle:Task:updateTask, _format: json }
   requirements:
     id: \d+
@@ -816,7 +814,7 @@ user_getIdByEmail:
   defaults:   { _controller: SQLBundle:User:getIdByEmail, _format: json }
   requirements:
   methods: [GET]
-
+    
 user_getUserAvatar:
   path:       user/avatar/{userId}
   defaults:   { _controller: SQLBundle:User:getUserAvatar, _format: json }
