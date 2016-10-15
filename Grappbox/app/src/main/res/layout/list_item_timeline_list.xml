@@ -1,91 +1,129 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_marginLeft="@dimen/dim_default_list_left_right"
-    android:layout_marginRight="@dimen/dim_default_list_left_right"
-    android:paddingTop="16dp"
-    android:paddingBottom="16dp">
+    android:layout_height="wrap_content"
+    android:clickable="true"
+    android:focusable="true"
+    android:padding="2dp">
 
-    <LinearLayout
-        android:orientation="horizontal"
+    <android.support.v7.widget.CardView
+        android:id="@+id/card_view"
+        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/avatar"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:src="@drawable/default_logo_avatar"
-            android:layout_marginRight="20dp"
-            android:layout_marginLeft="20dp"/>
+        android:layout_height="match_parent"
+        card_view:contentPadding="10dp"
+        card_view:cardCornerRadius="4dp"
+        >
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1">
+            android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="This is the Message title"
-                style="@style/TitleTextView"/>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:id="@+id/avatar"
+                    android:layout_width="77dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:src="@drawable/default_logo_avatar"
+                    android:adjustViewBounds="true"/>
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:paddingLeft="16dp"
+                    android:paddingRight="16dp">
+
+                    <TextView
+                        android:id="@+id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="This is the Message title"
+                        style="@style/TitleTextView"
+                        android:layout_gravity="center_vertical"/>
+
+                    <TextView
+                        android:id="@+id/messagelastupdate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Last update message"
+                        style="@style/SubHeadTextView"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/messagecontent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:padding="16dp"
                 android:text="This is the content of the message"
-                style="@style/SubHeadTextView"/>
+                android:textSize="14sp"/>
 
-            <TextView
-                android:id="@+id/messagelastupdate"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="date of last change"
-                android:textAlignment="textEnd" />
+                android:padding="8dp"
+                >
+
+                <ImageButton
+                    android:id="@+id/todebug"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_bug_report"
+                    android:background="@null"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    />
+
+                <ImageButton
+                    android:id="@+id/edit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_file"
+                    android:background="@null"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"/>
+
+                <ImageButton
+                    android:id="@+id/delete"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:src="@drawable/ic_delete"
+                    android:background="@null"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"/>
+
+                <TextView
+                    android:id="@+id/answer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="end"
+                    android:clickable="true"
+                    android:drawableStart="@drawable/ic_timeline"
+                    android:paddingLeft="8dp"
+                    android:paddingRight="8dp"
+                    android:text="0"
+                    android:drawablePadding="5dp"
+                    />
+
+            </LinearLayout>
 
         </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <ImageButton
-            android:id="@+id/answer"
-            android:layout_width="0dp"
-            android:layout_weight="0.33"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_timeline"/>
-
-        <ImageButton
-            android:id="@+id/todebug"
-            android:layout_width="0dp"
-            android:layout_weight="0.33"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_bug_report"/>
-
-        <ImageButton
-            android:id="@+id/edit"
-            android:layout_width="0dp"
-            android:layout_weight="0.33"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_file"/>
-
-        <ImageButton
-            android:id="@+id/delete"
-            android:layout_width="0dp"
-            android:layout_weight="0.33"
-            android:layout_height="match_parent"
-            android:src="@drawable/ic_delete"/>
-
-    </LinearLayout>
+    </android.support.v7.widget.CardView>
 
 </LinearLayout>

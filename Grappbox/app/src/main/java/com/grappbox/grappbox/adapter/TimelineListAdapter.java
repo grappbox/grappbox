@@ -2,7 +2,10 @@ package com.grappbox.grappbox.adapter;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.MergeCursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,6 +30,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Activity mContext;
     private List<TimelineModel> mDataset;
     private LayoutInflater  inflater;
+    private Cursor          mCursor = null;
 
     public static final int TYPE_TIMELINE_ENTRY = 0;
 
@@ -49,8 +53,20 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void add(Collection<? extends TimelineModel> items){
-        mDataset.addAll(items);
+        for (TimelineModel item : items){
+            mDataset.add(item);
+        }
+//        mDataset.addAll(items);
         notifyDataSetChanged();
+    }
+
+    public Cursor getCursor()
+    {
+        return mCursor;
+    }
+
+    public void setCursor(Cursor data){
+        mCursor = data;
     }
 
     @Override
@@ -66,6 +82,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.mTitle.setText(item._title);
         holder.mMessage.setText(item._message);
         holder.mLastUpdate.setText(item._lastUpadte);
+        holder.mAnswer.setText(String.valueOf(item._countAnswer));
         holder.mAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,7 +137,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView    mTitle;
         TextView    mMessage;
         TextView    mLastUpdate;
-        ImageButton mAnswer;
+        TextView    mAnswer;
         ImageButton mEdit;
         ImageButton mDelete;
         ViewGroup   mparent;
@@ -131,9 +148,9 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mTitle = (TextView) itemView.findViewById(R.id.title);
             mMessage = (TextView) itemView.findViewById(R.id.messagecontent);
             mLastUpdate = (TextView) itemView.findViewById(R.id.messagelastupdate);
-            mAnswer = (ImageButton) itemView.findViewById(R.id.answer);
-            mEdit = (ImageButton) itemView.findViewById(R.id.edit);
-            mDelete = (ImageButton) itemView.findViewById(R.id.delete);
+            mAnswer = (TextView) itemView.findViewById(R.id.answer);
+/*            mEdit = (ImageButton) itemView.findViewById(R.id.edit);
+            mDelete = (ImageButton) itemView.findViewById(R.id.delete);*/
             mparent = root;
 
         }

@@ -14,20 +14,16 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
-import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.os.ResultReceiver;
 import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
-import android.widget.Toast;
 
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.ProjectActivity;
@@ -51,18 +47,13 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.FileNameMap;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
 import java.util.Set;
 
 
@@ -989,6 +980,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 data.put("commentedId", parentId);
             json.put("data", data);
             Log.d(LOG_TAG, "Connect timelineMessage API : " + url.toString());
+            Log.d(LOG_TAG, "Data value : " + data.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("POST");
             Utils.JSON.sendJsonOverConnection(connection, json);
@@ -1121,6 +1113,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
+        Log.v(LOG_TAG, String.valueOf(localTimelineId));
         if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
             return;
         HttpURLConnection connection = null;
@@ -1133,6 +1126,8 @@ public class GrappboxJustInTimeService extends IntentService {
             connection.setRequestMethod("GET");
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
+            Log.v(LOG_TAG, "URL : " + url);
+            Log.v(LOG_TAG, "JSON : " + returnedJson);
             if (returnedJson == null || returnedJson.isEmpty())
                 return;
 
@@ -1181,6 +1176,8 @@ public class GrappboxJustInTimeService extends IntentService {
             if (connection != null)
                 connection.disconnect();
         }
+
+        Log.v(LOG_TAG, "Handle finish");
 
     }
 
