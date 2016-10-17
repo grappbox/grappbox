@@ -1167,6 +1167,14 @@ public class GrappboxJustInTimeService extends IntentService {
                 else
                     message.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
                 String lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
+                String deletedMsg;
+                if (!current.isNull("deletedAt")) {
+                    deletedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("deletedAt").getString("date"));
+                    message.put(TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC, deletedMsg);
+                } else {
+                    message.putNull(TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC);
+                }
+
 
                 message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
@@ -1183,7 +1191,6 @@ public class GrappboxJustInTimeService extends IntentService {
         }
 
         Log.v(LOG_TAG, "Handle finish");
-
     }
 
     private void handleUserDetailSync(long localUID) {

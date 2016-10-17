@@ -266,6 +266,7 @@ public class GrappboxContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MESSAGE = "message";
         public static final String COLUMN_DATE_LAST_EDITED_AT_UTC = "last_edited_at";
+        public static final String COLUMN_DATE_DELETED_AT_UTC = "deleted_at";
         public static final String COLUMN_COUNT_ANSWER = "nb_answer";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIMELINE_MESSAGES).build();
