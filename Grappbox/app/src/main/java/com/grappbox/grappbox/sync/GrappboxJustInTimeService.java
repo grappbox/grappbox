@@ -1070,6 +1070,7 @@ public class GrappboxJustInTimeService extends IntentService {
     private void handleTimelineMessageDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
+        Log.v(LOG_TAG, "delete message start");
         if (apiToken == null)
             return;
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
@@ -1079,7 +1080,7 @@ public class GrappboxJustInTimeService extends IntentService {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/archivemessage/" + apiToken + timelineGrappbox.getString(timelineGrappbox.getColumnIndex(TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID)) + messageId);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/archivemessage/" + apiToken + "/" + timelineGrappbox.getString(0) + "/" + messageId);
 
             Log.d(LOG_TAG, "Start connection : " + url);
             JSONObject json;
@@ -1110,6 +1111,7 @@ public class GrappboxJustInTimeService extends IntentService {
             if (resultReceiver != null)
                 resultReceiver.send(Activity.RESULT_OK, null);
         }
+        Log.v(LOG_TAG, "delete end");
     }
 
     private void handleTimelineMessagesSync(long localTimelineId, int offset, int limit) {

@@ -94,6 +94,8 @@
     <string name="message_content">Message content</string>
     <string name="add_message">New Message</string>
     <string name="edit_message">Edit Message</string>
+    <string name="delete_message">Delete Message</string>
+    <string name="delete_message_warning">Are your sure you want to delete this message ?</string>
 
     <string name="timeline_tab_title_team">Team</string>
     <string name="timeline_tab_title_client">Customers</string>
