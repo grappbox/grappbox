@@ -93,6 +93,7 @@
     <string name="message_title">Message title</string>
     <string name="message_content">Message content</string>
     <string name="add_message">New Message</string>
+    <string name="edit_message">Edit Message</string>
 
     <string name="timeline_tab_title_team">Team</string>
     <string name="timeline_tab_title_client">Customers</string>

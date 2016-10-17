@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.timeline_fragment;
 
 import android.accounts.AccountManager;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -105,6 +106,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         mRefresher.setOnRefreshListener(this);
         if (savedInstanceState != null)
             mRefresher.setVisibility(View.VISIBLE);
+        mAdapter.setRefreshReciver(mRefreshReceiver);
         mAddMessage = (FloatingActionButton) getActivity().findViewById(R.id.fab);
         mAddMessage.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -142,6 +144,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         getActivity().startService(addMessage);
+                        cursorTimelineId.close();
                     }
                 });
                 builder.setNegativeButton(getActivity().getString(R.string.negative_response), new DialogInterface.OnClickListener() {
@@ -156,7 +159,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         return v;
     }
 
-
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.v(LOG_TAG, "Result");
+        if (requestCode == Activity.RESULT_CANCELED)
+            return ;
+    }
 
     private void initLoader()
     {
@@ -165,7 +174,9 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = "datetime(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
+        String sortOrder = "CASE " +
+                "WHEN " + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " IS NOT NULL THEN date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") "  +
+                "ELSE " + "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") END ASC LIMIT " +
                 String.valueOf(mAdapter.getItemCount()) + ", " + String.valueOf(TIMELINE_LIMIT);
         String selection;
         String[] selectionArgs;
@@ -202,6 +213,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onRefresh() {
+        Log.v(LOG_TAG, "Refresh");
         AccountManager am = AccountManager.get(getActivity());
         long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));

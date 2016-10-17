@@ -1011,6 +1011,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 resultReceiver.send(Activity.RESULT_OK, null);
 
         }
+        Log.v(LOG_TAG, "add finish");
     }
 
     private void handleTimelineMessageEdit(long localTimelineId, long messageId, String title, String message, ResultReceiver resultReceiver)
@@ -1018,6 +1019,7 @@ public class GrappboxJustInTimeService extends IntentService {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
 
+        Log.v(LOG_TAG, "edit message start");
         if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
             return;
         HttpURLConnection connection = null;
@@ -1062,6 +1064,7 @@ public class GrappboxJustInTimeService extends IntentService {
             if (resultReceiver != null)
                 resultReceiver.send(Activity.RESULT_OK, null);
         }
+        Log.v(LOG_TAG, "edit message end");
     }
 
     private void handleTimelineMessageDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver){
