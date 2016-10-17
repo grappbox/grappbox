@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
@@ -69,6 +70,7 @@ public class BugDetailsActivity extends AppCompatActivity {
             close.setAction(GrappboxJustInTimeService.ACTION_CLOSE_BUG);
             close.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, mData._id);
             startService(close);
+            Log.d("del", "actionDelete");
             mData.isClosed = true;
         }
         invalidateOptionsMenu();

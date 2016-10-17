@@ -161,8 +161,12 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst())
+        if (!data.moveToFirst()){
+            mLoader.setVisibility(View.GONE);
+            mRefresher.setVisibility(View.VISIBLE);
             return;
+        }
+
         List<BugModel> models = new ArrayList<>();
         do {
             models.add(new BugModel(getActivity(), data));
@@ -196,8 +200,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         public void onChanged() {
             super.onChanged();
             if (!mAdapter.isEmpty()){
-                mLoader.setVisibility(View.GONE);
-                mRefresher.setVisibility(View.VISIBLE);
+
             }
         }
     }
@@ -283,6 +286,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
             super.onPostExecute(data);
             mAdapter.clear();
             mAdapter.add(data);
+            mLoader.setVisibility(View.GONE);
+            mRefresher.setVisibility(View.VISIBLE);
         }
     }
 }

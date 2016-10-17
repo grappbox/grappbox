@@ -8,13 +8,13 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Tags"
+        android:text="@string/tags"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:background="@drawable/bg_bottom_border"/>
     <android.support.v7.widget.RecyclerView
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:layout_width="match_parent"
@@ -25,7 +25,11 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:id="@+id/set_tag_btn">
+        android:id="@+id/set_tag_btn"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:theme="@style/BugtrackerTheme">
         <ImageView
             android:layout_width="25dp"
             android:layout_height="wrap_content"
@@ -35,7 +39,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Add a tag"
+            android:text="@string/add_a_tag"
             android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
@@ -43,7 +47,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:id="@+id/create_tag_btn">
+        android:id="@+id/create_tag_btn"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:theme="@style/BugtrackerTheme"
+        >
         <ImageView
             android:layout_width="25dp"
             android:layout_height="wrap_content"
@@ -52,14 +61,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Create a new tag"
+            android:text="@string/create_a_new_tag"
             android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Assignees"
+        android:text="@string/assignees_word"
         android:padding="10dp"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:background="@drawable/bg_bottom_border"/>
@@ -69,13 +78,17 @@
         android:paddingStart="10dp"
         android:paddingEnd="10dp"
         android:id="@+id/recycler_assignees"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"/>
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="10dp"
-        android:id="@+id/assign_btn">
+        android:id="@+id/assign_btn"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"
+        android:theme="@style/BugtrackerTheme">
         <ImageView
             android:layout_width="25dp"
             android:layout_height="wrap_content"
@@ -84,7 +97,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Change assignation"
+            android:text="@string/change_assignation"
             android:layout_marginStart="10dp"
             android:layout_gravity="center_vertical"/>
     </LinearLayout>

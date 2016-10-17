@@ -7,8 +7,11 @@ import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+
+import java.util.Arrays;
 
 /**
  * Created by marcw on 30/08/2016.

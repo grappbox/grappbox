@@ -192,4 +192,11 @@
     <string name="dialog_cancel_without_saving">Are you sure to quit without saving your modifications?</string>
     <string name="dialog_cancel_without_saving_title">Quit without saving?</string>
     <string name="quit_word">Quit</string>
+    <string name="edit_assignee">Edit Assignees</string>
+    <string name="add_a_tag">Add a tag</string>
+    <string name="create_a_new_tag">Create a new tag</string>
+    <string name="assignees_word">Assignees</string>
+    <string name="change_assignation">Change assignation</string>
+    <string name="tags">Tags</string>
+    <string name="tag_name">Tag name</string>
 </resources>

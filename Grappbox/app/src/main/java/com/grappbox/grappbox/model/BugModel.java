@@ -14,6 +14,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ public class BugModel implements Parcelable {
     public long _id = -1;
     public String grappboxId, title, date, desc;
     public boolean isClosed;
+
     /*
         The following data are considered as additional data.
         It's recommended to lazy load it.
@@ -80,6 +82,20 @@ public class BugModel implements Parcelable {
             comments.add((BugCommentModel) com);
         }
         projectID = in.readLong();
+    }
+
+    public void setCoreData(Context context, Cursor cursor){
+        isClosed = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)) != null && !cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC)).isEmpty();
+        _id = cursor.getLong(cursor.getColumnIndex(GrappboxContract.BugEntry._ID));
+        grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_GRAPPBOX_ID));
+        title = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_TITLE));
+        try {
+            date = context.getString(R.string.bug_status_date, context.getString(isClosed ? R.string.bug_status_closed : R.string.bug_status_opened), DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(cursor.getString(cursor.getColumnIndex(isClosed ? GrappboxContract.BugEntry.COLUMN_DATE_DELETED_UTC : GrappboxContract.BugEntry.COLUMN_DATE_LAST_EDITED_UTC)))));
+            desc = cursor.getString(cursor.getColumnIndex(GrappboxContract.BugEntry.COLUMN_DESCRIPTION));
+        } catch (ParseException e) {
+            e.printStackTrace();
+            date = context.getString(R.string.error_unknown_last_modified);
+        }
     }
 
     public void setProjectID(long projectID){

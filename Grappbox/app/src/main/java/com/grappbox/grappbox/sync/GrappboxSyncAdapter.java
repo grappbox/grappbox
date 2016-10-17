@@ -235,7 +235,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         return (localUID);
     }
 
-    public void syncUserList(String apiToken, String apiProjectId) {
+    public void syncUserList(String apiToken, String apiProjectId, long pid) {
         HttpURLConnection connection = null;
         String returnedJson;
 
@@ -255,14 +255,15 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             JSONArray users = json.getJSONObject("data").getJSONArray("array");
             if (users.length() == 0)
                 return;
-            ContentValues[] usersValues = new ContentValues[users.length()];
             for (int i = 0; i < users.length(); ++i) {
                 ContentValues userValue = new ContentValues();
                 JSONObject currentUser = users.getJSONObject(i);
                 userValue.put(UserEntry.COLUMN_GRAPPBOX_ID, currentUser.getString("id"));
                 userValue.put(UserEntry.COLUMN_FIRSTNAME, currentUser.getString("firstname"));
                 userValue.put(UserEntry.COLUMN_LASTNAME, currentUser.getString("lastname"));
-                getContext().getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
+                Uri newUsr = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
+                long id = Long.parseLong(newUsr.getLastPathSegment());
+                syncProjectUserRole(apiToken, pid, id);
             }
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
@@ -276,8 +277,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
     public void syncUsers(String apiToken) {
         //synchronize User's list
-        final String[] projection = new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID};
+        final String[] projection = new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID, ProjectEntry._ID};
         final int GRAPPBOX_ID = 0;
+        final int _ID = 1;
 
         Cursor allProjects = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, projection, null, null, null);
         Cursor allUsers = null;
@@ -286,7 +288,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         try {
             do {
                 String apiProjectID = allProjects.getString(GRAPPBOX_ID);
-                syncUserList(apiToken, apiProjectID);
+                syncUserList(apiToken, apiProjectID, allProjects.getLong(_ID));
             } while (allProjects.moveToNext());
             allUsers = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
             if (allUsers != null && allUsers.moveToFirst()) {
@@ -304,6 +306,73 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             allProjects.close();
             if (allUsers != null)
                 allUsers.close();
+        }
+    }
+
+    public void syncProjectUserRole(String apiToken, long pid, long uid){
+        HttpURLConnection connection = null;
+        String returnedJson = null;
+        Cursor project = null;
+        Cursor user = null;
+
+        try {
+            project = getContext().getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(pid)}, null);
+            user = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry._ID+"=?", new String[]{String.valueOf(uid)}, null);
+            if (project == null || user == null || !project.moveToFirst() || !user.moveToFirst())
+                throw new SQLException("ID Not found");
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/roles/getrolebyprojectanduser/" + apiToken+"/" + project.getString(0) + "/" + user.getString(0));
+            Log.d(LOG_TAG, String.valueOf(url));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty())
+                return;
+
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                return;
+            JSONObject currentRole = json.getJSONObject("data");
+
+            ContentValues roleValue = new ContentValues();
+            ContentValues roleAssignationValue = new ContentValues();
+            roleValue.put(RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("roleId"));
+            roleValue.put(RolesEntry.COLUMN_LOCAL_PROJECT_ID, pid);
+            roleValue.put(RolesEntry.COLUMN_NAME, currentRole.getString("name"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_BUGTRACKER, currentRole.getString("bugtracker"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_CLOUD, currentRole.getString("cloud"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_CUSTOMER_TIMELINE, currentRole.getString("customerTimeline"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_TEAM_TIMELINE, currentRole.getString("teamTimeline"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_EVENT, currentRole.getString("event"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_GANTT, currentRole.getString("gantt"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_WHITEBOARD, currentRole.getString("whiteboard"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_TASK, currentRole.getString("task"));
+            roleValue.put(RolesEntry.COLUMN_ACCESS_PROJECT_SETTINGS, currentRole.getString("projectSettings"));
+            Uri returnedUri = getContext().getContentResolver().insert(RolesEntry.CONTENT_URI, roleValue);
+            if (returnedUri == null)
+                return;
+            long id = Long.valueOf(returnedUri.getLastPathSegment());
+            if (id <= 0)
+                return;
+            roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, id);
+            roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
+            Cursor roleUser = getContext().getContentResolver().query(RolesAssignationEntry.CONTENT_URI, new String[]{RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry._ID}, RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID+"=? AND " + RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"=?", new String[]{String.valueOf(id), String.valueOf(uid)}, null);
+            if (roleUser == null || !roleUser.moveToFirst() || roleUser.getCount() <= 0){
+                getContext().getContentResolver().insert(RolesAssignationEntry.CONTENT_URI, roleAssignationValue);
+            } else {
+                roleUser.close();
+            }
+        } catch (IOException e) {
+            Log.e(LOG_TAG, "IOException : ", e);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+            if (user != null)
+                user.close();
         }
     }
 
@@ -327,7 +396,6 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
 
             if (roles.length() == 0)
                 return;
-            ArrayList<ContentValues> rolesAssignationsValues = new ArrayList<>();
             for (int i = 0; i < roles.length(); ++i) {
                 ContentValues roleValue = new ContentValues();
                 ContentValues roleAssignationValue = new ContentValues();
@@ -355,7 +423,12 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                     continue;
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, id);
                 roleAssignationValue.put(RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
-                getContext().getContentResolver().insert(RolesAssignationEntry.CONTENT_URI, roleAssignationValue);
+                Cursor roleUser = getContext().getContentResolver().query(RolesAssignationEntry.CONTENT_URI, new String[]{RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry._ID}, RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID+"=? AND " + RolesAssignationEntry.TABLE_NAME + "." + RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"=?", new String[]{String.valueOf(id), String.valueOf(uid)}, null);
+                if (roleUser == null || !roleUser.moveToFirst() || roleUser.getCount() <= 0){
+                    getContext().getContentResolver().insert(RolesAssignationEntry.CONTENT_URI, roleAssignationValue);
+                } else {
+                    roleUser.close();
+                }
                 projectCursor.close();
             }
         } catch (IOException e) {
@@ -377,6 +450,11 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(launchBugSyncing);
         launchBugSyncing.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
         getContext().startService(launchBugSyncing);
+
+        Intent syncTags = new Intent(getContext(), GrappboxJustInTimeService.class);
+        syncTags.setAction(GrappboxJustInTimeService.ACTION_SYNC_TAGS);
+        syncTags.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
+        getContext().startService(syncTags);
     }
 
     public void syncTimeline(String apiToken, long projectId) {

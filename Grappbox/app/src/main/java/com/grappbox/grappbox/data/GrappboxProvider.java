@@ -398,6 +398,7 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case USER_WITH_PROJECT:
                 retCursor = UserCursors.query_UserWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case OCCUPATION:
                 retCursor = OccupationCursors.query_Occupation(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -542,6 +543,9 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_ASSIGNATION_BY_USER_ID:
                 retCursor = BugAssignationCursors.query_BugAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case BUG_TAG:
+                retCursor = BugTagCursors.query_BugTag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_ASSIGNATION_BY_GRAPPBOX_USER_ID:
                 retCursor = BugAssignationCursors.query_BugAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -571,7 +575,6 @@ public class GrappboxProvider extends ContentProvider {
         if (contentValues.containsKey(GrappboxContract.GENERAL_GRAPPBOX_ID)){
             Cursor value = query(uri, new String[]{ getTableName(uri) + "." + BaseColumns._ID}, getTableName(uri) + "." + GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
             if (value != null && value.moveToFirst()){
-                Log.d("GProvider", "Conflict detected with : " + uri + " (" + contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID) + ")");
                 Uri newUri = uri.buildUpon().appendPath(String.valueOf(value.getLong(0))).build();
                 update(uri, contentValues, BaseColumns._ID + "=?", new String[]{String.valueOf(value.getLong(0))});
                 value.close();

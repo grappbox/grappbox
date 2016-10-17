@@ -11,6 +11,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ChooseProjectActivity extends AppCompatActivity {
     private static final String LOG_TAG = ChooseProjectActivity.class.getSimpleName();
     private static final int PERMISSION_REQUEST_GET_ACCOUNT = 0;
@@ -18,9 +21,12 @@ public class ChooseProjectActivity extends AppCompatActivity {
     private boolean isAttached = false;
     private Bundle mCurrentInstanceState;
 
+
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (grantResults.length <= 0)
+            return;
         if (requestCode == PERMISSION_REQUEST_GET_ACCOUNT){
             if (grantResults[0] != PackageManager.PERMISSION_GRANTED)
             {

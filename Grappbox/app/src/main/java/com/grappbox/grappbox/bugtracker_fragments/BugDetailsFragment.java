@@ -110,10 +110,7 @@ public class BugDetailsFragment extends Fragment implements LoaderManager.Loader
             mAdapter.setComments(comments);
         } else{
             data.moveToFirst();
-            mModel = new BugModel(getActivity(), data);
-            mModel.comments = mAdapter.getComments();
-            mModel.assignees = mAdapter.getAssignees();
-            mModel.tags = mAdapter.getTags();
+            mModel.setCoreData(getActivity(), data);
             mAdapter.setBugModel(mModel);
             getActivity().setTitle(mModel.title);
             mBugDescription.setText(mModel.desc);

@@ -13,34 +13,50 @@ import com.grappbox.grappbox.data.GrappboxContract;
  */
 
 public class BugTagModel implements Parcelable {
-    public String _id;
+    public long _id;
     public String name;
     public String color;
 
-    public BugTagModel(String id, String name, String color){
+    public BugTagModel(long id, String name, String color){
         _id = id;
         this.name = name;
         this.color = color;
     }
 
     public BugTagModel(Cursor data){
-        _id = data.getString(data.getColumnIndex(GrappboxContract.TagEntry._ID));
+        _id = data.getLong(data.getColumnIndex(GrappboxContract.TagEntry._ID));
         name = data.getString(data.getColumnIndex(GrappboxContract.TagEntry.COLUMN_NAME));
         color = "#9E58DC";
     }
 
     protected BugTagModel(Parcel in) {
-        _id = in.readString();
+        _id = in.readLong();
         name = in.readString();
         color = in.readString();
     }
 
+    public static String[] toStringArray(BugTagModel[] arr){
+        String[] ret = new String[arr.length];
+
+        for (int i = 0; i < arr.length; ++i){
+            ret[i] = arr[i].name;
+        }
+        return ret;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof BugTagModel && ((BugTagModel) obj)._id == this._id;
+    }
+
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeString(_id);
+        dest.writeLong(_id);
         dest.writeString(name);
         dest.writeString(color);
     }
+
+
 
     @Override
     public int describeContents() {

@@ -29,7 +29,7 @@ public class BugCommentModel implements Parcelable {
         } catch (ParseException e) {
             e.printStackTrace();
         }
-        mAuthor = new UserModel("", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)),data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME)), "", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_URI_AVATAR)), data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL)));
+        mAuthor = new UserModel(-1, data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)),data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME)), "", data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_URI_AVATAR)), data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL)));
     }
 
     protected BugCommentModel(Parcel in) {

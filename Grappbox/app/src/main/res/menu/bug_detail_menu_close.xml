@@ -6,6 +6,5 @@
     <item android:title="Open"
         android:icon="@drawable/ic_restore"
         app:showAsAction="ifRoom"
-        android:enabled="false"
         android:id="@+id/action_delete" />
 </menu>

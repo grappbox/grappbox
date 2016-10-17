@@ -58,6 +58,20 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <service
+            android:name=".sync.FirebaseCloudMessagingService"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".sync.FirebaseMessagingService"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".AddAccountActivity"
@@ -95,6 +109,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
+
     </application>
 
 </manifest>

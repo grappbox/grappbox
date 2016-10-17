@@ -36,6 +36,7 @@ public class AssigneeEditAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public void setDataset(List<UserModel> dataset){
         mDataset = dataset;
+        notifyDataSetChanged();
     }
 
     public List<UserModel> getDataset(){
