@@ -37,7 +37,7 @@ app.controller("dashboardController", ["$rootScope", "$scope", "$route", "$http"
   // Routine definition (local)
 	// Get current team occupation
   var _getTeamOccupation = function() {
-  	$http.get($rootScope.api.url + "/dashboard/occupation/" + $scope.data.project_id, {headers: { 'Authorization': $rootScope.user.token }}).then(
+  	$http.get($rootScope.api.url + "/dashboard/occupation/" + $scope.data.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetTeamOccupationSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {

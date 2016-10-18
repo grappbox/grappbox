@@ -185,7 +185,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   var _openWhiteboard = function() {
     var deferred = $q.defer();
 
-    $http.get($rootScope.api.url + "/whiteboard/open/" + $rootScope.user.token + "/" + $scope.data.id).then(
+    $http.get($rootScope.api.url + "/whiteboard/" + $scope.data.id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetWhiteboardSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -248,7 +248,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             case "10.3.4":
-            $location.path("whiteboard/" + $route.current.params.project_id);
+            $location.path("whiteboard/" + $route.  current.params.project_id);
             Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
             deferred.reject();
             break;
@@ -278,8 +278,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   // Routine definition (local)
   // Pull whiteboard modifications
   var _pull = function() {
-    $http.post($rootScope.api.url + "/whiteboard/pulldraw/" + $scope.data.id,
-      { data: { token: $rootScope.user.token, lastUpdate: $scope.pull.date }}).then(
+    $http.post($rootScope.api.url + "/whiteboard/draw/" + $scope.data.id,
+      { data: { lastUpdate: $scope.pull.date }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onPostWhiteboardUpdateSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -361,8 +361,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   // Push whiteboard modifications
   var _push = function(object) {
     if (object)
-      $http.put($rootScope.api.url + "/whiteboard/pushdraw/" + $scope.data.id,
-        { data: { token: $rootScope.user.token, object: object }}).then(
+      $http.put($rootScope.api.url + "/whiteboard/draw/" + $scope.data.id, { data: { object: object }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
         function onWhiteboardPushSuccess(response) {
           if (response.data.info) {
             switch(response.data.info.return_code) {
@@ -406,8 +405,9 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   // Routine definition (local)
   // Erase object
   var _erase = function(scope) {
-    $http.put($rootScope.api.url + "/whiteboard/deleteobject",
-      { data: { token: $rootScope.user.token, whiteboardId:  $scope.data.id, radius: 30, center: { x: (scope.mouse.start.x + scope.mouse.end.x) / 2, y: (scope.mouse.start.y + scope.mouse.end.y) / 2 }}}).then(
+    $http.delete($rootScope.api.url + "/whiteboard/object/" + $scope.data.id,
+    { data: { data: { radius: 30, center: { x: (scope.mouse.start.x + scope.mouse.end.x) / 2, y: (scope.mouse.start.y + scope.mouse.end.y) / 2 }}},
+    headers: { 'Authorization': $rootScope.user.token }}).then(
       function onWhiteboardEraseSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -500,7 +500,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
     function onOpenWhiteboardSuccess() {
-      $scope.pull.interval = $interval(_pull , ($scope.pull.time * 1000));
+      $scope.pull.interval = $interval(_openWhiteboard, ($scope.pull.time * 1000));
     },
     function onOpenWhiteboardFail() { }
   );

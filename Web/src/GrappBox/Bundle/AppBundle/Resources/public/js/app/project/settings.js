@@ -81,7 +81,8 @@ isProjectSettingsPageAccessible["$inject"] = ["$q", "$http", "$rootScope", "$rou
 * APP project page
 *
 */
-app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location", function($rootScope, $scope, $routeParams, $http, $uibModal, Notification, $route, $location) {
+app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location",
+    function($rootScope, $scope, $routeParams, $http, $uibModal, Notification, $route, $location) {
 
 
   // ------------------------------------------------------
@@ -137,7 +138,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     var data = {"data": elem};
 
     Notification.info({ message: "Updating project...", delay: 5000 });
-    $http.put($rootScope.api.url + "/projects/"+ $scope.projectID, data, {headers: {"Authorization": $rootScope.user.token}})
+    $http.put($rootScope.api.url + "/projects/"+ $scope.projectID, data, { headers: {"Authorization": $rootScope.user.token }})
       .then(function successCallback(response) {
         Notification.success({ message: "Project updated", delay: 5000 });
         $location.path("/settings/" + $scope.projectID);
@@ -185,7 +186,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     var data = {"data": elem};
 
     Notification.info({ message: "Creating project...", delay: 5000 });
-    $http.post($rootScope.api.url + "/project", data, {headers: {"Authorization": $rootScope.user.token}})
+    $http.post($rootScope.api.url + "/project", data, { headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.data.project_error = false;
         $scope.data.project_new = false;
