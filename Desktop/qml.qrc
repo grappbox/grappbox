@@ -1,0 +1,47 @@
+<RCC>
+    <qresource prefix="/qrc">
+        <file>qrc/Cloud.qml</file>
+        <file>qrc/main.qml</file>
+        <file>qrc/MainForm.qml</file>
+        <file>qrc/IconTextButton.qml</file>
+        <file>qrc/Gantt.qml</file>
+        <file>qrc/TaskForm.qml</file>
+        <file>qrc/Dashboard.qml</file>
+        <file>qrc/UserSettings.qml</file>
+        <file>qrc/Timeline.qml</file>
+        <file>qrc/TimelineBlock.qml</file>
+        <file>qrc/TimelineCommentary.qml</file>
+        <file>qrc/TextArea.qml</file>
+        <file>qrc/TextAreaStyle.qml</file>
+        <file>qrc/InvertedMouseArea.qml</file>
+        <file>qrc/BugTracker.qml</file>
+        <file>qrc/BugTrackerTabView.qml</file>
+        <file>qrc/BugTrackerTicketView.qml</file>
+        <file>qrc/BugTrackerAddTicketView.qml</file>
+        <file>qrc/ProjectSettings.qml</file>
+        <file>qrc/ProjectSettingsGeneral.qml</file>
+        <file>qrc/ProjectSettingsUsers.qml</file>
+        <file>qrc/ProjectSettingsRoles.qml</file>
+        <file>qrc/ProjectSettingsCustomersAccess.qml</file>
+        <file>qrc/Separator.qml</file>
+        <file>qrc/ProjectSettingsDangerZone.qml</file>
+        <file>qrc/CreateProject.qml</file>
+        <file>qrc/ImageAsync.qml</file>
+        <file>qrc/CircleImageAsync.qml</file>
+        <file>qrc/TaskView.qml</file>
+        <file>qrc/TaskBox.qml</file>
+        <file>qrc/Calendar.qml</file>
+        <file>qrc/CalendarCase.qml</file>
+        <file>qrc/CalendarTaskView.qml</file>
+        <file>qrc/CalendarEventCard.qml</file>
+        <file>qrc/UserIcon.qml</file>
+        <file>qrc/CalendarEventView.qml</file>
+        <file>qrc/WhiteboardCanvas.qml</file>
+        <file>qrc/Whiteboard.qml</file>
+        <file>qrc/IconButtonTransform.qml</file>
+        <file>qrc/WhiteboardColorPopup.qml</file>
+    </qresource>
+    <qresource prefix="/images">
+        <file>qrc/images/circle.png</file>
+    </qresource>
+</RCC>
