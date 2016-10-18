@@ -4,6 +4,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+    <ProgressBar
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="150dp"
+        android:indeterminateTint="@color/GrappOrange"
+        android:id="@+id/loader"
+        android:indeterminate="true" />
+
     <TextView
         android:padding="15dp"
         android:layout_width="match_parent"
@@ -16,8 +24,20 @@
         android:id="@+id/message"
         />
 
-    <android.support.v7.widget.RecyclerView
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/scrollable_content"/>
+        android:id="@+id/refresh"
+        tools:context="com.grappbox.grappbox.bugtracker_fragments.TimelineListFragment"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/scrollable_content"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
 </LinearLayout>

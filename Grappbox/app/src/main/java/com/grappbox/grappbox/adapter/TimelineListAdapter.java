@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.MergeCursor;
+import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -25,6 +27,7 @@ import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentActivity;
+import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -68,10 +71,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void add(Collection<? extends TimelineModel> items){
-        for (TimelineModel item : items){
-            mDataset.add(item);
-        }
-//        mDataset.addAll(items);
+        mDataset.addAll(items);
         notifyDataSetChanged();
     }
 
@@ -93,6 +93,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return null;
     }
 
+
     public void bindTimelineEntry(final TimelineModel item, TimelineHolder holder){
         holder.mTitle.setText(item._title);
         holder.mMessage.setText(item._message);
@@ -103,6 +104,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public void onClick(View v) {
                 Intent launchMessageComment = new Intent(mContext, TimelineMessageCommentActivity.class);
                 launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL, item);
+                launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_PARENT_ID, item._grappboxId);
                 TimelineModel model = launchMessageComment.getParcelableExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL);
                 mContext.startActivity(launchMessageComment);
             }
@@ -132,10 +134,9 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                             return;
                         }
                         Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
-                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID,
-                                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID},
-                                GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + " =?",
-                                new String[]{String.valueOf(mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)), String.valueOf(item._timelineType)},
+                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
+                                GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
+                                new String[] {String.valueOf(item._grappboxId)},
                                 null);
                         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
                             return;
@@ -143,7 +144,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         editMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, cursorTimelineId.getLong(1));
+                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, item._grappboxId);
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
@@ -172,10 +173,9 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
-                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID,
-                                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID},
-                                GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + " =?",
-                                new String[]{String.valueOf(mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)), String.valueOf(item._timelineType)},
+                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
+                                GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
+                                new String[]{String.valueOf(item._grappboxId)},
                                 null);
                         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
                             return;
@@ -183,7 +183,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         deleteMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_MESSAGE);
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, cursorTimelineId.getLong(1));
+                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, item._grappboxId);
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                         mContext.startService(deleteMessage);
                         cursorTimelineId.close();

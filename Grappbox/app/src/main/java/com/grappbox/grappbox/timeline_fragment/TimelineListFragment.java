@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.MergeCursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,6 +33,7 @@ import com.grappbox.grappbox.adapter.TimelineListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
+import com.grappbox.grappbox.data.GrappboxDBHelper;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
@@ -51,6 +53,19 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public static final int TIMELINE_CLIENT = 1;
 
     public static final int TIMELINE_LIMIT = 10;
+
+    public static final String[] projectionMessage = {
+            TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID,
+            TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry._ID,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_COUNT_ANSWER,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID
+    };
 
     private FloatingActionButton mAddMessage;
 
@@ -130,8 +145,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                             return;
                         }
                         Cursor cursorTimelineId = getActivity().getContentResolver().query(TimelineEntry.CONTENT_URI,
-                                new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID,
-                                        TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID},
+                                new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID},
                                 TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_TYPE_ID + " =?",
                                 new String[]{String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)), String.valueOf(mTimelineTypeId)},
                                 null);
@@ -174,32 +188,33 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = "CASE " +
-                "WHEN " + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " IS NOT NULL THEN date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") "  +
-                "ELSE " + "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") END ASC LIMIT " +
+        String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
                 String.valueOf(mAdapter.getItemCount()) + ", " + String.valueOf(TIMELINE_LIMIT);
         String selection;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
+
         switch (id){
             case TIMELINE_TEAM:
-                selection = GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
-                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=? AND "
-                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + " IS NOT NULL";
+                selection = TimelineEntry.TABLE_NAME + "." +TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_TEAM + 1)
+                        String.valueOf(TIMELINE_TEAM + 1),
+                        "null"
                 };
                 mTimelineTypeId = TIMELINE_TEAM;
                 break;
 
             case TIMELINE_CLIENT:
-                selection = GrappboxContract.TimelineEntry.TABLE_NAME + "." +  GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
-                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=? AND "
-                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + " IS NOT NULL";
+                selection = TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_CLIENT + 1)
+                        String.valueOf(TIMELINE_CLIENT + 1),
+                        "null"
                 };
                 mTimelineTypeId = TIMELINE_CLIENT;
                 break;
@@ -207,13 +222,11 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-        CursorLoader cursorLoader = new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
-        return cursorLoader;
+        return new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
     @Override
     public void onRefresh() {
-        Log.v(LOG_TAG, "Refresh");
         AccountManager am = AccountManager.get(getActivity());
         long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
@@ -273,7 +286,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         @Override
         protected void onPostExecute(Collection<TimelineModel> timelineModels) {
             super.onPostExecute(timelineModels);
-            //mAdapter.clear();
+//            mAdapter.clear();
             mAdapter.add(timelineModels);
         }
 
@@ -282,17 +295,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             if (params == null || params.length < 1)
                 throw new IllegalArgumentException();
 
-            /*String[] projectionMessage = {
-                    GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
-                    GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_NAME,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry._ID,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID,
-                    TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC
-            };
-            String selectionMessage = TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=?";*/
+
 
             return params[0];
         }

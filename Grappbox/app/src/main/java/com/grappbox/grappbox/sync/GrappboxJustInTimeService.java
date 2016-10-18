@@ -50,6 +50,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
@@ -67,6 +68,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_SYNC_USER_DETAIL = "com.grappbox.grappbox.sync.ACTION_SYNC_USER_DETAIL";
     public static final String ACTION_SYNC_BUGS = "com.grappbox.grappbox.sync.ACTION_SYNC_BUGS";
     public static final String ACTION_SYNC_TIMELINE_MESSAGES = "com.grappbox.grappbox.sync.ACTION_SYNC_TIMELINE_MESSAGES";
+    public static final String ACTION_SYNC_TIMELINE_COMMENTS = "com.grappbox.grappbox.sync.ACTION_SYNC_TIMELINE_COMMENTS";
     public static final String ACTION_SYNC_NEXT_MEETINGS = "com.grappbox.grappbox.sync.ACTION_SYNC_NEXT_MEETINGS";
     public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
     public static final String ACTION_SYNC_PROJECT_LIST = "com.grappbox.grappbox.sync.ACTION_SYNC_PROJECT_LIST";
@@ -137,6 +139,9 @@ public class GrappboxJustInTimeService extends IntentService {
             }
             else if (ACTION_SYNC_TIMELINE_MESSAGES.equals(action)) {
                 handleTimelineMessagesSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50));
+            }
+            else if (ACTION_SYNC_TIMELINE_COMMENTS.equals(action)) {
+                handleTimelineMessagesCommentSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
             }
             else if (ACTION_TIMELINE_ADD_MESSAGE.equals(action)) {
                 handleTimelineAddMessage(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_TIMELINE_PARENT_ID, -1), responseObserver);
@@ -976,8 +981,9 @@ public class GrappboxJustInTimeService extends IntentService {
             data.put("token", apiToken);
             data.put("title", title);
             data.put("message", message);
-            if (parentId != -1)
+            if (parentId != -1) {
                 data.put("commentedId", parentId);
+            }
             json.put("data", data);
             Log.d(LOG_TAG, "Connect timelineMessage API : " + url.toString());
             Log.d(LOG_TAG, "Data value : " + data.toString());
@@ -986,6 +992,7 @@ public class GrappboxJustInTimeService extends IntentService {
             Utils.JSON.sendJsonOverConnection(connection, json);
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
+            Log.d(LOG_TAG, "json returned : " + returnedJson.toString());
             if (returnedJson == null || returnedJson.isEmpty()){
                 Bundle answer = new Bundle();
                 answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.0"));
@@ -1114,6 +1121,83 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "delete end");
     }
 
+    private void handleTimelineMessagesCommentSync(long localTimelineId, long localTimelineParentId){
+        Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId),
+                new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID},
+                null, null, null);
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
+            return;
+        HttpURLConnection connection = null;
+        String returnedJson;
+        String apiTimelineID = timelineGrappbox.getString(0);
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/getcomments/"+apiToken+"/" + apiTimelineID + "/" + localTimelineParentId);
+
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            Log.v(LOG_TAG, "URL : " + url);
+            Log.v(LOG_TAG, "JSON : " + returnedJson);
+
+            if (returnedJson == null || returnedJson.isEmpty())
+                return;
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                return;
+            JSONArray msgs = json.getJSONObject("data").getJSONArray("array");
+            if (msgs.length() == 0)
+                return;
+            ContentValues[] messagesValues = new ContentValues[msgs.length()];
+            for (int i = 0; i < msgs.length(); ++i) {
+                JSONObject current = msgs.getJSONObject(i);
+                ContentValues message = new ContentValues();
+
+                String creatorId = current.getJSONObject("creator").getString("id");
+                Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+//                Cursor creator = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(creatorId), new String[]{UserEntry._ID}, null, null, null);
+                if (creator == null || !creator.moveToFirst()){
+                    handleUserDetailSync(creatorId);
+                    creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+//                    creator = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(creatorId), new String[]{UserEntry._ID}, null, null, null);
+                    if (creator == null || !creator.moveToFirst())
+                        return;
+                }
+                message.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
+                message.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
+                message.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
+                message.put(TimelineMessageEntry.COLUMN_TITLE, current.getString("title"));
+                message.put(TimelineMessageEntry.COLUMN_MESSAGE, current.getString("message"));
+                if (current.has("parentId"))
+                    message.put(TimelineMessageEntry.COLUMN_PARENT_ID, current.getString("parentId"));
+                else
+                    message.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
+                String lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
+                String deletedMsg;
+                if (!current.isNull("deletedAt")) {
+                    deletedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.getJSONObject("deletedAt").getString("date"));
+                    message.put(TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC, deletedMsg);
+                } else {
+                    message.putNull(TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC);
+                }
+
+
+                message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
+                message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
+                messagesValues[i] = message;
+                creator.close();
+            }
+            getContentResolver().bulkInsert(TimelineMessageEntry.CONTENT_URI, messagesValues);
+        } catch (IOException | JSONException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            timelineGrappbox.close();
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
     private void handleTimelineMessagesSync(long localTimelineId, int offset, int limit) {
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
@@ -1179,6 +1263,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
                 messagesValues[i] = message;
+                handleTimelineMessagesCommentSync(localTimelineId, Long.valueOf(current.getString("id")));
                 creator.close();
             }
             getContentResolver().bulkInsert(TimelineMessageEntry.CONTENT_URI, messagesValues);

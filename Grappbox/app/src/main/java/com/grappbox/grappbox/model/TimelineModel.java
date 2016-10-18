@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
@@ -21,20 +22,21 @@ import java.util.Locale;
 
 public class TimelineModel implements Parcelable {
 
-    private static final String LOG_TAG = TimelineModel.class.getSimpleName();
-    public int   _id;
+    public int      _id;
+    public int      _countAnswer;
+    public long     _timelineType;
+    public String   _grappboxId;
     public String   _title;
     public String   _message;
     public String   _lastUpadte;
-    public long      _timelineType;
-    public int      _countAnswer;
-    public long     _timelineId;
-    public List<TimelineMessageCommentModel>    mComments;
 
 
 
     public TimelineModel(Context context, Cursor cursor){
         _id = cursor.getInt(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry._ID));
+        _countAnswer = cursor.getInt(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER));
+        _timelineType = cursor.getLong(cursor.getColumnIndex(GrappboxContract.TimelineEntry.COLUMN_TYPE_ID));
+        _grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID));
         _title = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_TITLE));
         _message = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE));
         try {
@@ -43,36 +45,28 @@ public class TimelineModel implements Parcelable {
             e.printStackTrace();
             _lastUpadte = context.getString(R.string.error_unknown_last_modified);
         }
-        _timelineType = cursor.getLong(cursor.getColumnIndex(GrappboxContract.TimelineEntry.COLUMN_TYPE_ID));
-        _countAnswer = cursor.getInt(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER));
-        mComments = new ArrayList<>();
+
     }
 
     public TimelineModel(Parcel source){
         _id = source.readInt();
+        _countAnswer = source.readInt();
+        _timelineType = source.readLong();
+        _grappboxId = source.readString();
         _title = source.readString();
         _message = source.readString();
         _lastUpadte = source.readString();
-        _timelineType = source.readInt();
-        _countAnswer = source.readInt();
-        mComments = new ArrayList<>();
-        Parcelable[] arrayCom = source.readParcelableArray(TimelineMessageCommentModel.class.getClassLoader());
-        for (Parcelable com : arrayCom){
-            mComments.add((TimelineMessageCommentModel) com);
-        }
     }
 
-    public void setMessageCommentsData(List<TimelineMessageCommentModel> commentsData){
-        mComments = commentsData;
-    }
-
-    public TimelineModel(Cursor data){
-        _id = data.getInt(data.getColumnIndex(GrappboxContract.TimelineMessageEntry._ID));
-        _title = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_TITLE));
-        _message = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE));
-        _lastUpadte = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC));
-        _timelineType = data.getLong(data.getColumnIndex(GrappboxContract.TimelineEntry.COLUMN_TYPE_ID));
-        _countAnswer = data.getInt(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER));
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(_id);
+        dest.writeInt(_countAnswer);
+        dest.writeLong(_timelineType);
+        dest.writeString(_grappboxId);
+        dest.writeString(_title);
+        dest.writeString(_message);
+        dest.writeString(_lastUpadte);
     }
 
     @Override
@@ -80,18 +74,7 @@ public class TimelineModel implements Parcelable {
         return 0;
     }
 
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(_id);
-        dest.writeString(_title);
-        dest.writeString(_message);
-        dest.writeString(_lastUpadte);
-        dest.writeLong(_timelineType);
-        dest.writeParcelableArray(mComments.toArray(new TimelineMessageCommentModel[mComments.size()]), 0);
-        dest.writeInt(_countAnswer);
-    }
-
-    public static final Creator<TimelineModel> CREATOR = new Creator<TimelineModel>() {
+    public static final Parcelable.Creator<TimelineModel> CREATOR = new Parcelable.Creator<TimelineModel>() {
         @Override
         public TimelineModel createFromParcel(Parcel source) {
             return new TimelineModel(source);
