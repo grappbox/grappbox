@@ -1,0 +1,15 @@
+SQLBundle\Entity\Newsletter:
+    type: entity
+    table: newsletter
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        email:
+          type: string
+          length: 255
+          nullable: FALSE
+    lifecycleCallbacks: {  }
