@@ -9,6 +9,7 @@ import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Parcelable;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -98,12 +99,20 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.mTitle.setText(item._title);
         holder.mMessage.setText(item._message);
         holder.mLastUpdate.setText(item._lastUpadte);
+        holder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                return false;
+            }
+        });
         holder.mAnswer.setText(String.valueOf(item._countAnswer));
         holder.mAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent launchMessageComment = new Intent(mContext, TimelineMessageCommentActivity.class);
+
                 launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL, item);
+                launchMessageComment.putExtra(ProjectActivity.EXTRA_PROJECT_ID, mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
                 launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_PARENT_ID, item._grappboxId);
                 TimelineModel model = launchMessageComment.getParcelableExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL);
                 mContext.startActivity(launchMessageComment);
@@ -144,7 +153,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         editMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, item._grappboxId);
+                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         editMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
@@ -156,7 +165,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
-                        return;
                     }
                 });
                 builder.show();
@@ -183,7 +191,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                         deleteMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_MESSAGE);
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, item._grappboxId);
+                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
                         deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                         mContext.startService(deleteMessage);
                         cursorTimelineId.close();
@@ -248,6 +256,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         ImageButton mEdit;
         ImageButton mDelete;
         ViewGroup   mparent;
+        CardView    mCardView;
 
         public TimelineHolder(View itemView, ViewGroup root){
             super(itemView);
@@ -258,6 +267,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mAnswer = (TextView) itemView.findViewById(R.id.answer);
             mEdit = (ImageButton) itemView.findViewById(R.id.edit);
             mDelete = (ImageButton) itemView.findViewById(R.id.delete);
+            mCardView = (CardView) itemView.findViewById(R.id.card_view);
             mparent = root;
 
         }

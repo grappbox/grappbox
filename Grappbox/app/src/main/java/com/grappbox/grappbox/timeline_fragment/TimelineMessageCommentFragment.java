@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.timeline_fragment;
 
 import android.database.Cursor;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -22,10 +23,13 @@ import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.TimelineMessageCommentAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 
 import java.sql.Time;
+import java.util.Collection;
+import java.util.HashSet;
 
 public class TimelineMessageCommentFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -44,6 +48,20 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     public static final int TIMELINE_LOADER = 0;
     public static final int TIMELINE_COMMENT = 0;
     public static final int TIMELINE_OFFSET = 30;
+
+    public static final String[] projectionMessage = {
+            GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID,
+            GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry._ID,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_TITLE,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER,
+            GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID
+    };
 
     public TimelineMessageCommentFragment(){
         // Required empty public constructor
@@ -83,7 +101,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(LOG_TAG, "create loader");
-        String sortOrder = "datetime(" + GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC LIMIT 30";
+        String sortOrder = "datetime(" + GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC +
+                ") DESC LIMIT " + mAdapter.getSize() + ", 10";
         String selection;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
@@ -94,7 +113,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                 + GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
                 selectionArgs = new String[] {
                     String.valueOf(lpid),
-                    String.valueOf(parent._grappboxId)
+                    parent._grappboxId
                 };
                 break;
 
@@ -102,13 +121,22 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                 throw new IllegalArgumentException("Type doesn't exist");
         }
 
-        CursorLoader cursorLoader = new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
+        CursorLoader cursorLoader = new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
         return cursorLoader;
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "cursor size : " + data.getCount());
+        if (loader.getId() == TIMELINE_COMMENT) {
+            if (!data.moveToFirst())
+                return;
+            Collection<TimelineMessageCommentModel> models = new HashSet<>();
+            do {
+                models.add(new TimelineMessageCommentModel(getActivity(), data));
+            } while (data.moveToNext());
+            AdditionalDataLoader task = new AdditionalDataLoader();
+            task.execute(models);
+        }
     }
 
     @Override
@@ -122,4 +150,25 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             super.onChanged();
         }
     }
+
+    private class AdditionalDataLoader extends AsyncTask<Collection<TimelineMessageCommentModel>, Void, Collection<TimelineMessageCommentModel>> {
+
+        @Override
+        protected void onPostExecute(Collection<TimelineMessageCommentModel> timelineModels) {
+            super.onPostExecute(timelineModels);
+            mAdapter.clear();
+            mAdapter.add(timelineModels);
+        }
+
+        @Override
+        protected Collection<TimelineMessageCommentModel> doInBackground(Collection<TimelineMessageCommentModel>... params) {
+            if (params == null || params.length < 1)
+                throw new IllegalArgumentException();
+
+
+
+            return params[0];
+        }
+    }
+
 }

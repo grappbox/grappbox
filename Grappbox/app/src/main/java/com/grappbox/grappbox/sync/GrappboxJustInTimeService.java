@@ -1184,7 +1184,11 @@ public class GrappboxJustInTimeService extends IntentService {
 
 
                 message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
-                message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
+                if (!current.has("nbComment") && !current.isNull("nbComment")) {
+                    message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
+                } else {
+                    message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
+                }
                 messagesValues[i] = message;
                 creator.close();
             }
