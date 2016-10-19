@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.DataSetObserver;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.os.Parcelable;
@@ -61,6 +62,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mContext = context;
         mDataset = new ArrayList<>(0);
         inflater = LayoutInflater.from(context);
+
     }
 
     private RecyclerView.ViewHolder createTimelineEntryHolder(ViewGroup parent){
@@ -88,8 +90,18 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return mCursor;
     }
 
-    public void setCursor(Cursor data){
+    public void changeCursor(Cursor data){
         mCursor = data;
+
+    }
+
+    public Cursor swapCursor(Cursor newCursor){
+        if (newCursor == mCursor)
+            return null;
+        final Cursor oldCursor = mCursor;
+
+
+        return oldCursor;
     }
 
     @Override
@@ -320,4 +332,5 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
     }
+
 }

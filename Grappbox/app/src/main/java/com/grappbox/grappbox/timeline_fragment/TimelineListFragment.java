@@ -5,6 +5,7 @@ import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -16,6 +17,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -40,6 +42,7 @@ import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.sql.Time;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -259,12 +262,22 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst())
             return;
+        Cursor value = data;
         Collection<TimelineModel> models = new HashSet<>();
+        if (mAdapter.getCursor() != null && mAdapter.getCursor().moveToFirst()) {
+            Log.v(LOG_TAG, "mAdapter size : " + String.valueOf(mAdapter.getCursor().getCount()));
+            Cursor[] arrayCursor = {mAdapter.getCursor(), data};
+            mAdapter.changeCursor(new MergeCursor(arrayCursor));
+            value = new MergeCursor(arrayCursor);
+            value.moveToFirst();
+        }
         do {
-            models.add(new TimelineModel(getActivity(), data));
-        } while (data.moveToNext());
+            models.add(new TimelineModel(getActivity(), value));
+        } while (value.moveToNext());
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);
+        value.moveToFirst();
+
     }
 
     @Override
@@ -291,7 +304,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         @Override
         protected void onPostExecute(Collection<TimelineModel> timelineModels) {
             super.onPostExecute(timelineModels);
-            //mAdapter.clear();
+            mAdapter.clear();
             mAdapter.add(timelineModels);
         }
 

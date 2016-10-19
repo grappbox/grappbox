@@ -1018,8 +1018,7 @@ public class GrappboxJustInTimeService extends IntentService {
         } finally {
             if (connection != null)
                 connection.disconnect();
-            if (resultReceiver != null)
-                resultReceiver.send(Activity.RESULT_OK, null);
+
 
         }
         Log.v(LOG_TAG, "add finish");
