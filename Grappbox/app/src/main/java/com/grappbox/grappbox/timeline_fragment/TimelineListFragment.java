@@ -64,7 +64,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_COUNT_ANSWER,
-            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID,
+            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
     };
 
     private FloatingActionButton mAddMessage;
@@ -157,6 +158,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, mAdapter.getItemCount());
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
                     }
@@ -198,7 +200,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             case TIMELINE_TEAM:
                 selection = TimelineEntry.TABLE_NAME + "." +TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
                         + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=? AND "
-                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC + " IS NULL";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
                         String.valueOf(TIMELINE_TEAM + 1),
@@ -210,7 +213,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             case TIMELINE_CLIENT:
                 selection = TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
                         + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=? AND "
-                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC + " IS NULL";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
                         String.valueOf(TIMELINE_CLIENT + 1),
@@ -240,13 +244,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=?",
                 new String[]{String.valueOf(projectId)},
                 null);
-        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
             return;
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
-        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, TIMELINE_LIMIT);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, mAdapter.getItemCount());
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
         getActivity().startService(timelineSync);
     }
@@ -259,7 +263,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         do {
             models.add(new TimelineModel(getActivity(), data));
         } while (data.moveToNext());
-
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);
     }
@@ -279,6 +282,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 mRefresher.setVisibility(View.VISIBLE);
             }
         }
+
+
     }
 
     private class AdditionalDataLoader extends AsyncTask<Collection<TimelineModel>, Void, Collection<TimelineModel>> {
@@ -286,7 +291,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         @Override
         protected void onPostExecute(Collection<TimelineModel> timelineModels) {
             super.onPostExecute(timelineModels);
-//            mAdapter.clear();
+            //mAdapter.clear();
             mAdapter.add(timelineModels);
         }
 
@@ -294,8 +299,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         protected Collection<TimelineModel> doInBackground(Collection<TimelineModel>... params) {
             if (params == null || params.length < 1)
                 throw new IllegalArgumentException();
-
-
 
             return params[0];
         }

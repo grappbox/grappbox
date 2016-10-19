@@ -27,7 +27,6 @@ import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 
-import java.sql.Time;
 import java.util.Collection;
 import java.util.HashSet;
 

@@ -79,40 +79,11 @@
                 android:padding="8dp"
                 >
 
-                <ImageButton
-                    android:id="@+id/todebug"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_bug_report"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    />
-
-                <ImageButton
-                    android:id="@+id/edit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_file"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"/>
-
-                <ImageButton
-                    android:id="@+id/delete"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:src="@drawable/ic_delete"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"/>
-
                 <TextView
                     android:id="@+id/answer"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="end"
-                    android:clickable="true"
                     android:drawableStart="@drawable/ic_timeline"
                     android:paddingLeft="8dp"
                     android:paddingRight="8dp"

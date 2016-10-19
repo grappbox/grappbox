@@ -19,6 +19,7 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
@@ -31,6 +32,7 @@ import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentActivity;
 import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -47,6 +49,11 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
 
     public static final int TYPE_TIMELINE_ENTRY = 0;
+
+    private static final int TIMELINE_ACTION_VIEW_COMMENT = 0;
+    private static final int TIMELINE_ACTION_ADD_TO_BUGTRACKER = 1;
+    private static final int TIMELINE_ACTION_EDIT_MESSAGE = 2;
+    private static final int TIMELINE_ACTION_DELETE_MESSAGE = 3;
 
     public TimelineListAdapter(Activity context)
     {
@@ -94,119 +101,164 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return null;
     }
 
+    private void messageDelete(final TimelineModel item)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);AccountManager am = AccountManager.get(mContext);
+        final String token = am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
+        builder.setTitle(R.string.delete_message);
+        builder.setMessage(R.string.delete_message_warning);
+        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
+                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
+                        new String[]{String.valueOf(item._grappboxId)},
+                        null);
+                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
+                    return;
+                Intent deleteMessage = new Intent(mContext, GrappboxJustInTimeService.class);
+                deleteMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_MESSAGE);
+                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
+                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
+                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
+                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, mDataset.size());
+                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
+                mContext.startService(deleteMessage);
+                cursorTimelineId.close();
+            }
+        });
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
 
-    public void bindTimelineEntry(final TimelineModel item, TimelineHolder holder){
-        holder.mTitle.setText(item._title);
+    private void messageEdit(final TimelineModel item)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        final View dialog = inflater.inflate(R.layout.dialog_timeline_add_message, null);
+        AccountManager am = AccountManager.get(mContext);
+        final String token = am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
+        builder.setView(dialog);
+        EditText title = (EditText) dialog.findViewById(R.id.input_title);
+        EditText message = (EditText) dialog.findViewById(R.id.input_content);
+        title.setText(item._title);
+        message.setText(item._message);
+        builder.setTitle(R.string.edit_message);
+        builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AlertDialog alertDialog = (AlertDialog) dialog;
+                EditText title = (EditText) alertDialog.findViewById(R.id.input_title);
+                EditText message = (EditText) alertDialog.findViewById(R.id.input_content);
+
+                if (title == null || message == null) {
+                    alertDialog.cancel();
+                    return;
+                }
+                Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
+                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
+                        new String[] {String.valueOf(item._grappboxId)},
+                        null);
+                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
+                    return;
+                Intent editMessage = new Intent(mContext, GrappboxJustInTimeService.class);
+                editMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, mDataset.size());
+                editMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
+                mContext.startService(editMessage);
+                cursorTimelineId.close();
+            }
+        });
+        builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        builder.show();
+    }
+
+    private void launchMessageComment(final TimelineModel item)
+    {
+        Intent launchMessageComment = new Intent(mContext, TimelineMessageCommentActivity.class);
+
+        launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL, item);
+        launchMessageComment.putExtra(ProjectActivity.EXTRA_PROJECT_ID, mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
+        launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_PARENT_ID, item._grappboxId);
+        mContext.startActivity(launchMessageComment);
+    }
+
+    private void bindTimelineEntry(final TimelineModel item, final TimelineHolder holder){
+        holder.mTitle.setText(item._title + ", " + item._grappboxId);
         holder.mMessage.setText(item._message);
         holder.mLastUpdate.setText(item._lastUpadte);
+        holder.mCardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchMessageComment(item);
+            }
+        });
         holder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                return false;
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                List<String> items = new ArrayList<String>();
+                AccountManager am = AccountManager.get(mContext);
+                items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions)));
+                long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+                Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
+                        new String[]{String.valueOf(uid)},
+                        null);
+                if (cursorUserId == null || !cursorUserId.moveToFirst())
+                    return false;
+                if (Long.valueOf(item._createID) == cursorUserId.getLong(0))
+                    items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions_user)));
+                String[] actions = new String[items.size()];
+                actions = items.toArray(actions);
+                builder.setItems(actions, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int which) {
+                        switch (which){
+                            case TIMELINE_ACTION_VIEW_COMMENT:
+                                launchMessageComment(item);
+                                break;
+
+                            case TIMELINE_ACTION_ADD_TO_BUGTRACKER:
+                                break;
+
+                            case TIMELINE_ACTION_EDIT_MESSAGE:
+                                messageEdit(item);
+                                break;
+
+                            case TIMELINE_ACTION_DELETE_MESSAGE:
+                                messageDelete(item);
+                                break;
+
+                            default:
+                                throw new IllegalArgumentException("Type doesn't exist");
+                        }
+                        Toast.makeText(mContext, String.valueOf(which), Toast.LENGTH_SHORT).show();
+                    }
+                });
+                builder.show();
+                return true;
             }
         });
         holder.mAnswer.setText(String.valueOf(item._countAnswer));
-        holder.mAnswer.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent launchMessageComment = new Intent(mContext, TimelineMessageCommentActivity.class);
-
-                launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL, item);
-                launchMessageComment.putExtra(ProjectActivity.EXTRA_PROJECT_ID, mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
-                launchMessageComment.putExtra(TimelineMessageCommentActivity.EXTRA_PARENT_ID, item._grappboxId);
-                TimelineModel model = launchMessageComment.getParcelableExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL);
-                mContext.startActivity(launchMessageComment);
-            }
-        });
-        holder.mEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                final View dialog = inflater.inflate(R.layout.dialog_timeline_add_message, null);
-                AccountManager am = AccountManager.get(mContext);
-                final String token = am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
-                builder.setView(dialog);
-                EditText title = (EditText) dialog.findViewById(R.id.input_title);
-                EditText message = (EditText) dialog.findViewById(R.id.input_content);
-                title.setText(item._title);
-                message.setText(item._message);
-                builder.setTitle(R.string.edit_message);
-                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        AlertDialog alertDialog = (AlertDialog) dialog;
-                        EditText title = (EditText) alertDialog.findViewById(R.id.input_title);
-                        EditText message = (EditText) alertDialog.findViewById(R.id.input_content);
-
-                        if (title == null || message == null) {
-                            alertDialog.cancel();
-                            return;
-                        }
-                        Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
-                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
-                                GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
-                                new String[] {String.valueOf(item._grappboxId)},
-                                null);
-                        if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
-                            return;
-                        Intent editMessage = new Intent(mContext, GrappboxJustInTimeService.class);
-                        editMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
-                        editMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-                        mContext.startService(editMessage);
-                        cursorTimelineId.close();
-                    }
-                });
-                builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                    }
-                });
-                builder.show();
-            }
-        });
-        holder.mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext);AccountManager am = AccountManager.get(mContext);
-                final String token = am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
-                builder.setTitle(R.string.delete_message);
-                builder.setMessage(R.string.delete_message_warning);
-                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
-                                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID},
-                                GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." +  GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=?",
-                                new String[]{String.valueOf(item._grappboxId)},
-                                null);
-                        if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
-                            return;
-                        Intent deleteMessage = new Intent(mContext, GrappboxJustInTimeService.class);
-                        deleteMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_MESSAGE);
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
-                        deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-                        mContext.startService(deleteMessage);
-                        cursorTimelineId.close();
-                    }
-                });
-                builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
-                        return;
-                    }
-                });
-                builder.show();
-            }
-        });
     }
 
     @Override
@@ -253,8 +305,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         TextView    mMessage;
         TextView    mLastUpdate;
         TextView    mAnswer;
-        ImageButton mEdit;
-        ImageButton mDelete;
         ViewGroup   mparent;
         CardView    mCardView;
 
@@ -265,8 +315,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             mMessage = (TextView) itemView.findViewById(R.id.messagecontent);
             mLastUpdate = (TextView) itemView.findViewById(R.id.messagelastupdate);
             mAnswer = (TextView) itemView.findViewById(R.id.answer);
-            mEdit = (ImageButton) itemView.findViewById(R.id.edit);
-            mDelete = (ImageButton) itemView.findViewById(R.id.delete);
             mCardView = (CardView) itemView.findViewById(R.id.card_view);
             mparent = root;
 

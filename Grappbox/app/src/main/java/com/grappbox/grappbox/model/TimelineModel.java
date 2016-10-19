@@ -29,6 +29,7 @@ public class TimelineModel implements Parcelable {
     public String   _title;
     public String   _message;
     public String   _lastUpadte;
+    public String   _createID;
 
 
 
@@ -45,7 +46,7 @@ public class TimelineModel implements Parcelable {
             e.printStackTrace();
             _lastUpadte = context.getString(R.string.error_unknown_last_modified);
         }
-
+        _createID = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID));
     }
 
     public TimelineModel(Parcel source){
@@ -56,6 +57,7 @@ public class TimelineModel implements Parcelable {
         _title = source.readString();
         _message = source.readString();
         _lastUpadte = source.readString();
+        _createID = source.readString();
     }
 
     @Override
@@ -67,6 +69,7 @@ public class TimelineModel implements Parcelable {
         dest.writeString(_title);
         dest.writeString(_message);
         dest.writeString(_lastUpadte);
+        dest.writeString(_createID);
     }
 
     @Override

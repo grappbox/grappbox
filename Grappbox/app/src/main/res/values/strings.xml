@@ -100,4 +100,13 @@
     <string name="timeline_tab_title_team">Team</string>
     <string name="timeline_tab_title_client">Customers</string>
     <string name="title_activity_timeline_message_comments">Message comments</string>
+
+    <array name="labels_timeline_actions">
+        <item>View comments</item>
+        <item>Add to bugtracker</item>
+    </array>
+    <array name="labels_timeline_actions_user">
+        <item>Edit message</item>
+        <item>Delete message</item>
+    </array>
 </resources>
