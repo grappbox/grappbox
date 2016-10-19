@@ -13,6 +13,7 @@ use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\Project;
 use SQLBundle\Entity\User;
 use SQLBundle\Entity\Authentication;
+use SQLBundle\Entity\Newsletter;
 use DateTime;
 use DateInterval;
 
@@ -32,6 +33,62 @@ use DateInterval;
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
+ 	/**
+ 	* @api {post} /0.3/account/preorder Preorder newsletter
+ 	* @apiName preorder
+ 	* @apiGroup AccountAdministration
+	* @apiDescription Set a mail adress for the newsletter
+ 	* @apiVersion 0.3.0
+ 	*
+ 	* @apiParam {string} email Email to add to the list of newsletter
+ 	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	*		"data": {
+	*   		"email": "john.doe@gmail.com"
+	*		}
+	*   }
+	*
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - preorder - Complete Success"
+	*			},
+ 	*			"data": {
+	*			}
+ 	* 	}
+ 	*
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.6",
+	*			"return_message": "AccountAdministration - login - Missing Parameter"
+	*		}
+	* 	}
+ 	*
+ 	*/
+ 	public function preorderAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;		
+		$em = $this->getDoctrine()->getManager();
+
+		if (!array_key_exists("email", $content))
+				return $this->setBadRequest("1.1.6", "AccountAdministration", "preorder", "Missing Parameter");
+
+		$mail = new Newsletter();
+		$mail->setEmail($content->email);
+
+		$em->persist($mail);
+		$em->flush();
+
+		return $this->setSuccess("1.14.1", "AccountAdministration", "preorder", "Complete Success", null);
+	}
+
 	/**
 	* @-api {get} /0.3/account/login Client login
 	* @apiName clientlogin

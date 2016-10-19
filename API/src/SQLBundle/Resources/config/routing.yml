@@ -11,6 +11,10 @@ test:
   defaults: {_controller:SQLBundle:Notification:pushTest}
   methods:  [GET]
 
+accountAdministration_preorder:
+  path:       account/preorder
+  defaults:   { _controller: SQLBundle:AccountAdministration:preorder, _format: json }
+  methods:    [POST]
 
 # -----------------------------------------------------------------------
 #                     ACCOUNT ADMINISTRATION CONTROLLER
