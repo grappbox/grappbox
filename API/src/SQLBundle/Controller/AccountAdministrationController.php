@@ -59,13 +59,20 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*			"data": {
 	*			}
  	* 	}
- 	*
+	* @apiErrorExample Already in DB
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.7",
+	*			"return_message": "AccountAdministration - preorder - Already in Database"
+	*		}
+	* 	}
 	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "14.1.6",
-	*			"return_message": "AccountAdministration - login - Missing Parameter"
+	*			"return_message": "AccountAdministration - preorder - Missing Parameter"
 	*		}
 	* 	}
  	*
@@ -78,7 +85,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em = $this->getDoctrine()->getManager();
 
 		if (!array_key_exists("email", $content))
-				return $this->setBadRequest("1.1.6", "AccountAdministration", "preorder", "Missing Parameter");
+				return $this->setBadRequest("14.1.6", "AccountAdministration", "preorder", "Missing Parameter");
+
+		if ($em->getRepository('SQLBundle:Newsletter')->findOneBy(array('email' => $content->email)))
+			return $this->setBadRequest("14.1.7", "AccountAdministration", "preorder", "Already in Database");
 
 		$mail = new Newsletter();
 		$mail->setEmail($content->email);
