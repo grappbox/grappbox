@@ -12,4 +12,10 @@ SQLBundle\Entity\Newsletter:
           type: string
           length: 255
           nullable: FALSE
+        firstname:
+            type: string
+            length: 255
+        lastname:
+            type: string
+            length: 255
     lifecycleCallbacks: {  }

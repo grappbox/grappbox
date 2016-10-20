@@ -41,11 +41,15 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiVersion 0.3.0
  	*
  	* @apiParam {string} email Email to add to the list of newsletter
+ 	* @apiParam {string} firstname Firstname of the person to add to the list of newsletter
+ 	* @apiParam {string} lastname Lastname of the person to add to the list of newsletter
  	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	*		"data": {
-	*   		"email": "john.doe@gmail.com"
+	*   		"email": "john.doe@gmail.com",
+	*			"firstname": "John",
+	*			"lastname": "Doe"
 	*		}
 	*   }
 	*
@@ -84,7 +88,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = $content->data;		
 		$em = $this->getDoctrine()->getManager();
 
-		if (!array_key_exists("email", $content))
+		if (!array_key_exists("email", $content) || !array_key_exists("firstname", $content) || !array_key_exists("lastname", $content))
 				return $this->setBadRequest("14.1.6", "AccountAdministration", "preorder", "Missing Parameter");
 
 		if ($em->getRepository('SQLBundle:Newsletter')->findOneBy(array('email' => $content->email)))
@@ -92,6 +96,8 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$mail = new Newsletter();
 		$mail->setEmail($content->email);
+		$mail->setFirstname($content->firstname);
+		$mail->setLastname($content->lastname);
 
 		$em->persist($mail);
 		$em->flush();
