@@ -46,7 +46,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     public static final int TIMELINE_LOADER = 0;
     public static final int TIMELINE_COMMENT = 0;
-    public static final int TIMELINE_OFFSET = 30;
 
     public static final String[] projectionMessage = {
             GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID,
@@ -97,6 +96,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     }
 
+
+
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         Log.v(LOG_TAG, "create loader");
@@ -119,13 +120,12 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-
-        CursorLoader cursorLoader = new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
-        return cursorLoader;
+        return new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        Log.v(LOG_TAG, "onLoadFinished");
         if (loader.getId() == TIMELINE_COMMENT) {
             if (!data.moveToFirst())
                 return;
@@ -163,8 +163,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         protected Collection<TimelineMessageCommentModel> doInBackground(Collection<TimelineMessageCommentModel>... params) {
             if (params == null || params.length < 1)
                 throw new IllegalArgumentException();
-
-
 
             return params[0];
         }

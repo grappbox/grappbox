@@ -20,6 +20,7 @@ import java.util.Locale;
 public class TimelineMessageCommentModel implements Parcelable {
 
     public String   _id;
+    public String   _grappboxId;
     public String   _parentId;
     public String   _createId;
     public String   _title;
@@ -28,6 +29,7 @@ public class TimelineMessageCommentModel implements Parcelable {
 
     public TimelineMessageCommentModel(Context context, Cursor data){
         _id = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry._ID));
+        _grappboxId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID));
         _parentId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID));
         _createId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID));
         _title = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_TITLE));
@@ -43,6 +45,7 @@ public class TimelineMessageCommentModel implements Parcelable {
 
     protected TimelineMessageCommentModel(Parcel source){
         _id = source.readString();
+        _grappboxId = source.readString();
         _parentId = source.readString();
         _createId = source.readString();
         _title = source.readString();
@@ -70,6 +73,7 @@ public class TimelineMessageCommentModel implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(_id);
+        dest.writeString(_grappboxId);
         dest.writeString(_parentId);
         dest.writeString(_createId);
         dest.writeString(_title);

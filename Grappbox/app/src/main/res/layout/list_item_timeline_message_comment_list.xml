@@ -14,7 +14,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         card_view:contentPadding="10dp"
-        card_view:cardCornerRadius="10dp"
+        card_view:cardCornerRadius="2dp"
         >
 
         <LinearLayout

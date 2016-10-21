@@ -43,6 +43,7 @@ import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 import com.grappbox.grappbox.project_fragments.CloudFragment;
+import com.grappbox.grappbox.receiver.RefreshReceiver;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,6 +95,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_TIMELINE_MESSAGE = "message";
     public static final String EXTRA_TIMELINE_MESSAGE_ID = "messageId";
     public static final String EXTRA_TIMELINE_PARENT_ID = "commentedId";
+    public static final String EXTRA_TIMELINE_IS_COMMENT = "isComment";
     public static final String EXTRA_RESPONSE_RECEIVER = "response_receiver";
     public static final String EXTRA_MAIL = "mail";
     public static final String EXTRA_CRYPTED_PASSWORD = "password";
@@ -146,13 +148,13 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleTimelineMessagesCommentSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
             }
             else if (ACTION_TIMELINE_ADD_MESSAGE.equals(action)) {
-                handleTimelineAddMessage(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_TIMELINE_PARENT_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), responseObserver);
+                handleTimelineAddMessage(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_TIMELINE_PARENT_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), responseObserver, intent.getBooleanExtra(EXTRA_TIMELINE_IS_COMMENT, false));
             }
             else if (ACTION_TIMELINE_EDIT_MESSAGE.equals(action)) {
-                handleTimelineMessageEdit(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_OFFSET, 0),  responseObserver);
+                handleTimelineMessageEdit(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_OFFSET, 0),  responseObserver, intent.getBooleanExtra(EXTRA_TIMELINE_IS_COMMENT, false), intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
             }
             else if (ACTION_TIMELINE_DELETE_MESSAGE.equals(action)) {
-                handleTimelineMessageDelete(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0),  responseObserver);
+                handleTimelineMessageDelete(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0),  responseObserver, intent.getBooleanExtra(EXTRA_TIMELINE_IS_COMMENT, false), intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
             }
             else if (ACTION_SYNC_NEXT_MEETINGS.equals(action)) {
                 handleNextMeetingsSync(intent.getLongExtra(EXTRA_PROJECT_ID, -1));
@@ -967,7 +969,7 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    private void handleTimelineAddMessage(long localTimelineId, String title, String message, int parentId, int offset, ResultReceiver resultReceiver) {
+    private void handleTimelineAddMessage(long localTimelineId, String title, String message, int parentId, int offset, ResultReceiver resultReceiver, boolean isComment) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
 
@@ -1010,7 +1012,10 @@ public class GrappboxJustInTimeService extends IntentService {
                         resultReceiver.send(Activity.RESULT_CANCELED, answer);
                     }
                 } else {
-                    handleTimelineMessagesSync(localTimelineId, 0, offset, resultReceiver);
+                    if (isComment)
+                        handleTimelineMessagesCommentSync(localTimelineId, parentId);
+                    else
+                        handleTimelineMessagesSync(localTimelineId, 0, offset, resultReceiver);
                 }
             }
         } catch (IOException | JSONException e) {
@@ -1024,7 +1029,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "add finish");
     }
 
-    private void handleTimelineMessageEdit(long localTimelineId, long messageId, String title, String message, int offset, ResultReceiver resultReceiver)
+    private void handleTimelineMessageEdit(long localTimelineId, long messageId, String title, String message, int offset, ResultReceiver resultReceiver, boolean isComment, long parentId)
     {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
@@ -1063,7 +1068,10 @@ public class GrappboxJustInTimeService extends IntentService {
                         resultReceiver.send(Activity.RESULT_CANCELED, answer);
                     }
                 } else {
-                    handleTimelineMessagesSync(Long.valueOf(apiTimelineID), 0, offset, resultReceiver);
+                    if (isComment)
+                        handleTimelineMessagesCommentSync(localTimelineId, parentId);
+                    else
+                        handleTimelineMessagesSync(Long.valueOf(apiTimelineID), 0, offset, resultReceiver);
                 }
             }
         } catch (IOException | JSONException e) {
@@ -1077,7 +1085,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "edit message end");
     }
 
-    private void handleTimelineMessageDelete(long localTimelineId, long messageId, int offset, ResultReceiver resultReceiver){
+    private void handleTimelineMessageDelete(long localTimelineId, long messageId, int offset, ResultReceiver resultReceiver, boolean isComment, long parentId){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
         Log.v(LOG_TAG, "delete message start");
@@ -1100,6 +1108,7 @@ public class GrappboxJustInTimeService extends IntentService {
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson != null && !returnedJson.isEmpty()){
+                Log.d(LOG_TAG, "delete response : " + returnedJson);
                 json = new JSONObject(returnedJson);
                 if (Utils.Errors.checkAPIError(json)){
                     if (resultReceiver != null){
@@ -1110,7 +1119,10 @@ public class GrappboxJustInTimeService extends IntentService {
                         resultReceiver.send(Activity.RESULT_CANCELED, ans);
                     }
                 } else {
-                    handleTimelineMessagesSync(localTimelineId, 0, offset, resultReceiver);
+                    if (isComment)
+                        handleTimelineMessagesCommentSync(localTimelineId, parentId);
+                    else
+                        handleTimelineMessagesSync(localTimelineId, 0, offset, resultReceiver);
                 }
             }
 
@@ -1151,6 +1163,7 @@ public class GrappboxJustInTimeService extends IntentService {
             if (Utils.Errors.checkAPIError(json))
                 return;
             JSONArray msgs = json.getJSONObject("data").getJSONArray("array");
+            ArrayList<Long> existingMessage = new ArrayList<>();
             if (msgs.length() == 0)
                 return;
             ContentValues[] messagesValues = new ContentValues[msgs.length()];
@@ -1193,9 +1206,31 @@ public class GrappboxJustInTimeService extends IntentService {
                 } else {
                     message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
                 }
+                String checkSelection = TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_GRAPPBOX_ID + "=? AND "
+                        + TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID + "=?";
+                String[] checkArgs = new String[] {
+                        current.getString("title"),
+                        current.getString("message"),
+                        current.getString("id"),
+                        current.getString("parentId")
+                };
+                Cursor check = getContentResolver().query(TimelineMessageEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
+                if (check != null && check.moveToFirst()) {
+                    existingMessage.add(check.getLong(check.getColumnIndex(TimelineMessageEntry._ID)));
+                    check.close();
+                }
+
                 messagesValues[i] = message;
                 creator.close();
             }
+            String deleteIds = "";
+            for (Long id : existingMessage) {
+                deleteIds += deleteIds.isEmpty() ? id.toString() : "," + id.toString();
+            }
+            String deleteSelection = TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=? AND " + TimelineMessageEntry.COLUMN_PARENT_ID + "=? AND " + TimelineMessageEntry._ID + " NOT IN (" + deleteIds + ")";
+            getContentResolver().delete(TimelineMessageEntry.CONTENT_URI, deleteSelection, new String[]{String.valueOf(localTimelineId), String.valueOf(localTimelineParentId)});
             getContentResolver().bulkInsert(TimelineMessageEntry.CONTENT_URI, messagesValues);
         } catch (IOException | JSONException | ParseException e) {
             e.printStackTrace();
@@ -1295,8 +1330,8 @@ public class GrappboxJustInTimeService extends IntentService {
                 for (Long id : existingMessage){
                     deleteIds += deleteIds.isEmpty() ? id.toString() : "," + id.toString();
                 }
-                String deleteSelection = TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=? AND " + TimelineMessageEntry._ID + " NOT IN (" + deleteIds + ")";
-                getContentResolver().delete(TimelineMessageEntry.CONTENT_URI, deleteSelection, new String[]{String.valueOf(localTimelineId)});
+                String deleteSelection = TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=? AND " + TimelineMessageEntry._ID + " NOT IN (" + deleteIds + ") AND " + TimelineMessageEntry.COLUMN_PARENT_ID + " =?";
+                getContentResolver().delete(TimelineMessageEntry.CONTENT_URI, deleteSelection, new String[]{String.valueOf(localTimelineId), "null"});
             }
             getContentResolver().bulkInsert(TimelineMessageEntry.CONTENT_URI, messagesValues);
         } catch (IOException | JSONException | ParseException e) {
@@ -1308,7 +1343,6 @@ public class GrappboxJustInTimeService extends IntentService {
             if (resultReceiver != null)
                 resultReceiver.send(Activity.RESULT_OK, null);
         }
-
         Log.v(LOG_TAG, "Handle finish");
     }
 
