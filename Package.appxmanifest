@@ -1,6 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10" xmlns:mp="http://schemas.microsoft.com/appx/2014/phone/manifest" xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10" IgnorableNamespaces="uap mp">
-  <Identity Name="23175PierreFeytout.Grappbox" Publisher="CN=D3F7F3A8-052A-46C4-8A5E-33668BA99601" Version="1.1.10" />
+  <Identity Name="23175PierreFeytout.Grappbox" Publisher="CN=D3F7F3A8-052A-46C4-8A5E-33668BA99601" Version="1.1.10.0" />
   <mp:PhoneIdentity PhoneProductId="247d38a3-beba-4433-ba34-1b5209235fb8" PhonePublisherId="00000000-0000-0000-0000-000000000000" />
   <Properties>
     <DisplayName>Grappbox</DisplayName>
