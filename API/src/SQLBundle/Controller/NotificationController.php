@@ -35,8 +35,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	// (iOS) Private key's passphrase.
 	private static $passphrase = 'joashp'; // TODO to change
 
-	// The name of our push channel.
-	private static $channelName = "joashp"; // TODO to change
+	// (WP) The name of our push channel.
+	private $client = "ms-app://s-1-15-2-548773498-628784324-102833060-3543534270-3541984288-2302026642-2926546277";
+	private $secret = "30gJ7fwcLxozA8WoQtXEhuP";
 
 	/**
 	* @api {post} /0.3/notification/device Register user device
@@ -562,35 +563,38 @@ class NotificationController extends RolesAndTokenVerificationController
 					$token = $device->getToken();
 
 					switch ($type) {
-						case 'android':
+						case 'Android':
 							$ret = json_decode($this->android($mdata, $token));
 							if ($ret->failure == true) {
 								$em->remove($device);
 								$em->flush();
 							}
 							break;
-						// case 'ios':
-						// 	$this->iOS($mdata, $token);
-						// 	break,
-						// case 'wp':
-						// 	$this->WP($mdata, $token);
-						// 	break;
+						case 'iOS':
+							$this->iOS($mdata, $token);
+							break;
+						case 'WP':
+							if ($this->WP($mdata, $token) == false) {
+								$em->remove($device);
+								$em->flush();
+							}
+							break;
 						default:
 							break;
 					}
 				}
 
-				//notification for web and desktop
-				// $notification = new Notification();
-				// $notification->setUser($user);
-				// $notification->setType($wdata['type']);
-				// $notification->setTargetId($wdata['targetId']);
-				// $notification->setMessage($wdata['message']);
-				// $notification->setIsRead(false);
-				// $notification->setCreatedAt(new \Datetime);
+				//notification for web without firebase and desktop
+				$notification = new Notification();
+				$notification->setUser($user);
+				$notification->setType($wdata['type']);
+				$notification->setTargetId($wdata['targetId']);
+				$notification->setMessage($wdata['message']);
+				$notification->setIsRead(false);
+				$notification->setCreatedAt(new \Datetime);
 
-				// $em->persist($notification);
-				// $em->flush();
+				$em->persist($notification);
+				$em->flush();
 			}
 		}
 
@@ -619,36 +623,60 @@ class NotificationController extends RolesAndTokenVerificationController
 		return $this->useCurl($url, $headers, json_encode($fields));
 	}
 
-	// Sends Push's toast notification for Windows Phone 8 users
+	// Sends notification for Windows Phone 10 users
 	public function WP($data, $uri)
 	{
-		$delay = 2;
-		$msg =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>" .
-				"<wp:Notification xmlns:wp=\"WPNotification\">" .
-					"<wp:Toast>" .
-						"<wp:Text1>".htmlspecialchars($data['mtitle'])."</wp:Text1>" .
-						"<wp:Text2>".htmlspecialchars($data['mdesc'])."</wp:Text2>" .
-					"</wp:Toast>" .
-				"</wp:Notification>";
+		$this->get_access_token();
 
-		$sendedheaders =  array(
-			'Content-Type: text/xml',
-			'Accept: application/*',
-			'X-WindowsPhone-Target: toast',
-			"X-NotificationClass: $delay"
-		);
+		$msg =  array('title' => $data['mtitle'], 'body' => $data['mdesc']);
+		$msg = json_encode($msg);
+		$headers = array('Content-Type: application/octet-stream', "X-WNS-Type: wns/raw","Content-Length: ".strlen($msg), "Authorization: Bearer $this->access_token");
 
-		$response = $this->useCurl($uri, $sendedheaders, $msg);
+        $ch = curl_init($uri);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
 
-		$result = array();
-		foreach(explode("\n", $response) as $line) {
-			$tab = explode(":", $line, 2);
-			if (count($tab) == 2)
-				$result[$tab[0]] = trim($tab[1]);
+        list($headers, $response) = explode("\r\n\r\n", $output, 2);
+        $headers = explode("\n", $headers);
+		foreach($headers as $header) {
+		    if (strpos($header, 'X-WNS-NOTIFICATIONSTATUS:') !== false) {
+		        $status = explode(": ", $header);
+		        if (strpos($status[1], 'received') !== false)
+		        	return true;
+		        return false;
+		    }
 		}
-
-		return $result;
+		return false;
 	}
+
+	private function get_access_token(){
+        $str = "grant_type=client_credentials&client_id=$this->client&client_secret=$this->secret&scope=notify.windows.com";
+        $url = "https://login.live.com/accesstoken.srf";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "$str");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);                       
+        $output = json_decode($output);
+        if(isset($output->error)){
+            return false;
+        }
+        $this->auth = $output->token_type;
+        $this->access_token = $output->access_token;
+        return true;
+    }
 
 	// Sends Push notification for iOS users
 	public function iOS($data, $devicetoken)
@@ -718,6 +746,18 @@ class NotificationController extends RolesAndTokenVerificationController
 			if ($result === FALSE) {
 				die('Curl failed: ' . curl_error($ch));
 			}
+			$response = curl_getinfo( $ch );
+			$code = $response['http_code'];
+        
+	        if($code == 200){
+	            return 'Successfully sent message'.$code;
+	        }
+	        else if($code == 410 || $code == 404){
+	            return 'Expired or invalid URI '.$code;
+	        }
+	        else{
+	            return 'Unknown error while sending message'.$code;
+	        }
 
 			// Close connection
 			curl_close($ch);
