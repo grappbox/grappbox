@@ -1,21 +1,22 @@
-﻿using System;
+﻿using GrappBox.CustomControls;
+using GrappBox.Utils;
+using GrappBox.View;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.UI.Xaml.Automation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using GrappBox.CustomControls;
-using GrappBox.View;
 
 namespace GrappBox
 {
@@ -26,15 +27,73 @@ namespace GrappBox
     public sealed partial class AppShell : Page
     {
         private bool isPaddingAdded = false;
+
         // Declare the top level nav items
         private List<NavMenuItem> navlist = new List<NavMenuItem>(
             new[]
             {
                 new NavMenuItem()
                 {
-                    Symbol = Symbol.Contact.ToString(),
-                    Label = "Basic Page",
-                    DestPage = typeof(DashBoardView)
+                    Symbol = Constants.DashboardSymbol,
+                    Label = "Dashboard",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.CalendarSymbol,
+                    Label = "Calendar",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.TimelineSymbol,
+                    Label = "Timeline",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.BugtrackerSymbol,
+                    Label = "Bugtracker",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.TasksSymbol,
+                    Label = "Tasks",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.WhiteboardSymbol,
+                    Label = "Whiteboard",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.ProjectSettingsSymbol,
+                    Label = "Project Settings",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.UserSettingsSymbol,
+                    Label = "User Settings",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.LogoutSymbol,
+                    Label = "Logout",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
                 },
             });
 
@@ -70,7 +129,6 @@ namespace GrappBox
 
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-
 
             NavMenuList.ItemsSource = navlist;
         }
@@ -125,7 +183,7 @@ namespace GrappBox
             }
         }
 
-        #endregion
+        #endregion BackRequested Handlers
 
         #region Navigation
 
@@ -162,6 +220,10 @@ namespace GrappBox
         /// <param name="e"></param>
         private void OnNavigatingToPage(object sender, NavigatingCancelEventArgs e)
         {
+            //if (e.SourcePageType == typeof(LoginPage))
+            //    TogglePaneButton.Visibility = Visibility.Collapsed;
+            //else
+            //    TogglePaneButton.Visibility = Visibility.Visible;
             if (e.NavigationMode == NavigationMode.Back)
             {
                 var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).SingleOrDefault();
@@ -197,7 +259,7 @@ namespace GrappBox
             }
         }
 
-        #endregion
+        #endregion Navigation
 
         public Rect TogglePaneButtonRect
         {

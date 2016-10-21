@@ -16,7 +16,10 @@
     <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <PackageCertificateKeyFile>Grappbox_TemporaryKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateKeyFile>GrappBox_StoreKey.pfx</PackageCertificateKeyFile>
+    <PackageCertificateThumbprint>EB90C211F5FD56A71ED78B230A5A488D347AA062</PackageCertificateThumbprint>
+    <AppxAutoIncrementPackageRevision>True</AppxAutoIncrementPackageRevision>
+    <AppxBundle>Never</AppxBundle>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
     <DebugSymbols>true</DebugSymbols>
@@ -89,6 +92,8 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\MaterialIcons-Regular.otf" />
+    <None Include="GrappBox_StoreKey.pfx" />
     <None Include="project.json" />
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +103,7 @@
     <Compile Include="AppShell.xaml.cs">
       <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Constants.cs" />
     <Compile Include="CustomControls\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
@@ -115,6 +121,7 @@
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="HttpRequest\NotificationManager.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
@@ -165,50 +172,21 @@
     <AppxManifest Include="Package.appxmanifest">
       <SubType>Designer</SubType>
     </AppxManifest>
-    <None Include="Grappbox_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\alarm_add.png" />
-    <Content Include="Assets\alarm_on.png" />
-    <Content Include="Assets\border_color.png" />
-    <Content Include="Assets\bug.png" />
-    <Content Include="Assets\bugtracker.png" />
-    <Content Include="Assets\calendar.png" />
-    <Content Include="Assets\chat.png" />
-    <Content Include="Assets\cloud.png" />
-    <Content Include="Assets\dashboard.png" />
-    <Content Include="Assets\date_range.png" />
-    <Content Include="Assets\ellipse.png" />
-    <Content Include="Assets\end_time.png" />
-    <Content Include="Assets\erazer.png" />
-    <Content Include="Assets\file.png" />
-    <Content Include="Assets\fill_color.png" />
-    <Content Include="Assets\folder.png" />
-    <Content Include="Assets\forum.png" />
     <Content Include="Assets\grappbox-logo.png" />
-    <Content Include="Assets\handwrite.png" />
-    <Content Include="Assets\info.png" />
-    <Content Include="Assets\line.png" />
-    <Content Include="Assets\logout.png" />
-    <Content Include="Assets\lozenge.png" />
-    <Content Include="Assets\menu.png" />
-    <Content Include="Assets\pointer.png" />
-    <Content Include="Assets\rectangle.png" />
-    <Content Include="Assets\start_time.png" />
-    <Content Include="Assets\task_begin.png" />
-    <Content Include="Assets\task_ongoing.png" />
-    <Content Include="Assets\text.png" />
-    <Content Include="Assets\timeline.png" />
-    <Content Include="Assets\user.png" />
-    <Content Include="Assets\whiteboard.png" />
-    <Content Include="Properties\Default.rd.xml" />
-    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-100.png" />
+    <Content Include="Assets\SplashScreen.scale-125.png" />
+    <Content Include="Assets\SplashScreen.scale-150.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
-    <Content Include="Assets\Square150x150Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.scale-200.png" />
-    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <Content Include="Assets\StoreLogo.png" />
-    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-400.png" />
+    <Content Include="Assets\StoreLogo.scale-100.png" />
+    <Content Include="Assets\StoreLogo.scale-125.png" />
+    <Content Include="Assets\StoreLogo.scale-150.png" />
+    <Content Include="Assets\StoreLogo.scale-200.png" />
+    <Content Include="Assets\StoreLogo.scale-400.png" />
+    <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">

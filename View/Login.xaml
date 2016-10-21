@@ -19,7 +19,7 @@
                 <RowDefinition Height="3*" />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="1" Text="Login" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
-            <TextBox Name="loginBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="2" PlaceholderText="UserName" Text="" ></TextBox>
+            <TextBox Name="loginBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu" ></TextBox>
             <TextBlock Grid.Row="3" Text="Password" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
             <PasswordBox Name="pwdBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="4" PlaceholderText="Password" Password="feytou_p" PasswordRevealMode="Peek" ></PasswordBox>
             <Button Name="DashBoardButton" Content="Log In" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="5" Click="DashBoardButton_Click" />

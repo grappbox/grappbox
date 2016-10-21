@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GrappBox.HttpRequest;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -20,8 +21,10 @@ using Windows.UI.Xaml.Navigation;
 namespace GrappBox
 {
     using GrappBox.View;
+    using Windows.Networking.PushNotifications;
     using Windows.UI;
     using Windows.UI.ViewManagement;
+
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
@@ -42,9 +45,8 @@ namespace GrappBox
         /// will be used such as when the application is launched to open a specific file.
         /// </summary>
         /// <param name="e">Details about the launch request and process.</param>
-        protected override void OnLaunched(LaunchActivatedEventArgs e)
+        protected override async void OnLaunched(LaunchActivatedEventArgs e)
         {
-
 #if DEBUG
             if (System.Diagnostics.Debugger.IsAttached)
             {
@@ -52,6 +54,11 @@ namespace GrappBox
                 //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
+            PushNotificationChannel pc = null;
+            if ((pc = await NotificationManager.RequestChannel()) != null)
+            {
+                pc.PushNotificationReceived += NotificationManager.OnPushNotification;
+            }
             StatusBar sb = StatusBar.GetForCurrentView();
             sb.ForegroundColor = Colors.Black;
             // Change minimum window size
@@ -105,7 +112,7 @@ namespace GrappBox
         /// </summary>
         /// <param name="sender">The Frame which failed navigation</param>
         /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }

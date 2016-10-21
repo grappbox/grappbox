@@ -27,16 +27,24 @@
                            Width="6"
                            Height="24"
                            Margin="-2,0,0,0"
-                           Fill="{ThemeResource SystemControlForegroundAccentBrush}"
+                           Fill="{x:Bind SelectedColorBrush}"
                            Visibility="{x:Bind SelectedVis, Mode=TwoWay}"
                            VerticalAlignment="Center"
-                           HorizontalAlignment="Left"/>
-                <!-- Showing a ToolTip and the Label is redundant.  We put the ToolTip on the icon.
-                     It appears when the user hovers over the icon, but not the label which provides
-                     value when the SplitView is 'Compact' while reducing the likelihood of showing
-                     redundant information when the label is shown.-->
-                <FontIcon x:Name="Glyph" FontSize="16" Glyph="{x:Bind Symbol}" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTipService.ToolTip="{x:Bind Label}"/>
-                <TextBlock x:Name="Text" Grid.Column="1" Text="{x:Bind Label}" Style="{StaticResource BodyTextBlockStyle}" TextWrapping="NoWrap" VerticalAlignment="Center"/>
+                           HorizontalAlignment="Left" />
+                <FontIcon x:Name="Glyph"
+                          FontSize="16"
+                          VerticalAlignment="Center"
+                          Glyph="{x:Bind Symbol}"
+                          HorizontalAlignment="Center"
+                          FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"
+                          Foreground="{x:Bind SelectedColorBrush}" />
+                <TextBlock x:Name="Text"
+                           Grid.Column="1"
+                           Text="{x:Bind Label}"
+                           Style="{StaticResource BodyTextBlockStyle}"
+                           TextWrapping="NoWrap"
+                           VerticalAlignment="Center"
+                           Foreground="{x:Bind SelectedColorBrush}" />
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -50,11 +58,11 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="CompactInline"/>
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="True"/>
-                        <Setter Target="NavPaneDivider.Visibility" Value="Visible"/>
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True"/>
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True"/>
+                        <Setter Target="RootSplitView.DisplayMode" Value="CompactInline" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="True" />
+                        <Setter Target="NavPaneDivider.Visibility" Value="Visible" />
+                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True" />
+                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState>
@@ -62,11 +70,11 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay"/>
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="False"/>
-                        <Setter Target="NavPaneDivider.Visibility" Value="Collapsed"/>
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="False"/>
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="False"/>
+                        <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
+                        <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
+                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="False" />
+                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="False" />
                     </VisualState.Setters>
                 </VisualState>
                 <VisualState>
@@ -74,10 +82,10 @@
                         <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
                     </VisualState.StateTriggers>
                     <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="Overlay"/>
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="False"/>
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True"/>
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True"/>
+                        <Setter Target="RootSplitView.DisplayMode" Value="Overlay" />
+                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
+                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True" />
+                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True" />
                     </VisualState.Setters>
                 </VisualState>
             </VisualStateGroup>
@@ -92,7 +100,7 @@
                       Unchecked="TogglePaneButton_Unchecked"
                       Checked="TogglePaneButton_Checked"
                       AutomationProperties.Name="Navigation"
-                      ToolTipService.ToolTip="Navigation"/>
+                      ToolTipService.ToolTip="Navigation" />
 
         <!-- Top-level navigation menu + app content -->
         <SplitView x:Name="RootSplitView"
@@ -106,15 +114,15 @@
             <SplitView.Pane>
                 <Grid x:Name="PaneContentGrid">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="6"/>
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="6" />
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="48"/>
-                        <ColumnDefinition Width="48"/>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="48" />
+                        <ColumnDefinition Width="48" />
                     </Grid.ColumnDefinitions>
 
                     <!-- A custom ListView to display the items in the pane.  The automation Name is set in the ContainerContentChanging event. -->
@@ -125,27 +133,27 @@
                                               ContainerContentChanging="NavMenuItemContainerContentChanging"
                                               ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
                                               ItemTemplate="{StaticResource NavMenuItemTemplate}"
-                                              ItemInvoked="NavMenuList_ItemInvoked"/>
+                                              ItemInvoked="NavMenuList_ItemInvoked" />
                     <Rectangle x:Name="NavPaneDivider"
                                Grid.Row="1"
                                Grid.ColumnSpan="3"
                                Height="1"
                                Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                               Margin="16,0,16,6"/>
+                               Margin="16,0,16,6" />
                     <Button x:Name="FeedbackNavPaneButton"
                             Grid.Row="2"
                             Grid.Column="1"
                             Style="{StaticResource SplitViewPaneButtonStyle}"
                             Content="&#xE76E;"
                             AutomationProperties.Name="Feedback"
-                            ToolTipService.ToolTip="Feedback"/>
+                            ToolTipService.ToolTip="Feedback" />
                     <Button x:Name="SettingsNavPaneButton"
                             Grid.Row="2"
                             Grid.Column="2"
                             Style="{StaticResource SplitViewPaneButtonStyle}"
                             Content="&#xE713;"
                             AutomationProperties.Name="Settings"
-                            ToolTipService.ToolTip="Settings"/>
+                            ToolTipService.ToolTip="Settings" />
                 </Grid>
             </SplitView.Pane>
 
@@ -158,7 +166,7 @@
                         <TransitionCollection>
                             <NavigationThemeTransition>
                                 <NavigationThemeTransition.DefaultNavigationTransitionInfo>
-                                    <EntranceNavigationTransitionInfo/>
+                                    <EntranceNavigationTransitionInfo />
                                 </NavigationThemeTransition.DefaultNavigationTransitionInfo>
                             </NavigationThemeTransition>
                         </TransitionCollection>

@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace GrappBox.CustomControls
 {
@@ -16,8 +17,24 @@ namespace GrappBox.CustomControls
     {
         public string Label { get; set; }
         public String Symbol { get; set; }
+        public SolidColorBrush ForegroundColor { get; set; }
+
+        private SolidColorBrush defaultColorBrush = Constants.DefaultGray;
+
+        private SolidColorBrush _selectedColorBrush = Constants.DefaultGray;
+
+        public SolidColorBrush SelectedColorBrush
+        {
+            get { return _selectedColorBrush; }
+            set
+            {
+                _selectedColorBrush = value;
+                this.OnPropertyChanged("SelectedColorBrush");
+            }
+        }
 
         private bool _isSelected;
+
         public bool IsSelected
         {
             get { return _isSelected; }
@@ -25,11 +42,13 @@ namespace GrappBox.CustomControls
             {
                 _isSelected = value;
                 SelectedVis = value ? Visibility.Visible : Visibility.Collapsed;
+                SelectedColorBrush = value ? ForegroundColor : defaultColorBrush;
                 this.OnPropertyChanged("IsSelected");
             }
         }
 
         private Visibility _selectedVis = Visibility.Collapsed;
+
         public Visibility SelectedVis
         {
             get { return _selectedVis; }
@@ -44,11 +63,11 @@ namespace GrappBox.CustomControls
         public object Arguments { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged = delegate { };
+
         public void OnPropertyChanged(string propertyName)
         {
             // Raise the PropertyChanged event, passing the name of the property whose value has changed.
             this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
         }
-
     }
 }

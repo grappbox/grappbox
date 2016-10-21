@@ -3,20 +3,20 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox">
     <Color x:Key="RedGrappbox">#FC575E</Color>
-    <Color x:Key="White1Grappbox">#ffffff</Color>
-    <Color x:Key="White2Grappbox">#fafafa</Color>
-    <Color x:Key="White3Grappbox">#f0f0f0</Color>
-    <Color x:Key="Grey1Grappbox">#e0e0E0</Color>
-    <Color x:Key="Grey2Grappbox">#cccccc</Color>
-    <Color x:Key="Grey3Grappbox">#bdbdbd</Color>
+    <Color x:Key="White1Grappbox">#FFFFFF</Color>
+    <Color x:Key="White2Grappbox">#FAFAFA</Color>
+    <Color x:Key="White3Grappbox">#F0F0F0</Color>
+    <Color x:Key="Grey1Grappbox">#E0E0E0</Color>
+    <Color x:Key="Grey2Grappbox">#CCCCCC</Color>
+    <Color x:Key="Grey3Grappbox">#BDBDBD</Color>
     <Color x:Key="Black1Grappbox">#666666</Color>
     <Color x:Key="Black2Grappbox">#333333</Color>
     <Color x:Key="Black3Grappbox">#000000</Color>
-    <Color x:Key="BlueGrappbox">#44bbff</Color>
-    <Color x:Key="PurpleGrappbox">#9e58dc</Color>
-    <Color x:Key="OrangeGrappbox">#ff9f55</Color>
-    <Color x:Key="GreenGrappbox">#27ae60</Color>
-    <Color x:Key="YellowGrappbox">#f1c40f</Color>
+    <Color x:Key="BlueGrappbox">#44BBFF</Color>
+    <Color x:Key="PurpleGrappbox">#9E58DC</Color>
+    <Color x:Key="OrangeGrappbox">#FF9F55</Color>
+    <Color x:Key="GreenGrappbox">#27AE60</Color>
+    <Color x:Key="YellowGrappbox">#F1C40F</Color>
     <SolidColorBrush x:Key="RedGrappboxBrush" Color="{StaticResource RedGrappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="White1GrappboxBrush" Color="{StaticResource White1Grappbox}"></SolidColorBrush>
     <SolidColorBrush x:Key="White2GrappboxBrush" Color="{StaticResource White2Grappbox}"></SolidColorBrush>

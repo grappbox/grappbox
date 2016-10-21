@@ -10,7 +10,7 @@ using Windows.System.Profile;
 
 namespace GrappBox.Utils
 {
-    class SystemInformation
+    public class SystemInformation
     {
         public static string GetUniqueIdentifier()
         {
@@ -21,5 +21,47 @@ namespace GrappBox.Utils
             string hashedString = CryptographicBuffer.EncodeToHexString(hashed);
             return hashedString;
         }
+
+        public static object GetStaticResource(string resourceName)
+        {
+            object resource = null;
+            resource = App.Current.Resources[resourceName];
+            return resource;
+        }
     }
+
+    //internal class SettingsManager
+    //{
+    //    public static bool OptionExist(string optName)
+    //    {
+    //        return Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey(optName);
+    //    }
+
+    //    public static T getOption<T>(string optName)
+    //    {
+    //        Object value = Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName];
+    //        if (value == null)
+    //        {
+    //            return default(T);
+    //        }
+    //        else
+    //            return (T)value;
+    //    }
+
+    //    public static int getOption(string optName)
+    //    {
+    //        Object value = Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName];
+    //        if (value == null)
+    //        {
+    //            return -1;
+    //        }
+    //        else
+    //            return (int)value;
+    //    }
+
+    //    public static void setOption(string optName, Object value)
+    //    {
+    //        Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName] = value;
+    //    }
+    //}
 }
