@@ -15,7 +15,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.nfc.Tag;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
@@ -26,7 +25,6 @@ import android.util.Base64;
 import android.util.Log;
 import android.util.Pair;
 
-import com.google.firebase.messaging.*;
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
@@ -54,7 +52,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -63,13 +60,16 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import static com.grappbox.grappbox.R.id.tagname;
-
-
 /**
-     * An {@link IntentService} subclass for handling asynchronous task requests in
-     * a service on a separate handler thread.
-     */
+ * Created by Marc Wieser on 21/10/2016.
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser33@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
+ */
+
 public class GrappboxJustInTimeService extends IntentService {
     private static final String LOG_TAG = GrappboxJustInTimeService.class.getSimpleName();
 
@@ -241,7 +241,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
         try {
             if (apiToken == null)
-                throw new NetworkErrorException("Invalid api token");
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
             bug = getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry.COLUMN_GRAPPBOX_ID}, BugEntry._ID+"=?", new String[]{String.valueOf(bugId)}, null);
             String userAddSelection = "";
             String userDelSelection = "";
@@ -712,11 +712,11 @@ public class GrappboxJustInTimeService extends IntentService {
 
         try {
             if (apiToken == null)
-                throw new NetworkErrorException("Invalid api token");
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
 
             bug = getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry.COLUMN_GRAPPBOX_ID}, BugEntry._ID + "=?", new String[]{String.valueOf(commentID)}, null);
             if (bug == null || !bug.moveToFirst())
-                throw new NetworkErrorException("Invalid local project ID");
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_ID);
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/bugtracker/closeticket/"+apiToken+"/"+bug.getString(0));
             Log.d(LOG_TAG, String.valueOf(url));
             JSONObject json = new JSONObject();
@@ -1918,6 +1918,7 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
+    @Nullable
     private Pair<Integer, Integer> syncProjectInfos(String apiID) throws IOException, JSONException {
         //synchronize project's list
         String apiToken = Utils.Account.getAuthTokenService(this, null);
@@ -2056,9 +2057,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
             if (responseObserver != null)
                 responseObserver.send(Activity.RESULT_OK, null);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "IOException : ", e);
-        } catch (JSONException | ParseException e) {
+        } catch (IOException | JSONException | ParseException e) {
             e.printStackTrace();
         } finally {
             if (connection != null)

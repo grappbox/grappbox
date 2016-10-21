@@ -26,6 +26,16 @@ import java.net.URL;
 
 import static com.google.android.gms.internal.zzs.TAG;
 
+/**
+ * Created by Marc Wieser on 21/10/2016.
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser33@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
+ */
+
 public class FirebaseCloudMessagingService extends FirebaseInstanceIdService {
     public static final String APITOKEN_0_3 = "123456789";
     public FirebaseCloudMessagingService() {
