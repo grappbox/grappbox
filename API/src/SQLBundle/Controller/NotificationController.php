@@ -734,34 +734,18 @@ class NotificationController extends RolesAndTokenVerificationController
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
 			// Disabling SSL Certificate support temporarly
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			if ($fields) {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 			}
-
 			// Execute post
 			$result = curl_exec($ch);
 			if ($result === FALSE) {
 				die('Curl failed: ' . curl_error($ch));
 			}
-			$response = curl_getinfo( $ch );
-			$code = $response['http_code'];
-        
-	        if($code == 200){
-	            return 'Successfully sent message'.$code;
-	        }
-	        else if($code == 410 || $code == 404){
-	            return 'Expired or invalid URI '.$code;
-	        }
-	        else{
-	            return 'Unknown error while sending message'.$code;
-	        }
-
 			// Close connection
 			curl_close($ch);
-
 			return $result;
 		}
 	}
