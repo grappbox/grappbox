@@ -41,7 +41,7 @@ public class TimelineModel implements Parcelable {
         _title = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_TITLE));
         _message = cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE));
         try {
-            _lastUpadte = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC))));
+            _lastUpadte = DateFormat.getDateInstance(DateFormat.SHORT, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(cursor.getString(cursor.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC))));
         } catch (ParseException e) {
             e.printStackTrace();
             _lastUpadte = context.getString(R.string.error_unknown_last_modified);

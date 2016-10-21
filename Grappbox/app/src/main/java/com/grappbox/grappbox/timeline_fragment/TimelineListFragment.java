@@ -44,9 +44,13 @@ import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.sql.Time;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -201,7 +205,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC LIMIT " +
+        String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
                 String.valueOf(mAdapter.getItemCount()) + ", " + String.valueOf(TIMELINE_LIMIT);
         String selection;
         String[] selectionArgs;
@@ -266,14 +270,32 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         getActivity().startService(timelineSync);
     }
 
+    class StringDateComparator implements Comparator<TimelineModel>
+    {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        @Override
+        public int compare(TimelineModel o1, TimelineModel o2) {
+
+            try {
+                return dateFormat.parse(o2._lastUpadte).compareTo(dateFormat.parse(o1._lastUpadte));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst())
             return;
-        Collection<TimelineModel> models = new HashSet<>();
+        List<TimelineModel> models = new ArrayList<>();
         do {
             models.add(new TimelineModel(getActivity(), data));
         } while (data.moveToNext());
+        Collections.sort(models, new StringDateComparator());
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);
     }

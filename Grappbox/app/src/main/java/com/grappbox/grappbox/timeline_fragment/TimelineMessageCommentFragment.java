@@ -27,8 +27,14 @@ import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.List;
 
 public class TimelineMessageCommentFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -123,16 +129,34 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         return new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
+    class StringDateComparator implements Comparator<TimelineMessageCommentModel>
+    {
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        @Override
+        public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
+
+            try {
+                return dateFormat.parse(o2._lastupdate).compareTo(dateFormat.parse(o1._lastupdate));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+    }
+
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         Log.v(LOG_TAG, "onLoadFinished");
         if (loader.getId() == TIMELINE_COMMENT) {
             if (!data.moveToFirst())
                 return;
-            Collection<TimelineMessageCommentModel> models = new HashSet<>();
+            List<TimelineMessageCommentModel> models = new ArrayList<>();
             do {
                 models.add(new TimelineMessageCommentModel(getActivity(), data));
             } while (data.moveToNext());
+            Collections.sort(models, new StringDateComparator());
             AdditionalDataLoader task = new AdditionalDataLoader();
             task.execute(models);
         }
