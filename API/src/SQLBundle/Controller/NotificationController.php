@@ -29,15 +29,16 @@ use DateTime;
  */
 class NotificationController extends RolesAndTokenVerificationController
 {
-	// (Android)API access key from Firebase API's Console.
+	// (Firebase)API access key from Firebase API's Console.
 	private static $API_ACCESS_KEY = 'AIzaSyBjB-NKhL-jek8z_H0KYlspRQQOw_A_iUQ';
-
-	// (iOS) Private key's passphrase.
-	private static $passphrase = 'joashp'; // TODO to change
 
 	// (WP) The name of our push channel.
 	private $client = "ms-app://s-1-15-2-548773498-628784324-102833060-3543534270-3541984288-2302026642-2926546277";
 	private $secret = "30gJ7fwcLxozA8WoQtXEhuP";
+
+	public function notifs($users, $mdata, $wdata, $em) {
+		$this->pushNotification($users, $mdata, $wdata, $em);
+	}
 
 	/**
 	* @api {post} /0.3/notification/device Register user device
@@ -175,11 +176,6 @@ class NotificationController extends RolesAndTokenVerificationController
 		}
 
 		return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
-	}
-
-	public function longPollingAction(Request $request)
-	{
-
 	}
 
 	/**
@@ -515,21 +511,6 @@ class NotificationController extends RolesAndTokenVerificationController
 		return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
 	}
 
-
-	public function pushTestAction()
-	{
-		$mdata['mtitle'] = "Timeline - New message";
-		$mdata['mdesc'] = "There is a new message on the timeline";
-
-		$wdata['type'] = "Project";
-		$wdata['targetId'] = 2;
-		$wdata['message'] = "You have been added on the project Grappbox";
-
-		$em = $this->getDoctrine()->getManager();
-
-		return new JsonResponse($this->pushNotification([1], $mdata, $wdata, $em));
-	}
-
 	/*
 	** send push notification(mobile) and create a notification(desktop/web) in the db
 	** $userIds Array of user id that should be notified
@@ -550,6 +531,8 @@ class NotificationController extends RolesAndTokenVerificationController
 	*/
 	public function pushNotification($usersIds, $mdata, $wdata, $em)
 	{
+		$firebase_tokens = array();
+		$this->get_access_token();
 		foreach ($usersIds as $userId) {
 			$user = $em->getRepository("SQLBundle:User")->find($userId);
 
@@ -563,16 +546,6 @@ class NotificationController extends RolesAndTokenVerificationController
 					$token = $device->getToken();
 
 					switch ($type) {
-						case 'Android':
-							$ret = json_decode($this->android($mdata, $token));
-							if ($ret->failure == true) {
-								$em->remove($device);
-								$em->flush();
-							}
-							break;
-						case 'iOS':
-							$this->iOS($mdata, $token);
-							break;
 						case 'WP':
 							if ($this->WP($mdata, $token) == false) {
 								$em->remove($device);
@@ -580,6 +553,7 @@ class NotificationController extends RolesAndTokenVerificationController
 							}
 							break;
 						default:
+							$firebase_tokens[] = $token;
 							break;
 					}
 				}
@@ -598,11 +572,24 @@ class NotificationController extends RolesAndTokenVerificationController
 			}
 		}
 
+		if (count($firebase_tokens) > 0) {
+			$ret = json_decode($this->firebase($mdata, $firebase_tokens));
+			foreach ($ret->results as $key => $res) {
+				if (array_key_exists('error', $res)) {
+					$devices = $em->getRepository("SQLBundle:Devices")->findBytoken($firebase_tokens[$key]);
+					foreach ($devices as $key => $value) {
+						$em->remove($value);
+						$em->flush();
+					}
+				}
+			}
+		}
+
 		return true;
 	}
 
 	// Sends Push notification for Android users
-	public function android($data, $reg_id)
+	public function firebase($data, $reg_ids)
 	{
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$message = array(
@@ -616,7 +603,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		);
 
 		$fields = array(
-			'to' => $reg_id,
+			'registration_ids' => $reg_ids,
 			'data' => $message
 		);
 
@@ -626,8 +613,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	// Sends notification for Windows Phone 10 users
 	public function WP($data, $uri)
 	{
-		$this->get_access_token();
-
 		$msg =  array('title' => $data['mtitle'], 'body' => $data['mdesc']);
 		$msg = json_encode($msg);
 		$headers = array('Content-Type: application/octet-stream', "X-WNS-Type: wns/raw","Content-Length: ".strlen($msg), "Authorization: Bearer $this->access_token");
