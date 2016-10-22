@@ -9,6 +9,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Meta -->  
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="content-language" content="en-us">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,6 +21,17 @@
     <meta charset="UTF-8">
     <base href="/app/">
     <title>GrappBox</title>
+    <!-- Social -->
+    <meta property="og:title" content="GrappBox"/>
+    <meta property="og:url" content="https://grappbox.com"/>
+    <meta name="og:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">    
+    <meta name="og:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <meta name="twitter:card" content="summary_large_image">    
+    <meta name="twitter:site" content="@GrappBox">
+    <meta name="twitter:title" content="GrappBox">
+    <meta name="twitter:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="twitter:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <!-- Favicons -->    
     <link rel="apple-touch-icon" sizes="57x57" href="../resources/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../resources/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="../resources/img/favicon/apple-icon-72x72.png">
@@ -115,6 +127,12 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
+    {% javascripts
+    '@AppBundle/Resources/public/js/home/analytics.js'
+    filter='?uglifyjs2' output='resources/js/data.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
     <!-- Responsive for IE8 and lower -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -131,13 +149,17 @@
         <div class="navigation {[{ app.colors[app.current] + '-background' }]}" sidebar-directive="sidebar.open">
           <div class="container-fluid">
             <div class="navigation-left" data-ng-cloak>
-              <a href="" class="btn navigation-toggle" title="Toggle navigation drawer" data-ng-click="sidebar.toggle()"><i class="material-icons">menu</i></a>
+              <a href="" title="Toggle navigation drawer" class="btn {[{ app.colors[app.current] + '-hover' }]}" data-ng-click="sidebar.toggle()">
+                <i class="material-icons">menu</i></a>
               <p>{[{ page.onLoad ? 'Loading...' : page.title }]}</p>
             </div>
             <div class="navigation-right">
-              <a href="notifications" class="btn {[{ app.colors[app.current] + '-hover' }]}" title="See all your notifications"><i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i></a>
-              <a href="profile" class="btn {[{ app.colors[app.current] + '-hover' }]}" title="View and edit your profile"><i class="material-icons">{[{ ::app.icons['/profile'] }]}</i></a>
-              <a href="logout" class="btn {[{ app.colors[app.current] + '-hover' }]}" title="Sign out of GrappBox"><i class="material-icons">{[{ ::app.icons['/logout'] }]}</i></a>
+              <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}">
+                <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i></a>
+              <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}">
+                <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i></a>
+              <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}" >
+                <i class="material-icons">{[{ ::app.icons['/logout'] }]}</i></a>
             </div>
             <div class="clearfix"></div>
           </div>
@@ -146,7 +168,7 @@
         <!-- Navigation drawer -->
         <aside class="sidebar" sidebar-directive="sidebar.open">
           <div class="sidebar-header">
-            <a class="toggle raised visible-xs" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
+            <a class="toggle {[{ app.colors[app.current] + '-hover' }]}" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
             <a href="profile" title="View and edit your profile"><img class="avatar" src="../resources/img/default_avatar.min.png"></a>
             <p class="ellipsis user"><a href="profile" title="View and edit your profile">{[{ user.firstname }]} {[{ user.lastname }]}</a></p>
             <div class="clearfix"></div>
@@ -157,6 +179,10 @@
                 <a href="" title="Sign out of this project" data-ng-click="project.switch()" class="btn">
                   <i class="material-icons">arrow_back</i>Change project</a>
               </li>            
+              <li>
+                <a href="notifications" title="See all your notifications" class="btn visible-xs {[{ app.routes['/notifications'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i>Notifications</a>
+              </li>
               <li>
                 <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routes['/dashboard'] ? 'active' : '' }]}">
                   <i class="material-icons">{[{ ::app.icons['/dashboard'] }]}</i>Dashboard</a>
@@ -197,6 +223,10 @@
                 <a href="profile" title="View and edit your profile" class="btn {[{ app.routes['/profile'] ? 'active' : '' }]}">
                   <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i>Profile</a>
               </li>
+              <li>
+                <a href="logout" title="Sign out of GrappBox" class="btn visible-xs">
+                  <i class="material-icons">{[{ ::app.icons['/logout'] }]}</i>Log out</a>
+              </li>              
             </ul>
           </div>
         </aside>
@@ -222,7 +252,7 @@
 
       </div>
     </div>
-  </body>
+  </body>  
 </html>
 
 {% endspaceless %}
