@@ -17,6 +17,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.CursorAdapter;
@@ -28,6 +29,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Transformation;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 
@@ -38,6 +41,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxDBHelper;
+import com.grappbox.grappbox.item_decoration.HorizontalDivider;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
@@ -106,12 +110,15 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        mAdapter = new TimelineListAdapter(getActivity());
+
         View v = inflater.inflate(R.layout.fragment_timeline_list, container, false);
         mTimelineList = (RecyclerView) v.findViewById(R.id.timelinelist);
+        mAdapter = new TimelineListAdapter(getActivity(), mTimelineList);
         mTimelineList.setAdapter(mAdapter);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
+        mTimelineList.addItemDecoration(new HorizontalDivider(ContextCompat.getColor(getActivity(), R.color.GrappGrayMedium)));
         mTimelineList.setLayoutManager(mLinearLayoutManager);
+
         mTimelineList.addOnScrollListener(new RecyclerView.OnScrollListener() {
 
             @Override
@@ -127,7 +134,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 }
             }
         });
-
         mRefresher = (SwipeRefreshLayout) v.findViewById(R.id.refresh);
         mLoader = (ProgressBar) v.findViewById(R.id.loader);
         mAdapter.registerAdapterDataObserver(new AdapterObserver());
@@ -197,9 +203,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     private void initLoader()
     {
-/*        Bundle args = new Bundle();
-        args.putString(TIMELINE_BUNDLE_LIMIT, String.valueOf(TIMELINE_LIMIT));
-        args.putString(TIMELINE_BUNDLE_OFFSET, String.valueOf(mAdapter.getItemCount()));*/
         getLoaderManager().restartLoader(mTimelineTypeId, null, this);
     }
 
@@ -241,8 +244,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         }
         return new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
-
-
 
     @Override
     public void onRefresh() {
@@ -324,7 +325,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         @Override
         protected void onPostExecute(Collection<TimelineModel> timelineModels) {
             super.onPostExecute(timelineModels);
-            //mAdapter.clear();
+            mAdapter.clear();
             mAdapter.add(timelineModels);
         }
 
@@ -336,4 +337,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             return params[0];
         }
     }
+
+
 }

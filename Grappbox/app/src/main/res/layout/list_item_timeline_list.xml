@@ -1,142 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
+    android:layout_gravity="center"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:animateLayoutChanges="true"
+    android:id="@+id/card_view"
+    android:background="@drawable/detail_action_background"
+    android:stateListAnimator="@animator/detail_action_selection"
+    android:padding="2dp"
     android:clickable="true"
-    android:focusable="true"
-    android:padding="2dp">
+    android:focusable="true">
 
     <LinearLayout
-        android:id="@+id/card_view"
         android:orientation="vertical"
-        android:layout_gravity="center"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
-            android:orientation="vertical"
+            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/avatar"
+                android:layout_width="72dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:src="@drawable/default_logo_avatar"
+                android:adjustViewBounds="true"/>
 
             <LinearLayout
-                android:orientation="horizontal"
+                android:orientation="vertical"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-                <ImageView
-                    android:id="@+id/avatar"
-                    android:layout_width="72dp"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:paddingStart="16dp"
-                    android:paddingEnd="16dp"
-                    android:src="@drawable/default_logo_avatar"
-                    android:adjustViewBounds="true"/>
-
-                <LinearLayout
-                    android:orientation="vertical"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp">
-
-                    <TextView
-                        android:id="@+id/title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="This is the Message title"
-                        style="@style/TitleTextView"
-                        android:maxLines="1"
-                        android:ellipsize="end"
-                        android:textAlignment="textStart"
-                        android:layout_gravity="start"/>
-
-                    <TextView
-                        android:id="@+id/messagelastupdate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Last update message"
-                        style="@style/SubHeadTextView"/>
-
-                </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp">
 
                 <TextView
-                    android:id="@+id/answer"
+                    android:id="@+id/title"
                     android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="end"
-                    android:gravity="center_vertical"
-                    android:drawableStart="@drawable/ic_timeline"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    android:text="0"
-                    android:drawablePadding="5dp"
-                    />
+                    android:layout_height="wrap_content"
+                    android:text="This is the Message title"
+                    style="@style/TitleTextView"
+                    android:maxLines="1"
+                    android:ellipsize="end"
+                    android:textAlignment="textStart"
+                    android:layout_gravity="start"/>
+
+                <TextView
+                    android:id="@+id/messagelastupdate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Last update message"
+                    style="@style/SubHeadTextView"/>
 
             </LinearLayout>
 
             <TextView
-                android:id="@+id/messagecontent"
+                android:id="@+id/answer"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:gravity="center_vertical"
+                android:drawableStart="@drawable/ic_timeline"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp"
+                android:text="0"
+                android:drawablePadding="5dp"
+                />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/messagecontent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="16dp"
+            android:text="This is the content of the message"
+            android:textSize="14sp"/>
+
+        <LinearLayout
+            android:id="@+id/message_action"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:gravity="end"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/to_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:padding="16dp"
-                android:text="This is the content of the message"
-                android:textSize="14sp"/>
+                android:src="@drawable/ic_timeline"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
 
-            <LinearLayout
-                android:id="@+id/message_action"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/add_to_bucktracker"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp"
-                android:gravity="end"
-                android:visibility="gone">
+                android:src="@drawable/ic_bugtracker"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
 
-                <ImageButton
-                    android:id="@+id/to_comment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_timeline"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    />
+            <ImageButton
+                android:id="@+id/edit_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_file"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
 
-                <ImageButton
-                    android:id="@+id/add_to_bucktracker"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_bugtracker"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    />
+            <ImageButton
+                android:id="@+id/delete_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_delete"
+                android:background="@null"
+                android:paddingLeft="8dp"
+                android:paddingRight="8dp" />
 
-                <ImageButton
-                    android:id="@+id/edit_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_file"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    />
-
-                <ImageButton
-                    android:id="@+id/delete_message"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_delete"
-                    android:background="@null"
-                    android:paddingLeft="8dp"
-                    android:paddingRight="8dp"
-                    />
-
-
-            </LinearLayout>
 
         </LinearLayout>
 

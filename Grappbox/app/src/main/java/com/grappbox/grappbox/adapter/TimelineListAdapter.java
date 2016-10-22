@@ -2,6 +2,7 @@ package com.grappbox.grappbox.adapter;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -10,9 +11,12 @@ import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.media.Image;
 import android.os.Parcelable;
+import android.support.v4.view.animation.LinearOutSlowInInterpolator;
+import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.transition.TransitionManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,6 +42,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.MissingResourceException;
 
 /**
  * Created by tan_f on 28/09/2016.
@@ -48,8 +53,10 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Activity mContext;
     private List<TimelineModel> mDataset;
     private LayoutInflater  inflater;
-    private Cursor          mCursor = null;
     private RefreshReceiver mRefreshReceiver = null;
+    private RecyclerView    mRecyclerView;
+    private int             mExpandedPosition = -1;
+    private CursorAdapter   mCursorAdapter;
 
     public static final int TYPE_TIMELINE_ENTRY = 0;
 
@@ -58,13 +65,14 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private static final int TIMELINE_ACTION_EDIT_MESSAGE = 2;
     private static final int TIMELINE_ACTION_DELETE_MESSAGE = 3;
 
-    public TimelineListAdapter(Activity context)
+    public TimelineListAdapter(Activity context, RecyclerView rv)
     {
         super();
         mContext = context;
         mDataset = new ArrayList<>(0);
         inflater = LayoutInflater.from(context);
-
+        mRecyclerView = rv;
+        mExpandedPosition = -1;
     }
 
     private RecyclerView.ViewHolder createTimelineEntryHolder(ViewGroup parent){
@@ -85,19 +93,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void add(Collection<? extends TimelineModel> items){
         mDataset.addAll(items);
         notifyDataSetChanged();
-    }
-
-    public Cursor getCursor()
-    {
-        return mCursor;
-    }
-
-    public void changeCursor(Cursor data){
-        if (mCursor != null)
-            mCursor.close();
-        mCursor = null;
-        mCursor = data;
-
     }
 
     @Override
@@ -210,17 +205,19 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mContext.startActivity(launchMessageComment);
     }
 
-    private void bindTimelineEntry(final TimelineModel item, final TimelineHolder holder){
+    private void bindTimelineEntry(final TimelineModel item, final TimelineHolder holder, final int position){
+        final boolean isExpanded = position == mExpandedPosition;
         holder.mTitle.setText(item._title);
         holder.mMessage.setText(item._message);
         holder.mLastUpdate.setText(item._lastUpadte);
+        holder.mActionLayout.setVisibility(isExpanded ? View.VISIBLE : View.GONE);
+        holder.mListView.setActivated(isExpanded);
         holder.mListView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (holder.mActionLayout.getVisibility() == View.GONE)
-                    holder.mActionLayout.setVisibility(View.VISIBLE);
-                else if (holder.mActionLayout.getVisibility() == View.VISIBLE)
-                    holder.mActionLayout.setVisibility(View.GONE);
+                mExpandedPosition = isExpanded ? -1 : position;
+//                TransitionManager.beginDelayedTransition(mRecyclerView);
+                notifyDataSetChanged();
             }
         });
         holder.mToComment.setOnClickListener(new View.OnClickListener() {
@@ -296,7 +293,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case TYPE_TIMELINE_ENTRY:
-                bindTimelineEntry(getItemAt(position), (TimelineHolder) holder);
+                bindTimelineEntry(getItemAt(position), (TimelineHolder) holder, position);
                 break;
         }
     }

@@ -81,7 +81,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mAdapter = new TimelineMessageCommentAdapter(getActivity());
         mAdapter.setTimelineModel(parent);
         mRecycler.setAdapter(mAdapter);
-        mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
+        mRecycler.setLayoutManager(mLinearLayoutManager);
         mTimelineMessage = (TextView) view.findViewById(R.id.message);
         mTimelineMessage.setText(parent._message);
         mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
@@ -148,7 +149,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "onLoadFinished");
         if (loader.getId() == TIMELINE_COMMENT) {
             if (!data.moveToFirst())
                 return;
@@ -181,13 +181,13 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             super.onPostExecute(timelineModels);
             mAdapter.clear();
             mAdapter.add(timelineModels);
+            mLinearLayoutManager.scrollToPosition(mAdapter.getSize());
         }
 
         @Override
         protected Collection<TimelineMessageCommentModel> doInBackground(Collection<TimelineMessageCommentModel>... params) {
             if (params == null || params.length < 1)
                 throw new IllegalArgumentException();
-
             return params[0];
         }
     }

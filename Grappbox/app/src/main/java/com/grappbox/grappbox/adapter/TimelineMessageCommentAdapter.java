@@ -166,7 +166,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                             default:
                                 throw new IllegalArgumentException("Type doesn't exist");
                         }
-                        Toast.makeText(mContext, String.valueOf(which), Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.show();

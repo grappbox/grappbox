@@ -20,5 +20,7 @@
     <color name="GrappWhiteLight">#FFFFFF</color>
     <color name="GrappTransparent">#00000000</color>
 
+    <color name="designer_news_story_comment_background">@android:color/transparent</color>
+    <color name="selected_comment_background">#ffffffff</color>
 
 </resources>
