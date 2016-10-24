@@ -208,8 +208,16 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String offset = String.valueOf(mAdapter.getItemCount());
+        String limit = String.valueOf(TIMELINE_LIMIT);
+
+        if (args != null){
+            offset = args.getString(TIMELINE_BUNDLE_OFFSET);
+            limit = args.getString(TIMELINE_BUNDLE_LIMIT);
+        }
+
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
-                String.valueOf(mAdapter.getItemCount()) + ", " + String.valueOf(TIMELINE_LIMIT);
+                offset + ", " + limit;
         String selection;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
@@ -245,8 +253,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         return new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
-    @Override
-    public void onRefresh() {
+    private void RefreshDatabase(int offset, int limit){
         AccountManager am = AccountManager.get(getActivity());
         long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
@@ -256,7 +263,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
         Cursor cursorTimelineId = getActivity().getContentResolver().query(TimelineEntry.CONTENT_URI,
                 new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID,
-                    TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID},
+                        TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID},
                 TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=?",
                 new String[]{String.valueOf(projectId)},
                 null);
@@ -266,32 +273,27 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
-        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, mAdapter.getItemCount());
-        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, limit);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, offset);
         getActivity().startService(timelineSync);
     }
 
-    class StringDateComparator implements Comparator<TimelineModel>
+    @Override
+    public void onRefresh() {
+        RefreshDatabase(0, mAdapter.getItemCount() == 0 ? TIMELINE_LIMIT : mAdapter.getItemCount());
+    }
+
+    private void updateDataBase()
     {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        @Override
-        public int compare(TimelineModel o1, TimelineModel o2) {
-
-            try {
-                return dateFormat.parse(o2._lastUpadte).compareTo(dateFormat.parse(o1._lastUpadte));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
+        RefreshDatabase(mAdapter.getItemCount(), TIMELINE_LIMIT);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst())
+        if (!data.moveToFirst()) {
+            updateDataBase();
             return;
+        }
         List<TimelineModel> models = new ArrayList<>();
         do {
             models.add(new TimelineModel(getActivity(), data));
@@ -316,8 +318,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 mRefresher.setVisibility(View.VISIBLE);
             }
         }
-
-
     }
 
     private class AdditionalDataLoader extends AsyncTask<Collection<TimelineModel>, Void, Collection<TimelineModel>> {
@@ -338,5 +338,20 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         }
     }
 
+    class StringDateComparator implements Comparator<TimelineModel>
+    {
 
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+
+        @Override
+        public int compare(TimelineModel o1, TimelineModel o2) {
+
+            try {
+                return dateFormat.parse(o2._lastUpadte).compareTo(dateFormat.parse(o1._lastUpadte));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            return -1;
+        }
+    }
 }
