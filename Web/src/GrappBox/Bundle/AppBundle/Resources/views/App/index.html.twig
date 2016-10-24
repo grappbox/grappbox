@@ -9,16 +9,29 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Meta -->  
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="content-language" content="en-us">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="GrappBox - The new way to manage projects">
     <meta name="author" content="The GrappBox team">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="keywords" content="project,management,teamwork,team,information technology,collaborative,collaboration,online">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
     <base href="/app/">
     <title>GrappBox</title>
+    <!-- Social -->
+    <meta property="og:title" content="GrappBox"/>
+    <meta property="og:url" content="https://grappbox.com"/>
+    <meta name="og:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">    
+    <meta name="og:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <meta name="twitter:card" content="summary_large_image">    
+    <meta name="twitter:site" content="@GrappBox">
+    <meta name="twitter:title" content="GrappBox">
+    <meta name="twitter:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="twitter:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <!-- Favicons -->    
     <link rel="apple-touch-icon" sizes="57x57" href="../resources/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="../resources/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="../resources/img/favicon/apple-icon-72x72.png">
@@ -35,7 +48,7 @@
     <link rel="manifest" href="../resources/img/favicon/manifest.json">
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="../resources/img/favicon/ms-icon-144x144.png">
-    <meta name="theme-color" content="#ffffff">    
+    <meta name="theme-color" content="#ffffff">
     <!-- Google Fonts -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900">
 
@@ -114,6 +127,12 @@
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
+    {% javascripts
+    '@AppBundle/Resources/public/js/home/analytics.js'
+    filter='?uglifyjs2' output='resources/js/data.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
     <!-- Responsive for IE8 and lower -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -122,117 +141,118 @@
     <![endif]-->
   </head>
 
-  <body id="ng-app" data-ng-app="grappbox">
-    <div class="container-fluid">
-      <div class="row">
-        <div class="container-main" data-ng-controller="grappboxController">
+  <body>
+    <div data-ng-app="grappbox" id="ng-app">
+      <div data-ng-controller="grappboxController">
 
-          <!-- Navigation -->
-          <div class="navbar {[{ app.colors[app.current] + '-background' }]}" sidebar-directive="menu.open">
-            <div class="container-fluid">
-              <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse" data-ng-click="menu.toggle()">
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-                </button>
-                <a href="" class="navbar-brand" data-ng-click="menu.toggle()" data-ng-cloak>{[{ page.onLoad ? 'Loading...' : page.title }]}</a>
-              </div>
-              <div class="navbar-collapse collapse navbar-responsive-collapse">
-                <ul class="nav navbar-nav navbar-right">
-                  <li><a href="notifications" title="See all your notifications"><i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i></a></li>
-                  <li><a href="profile" title="View and edit your profile"><i class="material-icons">{[{ ::app.icons['/profile'] }]}</i></a></li>
-                  <li><a href="logout" title="Sign out of GrappBox"><i class="material-icons">{[{ ::app.icons['/logout'] }]}</i></a></li>
-                </ul>
-              </div>
+        <!-- Navigation -->
+        <div class="navigation {[{ app.colors[app.current] + '-background' }]}" sidebar-directive="sidebar.open">
+          <div class="container-fluid">
+            <div class="navigation-left" data-ng-cloak>
+              <a href="" title="Toggle navigation drawer" class="btn {[{ app.colors[app.current] + '-hover' }]}" data-ng-click="sidebar.toggle()">
+                <i class="material-icons">menu</i></a>
+              <p>{[{ page.onLoad ? 'Loading...' : page.title }]}</p>
             </div>
+            <div class="navigation-right">
+              <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}">
+                <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i></a>
+              <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}">
+                <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i></a>
+              <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ app.colors[app.current] + '-hover' }]}" >
+                <i class="material-icons">{[{ ::app.icons['/logout'] }]}</i></a>
+            </div>
+            <div class="clearfix"></div>
           </div>
+        </div>
 
-          <!-- Navigation drawer -->
-          <aside class="sidebar" role="navigation" sidebar-directive="menu.open">
-            <div class="sidebar-header">
-              <a class="toggle raised visible-xs" href="" data-ng-click="menu.toggle()"><i class="material-icons">arrow_back</i></a>
-              <a href="profile" title="View and edit your profile"><img class="avatar" src="../resources/img/default_avatar.min.png"></a>
-              <p class="ellipsis user"><a href="profile" title="View and edit your profile">{[{ user.firstname }]} {[{ user.lastname }]}</a></p>
-              <div class="clearfix"></div>
-            </div>
-            <div class="sidebar-content">
-              <ul>
-                <li>
-                  <a href="notifications" title="See all your notifications" class="btn {[{ app.routes['/notifications'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i>Notifications</a>
-                </li>              
-                <li>
-                  <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routes['/dashboard'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/dashboard'] }]}</i>Dashboard</a>
-                </li>
-                <li>
-                  <a href="calendar" title="Go to your calendar" class="btn {[{ app.routes['/calendar'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/calendar'] }]}</i>Calendar</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ app.routes['/cloud'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/cloud'] }]}</i>Cloud</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ app.routes['/timeline'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/timeline'] }]}</i>Timeline</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routes['/bugtracker'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/bugtracker'] }]}</i>Bugtracker</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ app.routes['/tasks'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/tasks'] }]}</i>Tasks</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ app.routes['/gantt'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/gantt'] }]}</i>Gantt</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routes['/whiteboard'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/whiteboard'] }]}</i>Whiteboard</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ app.routes['/settings'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/settings'] }]}</i>Project settings</a>
-                </li>
-                <li>
-                  <a href="profile" title="View and edit your profile" class="btn {[{ app.routes['/profile'] ? 'active' : '' }]}">
-                    <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i>Profile</a>
-                </li>
-                <li data-ng-if="project.set">
-                  <a href="" title="Sign out of this project" data-ng-click="project.switch()" class="btn">
-                    <i class="material-icons">arrow_back</i>Change project</a>
-                </li>
-              </ul>
-            </div>
-          </aside>
+        <!-- Navigation drawer -->
+        <aside class="sidebar" sidebar-directive="sidebar.open">
+          <div class="sidebar-header">
+            <a class="toggle {[{ app.colors[app.current] + '-hover' }]}" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
+            <a href="profile" title="View and edit your profile"><img class="avatar" src="../resources/img/default_avatar.min.png"></a>
+            <p class="ellipsis user"><a href="profile" title="View and edit your profile">{[{ user.firstname }]} {[{ user.lastname }]}</a></p>
+            <div class="clearfix"></div>
+          </div>
+          <div class="sidebar-content">
+            <ul>
+              <li data-ng-if="project.set">
+                <a href="" title="Sign out of this project" data-ng-click="project.switch()" class="btn">
+                  <i class="material-icons">arrow_back</i>Change project</a>
+              </li>            
+              <li>
+                <a href="notifications" title="See all your notifications" class="btn visible-xs {[{ app.routes['/notifications'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/notifications'] }]}</i>Notifications</a>
+              </li>
+              <li>
+                <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ app.routes['/dashboard'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/dashboard'] }]}</i>Dashboard</a>
+              </li>
+              <li>
+                <a href="calendar" title="Go to your calendar" class="btn {[{ app.routes['/calendar'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/calendar'] }]}</i>Calendar</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ app.routes['/cloud'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/cloud'] }]}</i>Cloud</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ app.routes['/timeline'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/timeline'] }]}</i>Timeline</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ app.routes['/bugtracker'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/bugtracker'] }]}</i>Bugtracker</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ app.routes['/tasks'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/tasks'] }]}</i>Tasks</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ app.routes['/gantt'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/gantt'] }]}</i>Gantt</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ app.routes['/whiteboard'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/whiteboard'] }]}</i>Whiteboard</a>
+              </li>
+              <li data-ng-if="project.set">
+                <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ app.routes['/settings'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/settings'] }]}</i>Project settings</a>
+              </li>
+              <li>
+                <a href="profile" title="View and edit your profile" class="btn {[{ app.routes['/profile'] ? 'active' : '' }]}">
+                  <i class="material-icons">{[{ ::app.icons['/profile'] }]}</i>Profile</a>
+              </li>
+              <li>
+                <a href="logout" title="Sign out of GrappBox" class="btn visible-xs">
+                  <i class="material-icons">{[{ ::app.icons['/logout'] }]}</i>Log out</a>
+              </li>              
+            </ul>
+          </div>
+        </aside>
 
-          <!-- Page content -->
-          <div class="page-content" sidebar-directive="menu.open">
-            <div class="container">
-              <div class="row">
-                <div class="col-lg-12">
-                  <!-- Dynamic view -->
-                  <div data-ng-if="page.onLoad">
-                    <div class="spinner view">
-                      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-                    </div>
+        <!-- Page content -->
+        <div class="page-content" sidebar-directive="sidebar.open">
+          <div class="container">
+            <div class="row">
+              <div class="col-lg-12">
+                <!-- Dynamic view -->
+                <div data-ng-if="page.onLoad">
+                  <div class="spinner view">
+                    <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                   </div>
-                  <div data-ng-if="!page.onLoad">
-                    <div class="container-content" data-ng-view></div>
-                  </div>
+                </div>
+                <div data-ng-if="!page.onLoad">
+                  <div class="container-content" data-ng-view></div>
                 </div>
               </div>
             </div>
           </div>
-
         </div>
+
       </div>
     </div>
-  </body>
+  </body>  
 </html>
 
 {% endspaceless %}

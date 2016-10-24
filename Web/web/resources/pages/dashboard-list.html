@@ -8,7 +8,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <section class="text-center">
   <p>Choose a project to begin, or create one.</p>
   <a href="settings/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
-  <a href="settings/0" class="btn btn-danger btn-fab btn-fixed" title="Create a new project"><i class="material-icons">add</i></a>
 </section>
 
 <section id="dashboard-list">
@@ -22,7 +21,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
       <div data-ng-if="!view.onLoad">
         <div data-ng-if="view.valid && projects">
-          <div class="each-data col-md-3" data-ng-repeat="project in projects">
+          <div class="each-data col-md-4" data-ng-repeat="project in projects">
             <div class="well">
               <ul>
                 <li class="col-xs-offset-2 avatar" data-ng-if="!project.logo">
@@ -36,8 +35,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <li class="col-xs-offset-2"><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
                 <li class="col-xs-offset-2"><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
               </ul>
-              <a href="" title="Use this project" class="btn btn-default" data-ng-click="method.loadProject(project)">Open</a>
-              <a href="settings/{[{ project.id }]}" title="Edit this project" class="btn">Edit</a>
+              <a href="" title="Use this project" class="btn" data-ng-click="method.loadProject(project)">Open</a>
               <div class="clearfix"></div>
             </div>
           </div>

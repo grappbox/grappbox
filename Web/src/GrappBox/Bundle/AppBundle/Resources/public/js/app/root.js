@@ -20,9 +20,9 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
 
   // ROOTSCOPE variables
   $rootScope.api = { version: "", url: "" };
-  $rootScope.menu = { open: true, toggle: "" };
   $rootScope.page = { onLoad: false, title: "", isHome: false };
   $rootScope.project = { set: false, id: "", name: "", switch : "" };
+  $rootScope.sidebar = { open: true, toggle: "" };
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
 
   $rootScope.api.version = "0.3";
@@ -36,9 +36,9 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
   /* ==================== ROOTSCOPE ROUTINES ==================== */
 
   // ROOTSCOPE routine definition
-  // Toggle menu state
-  $rootScope.menu.toggle = function() {
-    $rootScope.menu.open = !$rootScope.menu.open;
+  // Toggle sidebar state
+  $rootScope.sidebar.toggle = function() {
+    $rootScope.sidebar.open = !$rootScope.sidebar.open;
 	};
 
   // Routine definition

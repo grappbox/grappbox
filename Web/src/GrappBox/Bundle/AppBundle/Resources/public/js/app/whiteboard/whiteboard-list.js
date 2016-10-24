@@ -9,7 +9,8 @@
 * APP whiteboard list
 *
 */
-app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$http", "$uibModal", "Notification", function($rootScope, $scope, $route, $http, $uibModal, Notification) {
+app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$http", "$uibModal", "Notification",
+    function($rootScope, $scope, $route, $http, $uibModal, Notification) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -31,7 +32,7 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
     $scope.view.valid = false;
     $scope.view.onLoad = true;
 
-    $http.get($rootScope.api.url + "/whiteboard/list/" + $rootScope.user.token + "/" + $scope.whiteboards.project_id).then(
+    $http.get($rootScope.api.url + "/whiteboards/" + $scope.whiteboards.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetWhiteboardListSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -123,8 +124,9 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
     var modal_newWhiteboard = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewWhiteboard.html", controller: "modal_createNewWhiteboard" });
     modal_newWhiteboard.result.then(
       function onModalConfirm() {
-        $http.post($rootScope.api.url + "/whiteboard/new",
-          { data: { token: $rootScope.user.token, projectId: $scope.whiteboards.project_id, whiteboardName: $scope.new.name }}).then(
+        $http.post($rootScope.api.url + "/whiteboard",
+          { data: { projectId: $scope.whiteboards.project_id, whiteboardName: $scope.new.name }},
+          { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onPostWhiteboardSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.10.1")
               Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -163,7 +165,7 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
     var modal_deleteWhiteboard = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "modal_deleteWhiteboard.html", controller: "modal_deleteWhiteboard" });
     modal_deleteWhiteboard.result.then(
       function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/whiteboard/delete/" + $rootScope.user.token + "/" + whiteboard_id).then(
+        $http.delete($rootScope.api.url + "/whiteboard/" + whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onDeleteWhiteboardSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.10.1")
               Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });

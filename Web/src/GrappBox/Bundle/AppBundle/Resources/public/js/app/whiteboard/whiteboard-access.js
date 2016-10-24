@@ -13,7 +13,7 @@
 var isWhiteboardAccessible = function($rootScope, $q, $http, $route, $location, Notification) {
   var deferred = $q.defer();
 
-  $http.get($rootScope.api.url + "/whiteboard/list/" + $rootScope.user.token + "/" + $route.current.params.project_id).then(
+  $http.get($rootScope.api.url + "/whiteboards/" + $route.current.params.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
   	function onGetWhiteboardListSuccess(response) {
       if (response.data.info.return_code) {
         switch(response.data.info.return_code) {

@@ -9,15 +9,28 @@
 <!DOCTYPE html>
 <html>
   <head>
+    <!-- Meta -->  
     <meta http-equiv="content-type" content="text/html;charset=UTF-8">
     <meta http-equiv="content-language" content="en-us">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="description" content="GrappBox - The new way to manage projects">
     <meta name="author" content="The GrappBox team">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="keywords" content="project,management,teamwork,team,information technology,collaborative,collaboration,online">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta charset="UTF-8">
     <title>{% block title %}{% endblock %}</title>
+    <!-- Social -->
+    <meta property="og:title" content="GrappBox"/>
+    <meta property="og:url" content="https://grappbox.com"/>
+    <meta name="og:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">    
+    <meta name="og:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <meta name="twitter:card" content="summary_large_image">    
+    <meta name="twitter:site" content="@GrappBox">
+    <meta name="twitter:title" content="GrappBox">
+    <meta name="twitter:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="twitter:image" content="https://static.grappbox.com/public/social_banner.min.jpg">    
+    <!-- Favicons -->
     <link rel="apple-touch-icon" sizes="57x57" href="resources/img/favicon/apple-icon-57x57.png">
     <link rel="apple-touch-icon" sizes="60x60" href="resources/img/favicon/apple-icon-60x60.png">
     <link rel="apple-touch-icon" sizes="72x72" href="resources/img/favicon/apple-icon-72x72.png">
@@ -76,6 +89,12 @@
     '@AppBundle/Resources/public/js/home/user.js'
     '@AppBundle/Resources/public/js/home/secret.js'
     filter='?uglifyjs2' output='resources/js/home.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+
+    {% javascripts
+    '@AppBundle/Resources/public/js/home/analytics.js'
+    filter='?uglifyjs2' output='resources/js/data.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
 
