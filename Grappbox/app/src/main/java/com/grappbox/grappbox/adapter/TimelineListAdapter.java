@@ -43,6 +43,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.MissingResourceException;
+import java.util.Objects;
 
 /**
  * Created by tan_f on 28/09/2016.
@@ -56,7 +57,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView    mRecyclerView;
     private int             mExpandedPosition = -1;
-    private CursorAdapter   mCursorAdapter;
+    private Cursor          mCursor;
 
     public static final int TYPE_TIMELINE_ENTRY = 0;
 
@@ -324,6 +325,20 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void clear(){
         mDataset.clear();
         notifyDataSetChanged();
+    }
+
+    public void setCursor(Cursor newCursor){
+        mCursor = newCursor;
+    }
+
+    public Cursor getCursor(){
+        return mCursor;
+    }
+
+
+    @Override
+    public void setHasStableIds(boolean hasStableIds) {
+        super.setHasStableIds(true);
     }
 
     private static class TimelineHolder extends RecyclerView.ViewHolder {

@@ -32,10 +32,12 @@ import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Transformation;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.TimelineListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
@@ -57,7 +59,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
-
 
 public class TimelineListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
@@ -86,6 +87,20 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
     };
 
+    public static final String[] projectionMessageRow = {
+            TimelineEntry._ID,
+            TimelineEntry.COLUMN_TYPE_ID,
+            TimelineMessageEntry._ID,
+            TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
+            TimelineMessageEntry.COLUMN_TITLE,
+            TimelineMessageEntry.COLUMN_MESSAGE,
+            TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
+            TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
+            TimelineMessageEntry.COLUMN_COUNT_ANSWER,
+            TimelineMessageEntry.COLUMN_PARENT_ID,
+            TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
+    };
+
     private FloatingActionButton mAddMessage;
 
     private int mTimelineTypeId = 0;
@@ -95,6 +110,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView mTimelineList;
     private LinearLayoutManager mLinearLayoutManager;
+    private MatrixCursor mMatrixCursor;
 
     public TimelineListFragment(){
         // Required empty public constructor
@@ -178,7 +194,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
-                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, mAdapter.getItemCount() + 1);
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, mAdapter.getItemCount() + 1);
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
                     }
@@ -192,13 +209,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 builder.show();
             }
         });
+        mMatrixCursor = new MatrixCursor(projectionMessageRow);
         return v;
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        onRefresh();
     }
 
     private void initLoader()
@@ -210,12 +227,11 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String offset = String.valueOf(mAdapter.getItemCount());
         String limit = String.valueOf(TIMELINE_LIMIT);
-
         if (args != null){
             offset = args.getString(TIMELINE_BUNDLE_OFFSET);
             limit = args.getString(TIMELINE_BUNDLE_LIMIT);
         }
-
+        Log.v(LOG_TAG, "OnCreateLoader, offset : " + offset + ", limit : " + limit);
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
                 offset + ", " + limit;
         String selection;
@@ -290,10 +306,31 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (!data.moveToFirst()) {
-            updateDataBase();
+        if (data != null && !data.moveToFirst()) {
+            //updateDataBase();
             return;
         }
+        /*
+        if (mAdapter.getCursor() == null) {
+            mAdapter.setCursor(data);
+            message = data;
+        } else {
+
+            if (mAdapter.getCursor().moveToFirst()) {
+                Log.v(LOG_TAG, "mergeCursor start");
+                ArrayList<Cursor> finals = new ArrayList<>();
+                finals.add(data);
+                finals.add(mAdapter.getCursor());
+                Cursor[] finalArray = finals.toArray(new Cursor[finals.size()]);
+                message = new MergeCursor(finalArray);
+                data = new MergeCursor(finalArray);
+                mAdapter.setCursor(data);
+            }
+        }
+        if (message != null && !message.moveToFirst()) {
+            return;
+        }*/
+
         List<TimelineModel> models = new ArrayList<>();
         do {
             models.add(new TimelineModel(getActivity(), data));
