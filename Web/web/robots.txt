@@ -4,3 +4,5 @@
 User-agent: *
 Disallow: /resources
 Disallow: /bundles
+
+Sitemap: https://grappbox.com/sitemap.xml
