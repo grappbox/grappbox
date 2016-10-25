@@ -709,7 +709,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/ticket/closed/:id Close ticket
+	* @api {delete} /0.3/bugtracker/ticket/close/:id Close ticket
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Close a ticket, to delete a comment see [deleteComment](/#api-Bugtracker-deleteComment) request
