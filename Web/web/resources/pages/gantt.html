@@ -3,8 +3,10 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<section id="gantt">
 
+<h1>Gantt</h1>
+
+<section id="gantt">
   <div data-ng-if="data.onLoad">
     <div class="spinner section">
       <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
@@ -12,80 +14,46 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
   <div data-ng-if="!data.onLoad">
     <div data-ng-if="data.message == '_valid'">
-
       <div class="panel panel-default">
-        <div class="panel-heading">
-          <h4 class="panel-title">
-            Options
-          </h4>
-        </div>
         <div class="panel-body">
-          <div class="container-fluid">
-            <div class="row">
-              <div class="col-md-6 centered">
-                <div class="form-group centered">
-                  <h4>Date range</h4>
-                  <div class="col-md-6">
-                    <label class="control-label">From</label>
-                    <input type="date" class="form-control" data-ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
-                  </div>
-                  <div class="col-md-6">
-                    <label class="control-label">To</label>
-                    <input type="date" class="form-control" data-ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 centered">
-                <div class="form-group centered">
-                  <h4>Labels</h4>
-                  <div class="radio-primary">
-                    <label>
-                      <input type="radio" name="labelsOptions" data-ng-model="options.labelsEnabled" data-ng-value="false">
-                      Hidden
-                    </label>
-                  </div>
-                  <div class="radio-primary">
-                    <label>
-                      <input type="radio" name="labelsOptions" data-ng-model="options.labelsEnabled" data-ng-value="true">
-                      Visible
-                    </label>
-                  </div>
-                </div>
-              </div>
+          <form class="form" novalidate>
+            <div class="form-group col-md-2">
+              <label class="control-label">From</label>
+              <input type="date" class="form-control" data-ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
             </div>
-            <div class="row">
-              <div class="col-md-6 centered">
-                <div class="form-group centered">
-                  <h4>View scale</h4>
-                  <div class="radio-primary">
-                    <label>
-                      <input type="radio" name="viewOptions" data-ng-model="options.width" data-ng-value="false">
-                      Project overview
-                    </label>
-                  </div>
-                  <div class="radio-primary">
-                    <label>
-                      <input type="radio" name="viewOptions" data-ng-model="options.width" data-ng-value="true">
-                      Precise view
-                    </label>
-                  </div>
-                </div>
-              </div>
-              <div class="col-md-6 centered">
-                <div class="form-group centered">
-                  <h4>Containers</h4>
-                  <a class="btn btn-raised" data-ng-click="expandAll()">Expand all</a>
-                  <a class="btn btn-raised" data-ng-click="collapseAll()">Collapse all</a>
-                  <a class="btn btn-raised" data-ng-click="reload()">Reload all</a>
-                  <!-- <button class="btn btn-default btn-raised" data-ng-click="reload()">Refresh data</button> -->
-                </div>
-              </div>
+            <div class="form-group col-md-2">
+              <label class="control-label">to</label>
+              <input type="date" class="form-control" data-ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
             </div>
-          </div>
+            <div class="form-group col-md-2">
+              <label class="control-label">Labels</label>
+              <select class="form-control" data-ng-model="options.labelsEnabled"
+                      ng-options="opt.value as opt.name for opt in [{ name: 'Hidden', value: false }, { name: 'Visible', value: true }]">
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label class="control-label">View scale</label>
+              <select class="form-control" data-ng-model="options.width"
+                      ng-options="opt.value as opt.name for opt in [{ name: 'Project overview', value: false }, { name: 'Precise view', value: true }]">
+              </select>
+            </div>
+            <div class="form-group col-md-2">
+              <label class="control-label">Containers</label>
+              <select class="form-control">
+                  <option value="" ng-click="expandAll()">Expand all</option>
+                  <option value="" ng-click="collapseAll()">Collapse all</option>
+              </select>
+            </div>
+            <!-- <div class="form-group col-md-2 col-sm-9">
+              <a class="btn btn-default btn-sm" data-ng-click="expandAll()">Expand containers</a>
+              <a class="btn btn-default btn-sm" data-ng-click="collapseAll()">Collapse containers</a>
+            </div> -->
+            <div class="form-group col-md-2 centered">
+              <a class="btn btn-default btn-fab btn-fab-mini btn-info" data-ng-click="reload()"alt="refresh data"><i class="material-icons">refresh</i></a>
+            </div>
+          </form>
         </div>
       </div>
-
-      <!-- <textarea name="name" rows="8" cols="40">{[{data.gantt}]}</textarea> -->
 
       <div class="well">
         <div gantt
@@ -125,10 +93,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- <gantt-bounds></gantt-bounds> -->
             <gantt-progress></gantt-progress>
             <gantt-movable enabled="!options.readOnly"></gantt-movable>
-            <gantt-draw-task
+            <!-- <gantt-draw-task
                 enabled="options.canDraw"
                 move-threshold="2"
-                task-factory="options.drawTaskFactory">
+                task-factory="options.drawTaskFactory"> -->
             </gantt-draw-task>
             <!-- <gantt-overlap global="true"></gantt-overlap> -->
             <gantt-resize-sensor></gantt-resize-sensor>
@@ -237,7 +205,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </select>
               </div>
               <div class="col-md-1">
-                <a href="" class="btn btn-default" data-ng-click="addResource(new_user, user_percent)">Add</a>
+                <a href="" class="btn btn-default btn-fab btn-fab-mini" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons">add</i></a>
               </div>
             </div>
             <div class="form-group resource-row col-md-12" data-ng-repeat="user in data.edit.users" id="{[{'resource-'+$index}]}">
@@ -251,8 +219,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </select>
                 </div>
                 <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default" data-ng-click="removeResource(user)" ng-if="!user.old">Remove</a>
-                  <a href="" class="btn btn-default" data-ng-click="recoverResource(user)" ng-if="user.old">Recover</a>
+                  <a href="" class="btn btn-default btn-sm" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></a>
+                  <a href="" class="btn btn-default btn-sm" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></a>
                 </div>
             </div>
           </div>
@@ -270,7 +238,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </select>
               </div>
               <div class="col-md-1">
-                <a href="" class="btn btn-default" data-ng-click="addDependency(new_dependency, dependency_type)">Add</a>
+                <a href="" class="btn btn-default btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
               </div>
             </div>
             <div class="form-group dependency-row" data-ng-repeat="dependency in data.edit.dependencies">
@@ -283,8 +251,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </select>
               </div>
               <div class="col-md-1 col-xs-6">
-                <a href="" class="btn btn-default" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old">Remove</a>
-                <a href="" class="btn btn-default" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old">Recover</a>
+                <a href="" class="btn btn-default btn-sm" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old"><i class="material-icons">delete</i></a>
+                <a href="" class="btn btn-default btn-sm" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old"><i class="material-icons">refresh</i></a>
               </div>
             </div>
           </div>

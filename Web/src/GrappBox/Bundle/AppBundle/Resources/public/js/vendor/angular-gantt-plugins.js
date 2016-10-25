@@ -2346,13 +2346,13 @@ Github: https://github.com/angular-gantt/angular-gantt.git
                 this.element = element;
 
                 this.mouseExitHandler = function() {
-                    $timeout.cancel(self.hideEndpointsPromise);
-                    self.hideEndpointsPromise = $timeout(self.hideEndpoints, 1000, false);
+                    // $timeout.cancel(self.hideEndpointsPromise);
+                    // self.hideEndpointsPromise = $timeout(self.hideEndpoints, 1000, false);
                 };
 
                 this.mouseEnterHandler = function() {
-                    $timeout.cancel(self.hideEndpointsPromise);
-                    self.displayEndpoints();
+                    // $timeout.cancel(self.hideEndpointsPromise);
+                    // self.displayEndpoints();
                 };
 
                 this.install = function() {
@@ -2401,7 +2401,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
 
                     self.elementHandlers = [];
 
-                    self.displayEndpoints();
+                    //self.displayEndpoints();
                     self.installed = false;
                 }
             };
@@ -2412,7 +2412,7 @@ Github: https://github.com/angular-gantt/angular-gantt.git
             this.displayEndpoints = function() {
                 self.display = true;
                 angular.forEach(self.task.dependencies.endpoints, function(endpoint) {
-                    endpoint.setVisible(true, true, true);
+                    //endpoint.setVisible(true, true, true);
                 });
             };
 

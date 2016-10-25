@@ -1,3 +1,4 @@
+e:
 /*
 * This file is subject to the terms and conditions defined in
 * file "LICENSE.txt", which is part of the GRAPPBOX source code package.
@@ -257,12 +258,12 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
   var updateTask = function(eventName, task) {
     var elem = {"id": task.model.id,
-                "started_at": $filter('date')(new Date(task.model.from), "yyyy-MM-dd H:mm:ss", "GMT"),
-                "due_date": $filter('date')(new Date(task.model.to), "yyyy-MM-dd H:mm:ss", "GMT"),
+                "started_at": moment(task.model.from).format("YYYY-MM-DD HH:mm:ss"),
+                "due_date": moment(task.model.to).format("YYYY-MM-DD HH:mm:ss")
                 };
 
     var data = {"data": elem};
-    console.log(data);
+    //console.log(data);
 
     $http.put($rootScope.api.url + "/task/" + task.model.id, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
@@ -473,9 +474,11 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
     angular.forEach(row.dependencies, function(value, key) {
       value.old = false;
+      value.oldName = value.name;
     });
     angular.forEach(row.users, function(value, key) {
       value.old = false;
+      value.oldPercent = value.percent;
     });
 
     // SET MODAL DATA
@@ -494,7 +497,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
                         updateRes: []
                       };
 
-    // FORMAT TASKS FOR DPENDENCIES MANIPULATION
+    // FORMAT TASKS FOR DEPENDENCIES MANIPULATION
     $scope.tasksList = $scope.data.tasks;
     angular.forEach($scope.tasksList, function(task){
       task["name"] = task.title;
@@ -510,15 +513,11 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         return ;
       }
 
-      var dep = JSON.parse(dep);
-      console.info(dep);
-
-      $scope.data.edit.dependencies.push({"name": type, "title": dep.title});
-      $scope.data.edit.newDep.push({"id": dep.task[0].id, "name": type});
+      $scope.data.edit.dependencies.push({"name": type, "task": {"title": dep.title}});
+      $scope.data.edit.newDep.push({"id": dep.id, "name": type});
     };
 
     $scope.updateDependency = function(dep) {
-
       for (var i = 0; i < $scope.data.edit.newDep.length; i++) {
         if ($scope.data.edit.newDep[i].id == dep.id) {
           $scope.data.edit.newDep[i].name = dep.name;
@@ -528,7 +527,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
       var index = -1;
       for (var i = 0; i < $scope.data.edit.dependencies.length && index < 0; i++) {
-        if ($scope.data.edit.dependencies[i].task.id == dep.task[0].id)
+        if ($scope.data.edit.dependencies[i].task.id == dep.task.id)
           index = i;
       }
       if (index < 0) {
@@ -536,14 +535,14 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         return;
       }
 
-      $scope.data.edit.updateDep.push({"id": dep.task[0].id, "oldName": $scope.data.edit.dependencies[index].name, "newName": dep.name})
+      $scope.data.edit.updateDep.push({"id": dep.task.id, "oldName": $scope.data.edit.dependencies[index].oldName, "newName": dep.name})
     };
 
     $scope.removeDependency = function(dep) {
 
       var index = -1;
       for (var i = 0; i < $scope.data.edit.newDep.length && index < 0; i++) {
-        if ($scope.data.edit.newDep[i].id == dep.task[0].id)
+        if ($scope.data.edit.newDep[i].id == dep.task.id)
           index = i;
       }
       if (index >= 0)
@@ -551,12 +550,12 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
 
       var index = -1;
       for (var i = 0; i < $scope.data.edit.updateDep.length && index < 0; i++) {
-        if ($scope.data.edit.updateDep[i].id == dep.task[0].id)
+        if ($scope.data.edit.updateDep[i].id == dep.task.id)
           index = i;
       }
       if (index >= 0) {
         $scope.data.edit.updateDep.splice(index, 1);
-        $scope.data.edit.oldDep.push(dep.id);
+        $scope.data.edit.oldDep.push(dep.task.id);
       }
 
       var index = -1;
@@ -571,13 +570,15 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       $('#dependency-'+index).addClass('old');
       $('#select-dependency-'+index).addClass('old');
       $scope.data.edit.dependencies[index].old = true;
-      $scope.data.edit.oldDep.push(dep.id);
+      $scope.data.edit.oldDep.push(dep.task.id);
+      console.info(dep);
+      console.info($scope.data.edit.oldDep);
     };
 
     $scope.recoverDependency = function(dep) {
       var index = -1;
       for (var i = 0; i < $scope.data.edit.oldDep.length && index < 0; i++) {
-        if ($scope.data.edit.oldDep[i] == dep.task[0].id)
+        if ($scope.data.edit.oldDep[i] == dep.task.id)
           index = i;
       }
       if (index >= 0)
@@ -595,6 +596,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       $('#dependency-'+index).removeClass('old');
       $('#select-dependency-'+index).removeClass('old');
       $scope.data.edit.dependencies[index].old = false;
+      $scope.data.edit.dependencies[index].name = $scope.data.edit.dependencies[index].oldName;
     }
 
     //------------------RESOURCES ASSIGNATION---------------------//
@@ -607,12 +609,12 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       }
 
       var user = JSON.parse(user);
-      console.info("heelo");
-      console.info(user);
 
       $scope.data.edit.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
-      console.info($scope.data.edit.users);
       $scope.data.edit.newRes.push({"id": user.id, "percent": workcharge});
+      console.info('------Add res------');
+      console.info($scope.data.edit.users);
+      console.info($scope.data.edit.newRes);
     };
 
     $scope.updateResource = function(user) {
@@ -693,6 +695,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       $('#resource-'+index).removeClass('old');
       //$('#select-resource-'+index).removeClass('old');
       $scope.data.edit.users[index].old = false;
+      $scope.data.edit.users[index].percent = $scope.data.edit.users[index].oldPercent;
     }
 
     // MODAL ERROR GESTION

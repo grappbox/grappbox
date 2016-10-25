@@ -25,7 +25,7 @@ var app = angular.module("grappbox", [
   'gantt',
   //'gantt.sortable',
   'gantt.movable',
-  'gantt.drawtask',
+  //'gantt.drawtask',
   'gantt.tooltips',
   //'gantt.bounds',
   'gantt.progress',
@@ -119,7 +119,7 @@ app.controller("grappboxController", ["$rootScope", "$scope", "localStorageServi
       "/tasks": "view_list",
       "/gantt": "sort",
       "/logout": "exit_to_app"
-    },     
+    },
     routes: {
       "/notifications": false,
       "/dashboard": false,

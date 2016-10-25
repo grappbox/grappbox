@@ -53,7 +53,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                              {key: "ff", name: "finish to finish"},
                              {key: "ss", name: "start to start"}];
 
-
   // Get the task informations
   var getTask = function() {
     //Get task informations if not new
