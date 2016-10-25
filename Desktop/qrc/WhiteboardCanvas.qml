@@ -34,6 +34,8 @@ Item {
             width: 4096
             height: 4096
 
+            renderTarget: Canvas.FramebufferObject
+
             property int currentMode: -1
 
             property var context
@@ -134,29 +136,6 @@ Item {
                 context.clearRect(0, 0, width, height);
                 context.fillStyle = "#FFFFFF";
                 context.fillRect(0, 0, width, height);
-                switch (currentMode)
-                {
-                case 1:
-                    drawHand(tabHandWrite, tick, colorBorder);
-                    break;
-                case 2:
-                    drawLine(startX, startY, endX, endY, tick, colorBorder, colorFill);
-                    break;
-                case 3:
-                    drawRect(startX, startY, endX, endY, tick, colorBorder, colorFill);
-                    break;
-                case 4:
-                    drawCircle(startX, startY, endX, endY, tick, colorBorder, colorFill);
-                    break;
-                case 5:
-                    drawDiamond(startX, startY, endX, endY, tick, colorBorder, colorFill);
-                    break;
-                case 6:
-                    break;
-                case 7:
-                    drawText(endX, endY, text, colorBorder, sizeText, bold, italic);
-                    break;
-                }
                 for (var i = 0; i < objectsAdded.length; ++i) {
                     var obj = objectsAdded[i];
                     switch (obj.type)
@@ -182,6 +161,29 @@ Item {
                         drawText(obj.end.x, obj.end.y, obj.text, obj.borderCol, obj.sizeText, obj.boldM, obj.italicM);
                         break;
                     }
+                }
+                switch (currentMode)
+                {
+                case 1:
+                    drawHand(tabHandWrite, tick, colorBorder);
+                    break;
+                case 2:
+                    drawLine(startX, startY, endX, endY, tick, colorBorder, colorFill);
+                    break;
+                case 3:
+                    drawRect(startX, startY, endX, endY, tick, colorBorder, colorFill);
+                    break;
+                case 4:
+                    drawCircle(startX, startY, endX, endY, tick, colorBorder, colorFill);
+                    break;
+                case 5:
+                    drawDiamond(startX, startY, endX, endY, tick, colorBorder, colorFill);
+                    break;
+                case 6:
+                    break;
+                case 7:
+                    drawText(endX, endY, text, colorBorder, sizeText, bold, italic);
+                    break;
                 }
             }
 

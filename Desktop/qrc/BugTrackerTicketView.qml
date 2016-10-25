@@ -106,11 +106,48 @@ Column {
             placeholderText: "Tag name"
         }
 
+        Item {
+            visible: addANewTag.checked || bugModel.tags.length === ticket.tags.length
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: bugModel.tags.length > ticket.tags.length ? Units.dp(32) : Units.dp(0)
+            height: choicer.visible ? choicer.height : colorChoicer.height
+
+            Rectangle {
+                id: colorChoicer
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+                width: Units.dp(32)
+                height: Units.dp(32)
+                radius: width / 2
+
+                color: "#9E58DC"
+
+                MouseArea {
+                    anchors.fill: parent
+
+                    onClicked: {
+                        choicer.visible = true
+                    }
+                }
+            }
+
+            TagColorChoicer {
+                id: choicer
+                anchors.left: colorChoicer.left
+                anchors.verticalCenter: colorChoicer.verticalCenter
+
+                onChooseColor: {
+                    colorChoicer.color = color
+                }
+            }
+        }
+
         onRejected: tag.text = ""
 
         onAccepted: {
             if (tag.visible)
-                bugModel.createAndAddTagsToTicket(ticket.id, tag.text)
+                bugModel.createAndAddTagsToTicket(ticket.id, tag.text, colorChoicer.color)
             else
                 bugModel.addTagsToTicket(ticket.id, chooseTag.completeModel[chooseTag.selectedIndex].id)
             tag.text = ""
@@ -300,6 +337,7 @@ Column {
                         text: ""
                         visible: text !== ""
                         elevation: 1
+                        textColor: "#FFF"
 
                         onClicked: {
                             for (var item in bugModel.tags)
@@ -321,6 +359,16 @@ Column {
                                     if (bugModel.tags[item].id === modelData)
                                     {
                                         return bugModel.tags[item].name
+                                    }
+                                }
+                                return ""
+                            })
+                            backgroundColor = Qt.binding(function() {
+                                for (var item in bugModel.tags)
+                                {
+                                    if (bugModel.tags[item].id === modelData)
+                                    {
+                                        return bugModel.tags[item].color
                                     }
                                 }
                                 return ""
@@ -445,6 +493,7 @@ Column {
                         else if (ticket.isClosed)
                         {
                             bugModel.reopenTicket(ticket.id)
+                            back()
                         }
                         else
                         {

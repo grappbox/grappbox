@@ -1,6 +1,7 @@
 #include "LoginController.h"
 #include <QDebug>
 #include <QDateTime>
+#include <QHostInfo>
 #include "API/SDataManager.h"
 
 LoginController::LoginController(QWidget *parent)
@@ -19,6 +20,10 @@ void LoginController::login(QString name, QString password)
         SET_CALL_OBJECT(this);
         ADD_FIELD("login", name);
         ADD_FIELD("password", password);
+        ADD_FIELD("mac", getMacAdress());
+        ADD_FIELD("flag", "desk");
+        ADD_FIELD("device_name", QHostInfo::localHostName());
+        GENERATE_JSON_DEBUG;
         POST(API::DP_USER_DATA, API::PR_LOGIN);
     }
     END_REQUEST;
@@ -28,7 +33,7 @@ void LoginController::logout()
 {
     BEGIN_REQUEST_ADV(this, "OnLogoutSuccess", "OnLogoutFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         GET(API::DP_USER_DATA, API::GR_LOGOUT);
     }
     END_REQUEST;
@@ -57,7 +62,7 @@ void LoginController::OnLoginSuccess(int id, QByteArray response)
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnUserInfoDone");
         SET_ON_FAIL("OnUserInfoFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idUser);
         GET(API::DP_USER_DATA, API::GR_USER_DATA);
     }
@@ -115,6 +120,16 @@ void LoginController::OnLogoutFail(int id, QByteArray response)
 	Q_UNUSED(id)
 	Q_UNUSED(response)
 
+}
+
+QString LoginController::getMacAdress() const
+{
+    for (QNetworkInterface interface : QNetworkInterface::allInterfaces())
+    {
+        if (!(interface.flags() & QNetworkInterface::IsLoopBack))
+            return interface.hardwareAddress();
+    }
+    return QString();
 }
 
 bool LoginController::isLoged()

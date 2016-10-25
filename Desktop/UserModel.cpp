@@ -13,7 +13,7 @@ void UserModel::getUserModel()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("onGetUserDone");
         SET_ON_FAIL("onGetUserFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(API::SDataManager::GetDataManager()->user()->id());
         GET(API::DP_USER_DATA, API::GR_USER_DATA);
     }
@@ -29,7 +29,7 @@ void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPas
         SET_CALL_OBJECT(this);
         SET_ON_DONE("onSetUserDone");
         SET_ON_FAIL("onSetUserFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("firstname", user->firstName());
         ADD_FIELD("lastname", user->lastName());
         ADD_FIELD("birthday", user->birthday().toString("yyyy-MM-dd"));
@@ -71,7 +71,7 @@ void UserModel::onGetUserDone(int id, QByteArray data)
     user->setLastName(obj["lastname"].toString());
     user->setBirthday(JSON_TO_DATE(obj["birthday"].toString()));
     qDebug() << user->birthday();
-    user->setMail(obj["mail"].toString());
+    user->setMail(obj["email"].toString());
     user->setPhone(obj["phone"].toString());
     user->setCountry(obj["country"].toString());
     user->setLinkedin(obj["linkedin"].toString());

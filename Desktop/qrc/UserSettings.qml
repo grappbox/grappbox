@@ -11,13 +11,15 @@ Item {
     property UserData user
     property var mouseCursor
 
+    property bool isLoaded: false
+
     function finishedLoad()
     {
-
+        userModel.getUserModel()
     }
 
     Component.onCompleted: {
-        user = SDataManager.user
+
     }
 
     FileDialog {
@@ -59,8 +61,19 @@ Item {
         }
 
         onUserChangedSuccess: {
-            userSettingsForm.parent.info("User correctly modified.")
-            userSettingsForm.parent.returnPage()
+            if (!isLoaded)
+            {
+                user = SDataManager.user
+                dayText.text = (dateRow.birthdayDate.getDate()).toString()
+                monthText.text = (dateRow.birthdayDate.getMonth()).toString()
+                yearText.text = (dateRow.birthdayDate.getFullYear()).toString()
+                isLoaded = true
+            }
+            else
+            {
+                userSettingsForm.parent.info("User correctly modified.")
+                userSettingsForm.parent.returnPage()
+            }
         }
     }
 
@@ -161,9 +174,11 @@ Item {
                         property date birthdayDate: isNaN(user.birthday.getTime()) ? new Date(1970, 0, 1) : user.birthday
 
                         function updateDate() {
+                            if (!user)
+                                return
                             if (dayText.hasError || monthText.hasError || yearText.hasError || dayText.text == "" || monthText.text == "" || yearText.text == "")
                                 return
-                            user.birthday = new Date(parseInt(yearText.text), parseInt(monthText.text) - 1, parseInt(dayText.text))
+                            user.birthday = new Date(parseInt(yearText.text), parseInt(monthText.text), parseInt(dayText.text))
                             console.log(user.birthday)
                             console.log(parseInt(yearText.text))
                             console.log(parseInt(monthText.text))
@@ -171,9 +186,6 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            dayText.text = (dateRow.birthdayDate.getDate()).toString()
-                            monthText.text = (dateRow.birthdayDate.getMonth()).toString()
-                            yearText.text = (dateRow.birthdayDate.getFullYear()).toString()
                         }
 
                         TextField {
@@ -296,9 +308,10 @@ Item {
                         width: parent.width
                         placeholderText: "Email"
                         floatingLabel: true
-                        enabled: false
+                        enabled: true
                         text: user.mail
                         onTextChanged: {
+                            console.log(user.mail, " : ", text)
                             user.mail = text
                         }
                     }
@@ -437,7 +450,6 @@ Item {
                         }
 
                         Component.onCompleted: {
-                            user.id.connect(idChanged)
                         }
                     }
 

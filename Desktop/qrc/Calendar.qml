@@ -19,24 +19,22 @@ Item {
     property var daySelected: new Date()
 
     onCurrentDateChanged: {
-        monthText.text = Qt.formatDate(currentDate, "MMMM yyyy")
+        monthText.text = Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
+        console.log("CURRENT DATE CHANGED : ", calendarItem.currentDate)
     }
 
     function finishedLoad() {
-        console.log(currentDate)
-        calendarModel.goToMonth(currentDate)
+        console.log(calendarItem.currentDate)
+        calendarModel.goToMonth(calendarItem.currentDate)
     }
 
     Component.onCompleted: {
         daySelected = new Date(daySelected.getFullYear(), daySelected.getMonth(), daySelected.getDate())
-        currentDate = new Date()
-        currentDate.setDate(1)
-        console.log(currentDate)
-        firstMondayDate = Qt.binding(function() {
-            var ret = new Date(currentDate.valueOf())
-            ret.setDate(ret.getDate() - ret.getDay())
-            return ret
-        })
+        calendarItem.currentDate = new Date()
+        calendarItem.currentDate.setDate(1)
+        console.log("COMPLETE ! ", calendarItem.currentDate)
+        firstMondayDate = new Date(calendarItem.currentDate.getFullYear(), calendarItem.currentDate.getMonth(), calendarItem.currentDate.getDate())
+        firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
     }
 
     CalendarModel {
@@ -83,9 +81,14 @@ Item {
                     anchors.right: parent.right
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
-                    text: Qt.formatDate(currentDate, "MMMM yyyy")
+                    text: Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
                     font.bold: true
                     style: "title"
+
+                    function onDateChange() {
+                        console.log("Date ?")
+                        text = Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
+                    }
                 }
 
                 Separator {}
@@ -113,13 +116,16 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         textColor: "#44BBFF"
                         onClicked: {
-                            currentDate.setMonth(currentDate.getMonth() + 1)
-                            firstMondayDate = Qt.binding(function() {
-                                var ret = new Date(currentDate.valueOf())
-                                ret.setDate(ret.getDate() - ret.getDay())
-                                return ret
-                            })
-                            calendarModel.goToMonth(currentDate)
+                            console.log("BEFORE C ", calendarItem.currentDate)
+                            if (calendarItem.currentDate.getMonth() == 12)
+                                calendarItem.currentDate = new Date(calendarItem.currentDate.getFullYear() + 1, 1, 1)
+                            else
+                                calendarItem.currentDate = new Date(calendarItem.currentDate.getFullYear(), calendarItem.currentDate.getMonth() + 1, 1)
+                            console.log("AFTER C ", calendarItem.currentDate)
+                            monthText.text = Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
+                            firstMondayDate = new Date(calendarItem.currentDate.getFullYear(), calendarItem.currentDate.getMonth(), calendarItem.currentDate.getDate())
+                            firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
+                            calendarModel.goToMonth(calendarItem.currentDate)
                         }
                     }
 
@@ -132,15 +138,13 @@ Item {
                         anchors.verticalCenter: parent.verticalCenter
                         textColor: "#44BBFF"
                         onClicked: {
-                            console.log("DATE BEFORE : ", currentDate)
-                            currentDate.setMonth(currentDate.getMonth() - 1)
-                            console.log("DATE AFTER : ", currentDate)
-                            firstMondayDate = Qt.binding(function() {
-                                var ret = new Date(currentDate.valueOf())
-                                ret.setDate(ret.getDate() - ret.getDay())
-                                return ret
-                            })
-                            calendarModel.goToMonth(currentDate)
+                            console.log("BEFORE C ", calendarItem.currentDate)
+                            calendarItem.currentDate.setMonth(calendarItem.currentDate.getMonth() - 1)
+                            console.log("AFTER C ", calendarItem.currentDate)
+                            monthText.text = Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
+                            firstMondayDate = new Date(calendarItem.currentDate.getFullYear(), calendarItem.currentDate.getMonth(), calendarItem.currentDate.getDate())
+                            firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
+                            calendarModel.goToMonth(calendarItem.currentDate)
                         }
                     }
                 }
@@ -185,16 +189,9 @@ Item {
 
                 Repeater {
                     id: caseCalendar
-                    model: [0]
+                    model: [0, 7, 14, 21, 28, 35]
 
                     Component.onCompleted: {
-                        model = Qt.binding(function() {
-                            var endMonthDate = currentDate
-                            endMonthDate.setDate(0)
-                            endMonthDate.setMonth(endMonthDate.getMonth() + 1)
-                            var numberOfDays = Math.round(Math.abs(endMonthDate.getTime() - firstMondayDate.getTime()) / (86400000))
-                            return numberOfDays >= 35 ? [0, 7, 14, 21, 28, 35] : [0, 7, 14, 21, 28]
-                        })
                     }
 
                     delegate: Row {
@@ -214,12 +211,16 @@ Item {
                                 width: parent.width / 7
                                 isSelected: dateInfo === daySelected
 
-                                Component.onCompleted: {
+                                function updateInfo() {
                                     dateInfo = new Date(firstMondayDate.valueOf())
                                     dateInfo.setDate(dateInfo.getDate() + rowWeek.dayOffset + modelData)
                                     numberOfDay = dateInfo.getDate()
-                                    isToday = dateInfo.getDate() === todayDate.getDate()
-                                    isWeekEnd = modelData == 0 || modelData == 1
+                                    isToday = dateInfo.getDate() === todayDate.getDate() && dateInfo.getMonth() === todayDate.getMonth() && dateInfo.getFullYear() === todayDate.getFullYear()
+                                    isWeekEnd = modelData == 0 || modelData == 6
+                                }
+
+                                Component.onCompleted: {
+                                    updateInfo()
                                     calendarModel.eventDayChanged.connect(updateNumbers)
                                 }
 
@@ -232,7 +233,9 @@ Item {
                                 function updateNumbers()
                                 {
                                     numberOfEvent = calendarModel.getEventDayCount(new Date(dateInfo.getFullYear(), dateInfo.getMonth(), dateInfo.getDate()));
-                                    console.log(numberOfEvent)
+                                    if (numberOfEvent > 0)
+                                        console.log("Event found : ", numberOfEvent)
+                                    updateInfo();
                                 }
 
                                 mouseCursor: calendarItem.mouseCursor
@@ -241,14 +244,6 @@ Item {
                     }
                 }
             }
-        }
-
-        CalendarEventView {
-            id: eventView
-            anchors.top: parent.top
-            anchors.topMargin: Units.dp(32)
-            anchors.horizontalCenter: parent.horizontalCenter
-            calendarModel: calendarModel
         }
 
     }
@@ -265,6 +260,14 @@ Item {
             eventView.visible = true
             calendarModel.getEventInfo(taskdata.id)
         }
+    }
+
+    CalendarEventView {
+        id: eventView
+        anchors.top: parent.top
+        anchors.topMargin: Units.dp(32)
+        anchors.horizontalCenter: parent.horizontalCenter
+        calendarModel: calendarModel
     }
 
 

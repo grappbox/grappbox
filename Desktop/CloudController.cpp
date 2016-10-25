@@ -134,7 +134,7 @@ void CloudController::loadDirectory()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLSSuccess");
         SET_ON_FAIL("OnLSFailed");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         ADD_URL_FIELD(QString(_Path).replace("/", ","));
         if (_Path.startsWith("/Safe"))
@@ -154,7 +154,7 @@ void CloudController::createDirectory(QString dirName)
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnCreateSuccess");
         SET_ON_FAIL("OnCreateFailed");
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("project_id", PROJECT);
         ADD_FIELD("path", _Path);
         ADD_FIELD("dir_name", dirName);
@@ -260,7 +260,7 @@ void CloudController::sendFiles(QList<QUrl> files)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnOpenStreamSuccess");
             SET_ON_FAIL("OnOpenStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             if (_Path.startsWith("/Safe"))
                 ADD_URL_FIELD(_PasswordSafe);
@@ -315,7 +315,7 @@ void CloudController::sendFile(QUrl file, QString password)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnOpenStreamSuccess");
             SET_ON_FAIL("OnOpenStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             if (_Path.startsWith("/Safe"))
                 ADD_URL_FIELD(_PasswordSafe);
@@ -344,7 +344,7 @@ void CloudController::SendChunckFile()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnSendChunkSuccess");
         SET_ON_FAIL("OnSendChunkFailed");
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("project_id", PROJECT);
         ADD_FIELD("stream_id", _CurrentUploadID);
         ADD_FIELD("current_chunk", _ChunckNumber);
@@ -363,7 +363,7 @@ void CloudController::deleteFile(QString file, QString password)
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnDeleteItemSuccess");
         SET_ON_FAIL("OnDeleteItemFailed");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         ADD_URL_FIELD(url.toString().replace("/", ","));
         if (password != "")
@@ -388,7 +388,7 @@ void CloudController::downloadFile(QString file, QString password)
         SET_ON_DONE("OnGetDownloadSuccess");
         SET_ON_FAIL("OnGetDownloadFailed");
         ADD_URL_FIELD(url.toString().replace("/", ","));
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         if (password != "")
             ADD_URL_FIELD(password);
@@ -518,7 +518,7 @@ void CloudController::OnSendChunkSuccess(int id, QByteArray array)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnCloseStreamSuccess");
             SET_ON_FAIL("OnCloseStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             ADD_URL_FIELD(_CurrentUploadID);
             DELETE_REQ(API::DP_CLOUD, API::DR_CLOSE_STREAM);
@@ -558,7 +558,7 @@ void CloudController::OnSendChunkFailed(int id, QByteArray array)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnOpenStreamSuccess");
             SET_ON_FAIL("OnOpenStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             ADD_FIELD("path", _Path);
             ADD_FIELD("filename", _CurrentTransit->url().fileName());
@@ -611,7 +611,7 @@ void CloudController::OnOpenStreamFailed(int id, QByteArray array)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnOpenStreamSuccess");
             SET_ON_FAIL("OnOpenStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             ADD_FIELD("path", _Path);
             ADD_FIELD("filename", _CurrentTransit->url().fileName());
@@ -654,7 +654,7 @@ void CloudController::OnCloseStreamSuccess(int id, QByteArray array)
             SET_CALL_OBJECT(this);
             SET_ON_DONE("OnOpenStreamSuccess");
             SET_ON_FAIL("OnOpenStreamFailed");
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(PROJECT);
             ADD_FIELD("path", _Path);
             ADD_FIELD("filename", _CurrentTransit->url().fileName());

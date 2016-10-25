@@ -227,6 +227,10 @@ Column {
                     text: Qt.formatDateTime(modelData.createDate, "yyyy-MM-dd hh:mm");
                     style: "body1"
                     wrapMode: Text.Wrap
+
+                    Component.onCompleted: {
+                        console.log(modelData.createDate)
+                    }
                 }
             }
 

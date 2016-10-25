@@ -15,7 +15,7 @@ void DashboardModel::loadProjectList()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLoadProjectListDone");
         SET_ON_FAIL("OnLoadProjectListFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         GET(API::DP_PROJECT, API::GR_LIST_PROJECT);
     }
     END_REQUEST;
@@ -30,7 +30,7 @@ void DashboardModel::loadUserProjectList()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLoadUserListDone");
         SET_ON_FAIL("OnLoadUserListFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_PROJECT, API::GR_TEAM_OCCUPATION);
     }
@@ -46,7 +46,7 @@ void DashboardModel::loadNewEventList()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLoadEventListDone");
         SET_ON_FAIL("OnLoadEventListFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_PROJECT, API::GR_NEXT_MEETING);
     }
@@ -69,7 +69,7 @@ void DashboardModel::addANewProject(ProjectData *project, QString securedPasswor
     BEGIN_REQUEST_ADV(this, "OnCreateProjectDone", "OnCreateProjectFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("name", project->name());
         ADD_FIELD("description", project->description());
         ADD_FIELD("phone", project->phone());
@@ -111,11 +111,11 @@ void DashboardModel::OnLoadProjectListDone(int id, QByteArray data)
         }
         if (add)
             data = new ProjectData();
-        data->setId(project["project_id"].toInt());
-        data->setName(project["project_name"].toString());
-        data->setDescription(project["project_description"].toString());
-        data->setPhone(project["project_phone"].toString());
-        data->setCompany(project["project_company"].toString());
+        data->setId(project["id"].toInt());
+        data->setName(project["name"].toString());
+        data->setDescription(project["description"].toString());
+        data->setPhone(project["phone"].toString());
+        data->setCompany(project["company"].toString());
         // Logo Here
         data->setMail(project["contact_mail"].toString());
         data->setFacebook(project["facebook"].toString());

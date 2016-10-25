@@ -127,6 +127,8 @@ View {
             id: editTitle
             text: viewTitle.text
             visible: onAdd || onEdit
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
 
         Item {
@@ -145,6 +147,7 @@ View {
             id: editProjectChoice
             model: []
             visible: onAdd || onEdit
+            width: Units.dp(200)
 
             Component.onCompleted: {
                 var projects = []
@@ -173,7 +176,9 @@ View {
             id: editDescription
             text: viewDescription.text
             visible: onAdd || onEdit
-
+            height: Units.dp(86)
+            anchors.left: parent.left
+            anchors.right: parent.right
         }
 
         Item {
@@ -182,7 +187,7 @@ View {
         }
 
         Label {
-            text: (!visible || onAdd) ? "From 09/22/2016 12h20 to 09/22/2016 12h40" : "From " + Qt.formatDateTime(eventData.beginDate, "yyyy-MM-dd hh:mm") + " to " + Qt.formatDateTime(eventData.beginDate, "yyyy-MM-dd hh:mm")
+            text: (!visible || onAdd) ? "From 09/22/2016 12h20 to 09/22/2016 12h40" : "From " + Qt.formatDateTime(eventData.beginDate, "yyyy-MM-dd hh:mm") + " to " + Qt.formatDateTime(eventData.endDate, "yyyy-MM-dd hh:mm")
 
             visible: !onAdd && !onEdit
         }

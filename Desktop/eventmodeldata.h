@@ -43,21 +43,19 @@ public:
             m_creator = new UserData();
         }
         m_creator->setId(obj["creator"].toObject()["id"].toInt());
-        m_creator->setFirstName(obj["creator"].toObject()["fullname"].toString());
-        m_creator->setLastName(obj["creator"].toObject()["fullname"].toString());
+        m_creator->setFirstName(obj["creator"].toObject()["firstname"].toString());
+        m_creator->setLastName(obj["creator"].toObject()["lastname"].toString());
         m_title = obj["title"].toString();
         m_description = obj["description"].toString();
-        m_beginDate = JSON_TO_DATETIME(obj["beginDate"].toObject()["date"].toString());
-        m_endDate = JSON_TO_DATETIME(obj["endDate"].toObject()["date"].toString());
-        m_createdAt = JSON_TO_DATETIME(obj["createdAt"].toObject()["date"].toString());
-        m_editedAt = JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString());
+        m_beginDate = JSON_TO_DATETIME(obj["beginDate"].toString());
+        m_endDate = JSON_TO_DATETIME(obj["endDate"].toString());
+        m_createdAt = JSON_TO_DATETIME(obj["createdAt"].toString());
+        m_editedAt = JSON_TO_DATETIME(obj["editedAt"].toString());
         if (obj.contains("users"))
         {
-            qDebug() << "Contain user";
             for (QJsonValueRef ref : obj["users"].toArray())
             {
                 QJsonObject objUser = ref.toObject();
-                qDebug() << "New user " << objUser["id"].toInt();
                 UserData *newUser = nullptr;
                 bool add = true;
                 for (UserData *itemU : m_users)
@@ -72,8 +70,8 @@ public:
                 if (add)
                     newUser = new UserData();
                 newUser->setId(objUser["id"].toInt());
-                newUser->setFirstName(objUser["name"].toString());
-                newUser->setLastName(objUser["name"].toString());
+                newUser->setFirstName(objUser["firstname"].toString());
+                newUser->setLastName(objUser["lastname"].toString());
                 if (add)
                     m_users.push_back(newUser);
             }

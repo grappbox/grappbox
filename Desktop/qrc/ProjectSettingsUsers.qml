@@ -167,6 +167,7 @@ Column {
 
                     function hasRoleChanged(idRole) {
                         var i = 0
+                        console.log("Role changed");
                         for (var item in projectSettingsModel.roles)
                         {
                             if (projectSettingsModel.roles[item].id === modelData.roleId)

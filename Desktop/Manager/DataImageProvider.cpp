@@ -36,7 +36,7 @@ void DataImageProvider::callAPI(QString id, QDateTime time)
     _Pixmap[id] = dataImg;
     BEGIN_REQUEST_ADV(this, isProject ? "onLogoProjectDone" : "onAvatarUserDone", isProject ? "onLogoProjectFail" : "onAvatarUserFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id.split("#")[1]);
         int idReq;
         if (isProject)
@@ -221,7 +221,7 @@ void DataImageProvider::onAvatarUserFail(int id, QByteArray data)
 {
     Q_UNUSED(id)
     Q_UNUSED(data)
-    SInfoManager::GetManager()->error("Project", "Unable to retrieve user logo.");
+    //SInfoManager::GetManager()->error("Project", "Unable to retrieve user logo.");
 }
 
 void DataImageProvider::onLogoProjectDone(int id, QByteArray data)
@@ -271,5 +271,5 @@ void DataImageProvider::onLogoProjectFail(int id, QByteArray data)
 {
     Q_UNUSED(id)
     Q_UNUSED(data)
-    SInfoManager::GetManager()->error("Project", "Unable to retrieve project logo.");
+    //SInfoManager::GetManager()->error("Project", "Unable to retrieve project logo.");
 }

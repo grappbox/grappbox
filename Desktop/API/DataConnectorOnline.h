@@ -18,7 +18,7 @@
 #ifdef BETA
 #   define URL_API QString("http://beta.api.grappbox.com/app_dev.php/V0.2/")
 #else
-#   define URL_API QString("https://api.grappbox.com/V0.2/")
+#   define URL_API QString("https://api.grappbox.com/0.3/")
 #endif
 
 namespace API

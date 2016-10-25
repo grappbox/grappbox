@@ -12,38 +12,44 @@ void CalendarModel::goToMonth(QDate month)
     setEventMonthLoading(true);
     setEventDayLoading(true);
     month.setDate(month.year(), month.month(), 1);
-    qDebug() << "get for month : " << month;
+    m_currentMonth.setDate(month.year(), month.month(), 1);
+    qDebug() << "get for month : " << m_currentMonth;
     BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(month.toString("yyyy-MM-dd"));
         GET(API::DP_CALENDAR, API::GR_CALENDAR);
     }
     END_REQUEST;
-    month.setDate(month.year(), month.month() - 1, 1);
+    if (month.month() > 1)
+        month.setDate(month.year(), month.month() - 1, 1);
+    else
+        month.setDate(month.year() - 1, 12, 1);
     BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(month.toString("yyyy-MM-dd"));
         GET(API::DP_CALENDAR, API::GR_CALENDAR);
     }
     END_REQUEST;
-    month.setDate(month.year(), month.month() + 2, 1);
+    if (month.month() <= 10)
+        month.setDate(month.year(), month.month() + 2, 1);
+    else
+        month.setDate(month.year() + 1, 1, 1);
     BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(month.toString("yyyy-MM-dd"));
         GET(API::DP_CALENDAR, API::GR_CALENDAR);
     }
     END_REQUEST;
-    m_currentMonth = month;
 }
 
 void CalendarModel::getEventInfo(int id)
 {
     BEGIN_REQUEST_ADV(this, "onGetEventDone", "onGetEventFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id);
         GET(API::DP_CALENDAR, API::GR_EVENT);
     }
@@ -54,14 +60,12 @@ void CalendarModel::addEvent(QString title, QString message, int projectId, QDat
 {
     BEGIN_REQUEST_ADV(this, "onAddEventDone", "onAddEventFail");
     {
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", projectId);
         ADD_FIELD("title", title);
         ADD_FIELD("description", message);
         ADD_FIELD("begin", begin.toString("yyyy-MM-dd hh:mm:ss"));
         ADD_FIELD("end", end.toString("yyyy-MM-dd hh:mm:ss"));
-        ADD_FIELD("icon", "");
-        ADD_FIELD("typeId", 1);
         QList<int> idToAdd;
         for (QVariant var : users)
         {
@@ -82,15 +86,13 @@ void CalendarModel::editEvent(int eventId, QString title, QString message, int p
 {
     BEGIN_REQUEST_ADV(this, "onEditEventDone", "onEditEventFail");
     {
-        ADD_FIELD("eventId", eventId);
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_URL_FIELD(eventId);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", projectId);
         ADD_FIELD("title", title);
         ADD_FIELD("description", message);
         ADD_FIELD("begin", begin.toString("yyyy-MM-dd hh:mm:ss"));
         ADD_FIELD("end", end.toString("yyyy-MM-dd hh:mm:ss"));
-        ADD_FIELD("icon", "");
-        ADD_FIELD("typeId", 1);
         ADD_ARRAY("toAddUsers");
         ADD_ARRAY("toRemoveUsers");
         m_usersForEvents[PUT(API::DP_CALENDAR, API::PUTR_EDIT_EVENT)] = users;
@@ -103,7 +105,7 @@ void CalendarModel::removeEvent(EventModelData *event)
 {
     BEGIN_REQUEST_ADV(this, "onRemoveEventDone", "onRemoveEventFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(event->id());
         m_eventsToRemove[DELETE_REQ(API::DP_CALENDAR, API::DR_REMOVE_EVENT)] = event;
     }
@@ -147,8 +149,8 @@ void CalendarModel::updateUser(EventModelData *event, QVariantList users, bool i
     }
     BEGIN_REQUEST_ADV(this, "onSetParticipantDone", "onSetParticipantFail");
     {
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("eventId", event->id());
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(event->id());
         ADD_ARRAY("toAdd");
         ADD_ARRAY("toRemove");
         for (int item : idToAdd)
@@ -170,7 +172,8 @@ void CalendarModel::onLoadingEventDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1")
+    if (info["return_code"].toString() != "1.5.1" &&
+            info["return_code"].toString() != "1.5.3")
     {
         onLoadingEventFail(id, array);
         return;
@@ -179,10 +182,12 @@ void CalendarModel::onLoadingEventDone(int id, QByteArray array)
     {
         QJsonObject event = ref.toObject();
         EventModelData *eventModel = nullptr;
+        qDebug() << "Event #" << event["id"].toInt();
         for (EventModelData *item : m_eventsLoaded.values())
         {
             if (item->id() == event["id"].toInt())
             {
+                qDebug() << "Founded !";
                 eventModel = item;
                 break;
             }
@@ -191,6 +196,7 @@ void CalendarModel::onLoadingEventDone(int id, QByteArray array)
         {
             eventModel = new EventModelData(event);
             QDate date = eventModel->beginDate().date();
+            qDebug() << "New event ! at " << date << " : " << CONVERT_TO_DATE_ID(date);
             m_eventsLoaded.insert(CONVERT_TO_DATE_ID(date), eventModel);
         }
         else
@@ -249,23 +255,35 @@ void CalendarModel::onEditEventDone(int id, QByteArray array)
         onLoadingEventFail(id, array);
         return;
     }
-    QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toObject()["date"].toString());
-    QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.find(CONVERT_TO_DATE_ID(t.date()));
+    QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toString());
+    QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.begin();
+    EventModelData *data;
     for (; it != m_eventsLoaded.end(); ++it)
     {
         if (it.value()->id() == obj["id"].toInt())
         {
-            it.value()->modifyByJsonObject(obj);
+            data = it.value();
+            data->modifyByJsonObject(obj);
+            m_eventsLoaded.remove(it.key(), it.value());
+            break;
         }
     }
+    m_eventsLoaded.insert(CONVERT_TO_DATE_ID(t.date()), data);
     m_usersForEvents.remove(id);
     SInfoManager::GetManager()->emitInfo("Event modified");
     emit eventDayChanged(eventDay());
+    BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_currentMonth.toString("yyyy-MM-dd"));
+        GET(API::DP_CALENDAR, API::GR_CALENDAR);
+    }
+    END_REQUEST;
 }
 
 void CalendarModel::onEditEventFail(int id, QByteArray array)
 {
-
+    SInfoManager::GetManager()->emitError("Calendar", "Unable to edit this event.");
 }
 
 void CalendarModel::onAddEventDone(int id, QByteArray array)
@@ -280,7 +298,7 @@ void CalendarModel::onAddEventDone(int id, QByteArray array)
         onLoadingEventFail(id, array);
         return;
     }
-    QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toObject()["date"].toString());
+    QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toString());
     EventModelData *item = new EventModelData(obj);
     m_eventsLoaded.insert(CONVERT_TO_DATE_ID(t.date()), item);
     loadEventDay(m_currentDay);
@@ -288,10 +306,18 @@ void CalendarModel::onAddEventDone(int id, QByteArray array)
     m_usersForEvents.remove(id);
     emit eventDayChanged(eventDay());
     SInfoManager::GetManager()->emitInfo("Event added");
+    BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_currentMonth.toString("yyyy-MM-dd"));
+        GET(API::DP_CALENDAR, API::GR_CALENDAR);
+    }
+    END_REQUEST;
 }
 
 void CalendarModel::onAddEventFail(int id, QByteArray array)
 {
+    SInfoManager::GetManager()->emitError("Calendar", "Unable to add this event.");
 }
 
 void CalendarModel::onRemoveEventDone(int id, QByteArray array)
@@ -302,11 +328,18 @@ void CalendarModel::onRemoveEventDone(int id, QByteArray array)
     m_eventsToRemove.remove(id);
     emit eventDayChanged(eventDay());
     SInfoManager::GetManager()->emitInfo("Event deleted");
+    BEGIN_REQUEST_ADV(this, "onLoadingEventDone", "onLoadingEventFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_currentMonth.toString("yyyy-MM-dd"));
+        GET(API::DP_CALENDAR, API::GR_CALENDAR);
+    }
+    END_REQUEST;
 }
 
 void CalendarModel::onRemoveEventFail(int id, QByteArray array)
 {
-
+    SInfoManager::GetManager()->emitError("Calendar", "Unable to remove this event.");
 }
 
 void CalendarModel::onSetParticipantDone(int id, QByteArray array)
@@ -327,6 +360,6 @@ void CalendarModel::onSetParticipantDone(int id, QByteArray array)
 
 void CalendarModel::onSetParticipantFail(int id, QByteArray array)
 {
-
+    SInfoManager::GetManager()->emitError("Calendar", "Unable to set participent to this event.");
 }
 

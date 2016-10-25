@@ -1,6 +1,7 @@
 <RCC>
     <qresource prefix="/Logo">
         <file>Title.png</file>
+        <file>icons/logo-thick.png</file>
     </qresource>
     <qresource prefix="/icons">
         <file>icons/facebook-box.svg</file>

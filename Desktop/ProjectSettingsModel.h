@@ -5,7 +5,7 @@
 #include "API/SDataManager.h"
 #include "ProjectData.h"
 
-#define ROLE_API_ARRAY {"team_timeline", "customer_timeline", "gantt", "whiteboard", "bugtracker", "event", "task", "project_settings", "cloud"}
+#define ROLE_API_ARRAY {"teamTimeline", "customerTimeline", "gantt", "whiteboard", "bugtracker", "event", "task", "projectSettings", "cloud"}
 #define ROLE_API_ARRAY_ADD {"teamTimeline", "customerTimeline", "gantt", "whiteboard", "bugtracker", "event", "task", "projectSettings", "cloud"}
 
 class RolesData : public QObject
@@ -29,7 +29,7 @@ public:
 
     void modifyByJsonObject(QJsonObject obj)
     {
-        m_id = obj["id"].toInt();
+        m_id = obj["roleId"].toInt();
         m_name = obj["name"].toString();
         QVariantList roles;
         QString rolesStr[] = ROLE_API_ARRAY;

@@ -42,13 +42,13 @@ void TimelineModel::OnTimelineLoadDone(int id, QByteArray data)
         if (userData == nullptr)
             userData = new UserData();
         userData->setId(item["creator"].toObject()["id"].toInt());
-        userData->setFirstName(item["creator"].toObject()["fullname"].toString());
-        userData->setLastName("");
+        userData->setFirstName(item["creator"].toObject()["firstname"].toString());
+        userData->setLastName(item["creator"].toObject()["lastname"].toString());
         message->setAssociatedUser(userData);
         if (item["editedAt"].isNull())
-            message->setLastEdit(JSON_TO_DATETIME(item["createdAt"].toObject()["date"].toString()));
+            message->setLastEdit(JSON_TO_DATETIME(item["createdAt"].toString()));
         else
-            message->setLastEdit(JSON_TO_DATETIME(item["editedAt"].toObject()["date"].toString()));
+            message->setLastEdit(JSON_TO_DATETIME(item["editedAt"].toString()));
         if (hasToAdd)
         {
             if (isClient)
@@ -122,19 +122,19 @@ void TimelineModel::OnTimelineCommentLoadDone(int id, QByteArray data)
             message = new TimelineMessageData();
         message->setId(item["id"].toInt());
         message->setIsComment(false);
-        message->setMessage(item["message"].toString());
-        message->setTitle(item["title"].toString());
+        message->setMessage(item["comment"].toString());
+        message->setTitle("");
         UserData *userData = message->associatedUser();
         if (userData == nullptr)
             userData = new UserData();
         userData->setId(item["creator"].toObject()["id"].toInt());
-        userData->setFirstName(item["creator"].toObject()["fullname"].toString());
-        userData->setLastName("");
+        userData->setFirstName(item["creator"].toObject()["firstname"].toString());
+        userData->setLastName(item["creator"].toObject()["lastname"].toString());
         message->setAssociatedUser(userData);
         if (item["editedAt"].isNull())
-            message->setLastEdit(JSON_TO_DATETIME(item["createdAt"].toObject()["date"].toString()));
+            message->setLastEdit(JSON_TO_DATETIME(item["createdAt"].toString()));
         else
-            message->setLastEdit(JSON_TO_DATETIME(item["editedAt"].toObject()["date"].toString()));
+            message->setLastEdit(JSON_TO_DATETIME(item["editedAt"].toString()));
         if (hasToAdd)
         {
             currentList.push_back(message);
@@ -165,21 +165,21 @@ void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
 
     message->setId(obj["id"].toInt());
     message->setIsComment(!obj["parentId"].isNull());
-    message->setMessage(obj["message"].toString());
-    message->setTitle(obj["title"].toString());
+    message->setMessage(obj[obj["parentId"].isNull() ? "message" : "comment"].toString());
+    message->setTitle(obj[obj["parentId"].isNull() ? "title" : ""].toString());
 
     UserData *userData = message->associatedUser();
     if (userData == nullptr)
         userData = new UserData();
     userData->setId(obj["creator"].toObject()["id"].toInt());
-    userData->setFirstName(obj["creator"].toObject()["fullname"].toString());
-    userData->setLastName("");
+    userData->setFirstName(obj["creator"].toObject()["firstname"].toString());
+    userData->setLastName(obj["creator"].toObject()["lastname"].toString());
     message->setAssociatedUser(userData);
 
     if (obj["editedAt"].isNull())
-        message->setLastEdit(JSON_TO_DATETIME(obj["createdAt"].toObject()["date"].toString()));
+        message->setLastEdit(JSON_TO_DATETIME(obj["createdAt"].toString()));
     else
-        message->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString()));
+        message->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toString()));
 
     if (obj["parentId"].isNull())
     {
@@ -197,7 +197,8 @@ void TimelineModel::OnTimelineAddMessageDone(int id, QByteArray data)
     else
     {
         TimelineMessageData *realMess = nullptr;
-        int parentId = QVariant(obj["parentId"].toString()).toInt();
+        qDebug() << obj["parentId"].toString();
+        int parentId = obj["parentId"].toInt();
         for (TimelineMessageData *itemD : m_timelineClient)
         {
             if (itemD->id() == parentId)
@@ -311,7 +312,7 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     int editId = obj["id"].toInt();
-    if (m_editComment.contains(id))
+    if (obj.contains("parentId") && m_editComment.contains(id))
     {
         int idParent = m_editComment[id];
         TimelineMessageData *realMess = nullptr;
@@ -339,8 +340,8 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
             {
                 qDebug() << "Edit done";
                 item->setTitle(obj["title"].toString());
-                item->setMessage(obj["message"].toString());
-                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString()));
+                item->setMessage(obj["comment"].toString());
+                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toString()));
                 break;
             }
         }
@@ -355,7 +356,7 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
                 qDebug() << "Edit done";
                 item->setTitle(obj["title"].toString());
                 item->setMessage(obj["message"].toString());
-                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString()));
+                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toString()));
                 emit timelineClientChanged(timelineClient());
                 return;
             }
@@ -366,7 +367,7 @@ void TimelineModel::OnTimelineEditMessageDone(int id, QByteArray data)
             {
                 item->setTitle(obj["title"].toString());
                 item->setMessage(obj["message"].toString());
-                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString()));
+                item->setLastEdit(JSON_TO_DATETIME(obj["editedAt"].toString()));
                 emit timelineTeamChanged(timelineTeam());
                 return;
             }
@@ -421,10 +422,8 @@ void TimelineModel::loadNextTimelineContent(bool isClient)
     m_numberLoading++;
     BEGIN_REQUEST_ADV(this, "OnTimelineLoadDone", "OnTimelineLoadFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(isClient ? m_idTimelineClient : m_idTimelineTeam);
-        //ADD_URL_FIELD(isClient ? m_timelineClient.size() : m_timelineTeam.size());
-        //ADD_URL_FIELD(15);
         GET(API::DP_TIMELINE, API::GR_TIMELINE);
     }
     END_REQUEST;
@@ -434,7 +433,7 @@ void TimelineModel::loadComments(bool isClient, int id)
 {
     BEGIN_REQUEST_ADV(this, "OnTimelineCommentLoadDone", "OnTimelineCommentLoadFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(isClient ? m_idTimelineClient : m_idTimelineTeam);
         ADD_URL_FIELD(id);
         m_loadComment[GET(API::DP_TIMELINE, API::GR_COMMENT_TIMELINE)] = id;
@@ -448,7 +447,7 @@ void TimelineModel::addMessageTimeline(bool isClient, QString title, QString mes
     BEGIN_REQUEST_ADV(this, "OnTimelineAddMessageDone", "OnTimelineAddMessageFail");
     {
         ADD_URL_FIELD(isClient ? m_idTimelineClient : m_idTimelineTeam);
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("title", title);
         ADD_FIELD("message", message);
         POST(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE);
@@ -471,11 +470,10 @@ void TimelineModel::addMessageTimeline(int idParent, QString message)
     BEGIN_REQUEST_ADV(this, "OnTimelineAddMessageDone", "OnTimelineAddMessageFail");
     {
         ADD_URL_FIELD(isClient ? m_idTimelineClient : m_idTimelineTeam);
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("title", "");
-        ADD_FIELD("message", message);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_FIELD("comment", message);
         ADD_FIELD("commentedId", idParent);
-        POST(API::DP_TIMELINE, API::PR_MESSAGE_TIMELINE);
+        POST(API::DP_TIMELINE, API::PR_COMMENT_TIMELINE);
         GENERATE_JSON_DEBUG;
     }
     END_REQUEST;
@@ -504,13 +502,18 @@ void TimelineModel::deleteMessageTimeline(int id, int parentId)
         }
     BEGIN_REQUEST_ADV(this, "OnTimelineRemoveMessageDone", "OnTimelineRemoveMessageFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
-        ADD_URL_FIELD(timelineId);
-        ADD_URL_FIELD(id);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         if (parentId != -1)
-            m_deleteComment[DELETE_REQ(API::DP_TIMELINE, API::DR_ARCHIVE_MESSAGE_TIMELINE)] = parentId;
+        {
+            ADD_URL_FIELD(id);
+            m_deleteComment[DELETE_REQ(API::DP_TIMELINE, API::DR_ARCHIVE_COMMENT_TIMELINE)] = parentId;
+        }
         else
+        {
+            ADD_URL_FIELD(timelineId);
+            ADD_URL_FIELD(id);
             DELETE_REQ(API::DP_TIMELINE, API::DR_ARCHIVE_MESSAGE_TIMELINE);
+        }
     }
     END_REQUEST;
 }
@@ -538,14 +541,20 @@ void TimelineModel::editMessageTimeline(int parentId, int id, QString title, QSt
     BEGIN_REQUEST_ADV(this, "OnTimelineEditMessageDone", "OnTimelineEditMessageFail");
     {
         ADD_URL_FIELD(timelineId);
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("messageId", id);
-        ADD_FIELD("title", title);
-        ADD_FIELD("message", message);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         if (parentId != -1)
-            m_editComment[PUT(API::DP_TIMELINE, API::PUTR_EDIT_MESSAGE_TIMELINE)] = parentId;
+        {
+            ADD_FIELD("commentId", id);
+            ADD_FIELD("comment", message);
+            m_editComment[PUT(API::DP_TIMELINE, API::PUTR_EDIT_COMMENT_TIMELINE)] = parentId;
+        }
         else
+        {
+            ADD_URL_FIELD(id);
+            ADD_FIELD("title", title);
+            ADD_FIELD("message", message);
             PUT(API::DP_TIMELINE, API::PUTR_EDIT_MESSAGE_TIMELINE);
+        }
     }
     END_REQUEST;
 }
@@ -555,7 +564,7 @@ void TimelineModel::loadTimelines()
     setIsLoadingTimeline(true);
     BEGIN_REQUEST_ADV(this, "OnGetTimelineDone", "OnGetTimelineFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_TIMELINE, API::GR_LIST_TIMELINE);
     }
@@ -567,7 +576,7 @@ void TimelineModel::addTicket(QString title, QString message)
     BEGIN_REQUEST_ADV(this, "OnAddTicketDone", "OnAddTicketFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("title", title);
         ADD_FIELD("description", message);

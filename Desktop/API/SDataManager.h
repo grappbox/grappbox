@@ -33,6 +33,7 @@
 #define ADD_URL_FIELD(value) __data[QString("urlfield#") + QVariant(__currentIndex).toString()] = value; __currentIndex++
 #define ADD_OBJECT(name) __data[name] = QMap<QString, QVariant>()
 #define ADD_ARRAY(name) __data[name] = QList<QVariant>()
+#define ADD_HEADER_FIELD(name, value) __data[QString("__HEADER__;;") + name] = value
 #define POST(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_POST, part, request, __data, __callObj, __onDone, __onFail)
 #define PUT(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_PUT, part, request, __data, __callObj, __onDone, __onFail)
 #define GET(part, request) API::SDataManager::GetCurrentDataConnector()->Request(API::RT_GET, part, request, __data, __callObj, __onDone, __onFail)
@@ -42,7 +43,7 @@
 #define GENERATE_JSON_DEBUG API::SDataManager::GenerateFileDebug(__data)
 #define SHOW_JSON(param) API::SDataManager::GenerateFileDebug(param)
 
-#define JSON_TO_DATETIME(date) QDateTime::fromString(date, "yyyy-MM-dd HH:mm:ss.zzzz")
+#define JSON_TO_DATETIME(date) QDateTime::fromString(date, "yyyy-MM-dd HH:mm:ss")
 #define JSON_TO_DATE(datep) QDate::fromString(datep, "yyyy-MM-dd")
 
 namespace API
@@ -56,6 +57,8 @@ namespace API
         Q_PROPERTY(ProjectData *project READ project WRITE setProject NOTIFY projectChanged)
         Q_PROPERTY(QVariantList projectList READ projectList WRITE setProjectList NOTIFY projectListChanged)
         Q_PROPERTY(bool hasProject READ hasProject NOTIFY hasProjectChanged)
+        Q_PROPERTY(QString token READ token WRITE setToken NOTIFY tokenChanged)
+
 
     public:
         static IDataConnector      *GetCurrentDataConnector();
@@ -70,7 +73,7 @@ namespace API
                 SET_CALL_OBJECT(this);
                 SET_ON_DONE("UpdateProjectDone");
                 SET_ON_FAIL("UpdateProjectFail");
-                ADD_URL_FIELD(USER_TOKEN);
+                ADD_HEADER_FIELD("Authorization", USER_TOKEN);
                 ADD_URL_FIELD(PROJECT);
                 GET(API::DP_PROJECT, API::GR_PROJECT);
             }
@@ -80,7 +83,7 @@ namespace API
                 SET_CALL_OBJECT(this);
                 SET_ON_DONE("UpdateProjectUserDone");
                 SET_ON_FAIL("UpdateProjectUserFail");
-                ADD_URL_FIELD(USER_TOKEN);
+                ADD_HEADER_FIELD("Authorization", USER_TOKEN);
                 ADD_URL_FIELD(PROJECT);
                 GET(API::DP_PROJECT, API::GR_PROJECT_USERS);
             }
@@ -89,12 +92,15 @@ namespace API
 
         Q_INVOKABLE void          updateProjectList()
         {
+            qDebug() << "Update project list";
             for (QVariant varItem : m_projectList)
             {
                 ProjectData *item = qobject_cast<ProjectData*>(varItem.value<ProjectData*>());
+
+                qDebug() << "Project list #" << item->id();
                 BEGIN_REQUEST_ADV(this, "UpdateProjectsUserDone", "UpdateProjectsUserFail");
                 {
-                    ADD_URL_FIELD(USER_TOKEN);
+                    ADD_HEADER_FIELD("Authorization", USER_TOKEN);
                     ADD_URL_FIELD(item->id());
                     m_projectUpdate[GET(API::DP_PROJECT, API::GR_PROJECTS_USER)] = item;
                 }
@@ -142,6 +148,11 @@ namespace API
             return _CurrentProject != -1;
         }
 
+        QString token() const
+        {
+            return m_token;
+        }
+
     public slots:
         void setUser(UserData *user)
         {
@@ -174,6 +185,15 @@ namespace API
             emit projectListChanged(projectList);
         }
 
+        void setToken(QString token)
+        {
+            if (m_token == token)
+                return;
+
+            m_token = token;
+            emit tokenChanged(token);
+        }
+
         void UpdateProjectDone(int id, QByteArray data)
         {
             Q_UNUSED(id)
@@ -195,6 +215,7 @@ namespace API
         {
             Q_UNUSED(id)
             Q_UNUSED(data)
+            SInfoManager::GetManager()->error("Core error", "Unable to retreive project.");
         }
 
         void UpdateProjectUserDone(int id, QByteArray data)
@@ -204,14 +225,16 @@ namespace API
             doc = QJsonDocument::fromJson(data);
             QJsonObject obj = doc.object()["data"].toObject();
             QVariantList list;
+            qDebug() << "Project user ";
+            SHOW_JSON(data);
             for (QJsonValueRef ref : obj["array"].toArray())
             {
                 QJsonObject item = ref.toObject();
                 UserData *data = new UserData();
-                data->setId(item["id"].toInt());
-                data->setFirstName(item["firstname"].toString());
-                data->setLastName(item["lastname"].toString());
-                qDebug() << item["firstname"].toString();
+                data->setId(item["user"].toObject()["id"].toInt());
+                data->setFirstName(item["user"].toObject()["firstname"].toString());
+                data->setLastName(item["user"].toObject()["lastname"].toString());
+                qDebug() << "Project user " << data->firstName() << " " << data->lastName();
                 list.push_back(qVariantFromValue(data));
             }
             m_project->setUsers(list);
@@ -222,6 +245,7 @@ namespace API
         {
             Q_UNUSED(id)
             Q_UNUSED(data)
+            SInfoManager::GetManager()->error("Core error", "Unable to retreive users.");
         }
 
         void UpdateProjectsUserDone(int id, QByteArray data)
@@ -269,6 +293,8 @@ namespace API
 
         void hasProjectChanged(bool hasProject);
 
+        void tokenChanged(QString token);
+
     private:
         SDataManager();
         ~SDataManager();
@@ -282,6 +308,7 @@ namespace API
         QString             _Token;
         QImage              *_Avatar;
         int                 _CurrentProject;
+        QString             m_token;
 
         UserData *m_user;
         ProjectData *m_project;

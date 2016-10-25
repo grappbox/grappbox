@@ -10,21 +10,21 @@ void ProjectSettingsModel::loadInformation()
 {
     BEGIN_REQUEST_ADV(this, "onLoadProjectInfoDone", "onLoadProjectInfoFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECT);
     }
     END_REQUEST;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECT_ROLE);
     }
     END_REQUEST;
     BEGIN_REQUEST_ADV(this, "onLoadCustomerAccessDone", "onLoadCustomerAccessFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_CUSTOMER_ACCESSES);
     }
@@ -38,7 +38,7 @@ void ProjectSettingsModel::modifyInformation(QString title, QString description,
     BEGIN_REQUEST_ADV(this, "onModifyInformationDone", "onModifyInformationFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", title);
         ADD_FIELD("description", description);
@@ -60,7 +60,7 @@ void ProjectSettingsModel::addUser(QString users)
     BEGIN_REQUEST_ADV(this, "onAddUserDone", "onAddUserFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("id", m_idProject);
         ADD_FIELD("email", users);
         POST(API::DP_PROJECT, API::PR_ADD_USER_PROJECT);
@@ -73,7 +73,7 @@ void ProjectSettingsModel::deleteUser(int idUser)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onDeleteUserDone", "onDeleteUserFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         ADD_URL_FIELD(idUser);
         DELETE_REQ(API::DP_PROJECT, API::DR_PROJECT_USER);
@@ -89,7 +89,7 @@ void ProjectSettingsModel::changeRoleUser(int idUser, int idRole, int oldIdRole)
         BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
         {
             EPURE_WARNING_INDEX
-            ADD_FIELD("token", USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_FIELD("userId", idUser);
             ADD_FIELD("roleId", idRole);
             POST(API::DP_PROJECT, API::PR_ROLE_ASSIGN);
@@ -101,9 +101,9 @@ void ProjectSettingsModel::changeRoleUser(int idUser, int idRole, int oldIdRole)
         BEGIN_REQUEST_ADV(this, "onChangeRoleUserDone", "onChangeRoleUserFail");
         {
             EPURE_WARNING_INDEX
-            ADD_FIELD("token", USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+            ADD_URL_FIELD(idUser);
             ADD_FIELD("projectId", m_idProject);
-            ADD_FIELD("userId", idUser);
             ADD_FIELD("old_roleId", oldIdRole);
             ADD_FIELD("roleId", idRole);
             PUT(API::DP_PROJECT, API::PUTR_ROLE_USER);
@@ -117,7 +117,7 @@ void ProjectSettingsModel::addCustomerAccess(QString name)
     BEGIN_REQUEST_ADV(this, "onAddCustomerAccessDone", "onAddCustomerAccessFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", name);
         POST(API::DP_PROJECT, API::PR_CUSTOMER_GENERATE_ACCESS);
@@ -129,7 +129,7 @@ void ProjectSettingsModel::removeCustomerAccess(int idCustomer)
 {
     BEGIN_REQUEST_ADV(this, "onRemoveCustomerAccessDone", "onRemoveCustomerAccessFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         ADD_URL_FIELD(idCustomer);
         DELETE_REQ(API::DP_PROJECT, API::DR_CUSTOMER_ACCESS);
@@ -142,7 +142,7 @@ void ProjectSettingsModel::addNewRole(QString name, QList<int> roleValue)
     BEGIN_REQUEST_ADV(this, "onAddNewRoleDone", "onAddNewRoleFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", m_idProject);
         ADD_FIELD("name", name);
         int i = 0;
@@ -161,7 +161,7 @@ void ProjectSettingsModel::deleteRole(int id)
 {
     BEGIN_REQUEST_ADV(this, "onDeleteRoleDone", "onDeleteRoleFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id);
         DELETE_REQ(API::DP_PROJECT, API::DR_PROJECT_ROLE);
     }
@@ -173,7 +173,7 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
     BEGIN_REQUEST_ADV(this, "onUpdateRoleDone", "onUpdateRoleFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("roleId", id);
         int i = 0;
         for (QString var : ROLE_API_ARRAY_ADD)
@@ -202,7 +202,7 @@ void ProjectSettingsModel::onLoadProjectInfoDone(int id, QByteArray data)
 
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECTS_USER);
     }
@@ -227,12 +227,7 @@ void ProjectSettingsModel::onLoadUserRoleDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     int idRole;
-    if (obj["array"].toArray().size() == 0)
-    {
-        idRole = -1;
-    }
-    else
-        idRole = obj["array"].toArray()[0].toObject()["id"].toInt();
+    idRole = obj["roleId"].toInt();
     int idUser = m_userRolesGet[id];
     m_userRolesGet.remove(id);
     QVariantList users = project()->users();
@@ -241,6 +236,7 @@ void ProjectSettingsModel::onLoadUserRoleDone(int id, QByteArray data)
         UserData *user = qobject_cast<UserData*>(item.value<UserData*>());
         if (user && user->id() == idUser)
         {
+            qDebug() << "Role !! " << idRole;
             user->setRoleId(idRole);
         }
     }
@@ -267,7 +263,7 @@ void ProjectSettingsModel::onLoadProjectRolesDone(int id, QByteArray data)
     for (QJsonValueRef ref : obj["array"].toArray())
     {
         QJsonObject item = ref.toObject();
-        int idRole = item["id"].toInt();
+        int idRole = item["roleId"].toInt();
         idToKeep.push_back(idRole);
         RolesData *selRoles = nullptr;
         for (RolesData *roles : m_roles)
@@ -394,7 +390,7 @@ void ProjectSettingsModel::onLoadUsersProjectDone(int id, QByteArray data)
     {
         BEGIN_REQUEST_ADV(this, "onLoadUserRoleDone", "onLoadUserRoleFail");
         {
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(m_idProject);
             ADD_URL_FIELD(item->id());
             m_userRolesGet[GET(API::DP_PROJECT, API::GR_PROJECT_USER_ROLE)] = item->id();
@@ -435,7 +431,7 @@ void ProjectSettingsModel::onAddUserDone(int id, QByteArray data)
 	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECTS_USER);
     }
@@ -455,7 +451,7 @@ void ProjectSettingsModel::onDeleteUserDone(int id, QByteArray data)
 	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECTS_USER);
     }
@@ -475,7 +471,7 @@ void ProjectSettingsModel::onChangeRoleUserDone(int id, QByteArray data)
 	Q_UNUSED(data)
     BEGIN_REQUEST_ADV(this, "onLoadUsersProjectDone", "onLoadUsersProjectFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECTS_USER);
     }
@@ -496,7 +492,7 @@ void ProjectSettingsModel::onAddCustomerAccessDone(int id, QByteArray data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadCustomerAccessDone", "onLoadCustomerAccessFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_CUSTOMER_ACCESSES);
     }
@@ -517,7 +513,7 @@ void ProjectSettingsModel::onRemoveCustomerAccessDone(int id, QByteArray data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadCustomerAccessDone", "onLoadCustomerAccessFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_CUSTOMER_ACCESSES);
     }
@@ -538,7 +534,7 @@ void ProjectSettingsModel::onAddNewRoleDone(int id, QByteArray data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECT_ROLE);
     }
@@ -559,7 +555,7 @@ void ProjectSettingsModel::onDeleteRoleDone(int id, QByteArray data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECT_ROLE);
     }
@@ -580,7 +576,7 @@ void ProjectSettingsModel::onUpdateRoleDone(int id, QByteArray data)
     m_isLoading++;
     BEGIN_REQUEST_ADV(this, "onLoadProjectRolesDone", "onLoadProjectRolesFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_idProject);
         GET(API::DP_PROJECT, API::GR_PROJECT_ROLE);
     }

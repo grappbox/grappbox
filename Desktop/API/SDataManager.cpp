@@ -44,6 +44,9 @@ void                       SDataManager::RegisterUserConnected(int id, QString u
 {
 	Q_UNUSED(avatar)
     _Token = token;
+    m_token = _Token;
+    qDebug() << "Token of user : " << m_token;
+    emit tokenChanged(token);
     _UserId = id;
     _UserName = userName;
     _UserLastName = userLastName;
@@ -102,7 +105,7 @@ void                       SDataManager::SetCurrentProjectId(int id)
     {
         BEGIN_REQUEST_ADV(this, "UpdateProjectUserDone", "UpdateProjectUserFail");
         {
-            ADD_URL_FIELD(USER_TOKEN);
+            ADD_HEADER_FIELD("Authorization", USER_TOKEN);
             ADD_URL_FIELD(id);
             GET(API::DP_PROJECT, API::GR_TEAM_OCCUPATION);
         }

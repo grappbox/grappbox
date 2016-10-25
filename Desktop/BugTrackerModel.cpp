@@ -5,11 +5,11 @@ BugTrackerModel::BugTrackerModel() : QObject(nullptr)
 {
 }
 
-void BugTrackerModel::loadTags()
+void BugTrackerModel::loadTags() // D
 {
     BEGIN_REQUEST_ADV(this, "onLoadTagsDone", "onLoadTagsFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_BUGTRACKER, API::GR_PROJECTBUGTAG_ALL);
     }
@@ -20,7 +20,7 @@ void BugTrackerModel::loadClosedTickets()
 {
     BEGIN_REQUEST_ADV(this, "onLoadClosedTicketDone", "onLoadClosedTicketFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_BUGTRACKER, API::GR_BUG_CLOSED);
         GENERATE_JSON_DEBUG;
@@ -32,7 +32,7 @@ void BugTrackerModel::loadOpenTickets()
 {
     BEGIN_REQUEST_ADV(this, "onLoadOpenTicketDone", "onLoadOpenTicketFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_BUGTRACKER, API::GR_BUG_OPEN);
     }
@@ -43,7 +43,7 @@ void BugTrackerModel::loadYoursTickets()
 {
     BEGIN_REQUEST_ADV(this, "onLoadYoursTicketDone", "onLoadYoursTicketFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         ADD_URL_FIELD(API::SDataManager::GetDataManager()->user()->id());
         GET(API::DP_BUGTRACKER, API::GR_BUG_YOURS);
@@ -53,11 +53,9 @@ void BugTrackerModel::loadYoursTickets()
 
 void BugTrackerModel::loadCommentTicket(int id)
 {
-    qDebug() << m_openTickets.length();
     BEGIN_REQUEST_ADV(this, "onLoadCommentTicketDone", "onLoadCommentTicketFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
-        ADD_URL_FIELD(PROJECT);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id);
         m_loadingComment[GET(API::DP_BUGTRACKER, API::GR_BUGCOMMENT)] = id;
     }
@@ -71,13 +69,14 @@ void BugTrackerModel::addTicket(QString title, QString message, QVariantList use
     BEGIN_REQUEST_ADV(this, "onAddTicketDone", "onAddTicketFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("title", title);
         ADD_FIELD("description", message);
-        ADD_FIELD("stateId", 1);
-        ADD_FIELD("stateName", "To Do");
         ADD_FIELD("clientOrigin", false);
+        ADD_ARRAY("tags");
+        ADD_ARRAY("users");
+        GENERATE_JSON_DEBUG;
         POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG);
     }
     END_REQUEST;
@@ -88,13 +87,15 @@ void BugTrackerModel::modifyTicket(int idTicket, QString title, QString message)
     BEGIN_REQUEST_ADV(this, "onModifyTicketDone", "onModifyTicketFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("bugId", idTicket);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(idTicket);
         ADD_FIELD("title", title);
         ADD_FIELD("description", message);
-        ADD_FIELD("stateId", 1);
-        ADD_FIELD("stateName", "To Do");
         ADD_FIELD("clientOrigin", false);
+        ADD_ARRAY("addTags");
+        ADD_ARRAY("removeTags");
+        ADD_ARRAY("addUsers");
+        ADD_ARRAY("removeUsers");
         PUT(API::DP_BUGTRACKER, API::PUTR_EDIT_BUG);
     }
     END_REQUEST;
@@ -105,11 +106,12 @@ void BugTrackerModel::addUsersToTicket(int idTicket, int idUsers)
     BEGIN_REQUEST_ADV(this, "onAddUsersDone", "onAddUsersFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("bugId", idTicket);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(idTicket);
         ADD_ARRAY("toAdd");
         ADD_FIELD_ARRAY(idUsers, "toAdd");
         ADD_ARRAY("toRemove");
+        GENERATE_JSON_DEBUG;
         PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
     }
     END_REQUEST;
@@ -120,8 +122,8 @@ void BugTrackerModel::removeUsersToTicket(int idTicket, int idUsers)
     BEGIN_REQUEST_ADV(this, "onRemoveUserDone", "onRemoveUserFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("bugId", idTicket);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(idTicket);
         ADD_ARRAY("toAdd");
         ADD_ARRAY("toRemove");
         ADD_FIELD_ARRAY(idUsers, "toRemove");
@@ -135,8 +137,8 @@ void BugTrackerModel::addTagsToTicket(int idTicket, int idTag)
     BEGIN_REQUEST_ADV(this, "onAssignTagDone", "onAssignTagFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("bugId", idTicket);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(idTicket);
         ADD_FIELD("tagId", idTag);
         m_assignTags[PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNTAG)] = idTicket;
     }
@@ -147,7 +149,7 @@ void BugTrackerModel::removeTagsToTicket(int idTicket, int idTag)
 {
     BEGIN_REQUEST_ADV(this, "onRemoveTagsToTicketDone", "onRemoveTagsToTicketFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idTicket);
         ADD_URL_FIELD(idTag);
         DELETE_REQ(API::DP_BUGTRACKER, API::DR_REMOVE_TAG_TO_BUG);
@@ -159,21 +161,23 @@ void BugTrackerModel::removeTags(int idTag)
 {
     BEGIN_REQUEST_ADV(this, "onDeleteTagDone", "onDeleteTagFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idTag);
         DELETE_REQ(API::DP_BUGTRACKER, API::DR_REMOVE_BUGTAG);
     }
     END_REQUEST;
 }
 
-void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag)
+void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag, QString color)
 {
     BEGIN_REQUEST_ADV(this, "onAddTagDone", "onAddTagFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", tag);
+        ADD_FIELD("color", color.right(6));
+        GENERATE_JSON_DEBUG;
         if (idTicket == -1)
             POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG_TAG);
         else
@@ -185,6 +189,7 @@ void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag)
 void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
 {
 	Q_UNUSED(id)
+    qDebug() << "Close ticket";
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -194,6 +199,7 @@ void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
         QJsonObject item = var.toObject();
         int id = item["id"].toInt();
         idPresent.push_back(id);
+        qDebug() << "Id of a new ticket : " << id;
         BugTrackerTicketData *ticket = nullptr;
         for (BugTrackerTicketData *item : m_closedTickets)
             if (item->id() == id)
@@ -202,9 +208,9 @@ void BugTrackerModel::onLoadClosedTicketDone(int id, QByteArray data)
                 break;
             }
         if (ticket)
-            ticket->modifyByJsonObject(item);
+            ticket->modifyByJsonObject(item, true);
         else
-            m_closedTickets.push_back(new BugTrackerTicketData(item));
+            m_closedTickets.push_back(new BugTrackerTicketData(item, true));
     }
     QList<BugTrackerTicketData*> toRemove;
     for (BugTrackerTicketData *item : m_closedTickets)
@@ -225,6 +231,7 @@ void BugTrackerModel::onLoadClosedTicketFail(int id, QByteArray data)
 void BugTrackerModel::onLoadOpenTicketDone(int id, QByteArray data)
 {
 	Q_UNUSED(id)
+    qDebug() << "Open ticket";
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
@@ -324,8 +331,6 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     BugTrackerTicketData *ticket = nullptr;
-    qDebug() << m_closedTickets.size();
-    qDebug() << m_openTickets.size();
     for (BugTrackerTicketData *item : m_closedTickets)
     {
         if (item->id() == m_loadingComment[id])
@@ -354,7 +359,6 @@ void BugTrackerModel::onLoadCommentTicketDone(int id, QByteArray data)
     QList<BugTrackerComment*> list = ticket->realListComment();
     for (QJsonValueRef var : obj["array"].toArray())
     {
-        qDebug() << "Load new comment :)";
         QJsonObject obj = var.toObject();
         int idComment = obj["id"].toInt();
         idKeep.push_back(idComment);
@@ -415,12 +419,15 @@ void BugTrackerModel::onLoadTagsDone(int id, QByteArray data)
         if (ticket)
         {
             ticket->setName(item["name"].toString());
+            ticket->setColor(QString("#") + item["color"].toString());
         }
         else
         {
             ticket = new BugTrackerTags();
             ticket->setId(id);
             ticket->setName(item["name"].toString());
+            ticket->setColor(QString("#") + item["color"].toString());
+            qDebug() << ticket->color() << " > " << item["color"].toString();
             m_tags.push_back(ticket);
         }
     }
@@ -753,7 +760,7 @@ void BugTrackerModel::closeTicket(int idTicket)
 {
     BEGIN_REQUEST_ADV(this, "onCloseDone", "onCloseFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idTicket);
         DELETE_REQ(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT);
     }
@@ -764,9 +771,9 @@ void BugTrackerModel::reopenTicket(int idTicket)
 {
     BEGIN_REQUEST_ADV(this, "onReopenDone", "onReopenFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idTicket);
-        PUT(API::DP_BUGTRACKER, API::PUTR_REOPEN_BUG);
+        GET(API::DP_BUGTRACKER, API::GR_REOPEN_BUG);
     }
     END_REQUEST;
 }
@@ -776,11 +783,9 @@ void BugTrackerModel::addComment(int idParent, QString comment)
     BEGIN_REQUEST_ADV(this, "onAddCommentDone", "onAddCommentFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("projectId", PROJECT);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("parentId", idParent);
-        ADD_FIELD("title", "");
-        ADD_FIELD("description", comment);
+        ADD_FIELD("comment", comment);
         POST(API::DP_BUGTRACKER, API::PR_COMMENT_BUG);
     }
     END_REQUEST;
@@ -788,11 +793,12 @@ void BugTrackerModel::addComment(int idParent, QString comment)
 
 void BugTrackerModel::removeComment(int idComment, int idTicket)
 {
+    Q_UNUSED(idTicket);
     BEGIN_REQUEST_ADV(this, "onRemoveCommentDone", "onRemoveCommentFail");
     {
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(idComment);
-        m_removeComment[DELETE_REQ(API::DP_BUGTRACKER, API::DR_CLOSE_TICKET_OR_COMMENT)] = idTicket;
+        m_removeComment[DELETE_REQ(API::DP_BUGTRACKER, API::DR_DELETE_COMMENT_TIMELINE)] = idTicket;
     }
     END_REQUEST;
 }
@@ -802,11 +808,9 @@ void BugTrackerModel::modifyComment(int idComment, QString comment, int idTicket
     BEGIN_REQUEST_ADV(this, "onEditCommentDone", "onEditCommentFail");
     {
         EPURE_WARNING_INDEX
-        ADD_FIELD("token", USER_TOKEN);
-        ADD_FIELD("projectId", PROJECT);
-        ADD_FIELD("commentId", idComment);
-        ADD_FIELD("title", "");
-        ADD_FIELD("description", comment);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(idComment);
+        ADD_FIELD("comment", comment);
         m_editComment[PUT(API::DP_BUGTRACKER, API::PUTR_EDIT_COMMENTBUG)] = idTicket;
     }
     END_REQUEST;

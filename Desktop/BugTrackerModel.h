@@ -35,14 +35,14 @@ public:
     {
         m_id = obj["id"].toInt();
         m_parentId = obj["parentId"].toInt();
-        m_message = obj["description"].toString();
+        m_message = obj["comment"].toString();
         m_createdAt = JSON_TO_DATETIME(obj["createdAt"].toString());
         m_editedAt = JSON_TO_DATETIME(obj["editedAt"].toString());
         if (m_user == nullptr)
             m_user = new UserData();
         m_user->setId(obj["creator"].toObject()["id"].toInt());
-        m_user->setFirstName(obj["creator"].toObject()["fullname"].toString());
-        m_user->setLastName(m_user->firstName());
+        m_user->setFirstName(obj["creator"].toObject()["fistname"].toString());
+        m_user->setLastName(obj["creator"].toObject()["lastname"].toString());
         emit userChanged(user());
         emit parentIdChanged(parentId());
         emit messageChanged(message());
@@ -166,6 +166,7 @@ class BugTrackerTags : public QObject
     Q_OBJECT
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
 
@@ -189,11 +190,18 @@ public:
         return name();
     }
 
+    QString color() const
+    {
+        return m_color;
+    }
+
 signals:
 
     void idChanged(int id);
 
     void nameChanged(QString name);
+
+    void colorChanged(QString color);
 
 public slots:
 
@@ -215,9 +223,19 @@ public slots:
         emit nameChanged(name);
     }
 
+    void setColor(QString color)
+    {
+        if (m_color == color)
+            return;
+
+        m_color = color;
+        emit colorChanged(color);
+    }
+
 private:
     int m_id;
     QString m_name;
+    QString m_color;
 };
 
 class BugTrackerTicketData : public QObject
@@ -241,33 +259,33 @@ public:
         m_creator = new UserData();
     }
 
-    BugTrackerTicketData(QJsonObject obj)
+    BugTrackerTicketData(QJsonObject obj, bool isClosed = false)
     {
         m_creator = new UserData();
-        modifyByJsonObject(obj);
+        modifyByJsonObject(obj, isClosed);
     }
 
-    void modifyByJsonObject(QJsonObject obj)
+    void modifyByJsonObject(QJsonObject obj, bool isClosed = false)
     {
+        m_isClosed = isClosed;
         m_id = obj["id"].toInt();
         m_creator->setId(obj["creator"].toObject()["id"].toInt());
-        m_creator->setFirstName(obj["creator"].toObject()["fullname"].toString());
-        m_creator->setLastName(m_creator->firstName());
+        m_creator->setFirstName(obj["creator"].toObject()["firstname"].toString());
+        m_creator->setLastName(obj["creator"].toObject()["lastname"].toString());
         m_title = obj["title"].toString();
         m_message = obj["description"].toString();
-        m_createDate = JSON_TO_DATETIME(obj["createdAt"].toObject()["date"].toString());
+        m_createDate = JSON_TO_DATETIME(obj["createdAt"].toString());
         if (obj["editedAt"].isNull())
             m_editDate = m_createDate;
         else
-            m_editDate = JSON_TO_DATETIME(obj["editedAt"].toObject()["date"].toString());
+            m_editDate = JSON_TO_DATETIME(obj["editedAt"].toString());
         if (obj["deletedAt"].isNull())
             m_closeDate = QDateTime();
         else
-            m_closeDate = JSON_TO_DATETIME(obj["deletedAt"].toObject()["date"].toString());
+            m_closeDate = JSON_TO_DATETIME(obj["deletedAt"].toString());
         m_tags.clear();
         for (QJsonValueRef tagObj : obj["tags"].toArray())
             m_tags.push_back(tagObj.toObject()["id"].toInt());
-        qDebug() << obj["title"].toString();
         m_users.clear();
         for (QJsonValueRef userObj : obj["users"].toArray())
             m_users.push_back(userObj.toObject()["id"].toInt());
@@ -280,7 +298,7 @@ public:
         emit closeDateChanged(closeDate());
         emit tagsChanged(tags());
         emit usersChanged(users());
-        emit isClosedChanged(isClosed());
+        emit isClosedChanged(m_isClosed);
     }
 
     int id() const
@@ -349,7 +367,7 @@ public:
 
     bool isClosed() const
     {
-        return !m_closeDate.isNull();
+        return m_isClosed;
     }
 
 signals:
@@ -488,6 +506,7 @@ private:
     QDateTime m_createDate;
     QDateTime m_editDate;
     QDateTime m_closeDate;
+    bool m_isClosed;
     QList<BugTrackerComment*> m_comments;
 };
 
@@ -522,7 +541,7 @@ public:
     Q_INVOKABLE void addTagsToTicket(int idTicket, int idTag);
     Q_INVOKABLE void removeTagsToTicket(int idTicket, int idTag);
     Q_INVOKABLE void removeTags(int idTag);
-    Q_INVOKABLE void createAndAddTagsToTicket(int idTicket, QString tag);
+    Q_INVOKABLE void createAndAddTagsToTicket(int idTicket, QString tag, QString color);
 
 
     Q_INVOKABLE void addComment(int idTicket, QString comment);

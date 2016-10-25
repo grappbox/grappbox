@@ -21,68 +21,70 @@ DataConnectorOnline::DataConnectorOnline()
 	_Manager = new QNetworkAccessManager();
 
 	// Initialize Get request
-    _GetMap[GR_CALENDAR] = "planning/getmonth";
+    _GetMap[GR_CALENDAR] = "planning/month";
 	_GetMap[GR_CALENDAR_DAY] = "";
 	_GetMap[GR_LIST_GANTT] = "";
-	_GetMap[GR_LIST_PROJECT] = "dashboard/getprojectsglobalprogress";
-    _GetMap[GR_TEAM_OCCUPATION] = "dashboard/getteamoccupation";
-    _GetMap[GR_NEXT_MEETING] = "dashboard/getnextmeetings";
-    _GetMap[GR_PROJECT] = "projects/getinformations";
+    _GetMap[GR_LIST_PROJECT] = "dashboard/projects";
+    _GetMap[GR_TEAM_OCCUPATION] = "dashboard/occupation";
+    _GetMap[GR_NEXT_MEETING] = "dashboard/meetings";
+    _GetMap[GR_PROJECT] = "project";
 	_GetMap[GR_CREATOR_PROJECT] = "";
 	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
 	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
     _GetMap[GR_LIST_TASK] = "tasks/getprojecttasks";
-    _GetMap[GR_LIST_TIMELINE] = "timeline/gettimelines";
+    _GetMap[GR_LIST_TIMELINE] = "timelines";
     _GetMap[GR_LIST_TASK_TAG] = "tasks/getprojecttags";
 	_GetMap[GR_TASK] = "";
-    _GetMap[GR_TIMELINE] = "timeline/getmessages";
-	_GetMap[GR_COMMENT_TIMELINE] = "timeline/getcomments";
-    _GetMap[GR_USER_DATA] = "user/getuserbasicinformations";
+    _GetMap[GR_TIMELINE] = "timeline/messages";
+    _GetMap[GR_COMMENT_TIMELINE] = "timeline/message/comments";
+    _GetMap[GR_USER_DATA] = "user";
 	_GetMap[GR_WHITEBOARD] = "";
     _GetMap[GR_LOGOUT] = "accountadministration/logout";
 	_GetMap[GR_USER_SETTINGS] = "";
-    _GetMap[GR_PROJECTS_USER] = "projects/getusertoproject";
-    _GetMap[GR_PROJECT_ROLE] = "roles/getprojectroles";
+    _GetMap[GR_PROJECTS_USER] = "project/users";
+    _GetMap[GR_PROJECT_ROLE] = "roles";
     _GetMap[GR_PROJECT_USERS] = "projects/getusertoproject";
 	_GetMap[GR_PROJECT_CANCEL_DELETE] = "";
-    _GetMap[GR_PROJECT_USER_ROLE] = "roles/getrolebyprojectanduser";
-    _GetMap[GR_CUSTOMER_ACCESSES] = "projects/getcustomeraccessbyproject";
+    _GetMap[GR_PROJECT_USER_ROLE] = "roles/project/user";
+    _GetMap[GR_CUSTOMER_ACCESSES] = "project/customeraccesses";
 	_GetMap[GR_CUSTOMER_ACCESS_BY_ID] = "";
 	_GetMap[GR_XLAST_BUG_OFFSET] = "bugtracker/getlasttickets";
 	_GetMap[GR_XLAST_BUG_OFFSET_BY_STATE] = "bugtracker/getticketsbystate";
 	_GetMap[GR_XLAST_BUG_OFFSET_CLOSED] = "bugtracker/getlastclosedtickets";
 	_GetMap[GR_PROJECTBUG_ALL] = "bugtracker/gettickets";
-	_GetMap[GR_BUGCOMMENT] = "bugtracker/getcomments";
+    _GetMap[GR_BUGCOMMENT] = "bugtracker/comments";
 	_GetMap[GR_GETBUGS_STATUS] = "bugtracker/getstates";
-	_GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/getprojecttags";
+    _GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/project/tags";
 	_GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
-    _GetMap[GR_BUG_OPEN] = "bugtracker/gettickets";
-    _GetMap[GR_BUG_CLOSED] = "bugtracker/getclosedtickets";
-    _GetMap[GR_BUG_YOURS] = "bugtracker/getticketsbyuser";
-    _GetMap[GR_EVENT] = "event/getevent";
+    _GetMap[GR_BUG_OPEN] = "bugtracker/tickets/opened";
+    _GetMap[GR_BUG_CLOSED] = "bugtracker/tickets/closed";
+    _GetMap[GR_BUG_YOURS] = "bugtracker/tickets/user";
+    _GetMap[GR_EVENT] = "event";
     _GetMap[GR_TYPE_EVENT] = "event/gettypes";
     _GetMap[GR_LIST_CLOUD] = "cloud/list";
     _GetMap[GR_DOWNLOAD_FILE] = "cloud/file";
     _GetMap[GR_DOWNLOAD_SECURE_FILE] = "cloud/filesecured";
     _GetMap[GR_PROJECT_LOGO] = "projects/getprojectlogo";
     _GetMap[GR_USER_AVATAR] = "user/getuseravatar";
+    _GetMap[GR_REOPEN_BUG] = "bugtracker/ticket/reopen";
 
 	// Initialize Post request
-	_PostMap[PR_LOGIN] = "accountadministration/login";
-    _PostMap[PR_ROLE_ADD] = "roles/addprojectroles";
-    _PostMap[PR_ROLE_ASSIGN] = "roles/assignpersontorole";
+    _PostMap[PR_LOGIN] = "account/login";
+    _PostMap[PR_ROLE_ADD] = "role";
+    _PostMap[PR_ROLE_ASSIGN] = "role/user";
     _PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "projects/generatecustomeraccess";
-	_PostMap[PR_CREATE_BUG] = "bugtracker/postticket";
-	_PostMap[PR_COMMENT_BUG] = "bugtracker/postcomment";
-    _PostMap[PR_CREATE_BUG_TAG] = "bugtracker/tagcreation";
-    _PostMap[PR_MESSAGE_TIMELINE] = "timeline/postmessage";
-    _PostMap[PR_POST_EVENT] = "event/postevent";
+    _PostMap[PR_CREATE_BUG] = "bugtracker/ticket";
+    _PostMap[PR_COMMENT_BUG] = "bugtracker/comment";
+    _PostMap[PR_CREATE_BUG_TAG] = "bugtracker/tag";
+    _PostMap[PR_MESSAGE_TIMELINE] = "timeline/message";
+    _PostMap[PR_COMMENT_TIMELINE] = "timeline/comment";
+    _PostMap[PR_POST_EVENT] = "event";
 	_PostMap[PR_NEW_WHITEBOARD] = "";
     _PostMap[PR_CREATE_DIRECTORY] = "cloud/createdir";
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
     _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
     _PostMap[PR_ADD_USER_PROJECT] = "projects/addusertoproject";
-    _PostMap[PR_CREATE_PROJECT] = "projects/projectcreation";
+    _PostMap[PR_CREATE_PROJECT] = "project";
 
 	// Initialize Delete request
     _DeleteMap[DR_PROJECT_ROLE] = "roles/delprojectroles";
@@ -90,32 +92,34 @@ DataConnectorOnline::DataConnectorOnline()
     _DeleteMap[DR_PROJECT_USER] = "projects/removeusertoproject";
 	_DeleteMap[DR_PROJECT] = "";
     _DeleteMap[DR_CUSTOMER_ACCESS] = "projects/delcustomeraccess";
-	_DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/closeticket";
-	_DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/deletetag";
-    _DeleteMap[DR_REMOVE_TAG_TO_BUG] = "bugtracker/removetag";
-    _DeleteMap[DR_REMOVE_EVENT] = "event/delevent";
-    _DeleteMap[DR_ARCHIVE_MESSAGE_TIMELINE] = "timeline/archivemessage";
+    _DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/ticket/close";
+    _DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/tag";
+    _DeleteMap[DR_REMOVE_TAG_TO_BUG] = "bugtracker/tag/remove";
+    _DeleteMap[DR_REMOVE_EVENT] = "event";
+    _DeleteMap[DR_ARCHIVE_MESSAGE_TIMELINE] = "timeline/message";
+    _DeleteMap[DR_ARCHIVE_COMMENT_TIMELINE] = "timeline/comment";
     _DeleteMap[DR_CLOSE_STREAM] = "cloud/stream";
     _DeleteMap[DR_DELETE_ITEM] = "cloud/file";
     _DeleteMap[DR_DELETE_SECURE_ITEM] = "cloud/filesecured";
     _DeleteMap[DR_TASK_TAG] = "tasks/deletetag";
+    _DeleteMap[DR_DELETE_COMMENT_TIMELINE] = "bugtracker/comment";
 
 	// Initialize Put request
-    _PutMap[PUTR_USERSETTINGS] = "user/basicinformations";
+    _PutMap[PUTR_USERSETTINGS] = "user";
 	_PutMap[PUTR_PROJECTSETTINGS] = "";
 	_PutMap[PUTR_INVITE_USER] = "";
-	_PutMap[PUTR_ASSIGNTAG] = "bugtracker/assigntag";
-	_PutMap[PUTR_EDIT_EVENT] = "event/editevent";
-    _PutMap[PUTR_SET_EVENT_PARTICIPANT] = "event/setparticipants";
-	_PutMap[PUTR_SET_PARTICIPANT] = "bugtracker/setparticipants";
-	_PutMap[PUTR_EDIT_COMMENTBUG] = "bugtracker/editcomment";
-	_PutMap[PUTR_EDIT_BUG] = "bugtracker/editticket";
-    _PutMap[PUTR_EDIT_MESSAGE_TIMELINE] = "timeline/editmessage";
+    _PutMap[PUTR_ASSIGNTAG] = "bugtracker/tag/assign";
+    _PutMap[PUTR_EDIT_EVENT] = "event";
+    _PutMap[PUTR_SET_EVENT_PARTICIPANT] = "event/users";
+    _PutMap[PUTR_SET_PARTICIPANT] = "bugtracker/users";
+    _PutMap[PUTR_EDIT_COMMENTBUG] = "bugtracker/comment";
+    _PutMap[PUTR_EDIT_BUG] = "bugtracker/ticket";
+    _PutMap[PUTR_EDIT_MESSAGE_TIMELINE] = "timeline/message";
+    _PutMap[PUTR_EDIT_COMMENT_TIMELINE] = "timeline/comment";
     _PutMap[PUTR_SEND_CHUNK] = "cloud/file";
-    _PutMap[PUTR_ASSIGNUSER_BUG] = "bugtracker/setparticipants";
-    _PutMap[PUTR_REOPEN_BUG] = "bugtracker/reopenticket";
+    _PutMap[PUTR_ASSIGNUSER_BUG] = "bugtracker/users";
     _PutMap[PUTR_EDIT_PROJECT] = "projects/updateinformations";
-    _PutMap[PUTR_ROLE_USER] = "roles/putpersonrole";
+    _PutMap[PUTR_ROLE_USER] = "role/user";
     _PutMap[PUTR_ROLE] = "roles/putprojectroles";
 }
 
@@ -456,7 +460,7 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 
 int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
-    qDebug() << "[API][REQUEST][" << part << "] " << type;
+    qDebug() << "[API][REQUEST][" << ((type == RT_POST) ? "POST" : (type == RT_PUT ? "PUT" : (type == RT_GET ? "GET" : "DELETE"))) << "] : " << part;
     QNetworkReply *reply = nullptr;
 	switch (type)
 	{
@@ -502,7 +506,9 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
 	{
         if (it.key().contains("urlfield#"))
             continue;
-		if (it.value().canConvert<QString>())
+        if (it.value().type() == QVariant::Bool)
+            ret[it.key()] = it.value().toBool();
+        else if (it.value().canConvert<QString>())
 			ret[it.key()] = it.value().toString();
         else if (it.value().canConvert<QList<QVariant> >())
 		{
@@ -524,12 +530,17 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
 QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString, QVariant>& data)
 {
     QString urlAddon("");
+    QMap<QString, QVariant> headerAddon;
      for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
      {
          if (it.key().contains("urlfield#"))
          {
              QVariant var = it.value();
              urlAddon += "/" + var.toString();
+         }
+         if (it.key().contains("__HEADER__;;"))
+         {
+             headerAddon[it.key().split(";;")[1]] = it.value();
          }
      }
 	QJsonObject json;
@@ -542,6 +553,10 @@ QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString
     QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    for (QMap<QString, QVariant>::iterator it = headerAddon.begin(); it != headerAddon.end(); ++it)
+    {
+        requestSend.setRawHeader(QVariant(it.key()).toByteArray(), it.value().toByteArray());
+    }
 	QNetworkReply *request = _Manager->post(requestSend, jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
@@ -549,16 +564,18 @@ QNetworkReply * API::DataConnectorOnline::PostAction(QString urlIn, QMap<QString
 
 QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString, QVariant>& data)
 {
-    qDebug() << "Put action : " << urlIn;
     QString urlAddon("");
+    QMap<QString, QVariant> headerAddon;
     for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
     {
-        qDebug() << "Parsing url field : " << it.key();
         if (it.key().contains("urlfield#"))
         {
-            qDebug() << "Url field : " << it.value();
             QVariant var = it.value();
             urlAddon += "/" + var.toString();
+        }
+        if (it.key().contains("__HEADER__;;"))
+        {
+            headerAddon[it.key().split(";;")[1]] = it.value();
         }
     }
 	QJsonObject json;
@@ -573,6 +590,10 @@ QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString,
     QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 	requestSend.setHeader(QNetworkRequest::ContentLengthHeader, jsonba.size());
+    for (QMap<QString, QVariant>::iterator it = headerAddon.begin(); it != headerAddon.end(); ++it)
+    {
+        requestSend.setRawHeader(QVariant(it.key()).toByteArray(), it.value().toByteArray());
+    }
 	QNetworkReply *request = _Manager->put(requestSend, jsonba);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
@@ -581,15 +602,26 @@ QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString,
 QNetworkReply * API::DataConnectorOnline::DeleteAction(QString urlIn, QMap<QString, QVariant>& data)
 {
 	QString urlAddon = "";
-
+    QMap<QString, QVariant> headerAddon;
 	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
-	{
-		QVariant var = it.value();
-		urlAddon += "/" + var.toString();
+    {
+        if (it.key().contains("urlfield#"))
+        {
+            QVariant var = it.value();
+            urlAddon += "/" + var.toString();
+        }
+        if (it.key().contains("__HEADER__;;"))
+        {
+            headerAddon[it.key().split(";;")[1]] = it.value();
+        }
 	}
 
 	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    for (QMap<QString, QVariant>::iterator it = headerAddon.begin(); it != headerAddon.end(); ++it)
+    {
+        requestSend.setRawHeader(QVariant(it.key()).toByteArray(), it.value().toByteArray());
+    }
 	QNetworkReply *request = _Manager->deleteResource(requestSend);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;
@@ -598,15 +630,26 @@ QNetworkReply * API::DataConnectorOnline::DeleteAction(QString urlIn, QMap<QStri
 QNetworkReply * API::DataConnectorOnline::GetAction(QString urlIn, QMap<QString, QVariant>& data)
 {
 	QString urlAddon = "";
-
+    QMap<QString, QVariant> headerAddon;
 	for (QMap<QString, QVariant>::iterator it = data.begin(); it != data.end(); ++it)
-	{
-		QVariant var = it.value();
-		urlAddon += "/" + var.toString();
+    {
+        if (it.key().contains("urlfield#"))
+        {
+            QVariant var = it.value();
+            urlAddon += "/" + var.toString();
+        }
+        if (it.key().contains("__HEADER__;;"))
+        {
+            headerAddon[it.key().split(";;")[1]] = it.value();
+        }
 	}
 
 	QNetworkRequest requestSend(QUrl(URL_API + urlIn + urlAddon));
 	requestSend.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    for (QMap<QString, QVariant>::iterator it = headerAddon.begin(); it != headerAddon.end(); ++it)
+    {
+        requestSend.setRawHeader(QVariant(it.key()).toByteArray(), it.value().toByteArray());
+    }
 	QNetworkReply *request = _Manager->get(requestSend);
     QObject::connect(request, SIGNAL(finished()), this, SLOT(OnResponseAPI()));
 	return request;

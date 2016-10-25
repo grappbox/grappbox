@@ -3,6 +3,7 @@
 
 #include <QImage>
 #include <QObject>
+#include <QDebug>
 #include <QDate>
 
 class UserData : public QObject
@@ -250,7 +251,7 @@ public slots:
     {
         if (m_roleId == roleId)
             return;
-
+        qDebug() << "Role id changed";
         m_roleId = roleId;
         emit roleIdChanged(roleId);
     }

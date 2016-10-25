@@ -40,6 +40,8 @@
         <file>qrc/Whiteboard.qml</file>
         <file>qrc/IconButtonTransform.qml</file>
         <file>qrc/WhiteboardColorPopup.qml</file>
+        <file>qrc/Login.qml</file>
+        <file>qrc/TagColorChoicer.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

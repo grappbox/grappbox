@@ -55,11 +55,11 @@ public:
         m_facebook = obj["facebook"].toString();
         m_twitter = obj["twitter"].toString();
         //m_color = obj["color"].toString();
-        m_creationDate = QDateTime::fromString(obj["creation_date"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+        m_creationDate = QDateTime::fromString(obj["creation_date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
         if (obj["deleted_at"].isNull())
             m_deleteDate = QDateTime();
         else
-            m_deleteDate = QDateTime::fromString(obj["deleted_at"].toObject()["date"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
+            m_deleteDate = QDateTime::fromString(obj["deleted_at"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
         m_avatarDate = QDateTime::fromString(obj["project_logo"].toString(), "yyyy-MM-dd HH:mm:ss.zzzz");
         emit nameChanged(name());
         emit descriptionChanged(description());

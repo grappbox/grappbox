@@ -37,7 +37,7 @@ void GanttModel::loadTasks()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLoadTaskDone");
         SET_ON_FAIL("OnLoadTaskFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_GANTT, API::GR_LIST_TASK);
     }
@@ -53,7 +53,7 @@ void GanttModel::loadTaskTag()
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnLoadTaskTagDone");
         SET_ON_FAIL("OnLoadTaskTagFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_GANTT, API::GR_LIST_TASK_TAG);
     }
@@ -103,7 +103,7 @@ void GanttModel::addTag(QString name)
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnAddTagDone");
         SET_ON_FAIL("OnAddTagFail");
-        ADD_FIELD("token", USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", name);
         POST(API::DP_GANTT, API::PR_ADD_TAG_TASK);
@@ -118,7 +118,7 @@ void GanttModel::removeTag(int id)
         SET_CALL_OBJECT(this);
         SET_ON_DONE("OnAddTagDone");
         SET_ON_FAIL("OnAddTagFail");
-        ADD_URL_FIELD(USER_TOKEN);
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id);
         DELETE_REQ(API::DP_GANTT, API::DR_TASK_TAG);
     }

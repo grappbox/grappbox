@@ -2,6 +2,7 @@
 #define LOGINCONTROLLER_H
 
 #include <QObject>
+#include <QNetworkInterface>
 #include "API/SDataManager.h"
 
 class LoginController : public QObject
@@ -35,6 +36,8 @@ public slots:
     void OnLogoutFail(int id, QByteArray response);
 
 private:
+    QString getMacAdress() const;
+
     bool _IsLoged;
 };
 
