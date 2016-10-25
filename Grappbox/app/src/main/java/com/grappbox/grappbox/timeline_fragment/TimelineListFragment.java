@@ -6,6 +6,7 @@ import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
@@ -87,19 +88,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
     };
 
-    public static final String[] projectionMessageRow = {
-            TimelineEntry._ID,
-            TimelineEntry.COLUMN_TYPE_ID,
-            TimelineMessageEntry._ID,
-            TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
-            TimelineMessageEntry.COLUMN_TITLE,
-            TimelineMessageEntry.COLUMN_MESSAGE,
-            TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
-            TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
-            TimelineMessageEntry.COLUMN_COUNT_ANSWER,
-            TimelineMessageEntry.COLUMN_PARENT_ID,
-            TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
-    };
+
 
     private FloatingActionButton mAddMessage;
 
@@ -110,7 +99,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView mTimelineList;
     private LinearLayoutManager mLinearLayoutManager;
-    private MatrixCursor mMatrixCursor;
 
     public TimelineListFragment(){
         // Required empty public constructor
@@ -209,7 +197,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 builder.show();
             }
         });
-        mMatrixCursor = new MatrixCursor(projectionMessageRow);
         return v;
     }
 
@@ -231,7 +218,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             offset = args.getString(TIMELINE_BUNDLE_OFFSET);
             limit = args.getString(TIMELINE_BUNDLE_LIMIT);
         }
-        Log.v(LOG_TAG, "OnCreateLoader, offset : " + offset + ", limit : " + limit);
+
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") ASC LIMIT " +
                 offset + ", " + limit;
         String selection;
@@ -306,35 +293,24 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data != null && !data.moveToFirst()) {
-            //updateDataBase();
+        if (data == null || !data.moveToFirst()) {
+            updateDataBase();
             return;
         }
-        /*
-        if (mAdapter.getCursor() == null) {
-            mAdapter.setCursor(data);
-            message = data;
-        } else {
-
-            if (mAdapter.getCursor().moveToFirst()) {
-                Log.v(LOG_TAG, "mergeCursor start");
-                ArrayList<Cursor> finals = new ArrayList<>();
-                finals.add(data);
-                finals.add(mAdapter.getCursor());
-                Cursor[] finalArray = finals.toArray(new Cursor[finals.size()]);
-                message = new MergeCursor(finalArray);
-                data = new MergeCursor(finalArray);
-                mAdapter.setCursor(data);
-            }
-        }
-        if (message != null && !message.moveToFirst()) {
-            return;
-        }*/
-
         List<TimelineModel> models = new ArrayList<>();
+        Cursor oldMessage = mAdapter.swapCursor(data);
+        if (oldMessage != null)
+        {
+            Cursor newCursor = new MergeCursor(new Cursor[]{oldMessage, data});
+            mAdapter.getCursorAdapter().swapCursor(newCursor);
+        }
+        Cursor message = mAdapter.getCursorAdapter().getCursor();
+        if (message == null || !message.moveToFirst())
+            return;
         do {
-            models.add(new TimelineModel(getActivity(), data));
-        } while (data.moveToNext());
+            models.add(new TimelineModel(getActivity(), message));
+        } while (message.moveToNext());
+        message.moveToFirst();
         Collections.sort(models, new StringDateComparator());
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);

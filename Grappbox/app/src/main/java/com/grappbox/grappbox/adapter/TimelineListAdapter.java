@@ -2,11 +2,13 @@ package com.grappbox.grappbox.adapter;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.DataSetObserver;
+import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.media.Image;
@@ -51,20 +53,35 @@ import java.util.Objects;
 
 public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private Activity mContext;
-    private List<TimelineModel> mDataset;
-    private LayoutInflater  inflater;
-    private RefreshReceiver mRefreshReceiver = null;
-    private RecyclerView    mRecyclerView;
-    private int             mExpandedPosition = -1;
-    private Cursor          mCursor;
-
     public static final int TYPE_TIMELINE_ENTRY = 0;
 
     private static final int TIMELINE_ACTION_VIEW_COMMENT = 0;
     private static final int TIMELINE_ACTION_ADD_TO_BUGTRACKER = 1;
     private static final int TIMELINE_ACTION_EDIT_MESSAGE = 2;
     private static final int TIMELINE_ACTION_DELETE_MESSAGE = 3;
+
+    private Activity mContext;
+    private List<TimelineModel> mDataset;
+    private LayoutInflater  inflater;
+    private RefreshReceiver mRefreshReceiver = null;
+    private RecyclerView    mRecyclerView;
+    private int             mExpandedPosition = -1;
+    private CursorAdapter   mCursorAdapter = null;
+
+
+    public static final String[] projectionMessageRow = {
+            GrappboxContract.TimelineEntry._ID,
+            GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
+            GrappboxContract.TimelineMessageEntry._ID,
+            GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
+            GrappboxContract.TimelineMessageEntry.COLUMN_TITLE,
+            GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE,
+            GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
+            GrappboxContract.TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
+            GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER,
+            GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID,
+            GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
+    };
 
     public TimelineListAdapter(Activity context, RecyclerView rv)
     {
@@ -74,6 +91,55 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         inflater = LayoutInflater.from(context);
         mRecyclerView = rv;
         mExpandedPosition = -1;
+        mCursorAdapter = new CursorAdapter(mContext, null, 0) {
+            @Override
+            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                return null;
+            }
+
+            @Override
+            public Cursor swapCursor(Cursor newCursor) {
+                if (newCursor == null || !newCursor.moveToFirst())
+                    return super.swapCursor(newCursor);
+                int i;
+                MatrixCursor newMessages = new MatrixCursor(projectionMessageRow);
+                do {
+                    i = 0;
+                    ContentValues rowValue = new ContentValues();
+                    DatabaseUtils.cursorRowToContentValues(newCursor, rowValue);
+                    MatrixCursor.RowBuilder builder;
+                    builder = newMessages.newRow();
+                    for (String colName : projectionMessageRow) {
+                        switch (newCursor.getType(i)){
+                            case Cursor.FIELD_TYPE_NULL:
+                                builder.add(colName, null);
+                                break;
+                            case Cursor.FIELD_TYPE_INTEGER:
+                                builder.add(colName, newCursor.getInt(i));
+                                break;
+                            case Cursor.FIELD_TYPE_FLOAT:
+                                builder.add(colName, newCursor.getFloat(i));
+                                break;
+                            case Cursor.FIELD_TYPE_STRING:
+                                builder.add(colName, newCursor.getString(i));
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Not normally in columns, check database");
+                        }
+                        ++i;
+                    }
+                } while (newCursor.moveToNext());
+                ArrayList<Cursor> finals = new ArrayList<>();
+                if (newMessages.getCount() > 0)
+                    finals.add(newMessages);
+                Cursor[] finalArray = finals.toArray(new Cursor[finals.size()]);
+                return super.swapCursor(new MergeCursor(finalArray));
+            }
+
+            @Override
+            public void bindView(View view, Context context, Cursor cursor) {
+            }
+        };
     }
 
     private RecyclerView.ViewHolder createTimelineEntryHolder(ViewGroup parent){
@@ -327,14 +393,15 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
-    public void setCursor(Cursor newCursor){
-        mCursor = newCursor;
+    public CursorAdapter getCursorAdapter()
+    {
+        return mCursorAdapter;
     }
 
-    public Cursor getCursor(){
-        return mCursor;
+    public Cursor swapCursor(Cursor cursor)
+    {
+        return (mCursorAdapter.swapCursor(cursor));
     }
-
 
     @Override
     public void setHasStableIds(boolean hasStableIds) {
