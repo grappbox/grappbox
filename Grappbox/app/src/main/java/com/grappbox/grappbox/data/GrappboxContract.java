@@ -163,29 +163,6 @@ public class GrappboxContract {
         }
     }
 
-    public static final class EventTypeEntry implements BaseColumns {
-        public static final String TABLE_NAME = "event_types";
-
-        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
-        public static final String COLUMN_NAME = "name";
-
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_EVENT_TYPE).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EVENT_TYPE;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EVENT_TYPE;
-
-        public static Uri buildEventWithLocalIdUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-
-        public static Uri buildEventWithArgs(HashMap<String, String> args)
-        {
-            Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
-
-            for (String key : args.keySet())
-                projectUriBuilder.appendQueryParameter(key, args.get(key));
-            return projectUriBuilder.build();
-        }
-    }
 
     public static final class EventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
@@ -196,7 +173,6 @@ public class GrappboxContract {
         public static final String COLUMN_EVENT_DESCRIPTION = "description";
         public static final String COLUMN_DATE_BEGIN_UTC = "begin_date";
         public static final String COLUMN_DATE_END_UTC = "end_date";
-        public static final String COLUMN_LOCAL_EVENT_TYPE_ID = "type_id";
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
 
@@ -347,12 +323,13 @@ public class GrappboxContract {
         }
     }
 
-    public static final class TagEntry implements BaseColumns {
-        public static final String TABLE_NAME = "tags";
+    public static final class BugtrackerTagEntry implements BaseColumns {
+        public static final String TABLE_NAME = "bugtracker_tags";
 
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_COLOR = "color";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TAG).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TAG;

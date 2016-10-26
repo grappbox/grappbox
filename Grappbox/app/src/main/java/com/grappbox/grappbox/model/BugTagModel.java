@@ -3,9 +3,7 @@ package com.grappbox.grappbox.model;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
 
-import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.data.GrappboxContract;
 
 /**
@@ -24,8 +22,8 @@ public class BugTagModel implements Parcelable {
     }
 
     public BugTagModel(Cursor data){
-        _id = data.getLong(data.getColumnIndex(GrappboxContract.TagEntry._ID));
-        name = data.getString(data.getColumnIndex(GrappboxContract.TagEntry.COLUMN_NAME));
+        _id = data.getLong(data.getColumnIndex(GrappboxContract.BugtrackerTagEntry._ID));
+        name = data.getString(data.getColumnIndex(GrappboxContract.BugtrackerTagEntry.COLUMN_NAME));
         color = "#9E58DC";
     }
 

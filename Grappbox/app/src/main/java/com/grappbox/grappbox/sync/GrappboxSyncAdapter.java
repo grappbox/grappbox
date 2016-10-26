@@ -130,7 +130,6 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private void syncProjects(String apiToken, String accountName) {
-
         //synchronize project's list
         HttpURLConnection connection = null;
         String returnedJson;

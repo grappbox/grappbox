@@ -199,4 +199,6 @@
     <string name="change_assignation">Change assignation</string>
     <string name="tags">Tags</string>
     <string name="tag_name">Tag name</string>
+    <string name="upload_progress">Upload in progress</string>
+    <string name="upload_ended">Upload ended</string>
 </resources>

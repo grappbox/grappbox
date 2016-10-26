@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.grappbox.grappbox.R;
 
@@ -43,9 +42,6 @@ public class GrappboxProvider extends ContentProvider {
     public static final int EVENT = 130;
     public static final int EVENT_BY_ID = 132;
     public static final int EVENT_BY_GRAPPBOX_ID = 133;
-    public static final int EVENT_BY_TYPE_ID = 136;
-
-    public static final int EVENT_TYPE = 140;
 
     public static final int EVENT_PARTICIPANT = 150;
     public static final int EVENT_PARTICIPANT_BY_EVENT_ID = 151;
@@ -134,12 +130,9 @@ public class GrappboxProvider extends ContentProvider {
 
         //Event related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT, EVENT);
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/type/#", EVENT_BY_TYPE_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/#", EVENT_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/*", EVENT_BY_GRAPPBOX_ID);
 
-        //Event type related URIs
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT_TYPE, EVENT_TYPE);
 
         //Event participant related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT_PARTICIPANT, EVENT_PARTICIPANT);
@@ -244,20 +237,10 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.OccupationEntry.CONTENT_TYPE;
 
             case EVENT:
-            case EVENT_BY_TYPE_ID:
                 return GrappboxContract.EventEntry.CONTENT_TYPE;
             case EVENT_BY_ID:
             case EVENT_BY_GRAPPBOX_ID:
                 return GrappboxContract.EventEntry.CONTENT_ITEM_TYPE;
-
-            case EVENT_TYPE:
-                return GrappboxContract.EventTypeEntry.CONTENT_TYPE;
-
-            case EVENT_PARTICIPANT:
-                return GrappboxContract.EventTypeEntry.CONTENT_TYPE;
-            case EVENT_PARTICIPANT_BY_EVENT_ID:
-            case EVENT_PARTICIPANT_BY_GRAPPBOX_EVENT_ID:
-                return GrappboxContract.EventTypeEntry.CONTENT_ITEM_TYPE;
 
             case TIMELINE:
             case TIMELINE_BY_PROJECT_ID:
@@ -295,10 +278,10 @@ public class GrappboxProvider extends ContentProvider {
             case TAG:
             case TAG_BY_PROJECT_ID:
             case TAG_BY_GRAPPBOX_PROJECT_ID:
-                return GrappboxContract.TagEntry.CONTENT_TYPE;
+                return GrappboxContract.BugtrackerTagEntry.CONTENT_TYPE;
             case TAG_BY_ID:
             case TAG_BY_GRAPPBOX_ID:
-                return GrappboxContract.TagEntry.CONTENT_ITEM_TYPE;
+                return GrappboxContract.BugtrackerTagEntry.CONTENT_ITEM_TYPE;
 
             case BUG:
                 return GrappboxContract.BugEntry.CONTENT_TYPE;
@@ -354,10 +337,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.CloudEntry.TABLE_NAME;
             case EVENT:
                 return GrappboxContract.EventEntry.TABLE_NAME;
-            case EVENT_TYPE:
-                return GrappboxContract.EventTypeEntry.TABLE_NAME;
             case TAG:
-                return GrappboxContract.TagEntry.TABLE_NAME;
+                return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -416,12 +397,6 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case EVENT_BY_GRAPPBOX_ID:
                 retCursor = EventCursors.query_EventByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
-                break;
-            case EVENT_BY_TYPE_ID:
-                retCursor = EventCursors.query_EventByTypeId(uri, projection, selection, args, sortOrder, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                retCursor = EventTypeCursors.query_EventType(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case EVENT_PARTICIPANT:
                 retCursor = EventParticipantCursors.query_EventParticipant(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -622,9 +597,6 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 returnedUri = EventCursors.insert(uri, contentValues, mOpenHelper);
                 break;
-            case EVENT_TYPE:
-                returnedUri = EventTypeCursors.insert(uri, contentValues, mOpenHelper);
-                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -688,9 +660,6 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 ret = EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
-            case EVENT_TYPE:
-                ret = EventTypeCursors.update(uri, contentValues, selection, args, mOpenHelper);
-                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -737,9 +706,6 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case EVENT:
                 returnCount = EventCursors.bulkInsert(uri, values, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                returnCount = EventTypeCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

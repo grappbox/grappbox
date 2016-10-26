@@ -7,7 +7,7 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
-import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
+import com.grappbox.grappbox.data.GrappboxContract.BugtrackerTagEntry;
 
 /**
  * Created by marcw on 30/08/2016.
@@ -15,15 +15,15 @@ import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
 public class TagCursors {
     private static final SQLiteQueryBuilder sQueryBuilder;
 
-    private static final String sTagIdSelection = TagEntry.TABLE_NAME + "." + TagEntry._ID + "=?";
-    private static final String sTagGrappboxIdSelection = TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_GRAPPBOX_ID + "=?";
+    private static final String sTagIdSelection = BugtrackerTagEntry.TABLE_NAME + "." + BugtrackerTagEntry._ID + "=?";
+    private static final String sTagGrappboxIdSelection = BugtrackerTagEntry.TABLE_NAME + "." + BugtrackerTagEntry.COLUMN_GRAPPBOX_ID + "=?";
     private static final String sProjectIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID + "=?";
     private static final String sProjectGrappboxIdSelection = ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_GRAPPBOX_ID + "=?";
 
     static {
         sQueryBuilder = new SQLiteQueryBuilder();
-        sQueryBuilder.setTables(TagEntry.TABLE_NAME + " INNER JOIN " + ProjectEntry.TABLE_NAME +
-        " ON " + TagEntry.TABLE_NAME + "." + TagEntry.COLUMN_LOCAL_PROJECT_ID +
+        sQueryBuilder.setTables(BugtrackerTagEntry.TABLE_NAME + " INNER JOIN " + ProjectEntry.TABLE_NAME +
+        " ON " + BugtrackerTagEntry.TABLE_NAME + "." + BugtrackerTagEntry.COLUMN_LOCAL_PROJECT_ID +
         " = " + ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID);
     }
 
@@ -48,14 +48,14 @@ public class TagCursors {
     }
 
     public static Uri insert(Uri uri, ContentValues contentValues, GrappboxDBHelper mOpenHelper) {
-        long id = mOpenHelper.getWritableDatabase().insert(TagEntry.TABLE_NAME, null, contentValues);
+        long id = mOpenHelper.getWritableDatabase().insert(BugtrackerTagEntry.TABLE_NAME, null, contentValues);
 
         if (id < 0)
             return null;
-    return TagEntry.buildTagWithLocalIdUri(id);
+    return BugtrackerTagEntry.buildTagWithLocalIdUri(id);
     }
 
     public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
-        return mOpenHelper.getWritableDatabase().update(TagEntry.TABLE_NAME, contentValues, selection, args);
+        return mOpenHelper.getWritableDatabase().update(BugtrackerTagEntry.TABLE_NAME, contentValues, selection, args);
     }
 }
