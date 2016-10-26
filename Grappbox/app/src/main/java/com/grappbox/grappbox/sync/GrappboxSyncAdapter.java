@@ -135,7 +135,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects/" + apiToken);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
@@ -223,7 +223,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/projects/users/"+ apiProjectId);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/users/"+ apiProjectId);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");

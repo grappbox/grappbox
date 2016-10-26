@@ -8,11 +8,17 @@ import android.util.Log;
 import com.grappbox.grappbox.data.GrappboxContract.*;
 
  /**
- * Created by marcw on 29/08/2016.
- */
+  * Created by Marc Wieser on 29/08/2016.
+  * If you have any problem or question about this work
+  * please contact the author at marc.wieser33@gmail.com
+  *
+  * The following code is owned by GrappBox you can't
+  * use it without any authorization or special instructions
+  * GrappBox © 2016
+  */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 3;
-    public static final String DATABASE_NAME = "grappbox-dev.db";
+    private static final int DATABASE_VERSION  = 4;
+    public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
     public GrappboxDBHelper(Context context)

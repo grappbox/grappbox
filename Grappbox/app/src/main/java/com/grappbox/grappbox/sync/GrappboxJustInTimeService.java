@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.sync;
 
+import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.app.Activity;
 import android.app.DownloadManager;
@@ -16,9 +17,11 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.OpenableColumns;
+import android.provider.Settings;
 import android.support.annotation.Nullable;
 import android.support.v4.app.TaskStackBuilder;
 import android.support.v4.os.ResultReceiver;
@@ -57,6 +60,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.Set;
 
@@ -96,6 +100,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_EDIT_BUGTAG = "com.grappbox.grappbox.sync.ACTION_EDIT_BUGTAG";
     public static final String ACTION_REMOVE_BUGTAG = "com.grappbox.grappbox.sync.ACTION_REMOVE_BUGTAG";
     public static final String ACTION_SET_PARTICIPANT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT";
+    public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -226,9 +231,68 @@ public class GrappboxJustInTimeService extends IntentService {
             } else if (ACTION_SET_PARTICIPANT.equals(action)){
                 Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
                 handleBugSetParticipant(intent.getLongExtra(EXTRA_BUG_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
+            } else if (ACTION_LOGIN.equals(action)) {
+                handleLogin(intent.getStringExtra(EXTRA_MAIL), Utils.Security.decryptString(intent.getStringExtra(EXTRA_CRYPTED_PASSWORD)), responseObserver);
             }
         }
     }
+
+    private void handleLogin(String mail, String password, @Nullable ResultReceiver responseObserver) {
+        HttpURLConnection connection = null;
+        String returnedJson;
+        AccountManager am = AccountManager.get(this);
+        Bundle answer = new Bundle();
+
+
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/account/login");
+            //Ask login
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put("login", mail);
+            data.put("password", password);
+            data.put("mac", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
+            data.put("flag", "and");
+            data.put("device_name", Build.MODEL + " " + Build.SERIAL);
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.connect();
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            Log.d(LOG_TAG, json.toString());
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                    responseObserver.send(Activity.RESULT_CANCELED, null);
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null)
+                    responseObserver.send(Activity.RESULT_CANCELED, null);
+                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            data = json.getJSONObject("data");
+            Calendar cal = Calendar.getInstance();
+            cal.add(Calendar.DATE, 1);
+            cal.add(Calendar.HOUR, -2);
+            answer.putString(AccountManager.KEY_ACCOUNT_NAME, mail);
+            answer.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.sync_account_type));
+            answer.putSerializable(EXTRA_API_TOKEN, data.getString("token"));
+            answer.putString(AccountManager.KEY_AUTHTOKEN, data.getString("token"));
+            answer.putString(EXTRA_CRYPTED_PASSWORD, Utils.Security.cryptString(password));
+            if (responseObserver != null)
+                responseObserver.send(Activity.RESULT_OK, answer);
+        } catch (IOException | JSONException | NetworkErrorException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
 
     private void handleBugSetParticipant(long bugId, List<Long> toAdd, List<Long> toDel, ResultReceiver responseObserver) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
@@ -1888,7 +1952,7 @@ public class GrappboxJustInTimeService extends IntentService {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects/" + apiToken);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
