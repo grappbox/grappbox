@@ -5,4 +5,7 @@ User-agent: *
 Disallow: /resources
 Disallow: /bundles
 
+User-agent: Googlebot
+Allow: /resources
+
 Sitemap: https://grappbox.com/sitemap.xml
