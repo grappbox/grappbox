@@ -638,7 +638,7 @@ task_taskCreation:
   methods: [POST]
 
 task_taskUpdate:
-  path:       tasks/{id}
+  path:       task/{id}
   defaults:   { _controller: SQLBundle:Task:updateTask, _format: json }
   requirements:
     id: \d+
@@ -813,7 +813,7 @@ user_getIdByEmail:
   defaults:   { _controller: SQLBundle:User:getIdByEmail, _format: json }
   requirements:
   methods: [GET]
-    
+
 user_getUserAvatar:
   path:       user/avatar/{userId}
   defaults:   { _controller: SQLBundle:User:getUserAvatar, _format: json }
