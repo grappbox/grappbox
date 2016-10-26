@@ -7,6 +7,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.CursorIndexOutOfBoundsException;
+import android.database.CursorJoiner;
 import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
@@ -213,7 +214,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         String offset = String.valueOf(mAdapter.getItemCount());
-        String limit = String.valueOf(TIMELINE_LIMIT);
+        String limit = String.valueOf(TIMELINE_LIMIT /** (mAdapter.getItemCount() / TIMELINE_LIMIT + 1)*/);
         if (args != null){
             offset = args.getString(TIMELINE_BUNDLE_OFFSET);
             limit = args.getString(TIMELINE_BUNDLE_LIMIT);
@@ -299,10 +300,10 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         }
         List<TimelineModel> models = new ArrayList<>();
         Cursor oldMessage = mAdapter.swapCursor(data);
-        if (oldMessage != null)
+        if (oldMessage != null && oldMessage != data)
         {
             Cursor newCursor = new MergeCursor(new Cursor[]{oldMessage, data});
-            mAdapter.getCursorAdapter().swapCursor(newCursor);
+            mAdapter.swapCursor(newCursor);
         }
         Cursor message = mAdapter.getCursorAdapter().getCursor();
         if (message == null || !message.moveToFirst())
@@ -318,7 +319,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        loader.forceLoad();
+        mAdapter.getCursorAdapter().changeCursor(null);
     }
 
     class AdapterObserver extends RecyclerView.AdapterDataObserver {

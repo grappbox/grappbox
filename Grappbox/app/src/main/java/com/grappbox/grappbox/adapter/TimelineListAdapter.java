@@ -92,6 +92,9 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mRecyclerView = rv;
         mExpandedPosition = -1;
         mCursorAdapter = new CursorAdapter(mContext, null, 0) {
+
+            List<Cursor> mCursor = new ArrayList<>();
+
             @Override
             public View newView(Context context, Cursor cursor, ViewGroup parent) {
                 return null;
@@ -99,8 +102,16 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
             @Override
             public Cursor swapCursor(Cursor newCursor) {
-                if (newCursor == null || !newCursor.moveToFirst())
-                    return super.swapCursor(newCursor);
+                /*if (newCursor == null || !newCursor.moveToFirst() || getCursor() == newCursor)
+                    return super.swapCursor(newCursor);*/
+                return super.swapCursor(newCursor);
+                /*
+                for (Cursor cursor : mCursor)
+                {
+                    if (cursor == newCursor)
+                        return super.swapCursor(getCursor());
+                }
+                mCursor.add(newCursor);
                 int i;
                 MatrixCursor newMessages = new MatrixCursor(projectionMessageRow);
                 do {
@@ -133,7 +144,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 if (newMessages.getCount() > 0)
                     finals.add(newMessages);
                 Cursor[] finalArray = finals.toArray(new Cursor[finals.size()]);
-                return super.swapCursor(new MergeCursor(finalArray));
+                return super.swapCursor(new MergeCursor(finalArray));*/
             }
 
             @Override
