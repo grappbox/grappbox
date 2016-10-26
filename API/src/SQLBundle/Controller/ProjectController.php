@@ -1942,7 +1942,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 
-		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projectId'=> $project->getId()));
+		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects'=> $project->getId()));
 		foreach ($bugs as $key => $bug) {
 			$bug->removeUser($user);
 		}
@@ -2132,7 +2132,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 		
-		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projectId'=> $project->getId()));
+		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects'=> $project->getId()));
 		foreach ($bugs as $key => $bug) {
 			$bug->removeUser($userToRemove);
 		}
