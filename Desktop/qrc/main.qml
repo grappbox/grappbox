@@ -77,8 +77,8 @@ Item {
                                         "communication/forum",
                                         "action/bug_report",
                                         "action/view_list",
+                                        "content/sort",
                                         "content/create",
-                                        "action/settings",
                                         "action/settings" ]
 
         property var sectionColor: [    "#FC575E",
@@ -112,8 +112,6 @@ Item {
                 actionBar.maxActionCount: 3
 
                 actionBar.backgroundColor: "#f4c"
-
-                //actionBar.anchors.left: content.right
 
                 actions: [
 
@@ -157,6 +155,7 @@ Item {
                         onTriggered: {
                             SDataManager.changeProject()
                             demo.selectedComponent = "Dashboard"
+                            page.actionBar.backgroundColor = "#FC575E"
                         }
                     },
 

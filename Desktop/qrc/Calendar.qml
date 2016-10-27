@@ -37,6 +37,8 @@ Item {
         firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
     }
 
+    signal resetSelection()
+
     CalendarModel {
         id: calendarModel
 
@@ -54,12 +56,10 @@ Item {
         anchors.bottom: parent.bottom
         anchors.right: taskView.left
 
-        contentHeight: Math.max(viewCalendar.height, eventView.height, parent.height)
+        contentHeight: Math.max(viewCalendar.height + Units.dp(16), eventView.height, parent.height)
 
         View {
             id: viewCalendar
-
-            visible: !calendarModel.eventMonthLoading
 
             anchors.top: parent.top
             anchors.left: parent.left
@@ -72,7 +72,9 @@ Item {
             Column {
                 anchors.topMargin: Units.dp(8)
                 anchors.bottomMargin: Units.dp(8)
-                anchors.fill: parent
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
                 id: columnMain
 
                 Label {
@@ -105,6 +107,14 @@ Item {
                         height: Units.dp(32)
                         anchors.verticalCenter: parent.verticalCenter
                         anchors.horizontalCenter: parent.horizontalCenter
+
+                        onClicked: {
+                            calendarItem.currentDate = new Date(calendarItem.todayDate.getFullYear(), calendarItem.todayDate.getMonth(), 1)
+                            monthText.text = Qt.formatDate(calendarItem.currentDate, "MMMM yyyy")
+                            firstMondayDate = new Date(calendarItem.currentDate.getFullYear(), calendarItem.currentDate.getMonth(), calendarItem.currentDate.getDate())
+                            firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
+                            calendarModel.goToMonth(calendarItem.currentDate)
+                        }
                     }
 
                     Button {
@@ -146,6 +156,23 @@ Item {
                             firstMondayDate.setDate(calendarItem.currentDate.getDate() - calendarItem.currentDate.getDay())
                             calendarModel.goToMonth(calendarItem.currentDate)
                         }
+                    }
+                }
+
+                Separator {}
+
+                Button {
+                    id: addEventButton
+
+                    backgroundColor: "#44BBFF"
+                    textColor: "#FFFFFF"
+                    text: "Add a new event"
+                    anchors.horizontalCenter: parent.horizontalCenter
+
+                    onClicked: {
+                        eventView.onAdd = true
+                        eventView.onEdit = false
+                        eventView.visible = true
                     }
                 }
 
@@ -204,12 +231,20 @@ Item {
 
                         property int dayOffset: modelData
 
+                        onWidthChanged: {
+                            console.log(width)
+                        }
+
                         Repeater {
                             model: [0, 1, 2, 3, 4, 5, 6]
                             delegate: CalendarCase {
-                                height: parent.width / 7
+                                height: parent.height
                                 width: parent.width / 7
-                                isSelected: dateInfo === daySelected
+                                isSelected: false
+
+                                visibleCircle: !calendarModel.eventMonthLoading
+
+                                property bool initialized: false
 
                                 function updateInfo() {
                                     dateInfo = new Date(firstMondayDate.valueOf())
@@ -219,13 +254,21 @@ Item {
                                     isWeekEnd = modelData == 0 || modelData == 6
                                 }
 
+                                function removeSelectionCase() {
+                                    isSelected = false;
+                                    calendarItem.resetSelection.disconnect(removeSelectionCase)
+                                }
+
                                 Component.onCompleted: {
                                     updateInfo()
                                     calendarModel.eventDayChanged.connect(updateNumbers)
                                 }
 
                                 onSelected: {
+                                    calendarItem.resetSelection()
+                                    calendarItem.resetSelection.connect(removeSelectionCase)
                                     daySelected = dateInfo
+                                    isSelected = true
                                     calendarModel.loadEventDay(dateInfo)
                                     taskView.open = true
                                 }
@@ -233,8 +276,6 @@ Item {
                                 function updateNumbers()
                                 {
                                     numberOfEvent = calendarModel.getEventDayCount(new Date(dateInfo.getFullYear(), dateInfo.getMonth(), dateInfo.getDate()));
-                                    if (numberOfEvent > 0)
-                                        console.log("Event found : ", numberOfEvent)
                                     updateInfo();
                                 }
 
@@ -273,21 +314,5 @@ Item {
 
     Scrollbar {
         flickableItem: flickableMain
-    }
-
-    ActionButton {
-        anchors {
-            right: parent.right
-            bottom: parent.bottom
-            margins: Units.dp(32)
-        }
-
-        iconName: "content/add"
-
-        onClicked: {
-            eventView.onAdd = true
-            eventView.onEdit = false
-            eventView.visible = true
-        }
     }
 }

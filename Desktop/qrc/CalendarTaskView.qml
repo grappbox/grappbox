@@ -61,6 +61,16 @@ Item {
                     }
                 }
             }
+
+            Label {
+                id: noEventsFound
+                anchors.fill: parent
+                anchors.topMargin: Units.dp(32)
+                visible: calendarModel.eventDay.length === 0
+                text: "No events found for this date."
+                verticalAlignment: Text.AlignTop
+                horizontalAlignment: Text.AlignHCenter
+            }
         }
 
         Scrollbar {

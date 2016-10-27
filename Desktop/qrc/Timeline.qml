@@ -100,9 +100,20 @@ Item {
             }
         }
 
+        Label {
+            id: noMessageClient
+            text: "Be the first to create a message for your client !"
+            style: "title"
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: Units.dp(32)
+            visible: modelTimeline.timelineClient.length === 0
+        }
+
         Rectangle {
             id: lineClient
             color: "grey"
+            visible: modelTimeline.timelineClient.length > 0
 
             anchors.horizontalCenter: parent.width >= 1170 ? parent.horizontalCenter : undefined
             anchors.left: parent.width >= 1170 ? undefined : parent.left
@@ -180,9 +191,20 @@ Item {
             }
         }
 
+        Label {
+            id: noMessageTeam
+            text: "Be the first to create a message for your team !"
+            style: "title"
+            anchors.top: parent.top
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.topMargin: Units.dp(32)
+            visible: modelTimeline.timelineTeam.length === 0
+        }
+
         Rectangle {
             id: lineTeam
             color: "grey"
+            visible: modelTimeline.timelineTeam.length > 0
 
             anchors.horizontalCenter: parent.width >= 1170 ? parent.horizontalCenter : undefined
             anchors.left: parent.width >= 1170 ? undefined : parent.left

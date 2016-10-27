@@ -19,6 +19,8 @@ Rectangle {
     property int numberOfDay: 1
     property var dateInfo
 
+    property alias visibleCircle: circle.circleVisible
+
     border.color: "#E0E0E0"
     border.width: 1
 
@@ -33,16 +35,8 @@ Rectangle {
         anchors.fill: parent
         hoverEnabled: true
 
-        onHoveredChanged: {
-            if (containsMouse && numberOfEvent > 0)
-                mouseCursor.cursorShape = Qt.PointingHandCursor
-            else
-                mouseCursor.cursorShape = Qt.ArrowCursor
-        }
-
         onClicked: {
-            if (containsMouse && numberOfEvent > 0)
-                selected()
+            selected()
         }
     }
 
@@ -57,12 +51,14 @@ Rectangle {
 
     Rectangle {
         id: circle
-        visible: caseDay.numberOfEvent > 0
+        visible: caseDay.numberOfEvent > 0 && circleVisible
         anchors.left: parent.left
         anchors.top: parent.top
         anchors.margins: Units.dp(8)
         height: 25
         width: 25
+
+        property bool circleVisible: false
 
         smooth: true
         radius: Math.max(width / 2, height / 2)

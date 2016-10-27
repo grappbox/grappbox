@@ -72,7 +72,7 @@ DataConnectorOnline::DataConnectorOnline()
     _PostMap[PR_LOGIN] = "account/login";
     _PostMap[PR_ROLE_ADD] = "role";
     _PostMap[PR_ROLE_ASSIGN] = "role/user";
-    _PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "projects/generatecustomeraccess";
+    _PostMap[PR_CUSTOMER_GENERATE_ACCESS] = "project/customeraccess";
     _PostMap[PR_CREATE_BUG] = "bugtracker/ticket";
     _PostMap[PR_COMMENT_BUG] = "bugtracker/comment";
     _PostMap[PR_CREATE_BUG_TAG] = "bugtracker/tag";
@@ -83,15 +83,15 @@ DataConnectorOnline::DataConnectorOnline()
     _PostMap[PR_CREATE_DIRECTORY] = "cloud/createdir";
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
     _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
-    _PostMap[PR_ADD_USER_PROJECT] = "projects/addusertoproject";
+    _PostMap[PR_ADD_USER_PROJECT] = "project/user";
     _PostMap[PR_CREATE_PROJECT] = "project";
 
 	// Initialize Delete request
-    _DeleteMap[DR_PROJECT_ROLE] = "roles/delprojectroles";
+    _DeleteMap[DR_PROJECT_ROLE] = "role";
 	_DeleteMap[DR_ROLE_DETACH] = "";
-    _DeleteMap[DR_PROJECT_USER] = "projects/removeusertoproject";
+    _DeleteMap[DR_PROJECT_USER] = "project/user";
 	_DeleteMap[DR_PROJECT] = "";
-    _DeleteMap[DR_CUSTOMER_ACCESS] = "projects/delcustomeraccess";
+    _DeleteMap[DR_CUSTOMER_ACCESS] = "project/customeraccess";
     _DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/ticket/close";
     _DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/tag";
     _DeleteMap[DR_REMOVE_TAG_TO_BUG] = "bugtracker/tag/remove";
@@ -118,9 +118,9 @@ DataConnectorOnline::DataConnectorOnline()
     _PutMap[PUTR_EDIT_COMMENT_TIMELINE] = "timeline/comment";
     _PutMap[PUTR_SEND_CHUNK] = "cloud/file";
     _PutMap[PUTR_ASSIGNUSER_BUG] = "bugtracker/users";
-    _PutMap[PUTR_EDIT_PROJECT] = "projects/updateinformations";
+    _PutMap[PUTR_EDIT_PROJECT] = "project";
     _PutMap[PUTR_ROLE_USER] = "role/user";
-    _PutMap[PUTR_ROLE] = "roles/putprojectroles";
+    _PutMap[PUTR_ROLE] = "role";
 }
 
 void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
@@ -173,7 +173,8 @@ void DataConnectorOnline::OnResponseAPI()
 	}
 	else
     {
-        if (request->attribute(QNetworkRequest::HttpStatusCodeAttribute).toString() == "302")
+        qDebug() << request->header(QNetworkRequest::LocationHeader).toString();
+        if (request->header(QNetworkRequest::LocationHeader).toString() != "")
         {
             req = QByteArray::fromStdString(request->header(QNetworkRequest::LocationHeader).toString().toStdString());
         }
@@ -460,7 +461,7 @@ int API::DataConnectorOnline::Put(DataPart part, int request, QVector<QString>& 
 
 int API::DataConnectorOnline::Request(RequestType type, DataPart part, int request, QMap<QString, QVariant>& data, QObject * requestResponseObject, const char * slotSuccess, const char * slotFailure)
 {
-    qDebug() << "[API][REQUEST][" << ((type == RT_POST) ? "POST" : (type == RT_PUT ? "PUT" : (type == RT_GET ? "GET" : "DELETE"))) << "] : " << part;
+    qDebug() << "[API][REQUEST][" << ((type == RT_POST) ? "POST" : (type == RT_PUT ? "PUT" : (type == RT_GET ? "GET" : "DELETE"))) << "] : " << request;
     QNetworkReply *reply = nullptr;
 	switch (type)
 	{

@@ -2,6 +2,7 @@
 #define PROJECTSETTINGSMODEL_H
 
 #include <QObject>
+#include <QCryptographicHash>
 #include "API/SDataManager.h"
 #include "ProjectData.h"
 
@@ -213,6 +214,9 @@ public:
     Q_INVOKABLE void addNewRole(QString name, QList<int> roleValue);
     Q_INVOKABLE void deleteRole(int id);
     Q_INVOKABLE void updateRole(int id, QList<int> roleValue);
+    Q_INVOKABLE void changePassword(QString oldPass, QString newPass);
+    Q_INVOKABLE void leaveProject();
+    Q_INVOKABLE void deleteProject();
 
     ProjectData* project() const { return m_project; }
     QVariantList roles() const

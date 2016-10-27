@@ -324,6 +324,7 @@ void CloudController::sendFile(QUrl file, QString password)
             if (_CurrentTransit->password() != "")
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
+            qDebug() << "OPEN STREAM";
             GENERATE_JSON_DEBUG;
         }
         END_REQUEST;
@@ -351,6 +352,7 @@ void CloudController::SendChunckFile()
         ADD_FIELD("file_chunk", array);
         ADD_FIELD("chunk_numbers", _TotalChunckNumber);
         PUT(API::DP_CLOUD, API::PUTR_SEND_CHUNK);
+        qDebug() << "SEND CHUNK";
     }
     END_REQUEST;
 }
@@ -531,8 +533,7 @@ void CloudController::OnSendChunkSuccess(int id, QByteArray array)
 void CloudController::OnSendChunkFailed(int id, QByteArray array)
 {
 	Q_UNUSED(id)
-	Q_UNUSED(array)
-    qDebug() << "Hello";
+    Q_UNUSED(array)
     SInfoManager::GetManager()->error("Cloud", "Unable to send file. Please check your access to the cloud or try again later.");
     _CurrentTransit->setProgress(100);
     _PendingFiles.removeAll(_CurrentTransit);

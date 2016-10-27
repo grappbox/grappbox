@@ -72,7 +72,20 @@ View {
             isLandscape: true
         }
         onAccepted: {
-            objectDate.dateIn = inDatePicker.selectedDate
+            objectDate.dateIn = inDatePicker.selectedDate;
+            if (buttonDateBegin.dateIn > buttonDateEnd.dateIn)
+                buttonDateEnd.dateIn = new Date(buttonDateBegin.dateIn.getFullYear(), buttonDateBegin.dateIn.getMonth(), buttonDateBegin.dateIn.getDate());
+            if (buttonDateBegin.dateIn.getFullYear() === buttonDateEnd.dateIn.getFullYear() &&
+                    buttonDateBegin.dateIn.getMonth() === buttonDateEnd.dateIn.getMonth() &&
+                    buttonDateBegin.dateIn.getDate() === buttonDateEnd.dateIn.getDate())
+            {
+                if (buttonTimeBegin.timeIn > buttonTimeEnd.timeIn)
+                {
+                    console.log("TIME CHANGED !");
+                    buttonTimeBegin.timeIn = new Date(buttonTimeBegin.timeIn.getFullYear(), buttonTimeBegin.timeIn.getMonth(), buttonTimeBegin.timeIn.getDate(), buttonTimeBegin.timeIn.getHours(), buttonTimeBegin.timeIn.getMinutes(), buttonTimeBegin.timeIn.getSeconds())
+
+                }
+            }
         }
     }
 
@@ -84,14 +97,45 @@ View {
 
         property var objectDate
 
-        TimePicker {
+        CalendarTimePicker {
             id: inTimePicker
-            prefer24Hour: false
-
-
+            prefer24Hour: true
+            bottomMargin: Units.dp(48)
         }
+
         onAccepted: {
             objectDate.timeIn = inTimePicker.getCurrentTime()
+            console.log(inTimePicker.getCurrentTime())
+            if (buttonDateBegin.dateIn > buttonDateEnd.dateIn)
+                buttonDateEnd.dateIn = new Date(buttonDateBegin.dateIn.getFullYear(), buttonDateBegin.dateIn.getMonth(), buttonDateBegin.dateIn.getDate());
+            if (buttonDateBegin.dateIn.getFullYear() === buttonDateEnd.dateIn.getFullYear() &&
+                    buttonDateBegin.dateIn.getMonth() === buttonDateEnd.dateIn.getMonth() &&
+                    buttonDateBegin.dateIn.getDate() === buttonDateEnd.dateIn.getDate())
+            {
+                if (buttonTimeBegin.timeIn > buttonTimeEnd.timeIn)
+                {
+                    console.log("TIME CHANGED !");
+                    buttonTimeBegin.timeIn = new Date(buttonTimeBegin.timeIn.getFullYear(), buttonTimeBegin.timeIn.getMonth(), buttonTimeBegin.timeIn.getDate(), buttonTimeBegin.timeIn.getHours(), buttonTimeBegin.timeIn.getMinutes(), buttonTimeBegin.timeIn.getSeconds())
+
+                }
+            }
+        }
+    }
+
+    IconButton {
+        iconName: "content/clear"
+        width: Units.dp(32)
+        height: Units.dp(32)
+
+        anchors.right: parent.right
+        anchors.top: parent.top
+        anchors.topMargin: Units.dp(16)
+        anchors.rightMargin: Units.dp(16)
+
+        visible: !onAdd && !onEdit
+
+        onClicked: {
+            itemView.visible = false
         }
     }
 
@@ -102,23 +146,9 @@ View {
         anchors.right: parent.right
         anchors.margins: Units.dp(16)
 
-        IconTextButton {
-            iconName: "hardware/keyboard_backspace"
-            text: "BACK"
-            width: Units.dp(120)
-            height: Units.dp(32)
-            elevation: 0
-
-            visible: !onAdd && !onEdit
-
-            onClicked: {
-                itemView.visible = false
-            }
-        }
-
         Label {
             id: viewTitle
-            text: (!visible || onAdd) ? "Title" : eventData.title
+            text: (!visible || onAdd) ? "" : eventData.title
             style: "title"
             visible: !onAdd && !onEdit
         }
@@ -127,6 +157,7 @@ View {
             id: editTitle
             text: viewTitle.text
             visible: onAdd || onEdit
+            placeholderText: "Title"
             anchors.left: parent.left
             anchors.right: parent.right
         }
@@ -166,7 +197,7 @@ View {
 
         Label {
             id: viewDescription
-            text: (!visible || onAdd) ? "Description" : eventData.description
+            text: (!visible || onAdd) ? "" : eventData.description
             style: "body1"
             wrapMode: Text.Wrap
             visible: !onAdd && !onEdit
@@ -176,6 +207,7 @@ View {
             id: editDescription
             text: viewDescription.text
             visible: onAdd || onEdit
+            placeHolderText: "Description"
             height: Units.dp(86)
             anchors.left: parent.left
             anchors.right: parent.right

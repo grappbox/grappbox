@@ -42,6 +42,7 @@
         <file>qrc/WhiteboardColorPopup.qml</file>
         <file>qrc/Login.qml</file>
         <file>qrc/TagColorChoicer.qml</file>
+        <file>qrc/CalendarTimePicker.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

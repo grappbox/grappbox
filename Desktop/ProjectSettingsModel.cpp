@@ -39,7 +39,7 @@ void ProjectSettingsModel::modifyInformation(QString title, QString description,
     {
         EPURE_WARNING_INDEX
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
-        ADD_FIELD("projectId", m_idProject);
+        ADD_URL_FIELD(m_idProject);
         ADD_FIELD("name", title);
         ADD_FIELD("description", description);
         ADD_FIELD("phone", phone);
@@ -174,7 +174,7 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
     {
         EPURE_WARNING_INDEX
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
-        ADD_FIELD("roleId", id);
+        ADD_URL_FIELD(id);
         int i = 0;
         for (QString var : ROLE_API_ARRAY_ADD)
         {
@@ -185,6 +185,31 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
         PUT(API::DP_PROJECT, API::PUTR_ROLE);
     }
     END_REQUEST;
+}
+
+void ProjectSettingsModel::changePassword(QString oldPass, QString newPass)
+{
+    BEGIN_REQUEST_ADV(this, "onModifyInformationDone", "onModifyInformationFail");
+    {
+        EPURE_WARNING_INDEX
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_idProject);
+        ADD_FIELD("password", QCryptographicHash::hash(newPass.toLocal8Bit(), QCryptographicHash::Sha512).toHex());
+        ADD_FIELD("oldPassword", QCryptographicHash::hash(oldPass.toLocal8Bit(), QCryptographicHash::Sha512).toHex());
+        GENERATE_JSON_DEBUG;
+        PUT(API::DP_PROJECT, API::PUTR_EDIT_PROJECT);
+    }
+    END_REQUEST;
+}
+
+void ProjectSettingsModel::leaveProject()
+{
+
+}
+
+void ProjectSettingsModel::deleteProject()
+{
+
 }
 
 void ProjectSettingsModel::onLoadProjectInfoDone(int id, QByteArray data)

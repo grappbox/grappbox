@@ -32,8 +32,7 @@ Item {
         }
 
         Component.onCompleted: {
-            controller.login(email.text, password.text)
-            loginItem.isLoading = true
+
         }
 
         onLogoutSuccess: {

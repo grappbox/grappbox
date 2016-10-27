@@ -109,6 +109,10 @@ Column {
             text: "Change"
             enabled: newPassword.text != "" && newPasswordConfirm.text != "" && oldPassword.text != "" && newPassword.text == newPasswordConfirm.text
             textColor: Theme.primaryColor
+
+            onClicked: {
+                projectSettingsModel.changePassword(oldPassword.text, newPassword.text);
+            }
         }
 
     }
@@ -124,7 +128,7 @@ Column {
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: "This function is not yet implemented."//"If you click on the button bellow named \"Destroy the project\" you will have 7 days to retrieve it. After that the project will be destroyed and you will not be able to retrieve it. Use this button only if you are sure of you !"
+        text: "If you click on the button bellow named \"Destroy the project\" you will have 7 days to retrieve it. After that the project will be destroyed and you will not be able to retrieve it. Use this button only if you are sure of you !"
         style: "body2"
         wrapMode: Text.Wrap
         color: Theme.primaryColor
@@ -148,7 +152,7 @@ Column {
     Label {
         anchors.left: parent.left
         anchors.right: parent.right
-        text: "This function is not yet implemented."//"If you click on the button bellow named \"Leave the project\" you will leave the project and not be able to undo this action. An other member of your project will have to invite you if you want to be part of the project again."
+        text: "If you click on the button bellow named \"Leave the project\" you will leave the project and not be able to undo this action. An other member of your project will have to invite you if you want to be part of the project again."
         style: "body2"
         wrapMode: Text.Wrap
         color: Theme.primaryColor
