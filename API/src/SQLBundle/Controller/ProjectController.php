@@ -374,8 +374,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiParam {String} [email] Email for the project
 	* @apiParam {String} [facebook] Facebook of the project
 	* @apiParam {String} [twitter] Twitter of the person
-	* @apiParam {String} [password] New safe password for the project hashed in SHA-1 512
-	* @apiParam {String} [oldPassword] Old safe password for the project hashed in SHA-1 512
+	* @apiParam {String} [password] New safe password for the project
+	* @apiParam {String} [oldPassword] Old safe password for the project
 	*
 	* @apiParamExample {json} Request-Full-Example:
 	*	{
@@ -486,6 +486,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "6.2.4",
 	*			"return_message": "Project - updateinformations - Bad Parameter: projectId"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: oldPassword
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.4",
+	*			"return_message": "Project - updateinformations - Bad Parameter: oldPassword"
 	*		}
 	*	}
 	* @apiErrorExample Reading Error: role
@@ -705,7 +713,7 @@ class ProjectController extends RolesAndTokenVerificationController
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
 			$passwordEncrypted = ($content->oldPassword ? $this->grappSha1($content->oldPassword) : NULL);
 			if ($passwordEncrypted != $project->getSafePassword())
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: oldPassword");
 			$project->setSafePassword($content->password);
 		}
 
