@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "563262793830",
+    "firebase_url": "https://grappbox-b56bc.firebaseio.com",
+    "project_id": "grappbox-b56bc",
+    "storage_bucket": "grappbox-b56bc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563262793830:android:a77b5fbc40b9a326",
+        "android_client_info": {
+          "package_name": "com.grappbox.grappbox"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563262793830-ugfs1qmes3nsu7vcmudn367jte4i3bji.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.grappbox.grappbox",
+            "certificate_hash": "C143A59A4123135E2337D3443BE727E7260C0E87"
+          }
+        },
+        {
+          "client_id": "563262793830-klmjmolgjsums6hsb0tvu50s3nkbkof3.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBa8ROMJUMA051QItZRzt6AynH7wjBTsWY"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563262793830-klmjmolgjsums6hsb0tvu50s3nkbkof3.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

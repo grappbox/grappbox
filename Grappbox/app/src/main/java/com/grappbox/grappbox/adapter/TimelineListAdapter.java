@@ -76,7 +76,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             GrappboxContract.TimelineMessageEntry.COLUMN_TITLE,
             GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE,
             GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
-            GrappboxContract.TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
             GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER,
             GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID,
             GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID

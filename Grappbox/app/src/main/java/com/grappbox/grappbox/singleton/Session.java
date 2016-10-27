@@ -26,7 +26,7 @@ public class Session {
     private Account currentAccount = null;
     private long currentProject = -1;
 
-    private void tryToInitAccount(Context context){
+    private void tryToInitAccount(Context context) throws SecurityException{
         Account[] accounts = AccountManager.get(context).getAccountsByType(context.getString(R.string.sync_account_type));
         if (accounts.length == 0)
             currentAccount = null;

@@ -3,16 +3,32 @@ package com.grappbox.grappbox.data;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteQueryBuilder;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+
+import java.util.Arrays;
 
 /**
  * Created by marcw on 30/08/2016.
  */
 public class UserCursors {
+    private static SQLiteQueryBuilder sUserWithProjectQueryBuilder;
+
+    static {
+        sUserWithProjectQueryBuilder = new SQLiteQueryBuilder();
+        sUserWithProjectQueryBuilder.setTables(UserEntry.TABLE_NAME + " INNER JOIN " + GrappboxContract.RolesAssignationEntry.TABLE_NAME +
+        " ON " + UserEntry.TABLE_NAME + "." + UserEntry._ID + " = " + GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID +
+        " INNER JOIN " + GrappboxContract.RolesEntry.TABLE_NAME +
+        " ON " + GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID + " = " + GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID +
+        " INNER JOIN " + GrappboxContract.ProjectEntry.TABLE_NAME +
+        " ON " + GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID + " = " + GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_LOCAL_PROJECT_ID);
+    }
+
     public static Cursor query_User(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return openHelper.getReadableDatabase().query(UserEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
     }
@@ -31,6 +47,10 @@ public class UserCursors {
 
     public static int update(@NonNull Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper openHelper) {
         return openHelper.getWritableDatabase().update(UserEntry.TABLE_NAME, contentValues, selection, args);
+    }
+
+    public static Cursor query_UserWithProject(@NonNull Uri url, String[] projection, String selection, String[] args, String sort, GrappboxDBHelper openHelper){
+        return sUserWithProjectQueryBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sort);
     }
 
     public static int updateWithId(@NonNull Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper openHelper) {

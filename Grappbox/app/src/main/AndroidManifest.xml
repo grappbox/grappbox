@@ -17,6 +17,7 @@
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
 
     <application
         android:allowBackup="true"
@@ -57,13 +58,25 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/authenticator" />
         </service>
+        <service
+            android:name=".sync.FirebaseCloudMessagingService"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+        <service
+            android:name=".sync.FirebaseMessagingService"
+            android:enabled="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
 
         <activity
             android:name=".AddAccountActivity"
             android:label="@string/title_activity_login_acitivty"
-            android:theme="@style/BaseTheme">
-
-        </activity>
+            android:theme="@style/BaseTheme" />
         <activity
             android:name=".ChooseProjectActivity"
             android:label="@string/app_name"
@@ -77,8 +90,16 @@
         <activity
             android:name=".ProjectActivity"
             android:label="@string/title_activity_dashboard"
-            android:theme="@style/DashboardTheme">
-
+            android:theme="@style/DashboardTheme" />
+        <activity android:name=".CriticalErrorActivity" />
+        <activity
+            android:name=".bugtracker_fragments.BugDetailsActivity"
+            android:label="@string/title_activity_bug_details"
+            android:parentActivityName=".ProjectActivity"
+            android:theme="@style/BugtrackerTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
 
         <activity android:name=".timeline_fragment.TimelineMessageCommentActivity"
@@ -89,6 +110,16 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
+
+        <activity
+            android:name=".bugtracker_fragments.NewBugActivity"
+            android:label="@string/title_activity_new_bug"
+            android:parentActivityName=".ProjectActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity" />
+        </activity>
+
     </application>
 
 </manifest>

@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 
@@ -17,6 +18,8 @@ import com.grappbox.grappbox.R;
  */
 public class GrappboxProvider extends ContentProvider {
     private static final UriMatcher sUriMatcher = buildUriMatcher();
+
+
 
     private GrappboxDBHelper mOpenHelper;
     private Context mContext;
@@ -31,6 +34,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int USER_BY_ID = 111;
     public static final int USER_BY_GRAPPBOX_ID = 112;
     public static final int USER_BY_EMAIL = 113;
+    public static final int USER_WITH_PROJECT = 114;
 
     public static final int OCCUPATION = 120;
     public static final int OCCUPATION_ALL_BY_PROJECT_ID = 121;
@@ -84,6 +88,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_ALL_JOIN = 213;
     public static final int BUG_WITH_ASSIGNATION = 214;
     public static final int BUG_WITH_TAG = 215;
+    private static final int BUG_WITH_CREATOR = 216;
 
     public static final int BUG_TAG = 220;
     public static final int BUG_TAG_BY_BUG_ID = 221;
@@ -102,6 +107,7 @@ public class GrappboxProvider extends ContentProvider {
 
 
 
+
     public static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -117,6 +123,7 @@ public class GrappboxProvider extends ContentProvider {
         //Users related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER, USER);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/email/*", USER_BY_EMAIL);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/project", USER_WITH_PROJECT);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/#", USER_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER + "/*", USER_BY_GRAPPBOX_ID);
 
@@ -180,6 +187,7 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/tag_user", BUG_ALL_JOIN);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/user_assignation", BUG_WITH_ASSIGNATION);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/tags", BUG_WITH_TAG);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/creator", BUG_WITH_CREATOR);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/#", BUG_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG + "/*", BUG_BY_GRAPPBOX_ID);
 
@@ -388,6 +396,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER_BY_EMAIL:
                 retCursor = UserCursors.query_UserByEmail(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case USER_WITH_PROJECT:
+                retCursor = UserCursors.query_UserWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case OCCUPATION:
                 retCursor = OccupationCursors.query_Occupation(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -514,6 +525,9 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_WITH_TAG:
                 retCursor = BugCursors.query_BugWithTag(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case BUG_WITH_CREATOR:
+                retCursor = BugCursors.query_BugWithCreator(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case BUG_TAG_BY_GRAPPBOX_BUG_ID:
                 retCursor = BugTagCursors.query_BugTagByGrappboxBugId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -528,6 +542,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_ASSIGNATION_BY_USER_ID:
                 retCursor = BugAssignationCursors.query_BugAssignationByUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAG:
+                retCursor = BugTagCursors.query_BugTag(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case BUG_ASSIGNATION_BY_GRAPPBOX_USER_ID:
                 retCursor = BugAssignationCursors.query_BugAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -556,7 +573,6 @@ public class GrappboxProvider extends ContentProvider {
 
         //Pre-detect conflict and handle with update method
         if (contentValues.containsKey(GrappboxContract.GENERAL_GRAPPBOX_ID)){
-
             Cursor value = query(uri, new String[]{ getTableName(uri) + "." + BaseColumns._ID}, getTableName(uri) + "." + GrappboxContract.GENERAL_GRAPPBOX_ID + "=?", new String[]{contentValues.getAsString(GrappboxContract.GENERAL_GRAPPBOX_ID)}, null);
             if (value != null && value.moveToFirst()){
                 Uri newUri = uri.buildUpon().appendPath(String.valueOf(value.getLong(0))).build();
@@ -623,7 +639,10 @@ public class GrappboxProvider extends ContentProvider {
         String tableName = getTableName(uri);
         if (tableName == null || tableName.isEmpty())
             throw new UnsupportedOperationException("Delete not implemented yet, think to implement it");
-        return mOpenHelper.getWritableDatabase().delete(tableName, selection, args);
+        int ret =  mOpenHelper.getWritableDatabase().delete(tableName, selection, args);
+        if (ret > 0)
+            getContext().getContentResolver().notifyChange(uri, null);
+        return ret;
     }
 
     @Override

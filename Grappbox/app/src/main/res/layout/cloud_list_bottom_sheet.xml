@@ -36,13 +36,13 @@
             android:paddingEnd="20dp">
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_folder"
                 android:layout_weight="1"
                 style="@style/BottomSheetImageView"/>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/directory"
                 style="@style/BottomSheetTextView"
                 android:gravity="center"
@@ -59,17 +59,15 @@
             android:paddingStart="20dp">
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_upload"
-                android:layout_weight="1"
                 style="@style/BottomSheetImageView"/>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/word_import"
                 android:gravity="center"
-                style="@style/BottomSheetTextView"
-                android:layout_weight="1"/>
+                style="@style/BottomSheetTextView" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
@@ -82,17 +80,15 @@
             android:paddingStart="20dp">
             <ImageView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:src="@drawable/ic_lock"
-                android:layout_weight="1"
                 style="@style/BottomSheetImageView"/>
             <TextView
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:text="Secured import"
+                android:layout_height="wrap_content"
+                android:text="@string/word_secured"
                 android:gravity="center"
-                style="@style/BottomSheetTextView"
-                android:layout_weight="1"/>
+                style="@style/BottomSheetTextView" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

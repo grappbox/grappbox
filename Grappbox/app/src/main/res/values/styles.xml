@@ -52,6 +52,7 @@
 
     <style name="BottomSheetImageView">
         <item name="android:paddingTop">15dp</item>
+        <item name="android:padding">10dp</item>
         <item name="android:adjustViewBounds">true</item>
         <item name="android:tint">@color/GrappBlackLight</item>
     </style>
@@ -105,6 +106,18 @@
 
     <style name="BugtrackerTheme" parent="BaseTheme">
         <item name="colorPrimary">@color/GrappPurple</item>
+        <item name="colorAccent">@color/GrappPurple</item>
+    </style>
+
+    <style name="BugtrackerEditTheme" parent="BugtrackerTheme">
+        <item name="colorPrimary">@color/GrappPurple</item>
+        <item name="colorAccent">@color/GrappWhiteLight</item>
+        <item name="colorControlNormal">@color/GrappWhiteLight</item>
+        <item name="colorControlActivated">@color/GrappWhiteLight</item>
+        <item name="colorControlHighlight">@color/GrappWhiteLight</item>
+    </style>
+
+    <style name="BugtrackerDialogOverride" parent="@style/Theme.AppCompat.Light.Dialog">
         <item name="colorAccent">@color/GrappPurple</item>
     </style>
 

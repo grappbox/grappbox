@@ -14,29 +14,15 @@
         android:layout_height="wrap_content"
         android:theme="@style/BaseTheme.AppBarOverlay"
         app:elevation="0dp">
-
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             app:popupTheme="@style/BaseTheme.PopupOverlay"
             android:layout_height="match_parent"
             />
-
     </android.support.design.widget.AppBarLayout>
-
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/fragment_container">
-
-    </FrameLayout>
-
-    <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="bottom|end"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@android:drawable/ic_dialog_email" />-->
-
+        android:id="@+id/fragment_container"/>
 </LinearLayout>

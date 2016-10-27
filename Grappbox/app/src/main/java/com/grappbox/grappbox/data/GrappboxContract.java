@@ -118,6 +118,10 @@ public class GrappboxContract {
             return CONTENT_URI.buildUpon().appendPath(id).build();
         }
 
+        public static Uri buildUserWithProject(){
+            return CONTENT_URI.buildUpon().appendPath("project").build();
+        }
+
         public static Uri buildUserWithArgs(HashMap<String, String> args)
         {
             Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
@@ -266,7 +270,6 @@ public class GrappboxContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MESSAGE = "message";
         public static final String COLUMN_DATE_LAST_EDITED_AT_UTC = "last_edited_at";
-        public static final String COLUMN_DATE_DELETED_AT_UTC = "deleted_at";
         public static final String COLUMN_COUNT_ANSWER = "nb_answer";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIMELINE_MESSAGES).build();
@@ -358,8 +361,6 @@ public class GrappboxContract {
         public static Uri buildTagWithLocalIdUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
-
-
     }
 
     public static final class BugEntry implements BaseColumns {
@@ -392,6 +393,10 @@ public class GrappboxContract {
 
         public static Uri buildBugWithTag(){
             return CONTENT_URI.buildUpon().appendPath("tags").build();
+        }
+
+        public static Uri buildBugWithCreator(){
+            return CONTENT_URI.buildUpon().appendEncodedPath("creator").build();
         }
     }
 

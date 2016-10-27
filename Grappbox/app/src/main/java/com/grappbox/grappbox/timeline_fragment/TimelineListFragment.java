@@ -83,7 +83,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_TITLE,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_MESSAGE,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
-            TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_COUNT_ANSWER,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_PARENT_ID,
             TimelineMessageEntry.TABLE_NAME + "." + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID

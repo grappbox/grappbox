@@ -62,7 +62,7 @@ public class ProjectCursors {
     {
         long id = openHelper.getWritableDatabase().insert(ProjectEntry.TABLE_NAME, null, contentValues);
         if (id <= 0)
-            throw new android.database.SQLException("Failed to insert row into " + uri);
+            throw new android.database.SQLException("Failed to insert row into " + uri  + " id : " + id);
         return ProjectEntry.buildProjectWithLocalIdUri(id);
     }
 

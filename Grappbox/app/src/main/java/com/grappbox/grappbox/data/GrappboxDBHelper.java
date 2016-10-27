@@ -1,4 +1,4 @@
-package com.grappbox.grappbox.data;
+ package com.grappbox.grappbox.data;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -129,7 +129,6 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TimelineMessageEntry.COLUMN_TITLE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_MESSAGE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
-                TimelineMessageEntry.COLUMN_DATE_DELETED_AT_UTC + " TEXT, " +
                 TimelineMessageEntry.COLUMN_COUNT_ANSWER + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +

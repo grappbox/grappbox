@@ -1,12 +1,23 @@
-<android.support.v4.widget.SwipeRefreshLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:id="@+id/refresh"
-    tools:context="com.grappbox.grappbox.bugtracker_fragments.BugListFragment">
-    <ListView
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent" android:layout_height="match_parent">
+    <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/buglist"/>
-</android.support.v4.widget.SwipeRefreshLayout>
+        android:padding="150dp"
+        android:indeterminateTint="@color/GrappPurple"
+        android:id="@+id/loader"
+        android:indeterminate="true" />
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/refresh"
+        tools:context="com.grappbox.grappbox.bugtracker_fragments.BugListFragment"
+        android:visibility="gone">
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/buglist"
+            />
+    </android.support.v4.widget.SwipeRefreshLayout>
+</FrameLayout>

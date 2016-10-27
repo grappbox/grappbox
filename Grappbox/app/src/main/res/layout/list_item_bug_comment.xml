@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="10dp"
+    android:paddingBottom="10dp">
+    <ImageView
+        android:layout_width="60dp"
+        android:layout_height="40dp"
+        android:src="@drawable/default_logo_avatar"
+        android:id="@+id/avatar"/>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp">
+            <TextView
+                android:textSize="15sp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:id="@+id/username"
+                android:layout_weight="1"
+                android:textStyle="bold"/>
+            <TextView
+                android:id="@+id/date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="25dp"
+                android:gravity="center"
+                android:text="10-09-2016"/>
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="25dp"
+            android:text="This is a comment, really long comment, pass to a new line if its a long comment. You know what it is."
+            android:id="@+id/comment" />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:id="@+id/action_container"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="25dp"
+            android:visibility="gone">
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/GrappTransparent"
+                android:src="@drawable/ic_reply"
+                android:tint="@color/GrappBlackLight"
+                android:id="@+id/reply"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/GrappTransparent"
+                android:src="@drawable/ic_edit_white"
+                android:tint="@color/GrappBlackLight"
+                android:layout_marginStart="15dp"
+                android:layout_marginEnd="15dp"
+                android:id="@+id/edit"/>
+            <ImageButton
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@color/GrappTransparent"
+                android:src="@drawable/ic_delete"
+                android:tint="@color/GrappBlackLight"
+                android:id="@+id/delete"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>
