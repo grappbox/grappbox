@@ -369,7 +369,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
-		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('deviceFlag' => $content->flag, 'macAddr' => $content->mac));
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('user' => $user->getId(), 'deviceFlag' => $content->flag, 'macAddr' => $content->mac));
 		if ($auth instanceof Authentication && $content->flag != "web")
 		{
 			if ($content->device_name != $auth->getDeviceName()) {
@@ -558,10 +558,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($auth instanceof Authentication))
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
 
-		$auth->setToken(null);
-		if ($auth->getDeviceFlag() == "web")
-			$em->remove($auth);
-
+		$em->remove($auth);
 		$em->flush();
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
