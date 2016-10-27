@@ -1,14 +1,14 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.CustomControls;
+using GrappBox.Model;
 using GrappBox.Resources;
 using GrappBox.ViewModel;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Graphics.Display;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using System.Collections.ObjectModel;
-using GrappBox.CustomControls;
-using Windows.Graphics.Display;
 
 namespace GrappBox.View
 {
@@ -17,10 +17,11 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class DashBoardView : Page
     {
-        PivotItem team;
-        PivotItem meetings;
-        DashBoardViewModel dvm;
+        private PivotItem team;
+        private PivotItem meetings;
+        private DashBoardViewModel dvm;
         private NavigationHelper navigationHelper;
+
         public DashBoardView()
         {
             this.InitializeComponent();
@@ -37,6 +38,7 @@ namespace GrappBox.View
         }
 
         #region NavigationHelper
+
         /// <summary>
         /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
         /// </summary>
@@ -58,7 +60,6 @@ namespace GrappBox.View
         /// session. The state will be null the first time a page is visited.</param>
         private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
-
         }
 
         /// <summary>
@@ -81,7 +82,8 @@ namespace GrappBox.View
         {
             this.navigationHelper.OnNavigatedFrom(e);
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         /// <summary>
         /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
@@ -90,24 +92,24 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            this.navigationHelper.OnNavigatedTo(e);
-            SettingsPopUp.Visibility = Visibility.Collapsed;
-            SettingsPopUp.IsOpen = true;
-            db_pivot.IsEnabled = true;
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-            this.dvm = DashBoardViewModel.GetViewModel();
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-            await this.dvm.InitialiseAsync();
-            team = CreateOccupationTab();
-            meetings = CreateMeetingsTab();
-            team_cb.IsChecked = true;
-            this.db_pivot.Items.Add(this.team);
-            this.db_pivot.Items.Add(this.meetings);
-            team_cb.IsChecked = true;
-            meetings_cb.IsChecked = true;
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            //this.navigationHelper.OnNavigatedTo(e);
+            //SettingsPopUp.Visibility = Visibility.Collapsed;
+            //SettingsPopUp.IsOpen = true;
+            //db_pivot.IsEnabled = true;
+            //DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            //this.dvm = DashBoardViewModel.GetViewModel();
+            //LoadingBar.IsEnabled = true;
+            //LoadingBar.Visibility = Visibility.Visible;
+            //await this.dvm.InitialiseAsync();
+            //team = CreateOccupationTab();
+            //meetings = CreateMeetingsTab();
+            //team_cb.IsChecked = true;
+            //this.db_pivot.Items.Add(this.team);
+            //this.db_pivot.Items.Add(this.meetings);
+            //team_cb.IsChecked = true;
+            //meetings_cb.IsChecked = true;
+            //LoadingBar.IsEnabled = false;
+            //LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void team_cb_Checked(object sender, RoutedEventArgs e)

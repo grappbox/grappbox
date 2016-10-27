@@ -1,0 +1,50 @@
+﻿<UserControl
+    x:Class="GrappBox.CustomControls.GenericDashboardItem"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+    <StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Logo}" />
+            <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="10,0,0,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Image Source="/Assets/bug.png" />
+            <TextBlock Text="{Binding Bugs}" />
+            <TextBlock Text="bugs" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="10,0,0,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Image Source="/Assets/chat.png" />
+            <TextBlock Text="{Binding Messages}" />
+            <TextBlock Text="messages" />
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+            <StackPanel.Resources>
+                <Style TargetType="TextBlock">
+                    <Setter Property="Margin" Value="10,0,0,0" />
+                </Style>
+            </StackPanel.Resources>
+            <Image Source="/Assets/task_ongoing.png" />
+            <TextBlock Text="{Binding OngoingTasks}" />
+            <TextBlock Text="/" Margin="0" />
+            <TextBlock Text="{Binding TotalTasks}" Margin="0" />
+            <TextBlock Text="finished tasks" />
+        </StackPanel>
+    </StackPanel>
+</UserControl>

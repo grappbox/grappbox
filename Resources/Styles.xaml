@@ -168,13 +168,9 @@
     <Style x:Key="PageTitleTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource TitleTextBlockStyle}">
         <Setter Property="FontSize" Value="28" />
         <Setter Property="TextWrapping" Value="NoWrap" />
-        <Setter Property="HorizontalAlignment" Value="Left" />
-        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="HorizontalAlignment" Value="Right" />
+        <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Margin" Value="24,4,0,0" />
-    </Style>
-
-    <Style x:Key="NarrowPageTitleTextBlockStyle" TargetType="TextBlock" BasedOn="{StaticResource PageTitleTextBlockStyle}">
-        <Setter Property="Margin" Value="0,4,0,0" />
     </Style>
 
     <Style x:Key="NavMenuItemContainerStyle" TargetType="ListViewItem">

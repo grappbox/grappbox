@@ -1,0 +1,87 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox">
+    <!--UI Colors-->
+    <Color x:Key="RedGrappbox">#FC575E</Color>
+    <Color x:Key="White1Grappbox">#FFFFFF</Color>
+    <Color x:Key="White2Grappbox">#FAFAFA</Color>
+    <Color x:Key="White3Grappbox">#F0F0F0</Color>
+    <Color x:Key="Grey1Grappbox">#E0E0E0</Color>
+    <Color x:Key="Grey2Grappbox">#CCCCCC</Color>
+    <Color x:Key="Grey3Grappbox">#BDBDBD</Color>
+    <Color x:Key="Black1Grappbox">#666666</Color>
+    <Color x:Key="Black2Grappbox">#333333</Color>
+    <Color x:Key="Black3Grappbox">#000000</Color>
+    <Color x:Key="BlueGrappbox">#44BBFF</Color>
+    <Color x:Key="PurpleGrappbox">#9E58DC</Color>
+    <Color x:Key="OrangeGrappbox">#FF9F55</Color>
+    <Color x:Key="GreenGrappbox">#27AE60</Color>
+    <Color x:Key="YellowGrappbox">#F1C40F</Color>
+    <SolidColorBrush x:Key="RedGrappboxBrush" Color="{StaticResource RedGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White1GrappboxBrush" Color="{StaticResource White1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White2GrappboxBrush" Color="{StaticResource White2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="White3GrappboxBrush" Color="{StaticResource White3Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey1GrappboxBrush" Color="{StaticResource Grey1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey2GrappboxBrush" Color="{StaticResource Grey2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Grey3GrappboxBrush" Color="{StaticResource Grey3Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black1GrappboxBrush" Color="{StaticResource Black1Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black2GrappboxBrush" Color="{StaticResource Black2Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Black3GrappboxBrush" Color="{StaticResource Black3Grappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="GreenGrappboxBrush" Color="{StaticResource GreenGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="BlueGrappboxBrush" Color="{StaticResource BlueGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="PurpleGrappboxBrush" Color="{StaticResource PurpleGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="YellowGrappboxBrush" Color="{StaticResource YellowGrappbox}"></SolidColorBrush>
+    <SolidColorBrush x:Key="OrangeGrappboxBrush" Color="{StaticResource OrangeGrappbox}"></SolidColorBrush>
+    <!--WhiteboardColors-->
+    <Color x:Key="Color_01">#F44336</Color>
+    <Color x:Key="Color_02">#E91E63</Color>
+    <Color x:Key="Color_03">#9C27B0</Color>
+    <Color x:Key="Color_04">#673AB7</Color>
+    <Color x:Key="Color_05">#3F51B5</Color>
+    <Color x:Key="Color_06">#2196F3</Color>
+    <Color x:Key="Color_07">#03A9F4</Color>
+    <Color x:Key="Color_08">#00BCD4</Color>
+    <Color x:Key="Color_09">#009688</Color>
+    <Color x:Key="Color_10">#4CAF50</Color>
+    <Color x:Key="Color_11">#8BC34A</Color>
+    <Color x:Key="Color_12">#CDDC39</Color>
+    <Color x:Key="Color_13">#FFEB3B</Color>
+    <Color x:Key="Color_14">#FFC107</Color>
+    <Color x:Key="Color_15">#FF9800</Color>
+    <Color x:Key="Color_16">#FF5722</Color>
+    <Color x:Key="Color_17">#795548</Color>
+    <Color x:Key="Color_18">#607D8B</Color>
+    <Color x:Key="Color_19">#FFFFFF</Color>
+    <Color x:Key="Color_20">#EEEEEE</Color>
+    <Color x:Key="Color_21">#BDBDBD</Color>
+    <Color x:Key="Color_22">#757575</Color>
+    <Color x:Key="Color_23">#424242</Color>
+    <Color x:Key="Color_24">#000000</Color>
+    <Color x:Key="Color_25">Transparent</Color>
+    <SolidColorBrush x:Key="Color_1Brush" Color="{StaticResource Color_01}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_2Brush" Color="{StaticResource Color_02}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_3Brush" Color="{StaticResource Color_03}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_4Brush" Color="{StaticResource Color_04}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_5Brush" Color="{StaticResource Color_05}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_6Brush" Color="{StaticResource Color_06}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_7Brush" Color="{StaticResource Color_07}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_8Brush" Color="{StaticResource Color_08}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_9Brush" Color="{StaticResource Color_09}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_10Brush" Color="{StaticResource Color_10}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_11Brush" Color="{StaticResource Color_11}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_12Brush" Color="{StaticResource Color_12}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_13Brush" Color="{StaticResource Color_13}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_14Brush" Color="{StaticResource Color_14}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_15Brush" Color="{StaticResource Color_15}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_16Brush" Color="{StaticResource Color_16}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_17Brush" Color="{StaticResource Color_17}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_18Brush" Color="{StaticResource Color_18}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_19Brush" Color="{StaticResource Color_19}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_20Brush" Color="{StaticResource Color_20}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_21Brush" Color="{StaticResource Color_21}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_22Brush" Color="{StaticResource Color_22}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_23Brush" Color="{StaticResource Color_23}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_24Brush" Color="{StaticResource Color_24}"></SolidColorBrush>
+    <SolidColorBrush x:Key="Color_25Brush" Color="{StaticResource Color_25}"></SolidColorBrush>
+</ResourceDictionary>

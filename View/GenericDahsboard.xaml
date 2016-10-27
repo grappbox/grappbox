@@ -11,10 +11,19 @@
 
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add"/>
+            <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add" />
         </CommandBar>
     </Page.BottomAppBar>
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Dashboard" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
         <ListView
                     Grid.Row="1"
                     Padding="15,0,15,0"
@@ -25,63 +34,20 @@
                     ScrollViewer.VerticalScrollMode="Auto"
                     ScrollViewer.VerticalScrollBarVisibility="Hidden"
                     HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <StackPanel>
-                                <StackPanel.Resources>
-                                    <Style TargetType="TextBlock">
-                                        <Setter Property="FontSize" Value="16"/>
-                                    </Style>
-                                </StackPanel.Resources>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Logo}" />
-                                    <TextBlock Name="projectName" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" FontWeight="ExtraBold" Text="{Binding Name}" Margin="20,0,0,0"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/bug.png"/>
-                                    <TextBlock Text="{Binding Bugs}"/>
-                                    <TextBlock Text="bugs"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/chat.png"/>
-                                    <TextBlock Text="{Binding Messages}"/>
-                                    <TextBlock Text="messages"/>
-                                </StackPanel>
-                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                    <StackPanel.Resources>
-                                        <Style TargetType="TextBlock">
-                                            <Setter Property="Margin" Value="10,0,0,0"/>
-                                        </Style>
-                                    </StackPanel.Resources>
-                                    <Image Source="/Assets/task_ongoing.png"/>
-                                    <TextBlock Text="{Binding OngoingTasks}"/>
-                                    <TextBlock Text="/" Margin="0"/>
-                                    <TextBlock Text="{Binding TotalTasks}" Margin="0"/>
-                                    <TextBlock Text="finished tasks"/>
-                                </StackPanel>
-                            </StackPanel>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="ListViewItem">
-                            <Setter Property="Background" Value="White" />
-                            <Setter Property="Padding" Value="15" />
-                            <Setter Property="Margin" Value="15" />
-                            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                            <Setter Property="HorizontalAlignment" Value="Stretch" />
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                </ListView>
-                <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
-            </Grid>
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Background" Value="White" />
+                    <Setter Property="Padding" Value="15" />
+                    <Setter Property="Margin" Value="15" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+    </Grid>
 </Page>

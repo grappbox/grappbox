@@ -21,6 +21,8 @@ using Windows.UI.Xaml.Navigation;
 namespace GrappBox
 {
     using GrappBox.View;
+    using System.Diagnostics;
+    using Windows.ApplicationModel.Resources.Core;
     using Windows.Networking.PushNotifications;
     using Windows.UI;
     using Windows.UI.ViewManagement;
@@ -61,17 +63,9 @@ namespace GrappBox
             }
             StatusBar sb = StatusBar.GetForCurrentView();
             sb.ForegroundColor = Colors.Black;
+
             // Change minimum window size
             ApplicationView.GetForCurrentView().SetPreferredMinSize(new Size(320, 200));
-
-            // Darken the window title bar using a color value to match app theme
-            ApplicationViewTitleBar titleBar = ApplicationView.GetForCurrentView().TitleBar;
-            if (titleBar != null)
-            {
-                Color titleBarColor = (Color)App.Current.Resources["SystemChromeMediumColor"];
-                titleBar.BackgroundColor = titleBarColor;
-                titleBar.ButtonBackgroundColor = titleBarColor;
-            }
 
             AppShell shell = Window.Current.Content as AppShell;
 

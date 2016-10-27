@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
@@ -37,63 +38,63 @@ namespace GrappBox
                     Symbol = Constants.DashboardSymbol,
                     Label = "Dashboard",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.CalendarSymbol,
                     Label = "Calendar",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
                     Label = "Timeline",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.BugtrackerSymbol,
                     Label = "Bugtracker",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("PurpleGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.TasksSymbol,
                     Label = "Tasks",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.WhiteboardSymbol,
                     Label = "Whiteboard",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.ProjectSettingsSymbol,
                     Label = "Project Settings",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.UserSettingsSymbol,
                     Label = "User Settings",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.LogoutSymbol,
                     Label = "Logout",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("VioletGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
             });
 
@@ -220,10 +221,13 @@ namespace GrappBox
         /// <param name="e"></param>
         private void OnNavigatingToPage(object sender, NavigatingCancelEventArgs e)
         {
-            //if (e.SourcePageType == typeof(LoginPage))
-            //    TogglePaneButton.Visibility = Visibility.Collapsed;
-            //else
-            //    TogglePaneButton.Visibility = Visibility.Visible;
+            if (e.SourcePageType == typeof(LoginPage))
+                TogglePaneButton.Visibility = Visibility.Collapsed;
+            else
+            {
+                TogglePaneButton.Visibility = Visibility.Visible;
+                this.CheckTogglePaneButtonSizeChanged();
+            }
             if (e.NavigationMode == NavigationMode.Back)
             {
                 var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).SingleOrDefault();
@@ -249,13 +253,7 @@ namespace GrappBox
                 }
 
                 var container = (ListViewItem)NavMenuList.ContainerFromItem(item);
-
-                // While updating the selection state of the item prevent it from taking keyboard focus.  If a
-                // user is invoking the back button via the keyboard causing the selected nav menu item to change
-                // then focus will remain on the back button.
-                if (container != null) container.IsTabStop = false;
                 NavMenuList.SetSelectedItem(container);
-                if (container != null) container.IsTabStop = true;
             }
         }
 
@@ -280,21 +278,6 @@ namespace GrappBox
         public void OpenNavePane()
         {
             TogglePaneButton.IsChecked = true;
-            NavPaneDivider.Visibility = Visibility.Visible;
-        }
-
-        /// <summary>
-        /// Hides divider when nav pane is closed.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="args"></param>
-        private void RootSplitView_PaneClosed(SplitView sender, object args)
-        {
-            NavPaneDivider.Visibility = Visibility.Collapsed;
-
-            // Prevent focus from moving to elements when they're not visible on screen
-            FeedbackNavPaneButton.IsTabStop = false;
-            SettingsNavPaneButton.IsTabStop = false;
         }
 
         /// <summary>
@@ -316,11 +299,7 @@ namespace GrappBox
         /// <param name="e"></param>
         private void TogglePaneButton_Checked(object sender, RoutedEventArgs e)
         {
-            NavPaneDivider.Visibility = Visibility.Visible;
             this.CheckTogglePaneButtonSizeChanged();
-
-            FeedbackNavPaneButton.IsTabStop = true;
-            SettingsNavPaneButton.IsTabStop = true;
         }
 
         /// <summary>

@@ -27,7 +27,7 @@
                            Width="6"
                            Height="24"
                            Margin="-2,0,0,0"
-                           Fill="{x:Bind SelectedColorBrush}"
+                           Fill="{x:Bind SelectedColorBrush, Mode=TwoWay}"
                            Visibility="{x:Bind SelectedVis, Mode=TwoWay}"
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left" />
@@ -37,77 +37,34 @@
                           Glyph="{x:Bind Symbol}"
                           HorizontalAlignment="Center"
                           FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"
-                          Foreground="{x:Bind SelectedColorBrush}" />
+                          Foreground="{x:Bind SelectedColorBrush, Mode=TwoWay}" />
                 <TextBlock x:Name="Text"
                            Grid.Column="1"
                            Text="{x:Bind Label}"
                            Style="{StaticResource BodyTextBlockStyle}"
                            TextWrapping="NoWrap"
                            VerticalAlignment="Center"
-                           Foreground="{x:Bind SelectedColorBrush}" />
+                           Foreground="{x:Bind SelectedColorBrush, Mode=TwoWay}" />
             </Grid>
         </DataTemplate>
     </Page.Resources>
 
     <Grid x:Name="LayoutRoot">
-        <!-- Adaptive triggers -->
-        <VisualStateManager.VisualStateGroups>
-            <VisualStateGroup>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource LargeWindowSnapPoint}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="CompactInline" />
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="True" />
-                        <Setter Target="NavPaneDivider.Visibility" Value="Visible" />
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True" />
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource MediumWindowSnapPoint}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="CompactOverlay" />
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
-                        <Setter Target="NavPaneDivider.Visibility" Value="Collapsed" />
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="False" />
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="False" />
-                    </VisualState.Setters>
-                </VisualState>
-                <VisualState>
-                    <VisualState.StateTriggers>
-                        <AdaptiveTrigger MinWindowWidth="{StaticResource MinWindowSnapPoint}" />
-                    </VisualState.StateTriggers>
-                    <VisualState.Setters>
-                        <Setter Target="RootSplitView.DisplayMode" Value="Overlay" />
-                        <Setter Target="RootSplitView.IsPaneOpen" Value="False" />
-                        <Setter Target="FeedbackNavPaneButton.IsTabStop" Value="True" />
-                        <Setter Target="SettingsNavPaneButton.IsTabStop" Value="True" />
-                    </VisualState.Setters>
-                </VisualState>
-            </VisualStateGroup>
-        </VisualStateManager.VisualStateGroups>
-
         <!-- Declared first for screen reader navigation order, ZIndex specified to have it rendered above everything else. -->
         <ToggleButton x:Name="TogglePaneButton"
                       Canvas.ZIndex="100"
-                      TabIndex="1"
                       Style="{StaticResource SplitViewTogglePaneButtonStyle}"
                       IsChecked="{Binding IsPaneOpen, ElementName=RootSplitView, Mode=TwoWay}"
                       Unchecked="TogglePaneButton_Unchecked"
                       Checked="TogglePaneButton_Checked"
-                      AutomationProperties.Name="Navigation"
-                      ToolTipService.ToolTip="Navigation" />
+                      AutomationProperties.Name="Navigation" />
 
         <!-- Top-level navigation menu + app content -->
         <SplitView x:Name="RootSplitView"
                    DisplayMode="Inline"
                    OpenPaneLength="320"
+                   IsPaneOpen="False"
                    PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-                   PaneClosed="RootSplitView_PaneClosed"
                    LightDismissOverlayMode="On"
                    IsTabStop="False">
 
@@ -134,26 +91,6 @@
                                               ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
                                               ItemTemplate="{StaticResource NavMenuItemTemplate}"
                                               ItemInvoked="NavMenuList_ItemInvoked" />
-                    <Rectangle x:Name="NavPaneDivider"
-                               Grid.Row="1"
-                               Grid.ColumnSpan="3"
-                               Height="1"
-                               Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
-                               Margin="16,0,16,6" />
-                    <Button x:Name="FeedbackNavPaneButton"
-                            Grid.Row="2"
-                            Grid.Column="1"
-                            Style="{StaticResource SplitViewPaneButtonStyle}"
-                            Content="&#xE76E;"
-                            AutomationProperties.Name="Feedback"
-                            ToolTipService.ToolTip="Feedback" />
-                    <Button x:Name="SettingsNavPaneButton"
-                            Grid.Row="2"
-                            Grid.Column="2"
-                            Style="{StaticResource SplitViewPaneButtonStyle}"
-                            Content="&#xE713;"
-                            AutomationProperties.Name="Settings"
-                            ToolTipService.ToolTip="Settings" />
                 </Grid>
             </SplitView.Pane>
 

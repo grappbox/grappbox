@@ -11,22 +11,43 @@
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <Grid.RowDefinitions>
                 <RowDefinition Height="6*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
                 <RowDefinition Height="2*" />
-                <RowDefinition Height="3*" />
+                <RowDefinition Height="2*" />
+                <RowDefinition Height="4*" />
             </Grid.RowDefinitions>
-            <TextBlock Grid.Row="1" Text="Login" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
-            <TextBox Name="loginBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="2" PlaceholderText="UserName" Text="pierre.feytout@epitech.eu" ></TextBox>
-            <TextBlock Grid.Row="3" Text="Password" Foreground="{StaticResource Black3GrappboxBrush}"></TextBlock>
-            <PasswordBox Name="pwdBlock" Background="{StaticResource Grey3GrappboxBrush}" BorderThickness="0" HorizontalAlignment="Stretch" Grid.Row="4" PlaceholderText="Password" Password="feytou_p" PasswordRevealMode="Peek" ></PasswordBox>
-            <Button Name="DashBoardButton" Content="Log In" FontSize="24" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="5" Click="DashBoardButton_Click" />
             <Grid Grid.Row="0">
-                <Image Name="image" Height="200" Width="300" VerticalAlignment="Center" HorizontalAlignment="Center" Source="/Assets/GrappBox-logo.png" />
+                <Image Name="image" Height="200" Width="300"
+                       VerticalAlignment="Center"
+                       HorizontalAlignment="Center"
+                       Source="/Assets/GrappBox-logo.png" />
             </Grid>
-            <ProgressBar Grid.Row="3" VerticalAlignment="Top" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+            <TextBox Grid.Row="1" Name="loginBlock"
+                     Background="{StaticResource Grey3GrappboxBrush}"
+                     BorderThickness="0"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     PlaceholderText="UserName"
+                     Header="User name"
+                     Text="pierre.feytout@epitech.eu" />
+            <PasswordBox Grid.Row="2" Name="pwdBlock"
+                         Background="{StaticResource Grey3GrappboxBrush}"
+                         BorderThickness="0"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Stretch"
+                         PlaceholderText="Password"
+                         Password="feytou_p"
+                         Header="Password"
+                         PasswordRevealMode="Peek" />
+            <Button Grid.Row="3" Name="DashBoardButton"
+                    Content="Log In" FontSize="24"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Center"
+                    Click="DashBoardButton_Click" />
+            <ProgressRing Grid.Row="3" VerticalAlignment="Top"
+                          Name="LoadingBar"
+                          Visibility="Collapsed"
+                          IsEnabled="False"
+                          HorizontalAlignment="Stretch" />
         </Grid>
     </Border>
 </Page>

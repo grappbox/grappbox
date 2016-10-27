@@ -1,15 +1,16 @@
-﻿using System;
+﻿using GrappBox.HttpRequest;
 using GrappBox.Model;
-using GrappBox.HttpRequest;
-using Windows.Web.Http;
-using System.Diagnostics;
 using GrappBox.Resources;
+using System;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.Resources.Core;
+using Windows.Web.Http;
 
 namespace GrappBox.ViewModel
 {
-    class DashBoardViewModel : ViewModelBase
+    internal class DashBoardViewModel : ViewModelBase
     {
         static private DashBoardViewModel instance = null;
 
@@ -19,6 +20,7 @@ namespace GrappBox.ViewModel
                 instance = new DashBoardViewModel();
             return instance;
         }
+
         public DashBoardViewModel()
         {
             _occupationList = null;
@@ -43,8 +45,8 @@ namespace GrappBox.ViewModel
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             int id = SettingsManager.getOption<int>("ProjectIdChoosen");
-            object[] token = { User.GetUser().Token, id};
-            HttpResponseMessage res = await api.Get(token, "dashboard/getteamoccupation");
+            object[] token = { User.GetUser().Token, id };
+            HttpResponseMessage res = await api.Get(token, Constants.DashboardTeamOccupationCall);
             if (res.IsSuccessStatusCode)
             {
                 OccupationList = api.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
@@ -65,7 +67,7 @@ namespace GrappBox.ViewModel
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
-            HttpResponseMessage res = await api.Get(token, "dashboard/getnextmeetings");
+            HttpResponseMessage res = await api.Get(token, Constants.DashboardMeetingsCall);
             if (res == null)
                 return false;
             string json = await res.Content.ReadAsStringAsync();
@@ -76,12 +78,12 @@ namespace GrappBox.ViewModel
                 {
                     tmp = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
                 }
-                catch(ArgumentException aEx)
+                catch (ArgumentException aEx)
                 {
                     Debug.WriteLine("Argument Exception on Name {0} because of paramName {1}", aEx.Source, aEx.ParamName);
                     return false;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     Debug.WriteLine("DashBoard.getNextMeetings: {0}", ex.Message);
                     return false;
@@ -95,13 +97,17 @@ namespace GrappBox.ViewModel
             }
             return true;
         }
+
         private ObservableCollection<Occupations> _occupationList;
+
         public ObservableCollection<Occupations> OccupationList
         {
             get { return _occupationList; }
             set { _occupationList = value; NotifyPropertyChanged("OccupationList"); }
         }
+
         private ObservableCollection<MeetingDashBoard> _meetingList;
+
         public ObservableCollection<MeetingDashBoard> MeetingList
         {
             get { return _meetingList; }
