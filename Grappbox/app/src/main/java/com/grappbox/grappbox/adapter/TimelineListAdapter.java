@@ -66,7 +66,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView    mRecyclerView;
     private int             mExpandedPosition = -1;
-    private CursorAdapter   mCursorAdapter = null;
 
 
     public static final String[] projectionMessageRow = {
@@ -91,66 +90,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         inflater = LayoutInflater.from(context);
         mRecyclerView = rv;
         mExpandedPosition = -1;
-        mCursorAdapter = new CursorAdapter(mContext, null, 0) {
-
-            List<Cursor> mCursor = new ArrayList<>();
-
-            @Override
-            public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                return null;
-            }
-
-            @Override
-            public Cursor swapCursor(Cursor newCursor) {
-                /*if (newCursor == null || !newCursor.moveToFirst() || getCursor() == newCursor)
-                    return super.swapCursor(newCursor);*/
-                return super.swapCursor(newCursor);
-                /*
-                for (Cursor cursor : mCursor)
-                {
-                    if (cursor == newCursor)
-                        return super.swapCursor(getCursor());
-                }
-                mCursor.add(newCursor);
-                int i;
-                MatrixCursor newMessages = new MatrixCursor(projectionMessageRow);
-                do {
-                    i = 0;
-                    ContentValues rowValue = new ContentValues();
-                    DatabaseUtils.cursorRowToContentValues(newCursor, rowValue);
-                    MatrixCursor.RowBuilder builder;
-                    builder = newMessages.newRow();
-                    for (String colName : projectionMessageRow) {
-                        switch (newCursor.getType(i)){
-                            case Cursor.FIELD_TYPE_NULL:
-                                builder.add(colName, null);
-                                break;
-                            case Cursor.FIELD_TYPE_INTEGER:
-                                builder.add(colName, newCursor.getInt(i));
-                                break;
-                            case Cursor.FIELD_TYPE_FLOAT:
-                                builder.add(colName, newCursor.getFloat(i));
-                                break;
-                            case Cursor.FIELD_TYPE_STRING:
-                                builder.add(colName, newCursor.getString(i));
-                                break;
-                            default:
-                                throw new IllegalArgumentException("Not normally in columns, check database");
-                        }
-                        ++i;
-                    }
-                } while (newCursor.moveToNext());
-                ArrayList<Cursor> finals = new ArrayList<>();
-                if (newMessages.getCount() > 0)
-                    finals.add(newMessages);
-                Cursor[] finalArray = finals.toArray(new Cursor[finals.size()]);
-                return super.swapCursor(new MergeCursor(finalArray));*/
-            }
-
-            @Override
-            public void bindView(View view, Context context, Cursor cursor) {
-            }
-        };
     }
 
     private RecyclerView.ViewHolder createTimelineEntryHolder(ViewGroup parent){
@@ -402,16 +341,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void clear(){
         mDataset.clear();
         notifyDataSetChanged();
-    }
-
-    public CursorAdapter getCursorAdapter()
-    {
-        return mCursorAdapter;
-    }
-
-    public Cursor swapCursor(Cursor cursor)
-    {
-        return (mCursorAdapter.swapCursor(cursor));
     }
 
     @Override

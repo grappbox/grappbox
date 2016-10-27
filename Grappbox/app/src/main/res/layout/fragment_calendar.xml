@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.grappbox.grappbox.project_fragments.CalendarFragment">
 
     <LinearLayout
@@ -12,9 +13,8 @@
         <CalendarView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1">
-
-        </CalendarView>
+            android:layout_weight="1"
+            android:id="@+id/calendar_view" />
 
         <FrameLayout
             android:layout_width="match_parent"
@@ -22,19 +22,38 @@
             android:background="@color/GrappBlackMedium">
 
             <ImageView
+                android:id="@+id/slide_button"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:src="@drawable/button_slide"
-                android:layout_gravity="center"/>
+                android:contentDescription="slidebutton"
+                android:layout_gravity="center"
+                android:clickable="true"/>
 
         </FrameLayout>
 
         <android.support.v7.widget.RecyclerView
+            android:id="@+id/agendalist"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:id="@+id/agendalist"/>
+            android:layout_weight="1.2"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+/>
 
     </LinearLayout>
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:src="@android:drawable/ic_input_add"
+        android:tint="@color/GrappWhiteLight"
+        app:backgroundTint="@color/GrappBlue"
+        android:background="?android:attr/selectableItemBackground"
+        android:clickable="true"
+        android:focusable="true"/>
 
 </FrameLayout>

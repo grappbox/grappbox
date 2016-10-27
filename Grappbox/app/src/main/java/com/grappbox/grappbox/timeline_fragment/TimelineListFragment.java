@@ -299,19 +299,9 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             return;
         }
         List<TimelineModel> models = new ArrayList<>();
-        Cursor oldMessage = mAdapter.swapCursor(data);
-        if (oldMessage != null && oldMessage != data)
-        {
-            Cursor newCursor = new MergeCursor(new Cursor[]{oldMessage, data});
-            mAdapter.swapCursor(newCursor);
-        }
-        Cursor message = mAdapter.getCursorAdapter().getCursor();
-        if (message == null || !message.moveToFirst())
-            return;
         do {
-            models.add(new TimelineModel(getActivity(), message));
-        } while (message.moveToNext());
-        message.moveToFirst();
+            models.add(new TimelineModel(getActivity(), data));
+        } while (data.moveToNext());
         Collections.sort(models, new StringDateComparator());
         AdditionalDataLoader task = new AdditionalDataLoader();
         task.execute(models);
@@ -319,7 +309,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-        mAdapter.getCursorAdapter().changeCursor(null);
     }
 
     class AdapterObserver extends RecyclerView.AdapterDataObserver {
