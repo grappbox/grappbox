@@ -1966,7 +1966,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 else
                     message.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
                 String lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
-                
+
                 message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 if (!current.has("nbComment") && !current.isNull("nbComment")) {
                     message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
@@ -2064,6 +2064,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 else
                     message.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
                 String lastEditedMsg = Utils.Date.getDateFromGrappboxAPIToUTC(current.isNull("editedAt") ? current.getJSONObject("createdAt").getString("date") : current.getJSONObject("editedAt").getString("date"));
+
                 message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
 
