@@ -4,9 +4,15 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Timelines</ion-nav-title>
+
     <ion-tabs class="tabs-positive tabs-striped">
         <!-- TEAM tab -->
         <ion-tab title="Team" class="gb-tab">
+
+            <!-- Floating button -->
+            <ion-floating-button has-footer="true" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF" ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[0]})">
+            </ion-floating-button>
+
             <!-- Tab 1 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -16,10 +22,10 @@
                     </ion-refresher>
 
                     <!-- New message button -->
-                    <button class="button button-block button-positive"
+                    <!--<button class="button button-block button-positive"
                             ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[0]})">
                         New message
-                    </button>
+                    </button>-->
                     <ion-item ng-show="noMessageTeam">{{noMessageTeam}}</ion-item>
                     <div class="list card"
                          ng-repeat="message in lastMessagesTeam">
@@ -65,7 +71,7 @@
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.comment"></textarea>
-                                <p>By {{ com.creator.fullname }}<br>
+                                <p>By {{ com.creator.firstname }} {{ com.creator.lastname }}<br>
                                 Created: {{ com.createdAt }}<br>
                                 <span ng-show="com.editedAt">Edited: {{ com.editedAt }}</span></p>
                                 <div class="button-bar" ng-show="com.creator.id == userConnectedId">
@@ -75,7 +81,7 @@
                                     </a>
                                     <!-- Edit button if comment is by user connected only -->
                                     <a class="button button-block icon ion-edit button-small button-positive"
-                                       ng-click="EditCommentOnTimeline(com)">
+                                       ng-click="EditCommentOnTimeline(com, message)">
                                     </a>
                                 </div>
                             </ion-item>
@@ -109,6 +115,11 @@
 
         <!-- CUSTOMER tab -->
         <ion-tab title="Customer" class="gb-tab">
+
+            <!-- Floating button -->
+            <ion-floating-button has-footer="true" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF" ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[1]})">
+            </ion-floating-button>
+
             <!-- Tab 2 content -->
             <ion-pane>
                 <ion-content overflow-scroll="false">
@@ -118,10 +129,10 @@
                     </ion-refresher>
 
                     <!-- New message button -->
-                    <button class="button button-block button-positive"
+                    <!--<button class="button button-block button-positive"
                             ui-sref="app.createMessage({projectId: projectId, timelineId: timelineIds[1]})">
                         New message
-                    </button>
+                    </button>-->
 
                     <ion-item ng-show="noMessageCustomer">{{noMessageCustomer}}</ion-item>
                     <div class="list card"
@@ -168,7 +179,7 @@
                                 <textarea rows="5"
                                           ng-readonly="com.creator.id != userConnectedId"
                                           ng-model="com.comment"></textarea>
-                                <p>By {{ com.creator.fullname }}<br>
+                                <p>By {{ com.creator.firstname }} {{ com.creator.lastname }}<br>
                                 Created: {{ com.createdAt.date }}<br>
                                 <span ng-show="com.editedAt">Edited: {{ com.editedAt.date }}</span></p>
                                 <div class="button-bar" ng-show="com.creator.id == userConnectedId">

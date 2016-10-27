@@ -17,6 +17,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
             StatusBar.styleDefault();
         }*/
     });
+
     $rootScope.API_VERSION = '0.3'; //actual API's version
     //$rootScope.API = 'https://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
     $rootScope.API = 'https://api.grappbox.com/' + $rootScope.API_VERSION + '/';
@@ -80,7 +81,6 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
     $ionicConfigProvider.backButton.icon('ion-ios-arrow-back'); // iOS back icon
     $ionicConfigProvider.backButton.text('');                   // default is 'Back'
     $ionicConfigProvider.backButton.previousTitleText(false);   // hides the 'Back' text
-    $httpProvider.defaults.headers.delete = { "Content-Type": "application/json;charset=utf-8" };
 
     //Calendar
     calendarConfig.dateFormatter = "moment";
@@ -184,25 +184,25 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
     /*
     ** PROJECTS ROLES
     */
-    // roles view
-    .state('app.roles', {
-        url: "/projects/:projectId/roles",
+    // create role view
+    .state('app.createRole', {
+        url: "/projects/:projectId/roles/add",
         views: {
             'menuList': {
-                templateUrl: "views/roles.html",
-                controller: 'RolesCtrl'
+                templateUrl: "views/createRole.html",
+                controller: 'CreateRoleCtrl'
             }
         }
     })
 
-    // users on role view
-    .state('app.usersOnRole', {
+    // role & users on role view
+    .state('app.role', {
         url: "/projects/:projectId/roles/:roleId",
         params: { role: null },
         views: {
             'menuList': {
-                templateUrl: "views/usersOnRole.html",
-                controller: 'UsersOnRoleCtrl'
+                templateUrl: "views/role.html",
+                controller: 'RoleCtrl'
             }
         }
     })
@@ -391,13 +391,24 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
     ** CALENDAR
     */
 
-    // Tasks view
+    // Calendar view
     .state('app.calendar', {
         url: "/projects/:projectId/calendar",
         views: {
             'menuList': {
                 templateUrl: "views/calendar.html",
                 controller: 'CalendarCtrl'
+            }
+        }
+    })
+
+    // Event creation view
+    .state('app.createEvent', {
+        url: "/projects/:projectId/calendar/createEvent",
+        views: {
+            'menuList': {
+                templateUrl: "views/createEvent.html",
+                controller: 'CreateEventCtrl'
             }
         }
     })

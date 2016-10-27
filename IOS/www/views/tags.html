@@ -14,15 +14,14 @@
         <!-- Tags list -->
         <div class="item item-divider">Tags available</div>
         <p>These tags are affiliated to whole project.</p>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-show="noTag">{{noTag}}</ion-item>
             <ion-item ng-show="!noTag"
                       ng-repeat="tag in tagsOnProject"
                       ui-sref="app.editTag({tagId: tag.id, projectId: projectId})">
                 {{ tag.name }}
-                <ion-option-button class="button-assertive"
+                <ion-option-button class="button-assertive icon ion-ios-trash"
                                    ng-click="DeleteTagFromProject(tag.id);">
-                    Delete
                 </ion-option-button>
             </ion-item>
         </ion-list>
@@ -41,9 +40,8 @@
 
                 <!-- Create tag button -->
                 <button ng-disabled="createTag_form.$invalid"
-                        class="button button-block button-positive"
+                        class="button button-block button-positive icon ion-plus"
                         ng-click="CreateTag()">
-                    Create
                 </button>
             </form>
         </div>

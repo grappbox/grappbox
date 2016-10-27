@@ -4,7 +4,7 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Bugtracker) {
+.controller('TicketCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicHistory, Toast, Bugtracker) {
 
     $scope.$on('$ionicView.beforeEnter', function () {
         $rootScope.viewColor = $rootScope.GBNavColors.bugtracker;
@@ -144,7 +144,9 @@ angular.module('GrappBox.controllers')
             console.log('Close ticket successful !');
             Toast.show("Ticket closed");
             $scope.closeTicketData = data;
-            $scope.GetTicketInfo();
+            $ionicHistory.clearCache().then(function () {
+                $state.go('app.bugtracker', { projectId: $scope.projectId });
+            });
         })
         .catch(function (error) {
             console.error('Close ticket failed ! Reason: ' + error.status + ' ' + error.statusText);

@@ -483,9 +483,9 @@ angular.module('GrappBox.controllers')
     $scope.deleteObjectData = {};
     $scope.DeleteObject = function (mouse_pos) {
         //$rootScope.showLoading();
-        Whiteboard.DeleteObject().update({
+        Whiteboard.DeleteObject().delete({
             id: $scope.whiteboardId,
-            data: {
+            data: {         
                 center: { x: mouse_pos.x, y: mouse_pos.y },
                 radius: 10
             }

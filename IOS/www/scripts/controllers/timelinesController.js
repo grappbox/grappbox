@@ -192,13 +192,13 @@ angular.module('GrappBox.controllers')
     ** Method: PUT
     */
     $scope.editCommentData = {};
-    $scope.EditCommentOnTimeline = function (com) {
+    $scope.EditCommentOnTimeline = function (com, mess) {
         //$rootScope.showLoading();
         Timeline.EditComment().update({
-            id: com.timelineId,
+            id: mess.timelineId,
             data: {
                 commentId: com.id,
-                comment: com.message
+                comment: com.comment
             }
         }).$promise
             .then(function (data) {
@@ -208,8 +208,8 @@ angular.module('GrappBox.controllers')
             })
             .catch(function (error) {
                 console.error('Edit comment on timeline failed ! Reason: ' + error.status + ' ' + error.statusText);
-                Toast.show("Comment edition error");
                 console.error(error);
+                Toast.show("Comment edition error");
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');
@@ -253,19 +253,19 @@ angular.module('GrappBox.controllers')
     $scope.ArchiveComment = function (com, mess) {
         //$rootScope.showLoading();
         Timeline.DeleteComment().delete({
-            id: com.timelineId,
-            messageId: com.id
+            id: mess.timelineId,
+            commentId: com.id
         }).$promise
             .then(function (data) {
                 console.log('Delete comment successful !');
-                Toast.show("Comment archived");
+                Toast.show("Comment deleted");
                 $scope.archiveMessageData = data.data;
                 $scope.GetCommentsOnTimeline(mess);
             })
             .catch(function (error) {
                 console.error('Delete comment failed ! Reason: ' + error.status + ' ' + error.statusText);
-                Toast.show("Comment archive error");
                 console.error(error);
+                Toast.show("Comment delete error");
             })
             .finally(function () {
                 $scope.$broadcast('scroll.refreshComplete');

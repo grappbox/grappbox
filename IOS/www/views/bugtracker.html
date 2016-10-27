@@ -109,9 +109,9 @@
                                   ng-if="ticket.creator.id == userDatas.id"><!-- ng-show="!noOpenTicket" -->
                             <h2 style="text-align:center">{{ticket.title}}</h2>
                             <p>
-                                By {{ticket.creator.fullname}}<br />
-                                Created: {{ticket.createdAt.date}}<br />
-                                <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt.date}}</span>
+                                By {{ticket.creator.firstname}} {{ticket.creator.lastname}}<br />
+                                Created: {{ticket.createdAt}}<br />
+                                <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt}}</span>
                             </p>
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->

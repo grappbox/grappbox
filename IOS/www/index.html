@@ -22,6 +22,7 @@
     <link href="css/angular-gantt-plugins.css" rel="stylesheet" /> <!-- Angular-Gantt plugin (table, tree...) -->
     <link href='https://fonts.googleapis.com/css?family=Roboto' rel="stylesheet" type='text/css'> <!-- Roboto Font -->
     <link href="css/angular-bootstrap-calendar.min.css" rel="stylesheet" /> <!-- used for the calendar -->
+    <link href="css/ion-floating-menu.css" rel="stylesheet"/> <!-- Floating icon -->
 
     <!--<link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.4.0/css/font-awesome.min.css">-->
     <link href="css/index.css" rel="stylesheet" /> <!-- My CSS-->
@@ -40,6 +41,7 @@
     <script src="scripts/lib/fabric.js"></script> <!-- fabric.js is a library used for the whiteboard -->
     <script src="scripts/lib/angular-base64-upload.js"></script> <!-- angular-base-64-upload.js for binding file from HTML5 input type file to scope variable -->
     <script src="scripts/lib/angular-bootstrap-calendar-tpls.js"></script> <!-- angular-bootstrap-calendar-tpls.js used for the agenda events -->
+    <script src="scripts/lib/ion-floating-menu.js"></script> <!-- a super lib for a floating menu icon -->
 
     <!-- API -->
     <script src="scripts/api.js"></script>
@@ -61,8 +63,8 @@
     <script src="scripts/controllers/projectsController.js"></script>
     <script src="scripts/controllers/createProjectController.js"></script>
     <script src="scripts/controllers/editProjectController.js"></script>
-    <script src="scripts/controllers/rolesController.js"></script>
-    <script src="scripts/controllers/usersOnRoleController.js"></script>
+    <script src="scripts/controllers/createRoleController.js"></script>
+    <script src="scripts/controllers/roleController.js"></script>
     <script src="scripts/controllers/dashboardController.js"></script>
     <script src="scripts/controllers/timelinesController.js"></script>
     <script src="scripts/controllers/createMessageController.js"></script>
@@ -80,6 +82,7 @@
     <script src="scripts/controllers/cloudController.js"></script>
     <script src="scripts/controllers/tasksController.js"></script>
     <script src="scripts/controllers/calendarController.js"></script>
+    <script src="scripts/controllers/createEventController.js"></script>
 </head>
 <body ng-app="GrappBox" class="fullscreen"> <!-- class="fullscreen" is used to prevent header height for iOS6 (iPhone 5) -->
     

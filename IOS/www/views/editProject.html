@@ -96,9 +96,10 @@
             </ion-input>
             <span ng-show="project.newPassword != project.confirmPassword">Passwords do not match.</span>
             <!--<span ng-show="profile_form.profile_confirmPassword.$dirty && profile_form.profile_confirmPassword.$error.passwordVerify">Passwords do not match.</span>-->
-            <a class="button button-block button-positive" ng-disabled="(project.newPassword != project.confirmPassword) || (project.newPassword && !project.oldPassword) || (!project.newPassword && project.oldPassword)" ng-click="EditProject()">
+            <a class="button button-block button-positive icon ion-edit"
+               ng-disabled="(project.newPassword != project.confirmPassword) || (project.newPassword && !project.oldPassword) || (!project.newPassword && project.oldPassword)"
+               ng-click="EditProject()">
                 <!--profile_form.$invalid-->
-                Save
             </a>
 
             <!--<a class="button button-block button-positive" ng-click="EditProject()">

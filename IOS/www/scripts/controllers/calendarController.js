@@ -4,22 +4,59 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('CalendarCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Gantt, moment, calendarConfig) {
+.controller('CalendarCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, moment, calendarConfig, Planning) {
 
     $scope.$on('$ionicView.beforeEnter', function () {
         $rootScope.viewColor = $rootScope.GBNavColors.calendar;
     });
+
+    //Refresher
+    $scope.doRefresh = function () {
+        $scope.GetMonthPlanning();
+        console.log("View refreshed !");
+    }
+
+    $scope.projectId = $stateParams.projectId;
 
     $scope.calendar = {};
     $scope.calendar.typeView = 'month';
     $scope.calendar.date = new Date();
     $scope.calendar.cellOpen = true;
     $scope.calendar.cellEdit = function (cell) {
-        console.log(cell);
+        //console.log(cell);
         if (cell.inYear) {
             cell.cssClass = 'odd-cell';
         }
     };
+
+    /*
+    ** Get month planning
+    ** Method: GET
+    */
+    $scope.events = [];
+    $scope.GetEvents = function () {
+        Planning.Month().get({
+            date: "2016-10-01"
+        }).$promise
+            .then(function (data) {
+                $scope.events = data.data.array.events;
+                console.log('Get month planning successful !');
+                console.log(data.data.array.events);
+                $scope.calendar.events.push({
+                    title: $scope.events[0].title,
+                    startsAt: moment($scope.events[0].beginDate).toDate(),
+                    endsAt: moment($scope.events[0].endDate).toDate(),
+                    color: { primary: '#e3bc08', secondary: '#fdf1ba' }
+                });
+            })
+            .catch(function (error) {
+                console.error('Get month planning failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetEvents();
 
     $scope.calendar.events = [{
       title: 'My event title', // The title of the event

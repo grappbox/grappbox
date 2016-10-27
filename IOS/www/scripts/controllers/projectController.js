@@ -139,12 +139,12 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE
     */
     $scope.userRemoveData = {};
-    $scope.RemoveUserFromProject = function () {
+    $scope.RemoveUserFromProject = function (userId) {
         //$rootScope.showLoading();
         console.log($rootScope.userDatas.token + " " + $scope.projectId + " " + $scope.user_id);
         Projects.RemoveUser().delete({
             projectId: $scope.projectId,
-            userId: $scope.user_id
+            userId: userId
         }).$promise
         .then(function (data) {
             console.log('Remove user from project successful !');
@@ -234,11 +234,11 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE then GET
     */
     $scope.deleteCustomerAccessBeforeRegenInfo = {};
-    $scope.DeleteCustomerAccessBeforeRegen = function (customerName) {
+    $scope.DeleteCustomerAccessBeforeRegen = function (customerId, customerName) {
         //$rootScope.showLoading();
         Projects.DeleteCustomerAccess().delete({
             projectId: $scope.projectId,
-            customerAccessId: $scope.customer_id
+            customerAccessId: customerId
         }).$promise
         .then(function (data) {
             console.log('Delete customer access from project before regenerating successful !');
@@ -262,13 +262,13 @@ angular.module('GrappBox.controllers')
     ** Method: DELETE
     */
     $scope.deleteCustomerAccessData = {};
-    $scope.DeleteCustomerAccess = function () {
+    $scope.DeleteCustomerAccess = function (customerId) {
         //$rootScope.showLoading();
-        console.log("token: " + $rootScope.userDatas.token + " projectId: " + $scope.projectId + " customerId: " + $scope.customer_id);
+        console.log("token: " + $rootScope.userDatas.token + " projectId: " + $scope.projectId + " customerId: " + $scope.customerId);
         Projects.DeleteCustomerAccess().delete({
             token: $rootScope.userDatas.token,
             projectId: $scope.projectId,
-            customerAccessId: $scope.customer_id
+            customerAccessId: customerId
         }).$promise
         .then(function (data) {
             console.log('Delete customer access from project successful !');
@@ -372,6 +372,31 @@ angular.module('GrappBox.controllers')
     $scope.GetProjectRoles();
 
     /*
+    ** Delete role
+    ** Method: DELETE
+    */
+    $scope.deleteRoleData = {};
+    $scope.DeleteProjectRole = function (roleId) {
+        //$rootScope.showLoading();
+        Roles.Delete().delete({
+            id: roleId
+        }).$promise
+        .then(function (data) {
+            console.log('Delete role successful !');
+            Toast.show("Role deleted");
+            $scope.deleteRoleData = data;
+            $scope.GetProjectRoles();
+        })
+        .catch(function (error) {
+            console.error('Delete role failed ! Reason: ' + error.status + ' ' + error.statusText);
+            Toast.show("Role delete error");
+        })
+        .finally(function () {
+            //$rootScope.hideLoading();
+        })
+    }
+
+    /*
     ** Get users avatars
     ** Method: GET
     */
@@ -412,8 +437,8 @@ angular.module('GrappBox.controllers')
     */
 
     // Member action sheet
-    $scope.showMemberActionSheet = function (user_id) {
-        $scope.user_id = user_id;
+    $scope.showMemberActionSheet = function (userId) {
+        $scope.user_id = userId;
         // Show the action sheet
         $ionicActionSheet.show({
             buttons: [{ text: 'Member information' }],
@@ -457,14 +482,14 @@ angular.module('GrappBox.controllers')
     */
 
     // Remove confirm popup for removing member from current project
-    $scope.PopupRemoveUserFromProject = function () {
+    $scope.PopupRemoveUserFromProject = function (userId) {
         var confirmPopup = $ionicPopup.confirm({
             title: 'Delete user from project',
             template: 'Are you sure you want to remove this user from project ?'
         })
         .then(function (res) {
             if (res) {
-                $scope.RemoveUserFromProject();
+                $scope.RemoveUserFromProject(userId);
                 console.log("Chose to remove member");
             } else {
                 console.log("Chose to keep member");
@@ -472,15 +497,31 @@ angular.module('GrappBox.controllers')
         })
     }
 
+    // Remove confirm popup for deleting role from current project
+    $scope.PopupDeleteRoleFromProject = function (roleId) {
+        var confirmPopup = $ionicPopup.confirm({
+            title: 'Delete role from project',
+            template: 'Are you sure you want to delete this role from project ?'
+        })
+        .then(function (res) {
+            if (res) {
+                $scope.DeleteProjectRole(roleId);
+                console.log("Chose to delete role");
+            } else {
+                console.log("Chose to keep role");
+            }
+        })
+    }
+
     // Remove confirm popup for removing customer access from current project
-    $scope.PopupDeleteCustomerAccess = function () {
+    $scope.PopupDeleteCustomerAccess = function (customerId) {
         var confirmPopup = $ionicPopup.confirm({
             title: 'Delete access from project',
             template: 'Are you sure you want to delete this customer access from project ?'
         })
         .then(function (res) {
             if (res) {
-                $scope.DeleteCustomerAccess();
+                $scope.DeleteCustomerAccess(customerId);
                 console.log("Chose to delete access");
             } else {
                 console.log("Chose to keep access");

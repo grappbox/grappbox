@@ -1,0 +1,127 @@
+﻿<!--
+    Summary: Users on a specific role view
+-->
+
+<ion-view>
+    <ion-nav-title>{{ usersForRole.name }}</ion-nav-title>
+    <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
+        <!-- Users on role -->
+        <div class="item item-divider">Members</div>
+        <ion-list>
+            <ion-item ng-show="userAssignedOnRole">{{userAssignedOnRole}}</ion-item>
+            <ion-item ng-show="!userAssignedOnRole"
+                      ng-repeat="userAssigned in usersForRole.users_assigned"
+                      ng-click="showMemberActionSheet(userAssigned.id)">
+                <h2>{{ userAssigned.firstname }} {{ userAssigned.lastname }}</h2>
+            </ion-item>
+        </ion-list>
+
+        <!-- Users on project but not assigned to this role -->
+        <ion-list>
+            <ion-item ng-show="userNonAssignedOnRole">{{userNonAssignedOnRole}}</ion-item>
+            <form name="form_usersNotAssigned">
+                <label ng-show="!userNonAssignedOnRole" class="item item-input item-select">
+                    <div class="input-label">
+                        Member unassigned
+                    </div>
+                    <select ng-model="userToAdd.userId" required>
+                        <option ng-repeat="userUnassigned in usersForRole.users_non_assigned"
+                                value="{{ userUnassigned.id }}">
+                            {{ userUnassigned.firstname }} {{ userUnassigned.lastname }}
+                        </option>
+                    </select>
+                </label>
+            </form>
+        </ion-list>
+
+        <!-- Assign role -->
+        <button ng-show="!userNonAssignedOnRole"
+                class="button button-block button-positive"
+                ng-click="AssignToRole()"
+                ng-disabled="form_usersNotAssigned.$invalid">
+            Assign
+        </button>
+
+        <!-- Update a role -->
+        <div class="item item-divider">Update role</div>
+        <form name="form_roleType">
+            <ion-list>
+                <ion-item class="item-input">
+                    <ion-label class="input-label">Role name: </ion-label>
+                    <input type="text" name="name" ng-model="role.name" placeholder="New role name">
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Team Timeline</h2>
+                    <ion-radio name="teamTimeline" ng-model="role.teamTimeline" ng-value="0">None</ion-radio>
+                    <ion-radio name="teamTimeline" ng-model="role.teamTimeline" ng-value="1">Read</ion-radio>
+                    <ion-radio name="teamTimeline" ng-model="role.teamTimeline" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Customer Timeline</h2>
+                    <ion-radio name="customerTimeline" ng-model="role.customerTimeline" ng-value="0">None</ion-radio>
+                    <ion-radio name="customerTimeline" ng-model="role.customerTimeline" ng-value="1">Read</ion-radio>
+                    <ion-radio name="customerTimeline" ng-model="role.customerTimeline" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Gantt</h2>
+                    <ion-radio name="gantt" ng-model="role.gantt" ng-value="0">None</ion-radio>
+                    <ion-radio name="gantt" ng-model="role.gantt" ng-value="1">Read</ion-radio>
+                    <ion-radio name="gantt" ng-model="role.gantt" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Whiteboard</h2>
+                    <ion-radio name="whiteboard" ng-model="role.whiteboard" ng-value="0">None</ion-radio>
+                    <ion-radio name="whiteboard" ng-model="role.whiteboard" ng-value="1">Read</ion-radio>
+                    <ion-radio name="whiteboard" ng-model="role.whiteboard" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">BugTracker</h2>
+                    <ion-radio name="bugtracker" ng-model="role.bugtracker" ng-value="0">None</ion-radio>
+                    <ion-radio name="bugtracker" ng-model="role.bugtracker" ng-value="1">Read</ion-radio>
+                    <ion-radio name="bugtracker" ng-model="role.bugtracker" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Event</h2>
+                    <ion-radio name="event" ng-model="role.event" ng-value="0">None</ion-radio>
+                    <ion-radio name="event" ng-model="role.event" ng-value="1">Read</ion-radio>
+                    <ion-radio name="event" ng-model="role.event" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Tasks</h2>
+                    <ion-radio name="task" ng-model="role.task" ng-value="0">None</ion-radio>
+                    <ion-radio name="task" ng-model="role.task" ng-value="1">Read</ion-radio>
+                    <ion-radio name="task" ng-model="role.task" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Project Settings</h2>
+                    <ion-radio name="projectSettings" ng-model="role.projectSettings" ng-value="0">None</ion-radio>
+                    <ion-radio name="projectSettings" ng-model="role.projectSettings" ng-value="1">Read</ion-radio>
+                    <ion-radio name="projectSettings" ng-model="role.projectSettings" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+                <ion-item>
+                    <h2 style="text-align:center">Cloud</h2>
+                    <ion-radio name="cloud" ng-model="role.cloud" ng-value="0">None</ion-radio>
+                    <ion-radio name="cloud" ng-model="role.cloud" ng-value="1">Read</ion-radio>
+                    <ion-radio name="cloud" ng-model="role.cloud" ng-value="2">Read & Write</ion-radio>
+                </ion-item>
+            </ion-list>
+            <!-- Update role button-->
+            <button ng-disabled="form_roleType.$invalid"
+                    class="button button-block button-positive icon ion-edit"
+                    ng-click="UpdateProjectRole()">
+            </button>
+        </form>
+
+        <!-- Danger zone -->
+        <!--<div class="item item-divider bar bar-assertive">Danger zone</div>
+        <a class="button button-block button-dark"
+           ng-click="PopupDeleteRole()">
+            Delete this role
+        </a>-->
+    </ion-content>
+</ion-view>

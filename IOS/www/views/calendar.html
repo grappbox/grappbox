@@ -4,35 +4,43 @@
 
 <ion-view>
     <ion-nav-title class="item-text-wrap">Calendar</ion-nav-title>
+    <!-- Floating button -->
+    <ion-floating-button ui-sref="app.createEvent({projectId: projectId})" has-footer="false" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF">
+    </ion-floating-button>
+    <!-- Content -->
     <ion-content overflow-scroll="false" id="calendar">
+
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+                       on-refresh="doRefresh()">
+        </ion-refresher>
+
         <div class="button-bar">
             <!-- Year button -->
-            <a class="button button-positive" ng-click="calendar.typeView='year'">Year</a>
+            <!--<a class="button button-positive" ng-click="calendar.typeView='year'">Year</a>-->
             <!-- Month button -->
             <a class="button button-positive" ng-click="calendar.typeView='month'">Month</a>
             <!-- Week button -->
-            <a class="button button-positive" ng-click="calendar.typeView='week'">Week</a>
+            <!--<a class="button button-positive" ng-click="calendar.typeView='week'">Week</a>-->
             <!-- Day button -->
             <a class="button button-positive" ng-click="calendar.typeView='day'">Day</a>
         </div>
         <div class="button-bar">
-            <button class="button button-positive"
+            <button class="button button-small icon ion-ios-arrow-back button-positive"
                     mwl-date-modifier
                     date="calendar.date"
                     decrement="calendar.typeView">
-                Previous
             </button>
-            <button class="button button-positive"
+            <button class="button button-small button-positive"
                     mwl-date-modifier
                     date="calendar.date"
                     set-to-today>
                 Today
             </button>
-            <button class="button button-positive"
+            <button class="button button-small icon ion-ios-arrow-forward button-positive"
                     mwl-date-modifier
                     date="calendar.date"
                     increment="calendar.typeView">
-                Next
             </button>
         </div>
         <h2 class="title">{{ calendar.title }}</h2>

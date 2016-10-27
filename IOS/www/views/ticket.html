@@ -21,7 +21,7 @@
             <button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
 
             <!-- Users on ticket -->
-            <button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><br ng-if="ticket.users[0]"/><br ng-if="ticket.users[0]"/>
+            <button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />
 
             <!-- Ticket's description, creator's name -->
             <textarea ng-readonly="true"
@@ -32,28 +32,28 @@
                 Created: {{ticket.createdAt}}<br />
                 <span ng-show="ticket.editedAt">Edited: {{ticket.editedAt}}</span>
             </p>
-            <a ng-show="ticket.creator.id == userConnectedId" class="button button-block button-positive"
+            <a ng-show="ticket.creator.id == userConnectedId"
+               class="button button-block button-positive icon ion-edit"
                ui-sref="app.editTicket({projectId: projectId, ticketId: ticketId})">
-                Edit
             </a>
         </div>
 
-            <!-- Comments on ticket-->
-            <div class="item item-divider">Comments</div>
-            <ion-item ng-repeat="com in comments">
-                <textarea rows="5"
-                          ng-readonly="com.creator.id != userConnectedId"
-                          ng-model="com.comment"></textarea>
-                <p>By {{com.creator.firstname}} {{com.creator.lastname}}</p>
-                <div class="button-bar" ng-show="com.creator.id == userConnectedId">
-                    <a class="button button-block icon ion-ios-trash button-small button-assertive"
-                       ng-click="CloseComment(com)">
-                    </a>
-                    <a class="button button-block icon ion-edit button-small button-positive"
-                       ng-click="EditCommentOnTicket(com)">
-                    </a>
-                </div>
-            </ion-item>
+        <!-- Comments on ticket-->
+        <div class="item item-divider">Comments</div>
+        <ion-item ng-repeat="com in comments">
+            <textarea rows="5"
+                      ng-readonly="com.creator.id != userConnectedId"
+                      ng-model="com.comment"></textarea>
+            <p>By {{com.creator.firstname}} {{com.creator.lastname}}</p>
+            <div class="button-bar" ng-show="com.creator.id == userConnectedId">
+                <a class="button button-block icon ion-ios-trash button-small button-assertive"
+                   ng-click="CloseComment(com)">
+                </a>
+                <a class="button button-block icon ion-edit button-small button-positive"
+                   ng-click="EditCommentOnTicket(com)">
+                </a>
+            </div>
+        </ion-item>
 
         <!-- No comment error -->
         <p ng-show="comments[0] == null">There is no comment.</p>
@@ -63,13 +63,10 @@
         <form name="comment_form">
             <!-- Comment's description -->
             <ion-item>
-                <form name="comment_form">
-                    <textarea name="comment_description"
-                              rows="5"
-                              placeholder="Leave a comment"
-                              ng-model="comment.description" required>
-                    </textarea>
-                </form>
+                <textarea name="comment_description"
+                          rows="5"
+                          placeholder="Leave a comment"
+                          ng-model="comment.description" required></textarea>
             </ion-item>
             <div class="button-bar">
                 <!-- If ticket is open & Comment is empty -->

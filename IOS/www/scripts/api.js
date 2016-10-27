@@ -200,7 +200,7 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Close ticket
         CloseTicket: function () {
-            return $resource($rootScope.API + 'bugtracker/ticket/closed/:id', { id: "@id" });
+            return $resource($rootScope.API + 'bugtracker/ticket/:id', { id: "@id" });
         },
         // Reopen ticket
         ReopenTicket: function () {
@@ -339,7 +339,7 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Delete comment on a message
         DeleteComment: function () {
-            return $resource($rootScope.API + 'timeline/comment/:id', { id: "@id" });
+            return $resource($rootScope.API + 'timeline/comment/:commentId', { commentId: "@commentId" });
         },
         // Get comments on a message
         Comments: function () {
@@ -435,9 +435,7 @@ angular.module('GrappBox.api', ['ngResource'])
         },
         // Delete an object on a whiteboard
         DeleteObject: function () {
-            return $resource($rootScope.API + 'whiteboard/object/:id', { id: "@id"}, {
-                'update': { method: 'PUT' }
-            });
+            return $resource($rootScope.API + 'whiteboard/object/:id', { id: "@id" });
         },
         // List all whiteboards
         List: function () {
@@ -456,6 +454,73 @@ angular.module('GrappBox.api', ['ngResource'])
             return $resource($rootScope.API + 'whiteboard/draw/:id', { id: "@id" }, {
                 'update': { method: 'PUT' }
             });
+        }
+    }
+})
+
+/*
+********************* PLANNING *********************
+*/
+.factory('Planning', function ($rootScope, $resource) {
+    return {
+        // Get day planning
+        Day: function () {
+            return $resource($rootScope.API + 'planning/day/:date', { date: "@date" });
+        },
+        // Get month planning
+        Month: function () {
+            return $resource($rootScope.API + 'planning/month/:date', { date: "@date" });
+        },
+        // Get week planning
+        Week: function () {
+            return $resource($rootScope.API + 'planning/week/:date', { date: "@date" });
+        }
+    }
+})
+
+/*
+********************* EVENTS *********************
+*/
+.factory('Event', function ($rootScope, $resource) {
+    return {
+        // Get event detail
+        Get: function () {
+            return $resource($rootScope.API + 'event/:id', { id: "@id" });
+        },
+        // Edit event
+        Edit: function () {
+            return $resource($rootScope.API + 'event/:id', { id: "@id" }, {
+                'update': { method: 'PUT' }
+            });
+        },
+        // Post event
+        Create: function () {
+            return $resource($rootScope.API + 'event');
+        },
+        // Delete event
+        Delete: function () {
+            return $resource($rootScope.API + 'event/:id', { id: "@id" });
+        },
+        SetUsers: function () {
+            return $resource($rootScope.API + 'event/users/:id', { id: "@id" }, {
+                'update': { method: 'PUT' }
+            });
+        }
+    }
+})
+
+/*
+********************* STATISTICS *********************
+*/
+.factory('Stats', function ($rootScope, $resource) {
+    return {
+        // Get stat detail
+        GetStat: function () {
+            return $resource($rootScope.API + 'statistic/:projectId/:statName', { projectId: "@projectId", statName: "@statName" });
+        },
+        // Get all stats
+        GetStats: function () {
+            return $resource($rootScope.API + 'statistics/:projectId', { projectId: "@id" });
         }
     }
 })

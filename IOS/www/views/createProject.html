@@ -67,8 +67,9 @@
             </ion-input>
             <span ng-show="project.password != project.confirmPassword">Passwords do not match.</span>
             <p>Fields with a '*' are required.</p>
-            <a class="button button-block button-positive" ng-disabled="createProject_form.$invalid || (project.password != project.confirmPassword)" ng-click="CreateProject()">
-                Create
+            <a class="button button-block button-positive icon ion-plus"
+               ng-disabled="createProject_form.$invalid || (project.password != project.confirmPassword)"
+               ng-click="CreateProject()">
             </a>
         </form>
     </ion-content>

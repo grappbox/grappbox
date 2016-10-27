@@ -55,7 +55,7 @@ angular.module('GrappBox.controllers')
             id: $scope.tagId,
             data: {
                 name: $scope.tagInfo.name,
-                color: ""
+                color: "9E58DC"
             }
         }).$promise
             .then(function (data) {

@@ -8,7 +8,7 @@
     <ion-tabs class="tabs-positive tabs-striped">
 
         <!-- Team Occupation -->
-        <ion-tab title="Teams" class="gb-tab">
+        <ion-tab icon-on="ion-ios-people" icon-off="ion-ios-people-outline" class="gb-tab">
             <ion-pane>
                 <ion-content overflow-scroll="false">
                     <!-- Refresher -->
@@ -37,7 +37,7 @@
         </ion-tab>
 
         <!-- Next Meeting -->
-        <ion-tab title="Meetings" class="gb-tab">
+        <ion-tab icon-on="ion-ios-calendar" icon-off="ion-ios-calendar-outline" class="gb-tab">
             <ion-pane>
                 <ion-content overflow-scroll="false">
                     <!-- Refresher -->
@@ -45,6 +45,34 @@
                                    on-refresh="doRefreshNextMeetings()">
                     </ion-refresher>
                     <div class="item item-divider">Next Meetings</div>
+                    <ion-list>
+                        <ion-item ng-show="noMeeting">{{noMeeting}}</ion-item>
+                        <ion-item ng-show="!noMeeting" class="item-body">
+                            <a class="item item-thumbnail-left"
+                               ng-repeat="nextMeeting in nextMeetingsTab"
+                               ui-sref="app.calendar({projectId: projectId})">
+                                <img data-ng-src="data:image/png;base64, {{nextMeeting.projects.logo}}" />
+                                <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
+                                <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
+                                <p>"{{ nextMeeting.description }}"</p>
+                                <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
+                                <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
+                            </a>
+                        </ion-item>
+                    </ion-list>
+                </ion-content>
+            </ion-pane>
+        </ion-tab>
+
+        <!-- Statistics -->
+        <ion-tab icon-on="ion-ios-pie" icon-off="ion-ios-pie-outline" class="gb-tab">
+            <ion-pane>
+                <ion-content overflow-scroll="false">
+                    <!-- Refresher -->
+                    <ion-refresher pulling-text="Pull to refresh..."
+                                   on-refresh="doRefreshStats()">
+                    </ion-refresher>
+                    <div class="item item-divider">Statistics</div>
                     <ion-list>
                         <ion-item ng-show="noMeeting">{{noMeeting}}</ion-item>
                         <ion-item ng-show="!noMeeting" class="item-body">

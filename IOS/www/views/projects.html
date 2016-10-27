@@ -5,6 +5,12 @@
 
 <ion-view>
     <ion-nav-title>Projects</ion-nav-title>
+
+    <!-- Floating button -->
+    <ion-floating-button has-footer="false" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF" ui-sref="app.createProject">
+    </ion-floating-button>
+
+    <!-- Content -->
     <ion-content>
 
         <!-- Refresher -->
@@ -23,20 +29,18 @@
                 <h2>{{ project.name }}</h2><br />
                 <div class="button-bar">
                     <!-- Edit project button -->
-                    <a class="button button-positive"
+                    <a class="button button-positive icon ion-ios-cog"
                        ui-sref="app.project({projectId: project.id})">
-                        Edit
                     </a>
                     <!-- Open project button -->
-                    <a class="button button-positive"
+                    <a class="button button-positive icon ion-ios-speedometer"
                        ui-sref="app.dashboard({projectId: project.id})">
-                        Open
                     </a>
                 </div>
             </ion-item>
         </ion-list>
-        <a class="button button-block button-positive" ui-sref="app.createProject">
+        <!--<a class="button button-block button-positive" ui-sref="app.createProject">
             +
-        </a>
+        </a>-->
     </ion-content>
 </ion-view>

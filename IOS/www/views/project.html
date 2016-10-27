@@ -28,31 +28,27 @@
                 <p ng-show="projectInfo.twitter"><strong>Twitter: </strong> {{ projectInfo.twitter }}</p>
                 <p ng-show="projectInfo.deleted_at != null"><strong style="color:red">IN DELETION :(</strong></p>
 
-                <div class="button-bar">
-                    <!-- Edit project button -->
-                    <a class="button icon ion-edit button-positive"
-                       ui-sref="app.editProject({projectId: projectId})">
-                    </a>
-                    <!-- Roles on project button -->
-                    <a class="button icon ion-network button-positive"
-                       ui-sref="app.roles({projectId: projectId})">
-                    </a>
-                </div>
+                <!-- Edit project button -->
+                <button class="button button-block icon ion-edit button-positive"
+                   ui-sref="app.editProject({projectId: projectId})">
+                </button>
             </ion-item>
         </ion-list>
         <!-- Users on project -->
         <div class="item item-divider">Members</div>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-show="noUser">{{noUser}}</ion-item>
             <ion-item ng-show="!noUser"
                       class="item-avatar"
                       ng-repeat="userOnProject in userList"
-                      ng-click="showMemberActionSheet(userOnProject.id)">
+                      ui-sref="app.user({ userId: userOnProject.id, projectId: projectId })"><!--ng-click="showMemberActionSheet(userOnProject.id)"-->
                 <img ng-if="findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(userOnProject.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                 <img ng-if="!findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
 
-                <!--<img ng-src="userOnProject.avatar" />-->
                 <h2>{{ userOnProject.firstname }} {{ userOnProject.lastname }}</h2>
+                <ion-option-button class="button-assertive ion-ios-trash"
+                                   ng-click="PopupRemoveUserFromProject(userOnProject.id)">
+                </ion-option-button>
             </ion-item>
         </ion-list>
 
@@ -64,30 +60,31 @@
                            name="userToAdd_email" ng-model="userToAdd.userEmail" required>
                 </label>
                 <button ng-disabled="add_user_form.$invalid"
-                        class="button button-small button-positive"
+                        class="button button-small button-positive icon ion-plus"
                         ng-click="AddUserToProject()">
-                    Add
                 </button>
             </ion-item>
         </form>
 
         <!-- Roles on project -->
         <div class="item item-divider">Roles</div>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-show="noRole">{{noRole}}</ion-item>
             <ion-item ng-show="!noRole"
                       ng-repeat="role in projectRoles"
-                      ui-sref="app.usersOnRole({projectId: projectId, roleId: role.id, role: role})">
+                      ui-sref="app.role({projectId: projectId, roleId: role.roleId, role: role})">
                 <h2>{{ role.name }}</h2>
+                <ion-option-button class="button-assertive icon ion-ios-trash"
+                                   ng-click="PopupDeleteRoleFromProject(role.roleId)">
+                </ion-option-button>
             </ion-item>
         </ion-list>
 
         <!-- Add a role on project -->
         <form>
             <ion-item class="item-input-inset">
-                <button class="button button-block button-positive"
-                        ui-sref="app.roles({projectId: projectId})">
-                    Add
+                <button class="button button-block button-positive icon ion-plus"
+                        ui-sref="app.createRole({projectId: projectId})">
                 </button>
             </ion-item>
         </form>
@@ -95,16 +92,21 @@
 
         <!-- Customers accesses on project -->
         <div class="item item-divider">Customers Accesses</div>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-show="noCustomer">{{noCustomer}}</ion-item>
             <ion-item ng-show="!noCustomer"
                       class="item item-text-wrap"
-                      ng-repeat="customerOnProject in customersList"
-                      ng-click="showCustomerActionSheet(customerOnProject.id, customerOnProject.name)">
+                      ng-repeat="customerOnProject in customersList"><!--ng-click="showCustomerActionSheet(customerOnProject.id, customerOnProject.name)"-->
                 <!--<img ng-src="" />-->
                 <h2>{{ customerOnProject.name }}</h2>
                 <!--<p><strong>Created: </strong>{{ customerOnProject.creation_date.date }}</p>-->
                 <p><strong>Token: </strong>{{ customerOnProject.token }}</p>
+                <ion-option-button class="button-assertive icon ion-ios-refresh"
+                                   ng-click="DeleteCustomerAccessBeforeRegen(customerOnProject.id, customerOnProject.name)">
+                </ion-option-button>
+                <ion-option-button class="button-assertive icon ion-ios-trash"
+                                   ng-click="PopupDeleteCustomerAccess(customerOnProject.id)">
+                </ion-option-button>
             </ion-item>
         </ion-list>
 
@@ -116,18 +118,16 @@
                            name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
                 </label>
                 <button ng-disabled="gen_access_form.$invalid"
-                        class="button button-small button-positive"
+                        class="button button-small button-positive icon ion-link"
                         ng-click="GenerateAccess()">
-                    Generate
                 </button>
             </ion-item>
         </form>
 
         <!-- Danger zone -->
         <div class="item item-divider bar bar-assertive">Danger zone</div>
-        <a ng-show="projectInfo.deleted_at == null" class="button button-block button-dark"
+        <a ng-show="projectInfo.deleted_at == null" class="button button-block button-dark icon ion-ios-trash"
            ng-click="PopupDeleteProject()">
-            Delete this project
         </a>
         <a ng-show="projectInfo.deleted_at != null" class="button button-block button-dark"
            ng-click="RetreiveProject()">

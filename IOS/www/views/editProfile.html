@@ -101,13 +101,12 @@
                        ng-model="profileInfo.confirmPassword"/>
             </ion-input>
             <span ng-show="profileInfo.newPassword != profileInfo.confirmPassword">Passwords do not match.</span>
-            <a class="button button-block button-positive"
+            <a class="button button-block button-positive ion-edit"
                ng-disabled="profile_form.$invalid
                || (profileInfo.newPassword != profileInfo.confirmPassword)
                || (profileInfo.newPassword && !profileInfo.oldPassword)
                || (!profileInfo.newPassword && profileInfo.oldPassword)"
                ng-click="EditProfile()"><!--profile_form.$invalid-->
-                Save
             </a>
         </form>
     </ion-content>

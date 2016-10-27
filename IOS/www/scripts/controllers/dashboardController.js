@@ -4,10 +4,12 @@
 
 angular.module('GrappBox.controllers')
 
-.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Dashboard, Users, Projects) {
+.controller('DashboardCtrl', function ($scope, $rootScope, $state, $stateParams, Toast, Dashboard, Users, Projects, Stats) {
     
-    $scope.$on('$ionicView.beforeEnter', function () {
+    // Disable back button & set nav color
+    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
         $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+        viewData.enableBack = false;
     });
 
 
@@ -28,11 +30,6 @@ angular.module('GrappBox.controllers')
 
     // Just to know if we are in a project or not for UI
     $rootScope.hasProject = true;
-
-    // Disable back button
-    $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
-        viewData.enableBack = false;
-    });
 
     console.log("PROJECTID = " + $stateParams.projectId);
     $rootScope.projectId = $stateParams.projectId;
@@ -90,6 +87,29 @@ angular.module('GrappBox.controllers')
             })
     }
     $scope.GetNextMeetings();
+
+    //Get Stats
+    $scope.getStatsData = {};
+    $scope.GetStats = function () {
+        //$rootScope.showLoading();
+        Stats.GetStats().get({
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get stats list successful !');
+                console.log(data.data);
+                $scope.getStatsData = data.data;
+            })
+            .catch(function (error) {
+                console.error('Get stats list failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetStats();
 
     //Get Global Progress
     /*$scope.globalProgressTab = {};
