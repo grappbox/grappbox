@@ -133,9 +133,15 @@ class LoginController extends Controller
         case "7.1.3":
         $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+        $redirect->headers->clearCookie("TOKEN");
+        $redirect->headers->clearCookie("ID");
         break;
 
         default:
+        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+        $redirect->headers->clearCookie("TOKEN");
+        $redirect->headers->clearCookie("ID");
         break;
       }
     }
