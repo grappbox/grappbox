@@ -9,9 +9,10 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.grappbox.grappbox.R;
+
+import java.sql.Time;
 
 /**
  * Created by marcw on 30/08/2016.
@@ -43,9 +44,6 @@ public class GrappboxProvider extends ContentProvider {
     public static final int EVENT = 130;
     public static final int EVENT_BY_ID = 132;
     public static final int EVENT_BY_GRAPPBOX_ID = 133;
-    public static final int EVENT_BY_TYPE_ID = 136;
-
-    public static final int EVENT_TYPE = 140;
 
     public static final int EVENT_PARTICIPANT = 150;
     public static final int EVENT_PARTICIPANT_BY_EVENT_ID = 151;
@@ -105,6 +103,11 @@ public class GrappboxProvider extends ContentProvider {
     public static final int CLOUD_BY_ID = 241;
     public static final int CLOUD_WITH_PROJECT = 242;
 
+    public static final int TIMELINE_COMMENTS = 260;
+    public static final int TIMELINE_COMMENTS_BY_TIMELINE_ID = 261;
+    public static final int TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID = 262;
+    public static final int TIMELINE_COMMENTS_BY_ID = 263;
+    public static final int TIMELINE_COMMENTS_BY_GRAPPBOX_ID = 264;
 
 
 
@@ -134,12 +137,9 @@ public class GrappboxProvider extends ContentProvider {
 
         //Event related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT, EVENT);
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/type/#", EVENT_BY_TYPE_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/#", EVENT_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT + "/*", EVENT_BY_GRAPPBOX_ID);
 
-        //Event type related URIs
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT_TYPE, EVENT_TYPE);
 
         //Event participant related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_EVENT_PARTICIPANT, EVENT_PARTICIPANT);
@@ -159,6 +159,13 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/timeline/*", TIMELINE_MESSAGES_BY_GRAPPBOX_TIMELINE_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/#", TIMELINE_MESSAGES_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/*", TIMELINE_MESSAGES_BY_GRAPPBOX_ID);
+
+        //Timeline comments related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS, TIMELINE_COMMENTS);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/timeline/#", TIMELINE_COMMENTS_BY_TIMELINE_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/timeline/*", TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/#", TIMELINE_COMMENTS_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/*", TIMELINE_COMMENTS_BY_GRAPPBOX_ID);
 
         //Role related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE, ROLE);
@@ -244,20 +251,10 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.OccupationEntry.CONTENT_TYPE;
 
             case EVENT:
-            case EVENT_BY_TYPE_ID:
                 return GrappboxContract.EventEntry.CONTENT_TYPE;
             case EVENT_BY_ID:
             case EVENT_BY_GRAPPBOX_ID:
                 return GrappboxContract.EventEntry.CONTENT_ITEM_TYPE;
-
-            case EVENT_TYPE:
-                return GrappboxContract.EventTypeEntry.CONTENT_TYPE;
-
-            case EVENT_PARTICIPANT:
-                return GrappboxContract.EventTypeEntry.CONTENT_TYPE;
-            case EVENT_PARTICIPANT_BY_EVENT_ID:
-            case EVENT_PARTICIPANT_BY_GRAPPBOX_EVENT_ID:
-                return GrappboxContract.EventTypeEntry.CONTENT_ITEM_TYPE;
 
             case TIMELINE:
             case TIMELINE_BY_PROJECT_ID:
@@ -274,6 +271,14 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES_BY_GRAPPBOX_ID:
             case TIMELINE_MESSAGES_BY_ID:
                 return GrappboxContract.TimelineMessageEntry.CONTENT_ITEM_TYPE;
+
+            case TIMELINE_COMMENTS:
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID:
+            case TIMELINE_COMMENTS_BY_TIMELINE_ID:
+                return GrappboxContract.TimelineCommentEntry.CONTENT_TYPE;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_ID:
+            case TIMELINE_COMMENTS_BY_ID:
+                return GrappboxContract.TimelineCommentEntry.CONTENT_ITEM_TYPE;
 
             case ROLE:
             case ROLE_BY_PROJECT_ID:
@@ -295,10 +300,10 @@ public class GrappboxProvider extends ContentProvider {
             case TAG:
             case TAG_BY_PROJECT_ID:
             case TAG_BY_GRAPPBOX_PROJECT_ID:
-                return GrappboxContract.TagEntry.CONTENT_TYPE;
+                return GrappboxContract.BugtrackerTagEntry.CONTENT_TYPE;
             case TAG_BY_ID:
             case TAG_BY_GRAPPBOX_ID:
-                return GrappboxContract.TagEntry.CONTENT_ITEM_TYPE;
+                return GrappboxContract.BugtrackerTagEntry.CONTENT_ITEM_TYPE;
 
             case BUG:
                 return GrappboxContract.BugEntry.CONTENT_TYPE;
@@ -350,14 +355,14 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.TimelineEntry.TABLE_NAME;
             case TIMELINE_MESSAGES:
                 return GrappboxContract.TimelineMessageEntry.TABLE_NAME;
+            case TIMELINE_COMMENTS:
+                return GrappboxContract.TimelineCommentEntry.TABLE_NAME;
             case CLOUD:
                 return GrappboxContract.CloudEntry.TABLE_NAME;
             case EVENT:
                 return GrappboxContract.EventEntry.TABLE_NAME;
-            case EVENT_TYPE:
-                return GrappboxContract.EventTypeEntry.TABLE_NAME;
             case TAG:
-                return GrappboxContract.TagEntry.TABLE_NAME;
+                return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -417,12 +422,6 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT_BY_GRAPPBOX_ID:
                 retCursor = EventCursors.query_EventByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
-            case EVENT_BY_TYPE_ID:
-                retCursor = EventCursors.query_EventByTypeId(uri, projection, selection, args, sortOrder, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                retCursor = EventTypeCursors.query_EventType(uri, projection, selection, args, sortOrder, mOpenHelper);
-                break;
             case EVENT_PARTICIPANT:
                 retCursor = EventParticipantCursors.query_EventParticipant(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
@@ -461,6 +460,21 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case TIMELINE_MESSAGES_BY_GRAPPBOX_ID:
                 retCursor = TimelineMessageCursors.query_TimelineMessageByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS:
+                retCursor = TimelineCommentCursors.query_TimelineComment(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_TIMELINE_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByGrappboxTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case ROLE:
                 retCursor = RoleCursors.query_Role(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -616,14 +630,14 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 returnedUri = TimelineMessageCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                returnedUri = TimelineCommentCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             case CLOUD:
                 returnedUri = CloudCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case EVENT:
                 returnedUri = EventCursors.insert(uri, contentValues, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                returnedUri = EventTypeCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
@@ -682,14 +696,14 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 ret = TimelineMessageCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                ret = TimelineCommentCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case CLOUD:
                 ret = CloudCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             case EVENT:
                 ret = EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                ret = EventTypeCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
@@ -732,14 +746,14 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 returnCount = TimelineMessageCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                returnCount = TimelineCommentCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
             case CLOUD:
                 returnCount = CloudCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             case EVENT:
                 returnCount = EventCursors.bulkInsert(uri, values, mOpenHelper);
-                break;
-            case EVENT_TYPE:
-                returnCount = EventTypeCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

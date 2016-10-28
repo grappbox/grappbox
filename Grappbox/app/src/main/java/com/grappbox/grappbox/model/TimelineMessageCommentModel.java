@@ -23,17 +23,15 @@ public class TimelineMessageCommentModel implements Parcelable {
     public String   _grappboxId;
     public String   _parentId;
     public String   _createId;
-    public String   _title;
     public String   _comment;
     public String   _lastupdate;
 
     public TimelineMessageCommentModel(Context context, Cursor data){
-        _id = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry._ID));
-        _grappboxId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID));
-        _parentId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_PARENT_ID));
-        _createId = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID));
-        _title = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_TITLE));
-        _comment = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE));
+        _id = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry._ID));
+        _grappboxId = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID));
+        _parentId = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID));
+        _createId = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID));
+        _comment = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE));
         try {
             _lastupdate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC)))) ;
         } catch (ParseException e) {
@@ -48,7 +46,6 @@ public class TimelineMessageCommentModel implements Parcelable {
         _grappboxId = source.readString();
         _parentId = source.readString();
         _createId = source.readString();
-        _title = source.readString();
         _comment = source.readString();
         _lastupdate = source.readString();
     }
@@ -76,7 +73,6 @@ public class TimelineMessageCommentModel implements Parcelable {
         dest.writeString(_grappboxId);
         dest.writeString(_parentId);
         dest.writeString(_createId);
-        dest.writeString(_title);
         dest.writeString(_comment);
         dest.writeString(_lastupdate);
     }

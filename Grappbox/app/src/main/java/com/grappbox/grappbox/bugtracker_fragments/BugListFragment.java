@@ -25,7 +25,6 @@ import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.BugListAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
@@ -44,7 +43,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -123,12 +121,12 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
             case TYPE_YOURS:
                 sortOrder = "date(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
                 String[] projection = {
-                    BugEntry.TABLE_NAME + "." + BugEntry._ID,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
+                        BugEntry.TABLE_NAME + "." + BugEntry._ID,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
                 };
                 long uid = Long.parseLong(AccountManager.get(getActivity()).getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
 
@@ -234,8 +232,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
             };
             String selectionComments = BugEntry.COLUMN_LOCAL_PARENT_ID + "=?";
             final String[] projectionTags = {
-                    GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry._ID,
-                    GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry.COLUMN_NAME
+                    GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry._ID,
+                    GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry.COLUMN_NAME
             };
             String selectionTags = GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=?";
             for (BugModel model : params[0]){

@@ -136,11 +136,12 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects/" + apiToken);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/projects");
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
             connection.connect();
+            Log.v(LOG_TAG, "syncProjects : " + url.toString());
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
@@ -224,7 +225,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         String returnedJson;
 
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/projects/users/"+ apiProjectId);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/users/"+ apiProjectId);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
@@ -449,7 +450,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         HttpURLConnection connection = null;
         String returnedJson;
         try {
+            Log.v(LOG_TAG, "project ID : " + grappboxProjectIdCursor.getString(0) + ", column name : " + grappboxProjectIdCursor.getColumnName(0));
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timelines/"+ grappboxProjectIdCursor.getString(0));
+            Log.v(LOG_TAG, "url : " + url.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
@@ -482,7 +485,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, timelineId);
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
-                launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 100);
+                launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 50);
                 getContext().startService(launchTimelineMessageSync);
             }
 

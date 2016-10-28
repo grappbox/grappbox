@@ -1,13 +1,10 @@
 package com.grappbox.grappbox.bugtracker_fragments;
 
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DatabaseUtils;
-import android.nfc.Tag;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -16,11 +13,8 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,18 +22,14 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.AssigneeEditAdapter;
 import com.grappbox.grappbox.adapter.TagEditAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.layouts.GridAutofitLayoutManager;
 import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.model.BugTagModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.receiver.BugReceiver;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
-
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -253,14 +243,14 @@ public class NewBugFragment extends Fragment implements LoaderManager.LoaderCall
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         if (id == LOADER_EXISTING_TAGS){
             final String[] projection = {
-                    GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry._ID,
-                    GrappboxContract.TagEntry.TABLE_NAME + "." + GrappboxContract.TagEntry.COLUMN_NAME
+                    GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry._ID,
+                    GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry.COLUMN_NAME
             };
-            final String selection = GrappboxContract.TagEntry.COLUMN_LOCAL_PROJECT_ID+"=?";
+            final String selection = GrappboxContract.BugtrackerTagEntry.COLUMN_LOCAL_PROJECT_ID+"=?";
             final String[] arg = {
                     String.valueOf(mIsEditMode ? mModel.projectID  : mProjectID)
             };
-            return new CursorLoader(getActivity(), GrappboxContract.TagEntry.CONTENT_URI, projection, selection, arg, null);
+            return new CursorLoader(getActivity(), GrappboxContract.BugtrackerTagEntry.CONTENT_URI, projection, selection, arg, null);
         }
         else if (id == LOADER_EXISTING_USERS){
             final String[] projection = {

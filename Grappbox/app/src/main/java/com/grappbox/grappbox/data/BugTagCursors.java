@@ -10,7 +10,7 @@ import android.support.annotation.NonNull;
 
 import com.grappbox.grappbox.data.GrappboxContract.BugEntry;
 import com.grappbox.grappbox.data.GrappboxContract.BugTagEntry;
-import com.grappbox.grappbox.data.GrappboxContract.TagEntry;
+import com.grappbox.grappbox.data.GrappboxContract.BugtrackerTagEntry;
 
 /**
  * Created by marcw on 02/09/2016.
@@ -23,9 +23,9 @@ public class BugTagCursors {
     static {
         sQueryBuilder = new SQLiteQueryBuilder();
         sQueryBuilder.setTables(BugTagEntry.TABLE_NAME + " INNER JOIN " + BugEntry.TABLE_NAME +
-        " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_BUG_ID + " = " + BugEntry.TABLE_NAME + "." + BugEntry._ID +
-        " INNER JOIN " + TagEntry.TABLE_NAME +
-        " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_TAG_ID + " = " + TagEntry.TABLE_NAME + "." + TagEntry._ID);
+                " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_BUG_ID + " = " + BugEntry.TABLE_NAME + "." + BugEntry._ID +
+                " INNER JOIN " + BugtrackerTagEntry.TABLE_NAME +
+                " ON " + BugTagEntry.TABLE_NAME + "." + BugTagEntry.COLUMN_LOCAL_TAG_ID + " = " + BugtrackerTagEntry.TABLE_NAME + "." + BugtrackerTagEntry._ID);
     }
 
     public static Cursor query_BugTag(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {

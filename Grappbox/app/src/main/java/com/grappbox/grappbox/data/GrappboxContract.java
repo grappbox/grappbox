@@ -23,7 +23,8 @@ public class GrappboxContract {
     public static final String PATH_EVENT_TYPE = "event_types";
     public static final String PATH_EVENT_PARTICIPANT = "event_participant";
     public static final String PATH_TIMELINE = "timeline";
-    public static final String PATH_TIMELINE_MESSAGES = "timline_messages";
+    public static final String PATH_TIMELINE_MESSAGES = "timeline_messages";
+    public static final String PATH_TIMELINE_COMMENTS = "timeline_comments";
     public static final String PATH_ROLE = "roles";
     public static final String PATH_ROLE_ASSIGNATION = "role_assignations";
     public static final String PATH_TAG  = "tag";
@@ -163,29 +164,6 @@ public class GrappboxContract {
         }
     }
 
-    public static final class EventTypeEntry implements BaseColumns {
-        public static final String TABLE_NAME = "event_types";
-
-        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
-        public static final String COLUMN_NAME = "name";
-
-        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_EVENT_TYPE).build();
-        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EVENT_TYPE;
-        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_EVENT_TYPE;
-
-        public static Uri buildEventWithLocalIdUri(long id) {
-            return ContentUris.withAppendedId(CONTENT_URI, id);
-        }
-
-        public static Uri buildEventWithArgs(HashMap<String, String> args)
-        {
-            Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
-
-            for (String key : args.keySet())
-                projectUriBuilder.appendQueryParameter(key, args.get(key));
-            return projectUriBuilder.build();
-        }
-    }
 
     public static final class EventEntry implements BaseColumns {
         public static final String TABLE_NAME = "events";
@@ -196,7 +174,6 @@ public class GrappboxContract {
         public static final String COLUMN_EVENT_DESCRIPTION = "description";
         public static final String COLUMN_DATE_BEGIN_UTC = "begin_date";
         public static final String COLUMN_DATE_END_UTC = "end_date";
-        public static final String COLUMN_LOCAL_EVENT_TYPE_ID = "type_id";
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
 
@@ -266,7 +243,6 @@ public class GrappboxContract {
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_TIMELINE_ID = "timeline_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
-        public static final String COLUMN_PARENT_ID = "parent_id"; //This is set only when message is an answer to another message
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MESSAGE = "message";
         public static final String COLUMN_DATE_LAST_EDITED_AT_UTC = "last_edited_at";
@@ -281,6 +257,34 @@ public class GrappboxContract {
         }
 
         public static Uri buildTimelineMessageWithArgs(HashMap<String, String> args)
+        {
+            Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
+
+            for (String key : args.keySet())
+                projectUriBuilder.appendQueryParameter(key, args.get(key));
+            return projectUriBuilder.build();
+        }
+    }
+
+    public static final class TimelineCommentEntry implements BaseColumns {
+        public static final String TABLE_NAME = "timeline_comments";
+
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
+        public static final String COLUMN_LOCAL_TIMELINE_ID = "timeline_id";
+        public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
+        public static final String COLUMN_PARENT_ID = "parent_id";
+        public static final String COLUMN_MESSAGE = "message";
+        public static final String COLUMN_DATE_LAST_EDITED_AT_UTC = "last_edited_at";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TIMELINE_COMMENTS).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TIMELINE_COMMENTS;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TIMELINE_COMMENTS;
+
+        public static Uri buildTimelineCommentWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+
+        public static Uri buildTimelineCommentWithArgs(HashMap<String, String> args)
         {
             Uri.Builder projectUriBuilder = CONTENT_URI.buildUpon();
 
@@ -347,12 +351,13 @@ public class GrappboxContract {
         }
     }
 
-    public static final class TagEntry implements BaseColumns {
-        public static final String TABLE_NAME = "tags";
+    public static final class BugtrackerTagEntry implements BaseColumns {
+        public static final String TABLE_NAME = "bugtracker_tags";
 
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_PROJECT_ID = "project_id";
         public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_COLOR = "color";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TAG).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_TAG;

@@ -1,23 +1,24 @@
- package com.grappbox.grappbox.data;
+package com.grappbox.grappbox.data;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.nfc.Tag;
 import android.util.Log;
 
 import com.grappbox.grappbox.data.GrappboxContract.*;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
- * Created by marcw on 29/08/2016.
+ * Created by Marc Wieser on 29/08/2016.
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser33@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
  */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 3;
-    public static final String DATABASE_NAME = "grappbox-dev.db";
+    private static final int DATABASE_VERSION  = 4;
+    public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
     public GrappboxDBHelper(Context context)
@@ -82,12 +83,6 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + OccupationEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + OccupationEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "));";
 
-        final String SQL_CREATE_EVENT_TYPE_TABLE = "CREATE TABLE IF NOT EXISTS " +  EventTypeEntry.TABLE_NAME + " (" +
-                EventTypeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                EventTypeEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
-                EventTypeEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                " UNIQUE (" + EventTypeEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
-
         final String SQL_CREATE_EVENT_TABLE = "CREATE TABLE IF NOT EXISTS " + EventEntry.TABLE_NAME + " (" +
                 EventEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 EventEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
@@ -95,12 +90,10 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT, " +
                 EventEntry.COLUMN_DATE_BEGIN_UTC + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_DATE_END_UTC + " TEXT NOT NULL, " +
-                EventEntry.COLUMN_LOCAL_EVENT_TYPE_ID + " INTEGER NOT NULL, " +
                 EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 EventEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
-                " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_EVENT_TYPE_ID + ") REFERENCES " + EventTypeEntry.TABLE_NAME + " (" + EventTypeEntry._ID + "), " +
                 " UNIQUE (" + EventEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_EVENT_PARTICIPANT_TABLE = "CREATE TABLE IF NOT EXISTS " + EventParticipantEntry.TABLE_NAME + " (" +
@@ -125,7 +118,6 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TimelineMessageEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + " INTEGER NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
-                TimelineMessageEntry.COLUMN_PARENT_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_TITLE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_MESSAGE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
@@ -133,6 +125,17 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +
                 " UNIQUE (" + TimelineMessageEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_TIMELINE_COMMENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TimelineCommentEntry.TABLE_NAME + " (" +
+                TimelineCommentEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TimelineCommentEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + " INTEGER NOT NULL, " +
+                TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
+                TimelineCommentEntry.COLUMN_MESSAGE + " TEXT, " +
+                TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
+                " FOREIGN KEY (" + TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
+                " FOREIGN KEY (" + TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +
+                " UNIQUE (" + TimelineCommentEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_ROLES_TABLE = "CREATE TABLE IF NOT EXISTS " + RolesEntry.TABLE_NAME + " (" +
                 RolesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -158,13 +161,14 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + RolesAssignationEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID + ") REFERENCES " + RolesEntry.TABLE_NAME + " (" + RolesEntry._ID + "));";
 
-        final String SQL_CREATE_TAG_TABLE = "CREATE TABLE IF NOT EXISTS " + TagEntry.TABLE_NAME + " (" +
-                TagEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                TagEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
-                TagEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
-                TagEntry.COLUMN_NAME + " TEXT NOT NULL, " +
-                " FOREIGN KEY (" + TagEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
-                " UNIQUE (" + TagEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+        final String SQL_CREATE_BUGTRACKER_TAG_TABLE = "CREATE TABLE IF NOT EXISTS " + BugtrackerTagEntry.TABLE_NAME + " (" +
+                BugtrackerTagEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugtrackerTagEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                BugtrackerTagEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
+                BugtrackerTagEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                BugtrackerTagEntry.COLUMN_COLOR + " TEXT NOT NULL, " +
+                " FOREIGN KEY (" + BugtrackerTagEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
+                " UNIQUE (" + BugtrackerTagEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_BUG_TABLE = "CREATE TABLE IF NOT EXISTS " + BugEntry.TABLE_NAME + " (" +
                 BugEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -185,7 +189,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 BugTagEntry.COLUMN_LOCAL_BUG_ID + " INTEGER NOT NULL, " +
                 BugTagEntry.COLUMN_LOCAL_TAG_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + BugTagEntry.COLUMN_LOCAL_BUG_ID + ") REFERENCES " + BugEntry.TABLE_NAME + " (" + BugEntry._ID + "), " +
-                " FOREIGN KEY (" + BugTagEntry.COLUMN_LOCAL_TAG_ID + ") REFERENCES " + TagEntry.TABLE_NAME + " (" + TagEntry._ID + "));";
+                " FOREIGN KEY (" + BugTagEntry.COLUMN_LOCAL_TAG_ID + ") REFERENCES " + BugtrackerTagEntry.TABLE_NAME + " (" + BugtrackerTagEntry._ID + "));";
 
         final String SQL_CREATE_BUG_ASSIGNATION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugAssignationEntry.TABLE_NAME + " (" +
                 BugAssignationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -210,14 +214,14 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
         db.execSQL(SQL_CREATE_OCCUPATION_TABLE);
-        db.execSQL(SQL_CREATE_EVENT_TYPE_TABLE);
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_EVENT_PARTICIPANT_TABLE);
         db.execSQL(SQL_CREATE_TIMELINE_TABLE);
         db.execSQL(SQL_CREATE_TIMELINE_MESSAGE_TABLE);
+        db.execSQL(SQL_CREATE_TIMELINE_COMMENTS_TABLE);
         db.execSQL(SQL_CREATE_ROLES_TABLE);
         db.execSQL(SQL_CREATE_ROLES_ASSIGNATIONS_TABLE);
-        db.execSQL(SQL_CREATE_TAG_TABLE);
+        db.execSQL(SQL_CREATE_BUGTRACKER_TAG_TABLE);
         db.execSQL(SQL_CREATE_BUG_TABLE);
         db.execSQL(SQL_CREATE_BUG_TAG_TABLE);
         db.execSQL(SQL_CREATE_BUG_ASSIGNATION_TABLE);
