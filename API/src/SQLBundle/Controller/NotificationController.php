@@ -613,9 +613,18 @@ class NotificationController extends RolesAndTokenVerificationController
 	// Sends notification for Windows Phone 10 users
 	public function WP($data, $uri)
 	{
-		$msg =  array('title' => $data['mtitle'], 'body' => $data['mdesc']);
+		$msg =  array(
+			'title' => $data['mtitle'],
+			'body' => $data['mdesc']
+		);
 		$msg = json_encode($msg);
-		$headers = array('Content-Type: application/octet-stream', "X-WNS-Type: wns/raw","Content-Length: ".strlen($msg), "Authorization: Bearer $this->access_token");
+
+		$headers = array(
+			'Content-Type: application/octet-stream',
+			"X-WNS-Type: wns/raw",
+			"Content-Length: ".strlen($msg),
+			"Authorization: Bearer $this->access_token"
+		);
 
         $ch = curl_init($uri);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);

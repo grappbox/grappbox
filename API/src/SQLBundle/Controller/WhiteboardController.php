@@ -457,6 +457,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$whiteboard->setUpdatedAt(new DateTime('now'));
 		$em->persist($whiteboard);
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "new whiteboard";
+		$mdata['mdesc'] = json_encode($whiteboard->objectToArray());
+		$wdata['type'] = "new whiteboard";
+		$wdata['targetId'] = $whiteboard->getId();
+		$wdata['message'] = json_encode($whiteboard->objectToArray());
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setCreated("1.10.1", "Whiteboard", "new", "Complete Success", $whiteboard->objectToArray());
 	}
 
@@ -919,6 +933,21 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$object->setCreatedAt(new DateTime('now'));
 		$em->persist($object);
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "new object";
+		$mdata['mdesc'] = json_encode($object->objectToArray());
+		$wdata['type'] = "new object";
+		$wdata['targetId'] = $object->getId();
+		$wdata['message'] = json_encode($object->objectToArray());
+		$userNotif = array();
+		foreach ($whiteboard->getProjects()->getUsers() as $key => $value) {
+			if ($this->checkRoles($value, $whiteboard->getProjects()->getId(), "whiteboard") > 0)
+				$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setSuccess("1.10.1", "Whiteboard", "push", "Complete Success", $object->objectToArray());
 	}
 
@@ -1279,8 +1308,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		{
 			$whiteboard->setDeletedAt(new DateTime('now'));
 			$em->persist($whiteboard);
-			$em->remove($whiteboard);
 			$em->flush();
+
+			//notifs
+			$mdata['mtitle'] = "delete whiteboard";
+			$mdata['mdesc'] = json_encode($whiteboard->objectToArray());
+			$wdata['type'] = "delete whiteboard";
+			$wdata['targetId'] = $whiteboard->getId();
+			$wdata['message'] = json_encode($whiteboard->objectToArray());
+			$userNotif = array();
+			foreach ($whiteboard->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		$response["info"]["return_code"] = "1.10.1";
 		$response["info"]["return_message"] = "Whiteboard - delete - Complete Success";
@@ -1510,6 +1551,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$em->persist($value);
 			$em->flush();
 			$data = $value->objectToArray();
+
+			//notifs
+			$mdata['mtitle'] = "delete object";
+			$mdata['mdesc'] = json_encode($data);
+			$wdata['type'] = "delete object";
+			$wdata['targetId'] = $value->getId();
+			$wdata['message'] = json_encode($data);
+			$userNotif = array();
+			foreach ($whiteboard->getProjects()->getUsers() as $key => $value) {
+				if ($this->checkRoles($value, $whiteboard->getProjects()->getId(), "whiteboard") > 0)
+					$userNotif[] = $value->getId();
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		if (count($data) <= 0)
 			return $this->setNoDataSuccess("1.10.3", "Whiteboard", "deleteObject");

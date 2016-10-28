@@ -297,6 +297,19 @@ class RoleController extends RolesAndTokenVerificationController
 		$em->persist($role);
 		$em->flush();
 
+		//notifs
+		$mdata['mtitle'] = "new role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "new role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setCreated("1.13.1", "Role", "addprojectroles", "Complete Success", $role->objectToArray());
 	}
 
@@ -438,6 +451,19 @@ class RoleController extends RolesAndTokenVerificationController
 		$users = $em->getRepository("SQLBundle:ProjectUserRole")->findBy(array('roleId'=> $id));
 		if ($users != null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't delete role, there is still users linked to it");
+
+		//notifs
+		$mdata['mtitle'] = "delete role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "delete role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($role);
 		$em->flush();
@@ -761,6 +787,19 @@ class RoleController extends RolesAndTokenVerificationController
 			$role->setcloud($content->cloud);
 
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "update role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "update role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putprojectroles", "Complete Success", $role->objectToArray());
 	}
@@ -1205,6 +1244,19 @@ class RoleController extends RolesAndTokenVerificationController
 			$em->persist($ProjectUserRole);
 			$em->flush();
 
+			//notifs
+			$mdata['mtitle'] = "assign user role";
+			$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+			$wdata['type'] = "assign user role";
+			$wdata['targetId'] = $role->getId();
+			$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+			$userNotif = array();
+			foreach ($role->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
 		}
 		else
@@ -1405,8 +1457,20 @@ class RoleController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
 
 		$pur->setRoleId($content->roleId);
-
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "update user role";
+		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId));
+		$wdata['type'] = "update user role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId));
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putpersonrole", "Complete Success", array("id" => $pur->getId()));
 	}
@@ -1756,6 +1820,19 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($pur == null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameters");
+
+		//notifs
+		$mdata['mtitle'] = "delete user role";
+		$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+		$wdata['type'] = "delete user role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$purId = $pur->getId();
 		$em->remove($pur);

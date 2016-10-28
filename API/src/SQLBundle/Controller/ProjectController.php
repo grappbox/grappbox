@@ -15,6 +15,7 @@ use SQLBundle\Entity\CustomerAccess;
 use SQLBundle\Entity\Role;
 use SQLBundle\Entity\ProjectUserRole;
 use SQLBundle\Entity\Tag;
+use SQLBundle\Entity\BugtrackerTag;
 use SQLBundle\Entity\Timeline;
 use SQLBundle\Entity\Color;
 
@@ -257,6 +258,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em = $this->getDoctrine()->getManager();
 
+		//Create the project
 		$project = new Project();
 		$project->setName($content->name);
 		$project->setCreatedAt(new \DateTime);
@@ -279,9 +281,9 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setTwitter($content->twitter);
 
 		$em->persist($project);
-
 		$project->addUser($user);
 
+		//Create admin role
 		$role = new Role();
 		$role->setName("Admin");
 		$role->setTeamTimeline(2);
@@ -294,20 +296,35 @@ class ProjectController extends RolesAndTokenVerificationController
 		$role->setProjectSettings(2);
 		$role->setCloud(2);
 		$role->setProjects($project);
-
 		$em->persist($role);
+
+		//create customer role
+		$client_role = new Role();
+		$client_role->setName("Customer");
+		$client_role->setTeamTimeline(0);
+		$client_role->setCustomerTimeline(2);
+		$client_role->setGantt(0);
+		$client_role->setWhiteboard(2);
+		$client_role->setBugtracker(0);
+		$client_role->setEvent(0);
+		$client_role->setTask(0);
+		$client_role->setProjectSettings(0);
+		$client_role->setCloud(0);
+		$client_role->setProjects($project);
+		$em->persist($client_role);
+
 		$em->flush();
 
+		//Assign the creator to the admin role
 		$pur = new ProjectUserRole();
 		$pur->setProjectId($project->getId());
 		$pur->setUserId($user->getId());
 		$pur->setRoleId($role->getId());
-
 		$em->persist($pur);
 
+		//Create the default tags
 		$qb = $em->getRepository('SQLBundle:Tag')->createQueryBuilder('t')->getQuery();
 		$tags = $qb->getResult();
-
 		foreach ($tags as $t) {
 			if ($t->getProject() === null)
 			{
@@ -315,7 +332,20 @@ class ProjectController extends RolesAndTokenVerificationController
 				$newTag->setName($t->getName());
 				$newTag->setProject($project);
 				$newTag->setColor($t->getColor());
+				$em->persist($newTag);
+			}
+		}
 
+		//Create the default tags and bugtracker tags
+		$qb = $em->getRepository('SQLBundle:BugtrackerTag')->createQueryBuilder('t')->getQuery();
+		$btags = $qb->getResult();
+		foreach ($btags as $t) {
+			if ($t->getProject() === null)
+			{
+				$newTag = new BugtrackerTag();
+				$newTag->setName($t->getName());
+				$newTag->setProject($project);
+				$newTag->setColor($t->getColor());
 				$em->persist($newTag);
 			}
 		}
@@ -323,9 +353,11 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 		$id = $project->getId();
 
+		//Init the cloud for the project
 		$cloudClass = new CloudController();
 		$cloudClass->createCloudAction($request, $id);
 
+		//Create team timeline
 		$teamTimeline = new Timeline();
 		$teamTimeline->setTypeId(2);
 		$teamTimeline->setProjects($project);
@@ -333,6 +365,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$teamTimeline->setName("TeamTimeline - ".$project->getName());
 		$em->persist($teamTimeline);
 
+		//Create customer timeline
 		$customerTimeline = new Timeline();
 		$customerTimeline->setTypeId(1);
 		$customerTimeline->setProjects($project);
@@ -340,6 +373,19 @@ class ProjectController extends RolesAndTokenVerificationController
 		$customerTimeline->setName("CustomerTimeline - ".$project->getName());
 		$em->persist($customerTimeline);
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "new project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "new project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->initiateStatistics($project, $request->headers->get('Authorization'), $request);
 
@@ -688,6 +734,19 @@ class ProjectController extends RolesAndTokenVerificationController
 		{
 			$project->setLogo($content->logo);
 			$project->setLogoDate(new \Datetime("now"));
+
+
+			$mdata['mtitle'] = "logo project";
+			$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+			$wdata['type'] = "logo project";
+			$wdata['targetId'] = $project->getId();
+			$wdata['message'] = json_encode($project->objectToArray($em, $user));
+			$userNotif = array();
+			foreach ($project->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		if (array_key_exists('phone', $content))
 			$project->setPhone($content->phone);
@@ -708,9 +767,19 @@ class ProjectController extends RolesAndTokenVerificationController
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Missing Parameter");
 			$project->setSafePassword($content->password);
 		}
-
-
 		$em->flush();
+
+		$mdata['mtitle'] = "update project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "update project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "updateinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
@@ -885,7 +954,6 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: id");
 
-
 		return $this->setSuccess("1.6.1", "Project", "getinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
 
@@ -1001,6 +1069,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setDeletedAt($delDate);
 
 		$em->flush();
+
+		$mdata['mtitle'] = "delete project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "delete project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - delproject - Complete Success";
@@ -1124,6 +1204,18 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$project->setDeletedAt(null);
 		$em->flush();
+
+		$mdata['mtitle'] = "retrieve project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "retrieve project";
+		$wdata['targetId'] = $project->getId();
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - retrieveproject - Complete Success";
@@ -1324,6 +1416,18 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$project->addCustomersAccess($customerAccess);
 		$em->flush();
+
+		$mdata['mtitle'] = "new customeraccess";
+		$mdata['mdesc'] = json_encode($customerAccess->objectToArray($em, $user));
+		$wdata['type'] = "new customeraccess";
+		$wdata['targetId'] = $customerAccess->getId();
+		$wdata['message'] = json_encode($customerAccess->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "generatecustomeraccess", "Complete Success", $customerAccess->objectToArray());
 	}
@@ -1612,6 +1716,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		if ($customerAccess === null)
 			return $this->setBadRequest("6.9.4", "Project", "delcustomeraccess", "Bad Parameter: customerAccessId");
 
+		$mdata['mtitle'] = "delete customeraccess";
+		$mdata['mdesc'] = json_encode($customerAccess->objectToArray($em, $user));
+		$wdata['type'] = "delete customeraccess";
+		$wdata['targetId'] = $customerAccess->getId();
+		$wdata['message'] = json_encode($customerAccess->objectToArray($em, $user));
+		$userNotif = array();
+		foreach ($customerAccess->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$em->remove($customerAccess);
 		$em->flush();
 
@@ -1837,20 +1953,17 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->addUser($userToAdd);
 		$em->flush();
 
-
-		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Project - Add";
-		$mdata['mdesc'] = "You have been added on the project ".$project->getName();
-
-		$wdata['type'] = "Project";
+		$mdata['mtitle'] = "user assign project";
+		$mdata['mdesc'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname())));
+		$wdata['type'] = "user assign project";
 		$wdata['targetId'] = $project->getId();
-		$wdata['message'] = "You have been added on the project ".$project->getName();
-
-		$userNotif[] = $userToAdd->getId();
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+		$wdata['message'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname())));
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
 			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname()));
@@ -1942,7 +2055,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 
-		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projectId'=> $project->getId()));
+		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects'=> $project->getId()));
 		foreach ($bugs as $key => $bug) {
 			$bug->removeUser($user);
 		}
@@ -1951,18 +2064,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Project - Remove";
-		$mdata['mdesc'] = "You have been removed from the project ".$project->getName();
-
-		$wdata['type'] = "Project";
+		$mdata['mtitle'] = "user unassign project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "user unassign project";
 		$wdata['targetId'] = $project->getId();
-		$wdata['message'] = "You have been removed from the project ".$project->getName();
-
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
 		$userNotif[] = $user->getId();
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - removeuserconnected - Complete Success";
@@ -2132,7 +2245,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 		
-		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projectId'=> $project->getId()));
+		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects'=> $project->getId()));
 		foreach ($bugs as $key => $bug) {
 			$bug->removeUser($userToRemove);
 		}
@@ -2141,18 +2254,18 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Project - Remove";
-		$mdata['mdesc'] = "You have been removed from the project ".$project->getName();
-
-		$wdata['type'] = "Project";
+		$mdata['mtitle'] = "user unassign project";
+		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$wdata['type'] = "user unassign project";
 		$wdata['targetId'] = $project->getId();
-		$wdata['message'] = "You have been removed from the project ".$project->getName();
-
+		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$userNotif = array();
 		$userNotif[] = $userToRemove->getId();
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - removeusertoproject - Complete Success";

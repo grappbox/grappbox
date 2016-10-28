@@ -308,22 +308,18 @@ class EventController extends RolesAndTokenVerificationController
 			}
 		}
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Event - Event Created";
-		$mdata['mdesc'] = "The event ".$event->getTitle()." has been created and assigned to you";
-
-		$wdata['type'] = "Event";
+		$mdata['mtitle'] = "new event";
+		$mdata['mdesc'] = json_encode($event->objectToArray());
+		$wdata['type'] = "new event";
 		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "The event ".$event->getTitle()." has been created and assigned to you";
-
+		$wdata['message'] = json_encode($event->objectToArray());
 		$userNotif = array();
+		$userNotif[] = $event->getCreatorUser()->getId();
 		foreach ($event->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.5.1", "Calendar", "postEvent", "Complete Success", $event->objectToArray());
 	}
@@ -625,14 +621,8 @@ class EventController extends RolesAndTokenVerificationController
 		$em->persist($event);
 		$em->flush();
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Event - Event Remove";
-		$mdata['mdesc'] = "You have been removed of event ".$event->getTitle();
-
-		$wdata['type'] = "Event";
-		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "You have been removed of event ".$event->getTitle();
+		$userNotif = array();
+		$userNotif[] = $event->getCreatorUser()->getId();
 
 		foreach ($content->toRemoveUsers as $key => $guest) {
 				$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
@@ -641,21 +631,13 @@ class EventController extends RolesAndTokenVerificationController
 					if ($guest == $event->getCreatorUser()->getId())
 						$creator = true;
 					if (!$creator) {
+						$userNotif[] = $oldGuest;
+
 						$event->removeUser($oldGuest);
 						$em->flush();
-
-						$userNotif = array($guest);
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 		}
-
-		$mdata['mtitle'] = "Event - Event Assigned";
-		$mdata['mdesc'] = "You have been assigned to event ".$event->getTitle();
-
-		$wdata['type'] = "Event";
-		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "You have been assigned to event ".$event->getTitle();
 
 		foreach ($content->toAddUsers as $key => $guest) {
 				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
@@ -668,29 +650,20 @@ class EventController extends RolesAndTokenVerificationController
 					if (!$alreadyAdded) {
 						$event->addUser($newGuest);
 						$em->flush();
-
-						$userNotif = array($guest);
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 		}
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Event - Event Edited";
-		$mdata['mdesc'] = "The event ".$event->getTitle()." has been edited";
-
-		$wdata['type'] = "Event";
+		$mdata['mtitle'] = "update event";
+		$mdata['mdesc'] = json_encode($event->objectToArray());
+		$wdata['type'] = "update event";
 		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "The event ".$event->getTitle()." has been edited";
-
-		$userNotif = array();
+		$wdata['message'] = json_encode($event->objectToArray());
 		foreach ($event->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.5.1", "Calendar", "editEvent", "Complete Success", $event->objectToArray());
 	}
@@ -810,8 +783,20 @@ class EventController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("5.6.9", "Calendar", "delEvent"));
 		}
 
-		$em->remove($event);
+		$mdata['mtitle'] = "delete event";
+		$mdata['mdesc'] = json_encode($event->objectToArray());
+		$wdata['type'] = "delete event";
+		$wdata['targetId'] = $event->getId();
+		$wdata['message'] = json_encode($event->objectToArray());
+		$userNotif = array();
+		$userNotif[] = $event->getCreatorUser()->getId();
+		foreach ($event->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
+		$em->remove($event);
 		$em->flush();
 
 		$response["info"]["return_code"] = "1.5.1";
@@ -1294,15 +1279,6 @@ class EventController extends RolesAndTokenVerificationController
 				return ($this->setNoRightsError("5.3.9", "Calendar", "setParticipants"));
 		}
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Event - Event Assigned";
-		$mdata['mdesc'] = "You have been assigned to event ".$event->getTitle();
-
-		$wdata['type'] = "Event";
-		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "You have been assigned to event ".$event->getTitle();
-
 		foreach ($content->toAdd as $key => $value) {
 			$toAddUser = $em->getRepository("SQLBundle:User")->find($value);
 			if ($toAddUser instanceof User)
@@ -1313,18 +1289,12 @@ class EventController extends RolesAndTokenVerificationController
 				}
 
 				$event->addUser($toAddUser);
-
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
 			}
 		}
 
-		$mdata['mtitle'] = "Event - Event Remove";
-		$mdata['mdesc'] = "You have been removed of event ".$event->getTitle();
 
-		$wdata['type'] = "Event";
-		$wdata['targetId'] = $event->getId();
-		$wdata['message'] = "You have been removed of event ".$event->getTitle();
+		$userNotif = array();
+		$userNotif[] = $event->getCreatorUser()->getId();
 
 		foreach ($content->toRemove as $key => $value) {
 			$toRemoveUser = $em->getRepository("SQLBundle:User")->find($value);
@@ -1333,15 +1303,25 @@ class EventController extends RolesAndTokenVerificationController
 				if ($toRemoveUser->getId() == $event->getCreatorUser()->getId())
 					return $this->setBadRequest("5.3.7", "Calendar", "setParticipants", "Bad Parameter: Can't remove event creator");
 
-				$event->removeUser($toRemoveUser);
+				$userNotif[] = $toRemoveUser;
 
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
+				$event->removeUser($toRemoveUser);
 			}
 		}
 
 		$em->persist($event);
 		$em->flush();
+
+		$mdata['mtitle'] = "participants event";
+		$mdata['mdesc'] = json_encode($event->objectToArray());
+		$wdata['type'] = "participants event";
+		$wdata['targetId'] = $event->getId();
+		$wdata['message'] = json_encode($event->objectToArray());
+		foreach ($event->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.5.1", "Calendar", "setParticipants", "Complete Success", $event->objectToArray());
 	}

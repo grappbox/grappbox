@@ -322,22 +322,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				}
 		}
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
-		$mdata['mdesc'] = "You have been assigned to ticket ".$bug->getTitle();
-
-		$wdata['type'] = "Bugtracker";
+		$mdata['mtitle'] = "new bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "new bug";
 		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
-
+		$wdata['message'] = json_encode($bug->objectToArray());
 		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
@@ -639,21 +634,13 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			}
 		}
 
+		$userNotif = array();
 		foreach ($content->removeUsers as $key => $guest) {
 			$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
 			if ($oldGuest instanceof User) {
+				$userNotif[] = $oldGuest;
 				$bug->removeUser($oldGuest);
 				$em->flush();
-
-				$class = new NotificationController();
-				$mdata['mtitle'] = "Bugtracker - Ticket Remove";
-				$mdata['mdesc'] = "You have been removed of ticket ".$bug->getTitle();
-
-				$wdata['type'] = "Bugtracker";
-				$wdata['targetId'] = $bug->getId();
-				$wdata['message'] = "You have been removed of ticket ".$bug->getTitle();
-				$userNotif[] = $oldGuest->getId();
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
 			}
 		}
 
@@ -668,38 +655,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				if (!$alreadyAdded) {
 					$bug->addUser($newGuest);
 					$em->flush();
-
-					$class = new NotificationController();
-
-					$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
-					$mdata['mdesc'] = "You have been assigned to ticket ".$bug->getTitle();
-
-					$wdata['type'] = "Bugtracker";
-					$wdata['targetId'] = $bug->getId();
-					$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
-
-					$userNotif[] = $newGuest->getId();
-					$class->pushNotification($userNotif, $mdata, $wdata, $em);
 				}
 			}
 		}
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket edited";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been edited";
-
-		$wdata['type'] = "Bugtracker";
+		$mdata['mtitle'] = "update bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "update bug";
 		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been edited";
-
-		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
+		$wdata['message'] = json_encode($bug->objectToArray());
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -709,7 +678,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /0.3/bugtracker/ticket/closed/:id Close ticket
+	* @api {delete} /0.3/bugtracker/ticket/close/:id Close ticket
 	* @apiName closeTicket
 	* @apiGroup Bugtracker
 	* @apiDescription Close a ticket, to delete a comment see [deleteComment](/#api-Bugtracker-deleteComment) request
@@ -821,22 +790,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket closed";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been closed";
-
-		$wdata['type'] = "Bugtracker";
+		$mdata['mtitle'] = "close bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "close bug";
 		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been closed";
-
+		$wdata['message'] = json_encode($bug->objectToArray());
 		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -910,6 +874,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.25.9", "Bugtracker", "deleteTicket"));
+
+		$mdata['mtitle'] = "delete bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "delete bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($bug);
 		$em->flush();
@@ -1036,22 +1012,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket reopen";
-		$mdata['mdesc'] = "The ticket ".$bug->getTitle()." has been reopen";
-
-		$wdata['type'] = "Bugtracker";
+		$mdata['mtitle'] = "reopen bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "reopen bug";
 		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "The ticket ".$bug->getTitle()." has been reopen";
-
+		$wdata['message'] = json_encode($bug->objectToArray());
 		$userNotif = array();
-		foreach ($bug->getUsers() as $key => $value) {
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -3132,16 +3103,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.7.9", "Bugtracker", "setParticipants"));
 
-
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Assigned";
-		$mdata['mdesc'] = "You have been assigned to ticket ".$bug->getTitle();
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "You have been assigned to ticket ".$bug->getTitle();
-
 		foreach ($content->toAdd as $key => $value) {
 			$toAddUser = $em->getRepository("SQLBundle:User")->find($value);
 			if ($toAddUser instanceof User)
@@ -3152,18 +3113,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					}
 
 				$bug->addUser($toAddUser);
-
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
 			}
 		}
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Remove";
-		$mdata['mdesc'] = "You have been removed of ticket ".$bug->getTitle();
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $bug->getId();
-		$wdata['message'] = "You have been removed of ticket ".$bug->getTitle();
 
 		foreach ($content->toRemove as $key => $value) {
 			$toRemoveuser = $em->getRepository("SQLBundle:User")->find($value);
@@ -3171,14 +3122,23 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			if ($toRemoveuser instanceof User)
 			{
 				$bug->removeUser($toRemoveuser);
-
-				$userNotif = array($value);
-				$class->pushNotification($userNotif, $mdata, $wdata, $em);
 			}
 		}
 
 		$em->persist($bug);
 		$em->flush();
+
+		$mdata['mtitle'] = "participants bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "participants bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -3609,22 +3569,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$ticket = $comment->objectToArray();
 
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Bugtracker - Ticket Commented";
-		$mdata['mdesc'] = "The ticket ".$parent->getTitle()." has been commented";
-
-		$wdata['type'] = "Bugtracker";
-		$wdata['targetId'] = $parent->getId();
-		$wdata['message'] = "The ticket ".$parent->getTitle()." has been commented";
-
+		$mdata['mtitle'] = "new comment bug";
+		$mdata['mdesc'] = json_encode($ticket);
+		$wdata['type'] = "new comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($ticket);
 		$userNotif = array();
-		foreach ($parent->getUsers() as $key => $value) {
+		foreach ($parent->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
-
 		if (count($userNotif) > 0)
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
 	}
@@ -3830,6 +3785,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($comment);
 		$em->flush();
 
+		$mdata['mtitle'] = "edit comment bug";
+		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$wdata['type'] = "edit comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($comment->objectToArray());
+		$userNotif = array();
+		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $comment->objectToArray());
 	}
 
@@ -3896,6 +3863,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		if ($comment->getCreator()->getId() != $user->getId())
 			return ($this->setNoRightsError("4.24.9", "Bugtracker", "deleteComment"));
+
+		$mdata['mtitle'] = "delete comment bug";
+		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$wdata['type'] = "delete comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($comment->objectToArray());
+		$userNotif = array();
+		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($comment);
 		$em->flush();
@@ -4084,6 +4063,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		$mdata['mtitle'] = "new tag bug";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "new tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", $tag->objectToArray());
@@ -4259,6 +4250,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tag->setName($content->name);
 		$tag->setColor($content->color);
 		$em->flush();
+
+		$mdata['mtitle'] = "update tag bug";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "update tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
@@ -4498,6 +4501,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.18.9", "Bugtracker", "deleteTag"));
 
+		$mdata['mtitle'] = "delete tag bug";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "delete tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$em->remove($tag);
 		$em->flush();
 
@@ -4728,8 +4743,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 
 		$bug->addTag($tagToAdd);
-
 		$em->flush();
+
+		$mdata['mtitle'] = "assign tag bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "assign tag bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
@@ -4879,8 +4905,19 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($isAssign === false)
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
-		$bug->removeTag($tagToRemove);
+		$mdata['mtitle'] = "remove tag bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "remove tag bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
+		$bug->removeTag($tagToRemove);
 		$em->flush();
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');

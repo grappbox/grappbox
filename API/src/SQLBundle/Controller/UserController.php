@@ -530,6 +530,22 @@ class UserController extends RolesAndTokenVerificationController
 		{
 			$user->setAvatar($content->avatar);
 			$user->setAvatarDate(new \DateTime('now'));
+
+			//notifs
+			$mdata['mtitle'] = "avatar user";
+			$mdata['mdesc'] = json_encode($user->objectToArray());
+			$wdata['type'] = "avatar user";
+			$wdata['targetId'] = $user->getId();
+			$wdata['message'] = json_encode($user->objectToArray());
+			$userNotif = array();
+			foreach ($user->getProjects() as $key => $value) {
+				foreach ($value->getUsers() as $key => $user) {
+					if (!in_array($user->getId(), $userNotif))
+						$userNotif[] = $user->getId();
+				}
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
 		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)

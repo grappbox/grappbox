@@ -849,20 +849,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 						$em->persist($resource);
 						$task->addRessource($resource);
-
-						// Notifications
-						$class = new NotificationController();
-
-						$mdata['mtitle'] = "Task - Add";
-						$mdata['mdesc'] = "You have been added on the task ".$task->getTitle();
-
-						$wdata['type'] = "Task";
-						$wdata['targetId'] = $task->getId();
-						$wdata['message'] = "You have been added on the task ".$task->getTitle();
-
-						$userNotif[] = $userToAdd->getId();
-
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 			}
@@ -890,20 +876,6 @@ class TaskController extends RolesAndTokenVerificationController
 					if ($isAssign !== false) {
 						$task->removeRessource($resToRemove);
 						$em->remove($resToRemove);
-
-						// Notifications
-						$class = new NotificationController();
-
-						$mdata['mtitle'] = "Task - Remove";
-						$mdata['mdesc'] = "You have been removed from the task ".$task->getTitle();
-
-						$wdata['type'] = "Task";
-						$wdata['targetId'] = $task->getId();
-						$wdata['message'] = "You have been removed from the task ".$task->getTitle();
-
-						$userNotif[] = $userToRemove->getId();
-
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 			}
@@ -943,7 +915,25 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		$taskDep = $task->getTaskDepended();
+		//notifs
+		$mdata['mtitle'] = "new task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "new task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
 		$this->get('service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
@@ -1909,20 +1899,6 @@ class TaskController extends RolesAndTokenVerificationController
 
 						$em->persist($resource);
 						$task->addRessource($resource);
-
-						// Notifications
-						$class = new NotificationController();
-
-						$mdata['mtitle'] = "Task - Add";
-						$mdata['mdesc'] = "You have been added on the task ".$task->getTitle();
-
-						$wdata['type'] = "Task";
-						$wdata['targetId'] = $task->getId();
-						$wdata['message'] = "You have been added on the task ".$task->getTitle();
-
-						$userNotif[] = $userToAdd->getId();
-
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 			}
@@ -1935,20 +1911,6 @@ class TaskController extends RolesAndTokenVerificationController
 				foreach ($users as $us) {
 					if ($us->getUser()->getId() == $usUp->id) {
 						$us->setResource($usUp->percent);
-
-						// Notifications
-						$class = new NotificationController();
-
-						$mdata['mtitle'] = "Task - Update";
-						$mdata['mdesc'] = "Your percent has changed on the task ".$task->getTitle();
-
-						$wdata['type'] = "Task";
-						$wdata['targetId'] = $task->getId();
-						$wdata['message'] = "Your percent has changed on the task ".$task->getTitle();
-
-						$userNotif[] = $usUp->id;
-
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 			}
@@ -1976,20 +1938,6 @@ class TaskController extends RolesAndTokenVerificationController
 					if ($isAssign !== false) {
 						$task->removeRessource($resToRemove);
 						$em->remove($resToRemove);
-
-						// Notifications
-						$class = new NotificationController();
-
-						$mdata['mtitle'] = "Task - Remove";
-						$mdata['mdesc'] = "You have been removed from the task ".$task->getTitle();
-
-						$wdata['type'] = "Task";
-						$wdata['targetId'] = $task->getId();
-						$wdata['message'] = "You have been removed from the task ".$task->getTitle();
-
-						$userNotif[] = $userToRemove->getId();
-
-						$class->pushNotification($userNotif, $mdata, $wdata, $em);
 					}
 				}
 			}
@@ -2043,16 +1991,24 @@ class TaskController extends RolesAndTokenVerificationController
 		// Notifications
 		if (count($userNotif) != 0)
 		{
-			$class = new NotificationController();
-
-			$mdata['mtitle'] = "Task - Update";
-			$mdata['mdesc'] = "The task ".$task->getTitle()." has been updated";
-
-			$wdata['type'] = "Task";
+			$mdata['mtitle'] = "update task";
+			$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
+			$wdata['type'] = "update task";
 			$wdata['targetId'] = $task->getId();
-			$wdata['message'] = "The task ".$task->getTitle()." has been updated";
-
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$wdata['message'] = json_encode($task->objectToArray($taskModified));
+			$userNotif = array();
+			if ($task->getProjects() != null) {
+				foreach ($task->getProjects()->getUsers() as $key => $value) {
+					$userNotif[] = $value->getId();
+				}
+			}
+			else {
+				foreach ($task->getRessources() as $key => $value) {
+					$userNotif[] = $value->getUser()->getId();
+				}
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
@@ -2614,8 +2570,27 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.4.9", "Task", "archivetask"));
 
 		$task->setDeletedAt(new \Datetime);
-
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "archive task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "archive task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
 		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
@@ -2732,8 +2707,27 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.5.9", "Task", "taskdelete"));
 
-		$em->remove($task);
+		//notifs
+		$mdata['mtitle'] = "delete task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "delete task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
+		$em->remove($task);
 		$em->flush();
 
 		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
@@ -2918,6 +2912,19 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		//notifs
+		$mdata['mtitle'] = "new tag task";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "new tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", $tag->objectToArray());
@@ -3093,6 +3100,19 @@ class TaskController extends RolesAndTokenVerificationController
 		$tag->setName($content->name);
 		$tag->setColor($content->color);
 		$em->flush();
+
+		//notifs
+		$mdata['mtitle'] = "update tag task";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "update tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
@@ -3332,6 +3352,19 @@ class TaskController extends RolesAndTokenVerificationController
 
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "task") < 2)
 			return ($this->setNoRightsError("12.11.9", "Task", "deletetag"));
+
+		//notifs
+		$mdata['mtitle'] = "delete tag task";
+		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$wdata['type'] = "delete tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tag->objectToArray());
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($tag);
 		$em->flush();

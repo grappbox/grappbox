@@ -254,22 +254,18 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
-		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Timeline - New message";
-		$mdata['mdesc'] = "There is a new message on the timeline ".$timeline->getName();
-
-		$wdata['type'] = "Timeline";
+		//notifs
+		$mdata['mtitle'] = "new message";
+		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$wdata['type'] = "new message";
 		$wdata['targetId'] = $message->getId();
-		$wdata['message'] = "There is a new message on the timeline ".$timeline->getName();
-
-		$projectUsers = $timeline->getProjects()->getUsers();
-		foreach ($projectUsers as $u) {
-			$userNotif[] = $u->getId();
+		$wdata['message'] = json_encode($message->objectToArray());
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
 		}
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.11.1", "Timeline", "postmessage", "Complete Success", $message->objectToArray());
 	}
@@ -477,6 +473,19 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
+		//notifs
+		$mdata['mtitle'] = "update message";
+		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$wdata['type'] = "update message";
+		$wdata['targetId'] = $message->getId();
+		$wdata['message'] = json_encode($message->objectToArray());
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setSuccess("1.11.1", "Timeline", "editmessage", "Complete Success", $message->objectToArray());
 	}
 
@@ -503,7 +512,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "1.11.1",
-	*			"return_message": "Timeline - archivemessage - Complete Success"
+	*			"return_message": "Timeline - deletemessage - Complete Success"
 	*		},
 	*		"data":
 	*		{
@@ -515,7 +524,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "11.6.3",
-	*			"return_message": "Timeline - archivemessage - Bad Token"
+	*			"return_message": "Timeline - deletemessage - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Insufficient Rights
@@ -523,7 +532,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "11.6.9",
-	*			"return_message": "Timeline - archivemessage - Insufficient Rights"
+	*			"return_message": "Timeline - deletemessage - Insufficient Rights"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: id
@@ -531,7 +540,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*	{
 	*		"info": {
 	*			"return_code": "11.6.4",
-	*			"return_message": "Timeline - archivemessage - Bad Parameter: id"
+	*			"return_message": "Timeline - deletemessage - Bad Parameter: id"
 	*		}
 	*	}
 	*/
@@ -589,28 +598,44 @@ class TimelineController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
-			return ($this->setBadTokenError("11.6.3", "Timeline", "archivemessage"));
+			return ($this->setBadTokenError("11.6.3", "Timeline", "deletemessage"));
 
 		$em = $this->getDoctrine()->getManager();
 		$timeline = $em->getRepository('SQLBundle:Timeline')->find($id);
 		if (!($timeline instanceof Timeline))
-			return $this->setBadRequest("11.6.4", "Timeline", "archivemessage", "Bad Parameter: id");
+			return $this->setBadRequest("11.6.4", "Timeline", "deletemessage", "Bad Parameter: id");
 
 		$type = $em->getRepository('SQLBundle:TimelineType')->find($timeline->getTypeId());
 		if ($type->getName() == "customerTimeline")
 		{
 			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
-				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
+				return ($this->setNoRightsError("11.6.9", "Timeline", "deletemessage"));
 		} else {
 			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
-				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
+				return ($this->setNoRightsError("11.6.9", "Timeline", "deletemessage"));
 		}
 
 		$message = $em->getRepository('SQLBundle:TimelineMessage')->find($messageId);
+		if ($message === null)
+			return $this->setBadRequest("11.6.4", "Timeline", "deletemessage", "Bad Parameter: messageId");			
+
+		//notifs
+		$mdata['mtitle'] = "delete message";
+		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$wdata['type'] = "delete message";
+		$wdata['targetId'] = $message->getId();
+		$wdata['message'] = json_encode($message->objectToArray());
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$em->remove($message);
 		$em->flush();
 
-		return $this->setSuccess("1.11.1", "Timeline", "archivemessage", "Complete Success", array("id" => $messageId));
+		return $this->setSuccess("1.11.1", "Timeline", "deletemessage", "Complete Success", array("id" => $messageId));
 	}
 
 	/*
@@ -1610,6 +1635,19 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($comment);
 		$em->flush();
 
+		//notifs
+		$mdata['mtitle'] = "new comment message";
+		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$wdata['type'] = "new comment message";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($comment->objectToArray());
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setCreated("1.11.1", "Timeline", "postcomment", "Complete Success", $comment->objectToArray());
 	}
 
@@ -1744,6 +1782,19 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($comment);
 		$em->flush();
 
+		//notifs
+		$mdata['mtitle'] = "update comment message";
+		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$wdata['type'] = "update comment message";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($comment->objectToArray());
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		return $this->setSuccess("1.11.1", "Timeline", "editcomment", "Complete Success", $comment->objectToArray());
 	}
 
@@ -1816,6 +1867,19 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		if ($user->getId() != $comment->getCreator()->getId())
 			return ($this->setNoRightsError("11.10.9", "Timeline", "deleteComment"));
+
+		//notifs
+		$mdata['mtitle'] = "delete comment message";
+		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$wdata['type'] = "delete comment message";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($comment->objectToArray());
+		$userNotif = array();
+		foreach ($comment->getMessages()->getTimelines()->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($comment);
 		$em->flush();
