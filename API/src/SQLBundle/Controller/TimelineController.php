@@ -1811,10 +1811,9 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
 	*	}
 	*
-	* @apiParam {int} id Id of the timeline
-	* @apiParam {int} commentId Id of the comment
+	* @apiParam {int} id Id of the comment
 	*
-	* @apiSuccess {Number} id Id of the message archived
+	* @apiSuccess {Number} id Id of the message deleted
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
