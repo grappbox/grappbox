@@ -1064,4 +1064,42 @@ class User implements UserInterface
     {
         return $this->authentications;
     }
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboard_user;
+
+
+    /**
+     * Add whiteboard_user
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $whiteboardUser
+     * @return User
+     */
+    public function addWhiteboardUser(\SQLBundle\Entity\WhiteboardPerson $whiteboardUser)
+    {
+        $this->whiteboard_user[] = $whiteboardUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_user
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $whiteboardUser
+     */
+    public function removeWhiteboardUser(\SQLBundle\Entity\WhiteboardPerson $whiteboardUser)
+    {
+        $this->whiteboard_user->removeElement($whiteboardUser);
+    }
+
+    /**
+     * Get whiteboard_user
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getWhiteboardUser()
+    {
+        return $this->whiteboard_user;
+    }
 }

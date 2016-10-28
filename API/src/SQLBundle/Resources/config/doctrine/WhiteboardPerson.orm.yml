@@ -1,0 +1,24 @@
+SQLBundle\Entity\WhiteboardPerson:
+    type: entity
+    table: whiteboard_persons
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+    manyToOne:
+        whiteboard:
+          targetEntity: Whiteboard
+          inversedBy: persons
+          joinColumn:
+            name: whiteboard_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          inversedBy: persons
+          joinColumn:
+            name: user_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

@@ -22,7 +22,6 @@ class Whiteboard
             'deletedAt' => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
         );
     }
-
     /**
      * @var integer
      */
@@ -54,6 +53,11 @@ class Whiteboard
     private $objects;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $persons;
+
+    /**
      * @var \SQLBundle\Entity\Project
      */
     private $projects;
@@ -74,6 +78,7 @@ class Whiteboard
     public function __construct()
     {
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -209,6 +214,39 @@ class Whiteboard
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * Add persons
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $persons
+     * @return Whiteboard
+     */
+    public function addPerson(\SQLBundle\Entity\WhiteboardPerson $persons)
+    {
+        $this->persons[] = $persons;
+
+        return $this;
+    }
+
+    /**
+     * Remove persons
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $persons
+     */
+    public function removePerson(\SQLBundle\Entity\WhiteboardPerson $persons)
+    {
+        $this->persons->removeElement($persons);
+    }
+
+    /**
+     * Get persons
+     *
+     * @return \Doctrine\Common\Collections\Collection 
+     */
+    public function getPersons()
+    {
+        return $this->persons;
     }
 
     /**

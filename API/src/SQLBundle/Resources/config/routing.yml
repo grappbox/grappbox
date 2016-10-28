@@ -852,6 +852,13 @@ whiteboard_open:
     id: \d+
   methods: [GET]
 
+whiteboard_close:
+  path:   whiteboard/{id}
+  defaults: { _controller: SQLBundle:Whiteboard:closeWhiteboard, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
+
 whiteboard_pushDraw:
   path:		whiteboard/draw/{id}
   defaults:	{ _controller: SQLBundle:Whiteboard:pushDraw, _format: json }

@@ -77,8 +77,11 @@ SQLBundle\Entity\User:
           targetEntity: Whiteboard
           mappedBy: creator_user
         whiteboard_updator:
-          targetEntity: Gantt
+          targetEntity: Whiteboard
           mappedBy: updator_user
+        whiteboard_user:
+          targetEntity: WhiteboardPerson
+          mappedBy: user
         gantt_updator:
           targetEntity: Gantt
           mappedBy: updator_id

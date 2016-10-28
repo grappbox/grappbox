@@ -7,6 +7,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\Whiteboard;
 use SQLBundle\Entity\WhiteboardObject;
+use SQLBundle\Entity\WhiteboardPerson;
 use DateTime;
 /**
 *  @IgnoreAnnotation("apiName")
@@ -491,15 +492,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*
 	* @apiSuccess {int} id Whiteboard id
 	* @apiSuccess {int} projectId Project id
-	* @apiSuccess {Object} array.user User creator informations
-	* @apiSuccess {int} array.user.Id Id of the user
-	* @apiSuccess {string} array.user.firstname Firstname of the user
-	* @apiSuccess {string} array.user.lastname Lastname of the User
-	* @apiSuccess {string} array.name Whiteboard name
-	* @apiSuccess {int} array.updator User who update last the whiteboard informations
-	* @apiSuccess {int} array.updator.Id Id of the user
-	* @apiSuccess {string} array.updator.firstname Firstname of the user
-	* @apiSuccess {string} array.updator.lastname Lastname of the User
+	* @apiSuccess {Object} user User creator informations
+	* @apiSuccess {int} user.Id Id of the user
+	* @apiSuccess {string} user.firstname Firstname of the user
+	* @apiSuccess {string} user.lastname Lastname of the User
+	* @apiSuccess {string} name Whiteboard name
+	* @apiSuccess {int} updator User who update last the whiteboard informations
+	* @apiSuccess {int} updator.Id Id of the user
+	* @apiSuccess {string} updator.firstname Firstname of the user
+	* @apiSuccess {string} updator.lastname Lastname of the User
 	* @apiSuccess {DateTime} updatedAt Update date (creation date)
 	* @apiSuccess {DateTime} createdAt Creation date
 	* @apiSuccess {DateTime} deledtedAt Deletion date
@@ -509,6 +510,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {object} content.object object whiteboard's object (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
 	* @apiSuccess {DateTime} content.createdAt createdAt object creation date
 	* @apiSuccess {DateTime} content.deletedAt deletedAt object deletion date
+	* @apiSuccess {Object[]} users Array of users connected on the whiteboard
+	* @apiSuccess {int} users.Id Id of the user
+	* @apiSuccess {string} users.firstname Firstname of the user
+	* @apiSuccess {string} users.lastname Lastname of the User
 	*
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
@@ -555,7 +560,14 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	        ...
 	*	      },
 	*	      ...
-	*	    ]
+	*	    ],
+	*		"users": [
+	*			{
+	*				"id": 12,
+	*				"firstname": "jane",
+	*				"lastname": "doe"
+	*			}
+	*		]
 	*	  }
 	*	}
 	*
@@ -727,7 +739,156 @@ class WhiteboardController extends RolesAndTokenVerificationController
 				$arr["content"][] = $object;
 			}
 		}
+		$arr["users"] = array();
+		$userNotif = array();
+		foreach ($whiteboard->getPersons() as $key => $value) {
+			$arr["users"][] = $value->getUser()->objectToArray();
+			if ($value->getUser()->getId() != $user->getId())
+				$userNotif[] = $value->getUser()->getId();
+		}
+
+		//notifs
+		$mdata['mtitle'] = "login whiteboard";
+		$mdata['mdesc'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$wdata['type'] = "login whiteboard";
+		$wdata['targetId'] = $whiteboard->getId();
+		$wdata['message'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
+		$exist = $em->getRepository('SQLBundle:WhiteboardPerson')->findBy(array("user" => $user->getId(), "whiteboard" => $whiteboard->getId()));
+		if (count($exist) == 0) {
+			$newPerson = new WhiteboardPerson();
+			$newPerson->setWhiteboard($whiteboard);
+			$newPerson->setUser($user);
+			$em->persist($newPerson);
+			$em->flush();
+		}
+
 		return $this->setSuccess("1.10.1", "Whiteboard", "open", "Complete Success", $arr);
+	}
+
+	/**
+	* @api {put} /0.3/whiteboard/:id Close a whiteboard
+	* @apiName closeWhiteboard
+	* @apiGroup Whiteboard
+	* @apiDescription Close the given whiteboard
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {Number} id Id of the whiteboard
+	*
+	* @apiSuccess {int} id Whiteboard id
+	* @apiSuccess {int} projectId Project id
+	* @apiSuccess {Object} user User creator informations
+	* @apiSuccess {int} user.Id Id of the user
+	* @apiSuccess {string} user.firstname Firstname of the user
+	* @apiSuccess {string} user.lastname Lastname of the User
+	* @apiSuccess {string} name Whiteboard name
+	* @apiSuccess {int} updator User who update last the whiteboard informations
+	* @apiSuccess {int} updator.Id Id of the user
+	* @apiSuccess {string} updator.firstname Firstname of the user
+	* @apiSuccess {string} updator.lastname Lastname of the User
+	* @apiSuccess {DateTime} updatedAt Update date (creation date)
+	* @apiSuccess {DateTime} createdAt Creation date
+	* @apiSuccess {DateTime} deledtedAt Deletion date
+	* @apiSuccess {Object[]} content Whiteboard content objects
+	* @apiSuccess {int} content.id id whiteboard's object
+	* @apiSuccess {int} content.whiteboardId whiteboardId whiteboard's object
+	* @apiSuccess {object} content.object object whiteboard's object (cf: https://docs.google.com/document/d/1-AU7XpD5xt1r4QxkMPqoB1IZkJiAzlIyt7Rh8FLePgE/edit#)
+	* @apiSuccess {DateTime} content.createdAt createdAt object creation date
+	* @apiSuccess {DateTime} content.deletedAt deletedAt object deletion date
+	* @apiSuccess {Object[]} users Array of users connected on the whiteboard
+	* @apiSuccess {int} users.Id Id of the user
+	* @apiSuccess {string} users.firstname Firstname of the user
+	* @apiSuccess {string} users.lastname Lastname of the User
+	*
+	* @apiSuccessExample {json} Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*	  "info": {
+	*	    "return_code": "1.10.1",
+	*	    "return_message": "Whiteboard - close - Complete Success"
+	*	  },
+	*	  "data": {}
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "10.3.3",
+	*			"return_message": "Whiteboard - close - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Insufficient Rights
+	*	HTTP/1.1 403 Forbidden
+	*	{
+	*		"info": {
+	*			"return_code": "10.3.9",
+	*			"return_message": "Whiteboard - close - Insufficient Rights"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: id
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "10.3.4",
+	*			"return_message": "Whiteboard - close - Bad Parameter: id"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: Whiteboard deleted
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "10.3.4",
+	*			"return_message": "Whiteboard - close - Bad Parameter: Whiteboard deleted"
+	*		}
+	*	}
+	*/
+	public function closeWhiteboardAction(Request $request, $id)
+	{
+		$user = $this->checkToken($request->headers->get('Authorization'));
+		if (!$user)
+			return ($this->setBadTokenError("10.3.3", "Whiteboard", "close"));
+		$em = $this->getDoctrine()->getManager();
+		$whiteboard =  $em->getRepository('SQLBundle:Whiteboard')->find($id);
+		if (!$whiteboard)
+ 			return $this->setBadRequest("10.3.4", "Whiteboard", "close", "Bad Parameter: id");
+		if ($this->checkRoles($user, $whiteboard->getProjects()->getId(), "whiteboard") < 1)
+			return ($this->setNoRightsError("10.3.9", "Whiteboard", "close"));
+		if ($whiteboard->getDeletedAt())
+			return $this->setBadRequest("10.3.4", "Whiteboard", "close", "Bad Parameter: Whiteboard Deleted");
+		$users = array();
+		$userNotif = array();
+		foreach ($whiteboard->getPersons() as $key => $value) {
+			$users[] = $value->getUser()->objectToArray();
+			$userNotif[] = $value->getUser()->getId();
+		}
+		$userConnect = $em->getRepository('SQLBundle:WhiteboardPerson')->findBy(array("user" => $user->getId(), "whiteboard" => $whiteboard->getId()));
+		if (count($userConnect) < 1)
+			return $this->setBadRequest("10.3.4", "Whiteboard", "close", "Bad Parameter: Not connected on the whiteboard");
+
+		//notifs
+		$mdata['mtitle'] = "logout whiteboard";
+		$mdata['mdesc'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$wdata['type'] = "logout whiteboard";
+		$wdata['targetId'] = $whiteboard->getId();
+		$wdata['message'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
+		foreach ($userConnect as $key => $value) {
+			$em->remove($value);
+		}
+		$em->flush();
+
+		return $this->setSuccess("1.10.1", "Whiteboard", "close", "Complete Success", array());
 	}
 
 	/**
@@ -987,6 +1148,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiSuccess {object} delete.object object whiteboard's object
 	* @apiSuccess {string} delete.createdAt createdAt object creation date
 	* @apiSuccess {string} delete.deletedAt deletedAt object deletion date
+	* @apiSuccess {Object[]} users Array of users connected on the whiteboard
+	* @apiSuccess {int} users.Id Id of the user
+	* @apiSuccess {string} users.firstname Firstname of the user
+	* @apiSuccess {string} users.lastname Lastname of the User
 	*
 	* @apiSuccessExample {json} Success-Response:
 	*	HTTP/1.1 200 OK
@@ -1023,7 +1188,14 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	        "deletedAt": "2016-05-21 08:53:42"
 	*	      },
 	*	      ...
-	*	    ]
+	*	    ],
+	*		"users": [
+	*			{
+	*				"id": 12,
+	*				"firstname": "jane",
+	*				"lastname": "doe"
+	*			}
+	*		]
 	*	  }
 	*	}
 	*
@@ -1197,7 +1369,12 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		foreach ($to_del as $key => $value) {
 			$toDel[] = $value->objectToArray();
 		}
-		return $this->setSuccess("1.10.1", "Whiteboard", "pull", "Complete Success", array('add' => $toAdd, 'delete' => $toDel));
+
+		$users = array();
+		foreach ($whiteboard->getPersons() as $key => $value) {
+			$users[] = $value->getUser()->objectToArray();
+		}
+		return $this->setSuccess("1.10.1", "Whiteboard", "pull", "Complete Success", array('add' => $toAdd, 'delete' => $toDel, 'users' => $users));
 	}
 
 	/**
