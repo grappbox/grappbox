@@ -85,7 +85,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
-		$content = $content->data;		
+		$content = $content->data;
 		$em = $this->getDoctrine()->getManager();
 
 		if (!array_key_exists("email", $content) || !array_key_exists("firstname", $content) || !array_key_exists("lastname", $content))
@@ -204,6 +204,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
+
  	/**
  	* @api {post} /0.3/account/login Login
  	* @apiName login
@@ -267,6 +268,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
+	*		}
+	* 	}
+  * @apiErrorExample Bad Parameter: password
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.4",
+	*			"return_message": "AccountAdministration - login - Bad Parameter: flag or device_name"
 	*		}
 	* 	}
 	* @apiErrorExample Missing Parameter
@@ -344,6 +353,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = json_decode($content);
 		$content = $content->data;
 
+    if (!array_key_exists('login', $content) || !array_key_exists('password', $content)
+				|| !array_key_exists('flag', $content) || !array_key_exists('mac', $content)
+				|| !array_key_exists('device_name', $content))
+			return $this->setBadRequest("14.1.6", "AccountAdministration", "register", "Missing Parameter");
+
+    if ($content->flag == "" || $content->device_name == "")
+      return $this->setBadRequest("14.1.4", "AccountAdministration", "register", "Bad Parameter: flag or device_name");
+
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->login));
 		if (!$user)
@@ -352,7 +369,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
-		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('deviceFlag' => $content->flag, 'macAddr' => $content->mac));
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('user' => $user->getId(), 'deviceFlag' => $content->flag, 'macAddr' => $content->mac));
 		if ($auth instanceof Authentication && $content->flag != "web")
 		{
 			if ($content->device_name != $auth->getDeviceName()) {
@@ -541,10 +558,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($auth instanceof Authentication))
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
 
-		$auth->setToken(null);
-		if ($auth->getDeviceFlag() == "web")
-			$em->remove($auth);
-
+		$em->remove($auth);
 		$em->flush();
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
@@ -651,6 +665,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
 	*		}
 	* 	}
+  * @apiErrorExample Bad Parameter
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  *		"info": {
+  *			"return_code": "14.3.4",
+  *			"return_message": "AccountAdministration - register - Bad Parameter"
+    *		}
+  * 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
@@ -772,9 +794,12 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 				|| !array_key_exists('flag', $content) || !array_key_exists('device_name', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
 
+    if ($content->flag == "" || $content->device_name == "")
+      return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Bad Parameter");
+
 		$em = $this->getDoctrine()->getManager();
 		if ($em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email)))
-			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
+			return $this->setBadRequest("14.3.4", "AccountAdministration", "register", "Already in Database");
 
 		$user = new User();
 		$user->setFirstname($content->firstname);

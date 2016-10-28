@@ -1105,6 +1105,14 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - assignpersontorole - Already In Database"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: You can't add the creator to another role than Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.5.7",
+	*			"return_message": "Role - assignpersontorole - Bad Parameter: You can't add the creator to another role than Admin role"
+	*		}
+	*	}
 	*/
 	/**
 	* @api {post} /V0.2/roles/assignpersontorole Assign a person to a role
@@ -1209,6 +1217,8 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($role === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
+		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() != "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't add the creator to another role than Admin role");
 		if ($userToAdd === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
@@ -1345,6 +1355,14 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - putpersonrole - Bad Parameter: roleId"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: You can't remove the creator from the Admin role
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.6.4",
+	*			"return_message": "Role - putpersonrole - Bad Parameter: You can't remove the creator from the Admin role"
+	*		}
+	*	}
 	*/
 	/**
 	* @api {put} /V0.2/roles/putpersonrole Update a person role
@@ -1455,6 +1473,9 @@ class RoleController extends RolesAndTokenVerificationController
 		$role = $em->getRepository('SQLBundle:Role')->find($content->roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
+		
+		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() == "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 
 		$pur->setRoleId($content->roleId);
 		$em->flush();
