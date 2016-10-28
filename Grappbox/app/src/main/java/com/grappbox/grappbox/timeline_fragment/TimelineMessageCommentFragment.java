@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.timeline_fragment;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
+import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -91,7 +93,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mLoader.setVisibility(View.GONE);
         mRefresher.setVisibility(View.VISIBLE);
         mAdapter.setRefreshReceiver(mRefreshReceiver);
-        this.getLoaderManager().initLoader(TIMELINE_LOADER, null, this);
+
         return view;
     }
 

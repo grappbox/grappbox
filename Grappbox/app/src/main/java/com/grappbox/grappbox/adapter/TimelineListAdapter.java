@@ -12,6 +12,7 @@ import android.database.DatabaseUtils;
 import android.database.MatrixCursor;
 import android.database.MergeCursor;
 import android.media.Image;
+import android.os.AsyncTask;
 import android.os.Parcelable;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.CursorAdapter;
@@ -33,6 +34,7 @@ import android.widget.Toast;
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
@@ -40,9 +42,13 @@ import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentActivity;
 import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.MissingResourceException;
 import java.util.Objects;
@@ -66,7 +72,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView    mRecyclerView;
     private int             mExpandedPosition = -1;
-
 
     public static final String[] projectionMessageRow = {
             GrappboxContract.TimelineEntry._ID,
@@ -110,6 +115,12 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         notifyDataSetChanged();
     }
 
+    public void mergeItem(Collection<TimelineModel> items){
+        Log.v("MergeItem", "on merge item, items : " + items.size());
+        MergeDataItem merge = new MergeDataItem();
+        merge.execute(items);
+    }
+
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType){
@@ -140,7 +151,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                 deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                 deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
-                deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, mDataset.size());
                 deleteMessage.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                 mContext.startService(deleteMessage);
                 cursorTimelineId.close();
@@ -378,4 +388,59 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         }
     }
+
+    private class MergeDataItem extends AsyncTask<Collection<TimelineModel>, Void, Collection<TimelineModel>> {
+
+        @Override
+        protected void onPostExecute(Collection<TimelineModel> timelineModels) {
+            super.onPostExecute(timelineModels);
+            mDataset.clear();
+            notifyDataSetChanged();
+            mDataset.addAll(timelineModels);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected Collection<TimelineModel> doInBackground(Collection<TimelineModel>... params) {
+            boolean exist;
+            if (params == null || params.length < 1)
+                throw new IllegalArgumentException();
+
+            ArrayList<TimelineModel> timeline = new ArrayList<>();
+            Collection<TimelineModel> newItems = params[0];
+
+            for (TimelineModel item : newItems) {
+                timeline.add(item);
+            }
+            for (TimelineModel model : mDataset) {
+                exist = false;
+                for (TimelineModel item : newItems) {
+                    if (item._id == model._id)
+                        exist = true;
+                }
+                if (!exist)
+                    timeline.add(model);
+            }
+            Collections.sort(timeline, new StringDateComparator());
+            return timeline;
+        }
+
+        class StringDateComparator implements Comparator<TimelineModel>
+        {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+            @Override
+            public int compare(TimelineModel o1, TimelineModel o2) {
+
+                try {
+                    return dateFormat.parse(o2._lastUpadte).compareTo(dateFormat.parse(o1._lastUpadte));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return -1;
+            }
+        }
+    }
+
 }

@@ -72,6 +72,9 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     public static final int TIMELINE_LIMIT = 50;
 
+    public static final String BUNDLE_OFFSET = "com.grappbox.grappbox.timeline_fragment.BUNDLE_OFFSET";
+    public static final String BUNDLE_LIMIT = "com.grappbox.grappbox.timeline_fragment.BUNDLE_LIMIT";
+
     public static final String[] projectionMessage = {
             TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID,
             TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID,
@@ -94,6 +97,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     private RecyclerView mTimelineList;
     private LinearLayoutManager mLinearLayoutManager;
 
+    private TimelineListFragment fragment = this;
+
     public TimelineListFragment(){
         // Required empty public constructor
     }
@@ -108,6 +113,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_timeline_list, container, false);
+        mTimelineTypeId = getArguments().getInt(ARG_LIST_TYPE);
         mTimelineList = (RecyclerView) v.findViewById(R.id.timelinelist);
         mAdapter = new TimelineListAdapter(getActivity(), mTimelineList);
         mTimelineList.setAdapter(mAdapter);
@@ -168,9 +174,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                                 null);
                         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
                             return;
-                        Log.v(LOG_TAG, "Send the add Message, project ID : " + String.valueOf(getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1)) +
-                                ", timelineTypeId : " + mTimelineTypeId +
-                                ", timeline grappbox Id : " + cursorTimelineId.getLong(0));
                         Intent addMessage = new Intent(getActivity(), GrappboxJustInTimeService.class);
                         addMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_MESSAGE);
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -178,7 +181,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
-                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, (mAdapter.getItemCount() > 0 ? mAdapter.getItemCount() : TIMELINE_LIMIT) + 1);
+                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 1);
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
                     }
@@ -192,7 +195,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 builder.show();
             }
         });
-        mTimelineTypeId = getArguments().getInt(ARG_LIST_TYPE);
+
         return v;
     }
 
@@ -211,10 +214,16 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         String offset = String.valueOf(mAdapter.getItemCount());
         String limit = String.valueOf(TIMELINE_LIMIT);
 
+        if (args != null && !args.isEmpty()){
+            offset = args.getString(BUNDLE_OFFSET);
+            limit = args.getString(BUNDLE_LIMIT);
+        }
+
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC LIMIT " +
                 offset + ", " + limit;
         String selection;
         String[] selectionArgs;
+        Log.v(LOG_TAG, "onCreateLoader, sort : " + sortOrder);
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         switch (id){
             case TIMELINE_TEAM:
@@ -238,7 +247,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-        Log.v(LOG_TAG, "timeline type : " + mTimelineTypeId);
         return new CursorLoader(getActivity(), TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
@@ -251,13 +259,14 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_MESSAGES);
 
         Cursor cursorTimelineId = getActivity().getContentResolver().query(TimelineEntry.CONTENT_URI,
-                new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID},
-                TimelineEntry.TABLE_NAME + "." +  TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " +
-                TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=?",
+                new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID},
+                TimelineEntry.TABLE_NAME + "." +TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=?",
                 new String[]{String.valueOf(projectId), String.valueOf(mTimelineTypeId)},
                 null);
         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
             return;
+        Log.v(LOG_TAG, "refresh data");
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
@@ -265,6 +274,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, limit);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, offset);
         getActivity().startService(timelineSync);
+        cursorTimelineId.close();
     }
 
     @Override
@@ -287,13 +297,12 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         do {
             models.add(new TimelineModel(getActivity(), data));
         } while (data.moveToNext());
-        //Collections.sort(models, new StringDateComparator());
-        AdditionalDataLoader task = new AdditionalDataLoader();
-        task.execute(models);
+        mAdapter.mergeItem(models);
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        loader.forceLoad();
     }
 
     class AdapterObserver extends RecyclerView.AdapterDataObserver {
@@ -307,39 +316,4 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
             }
         }
     }
-
-    private class AdditionalDataLoader extends AsyncTask<Collection<TimelineModel>, Void, Collection<TimelineModel>> {
-
-        @Override
-        protected void onPostExecute(Collection<TimelineModel> timelineModels) {
-            super.onPostExecute(timelineModels);
-            mAdapter.clear();
-            mAdapter.add(timelineModels);
-        }
-
-        @Override
-        protected Collection<TimelineModel> doInBackground(Collection<TimelineModel>... params) {
-            if (params == null || params.length < 1)
-                throw new IllegalArgumentException();
-
-            return params[0];
-        }
-    }
-
-    /*class StringDateComparator implements Comparator<TimelineModel>
-    {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        @Override
-        public int compare(TimelineModel o1, TimelineModel o2) {
-
-            try {
-                return dateFormat.parse(o2._lastUpadte).compareTo(dateFormat.parse(o1._lastUpadte));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
-    }*/
 }

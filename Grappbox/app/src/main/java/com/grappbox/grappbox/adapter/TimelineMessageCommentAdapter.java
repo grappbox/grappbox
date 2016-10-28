@@ -204,14 +204,13 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     return;
                 }
                 Intent editComment = new Intent(mContext, GrappboxJustInTimeService.class);
-                editComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
+                editComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_COMMENT);
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Long.valueOf(item._parentId));
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-                editComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_IS_COMMENT, true);
                 mContext.startService(editComment);
                 cursorTimelineId.close();
 
@@ -247,13 +246,12 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     return;
                 }
                 Intent deleteComment = new Intent(mContext, GrappboxJustInTimeService.class);
-                deleteComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_MESSAGE);
+                deleteComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_COMMENT);
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Long.valueOf(item._parentId));
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE_ID, Long.valueOf(item._grappboxId));
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-                deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_IS_COMMENT, true);
                 mContext.startService(deleteComment);
                 cursorTimelineId.close();
 
@@ -288,7 +286,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 }
 
                 Intent addComment = new Intent(mContext, GrappboxJustInTimeService.class);
-                addComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_MESSAGE);
+                addComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_COMMENT);
                 addComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
                 addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, holder.comment.getText().toString());
                 addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Integer.valueOf(mParent._grappboxId));
