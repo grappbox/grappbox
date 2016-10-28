@@ -45,7 +45,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="well no-shadow border">
                       <ul>
                         <li class="ellipsis"><strong>{[{ message.title }]}</strong><br>{[{ message.message }]}</li>
-                        <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
+                        <li class="author">{[{ message.creator.firstname }]} {[{ message.creator.lastname }]}<br>{[{ method.formatObjectDate(message.createdAt) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt) }]})</span></li>
                       </ul>
                       <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="action.onOpenMessage(message)" class="btn btn-raised btn-info">Open</a>
                       <div class="clearfix"></div>
@@ -87,9 +87,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <ul>
                         <li class="ellipsis"><strong>{[{ message.title }]}</strong><br>{[{ message.message }]}</li>
                         <li class="divider"></li>
-                        <li class="author">{[{ message.creator.fullname }]}<br>{[{ method.formatObjectDate(message.createdAt.date) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt.date) }]})</span></li>
+                        <li class="author">{[{ message.creator.firstname }]} {[{ message.creator.lastname }]}<br>{[{ method.formatObjectDate(message.createdAt) }]}<span data-ng-if="message.editedAt"> (edited on {[{ method.formatObjectDate(message.editedAt) }]})</span></li>
                       </ul>
-                      <a href="" title="Open {[{ message.creator.fullname }]}'s message" data-ng-click="action.onOpenMessage(message)" class="btn btn-raised btn-info">Open</a>
+                      <a href="" title="Open {[{ message.creator.firstname }]}'s message" data-ng-click="action.onOpenMessage(message)" class="btn btn-raised btn-info">Open</a>
                       <div class="clearfix"></div>
                     </div>
                     <div class="dot"></div>
@@ -136,7 +136,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="each-data message-data">
         <ul>
           <li><strong>{[{ active.message.title }]}</strong><br>{[{ active.message.message }]}</li>
-          <li class="author">{[{ active.message.creator.fullname }]}<br>{[{ method.formatObjectDate(active.message.createdAt.date) }]}<span data-ng-if="active.message.editedAt"> (edited on {[{ method.formatObjectDate(active.message.editedAt.date) }]})</span></li>
+          <li class="author">{[{ active.message.creator.firstname }]} {[{ active.message.creator.lastname }]}<br>{[{ method.formatObjectDate(active.message.createdAt) }]}<span data-ng-if="active.message.editedAt"> (edited on {[{ method.formatObjectDate(active.message.editedAt) }]})</span></li>
         </ul>
         <div class="action">
           <a href="" title="Delete this message" class="btn btn-default" data-ng-click="action.onDeleteMessage(active.message.id)" data-ng-if="user.id == active.message.creator.id">Delete</a>
@@ -157,8 +157,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="each-data each-comment" data-ng-repeat="comment in comments">
                 <div class="well well-soft no-shadow border">
                   <ul>
-                    <li><strong>{[{ comment.title }]}</strong><br>{[{ comment.message }]}</li>
-                    <li class="author">{[{ comment.creator.fullname }]}<br>{[{ method.formatObjectDate(comment.createdAt.date) }]}<span data-ng-if="comment.editedAt"> (edited on {[{ method.formatObjectDate(comment.editedAt.date) }]})</span></li>
+                    <li>{[{ comment.comment }]}</li>
+                    <li class="author">{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}<br>{[{ method.formatObjectDate(comment.createdAt) }]}<span data-ng-if="comment.editedAt"> (edited on {[{ method.formatObjectDate(comment.editedAt) }]})</span></li>
                   </ul>
                   <div class="action">
                     <a href="" title="Delete this comment" class="btn btn-default" data-ng-click="action.onDeleteComment(comment.id)" data-ng-if="user.id == comment.creator.id">Delete</a>
@@ -237,16 +237,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="modal-body">
       <form class="form-horizontal">
         <fieldset>
-          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
-            <label for="new-comment-title" class="col-md-1 control-label">Title</label>
-            <div class="col-md-11">
-              <input type="text" class="form-control" id="new-comment-title" data-ng-model="new.comment.title" placeholder="Title">
-            </div>
-          </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="new-comment-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="new-comment-content" data-ng-model="new.comment.message" placeholder="Message"></textarea>
+              <textarea class="form-control" rows="3" id="new-comment-content" data-ng-model="new.comment" placeholder="Message"></textarea>
             </div>
           </div>
         </fieldset>
@@ -301,16 +295,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="modal-body">
       <form class="form-horizontal">
         <fieldset>
-          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
-            <label for="comment-edited-title" class="col-md-1 control-label">Title</label>
-            <div class="col-md-11">
-              <input type="text" class="form-control" id="comment-edited-title" data-ng-model="new.comment.title" placeholder="Title">
-            </div>
-          </div>
           <div class="form-group {[{ error.content ? 'has-error' : '' }]}">
             <label for="comment-edited-content" class="col-md-1 control-label">Message</label>
             <div class="col-md-11">
-              <textarea class="form-control" rows="3" id="comment-edited-content" data-ng-model="new.comment.message" placeholder="Comment"></textarea>
+              <textarea class="form-control" rows="3" id="comment-edited-content" data-ng-model="new.comment" placeholder="Comment"></textarea>
             </div>
           </div>
         </fieldset>

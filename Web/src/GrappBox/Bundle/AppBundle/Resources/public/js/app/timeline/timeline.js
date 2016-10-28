@@ -20,10 +20,10 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 	$scope.method = { switchTab: "", formatObjectDate: "" };
 
   $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
-  $scope.active = { message: { title: "", message: "" }, comment: { title: "", comment: "" }, modal: "" };
+  $scope.active = { message: { title: "", message: "" }, comment: "" };
   $scope.action = { onOpenMessage: "", onNewMessage: "", onNewComment: "", onEditMessage: "", onEditComment: "", onDeleteMessage: "", onDeleteComment: "", onNewIssue: "" }
   
-  $scope.new = { message: { title: "", message: "" }, comment: { title: "", comment: "" } };
+  $scope.new = { message: { title: "", message: "" }, comment: "" };
   $scope.comments = {};
   
 
@@ -42,9 +42,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   var _resetModalContent = function() {
     $scope.modal = { onLoad: true, valid: false, authorized: false };
     $scope.active.message = { title: "", message: "" };
-    $scope.active.comment = { title: "", message: "" };
+    $scope.active.comment = "";
     $scope.new.message = { title: "", message: "" };
-    $scope.new.comment = { title: "", message: "" };
+    $scope.new.comment = "";
     $scope.comments = {};
   };
 
@@ -215,7 +215,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   // Routine definition (local)
   // Get message comments
   var _getMessageComments = function(message) {
-    $http.get($rootScope.api.url + "/timeline/message/comments" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message.id, { headers: { "Authorization": $rootScope.user.token }}).then(
+    $http.get($rootScope.api.url + "/timeline/message/comments/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message.id,
+      { headers: { "Authorization": $rootScope.user.token }}).then(
       function onGetCommentsSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -302,8 +303,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     modal_newMessage.result.then(
       function onModalConfirm() {
         $http.post($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { headers: { "Authorization": $rootScope.user.token }},
-        { data: { title: $scope.new.message.title, message: $scope.new.message.message }}).then(
+          { data: { title: $scope.new.message.title, message: $scope.new.message.message }},
+          { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPostMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -338,15 +339,14 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   // "Add comment" button handler
   $scope.action.onNewComment = function(message) {
-    $scope.new.comment.title = "";
-    $scope.new.comment.message = "";
+    $scope.new.comment = "";
 
     var modal_newComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_createNewComment.html", controller: "modal_createNewComment" });
     modal_newComment.result.then(
       function onModalConfirm() {
         $http.post($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { headers: { "Authorization": $rootScope.user.token }},
-        { data: { token: $rootScope.user.token, title: $scope.new.comment.title, message: $scope.new.comment.message, commentedId: message.id }}).then(
+        { data: { comment: $scope.new.comment, commentedId: message.id }},
+        { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPostCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -395,9 +395,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editMessage.html", controller: "modal_editMessage" });
     modal_editMessage.result.then(
       function onModalConfirm() {
-        $http.put($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { headers: { "Authorization": $rootScope.user.token }},
-        { data: { token: $rootScope.user.token, messageId: message.id, title: $scope.new.message.title, message: $scope.new.message.message }}).then(
+        $http.put($rootScope.api.url + "/timeline/message/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + message.id,
+          { data: { title: $scope.new.message.title, message: $scope.new.message.message }},
+          { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPutMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -434,22 +434,20 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   // "Edit comment" button handler
   $scope.action.onEditComment = function(comment) {
-    $scope.new.comment.title = comment.title;
-    $scope.new.comment.message = comment.message;
+    $scope.new.comment = comment.comment;
 
-    var modal_editMessage = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editComment.html", controller: "modal_editComment" });
-    modal_editMessage.result.then(
+    var modal_editComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, windowClass: "submodal", templateUrl: "modal_editComment.html", controller: "modal_editComment" });
+    modal_editComment.result.then(
       function onModalConfirm() {
         $http.put($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id),
-        { headers: { "Authorization": $rootScope.user.token }},
-        { data: { token: $rootScope.user.token, messageId: comment.id, title: $scope.new.comment.title, message: $scope.new.comment.message }}).then(
+        { data: { commentId: comment.id, comment: $scope.new.comment }},
+        { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPutCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
             else {
               Notification.success({ title: "Timeline", message: "Comment updated.", delay: 2000 });
-              $scope.active.comment.title = $scope.new.comment.title;
-              $scope.active.comment.message = $scope.new.comment.message;
+              $scope.active.comment = $scope.new.comment;
             }
             _getMessageComments($scope.active.message);
           },
@@ -522,8 +520,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
     var modal_deleteComment = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteComment.html", controller: "modal_deleteComment" });
     modal_deleteComment.result.then(
       function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/timeline/comment/" + ($scope.timeline.team.active ? $scope.timeline.team.id : $scope.timeline.customer.id) + "/" + comment_id,
-          { headers: { "Authorization": $rootScope.user.token }}).then(
+        $http.delete($rootScope.api.url + "/timeline/comment/" + comment_id, { headers: { "Authorization": $rootScope.user.token }}).then(
           function onDeleteCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
               Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
@@ -593,12 +590,11 @@ app.controller("modal_createNewMessage", ["$scope", "$uibModalInstance", functio
 *
 */
 app.controller("modal_createNewComment", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-  $scope.error = { title: false, content: false };
+  $scope.error = { content: false };
 
   $scope.modal_confirmCommentCreation = function() {
-    $scope.error.title = ($scope.new.comment.title && $scope.new.comment.title.length ? false : true);
-    $scope.error.content = ($scope.new.comment.message && $scope.new.comment.message.length ? false : true);
-    if (!$scope.error.title && !$scope.error.content)
+    $scope.error.content = ($scope.new.comment && $scope.new.comment.length ? false : true);
+    if (!$scope.error.content)
       $uibModalInstance.close();
   };
   $scope.modal_cancelCommentCreation = function() { $uibModalInstance.dismiss(); };
@@ -630,12 +626,11 @@ app.controller("modal_editMessage", ["$scope", "$uibModalInstance", function($sc
 *
 */
 app.controller("modal_editComment", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-  $scope.error = { title: false, content: false };
+  $scope.error = { content: false };
 
   $scope.modal_confirmCommentEdition = function() {
-    $scope.error.title = ($scope.new.comment.title && $scope.new.comment.title.length ? false : true);
-    $scope.error.content = ($scope.new.comment.message && $scope.new.comment.message.length ? false : true);
-    if (!$scope.error.title && !$scope.error.content)
+    $scope.error.content = ($scope.new.comment && $scope.new.comment.length ? false : true);
+    if (!$scope.error.content)
       $uibModalInstance.close();
   };
   $scope.modal_cancelCommentEdition = function() { $uibModalInstance.dismiss(); };
