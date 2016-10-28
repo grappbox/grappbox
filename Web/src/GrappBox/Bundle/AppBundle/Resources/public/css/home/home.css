@@ -99,7 +99,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 .well .btn.btn-default:hover,
 .well .btn.btn-default:focus { color: #fafafa!important; background: #44BBFF!important; }
 
-.well-title { background: #333; color: #f0f0f0; padding: 15px 0; margin-bottom: -1px; border-radius: 2px; text-align: center; font-weight: 300; }
+.well-title { background: #333; color: #f0f0f0; padding: 15px 0; margin-bottom: -1px; border-radius: 2px; text-align: center; }
 .well-logo { padding-right: 10px; margin-left: -20px; }
 .well-link { text-align: center; }
 
@@ -147,7 +147,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 .navbar-custom { padding: 0; border-bottom: 0; letter-spacing: 1px; background: #333; text-transform: uppercase; }
 .navbar-custom .navbar-brand { font-weight: 600; }
 .navbar-custom .navbar-brand > img { display: inline; margin: -2px 10px 0 0; }
-.navbar-custom .nav li a { color: #fafafa; transition-duration: .2s; }
+.navbar-custom .nav li a { color: #fafafa; transition-duration: .2s; font-weight: 500; }
 .navbar-custom .nav li a.login { background: #FC575E; color: #fafafa; height: 60px; }
 .navbar-custom .nav li a.login i { padding-right: 7px; margin-top: -3px; }
 .navbar-custom .nav li a:active,
@@ -175,7 +175,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 #home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 #home .home-body { display: table-cell; vertical-align: middle; }
 #home .home-body h1 { font-size: 88px; font-weight: 700; text-transform: uppercase; }
-#home .home-body .home-text { font-size: 18px; font-weight: 300; }
+#home .home-body .home-text { font-size: 18px; }
 #home .home-body .container { padding: 100px 0; background: #333; text-align: center; width: 100%!important; }
 
 @media (max-width: 640px) {
