@@ -1,0 +1,78 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+    <PreferenceCategory android:title="Basic Informations">
+
+        <EditTextPreference
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_display_name"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:key="pref_firstname"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Firstname" />
+        <EditTextPreference
+            android:key="pref_lastname"
+            android:capitalize="words"
+            android:defaultValue="@string/pref_default_display_name"
+            android:inputType="textCapWords"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Lastname" />
+        <EditTextPreference
+            android:key="pref_email"
+            android:defaultValue="Default value"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Email" />
+        <com.grappbox.grappbox.custom_preferences.DatePreference
+            android:key="pref_birthday"
+            android:title="Birthday"
+            android:inputType="textCapWords" />
+        <EditTextPreference
+            android:key="pref_phone"
+            android:defaultValue="Default value"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Phone" />
+        <ListPreference
+            android:key="pref_country"
+            android:defaultValue="1"
+            android:title="Country"
+            android:entries="@array/countries_list_human"
+            android:entryValues="@array/countries_list_human" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Social Media">
+
+        <EditTextPreference
+            android:key="pref_twitter"
+            android:defaultValue="Default value"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Twitter"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <EditTextPreference
+            android:key="pref_linkedin"
+            android:defaultValue="Default value"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Linkedin" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Danger Zone">
+
+        <EditTextPreference
+            android:key="pref_password"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Change password" />
+    </PreferenceCategory>
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+
+</PreferenceScreen>

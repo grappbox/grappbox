@@ -47,6 +47,7 @@ import com.grappbox.grappbox.project_fragments.GanttFragment;
 import com.grappbox.grappbox.project_fragments.TaskFragment;
 import com.grappbox.grappbox.project_fragments.TimelineFragment;
 import com.grappbox.grappbox.project_fragments.WhiteboardFragment;
+import com.grappbox.grappbox.settings.UserSettingsActivity;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
 
@@ -230,7 +231,9 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
                 break;
             case R.id.nav_change_project:
                 break;
-            case R.id.nav_change_account:
+            case R.id.nav_account_settings:
+                Intent launchSettings = new Intent(this, UserSettingsActivity.class);
+                startActivity(launchSettings);
                 break;
             default:
                 throw new UnsupportedOperationException(getString(R.string.error_hacker_detected));

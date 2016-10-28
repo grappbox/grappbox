@@ -2,6 +2,7 @@ package com.grappbox.grappbox.sync;
 
 import android.app.Notification;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
@@ -10,6 +11,7 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
+import com.grappbox.grappbox.DebugActivity;
 import com.grappbox.grappbox.R;
 
 import java.util.Map;
@@ -44,9 +46,15 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         builder.setContentTitle(data.get("title"));
         builder.setContentText(data.get("body"));
         builder.setSmallIcon(R.drawable.grappbox_mini_logo);
+
+        Intent intent = new Intent(this, DebugActivity.class);
+        intent.putExtra(DebugActivity.EXTRA_DEBUG, data.get("body"));
+        PendingIntent pending = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        builder.setContentIntent(pending);
         Notification notif = builder.build();
         NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         nm.notify(idNotif++, notif);
         Log.d("Test", data.get("title"));
+        
     }
 }

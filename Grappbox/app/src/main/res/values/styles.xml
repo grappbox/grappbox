@@ -89,6 +89,11 @@
         <item name="colorAccent">@color/GrappRed</item>
     </style>
 
+    <style name="SettingsTheme" parent="DashboardTheme">
+        <item name="windowActionBar">true</item>
+        <item name="windowNoTitle">false</item>
+    </style>
+
     <style name="CalendarTheme" parent="BaseTheme">
         <item name="colorPrimary">@color/GrappBlue</item>
         <item name="colorAccent">@color/GrappBlue</item>

@@ -46,11 +46,14 @@
                 android:id="@+id/nav_change_project"
                 android:icon="@drawable/ic_home"
                 android:title="@string/title_change_project" />
-            <item
-                android:id="@+id/nav_change_account"
-                android:icon="@drawable/default_logo_avatar"
-                android:title="@string/title_change_account" />
         </menu>
     </item>
-
+    <item android:title="@string/account">
+        <menu>
+            <item
+                android:id="@+id/nav_account_settings"
+                android:icon="@drawable/ic_settings"
+                android:title="@string/account_settings" />
+        </menu>
+    </item>
 </menu>

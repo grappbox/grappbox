@@ -6,7 +6,6 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.annotation.SuppressLint;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -17,9 +16,8 @@ import android.util.Log;
 
 import com.grappbox.grappbox.AddAccountActivity;
 import com.grappbox.grappbox.BuildConfig;
-import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.Utils;
+import com.grappbox.grappbox.singleton.Session;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,6 +26,8 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Calendar;
+
+import static android.accounts.AccountManager.KEY_INTENT;
 
 /**
  * Created by Marc Wieser on 03/09/2016.
@@ -50,7 +50,6 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle editProperties(AccountAuthenticatorResponse accountAuthenticatorResponse, String s) {
-        //TODO : return intent to device specific preferences concerning syncing on WI-FI and Radio Cell
         return null;
     }
 
@@ -59,7 +58,7 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
         launchAddAccountScreen.putExtra(AccountManager.KEY_ACCOUNT_MANAGER_RESPONSE, response);
 
         Bundle ret = new Bundle();
-        ret.putParcelable(AccountManager.KEY_INTENT, launchAddAccountScreen);
+        ret.putParcelable(KEY_INTENT, launchAddAccountScreen);
         return ret;
     }
 
