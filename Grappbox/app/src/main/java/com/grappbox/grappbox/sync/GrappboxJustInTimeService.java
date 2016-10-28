@@ -1743,13 +1743,13 @@ public class GrappboxJustInTimeService extends IntentService {
         HttpURLConnection connection = null;
         String returnedJson;
         String apiTimelineID = timelineGrappbox.getString(0);
-        String addTypeMessage = "/timeline/";
-        if (isComment)
-            addTypeMessage += "comment/";
-        else
-            addTypeMessage += "message/";
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + addTypeMessage + apiTimelineID);
+
+            final URL url;
+            if (isComment)
+                url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/comment/" + apiTimelineID);
+            else
+                url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/message/" + apiTimelineID);
             Log.v(LOG_TAG, "url : " + url);
             JSONObject json = new JSONObject();
             JSONObject data = new JSONObject();
@@ -1819,7 +1819,7 @@ public class GrappboxJustInTimeService extends IntentService {
             JSONObject data = new JSONObject();
             if (isComment){
                 url  = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/comment/" + apiTimelineID);
-                data.put("commentId", parentId);
+                data.put("commentId", messageId);
                 data.put("comment", message);
             } else {
                 url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/message/" + apiTimelineID + "/" + messageId);
@@ -1933,7 +1933,7 @@ public class GrappboxJustInTimeService extends IntentService {
         String returnedJson;
         String apiTimelineID = timelineGrappbox.getString(0);
         try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/getcomments/" + apiTimelineID + "/" + localTimelineParentId);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timeline/message/comments/" + apiTimelineID + "/" + localTimelineParentId);
 
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
@@ -1968,29 +1968,23 @@ public class GrappboxJustInTimeService extends IntentService {
                         return;
                 }
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
+                message.put(GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID, current.getString("parentId"));
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
-                message.put(GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE, current.getString("message"));
+                message.put(GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE, current.getString("comment"));
                 String lastEditedMsg = current.isNull("editedAt") ? current.getString("createdAt") : current.getString("editedAt");
-
-                message.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
-                if (!current.has("nbComment") && !current.isNull("nbComment")) {
-                    message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, Integer.valueOf(current.getString("nbComment")));
-                } else {
-                    message.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
-                }
+                message.put(GrappboxContract.TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                 String checkSelection = GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE + "=? AND "
                         + GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID + "=? AND "
                         + GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID + "=?";
                 String[] checkArgs = new String[] {
-                        current.getString("title"),
-                        current.getString("message"),
+                        current.getString("comment"),
                         current.getString("id"),
                         current.getString("parentId")
                 };
-                Cursor check = getContentResolver().query(TimelineMessageEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
+                Cursor check = getContentResolver().query(GrappboxContract.TimelineCommentEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
                 if (check != null && check.moveToFirst()) {
-                    existingMessage.add(check.getLong(check.getColumnIndex(TimelineMessageEntry._ID)));
+                    existingMessage.add(check.getLong(check.getColumnIndex(GrappboxContract.TimelineCommentEntry._ID)));
                     check.close();
                 }
 
@@ -2083,7 +2077,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     check.close();
                 }
                 messagesValues[i] = message;
-                //handleTimelineMessagesCommentSync(localTimelineId, Long.valueOf(current.getString("id")));
+                handleTimelineMessagesCommentSync(localTimelineId, Long.valueOf(current.getString("id")));
 
                 creator.close();
             }

@@ -57,6 +57,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID,
             GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
             GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry._ID,
+            GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID,
             GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID,
             GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE,
             GrappboxContract.TimelineCommentEntry.TABLE_NAME + "." + GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID,
@@ -123,7 +124,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             default:
                 throw new IllegalArgumentException("Type doesn't exist");
         }
-        return new CursorLoader(getActivity(), GrappboxContract.TimelineMessageEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
+        return new CursorLoader(getActivity(), GrappboxContract.TimelineCommentEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
     class StringDateComparator implements Comparator<TimelineMessageCommentModel>
@@ -146,7 +147,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == TIMELINE_COMMENT) {
-            if (!data.moveToFirst())
+            if (data == null || !data.moveToFirst())
                 return;
             List<TimelineMessageCommentModel> models = new ArrayList<>();
             do {

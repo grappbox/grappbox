@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
@@ -32,13 +33,7 @@ public class TimelineMessageCommentModel implements Parcelable {
         _parentId = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID));
         _createId = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID));
         _comment = data.getString(data.getColumnIndex(GrappboxContract.TimelineCommentEntry.COLUMN_MESSAGE));
-        try {
-            _lastupdate = DateFormat.getDateInstance(DateFormat.MEDIUM, Locale.getDefault()).format(Utils.Date.convertUTCToPhone(data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC)))) ;
-        } catch (ParseException e) {
-            e.printStackTrace();
-            _lastupdate = context.getString(R.string.error_unknown_last_modified);
-        }
-
+        _lastupdate = data.getString(data.getColumnIndex(GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC));
     }
 
     protected TimelineMessageCommentModel(Parcel source){
