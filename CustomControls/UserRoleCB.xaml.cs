@@ -42,9 +42,12 @@ namespace GrappBox.CustomControls
 
         private async void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
-            ProjectRoleModel role = await vm.getUserRole(UserId);
-            if (role != null)
-                (sender as ComboBox).SelectedValue = role.RoleId;
+            if (UserId != 0)
+            {
+                ProjectRoleModel role = await vm.getUserRole(UserId);
+                if (role != null)
+                    (sender as ComboBox).SelectedValue = role.RoleId;
+            }
         }
     }
 }

@@ -116,7 +116,8 @@ namespace GrappBox.View
                     statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
                 }
             }
-            PivotPS.SelectedIndex = 0;
+            if (e.NavigationMode == NavigationMode.New)
+                PivotPS.SelectedIndex = 0;
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
@@ -484,7 +485,7 @@ namespace GrappBox.View
             {
                 if (vm.RoleSelected != null)
                 {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected.RoleId));
+                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected));
                 }
             }
         }

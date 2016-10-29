@@ -79,14 +79,14 @@ namespace GrappBox
                 {
                     Symbol = Constants.ProjectSettingsSymbol,
                     Label = "Project Settings",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(ProjectSettingsView),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.UserSettingsSymbol,
                     Label = "User Settings",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(UserView),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
