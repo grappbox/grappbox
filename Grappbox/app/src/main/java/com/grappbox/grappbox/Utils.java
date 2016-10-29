@@ -2,24 +2,16 @@ package com.grappbox.grappbox;
 
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
-import android.accounts.NetworkErrorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
-import android.content.ContentUris;
 import android.content.Context;
-import android.content.OperationApplicationException;
 import android.content.res.TypedArray;
-import android.database.Cursor;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.Environment;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
 import android.util.Base64;
-import android.util.Log;
 import android.util.TypedValue;
 
+import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxAuthenticator;
 
@@ -34,8 +26,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
+import java.util.Map;
 import java.util.TimeZone;
 
 import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_BUGTRACKER;
@@ -273,6 +266,20 @@ public class Utils {
                    throw new IllegalArgumentException("Unexpected tag ID");
            }
        }
+    }
+
+    public static class Database{
+        public final static Map<String, String> sUserApiDBMap = new HashMap<>();
+        static{
+            sUserApiDBMap.put("firstname", GrappboxContract.UserEntry.COLUMN_FIRSTNAME);
+            sUserApiDBMap.put("lastname", GrappboxContract.UserEntry.COLUMN_LASTNAME);
+            sUserApiDBMap.put("birthday", GrappboxContract.UserEntry.COLUMN_DATE_BIRTHDAY_UTC);
+            sUserApiDBMap.put("email", GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL);
+            sUserApiDBMap.put("phone", GrappboxContract.UserEntry.COLUMN_CONTACT_PHONE);
+            sUserApiDBMap.put("country", GrappboxContract.UserEntry.COLUMN_COUNTRY);
+            sUserApiDBMap.put("linkedin", GrappboxContract.UserEntry.COLUMN_SOCIAL_LINKEDIN);
+            sUserApiDBMap.put("twitter", GrappboxContract.UserEntry.COLUMN_SOCIAL_TWITTER);
+        }
     }
 
 }

@@ -14,19 +14,22 @@
         
     </style>
 
-    <style name="SettingsTheme" parent="DashboardTheme">
-        <item name="windowActionBar">true</item>
-        <item name="windowNoTitle">false</item>
-    </style>
+
 
     <style name="Toolbar.TextAppearance" parent="TextAppearance.Widget.AppCompat.Toolbar.Title">
 
     </style>
 
     <style name="Toolbar" parent="Base.Widget.AppCompat.Toolbar">
-        <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:background">?attr/colorPrimaryDark</item>
         <item name="android:textColor">@android:color/white</item>
+    </style>
 
+    <style name="SettingsTheme" parent="Base.Theme.AppCompat.Light.DarkActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="colorPrimaryDark">@color/GrappRed</item>
+        <item name="android:colorPrimary">@color/GrappRed</item>
+        <item name="colorAccent">@color/GrappRed</item>
     </style>
 </resources>

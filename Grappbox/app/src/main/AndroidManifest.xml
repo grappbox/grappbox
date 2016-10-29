@@ -113,29 +113,14 @@
             android:name=".DebugActivity"
             android:label="@string/title_activity_debug" />
         <activity
-            android:name=".UserSettingsActivity"
+            android:name=".settings.UserSettingsActivity"
             android:label="@string/title_activity_user_settings"
             android:theme="@style/SettingsTheme"
             android:parentActivityName=".ChooseProjectActivity">
-            <intent-filter>
-                <action android:name="grappbox.intent.ACTION_EDIT_USER_SETTINGS" />
-            </intent-filter>
-
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ChooseProjectActivity" />
         </activity>
-        <activity
-            android:name=".settings.UserSettingsActivity"
-            android:label="@string/title_activity_user_settings"
-            android:parentActivityName=".ProjectActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.grappbox.grappbox.ProjectActivity" />
-        </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings"></activity>
     </application>
 
 </manifest>

@@ -186,7 +186,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     }
 
     private long syncAccountUser(String apiToken, Account account) throws IOException, JSONException, OperationApplicationException {
-        final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/user/id/"+ account.name);
+        final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/user");
         HttpURLConnection connection;
         String returnedJson;
 
@@ -195,7 +195,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         connection.setRequestMethod("GET");
         connection.connect();
         returnedJson = Utils.JSON.readDataFromConnection(connection);
-
+        Log.d(LOG_TAG, returnedJson);
         if (returnedJson == null || returnedJson.isEmpty())
             throw new JSONException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
         JSONObject json = new JSONObject(returnedJson);
@@ -208,6 +208,11 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         user.put(UserEntry.COLUMN_FIRSTNAME, data.getString("firstname"));
         user.put(UserEntry.COLUMN_LASTNAME, data.getString("lastname"));
         user.put(UserEntry.COLUMN_CONTACT_EMAIL, account.name);
+        user.put(UserEntry.COLUMN_DATE_BIRTHDAY_UTC, data.getString("birthday"));
+        user.put(UserEntry.COLUMN_CONTACT_PHONE, data.getString("phone"));
+        user.put(UserEntry.COLUMN_COUNTRY, data.getString("country"));
+        user.put(UserEntry.COLUMN_SOCIAL_LINKEDIN, data.getString("linkedin"));
+        user.put(UserEntry.COLUMN_SOCIAL_TWITTER, data.getString("twitter"));
         Uri uri = getContext().getContentResolver().insert(UserEntry.CONTENT_URI, user);
         if (uri == null || uri.getLastPathSegment().isEmpty() || Long.parseLong(uri.getLastPathSegment()) == -1)
             throw new SQLiteAbortException("Insert account user failed");

@@ -230,6 +230,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
             case R.id.nav_project_settings:
                 break;
             case R.id.nav_change_project:
+                Intent launchChangeProject = new Intent(this, ChooseProjectActivity.class);
+                startActivity(launchChangeProject);
                 break;
             case R.id.nav_account_settings:
                 Intent launchSettings = new Intent(this, UserSettingsActivity.class);
@@ -238,7 +240,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
             default:
                 throw new UnsupportedOperationException(getString(R.string.error_hacker_detected));
         }
-        mCurrentNavSelected = id;
+        if (id != R.id.nav_account_settings && id != R.id.nav_change_project && id != R.id.nav_project_settings)
+            mCurrentNavSelected = id;
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;

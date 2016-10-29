@@ -2,6 +2,7 @@ package com.grappbox.grappbox.sync;
 
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
 import android.app.IntentService;
@@ -56,12 +57,13 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -101,6 +103,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_REMOVE_BUGTAG = "com.grappbox.grappbox.sync.ACTION_REMOVE_BUGTAG";
     public static final String ACTION_SET_PARTICIPANT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT";
     public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
+    public static final String ACTION_UPDATE_USER_SETTINGS = "com.grappbox.grappbox.sync.ACTION_UPDATE_USER_SETTINGS";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -233,14 +236,75 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleBugSetParticipant(intent.getLongExtra(EXTRA_BUG_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
             } else if (ACTION_LOGIN.equals(action)) {
                 handleLogin(intent.getStringExtra(EXTRA_MAIL), Utils.Security.decryptString(intent.getStringExtra(EXTRA_CRYPTED_PASSWORD)), responseObserver);
+            } else if (ACTION_UPDATE_USER_SETTINGS.equals(action)){
+                handleUpdateUserSettings(intent.getBundleExtra(EXTRA_BUNDLE), responseObserver);
             }
         }
     }
 
+    public void handleUpdateUserSettings(Bundle keys, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/user");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            for (String key : keys.keySet()){
+                data.put(key, keys.get(key));
+            }
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("PUT");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            Log.d(LOG_TAG, returnedJson);
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            data = json.getJSONObject("data");
+            ContentValues values = new ContentValues();
+            values.put(UserEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+            for (String key : keys.keySet()){
+                if (!key.equals("password") && !key.equals("oldPassword"))
+                    values.put(Utils.Database.sUserApiDBMap.get(key), keys.getString(key));
+                else if (key.equals("password")){
+                    AccountManager.get(this).setPassword(Session.getInstance(this).getCurrentAccount(), Utils.Security.cryptString(keys.getString(key)));
+                }
+            }
+            getContentResolver().insert(UserEntry.CONTENT_URI, values);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    @SuppressLint("HardwareIds")
     private void handleLogin(String mail, String password, @Nullable ResultReceiver responseObserver) {
         HttpURLConnection connection = null;
         String returnedJson;
-        AccountManager am = AccountManager.get(this);
         Bundle answer = new Bundle();
 
 
@@ -292,7 +356,6 @@ public class GrappboxJustInTimeService extends IntentService {
                 connection.disconnect();
         }
     }
-
 
     private void handleBugSetParticipant(long bugId, List<Long> toAdd, List<Long> toDel, ResultReceiver responseObserver) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
@@ -1006,18 +1069,19 @@ public class GrappboxJustInTimeService extends IntentService {
             connection.setRequestMethod("GET");
             connection.setInstanceFollowRedirects(false);
             String resultString = Utils.JSON.readDataFromConnection(connection);
-            if (resultString == null || resultString.startsWith("{")){
+            JSONObject json = new JSONObject(resultString);
+            if (resultString == null || (json.has("info") && Utils.Errors.checkAPIError(new JSONObject(resultString)))){
                 if (responseObserver != null)
                 {
                     Bundle error = new Bundle();
                     error.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
                     responseObserver.send(Activity.RESULT_CANCELED, error);
                 }
-                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC + " :: " + resultString);
             }
             else{
-                url = connection.getURL();
-                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(url.toURI().toString()));
+                String cloudUrl = connection.getHeaderField("Location");
+                DownloadManager.Request request = new DownloadManager.Request(Uri.parse(cloudUrl));
                 request.allowScanningByMediaScanner();
                 request.setTitle(filename);
                 request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE);
@@ -1025,7 +1089,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 DownloadManager manager = (DownloadManager) getSystemService(Context.DOWNLOAD_SERVICE);
                 manager.enqueue(request);
             }
-        } catch (IOException | URISyntaxException | NetworkErrorException e) {
+        } catch (IOException | NetworkErrorException | JSONException e) {
             e.printStackTrace();
         } finally {
             if (connection != null)
