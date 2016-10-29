@@ -868,7 +868,7 @@ class CloudController extends Controller
 				return new JsonResponse($response, 206);
 			}
 	 	header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download", true, 204);
-		return new Response();
+		return new Response("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download", 204);
 	}
 
 	/**
