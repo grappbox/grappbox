@@ -184,7 +184,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleTimelineMessagesCommentSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
             }
             else if (ACTION_TIMELINE_ADD_MESSAGE.equals(action)) {
-                handleTimelineAddMessage(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_TIMELINE_PARENT_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50), responseObserver, intent.getBooleanExtra(EXTRA_TIMELINE_IS_COMMENT, false));
+                handleTimelineAddMessage(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), responseObserver);
             }
             else if (ACTION_TIMELINE_ADD_COMMENT.equals(action)) {
                 handleTimelineAddComment(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getStringExtra(EXTRA_TIMELINE_TITLE), intent.getStringExtra(EXTRA_TIMELINE_MESSAGE), intent.getIntExtra(EXTRA_TIMELINE_PARENT_ID, -1), responseObserver);
@@ -199,7 +199,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleTimelineMessageDelete(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1), responseObserver);
             }
             else if (ACTION_TIMELINE_DELETE_COMMENT.equals(action)) {
-                handleTimelineCommentDelete(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1),  responseObserver, intent.getLongExtra(EXTRA_TIMELINE_PARENT_ID, -1));
+                handleTimelineCommentDelete(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getLongExtra(EXTRA_TIMELINE_MESSAGE_ID, -1),  responseObserver);
             }
             else if (ACTION_SYNC_NEXT_MEETINGS.equals(action)) {
                 handleNextMeetingsSync(intent.getLongExtra(EXTRA_PROJECT_ID, -1));
@@ -1825,7 +1825,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "add finish");
     }
 
-    private void handleTimelineAddMessage(long localTimelineId, String title, String message, int parentId, int offset, int limit, ResultReceiver resultReceiver, boolean isComment) {
+    private void handleTimelineAddMessage(long localTimelineId, String title, String message, ResultReceiver resultReceiver) {
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
@@ -1876,10 +1876,10 @@ public class GrappboxJustInTimeService extends IntentService {
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
                     messagesValues.put(TimelineMessageEntry.COLUMN_TITLE, current.getString("title"));
                     messagesValues.put(TimelineMessageEntry.COLUMN_MESSAGE, current.getString("message"));
-                    String lastEditedMsg = json.isNull("editedAt") ? json.getString("createdAt") : current.getString("editedAt");
+                    String lastEditedMsg = current.isNull("editedAt") ? current.getString("createdAt") : current.getString("editedAt");
                     messagesValues.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                     messagesValues.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
-                    getContentResolver().insert(GrappboxContract.TimelineCommentEntry.CONTENT_URI, messagesValues);
+                    getContentResolver().insert(GrappboxContract.TimelineMessageEntry.CONTENT_URI, messagesValues);
                     creator.close();
                 }
             }
@@ -2035,7 +2035,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "edit message end");
     }
 
-    private void handleTimelineCommentDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver, long parentId){
+    private void handleTimelineCommentDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
 

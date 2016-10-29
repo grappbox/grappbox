@@ -116,7 +116,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public void mergeItem(Collection<TimelineModel> items){
-        Log.v("MergeItem", "on merge item, items : " + items.size());
         MergeDataItem merge = new MergeDataItem();
         merge.execute(items);
     }
@@ -295,16 +294,17 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
                             case TIMELINE_ACTION_EDIT_MESSAGE:
                                 messageEdit(item);
+                                mDataset.remove(position);
                                 break;
 
                             case TIMELINE_ACTION_DELETE_MESSAGE:
                                 messageDelete(item);
+                                mDataset.remove(position);
                                 break;
 
                             default:
                                 throw new IllegalArgumentException("Type doesn't exist");
                         }
-                        Toast.makeText(mContext, String.valueOf(which), Toast.LENGTH_SHORT).show();
                     }
                 });
                 builder.show();

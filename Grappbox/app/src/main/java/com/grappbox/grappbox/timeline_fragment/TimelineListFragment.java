@@ -70,7 +70,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public static final int TIMELINE_TEAM = 0;
     public static final int TIMELINE_CLIENT = 1;
 
-    public static final int TIMELINE_LIMIT = 50;
+    public static final int TIMELINE_LIMIT = 10;
 
     public static final String BUNDLE_OFFSET = "com.grappbox.grappbox.timeline_fragment.BUNDLE_OFFSET";
     public static final String BUNDLE_LIMIT = "com.grappbox.grappbox.timeline_fragment.BUNDLE_LIMIT";
@@ -96,6 +96,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView mTimelineList;
     private LinearLayoutManager mLinearLayoutManager;
+    private int loaderPosition = 0;
 
     private TimelineListFragment fragment = this;
 
@@ -132,6 +133,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                     int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
                     if ((visibleItemCount + pastVisible) >= totalItemCount){
                         initLoader();
+                        loaderPosition += TIMELINE_LIMIT;
+                    }
+                } else if (dy < 0) {
+                    int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if (pastVisible <= loaderPosition){
+                        initLoader();
+                        loaderPosition -= TIMELINE_LIMIT;
                     }
                 }
             }
@@ -153,7 +161,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 final View dialogView = LayoutInflater.from(getActivity()).inflate(R.layout.dialog_timeline_add_message, null);
                 AccountManager am = AccountManager.get(getActivity());
                 final String token = am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
-                
+
                 builder.setTitle(R.string.add_message);
                 builder.setView(dialogView);
                 builder.setPositiveButton(getActivity().getString(R.string.positive_response), new DialogInterface.OnClickListener() {
@@ -163,7 +171,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         EditText title = (EditText) dialog.findViewById(R.id.input_title);
                         EditText message = (EditText) dialog.findViewById(R.id.input_content);
 
-                        if (title == null || message == null) {
+                        if (title == null || message == null ||
+                                title.getText().toString().equals("") || message.getText().toString().equals("")) {
                             dialog.cancel();
                             return;
                         }
@@ -180,8 +189,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_TITLE, title.getText().toString());
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
-                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
-                        addMessage.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 1);
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
                     }
@@ -211,19 +218,14 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String offset = String.valueOf(mAdapter.getItemCount());
+        String offset = String.valueOf(mLinearLayoutManager.findFirstVisibleItemPosition());
         String limit = String.valueOf(TIMELINE_LIMIT);
-
-        if (args != null && !args.isEmpty()){
-            offset = args.getString(BUNDLE_OFFSET);
-            limit = args.getString(BUNDLE_LIMIT);
-        }
 
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC LIMIT " +
                 offset + ", " + limit;
         String selection;
         String[] selectionArgs;
-        Log.v(LOG_TAG, "onCreateLoader, sort : " + sortOrder);
+        Log.v(LOG_TAG, "onCreateLoader");
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         switch (id){
             case TIMELINE_TEAM:
@@ -254,10 +256,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
         AccountManager am = AccountManager.get(getActivity());
         long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-
-        Intent timelineSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
-        timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_MESSAGES);
-
         Cursor cursorTimelineId = getActivity().getContentResolver().query(TimelineEntry.CONTENT_URI,
                 new String[] {TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID},
                 TimelineEntry.TABLE_NAME + "." +TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
@@ -266,7 +264,10 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                 null);
         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
             return;
+
         Log.v(LOG_TAG, "refresh data");
+        Intent timelineSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_MESSAGES);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
