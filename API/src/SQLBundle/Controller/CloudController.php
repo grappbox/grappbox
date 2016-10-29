@@ -867,8 +867,9 @@ class CloudController extends Controller
 				$response["info"]["return_message"] = "Cloud - getFileAction - Target file not found";
 				return new JsonResponse($response, 206);
 			}
-	 	header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download", true, 204);
-		return new Response();
+	 	header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+		$answer["location"] = ("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download"); 
+		return new JsonResponse($answer, 200);
 	}
 
 	/**
@@ -979,7 +980,9 @@ class CloudController extends Controller
 				$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Target file not found";
 				return new JsonResponse($response, 206);
 			}
-		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+		header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+                $answer["location"] = ("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+		return new JsonResponse($answer, 200);
 	}
 
 	/**
