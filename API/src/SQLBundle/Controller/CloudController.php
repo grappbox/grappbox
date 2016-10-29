@@ -869,9 +869,7 @@ class CloudController extends Controller
 			}
 
 		$httpAnswer = new Response();
-	 	header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
-		header("HTTP/1.1 302 Found", true, 302);
-		return $httpAnswer;
+		return $this->redirect("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
 	}
 
 	/**
