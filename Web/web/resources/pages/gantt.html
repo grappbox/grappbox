@@ -28,13 +28,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="form-group col-md-2">
               <label class="control-label">Labels</label>
               <select class="form-control" data-ng-model="options.labelsEnabled"
-                      ng-options="opt.value as opt.name for opt in [{ name: 'Hidden', value: false }, { name: 'Visible', value: true }]">
+                      ng-options="opt.value as opt.name for opt in labelsEnabledOpt">
               </select>
             </div>
             <div class="form-group col-md-2">
               <label class="control-label">View scale</label>
               <select class="form-control" data-ng-model="options.width"
-                      ng-options="opt.value as opt.name for opt in [{ name: 'Project overview', value: false }, { name: 'Precise view', value: true }]">
+                      ng-options="opt.value as opt.name for opt in viewScaleOpt">
               </select>
             </div>
             <div class="form-group col-md-2">
@@ -44,11 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <option value="" ng-click="collapseAll()">Collapse all</option>
               </select>
             </div>
-            <!-- <div class="form-group col-md-2 col-sm-9">
-              <a class="btn btn-default btn-sm" data-ng-click="expandAll()">Expand containers</a>
-              <a class="btn btn-default btn-sm" data-ng-click="collapseAll()">Collapse containers</a>
-            </div> -->
-            <div class="form-group col-md-2 centered">
+            <div class="form-group col-md-2 text-center">
               <a class="btn btn-default btn-fab btn-fab-mini btn-info" data-ng-click="reload()"alt="refresh data"><i class="material-icons">refresh</i></a>
             </div>
           </form>
@@ -96,8 +92,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <!-- <gantt-draw-task
                 enabled="options.canDraw"
                 move-threshold="2"
-                task-factory="options.drawTaskFactory"> -->
-            </gantt-draw-task>
+                task-factory="options.drawTaskFactory">
+            </gantt-draw-task>-->
             <!-- <gantt-overlap global="true"></gantt-overlap> -->
             <gantt-resize-sensor></gantt-resize-sensor>
             <gantt-dependencies enabled="options.dependencies" read-only="options.readOnly"></gantt-dependencies>
@@ -126,7 +122,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <!-- gantt: task edition modal -->
 <div class="modal">
   <script type="text/ng-template" id="modal_editTask.html">
-    <div class="modal-header centered">
+    <div class="modal-header text-center">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTaskEdition()">×</button>
       <h4 class="modal-title">Edit task</h4>
     </div>
@@ -205,7 +201,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </select>
               </div>
               <div class="col-md-1">
-                <a href="" class="btn btn-default btn-fab btn-fab-mini" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons">add</i></a>
+                <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons">add</i></a>
               </div>
             </div>
             <div class="form-group resource-row col-md-12" data-ng-repeat="user in data.edit.users" id="{[{'resource-'+$index}]}">
@@ -214,13 +210,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="col-md-4" id="{[{'select-resource-'+$index}]}">
                   <select class="form-control" data-ng-model="user.percent" convert-to-number ng-disabled="user.old" data-ng-change="updateResource(user)">
-                    <!-- <option value="" disabled selected>Select user's work charge</option> -->
                     <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                   </select>
                 </div>
                 <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default btn-sm" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></a>
-                  <a href="" class="btn btn-default btn-sm" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></a>
+                  <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></button>
+                  <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></button>
                 </div>
             </div>
           </div>
@@ -238,21 +233,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </select>
               </div>
               <div class="col-md-1">
-                <a href="" class="btn btn-default btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
+                <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
               </div>
             </div>
-            <div class="form-group dependency-row" data-ng-repeat="dependency in data.edit.dependencies">
+            <div class="form-group dependency-row col-md-12" data-ng-repeat="dependency in data.edit.dependencies">
               <div class="col-md-4 col-md-offset-1" id="{[{'dependency-'+$index}]}">
                 <h4>{[{ dependency.task.title }]}</h4>
               </div>
               <div class="col-md-4" id="{[{'select-dependency-'+$index}]}">
-                <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList" data-ng-change="updateDependency(dependency)" ng-disabled="dependency.old">
-                  <!-- <option value="" disabled selected>Select a type of dependencies</option> -->
+                <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList"
+                        data-ng-change="updateDependency(dependency)" ng-disabled="dependency.old">
                 </select>
               </div>
               <div class="col-md-1 col-xs-6">
-                <a href="" class="btn btn-default btn-sm" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old"><i class="material-icons">delete</i></a>
-                <a href="" class="btn btn-default btn-sm" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old"><i class="material-icons">refresh</i></a>
+                <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old"><i class="material-icons">delete</i></button>
+                <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old"><i class="material-icons">refresh</i></button>
               </div>
             </div>
           </div>
@@ -265,6 +260,4 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <button type="button" class="btn" data-ng-click="modal_cancelTaskEdition()">Cancel</button>
     </div>
   </script>
-</div>
-
 </div>

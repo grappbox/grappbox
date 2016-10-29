@@ -41,7 +41,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <li class="avatar" data-ng-if="!member.avatar">
                   <img data-ng-src="../resources/img/default_logo.min.png" height="120" width="120">
                 </li>
-                <li class="avatar centered" data-ng-if="member.avatar">
+                <li class="avatar text-center" data-ng-if="member.avatar">
                   <img data-ng-src="data:image/png;base64,{[{ ::member.project_logo }]}" data-err-src="../resources/img/default_logo.min.png" height="120" width="120">
                 </li>
                 <li class="col-md-offset-1 ellipsis title">{[{ member.user.firstname }]} {[{ member.user.lastname }]}</li>
@@ -56,12 +56,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
         <div data-ng-if="occupation.valid && !occupation.list">
-          <div class="well centered">
+          <div class="well text-center">
             <p><i class="material-icons">people</i><br>{[{ ::occupation.message }]}</p>
           </div>
         </div>
         <div data-ng-if="!occupation.valid">
-          <div class="well centered">
+          <div class="well text-center">
             <p><i class="material-icons">clear</i><br>{[{ ::occupation.message }]}</p>
           </div>
         </div>
@@ -104,12 +104,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
         <div data-ng-if="meetings.valid && !meetings.list">
-          <div class="well centered">
+          <div class="well text-center">
             <p><i class="material-icons">assignment_turned_in</i><br>{[{ meetings.message }]}</p>
           </div>
         </div>
         <div data-ng-if="!meetings.valid">
-          <div class="well centered">
+          <div class="well text-center">
             <p><i class="material-icons">clear</i><br>{[{ meetings.message }]}</p>
           </div>
         </div>

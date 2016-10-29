@@ -46,7 +46,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   $scope.projectName = $routeParams.projectName;
   $scope.taskID = $routeParams.id;
 
-  $scope.data = { onLoad: true, task_new: false, canEdit: true, task: { }, toUpdate: { }, tasks: [], tags: [], users: [], message: "_invalid" };
+  $scope.data = { onLoad: true, task_new: false, canEdit: true, task: { }, edit: { }, tasks: [], tags: [], users: [], message: "_invalid" };
 
   $scope.dependenciesList = [{key: "fs", name: "finish to start"},
                              {key: "sf", name: "start to finish"},
@@ -62,7 +62,9 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
           $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
           $scope.data.onLoad = false;
-          formatTasksforTagInput();
+          formatTasks();
+          formatUsers();
+          formatDependencies();
         },
         function errorCallback(response) {
           $scope.data.task = null;
@@ -87,9 +89,8 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     else {
       $scope.data.task_new = true;
       $scope.data.message = '_valid';
-      $scope.data.task = [];
+      //$scope.data.task = [];
       $scope.data.task.type = "regular";
-      $scope.data.task.color = "#44BBFF";
       $scope.data.task.users = [];
       $scope.data.task.dependencies = [];
       $scope.data.onLoad = false;
@@ -110,7 +111,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   getProjectTags();
 
   // Get all users from the project
-  var getProjectUsers = function() { //"/dashboard/getprojectpersons/"
+  var getProjectUsers = function() {
     $http.get($rootScope.api.url + "/project/users/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
@@ -151,9 +152,25 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   };
 
   //----------------TASKS FORMATING---------------------//
-  var formatTasksforTagInput = function() {
+  var formatTasks = function() {
     angular.forEach($scope.data.task.tasks, function(task) {
       task['name'] = task.title;
+    });
+  };
+
+  //----------------USERS FORMATING---------------------//
+  var formatUsers = function() {
+    angular.forEach($scope.data.task.users, function(user) {
+      user["old"] = false;
+      user["oldPercent"] = user.percent;
+    });
+  };
+
+  //------------DEPENDENCIES FORMATING------------------//
+  var formatDependencies = function() {
+    angular.forEach($scope.data.task.dependencies, function(dep) {
+      dep["old"] = false;
+      dep["oldName"] = dep.name;
     });
   };
 
@@ -166,13 +183,18 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     $scope.tagToRemove = [];
     $scope.data.taskToAdd = [];
     $scope.data.taskToRemove = [];
-    $scope.data.toUpdate.title = $scope.data.task.title;
-    $scope.data.toUpdate.description = $scope.data.task.description;
-    $scope.data.toUpdate.color = $scope.data.task.color;
-    $scope.data.toUpdate.type = ($scope.data.task.is_milestone ? 'milestone' : ($scope.data.task.is_container ? 'container': 'regular'));
-    $scope.data.toUpdate.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at) : null);
-    $scope.data.toUpdate.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date) : null);
-    $scope.data.toUpdate.advance = $scope.data.task.advance;
+    $scope.data.edit.title = $scope.data.task.title;
+    $scope.data.edit.description = $scope.data.task.description;
+    $scope.data.edit.type = ($scope.data.task.is_milestone ? 'milestone' : ($scope.data.task.is_container ? 'container': 'regular'));
+    $scope.data.edit.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at) : null);
+    $scope.data.edit.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date) : null);
+    $scope.data.edit.advance = $scope.data.task.advance;
+    $scope.data.edit.newRes = [];
+    $scope.data.edit.updateRes = [];
+    $scope.data.edit.oldRes = [];
+    $scope.data.edit.newDep = [];
+    $scope.data.edit.updateDep = [];
+    $scope.data.edit.oldDep = [];
   };
 
   $scope.task_switchEditMode = function(elem) {
@@ -294,37 +316,17 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       $scope.data.taskToRemove.push(task.id);
   };
 
-  // var memorizeTasks = function() {
-  //   var toAdd = [];
-  //   angular.forEach($scope.taskToRemove, function(user) {
-  //     toAdd.push(task.id);
-  //   }, toAdd);
-  //   var toRemove = [];
-  //   angular.forEach($scope.taskToRemove, function(user) {
-  //     toRemove.push(task.id);
-  //   }, toRemove);
-  //
-  //   var data = {"data": {"token": $rootScope.user.token, "bugId": $scope.ticketID, "tasksAdd": toAdd, "tasksRemove": toRemove}};
-  //
-  //   $http.put($rootScope.api.url + '/bugtracker/setparticipants', data)
-  //     .then(function successCallback(response) {
-  //
-  //     },
-  //     function errorCallback(resposne) {
-  //         Notification.warning({ message: 'Unable to save users. Please try again.', delay: 5000 });
-  //     });
-  //
-  // };
-
   //-----------------USERS ASSIGNATION--------------------//
-  $scope.addUser = function(assign_user, workcharge) {
-    if (assign_user == "")
-      return;
+
+  $scope.addResource = function(user, workcharge) {
+    if (user == "")
+      return ;
     else if (workcharge == "") {
       Notification.warning({ message: "You must select a workcharge before adding the user.", delay: 5000 });
+      return ;
     }
 
-    var user = JSON.parse(assign_user);
+    var user = JSON.parse(user);
 
     if ($scope.data.task_new) {
       var index = -1;
@@ -340,19 +342,12 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
-    var data = {"data": {"id": $scope.taskID, "usersAdd": [{"id":user.id, "percent": workcharge}]}};
-
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "User added", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to add user. Please try again.", delay: 5000 });
-      });
+    $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
+    $scope.data.edit.newRes.push({"id": user.id, "percent": workcharge});
   };
 
-  $scope.updateUser = function(assign_user) {
+  $scope.updateResource = function(user) {
+
     if ($scope.data.task_new) {
       var index = -1;
       for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
@@ -367,67 +362,110 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
-    var data = {"data": {"id": $scope.taskID, "usersUpdate": [{"id": assign_user.id, "percent": assign_user.workcharge}]}};
+    for (var i = 0; i < $scope.data.edit.newRes.length; i++) {
+      if ($scope.data.edit.newRes[i].id == user.id) {
+        $scope.data.edit.newRes[i].percent = user.percent;
+        return ;
+      }
+    }
 
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "User updated", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to update user. Please try again.", delay: 5000 });
-      });
-    return;
+    for (var i = 0; i < $scope.data.edit.updateRes.length; i++) {
+      if ($scope.data.edit.updateRes[i].id == user.id) {
+        $scope.data.edit.updateRes[i].percent = user.percent;
+        return ;
+      }
+    }
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
+      if ($scope.data.task.users[i].id == user.id)
+        index = i;
+    }
+    if (index < 0) {
+      Notification.warning({ message: "Unable to find resource for update.", delay: 5000 });
+      return;
+    }
+
+    $scope.data.edit.updateRes.push({"id": user.id, "percent": user.percent})
   };
 
-  $scope.removeUser = function(assign_user) {
+  $scope.removeResource = function(user) {
+
     if ($scope.data.task_new) {
       var index = -1;
       for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
-        if ($scope.data.task.users[i].id == assign_user.id)
+        if ($scope.data.task.users[i].id == user.id)
           index = i;
       }
 
       if (index >= 0) {
         $scope.data.task.users.splice(index, 1);
-        //getTask();
       }
       return;
     }
 
-    var data = {"data": {"id": $scope.taskID, "usersRemove": [assign_user.id]}};
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.newRes.length && index < 0; i++) {
+      if ($scope.data.edit.newRes[i].id == user.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.edit.newRes.splice(index, 1);
 
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "User removed", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to remove user. Please try again.", delay: 5000 });
-      });
-    return;
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.updateRes.length && index < 0; i++) {
+      if ($scope.data.edit.updateRes[i].id == user.id)
+        index = i;
+    }
+    if (index >= 0) {
+      $scope.data.edit.updateRes.splice(index, 1);
+      $scope.data.edit.oldRes.push(user.id);
+    }
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
+      if ($scope.data.task.users[i].id == user.id)
+        index = i;
+    }
+    if (index < 0) {
+      Notification.warning({ message: "Unable to find resource to remove.", delay: 5000 });
+      return;
+    }
+    $scope.data.task.users[index].old = true;
+    $('#resource-'+index).addClass('old');
+    $scope.data.edit.oldRes.push(user.id);
   };
 
-  var assignUsers = function(task) {
-    // angular.forEach(task.users_assigned, function(value, key) {
-    //   var data = {"data": {"token": $rootScope.user.token, "taskId": $scope.taskID, "userId": value.id, "percent": value.percent}};
-    //
-    //   $http.put($rootScope.api.url + "/tasks/assignusertotask", data)
-    //     .then(function successCallback(response) {
-    //
-    //     },
-    //     function errorCallback(resposne) {
-    //         Notification.warning({ message: "Unable to add user. Please try again.", delay: 5000 });
-    //     });
-    // });
-  };
+  $scope.recoverResource = function(user) {
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.oldRes.length && index < 0; i++) {
+      if ($scope.data.edit.oldRes[i] == user.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.edit.oldRes.splice(index, 1);
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
+      if ($scope.data.task.users[i].id == user.id)
+        index = i;
+    }
+    if (index < 0) {
+      Notification.warning({ message: "Unable to find resource to recover.", delay: 5000 });
+      return;
+    }
+    $scope.data.task.users[index].old = false;
+    $('#resource-'+index).removeClass('old');
+    $scope.data.task.users[index].percent = $scope.data.task.users[index].oldPercent;
+  }
 
   //-----------------DEPENDENCIES ASSIGNATION--------------------//
   $scope.addDependency = function(dep, type) {
     if (dep == "")
-      return;
+      return ;
     else if (type == "") {
       Notification.warning({ message: "You must select a type of dependency before adding the dependency.", delay: 5000 });
+      return ;
     }
 
     if ($scope.data.task_new) {
@@ -444,16 +482,8 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
-    var data = {"data": { "id": $scope.taskID, "dependencies": [{"id": dep.taskO.id, "name": type}]}};
-
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "Dependency added", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to add dependency. Please try again.", delay: 5000 });
-      });
+    $scope.data.task.dependencies.push({"name": type, "task": {"title": dep.title}});
+    $scope.data.edit.newDep.push({"id": dep.id, "name": type});
   };
 
   $scope.updateDependency = function(dep) {
@@ -472,55 +502,104 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       return;
     }
 
+    for (var i = 0; i < $scope.data.edit.newDep.length; i++) {
+      if ($scope.data.edit.newDep[i].id == dep.id) {
+        $scope.data.edit.newDep[i].name = dep.name;
+        return ;
+      }
+    }
+
+    for (var i = 0; i < $scope.data.edit.updateDep.length; i++) {
+      if ($scope.data.edit.updateDep[i].id == dep.id) {
+        $scope.data.edit.updateDep[i].name = dep.name;
+        return ;
+      }
+    }
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+      if ($scope.data.task.dependencies[i].task.id == dep.task.id)
+        index = i;
+    }
+    if (index < 0) {
+      Notification.warning({ message: "Unable to find dependency for update.", delay: 5000 });
+      return;
+    }
+
+    $scope.data.edit.updateDep.push({"id": dep.task.id, "oldName": $scope.data.task.dependencies[index].oldName, "newName": dep.name})
+  };
+
+  $scope.removeDependency = function(dep) {
+
+    if ($scope.data.task_new) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+        if ($scope.data.task.dependencies[i].id == dependency.id)
+          index = i;
+      }
+
+      if (index >= 0) {
+        $scope.data.task.dependencies.splice(index, 1);
+      }
+      return;
+    }
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.newDep.length && index < 0; i++) {
+      if ($scope.data.edit.newDep[i].id == dep.task.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.edit.newDep.splice(index, 1);
+
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.updateDep.length && index < 0; i++) {
+      if ($scope.data.edit.updateDep[i].id == dep.task.id)
+        index = i;
+    }
+    if (index >= 0) {
+      $scope.data.edit.updateDep.splice(index, 1);
+      $scope.data.edit.oldDep.push(dep.task.id);
+    }
+
     var index = -1;
     for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
       if ($scope.data.task.dependencies[i].id == dep.id)
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to update dependency.", delay: 5000 });
+      Notification.warning({ message: "Unable to find dependency to remove.", delay: 5000 });
       return;
     }
-
-    var data = {"data": {"id": $scope.taskID, "dependenciesUpdate": [{"id": dep.task.id, "oldName": $scope.data.task.dependencies[index].name, "newName": dep.name}]}};
-
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "Dependency updated", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to update dependency. Please try again.", delay: 5000 });
-      });
-    return;
+    $('#dependency-'+index).addClass('old');
+    $('#select-dependency-'+index).addClass('old');
+    $scope.data.task.dependencies[index].old = true;
+    $scope.data.edit.oldDep.push(dep.task.id);
   };
 
-  $scope.removeDependency = function(dependency) {
-    if ($scope.data.task_new) {
-      var index = -1;
-      for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
-        if ($scope.data.task.dependencies[i].task.id == dependency.task.id)
-          index = i;
-      }
+  $scope.recoverDependency = function(dep) {
+    var index = -1;
+    for (var i = 0; i < $scope.data.edit.oldDep.length && index < 0; i++) {
+      if ($scope.data.edit.oldDep[i] == dep.task.id)
+        index = i;
+    }
+    if (index >= 0)
+      $scope.data.edit.oldDep.splice(index, 1);
 
-      if (index >= 0) {
-        $scope.data.task.dependencies.splice(index, 1);
-        getTask();
-      }
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+      if ($scope.data.task.dependencies[i].id == dep.id)
+        index = i;
+    }
+    if (index < 0) {
+      Notification.warning({ message: "Unable to find dependency to recover.", delay: 5000 });
       return;
     }
-
-    var data = {"data": {"id": $scope.taskID, "dependenciesRemove": [dependency.id]}};
-
-    $http.put($rootScope.api.url + "/task/"+ $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-          getTask();
-          Notification.success({ message: "Dependency removed", delay: 5000 });
-      },
-      function errorCallback(response) {
-          Notification.warning({ message: "Unable to remove dependency. Please try again.", delay: 5000 });
-      });
-  };
+    $('#dependency-'+index).removeClass('old');
+    $('#select-dependency-'+index).removeClass('old');
+    $scope.data.task.dependencies[index].old = false;
+    $scope.data.task.dependencies[index].name = $scope.data.task.dependencies[index].oldName;
+  }
 
   // ------------------------------------------------------
   //                    TASK
@@ -583,9 +662,9 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         $scope.taskID = $scope.data.task.id;
         $scope.data.message = '_valid';
         memorizeTags();
-        assignUsers(task);
+        //assignUsers(task);
         Notification.success({ message: "Task posted", delay: 5000 });
-        $location.path("/task/" + $scope.projectID + "/" + $scope.taskID);
+        $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
       },
       function errorCallback(response) {
         Notification.warning({ message: "Unable to post task. Please try again.", delay: 5000 });
@@ -596,34 +675,34 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     Notification.info({ message: "Saving task...", delay: 5000 });
 
     var elem = {"id": $scope.taskID,
-                "title": $scope.data.toUpdate.title,
-                "description": $scope.data.toUpdate.description,
+                "title": $scope.data.edit.title,
+                "description": $scope.data.edit.description,
                 "is_milestone": false,
                 "is_container": false,
-                "advance": $scope.data.toUpdate.advance,
+                "advance": $scope.data.edit.advance,
                 };
 
-    if ($scope.data.toUpdate.type == "container") {
+    if ($scope.data.edit.type == "container") {
       elem['is_container'] = true;
       elem["tasksAdd"] = $scope.data.taskToAdd;
       elem["tasksRemove"] = $scope.data.taskToRemove;
     }
-    if ($scope.data.toUpdate.type == "milestone") {
-      if ($scope.data.toUpdate.due_date.getTime() != (new Date($scope.data.task.due_date).getTime())) {
-        elem['due_date'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT"); // add 1h
-        elem['started_at'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
+    if ($scope.data.edit.type == "milestone") {
+      if ($scope.data.edit.due_date.getTime() != (new Date($scope.data.task.due_date).getTime())) {
+        elem['due_date'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT"); // add 1h
+        elem['started_at'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
       }
       elem['is_milestone'] = true;
     }
-    if ($scope.data.toUpdate.type == "regular") {
-      if ($scope.data.toUpdate.due_date.getTime() != (new Date($scope.data.task.due_date).getTime()))
-        elem['due_date'] = $filter('date')(new Date($scope.data.toUpdate.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
-      if ($scope.data.toUpdate.started_at.getTime() != (new Date($scope.data.task.started_at).getTime()))
-        elem['started_at'] = $filter('date')(new Date($scope.data.toUpdate.started_at), "yyyy-MM-dd H:mm:ss", "GMT");
+    if ($scope.data.edit.type == "regular") {
+      if ($scope.data.edit.due_date.getTime() != (new Date($scope.data.task.due_date).getTime()))
+        elem['due_date'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
+      if ($scope.data.edit.started_at.getTime() != (new Date($scope.data.task.started_at).getTime()))
+        elem['started_at'] = $filter('date')(new Date($scope.data.edit.started_at), "yyyy-MM-dd H:mm:ss", "GMT");
     }
-    if ($scope.data.toUpdate.advance == 100)
+    if ($scope.data.edit.advance == 100)
       elem['finished_at'] = $filter('date')(new Date(), "yyyy-MM-dd H:mm:ss", "GMT");
-    else if ($scope.data.toUpdate.advance < 100 && $scope.data.task.finished_at)
+    else if ($scope.data.edit.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
 
     if ($scope.tagToAdd) {
@@ -646,8 +725,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       if (newTags.length)
         elem['tagsAdd'] = newTags;
     }
-    console.log($scope.tagToAdd);
-    console.log(elem['tagAdd'])
 
     if ($scope.tagToRemove) {
       var oldTags = [];
@@ -658,12 +735,31 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         elem['tagsRemove'] = oldTags;
     }
 
+    if ($scope.data.edit.newDep.length)
+      elem['dependencies'] = $scope.data.edit.newDep;
+    if ($scope.data.edit.updateDep.length)
+      elem['dependenciesUpdate'] = $scope.data.edit.updateDep;
+    if ($scope.data.edit.oldDep.length)
+      elem['dependenciesRemove'] = $scope.data.edit.oldDep;
+
+    if ($scope.data.edit.newRes.length)
+      elem['usersAdd'] = $scope.data.edit.newRes;
+    if ($scope.data.edit.updateRes.length)
+      elem['usersUpdate'] = $scope.data.edit.updateRes;
+    if ($scope.data.edit.oldRes.length)
+      elem['usersRemove'] = $scope.data.edit.oldRes;
+
     var data = {"data": elem};
 
     $http.put($rootScope.api.url + "/task/" + $scope.taskID, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         memorizeTags();
         $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
+        $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
+        $scope.data.onLoad = false;
+        formatTasks();
+        formatUsers();
+        formatDependencies();
         Notification.success({ message: "Task saved", delay: 5000 });
       },
       function errorCallback(response) {
@@ -682,6 +778,23 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         Notification.success({ message: "Task saved", delay: 5000 });
       },
       function errorCallback(response) {
+        $scope.data.task = null;
+        $scope.data.onLoad = false;
+
+        if (response.data.info && response.data.info.return_code)
+          switch(response.data.info.return_code) {
+            case "12.10.3":
+            $rootScope.onUserTokenError();
+            break;
+
+            case "12.10.9":
+            $scope.data.message = "_denied";
+            break;
+
+            default:
+            $scope.data.message = "_invalid";
+            break;
+          }
         Notification.warning({ message: "Unable to save task. Please try again.", delay: 5000 });
       });
   };

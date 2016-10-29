@@ -142,7 +142,7 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
-	.when("/task/:project_id/:id", {
+	.when("/tasks/:project_id/:id", {
 		title: "Tasks",
 		templateUrl : "../resources/pages/task.html",
 		controller  : "taskController",

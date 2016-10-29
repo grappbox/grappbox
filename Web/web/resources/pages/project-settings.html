@@ -149,7 +149,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <form class="form-horizontal" novalidate>
                     <fieldset>
                       <div class="form-group" data-ng-if="data.project.deleted_at">
-                        <div class="centered">
+                        <div class="text-center">
                           <a class="btn btn-raised btn-danger" title="Retrieve This project" data-ng-click="retrieveProject()">Retrieve Project</a>
                         </div>
                       </div>
@@ -723,7 +723,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                             </div>
                           </div>
                           <div class="form-group">
-                            <div class="centered">
+                            <div class="text-center">
                               <p>Click on the <b>"Update"</b> button to validate the password changement.<br><b>Be sure to remember your new password !</b></p>
                               <a class="btn btn-raised btn-danger" title="Update Cloud password" data-ng-click="updatePassword(data.project)">Update</a>
                             </div>
@@ -735,7 +735,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <h4>Project deletion</h4>
                     </div>
                     <div class="col-md-12">
-                      <div class="centered">
+                      <div class="text-center">
                         <p>Click on the <b>"Delete"</b> button to delete your project.<br><b>Every information related to this project will be deleted after the retrieving period !</b></p>
                         <a class="btn btn-raised btn-danger" title="Delete project" data-ng-click="action.onDeleteProject()">Delete projet</a>
                       </div>
@@ -760,7 +760,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
 
               <div data-ng-if="!data.onLoad && data.project_error">
-                <div class="centered">
+                <div class="text-center">
                   <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
                 </div>
               </div>

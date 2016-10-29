@@ -48,6 +48,8 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
   //Scope variables initialization
   $scope.projectID = $routeParams.project_id;
   $scope.projectName = $routeParams.projectName;
+  $scope.labelsEnabledOpt = [{ name: 'Hidden', value: false }, { name: 'Visible', value: true }];
+  $scope.viewScaleOpt = [{ name: 'Project overview', value: false }, { name: 'Precise view', value: true }];
 
   $scope.data = { onLoad: true, canEdit: false, tasks: [], message: "_invalid", gantt: [] };
 
@@ -57,8 +59,9 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       .then(function projectsReceived(response) {
         $scope.data.tasks = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.message = (response.data.info && response.data.info.return_code == "1.12.1" ? "_valid" : "_empty");
-        $scope.data.onLoad = false;
+        //$scope.data.onLoad = false;
         formatDataForGantt();
+        $scope.data.onLoad = false;
       },
       function projectsNotReceived(response) {
         $scope.data.tasks = null;
@@ -199,47 +202,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       }
       this.push(elem);
 
-
     }, $scope.data.gantt);
-
-    // $scope.data.gantt = [
-    //         {id: "10", name: 'Parent1', children: ['One', 'Two'], from: new Date('2016-08-01'), to: new Date('2016-08-21'),
-    //         'rowContents': {
-    //           'model.name': '{[{getValue()}]}',
-    //           'from': new Date('2016-08-01'),
-    //           'to': new Date('2016-08-21')
-    //         }},
-    //         {id: "12", name: 'One', from: new Date('2016-08-01'), to: new Date('2016-09-11'), tasks: [
-    //             {name: 'task1',
-    //               from: new Date('2016-08-01'),
-    //               to: new Date('2016-08-21'),
-    //               color: '#bdbdbd',
-    //               data: 'description of task1'}
-    //             ]},
-    //         {id: "31", name: 'Two', tasks: [
-    //             {name: 'task3',
-    //               from: new Date('2016-08-01'),
-    //               to: new Date('2016-08-21'),
-    //               progress: {percent: "0", color:'#00B1D2', classes: []}},
-    //             {name: 'task4',
-    //               from: new Date('2016-09-01'),
-    //               to: new Date('2016-12-21'),
-    //               progress: {percent: "65", color:'#00B1D2', classes: []}}
-    //           ]},
-    //         {id: "13", name: 'Parent2', children: ['Three', 'Four']},
-    //         {id: "50", name: 'Three', tasks: [
-    //             {name: 'task1',
-    //               from: new Date('2016-08-01'),
-    //               to: new Date('2016-08-21'),
-    //               progress: {percent: "50", color: "#FF9580", classes: []}}
-    //             ]},
-    //         {id: "53", name: 'Four', tasks: [
-    //             {name: 'task3',
-    //               from: new Date('2016-08-01'),
-    //               to: new Date('2016-08-21'),
-    //               progress: {percent: "25", color: "#552580", classes: []}}
-    //           ]}
-    //       ];
 
   };
 
@@ -357,10 +320,10 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
                   api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent)); // TODO: same as moveEnd
               }
               // TODO: block rows events
-              api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
-              api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
-              api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
-              api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
+              // api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
+              // api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
+              // api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
+              // api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
 
               // api.data.on.change($scope, function(newData) {
               //     console.info('[api.data.on.change] :' + newData);
@@ -525,6 +488,13 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         }
       }
 
+      for (var i = 0; i < $scope.data.edit.updateDep.length; i++) {
+        if ($scope.data.edit.updateDep[i].id == dep.id) {
+          $scope.data.edit.updateDep[i].name = dep.name;
+          return ;
+        }
+      }
+
       var index = -1;
       for (var i = 0; i < $scope.data.edit.dependencies.length && index < 0; i++) {
         if ($scope.data.edit.dependencies[i].task.id == dep.task.id)
@@ -626,6 +596,13 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         }
       }
 
+      for (var i = 0; i < $scope.data.edit.updateRes.length; i++) {
+        if ($scope.data.edit.updateRes[i].id == user.id) {
+          $scope.data.edit.updateRes[i].percent = user.percent;
+          return ;
+        }
+      }
+
       var index = -1;
       for (var i = 0; i < $scope.data.edit.users.length && index < 0; i++) {
         if ($scope.data.edit.users[i].id == user.id)
@@ -656,7 +633,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       }
       if (index >= 0) {
         $scope.data.edit.updateRes.splice(index, 1);
-        $scope.data.edit.oldRes.push(dep.id);
+        $scope.data.edit.oldRes.push(user.id);
       }
 
       var index = -1;
@@ -747,7 +724,6 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
     );
   };
 
-
 }]);
 
 
@@ -793,6 +769,5 @@ app.controller("modal_editTask", ["$scope", "$uibModalInstance", function($scope
                              {key: "sf", name: "start to finish"},
                              {key: "ff", name: "finish to finish"},
                              {key: "ss", name: "start to start"}];
-
 
 }]);

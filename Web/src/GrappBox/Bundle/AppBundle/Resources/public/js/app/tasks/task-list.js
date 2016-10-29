@@ -48,7 +48,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
-    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "-");
   };
 
   // Tags in string format
@@ -59,7 +59,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
       tagsInString += (i != 0 ? ", " : "") + tags[i].name;
     }
     if (tags.length <= 0)
-      tagsInString = "N/A";
+      tagsInString = "-";
     return tagsInString;
   };
 
@@ -71,13 +71,13 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
       usersInString += (i != 0 ? ", " : "") + users[i].firstname + " " + users[i].lastname;
     }
     if (users.length <= 0)
-      usersInString = "N/A";
+      usersInString = "-";
     return usersInString;
   };
 
   // Open task detail page
   $scope.openTask = function(project, task){
-    $location.path("/task/" + project + "/" + task);
+    $location.path("/tasks/" + project + "/" + task);
   };
 
   /*-------------------------TAB FILTERS AND SWITCH ----------------------*/
