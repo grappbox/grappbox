@@ -27,7 +27,7 @@
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
                      PlaceholderText="UserName"
-                     Header="User name"
+                     Header="Username"
                      Text="pierre.feytout@epitech.eu" />
             <PasswordBox Grid.Row="2" Name="pwdBlock"
                          Background="{StaticResource Grey3GrappboxBrush}"
@@ -39,7 +39,7 @@
                          Header="Password"
                          PasswordRevealMode="Peek" />
             <Button Grid.Row="3" Name="DashBoardButton"
-                    Content="Log In" FontSize="24"
+                    Content="Log In"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     Click="DashBoardButton_Click" />

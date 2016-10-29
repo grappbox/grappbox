@@ -37,6 +37,7 @@ namespace GrappBox.ViewModel
         public ProjectSettingsViewModel()
         {
             instance = this;
+            _role = new ProjectRoleModel();
         }
 
         #region CustomerAccess
@@ -140,7 +141,7 @@ namespace GrappBox.ViewModel
         #endregion CustomerAccess
 
         #region ProjectRole
-        public async System.Threading.Tasks.Task addRole()
+        public async System.Threading.Tasks.Task<bool> addRole()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -159,7 +160,6 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Post(props, "role");
             if (res.IsSuccessStatusCode)
             {
-                _projectRoleModel.Clear();
                 await getRoles();
                 _role = _projectRoleModel.Last();
             }
@@ -167,11 +167,13 @@ namespace GrappBox.ViewModel
             {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
+                return false;
             }
             props.Clear();
+            return true;
         }
 
-        public async System.Threading.Tasks.Task updateRole()
+        public async System.Threading.Tasks.Task<bool> updateRole()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -189,7 +191,6 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "role/" + _role.RoleId);
             if (res.IsSuccessStatusCode)
             {
-                _projectRoleModel.Clear();
                 await getRoles();
 
                 ContentDialog cd = new ContentDialog();
@@ -205,13 +206,15 @@ namespace GrappBox.ViewModel
             {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
+                return false;
             }
             props.Clear();
+            return true;
         }
 
-        public void getRole()
+        public void role(ProjectRoleModel roleSelected)
         {
-            _role = _roleSelected;
+            _role = roleSelected;
             _roleSelected = null;
             notifySimpleRole();
         }

@@ -97,7 +97,6 @@
             <SplitView.Content>
                 <!-- OnNavigatingToPage we synchronize the selected item in the nav menu with the current page.-->
                 <Frame x:Name="frame"
-                   Margin="0,4,0,0"
                    Navigating="OnNavigatingToPage">
                     <Frame.ContentTransitions>
                         <TransitionCollection>

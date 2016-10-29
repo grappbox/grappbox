@@ -106,7 +106,7 @@ namespace GrappBox.View
             {
                 Update.Visibility = Visibility.Visible;
                 Add.Visibility = Visibility.Collapsed;
-                vm.getRole();
+                vm.role(e.Parameter as ProjectRoleModel);
                 //TeamTimeline
                 if (vm.TeamTimeline == 0)
                     TTNButton.IsChecked = true;
@@ -259,7 +259,8 @@ namespace GrappBox.View
             {
                 RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
-                await vm.updateRole();
+                if (await vm.updateRole() == true)
+                    Frame.GoBack();
             }
             else
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
@@ -277,7 +278,8 @@ namespace GrappBox.View
             {
                 RoleName.BorderBrush = new SolidColorBrush();
                 setValues();
-                await vm.addRole();
+                if (await vm.addRole() == true)
+                    Frame.GoBack();
 
                 Update.Visibility = Visibility.Visible;
                 Add.Visibility = Visibility.Collapsed;

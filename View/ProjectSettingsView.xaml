@@ -73,8 +73,17 @@
         </CommandBar>
     </Page.BottomAppBar>
     <Grid>
-        <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
-        <Pivot Name="PivotPS" SelectionChanged="Pivot_SelectionChanged">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Project settings" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
+        <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
+        <Pivot Grid.Row="1" Name="PivotPS" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem Margin="0" VerticalAlignment="Stretch">
                 <PivotItem.Header>
                     <customControl:TabHeader Label="Settings" Glyph="&#xE115;" />

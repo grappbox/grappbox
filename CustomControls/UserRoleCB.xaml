@@ -11,13 +11,13 @@
 
     <Grid Margin="0,0,0,10">
         <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="*" />
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <StackPanel Orientation="Horizontal">
-            <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-            <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+            <TextBlock Text="{Binding Firstname}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
+            <TextBlock Text="{Binding Lastname}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5"/>
         </StackPanel>
-        <ComboBox Grid.Row="1" ItemsSource="{Binding RoleList}" DisplayMemberPath="Name" SelectedValuePath="RoleId" SelectionChanged="ComboBox_SelectionChanged" Loaded="ComboBox_Loaded" />
+        <ComboBox Grid.Row="1" ItemsSource="{Binding RoleList}" DisplayMemberPath="Name" SelectedValuePath="RoleId" SelectionChanged="ComboBox_SelectionChanged" Loaded="ComboBox_Loaded"/>
     </Grid>
 </UserControl>
