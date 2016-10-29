@@ -56,7 +56,6 @@
             </Setter>
         </Style>
     </Page.Resources>
-
     <Page.BottomAppBar>
         <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
@@ -92,53 +91,32 @@
                     <StackPanel Margin="15">
                         <StackPanel.Resources>
                             <Style TargetType="TextBox">
-                                <Setter Property="Margin" Value="0,5,0,15" />
+                                <Setter Property="Margin" Value="0,20,0,0" />
                                 <Setter Property="FontSize" Value="15" />
                             </Style>
                         </StackPanel.Resources>
-
                         <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-
-                        <TextBlock Text="Name" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="ProjectName" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" />
-
-                        <TextBlock Text="Description" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="ProjectDescription" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-
-                        <TextBlock Text="Logo" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
+                        <TextBox Name="ProjectName" Header="Name" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" />
+                        <TextBox Name="ProjectDescription" Header="Description" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" />
+                        <TextBox Header="Logo" Height="1" MinHeight="26" />
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100" />
                             <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click" />
                             <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100" />
                         </Grid>
-
-                        <TextBlock Text="Phone" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
-
-                        <TextBlock Text="Company" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}" />
-
-                        <TextBlock Text="Contact mail" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="Mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress" />
-
-                        <TextBlock Text="Facebook" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}" />
-
-                        <TextBlock Text="Twitter" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
-
+                        <TextBox Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
+                        <TextBox Name="Company" Header="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}" />
+                        <TextBox Name="Mail" Header="Contact mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress" />
+                        <TextBox Name="Facebook" Header="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}" />
+                        <TextBox Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
                         <StackPanel Name="NewPassword" Visibility="Collapsed">
-                            <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17" />
-                            <PasswordBox x:Name="password" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <PasswordBox x:Name="password" Header="Cloud's safe folder password" BorderBrush="Transparent" VerticalAlignment="Stretch" />
                         </StackPanel>
                         <StackPanel Name="UpdatePassword" Visibility="Collapsed">
-                            <TextBlock Text="Cloud's Safe folder password" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17" />
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" FontFamily="Segoe WP" FontSize="15" />
-                            <PasswordBox x:Name="oldPassword" BorderBrush="Transparent" VerticalAlignment="Stretch" />
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" FontFamily="Segoe WP" FontSize="15" />
-                            <PasswordBox x:Name="newPassword" BorderBrush="Transparent" VerticalAlignment="Stretch" />
-                            <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" FontFamily="Segoe WP" FontSize="15" />
-                            <PasswordBox x:Name="retypePassword" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <TextBlock Text="Cloud's safe folder password" Foreground="Black" Margin="0,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17" />
+                            <PasswordBox x:Name="oldPassword" Header="Old password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <PasswordBox x:Name="newPassword" Header="New password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <PasswordBox x:Name="retypePassword" Header="Retype password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>

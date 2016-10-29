@@ -14,6 +14,36 @@ namespace GrappBox.ViewModel
 {
     #region Converter
 
+    public class DateTimeToDateConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTime date = (DateTime)value;
+                return new DateTimeOffset(date);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return DateTimeOffset.MinValue;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, string language)
+        {
+            try
+            {
+                DateTimeOffset dto = (DateTimeOffset)value;
+                return dto.DateTime;
+            }
+            catch (Exception ex)
+            {
+                return DateTime.MinValue;
+            }
+        }
+    }
+
     public class SenderParameterConverter : IValueConverter
     {
         public object Convert(object value, Type targetType,
