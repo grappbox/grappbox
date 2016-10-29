@@ -9,7 +9,8 @@
 * APP Cloud page content
 *
 */
-app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$http", "localStorageService", "$base64", "$window", "Notification", "$uibModal", "$q", function($rootScope, $scope, $routeParams, $http, localStorageService, $base64, $window, Notification, $uibModal, $q) {
+app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$http", "localStorageService", "$base64", "$window", "Notification", "$uibModal", "$q",
+    function($rootScope, $scope, $routeParams, $http, localStorageService, $base64, $window, Notification, $uibModal, $q) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -124,11 +125,8 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     promise.then(function safeCheckSuccess() {
       $scope.data.onLoad = true;
 
-      $http.get($rootScope.api.url + "/cloud/list/"
-        + $rootScope.user.token + "/"
-        + $scope.project.id + "/"
-        + $scope.path.current
-        + (isPathInSafeFolder($scope.path.current) ? "/" + $scope.safe.password : ""))
+      $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/" + $scope.path.current + (isPathInSafeFolder($scope.path.current) ? "/" + $scope.safe.password : ""),
+        { headers: { "Authorization": $rootScope.user.token }})
       .then(function folderContentReceived(response) {
         if (response.data.info && response.data.info.return_code == "1.3.1") {
         setDataOnSuccess(response);
@@ -195,24 +193,28 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     selectedFileURL = $rootScope.api.url
     + "/cloud/" + ($scope.selected.previous.isSecured ? "filesecured/" : "file/")
     + $scope.path.current + ($scope.path.current === "," ? "" : ",") + selectedFilename + "/"
-    + $rootScope.user.token + "/" + $scope.project.id
+    + $scope.project.id
     + ($scope.selected.previous.isSecured ? "/" + $scope.selected.previous.password : "")
     + (isFileInSafeFolder ? "/" + $scope.safe.password : "");
 
-    Notification.info({ message: "Loading...", delay: 5000 });
-    $http.get(selectedFileURL)
+    $http.get(selectedFileURL, { headers: { "Authorization": $rootScope.user.token }})
       .then(function downloadFileSuccess(response) {
-        if (!response.data.info) {
+        if (response.data && response.data.info && response.data.info.return_code == "11.1.3")
+          $rootScope.onUserTokenError();
+        if (response.data && response.data.location) {
           storeSafePassword();
           Notification.success({ message: "Downloaded: " + selectedFilename, delay: 5000 });
-          $window.open(selectedFileURL);
+          $window.open(response.data.location);
         }
         else {
           Notification.warning({ message: "Unable to download \"" + selectedFilename + "\". Please try again.", delay: 5000 });
-          resetSafePassword();
+          resetSafePassword();          
         }
       },
-      function downloadFileFailure() { Notification.warning({ message: "Unable to download \"" + selectedFilename + "\". Please try again.", delay: 5000 }); });
+      function downloadFileFailure() {
+        Notification.warning({ message: "Unable to download \"" + selectedFilename + "\". Please try again.", delay: 5000 });
+        resetSafePassword();
+      });
   };
 
   // Double clic handler (file/folder)
@@ -260,25 +262,25 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     isFolderInSafeFolder = isPathInSafeFolder($scope.path.child);
     promise = (isFolderInSafeFolder ? getSafePassword() : $q.when(true) );
     promise.then(function safeCheckSuccess() {
-      Notification.info({ message: "Loading...", delay: 5000 });
-      $http.get($rootScope.api.url + "/cloud/list/" + $rootScope.user.token + "/" + $scope.project.id + "/" + $scope.path.child + (isFolderInSafeFolder ? "/" + $scope.safe.password : ""))
-      .then(function folderContentReceived(response) {
-        if (response.data.info && response.data.info.return_code == "1.3.1") {
-          setDataOnSuccess(response);
-          storeSafePassword();
-          $scope.path.parent = $scope.path.current;
-          $scope.path.current = $scope.path.child;
-          $scope.path.child = "";
-          toggleParentButton(true);
-        }
-        else {
-          Notification.warning({ message: "Unable to access " + object.filename + ". Please try again.", delay: 5000 });
-          resetSafePassword();
-        }
+      $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/" + $scope.path.child + (isFolderInSafeFolder ? "/" + $scope.safe.password : ""),
+        { headers: { "Authorization": $rootScope.user.token }}).then(
+        function folderContentReceived(response) {
+          if (response.data.info && response.data.info.return_code == "1.3.1") {
+            setDataOnSuccess(response);
+            storeSafePassword();
+            $scope.path.parent = $scope.path.current;
+            $scope.path.current = $scope.path.child;
+            $scope.path.child = "";
+            toggleParentButton(true);
+          }
+          else {
+            Notification.warning({ message: "Unable to access " + object.filename + ". Please try again.", delay: 5000 });
+            resetSafePassword();
+          }
+        },
+        function folderContentNotReceived() { Notification.warning({ message: "Unable to access " + object.filename + ". Please try again.", delay: 5000 }); });
       },
-      function folderContentNotReceived() { Notification.warning({ message: "Unable to access " + object.filename + ". Please try again.", delay: 5000 }); });
-    },
-    function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
+      function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
   };
 
 
@@ -294,27 +296,27 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
       isParentInSafeFolder = isPathInSafeFolder($scope.path.parent);
       promise = (isParentInSafeFolder ? getSafePassword() : $q.when(true) );
       promise.then(function safeCheckSuccess() {
-        Notification.info({ message: "Loading...", delay: 5000 });
-        $http.get($rootScope.api.url + "/cloud/list/" + $rootScope.user.token + "/" + $scope.project.id + "/" + ($scope.path.parent === "" ? "," : $scope.path.parent) + (isParentInSafeFolder ? "/" + $scope.safe.password : ""))
-        .then(function parentfolderContentReceived(response) {
-          if (response.data.info && response.data.info.return_code == "1.3.1") {
-            setDataOnSuccess(response);
-            storeSafePassword();
-            $scope.path.current = ($scope.path.parent === "" ? "," : $scope.path.parent);
-            $scope.path.parent = $scope.path.current.substring(0, $scope.path.current.lastIndexOf(","));
-            $scope.path.parent = ($scope.path.parent === "" ? "," : $scope.path.parent);
-            $scope.path.child = "";
-            toggleParentButton($scope.path.current === "," ? false : true);
-          }
-          else {
-            Notification.warning({ message: "Unable to access parent folder. Please try again.", delay: 5000 });
-            resetSafePassword();
-          }
+        $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/" + ($scope.path.parent === "" ? "," : $scope.path.parent) + (isParentInSafeFolder ? "/" + $scope.safe.password : ""),
+          { headers: { "Authorization": $rootScope.user.token }}).then(
+            function parentfolderContentReceived(response) {
+            if (response.data.info && response.data.info.return_code == "1.3.1") {
+              setDataOnSuccess(response);
+              storeSafePassword();
+              $scope.path.current = ($scope.path.parent === "" ? "," : $scope.path.parent);
+              $scope.path.parent = $scope.path.current.substring(0, $scope.path.current.lastIndexOf(","));
+              $scope.path.parent = ($scope.path.parent === "" ? "," : $scope.path.parent);
+              $scope.path.child = "";
+              toggleParentButton($scope.path.current === "," ? false : true);
+            }
+            else {
+              Notification.warning({ message: "Unable to access parent folder. Please try again.", delay: 5000 });
+              resetSafePassword();
+            }
+          },
+          function parentfolderContentNotReceived() { Notification.warning({ message: "Unable to access parent folder. Please try again.", delay: 5000 }); });
         },
-        function parentfolderContentNotReceived() { Notification.warning({ message: "Unable to access parent folder. Please try again.", delay: 5000 }); });
-      },
-      function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
-    }
+        function safeCheckFailure() { Notification.warning({ message: "You must provide the \"Safe\" password in order to access any \"Safe\"-based file or folder. Please try again.", delay: 5000 }); });
+      }
   };
 
 
@@ -327,26 +329,28 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
 
     $http.delete($rootScope.api.url
       + "/cloud/" + ($scope.selected.current.isSecured ? "filesecured/" : "file/")
-      + $rootScope.user.token + "/" + $scope.project.id + "/"
+      + $scope.project.id + "/"
       + $scope.path.current + ($scope.path.current === "," ? "" : ",") + $scope.selected.current.name
       + ($scope.selected.current.isSecured ? "/" + $scope.selected.current.password : "")
-      + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""))
+      + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""),
+      { headers: { "Authorization": $rootScope.user.token }})
     .then(function objectDeletionSuccess(response) {
       if (response.data.info && response.data.info.return_code == "1.3.1") {
-        $http.get($rootScope.api.url + "/cloud/list/" + $rootScope.user.token + "/" + $scope.project.id + "/" + $scope.path.current + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""))
-        .then(function folderContentReceived(response) {
-          Notification.success({ message: "Deleted: \"" + $scope.selected.current.name + "\"", delay: 5000 });
-          setDataOnSuccess(response);
-          storeSafePassword();
-          toggleDeleteButton(false);
-          resetSelected();
-        },
-        function folderContentNotReceived(response) { setDataOnFailure(); });
-      }
-      else {
-        Notification.warning({ message: "Unable to delete " + $scope.selected.current.name + ". Please try again.", delay: 5000 });
-        resetSafePassword();
-      }
+        $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/" + $scope.path.current + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""),
+          { headers: { "Authorization": $rootScope.user.token }}).then(
+          function folderContentReceived(response) {
+            Notification.success({ message: "Deleted: \"" + $scope.selected.current.name + "\"", delay: 5000 });
+            setDataOnSuccess(response);
+            storeSafePassword();
+            toggleDeleteButton(false);
+            resetSelected();
+          },
+          function folderContentNotReceived(response) { setDataOnFailure(); });
+        }
+        else {
+          Notification.warning({ message: "Unable to delete " + $scope.selected.current.name + ". Please try again.", delay: 5000 });
+          resetSafePassword();
+        }
     }),
     function objectDeletionFailure(response) { Notification.warning({ message: "Unable to delete \"" + $scope.selected.current.name + "\". Please try again.", delay: 5000 }) }
   };
@@ -402,12 +406,13 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     var local_fileDataChunkSent = 0;
 
     Notification.info({ message: "Loading...", delay: 5000 });
-    $http.post($rootScope.api.url + "/cloud/stream/" + $rootScope.user.token + "/" + $scope.project.id + (isNewFileInSafeFolder ? "/" + $scope.safe.password : ""), {
+    $http.post($rootScope.api.url + "/cloud/stream/" + $scope.project.id + (isNewFileInSafeFolder ? "/" + $scope.safe.password : ""), {
       data: {
         filename: $scope.view_newFile.filename,
         path: $scope.path.current.split(",").join("/"),
         password: ($scope.newFile.isSecured ? $scope.newFile.password : ""),
-      }})
+      }},
+      { headers: { "Authorization": $rootScope.user.token }})
     .then(function streamOpeningSuccess(response) {
       if (response.data.info && response.data.info.return_code == "1.3.1") {
         storeSafePassword();
@@ -417,18 +422,18 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
         for (var i = 0; i < local_fileData.length; ++i) {
           $http.put($rootScope.api.url + "/cloud/file", {
             data: {
-              token: $rootScope.user.token,
               stream_id: local_fileStreamID,
               project_id: $scope.project.id,
               chunk_numbers: local_fileData.length,
               current_chunk: i,
               file_chunk: local_fileData[i]
-            }})
+            }},
+            { headers: { "Authorization": $rootScope.user.token }})
           .then(function chunkSendingSuccess(response) {
             ++local_fileDataChunkSent;
             Notification.info({ message: "\"" + $scope.view_newFile.filename + "\" sent at " + parseInt(local_fileDataChunkSent / local_fileData.length * 100) + "%", delay: 5000 });
             if (local_fileDataChunkSent === local_fileData.length) {
-              $http.delete($rootScope.api.url + "/cloud/stream/" + $rootScope.user.token + "/" + $scope.project.id + "/" + local_fileStreamID)
+              $http.delete($rootScope.api.url + "/cloud/stream/" + $scope.project.id + "/" + local_fileStreamID, { headers: { "Authorization": $rootScope.user.token }})
               .then(function streamClosingSuccess(response) {
                 Notification.success({ message: "Sent: \"" + $scope.view_newFile.filename + "\"", delay: 5000 });
                 resetUploadFileField();
@@ -531,16 +536,17 @@ app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$htt
         Notification.info({ message: "Loading...", delay: 5000 });
         $http.post($rootScope.api.url + "/cloud/createdir", {
           data: {
-            token: $rootScope.user.token,
             project_id: $scope.project.id,
             path: $scope.path.current.split(",").join("/"),
             dir_name: $scope.newFolder.name,
             password: (isNewFolderInSafeFolder ? $scope.safe.password : "")
-          }})
+          }},
+          { headers: { "Authorization": $rootScope.user.token }})
         .then(function folderCreationSuccess(response) {
           if (response.data.info && response.data.info.return_code == "1.3.1") {
             storeSafePassword();
-            $http.get($rootScope.api.url + "/cloud/list/" + $rootScope.user.token + "/" + $scope.project.id + "/," + $scope.path.current + (isNewFolderInSafeFolder ? "/" + $scope.safe.password : ""))
+            $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/," + $scope.path.current + (isNewFolderInSafeFolder ? "/" + $scope.safe.password : ""),
+              { headers: { "Authorization": $rootScope.user.token }})
             .then(function folderContentReceived(response) {
               setDataOnSuccess(response);
               Notification.success({ message: "Created: \"" + $scope.newFolder.name + "\"", delay: 5000 });
