@@ -329,7 +329,6 @@ class UserController extends RolesAndTokenVerificationController
 	* @apiParam {String} [lastname] Last name of the person
 	* @apiParam {Date} [birthday] Birthday of the person
 	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
 	* @apiParam {String} [oldPassword] Old password of the person. oldPassword and password must be set if you want to change password
 	* @apiParam {String} [password] New password of the person. oldPassword and password must be set if you want to change password
 	* @apiParam {String} [phone] Phone number of the person
@@ -345,7 +344,6 @@ class UserController extends RolesAndTokenVerificationController
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18",
 	*			"avatar": "10001111001100110010101010",
-	*			"email": "john.doe@gmail.com",
 	*			"oldPassword": "toto",
 	*			"password": "azertyuiop",
 	*			"phone": +33984231475,
@@ -546,17 +544,6 @@ class UserController extends RolesAndTokenVerificationController
 			}
 			if (count($userNotif) > 0)
 				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
-		}
-
-		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
-		{
-			if ($em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email)))
-				return $this->setBadRequest("Email already in DB");
-			else if ($content->email != "")
-				return $this->setBadRequest("Email invalid");
-			else
-				$user->setEmail($content->email);
-
 		}
 		if (array_key_exists('phone', $content))
 			$user->setPhone($content->phone);
