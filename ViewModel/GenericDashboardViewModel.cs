@@ -29,6 +29,7 @@ namespace GrappBox.ViewModel
             if (res == null)
                 return false;
             string response = await res.Content.ReadAsStringAsync();
+            Debug.WriteLine("Url= " + res.RequestMessage.RequestUri.ToString());
             Debug.WriteLine("response= " + response);
             if (res.IsSuccessStatusCode)
             {

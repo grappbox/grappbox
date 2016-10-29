@@ -62,7 +62,7 @@
         <!-- Top-level navigation menu + app content -->
         <SplitView x:Name="RootSplitView"
                    DisplayMode="Inline"
-                   OpenPaneLength="320"
+                   OpenPaneLength="300"
                    IsPaneOpen="False"
                    PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}"
                    LightDismissOverlayMode="On"

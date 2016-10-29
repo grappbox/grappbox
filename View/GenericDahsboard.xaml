@@ -26,7 +26,6 @@
         </customControl:PageHeader>
         <ListView
                     Grid.Row="1"
-                    Padding="15,0,15,0"
                     ItemsSource="{Binding ProjectList}"
                     SelectionChanged="ListView_SelectionChanged"
                     ScrollViewer.HorizontalScrollMode="Disabled"
@@ -36,17 +35,15 @@
                     HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
             <ListView.ItemTemplate>
                 <DataTemplate>
+                    <customControl:GenericDashboardItem/>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
-                <Style TargetType="ListViewItem">
-                    <Setter Property="Background" Value="White" />
-                    <Setter Property="Padding" Value="15" />
-                    <Setter Property="Margin" Value="15" />
-                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
-                    <Setter Property="HorizontalAlignment" Value="Stretch" />
-                </Style>
+
             </ListView.ItemContainerStyle>
+            <ListViewItem>
+                
+            </ListViewItem>
         </ListView>
         <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
     </Grid>
