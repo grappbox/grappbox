@@ -47,6 +47,7 @@ import com.grappbox.grappbox.project_fragments.GanttFragment;
 import com.grappbox.grappbox.project_fragments.TaskFragment;
 import com.grappbox.grappbox.project_fragments.TimelineFragment;
 import com.grappbox.grappbox.project_fragments.WhiteboardFragment;
+import com.grappbox.grappbox.settings.ProjectSettingsActivity;
 import com.grappbox.grappbox.settings.UserSettingsActivity;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
@@ -228,6 +229,8 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
                 getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, new WhiteboardFragment(), FRAGMENT_TAG_WHITEBOARD).addToBackStack(null).commit();
                 break;
             case R.id.nav_project_settings:
+                Intent launchProjectSettings = new Intent(this, ProjectSettingsActivity.class);
+                startActivity(launchProjectSettings);
                 break;
             case R.id.nav_change_project:
                 Intent launchChangeProject = new Intent(this, ChooseProjectActivity.class);

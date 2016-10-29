@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Created by Marc Wieser on 29/10/2016
+  ~ If you have any problem or question about this work
+  ~ please contact the author at marc.wieser@gmail.com
+  ~
+  ~ The following code is owned by GrappBox you can't
+  ~ use it without any authorization or special instructions
+  ~ GrappBox © 2016
+  -->
+
+<!--
+  ~ Created by Marc Wieser on 29/10/2016
+  ~ If you have any problem or question about this work
+  ~ please contact the author at marc.wieser@gmail.com
+  ~
+  ~ The following code is owned by GrappBox you can't
+  ~ use it without any authorization or special instructions
+  ~ GrappBox © 2016
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/BaseTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:popupTheme="@style/BaseTheme.PopupOverlay"
+            android:background="@color/GrappRed"
+            app:titleTextColor="@android:color/white"
+            android:layout_height="match_parent" >
+        </android.support.v7.widget.Toolbar>
+    </android.support.design.widget.AppBarLayout>
+    <android.support.v4.view.ViewPager
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/viewPager">
+        <android.support.design.widget.TabLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/GrappRed"
+            app:tabTextColor="@color/GrappWhiteLight"
+            app:tabSelectedTextColor="@color/GrappWhiteLight"
+            app:tabIndicatorColor="@color/GrappWhiteLight"/>
+    </android.support.v4.view.ViewPager>
+
+
+</LinearLayout>

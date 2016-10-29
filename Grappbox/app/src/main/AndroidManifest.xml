@@ -115,7 +115,15 @@
         <activity
             android:name=".settings.UserSettingsActivity"
             android:label="@string/title_activity_user_settings"
-            android:theme="@style/SettingsTheme"
+            android:parentActivityName=".ChooseProjectActivity"
+            android:theme="@style/SettingsTheme">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ChooseProjectActivity" />
+        </activity>
+        <activity
+            android:name=".settings.ProjectSettingsActivity"
+            android:label="@string/title_activity_project_settings"
             android:parentActivityName=".ChooseProjectActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
