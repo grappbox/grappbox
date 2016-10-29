@@ -1743,6 +1743,18 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
+    private Cursor TimelineGetCreatorId(String creatorId)
+    {
+        Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+        if (creator == null || !creator.moveToFirst()){
+            handleUserDetailSync(creatorId);
+            creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+            if (creator == null || !creator.moveToFirst())
+                return null;
+        }
+        return creator;
+    }
+
     private void handleTimelineAddComment(long localTimelineId, String title, String message, int parentId, ResultReceiver resultReceiver) {
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
@@ -1786,13 +1798,9 @@ public class GrappboxJustInTimeService extends IntentService {
                     JSONObject current = json.getJSONObject("data");
                     ContentValues commentValues = new ContentValues();
                     String creatorId = current.getJSONObject("creator").getString("id");
-                    Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                    if (creator == null || !creator.moveToFirst()){
-                        handleUserDetailSync(creatorId);
-                        creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                        if (creator == null || !creator.moveToFirst())
-                            return;
-                    }
+                    Cursor creator = TimelineGetCreatorId(creatorId);
+                    if (creator == null || !creator.moveToFirst())
+                        return;
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
@@ -1841,8 +1849,8 @@ public class GrappboxJustInTimeService extends IntentService {
             Utils.JSON.sendJsonOverConnection(connection, json);
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
-            Log.d(LOG_TAG, "json returned : " + returnedJson.toString());
-            if (returnedJson.isEmpty()){
+            Log.d(LOG_TAG, "json returned : " + returnedJson);
+            if (returnedJson == null || returnedJson.isEmpty()){
                 if (resultReceiver != null) {
                     Bundle answer = new Bundle();
                     answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.0"));
@@ -1860,13 +1868,9 @@ public class GrappboxJustInTimeService extends IntentService {
                     JSONObject current = json.getJSONObject("data");
                     ContentValues messagesValues = new ContentValues();
                     String creatorId = current.getJSONObject("creator").getString("id");
-                    Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                    if (creator == null || !creator.moveToFirst()){
-                        handleUserDetailSync(creatorId);
-                        creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                        if (creator == null || !creator.moveToFirst())
-                            return;
-                    }
+                    Cursor creator = TimelineGetCreatorId(creatorId);
+                    if (creator == null || !creator.moveToFirst())
+                        return;
                     messagesValues.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
@@ -1936,13 +1940,9 @@ public class GrappboxJustInTimeService extends IntentService {
                     JSONObject current = json.getJSONObject("data");
                     ContentValues commentValues = new ContentValues();
                     String creatorId = current.getJSONObject("creator").getString("id");
-                    Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                    if (creator == null || !creator.moveToFirst()){
-                        handleUserDetailSync(creatorId);
-                        creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                        if (creator == null || !creator.moveToFirst())
-                            return;
-                    }
+                    Cursor creator = TimelineGetCreatorId(creatorId);
+                    if (creator == null || !creator.moveToFirst())
+                        return;
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
                     commentValues.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
@@ -2006,17 +2006,22 @@ public class GrappboxJustInTimeService extends IntentService {
                         resultReceiver.send(Activity.RESULT_CANCELED, answer);
                     }
                 } else {
-                    Log.v(LOG_TAG, "json : " + json);
+                    JSONObject current = json.getJSONObject("data");
                     ContentValues messagesValues = new ContentValues();
-                    messagesValues.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, json.getString("id"));
-                    messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, json.getJSONObject("creator").getString("id"));
+                    String creatorId = current.getJSONObject("creator").getString("id");
+                    Cursor creator = TimelineGetCreatorId(creatorId);
+                    if (creator == null || !creator.moveToFirst())
+                        return;
+                    messagesValues.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
+                    messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);
-                    messagesValues.put(TimelineMessageEntry.COLUMN_TITLE, json.getString("title"));
-                    messagesValues.put(TimelineMessageEntry.COLUMN_MESSAGE, json.getString("message"));
-                    String lastEditedMsg = json.isNull("editedAt") ? json.getString("createdAt") : json.getString("editedAt");
+                    messagesValues.put(TimelineMessageEntry.COLUMN_TITLE, current.getString("title"));
+                    messagesValues.put(TimelineMessageEntry.COLUMN_MESSAGE, current.getString("message"));
+                    String lastEditedMsg = current.isNull("editedAt") ? current.getString("createdAt") : current.getString("editedAt");
                     messagesValues.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, lastEditedMsg);
                     messagesValues.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
                     getContentResolver().insert(GrappboxContract.TimelineMessageEntry.CONTENT_URI, messagesValues);
+                    creator.close();
                 }
             }
         } catch (IOException | JSONException e) {
@@ -2170,15 +2175,9 @@ public class GrappboxJustInTimeService extends IntentService {
                 ContentValues message = new ContentValues();
 
                 String creatorId = current.getJSONObject("creator").getString("id");
-                Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-//                Cursor creator = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(creatorId), new String[]{UserEntry._ID}, null, null, null);
-                if (creator == null || !creator.moveToFirst()){
-                    handleUserDetailSync(creatorId);
-                    creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-//                    creator = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(creatorId), new String[]{UserEntry._ID}, null, null, null);
-                    if (creator == null || !creator.moveToFirst())
-                        return;
-                }
+                Cursor creator = TimelineGetCreatorId(creatorId);
+                if (creator == null || !creator.moveToFirst())
+                    return;
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID, current.getString("parentId"));
                 message.put(GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
@@ -2254,14 +2253,9 @@ public class GrappboxJustInTimeService extends IntentService {
                 ContentValues message = new ContentValues();
 
                 String creatorId = current.getJSONObject("creator").getString("id");
-                Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                //Cursor creator = getContentResolver().query(UserEntry.buildUserWithGrappboxIdUri(creatorId), new String[]{UserEntry._ID}, null, null, null);
-                if (creator == null || !creator.moveToFirst()){
-                    handleUserDetailSync(creatorId);
-                    creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
-                    if (creator == null || !creator.moveToFirst())
-                        return;
-                }
+                Cursor creator = TimelineGetCreatorId(creatorId);
+                if (creator == null || !creator.moveToFirst())
+                    return;
                 message.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                 message.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                 message.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);

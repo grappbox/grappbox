@@ -2,6 +2,7 @@ package com.grappbox.grappbox.adapter;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
@@ -16,6 +17,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -44,18 +46,15 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     private static final int    TYPE_MESSAGE_COMMENTS = 0;
     private static final int    TYPE_MESSAGE_REPLY = 1;
 
-    private static final int TIMELINE_ACTION_EDIT_MESSAGE = 0;
-    private static final int TIMELINE_ACTION_DELETE_MESSAGE = 1;
+    private static final int    TIMELINE_ACTION_EDIT_MESSAGE = 0;
+    private static final int    TIMELINE_ACTION_DELETE_MESSAGE = 1;
 
 
     private List<TimelineMessageCommentModel>   mComments;
-    private TimelineModel                       mParent;
-    private RefreshReceiver                     mRefreshReceiver;
-
-
-
+    private TimelineModel   mParent;
+    private RefreshReceiver mRefreshReceiver;
     private LayoutInflater  mInflater;
-    private Activity mContext;
+    private Activity        mContext;
 
     public TimelineMessageCommentAdapter(Activity context) {
         mContext = context;
@@ -116,7 +115,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         holder.mLastUpdate.setText(item._lastupdate);
         if (cursorUserId == null || !cursorUserId.moveToFirst())
             return ;
-        Log.v(LOG_TAG, "created id : " + item._createId + ", User ID : " + cursorUserId.getLong(0) + ", cursor lenght : " + cursorUserId.getCount() + ", grappbox id : " + item._grappboxId);
         if (Long.valueOf(item._createId) == cursorUserId.getLong(0)) {
             holder.mlayout.setGravity(Gravity.END);
             holder.mAvatar.setVisibility(View.GONE);
@@ -277,11 +275,8 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                         new String[]{String.valueOf(mParent._grappboxId)},
                         null);
 
-                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst()) {
-                    Log.v(LOG_TAG, "error cursor");
-                    cursorTimelineId.close();
+                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
                     return;
-                }
 
                 Intent addComment = new Intent(mContext, GrappboxJustInTimeService.class);
                 addComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_COMMENT);
@@ -294,6 +289,8 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 mContext.startService(addComment);
                 cursorTimelineId.close();
                 holder.comment.setText("");
+                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(mContext.getCurrentFocus().getWindowToken(), 0);
             }
         });
     }
@@ -325,19 +322,17 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
     private static class TimelineMessageCommentHolder extends RecyclerView.ViewHolder {
 
-        ImageView mAvatar;
-        TextView mTitle;
-        TextView    mMessage;
-        TextView    mLastUpdate;
-        ViewGroup   mparent;
-        CardView    mCardView;
-        LinearLayout mlayout;
+        ImageView       mAvatar;
+        TextView        mMessage;
+        TextView        mLastUpdate;
+        ViewGroup       mparent;
+        CardView        mCardView;
+        LinearLayout    mlayout;
 
 
         public TimelineMessageCommentHolder(View itemView, ViewGroup root){
             super(itemView);
             mAvatar = (ImageView) itemView.findViewById(R.id.avatar);
-            mTitle = (TextView) itemView.findViewById(R.id.title);
             mMessage = (TextView) itemView.findViewById(R.id.messagecontent);
             mLastUpdate = (TextView) itemView.findViewById(R.id.messagelastupdate);
             mlayout = (LinearLayout) itemView.findViewById(R.id.layoutcomment);
@@ -349,9 +344,9 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
     private static class CommentReplyHolder extends RecyclerView.ViewHolder{
 
-        public ImageView avatar;
-        public ImageButton send;
-        public TextInputEditText comment;
+        public ImageView            avatar;
+        public ImageButton          send;
+        public TextInputEditText    comment;
 
         public CommentReplyHolder(View itemView){
             super(itemView);

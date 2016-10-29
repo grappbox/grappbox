@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.timeline_fragment;
 
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -27,6 +28,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
+import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.text.ParseException;
@@ -99,10 +101,26 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public void onRefresh() {
+        long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
 
+        Cursor cursorTimelineId = getActivity().getContentResolver().query(GrappboxContract.TimelineEntry.CONTENT_URI,
+                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID},
+                GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=?",
+                new String[]{String.valueOf(projectId), String.valueOf(parent._timelineType)},
+                null);
+        Log.v(LOG_TAG, "Comment refresh");
+        if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
+            return;
+        Log.v(LOG_TAG, "Comment refresh : " + cursorTimelineId.getLong(0));
+        Intent timelineSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_COMMENTS);
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Long.valueOf(parent._grappboxId));
+        timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
+        getActivity().startService(timelineSync);
+        cursorTimelineId.close();
     }
-
-
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
@@ -131,7 +149,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     class StringDateComparator implements Comparator<TimelineMessageCommentModel>
     {
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 
         @Override
         public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
