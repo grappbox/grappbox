@@ -174,8 +174,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         });
     }
 
-
-
     private void messageCommentEdit(final TimelineMessageCommentModel item){
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         final View dialog = mInflater.inflate(R.layout.dialog_timeline_add_comment, null);

@@ -52,7 +52,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     private TimelineModel   parent;
     private LinearLayoutManager mLinearLayoutManager;
 
-    public static final int TIMELINE_LOADER = 0;
+    public static final int COMMENT_LIMIT = 10;
     public static final int TIMELINE_COMMENT = 0;
 
     public static final String[] projectionMessage = {
@@ -93,7 +93,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mLoader.setVisibility(View.GONE);
         mRefresher.setVisibility(View.VISIBLE);
         mAdapter.setRefreshReceiver(mRefreshReceiver);
-
+        getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
         return view;
     }
 
@@ -106,9 +106,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "create loader");
         String sortOrder = "datetime(" + GrappboxContract.TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC +
-                ") DESC LIMIT " + mAdapter.getSize() + ", 10";
+                ") DESC LIMIT " + mAdapter.getSize() + ", " + String.valueOf(COMMENT_LIMIT);
         String selection;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
