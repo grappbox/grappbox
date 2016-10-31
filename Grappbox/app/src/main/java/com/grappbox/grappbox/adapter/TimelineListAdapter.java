@@ -14,6 +14,7 @@ import android.database.MergeCursor;
 import android.media.Image;
 import android.os.AsyncTask;
 import android.os.Parcelable;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
@@ -240,6 +241,16 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private void bindTimelineEntry(final TimelineModel item, final TimelineHolder holder, final int position){
         final boolean isExpanded = position == mExpandedPosition;
+        final AccountManager am = AccountManager.get(mContext);
+        final long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+        final Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+                new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
+                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
+                new String[]{String.valueOf(uid)},
+                null);
+        if (cursorUserId == null || !cursorUserId.moveToFirst())
+            return;
+
         holder.mTitle.setText(item._title);
         holder.mMessage.setText(item._message);
         holder.mLastUpdate.setText(item._lastUpadte);
@@ -259,18 +270,25 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 launchMessageComment(item);
             }
         });
-        holder.mEdit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messageEdit(item);
-            }
-        });
-        holder.mDelete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                messageDelete(item);
-            }
-        });
+        if (Long.valueOf(item._createID) == cursorUserId.getLong(0)) {
+            holder.mEdit.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    messageEdit(item);
+                }
+            });
+            holder.mDelete.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    messageDelete(item);
+                }
+            });
+        } else {
+            holder.mEdit.setClickable(false);
+            holder.mEdit.setBackgroundColor(ContextCompat.getColor(mContext, R.color.GrappBlackLight));
+            holder.mDelete.setClickable(false);
+            holder.mDelete.setBackgroundColor(ContextCompat.getColor(mContext, R.color.GrappBlackLight));
+        }
         holder.mToBugtracker.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -282,15 +300,8 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 List<String> items = new ArrayList<String>();
-                AccountManager am = AccountManager.get(mContext);
                 items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions)));
-                long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-                Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
-                        new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
-                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
-                        new String[]{String.valueOf(uid)},
-                        null);
-                if (cursorUserId == null || !cursorUserId.moveToFirst())
+                if (!cursorUserId.moveToFirst())
                     return false;
                 if (Long.valueOf(item._createID) == cursorUserId.getLong(0))
                     items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions_user)));
@@ -328,6 +339,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
         holder.mAnswer.setText(String.valueOf(item._countAnswer));
+        cursorUserId.close();
     }
 
     @Override

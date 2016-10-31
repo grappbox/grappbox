@@ -56,6 +56,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     public static final int COMMENT_LIMIT = 10;
     public static final int TIMELINE_COMMENT = 0;
+    private int loaderPosition = 0;
 
     public static final String[] projectionMessage = {
             GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID,
@@ -89,6 +90,27 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mLoader = (ProgressBar) view.findViewById(R.id.loader);
         mAdapter.registerAdapterDataObserver(new AdapterObserver());
+        mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0) {
+                    int visibleItemCount = mLinearLayoutManager.getChildCount();
+                    int totalItemCount = mLinearLayoutManager.getItemCount();
+                    int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if ((visibleItemCount + pastVisible) >= totalItemCount){
+                        initLoader();
+                        loaderPosition += COMMENT_LIMIT;
+                    }
+                } else if (dy < 0) {
+                    int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if (pastVisible <= loaderPosition){
+                        initLoader();
+                        loaderPosition -= COMMENT_LIMIT;
+                    }
+                }
+            }
+        });
 
         mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
         mRefresher.setOnRefreshListener(this);
@@ -97,6 +119,11 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mAdapter.setRefreshReceiver(mRefreshReceiver);
         getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
         return view;
+    }
+
+    private void initLoader()
+    {
+        getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
     }
 
     @Override
@@ -109,10 +136,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                         + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=?",
                 new String[]{String.valueOf(projectId), String.valueOf(parent._timelineType)},
                 null);
-        Log.v(LOG_TAG, "Comment refresh");
         if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
             return;
-        Log.v(LOG_TAG, "Comment refresh : " + cursorTimelineId.getLong(0));
         Intent timelineSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
         timelineSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_COMMENTS);
         timelineSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
@@ -124,8 +149,10 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String offset = String.valueOf(mLinearLayoutManager.findFirstCompletelyVisibleItemPosition());
+        String limit = String.valueOf(COMMENT_LIMIT);
         String sortOrder = "datetime(" + GrappboxContract.TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC +
-                ") DESC LIMIT " + mAdapter.getSize() + ", " + String.valueOf(COMMENT_LIMIT);
+                ") DESC LIMIT " + offset + ", " + limit;
         String selection;
         String[] selectionArgs;
         long lpid = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);

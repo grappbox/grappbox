@@ -7,11 +7,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.os.AsyncTask;
 import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.text.format.Time;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -34,9 +36,13 @@ import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
@@ -80,6 +86,11 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         notifyDataSetChanged();
     }
 
+    public void mergeItem(Collection<TimelineMessageCommentModel> items){
+        MergeDataItem merge = new MergeDataItem();
+        merge.execute(items);
+    }
+
     private RecyclerView.ViewHolder createCommentViewHolder(ViewGroup parent){
         RecyclerView.ViewHolder vh = new TimelineMessageCommentHolder(mInflater.inflate(R.layout.list_item_timeline_message_comment_list, parent, false), parent);
         return vh;
@@ -104,9 +115,9 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     }
 
     private void bindComment(TimelineMessageCommentHolder holder, final TimelineMessageCommentModel item){
-        AccountManager am = AccountManager.get(mContext);
-        long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-        Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+        final AccountManager am = AccountManager.get(mContext);
+        final long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+        final Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
                 new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
                 GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
                 new String[]{String.valueOf(uid)},
@@ -128,22 +139,12 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             holder.mMessage.setTextColor(ContextCompat.getColor(mContext, R.color.GrappBlackDark));
             holder.mLastUpdate.setTextColor(ContextCompat.getColor(mContext, R.color.GrappBlackDark));
         }
-        cursorUserId.close();
         holder.mCardView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 List<String> items = new ArrayList<String>();
-                AccountManager am = AccountManager.get(mContext);
-                long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-                Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
-                        new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
-                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
-                        new String[]{String.valueOf(uid)},
-                        null);
-                if (cursorUserId == null || !cursorUserId.moveToFirst())
-                    return false;
-                if (Long.valueOf(item._createId) != cursorUserId.getLong(0))
+                if (!cursorUserId.moveToFirst() || Long.valueOf(item._createId) != cursorUserId.getLong(0))
                     return false;
                 items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions_user)));
                 String[] actions = new String[items.size()];
@@ -170,6 +171,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 return true;
             }
         });
+        cursorUserId.close();
     }
 
     private void messageCommentEdit(final TimelineMessageCommentModel item){
@@ -355,4 +357,59 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             comment = (TextInputEditText) itemView.findViewById(R.id.comment);
         }
     }
+
+    private class MergeDataItem extends AsyncTask<Collection<TimelineMessageCommentModel>, Void, Collection<TimelineMessageCommentModel>> {
+
+        @Override
+        protected void onPostExecute(Collection<TimelineMessageCommentModel> timelineModels) {
+            super.onPostExecute(timelineModels);
+            mComments.clear();
+            notifyDataSetChanged();
+            mComments.addAll(timelineModels);
+            notifyDataSetChanged();
+        }
+
+        @Override
+        protected Collection<TimelineMessageCommentModel> doInBackground(Collection<TimelineMessageCommentModel>... params) {
+            boolean exist;
+            if (params == null || params.length < 1)
+                throw new IllegalArgumentException();
+
+            ArrayList<TimelineMessageCommentModel> timeline = new ArrayList<>();
+            Collection<TimelineMessageCommentModel> newItems = params[0];
+
+            for (TimelineMessageCommentModel item : newItems) {
+                timeline.add(item);
+            }
+            for (TimelineMessageCommentModel model : mComments) {
+                exist = false;
+                for (TimelineMessageCommentModel item : newItems) {
+                    if (item._id == model._id)
+                        exist = true;
+                }
+                if (!exist)
+                    timeline.add(model);
+            }
+            Collections.sort(timeline, new StringDateComparator());
+            return timeline;
+        }
+
+        class StringDateComparator implements Comparator<TimelineMessageCommentModel>
+        {
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+
+            @Override
+            public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
+
+                try {
+                    return dateFormat.parse(o2._lastupdate).compareTo(dateFormat.parse(o1._lastupdate));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+                return -1;
+            }
+        }
+    }
+
 }
