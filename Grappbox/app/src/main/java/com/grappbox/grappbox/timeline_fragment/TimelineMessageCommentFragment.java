@@ -1,12 +1,14 @@
 package com.grappbox.grappbox.timeline_fragment;
 
 import android.accounts.AccountManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.TextInputEditText;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -18,6 +20,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -57,6 +63,11 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
     public static final int COMMENT_LIMIT = 10;
     public static final int TIMELINE_COMMENT = 0;
     private int loaderPosition = 0;
+    private boolean isFirst = true;
+
+    private ImageView           mAvatar;
+    private ImageButton         mSend;
+    private TextInputEditText   mComment;
 
     public static final String[] projectionMessage = {
             GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID,
@@ -84,17 +95,65 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mAdapter = new TimelineMessageCommentAdapter(getActivity(), mLinearLayoutManager);
         mAdapter.setTimelineModel(parent);
         mRecycler.setAdapter(mAdapter);
+        mLinearLayoutManager.setReverseLayout(true);
         mRecycler.setLayoutManager(mLinearLayoutManager);
+
         mTimelineMessage = (TextView) view.findViewById(R.id.message);
         mTimelineMessage.setText(parent._message);
         mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mLoader = (ProgressBar) view.findViewById(R.id.loader);
         mAdapter.registerAdapterDataObserver(new AdapterObserver());
+
+        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
+        mRefresher.setOnRefreshListener(this);
+        mLoader.setVisibility(View.GONE);
+        mRefresher.setVisibility(View.VISIBLE);
+        mAdapter.setRefreshReceiver(mRefreshReceiver);
+        mAvatar = (ImageView) view.findViewById(R.id.avatar);
+        mSend = (ImageButton) view.findViewById(R.id.reply);
+        mComment = (TextInputEditText) view.findViewById(R.id.comment);
+        mSend.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AccountManager am = AccountManager.get(getContext());
+                final String token = am.getUserData(Session.getInstance(getContext()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
+                Cursor cursorTimelineId = getContext().getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID},
+                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + " =?",
+                        new String[]{String.valueOf(parent._grappboxId)},
+                        null);
+
+                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
+                    return;
+
+                Intent addComment = new Intent(getContext(), GrappboxJustInTimeService.class);
+                mAdapter.setACtion(TimelineMessageCommentAdapter.ACTION_ADD);
+                addComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_COMMENT);
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, mComment.getText().toString());
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Integer.valueOf(parent._grappboxId));
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
+                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_IS_COMMENT, true);
+                getContext().startService(addComment);
+                cursorTimelineId.close();
+                mComment.setText("");
+                InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+            }
+        });
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                Log.v(LOG_TAG, "scrolled");
                 if (dy > 0) {
+                    int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
+                    if (pastVisible <= loaderPosition){
+                        initLoader();
+                        loaderPosition -= COMMENT_LIMIT;
+                    }
+                } else if (dy < 0) {
                     int visibleItemCount = mLinearLayoutManager.getChildCount();
                     int totalItemCount = mLinearLayoutManager.getItemCount();
                     int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
@@ -102,28 +161,17 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                         initLoader();
                         loaderPosition += COMMENT_LIMIT;
                     }
-                } else if (dy < 0) {
-                    int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
-                    if (pastVisible <= loaderPosition){
-                        initLoader();
-                        loaderPosition -= COMMENT_LIMIT;
-                    }
+
                 }
             }
         });
-
-        mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
-        mRefresher.setOnRefreshListener(this);
-        mLoader.setVisibility(View.GONE);
-        mRefresher.setVisibility(View.VISIBLE);
-        mAdapter.setRefreshReceiver(mRefreshReceiver);
         getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
         return view;
     }
 
-    private void initLoader()
+    public void initLoader()
     {
-        getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
+        getLoaderManager().restartLoader(TIMELINE_COMMENT, null, this);
     }
 
     @Override
@@ -149,6 +197,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v(LOG_TAG, "onCreateLoader");
         String offset = String.valueOf(mLinearLayoutManager.findFirstCompletelyVisibleItemPosition());
         String limit = String.valueOf(COMMENT_LIMIT);
         String sortOrder = "datetime(" + GrappboxContract.TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC +
@@ -182,7 +231,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
 
             try {
-                return dateFormat.parse(o2._lastupdate).compareTo(dateFormat.parse(o1._lastupdate));
+                return dateFormat.parse(o1._lastupdate).compareTo(dateFormat.parse(o2._lastupdate));
             } catch (ParseException e) {
                 e.printStackTrace();
             }
@@ -201,12 +250,16 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             } while (data.moveToNext());
             Collections.sort(models, new StringDateComparator());
             mAdapter.mergeItem(models);
+            if (isFirst) {
+                mLinearLayoutManager.scrollToPosition(mAdapter.getSize());
+                isFirst = false;
+            }
         }
     }
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        loader.forceLoad();
     }
 
     class AdapterObserver extends RecyclerView.AdapterDataObserver {

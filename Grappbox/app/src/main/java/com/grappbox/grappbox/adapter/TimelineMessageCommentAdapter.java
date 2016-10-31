@@ -2,40 +2,32 @@ package com.grappbox.grappbox.adapter;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.text.format.Time;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
+import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -50,8 +42,12 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
     private static final String LOG_TAG = TimelineMessageCommentAdapter.class.getSimpleName();
 
+    public static final int LOAD = 0;
+    public static final int ACTION_ADD = 1;
+    public static final int ACTION_EDIT = 2;
+    public static final int ACTION_DELETE = 3;
+
     private static final int    TYPE_MESSAGE_COMMENTS = 0;
-    private static final int    TYPE_MESSAGE_REPLY = 1;
 
     private static final int    TIMELINE_ACTION_EDIT_MESSAGE = 0;
     private static final int    TIMELINE_ACTION_DELETE_MESSAGE = 1;
@@ -63,13 +59,14 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     private LayoutInflater  mInflater;
     private Activity        mContext;
     private LinearLayoutManager mLinearLayoutManager;
-    private boolean isFirst = true;
+    private int _currentAction;
 
     public TimelineMessageCommentAdapter(Activity context, LinearLayoutManager linearLayoutManager) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mComments = new ArrayList<>();
         mLinearLayoutManager = linearLayoutManager;
+        _currentAction = 0;
     }
 
     public void setTimelineModel(TimelineModel model){
@@ -104,8 +101,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         switch (viewType){
             case TYPE_MESSAGE_COMMENTS:
                 return createCommentViewHolder(parent);
-            case TYPE_MESSAGE_REPLY:
-                return new CommentReplyHolder(mInflater.inflate(R.layout.list_item_timeline_message_comment_reply, parent, false));
             default:
                 throw new IllegalArgumentException("Bad viewTYpe : " + viewType);
         }
@@ -113,12 +108,10 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public int getItemViewType(int position) {
-        if (position == getItemCount() - 1)
-            return TYPE_MESSAGE_REPLY;
         return TYPE_MESSAGE_COMMENTS;
     }
 
-    private void bindComment(TimelineMessageCommentHolder holder, final TimelineMessageCommentModel item){
+    private void bindComment(TimelineMessageCommentHolder holder, final TimelineMessageCommentModel item, final int position){
         final AccountManager am = AccountManager.get(mContext);
         final long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
         Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
@@ -164,10 +157,12 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                         switch (which){
 
                             case TIMELINE_ACTION_EDIT_MESSAGE:
+                                mComments.remove(position);
                                 messageCommentEdit(item);
                                 break;
 
                             case TIMELINE_ACTION_DELETE_MESSAGE:
+                                mComments.remove(position);
                                 messageCommentDelete(item);
                                 break;
 
@@ -211,7 +206,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     alertDialog.cancel();
                     return;
                 }
-                mComments.remove(item);
+                _currentAction = ACTION_EDIT;
                 Intent editComment = new Intent(mContext, GrappboxJustInTimeService.class);
                 editComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_COMMENT);
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -253,7 +248,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     alertDialog.cancel();
                     return;
                 }
-                mComments.remove(item);
+                _currentAction = ACTION_DELETE;
                 Intent deleteComment = new Intent(mContext, GrappboxJustInTimeService.class);
                 deleteComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_COMMENT);
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -274,49 +269,15 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         builder.show();
     }
 
-    private void bindReply(final CommentReplyHolder holder)
-    {
-        holder.send.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                AccountManager am = AccountManager.get(mContext);
-                final String token = am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_API_TOKEN);
-                Cursor cursorTimelineId = mContext.getContentResolver().query(GrappboxContract.TimelineMessageEntry.CONTENT_URI,
-                        new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID},
-                        GrappboxContract.TimelineMessageEntry.TABLE_NAME + "." + GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID + " =?",
-                        new String[]{String.valueOf(mParent._grappboxId)},
-                        null);
-
-                if (cursorTimelineId == null || !cursorTimelineId.moveToFirst())
-                    return;
-
-                Intent addComment = new Intent(mContext, GrappboxJustInTimeService.class);
-                addComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_ADD_COMMENT);
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, holder.comment.getText().toString());
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Integer.valueOf(mParent._grappboxId));
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
-                addComment.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_IS_COMMENT, true);
-                mContext.startService(addComment);
-                cursorTimelineId.close();
-                holder.comment.setText("");
-                InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(mContext.getCurrentFocus().getWindowToken(), 0);
-                mLinearLayoutManager.scrollToPosition(mComments.size() + 1);
-            }
-        });
-    }
-
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)){
             case TYPE_MESSAGE_COMMENTS :
-                bindComment((TimelineMessageCommentHolder) holder, mComments.get(position));
+                bindComment((TimelineMessageCommentHolder) holder, mComments.get(position), position);
                 break;
-            case TYPE_MESSAGE_REPLY :
+            /*case TYPE_MESSAGE_REPLY :
                 bindReply((CommentReplyHolder) holder);
-                break;
+                break;*/
             default :
                 throw new IllegalArgumentException("Bad viewType : " + getItemViewType(position));
         }
@@ -324,7 +285,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
     @Override
     public int getItemCount() {
-        return  1 + mComments.size();
+        return  mComments.size();
     }
 
     public void clear(){
@@ -332,6 +293,10 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     }
 
     public int getSize() {return mComments.size();}
+
+    public void setACtion(int action) {
+        _currentAction = action;
+    }
 
     private static class TimelineMessageCommentHolder extends RecyclerView.ViewHolder {
 
@@ -355,20 +320,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         }
     }
 
-    private static class CommentReplyHolder extends RecyclerView.ViewHolder{
-
-        public ImageView            avatar;
-        public ImageButton          send;
-        public TextInputEditText    comment;
-
-        public CommentReplyHolder(View itemView){
-            super(itemView);
-            avatar = (ImageView) itemView.findViewById(R.id.avatar);
-            send = (ImageButton) itemView.findViewById(R.id.reply);
-            comment = (TextInputEditText) itemView.findViewById(R.id.comment);
-        }
-    }
-
     private class MergeDataItem extends AsyncTask<Collection<TimelineMessageCommentModel>, Void, Collection<TimelineMessageCommentModel>> {
 
         @Override
@@ -378,8 +329,9 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             notifyDataSetChanged();
             mComments.addAll(timelineModels);
             notifyDataSetChanged();
-            if (isFirst) {
-                mLinearLayoutManager.scrollToPosition(mComments.size() + 1);
+            if (_currentAction == LOAD || _currentAction == ACTION_ADD || _currentAction == ACTION_EDIT) {
+                mLinearLayoutManager.scrollToPosition(0);
+                _currentAction = -1;
             }
         }
 
@@ -417,7 +369,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
 
                 try {
-                    return dateFormat.parse(o1._lastupdate).compareTo(dateFormat.parse(o2._lastupdate));
+                    return dateFormat.parse(o2._lastupdate).compareTo(dateFormat.parse(o1._lastupdate));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

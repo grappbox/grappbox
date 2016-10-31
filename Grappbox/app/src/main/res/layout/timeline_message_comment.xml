@@ -1,43 +1,99 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ProgressBar
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="150dp"
-        android:indeterminateTint="@color/GrappOrange"
-        android:id="@+id/loader"
-        android:indeterminate="true" />
+        android:layout_above="@+id/footer">
 
-    <TextView
-        android:padding="15dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/GrappOrange"
-        android:textAlignment="textStart"
-        android:textColor="@color/GrappWhiteLight"
-        android:textAppearance="@style/EmphasisTextView"
-        android:text="Timeline message"
-        android:id="@+id/message"
-        />
-
-    <android.support.v4.widget.SwipeRefreshLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/refresh"
-        tools:context="com.grappbox.grappbox.bugtracker_fragments.TimelineListFragment"
-        android:visibility="gone">
-
-        <android.support.v7.widget.RecyclerView
+        <ProgressBar
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:id="@+id/scrollable_content"/>
+            android:padding="150dp"
+            android:indeterminateTint="@color/GrappOrange"
+            android:id="@+id/loader"
+            android:indeterminate="true" />
 
-    </android.support.v4.widget.SwipeRefreshLayout>
+        <TextView
+            android:padding="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/GrappOrange"
+            android:textAlignment="textStart"
+            android:textColor="@color/GrappWhiteLight"
+            android:textAppearance="@style/EmphasisTextView"
+            android:text="Timeline message"
+            android:id="@+id/message"
+            />
 
-</LinearLayout>
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/refresh"
+            tools:context="com.grappbox.grappbox.bugtracker_fragments.TimelineListFragment"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/scrollable_content" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/footer"
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/GrappWhiteMedium">
+
+        <ImageView
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:src="@drawable/default_logo_avatar"
+            android:padding="5dp"
+            android:id="@+id/avatar"
+            android:focusable="true"
+            android:focusableInTouchMode="true"/>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_weight="1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+            <android.support.design.widget.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/word_reply"
+                android:id="@+id/comment"
+                android:inputType="textMultiLine"
+                android:nextFocusUp="@id/avatar"
+                android:nextFocusLeft="@id/avatar"
+                />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <ImageButton
+            android:id="@+id/reply"
+            android:layout_weight="3"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_comment"
+            android:background="@color/GrappTransparent"
+            android:scaleX="-1"
+            android:tint="@color/GrappBlackLight"/>
+    </LinearLayout>
+
+</RelativeLayout>
+
