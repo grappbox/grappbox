@@ -12,6 +12,7 @@ import android.support.design.widget.TextInputEditText;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.format.Time;
 import android.util.Log;
@@ -61,11 +62,14 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     private RefreshReceiver mRefreshReceiver;
     private LayoutInflater  mInflater;
     private Activity        mContext;
+    private LinearLayoutManager mLinearLayoutManager;
+    private boolean isFirst = true;
 
-    public TimelineMessageCommentAdapter(Activity context) {
+    public TimelineMessageCommentAdapter(Activity context, LinearLayoutManager linearLayoutManager) {
         mContext = context;
         mInflater = LayoutInflater.from(context);
         mComments = new ArrayList<>();
+        mLinearLayoutManager = linearLayoutManager;
     }
 
     public void setTimelineModel(TimelineModel model){
@@ -117,7 +121,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     private void bindComment(TimelineMessageCommentHolder holder, final TimelineMessageCommentModel item){
         final AccountManager am = AccountManager.get(mContext);
         final long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-        final Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+        Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
                 new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
                 GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
                 new String[]{String.valueOf(uid)},
@@ -144,7 +148,12 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             public boolean onLongClick(View v) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 List<String> items = new ArrayList<String>();
-                if (!cursorUserId.moveToFirst() || Long.valueOf(item._createId) != cursorUserId.getLong(0))
+                Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
+                        new String[]{String.valueOf(uid)},
+                        null);
+                if (cursorUserId == null || !cursorUserId.moveToFirst() || Long.valueOf(item._createId) != cursorUserId.getLong(0))
                     return false;
                 items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions_user)));
                 String[] actions = new String[items.size()];
@@ -168,6 +177,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     }
                 });
                 builder.show();
+                cursorUserId.close();
                 return true;
             }
         });
@@ -201,6 +211,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     alertDialog.cancel();
                     return;
                 }
+                mComments.remove(item);
                 Intent editComment = new Intent(mContext, GrappboxJustInTimeService.class);
                 editComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_COMMENT);
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -211,7 +222,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 editComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                 mContext.startService(editComment);
                 cursorTimelineId.close();
-
             }
         });
         builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
@@ -243,6 +253,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                     alertDialog.cancel();
                     return;
                 }
+                mComments.remove(item);
                 Intent deleteComment = new Intent(mContext, GrappboxJustInTimeService.class);
                 deleteComment.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_DELETE_COMMENT);
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -252,7 +263,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 deleteComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
                 mContext.startService(deleteComment);
                 cursorTimelineId.close();
-
             }
         });
         builder.setNegativeButton(R.string.negative_response, new DialogInterface.OnClickListener() {
@@ -293,6 +303,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
                 holder.comment.setText("");
                 InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mContext.getCurrentFocus().getWindowToken(), 0);
+                mLinearLayoutManager.scrollToPosition(mComments.size() + 1);
             }
         });
     }
@@ -367,6 +378,9 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             notifyDataSetChanged();
             mComments.addAll(timelineModels);
             notifyDataSetChanged();
+            if (isFirst) {
+                mLinearLayoutManager.scrollToPosition(mComments.size() + 1);
+            }
         }
 
         @Override
@@ -384,7 +398,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             for (TimelineMessageCommentModel model : mComments) {
                 exist = false;
                 for (TimelineMessageCommentModel item : newItems) {
-                    if (item._id == model._id)
+                    if (item._id.equals(model._id))
                         exist = true;
                 }
                 if (!exist)
@@ -403,7 +417,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
 
                 try {
-                    return dateFormat.parse(o2._lastupdate).compareTo(dateFormat.parse(o1._lastupdate));
+                    return dateFormat.parse(o1._lastupdate).compareTo(dateFormat.parse(o2._lastupdate));
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }

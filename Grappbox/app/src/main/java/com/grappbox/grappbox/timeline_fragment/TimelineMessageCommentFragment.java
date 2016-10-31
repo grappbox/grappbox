@@ -79,11 +79,11 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                              @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.timeline_message_comment, container, false);
         parent = getActivity().getIntent().getParcelableExtra(TimelineMessageCommentActivity.EXTRA_TIMELINE_MODEL);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
         mRecycler = (RecyclerView) view.findViewById(R.id.scrollable_content);
-        mAdapter = new TimelineMessageCommentAdapter(getActivity());
+        mAdapter = new TimelineMessageCommentAdapter(getActivity(), mLinearLayoutManager);
         mAdapter.setTimelineModel(parent);
         mRecycler.setAdapter(mAdapter);
-        mLinearLayoutManager = new LinearLayoutManager(getContext());
         mRecycler.setLayoutManager(mLinearLayoutManager);
         mTimelineMessage = (TextView) view.findViewById(R.id.message);
         mTimelineMessage.setText(parent._message);
@@ -200,8 +200,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                 models.add(new TimelineMessageCommentModel(getActivity(), data));
             } while (data.moveToNext());
             Collections.sort(models, new StringDateComparator());
-            AdditionalDataLoader task = new AdditionalDataLoader();
-            task.execute(models);
+            mAdapter.mergeItem(models);
         }
     }
 
@@ -216,23 +215,4 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             super.onChanged();
         }
     }
-
-    private class AdditionalDataLoader extends AsyncTask<Collection<TimelineMessageCommentModel>, Void, Collection<TimelineMessageCommentModel>> {
-
-        @Override
-        protected void onPostExecute(Collection<TimelineMessageCommentModel> timelineModels) {
-            super.onPostExecute(timelineModels);
-            mAdapter.clear();
-            mAdapter.add(timelineModels);
-            mLinearLayoutManager.scrollToPosition(mAdapter.getSize());
-        }
-
-        @Override
-        protected Collection<TimelineMessageCommentModel> doInBackground(Collection<TimelineMessageCommentModel>... params) {
-            if (params == null || params.length < 1)
-                throw new IllegalArgumentException();
-            return params[0];
-        }
-    }
-
 }

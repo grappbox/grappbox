@@ -243,7 +243,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         final boolean isExpanded = position == mExpandedPosition;
         final AccountManager am = AccountManager.get(mContext);
         final long uid = Long.parseLong(am.getUserData(Session.getInstance(mContext).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-        final Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+        Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
                 new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
                 GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
                 new String[]{String.valueOf(uid)},
@@ -301,7 +301,12 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
                 List<String> items = new ArrayList<String>();
                 items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions)));
-                if (!cursorUserId.moveToFirst())
+                Cursor cursorUserId = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI,
+                        new String[] {GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID},
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID + " =?",
+                        new String[]{String.valueOf(uid)},
+                        null);
+                if (cursorUserId == null || !cursorUserId.moveToFirst())
                     return false;
                 if (Long.valueOf(item._createID) == cursorUserId.getLong(0))
                     items.addAll(Arrays.asList(mContext.getResources().getStringArray(R.array.labels_timeline_actions_user)));
@@ -335,6 +340,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     }
                 });
                 builder.show();
+                cursorUserId.close();
                 return true;
             }
         });

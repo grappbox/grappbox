@@ -71,4 +71,12 @@ public class TimelineMessageCommentModel implements Parcelable {
         dest.writeString(_comment);
         dest.writeString(_lastupdate);
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof TimelineMessageCommentModel){
+            return (Integer.valueOf(_id) == Integer.valueOf(((TimelineMessageCommentModel) obj)._id));
+        }
+        return false;
+    }
 }
