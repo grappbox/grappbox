@@ -33,6 +33,7 @@ import android.widget.Toast;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.bugtracker_fragments.NewBugActivity;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
@@ -229,6 +230,14 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         mContext.startActivity(launchMessageComment);
     }
 
+    private void launchBugtrackerActivity(final TimelineModel item){
+        Intent toBugtracker = new Intent(mContext, NewBugActivity.class);
+        toBugtracker.setAction(NewBugActivity.ACTION_NEW_FROM_TIMELINE);
+        toBugtracker.putExtra(NewBugActivity.EXTRA_TITLE_BUG, item._title);
+        toBugtracker.putExtra(NewBugActivity.EXTRA_MESSAGE_BUG, item._message);
+        mContext.startActivity(toBugtracker);
+    }
+
     private void bindTimelineEntry(final TimelineModel item, final TimelineHolder holder, final int position){
         final boolean isExpanded = position == mExpandedPosition;
         holder.mTitle.setText(item._title);
@@ -262,6 +271,12 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 messageDelete(item);
             }
         });
+        holder.mToBugtracker.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                launchBugtrackerActivity(item);
+            }
+        });
         holder.mListView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
@@ -290,6 +305,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 break;
 
                             case TIMELINE_ACTION_ADD_TO_BUGTRACKER:
+                                launchBugtrackerActivity(item);
                                 break;
 
                             case TIMELINE_ACTION_EDIT_MESSAGE:

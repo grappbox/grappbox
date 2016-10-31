@@ -28,9 +28,13 @@ import java.util.List;
 public class NewBugActivity extends AppCompatActivity {
     public static final String ACTION_EDIT = "com.grappbox.grappbox.bugtracker_fragements.ACTION_EDIT";
     public static final String ACTION_NEW = "com.grappbox.grappbox.bugtracker_fragements.ACTION_NEW";
+    public static final String ACTION_NEW_FROM_TIMELINE = "com.grappbox.grappbox.bugtracker_fragements.ACTION_NEW_FROM_TIMELINE";
 
     public static final String EXTRA_MODEL = "com.grappbox.grappbox.bugtracker_fragments.EXTRA_MODEL";
     public static final String EXTRA_PROJECT_ID = "com.grappbox.grappbox.bugtracker_fragments.EXTRA_PROJECT_ID";
+    public static final String EXTRA_TITLE_BUG = "com.grappbox.grappbox.bugtracker_fragments.EXTRA_TITLE_BUG";
+    public static final String EXTRA_MESSAGE_BUG = "com.grappbox.grappbox.bugtracker_fragments.EXTRA_MESSAGE_BUG";
+
     private boolean mIsEditMode;
     private BugModel mModel = null;
     private long mProjectID = -1;
@@ -59,14 +63,19 @@ public class NewBugActivity extends AppCompatActivity {
         mIsEditMode = getIntent().getAction().equals(ACTION_EDIT);
         mTitle = (TextView) findViewById(R.id.title);
         mDescription = (TextView) findViewById(R.id.description);
+        final String action = getIntent().getAction();
 
-        if (mIsEditMode){
+        if (ACTION_EDIT.equals(action)){
             mModel = getIntent().getParcelableExtra(EXTRA_MODEL);
             mTitle.setText(mModel.title);
             mDescription.setText(mModel.desc);
-        }
-        else
+        } else if (ACTION_NEW_FROM_TIMELINE.equals(action)){
+            mTitle.setText(getIntent().getStringExtra(EXTRA_TITLE_BUG));
+            mDescription.setText(getIntent().getStringExtra(EXTRA_MESSAGE_BUG));
+        } else {
             mProjectID = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
+        }
+
     }
 
     public void registerActivityActionCallback(BugReceiver.Callback action){
