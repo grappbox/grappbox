@@ -413,6 +413,14 @@ class UserController extends RolesAndTokenVerificationController
 	*			"return_message": "User - putbasicinformations - Bad Token"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: oldPassword
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.4",
+	*			"return_message": "User - putbasicinformations - Bad Parameter: oldPassword"
+	*		}
+	*	}
 	*/
 	/**
 	* @api {put} /V0.2/user/basicinformations/:token Update the basic informations of the user connected
@@ -557,12 +565,11 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setTwitter($content->twitter);
 		if (array_key_exists('password', $content) && array_key_exists('oldPassword', $content))
 		{
-			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->oldPassword))
-			{
-				$encoder = $this->container->get('security.password_encoder');
-				$encoded = $encoder->encodePassword($user, $content->password);
-				$user->setPassword($encoded);
-			}
+			$encoder = $this->container->get('security.password_encoder');
+			if (!($encoder->isPasswordValid($user, $content->oldPassword)))
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: oldPassword");
+			$encoded = $encoder->encodePassword($user, $content->password);
+			$user->setPassword($encoded);
 		}
 
 		$em->flush();
