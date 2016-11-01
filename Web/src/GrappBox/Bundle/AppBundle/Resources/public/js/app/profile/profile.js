@@ -6,72 +6,143 @@
 
 /**
 * Controller definition
-* APP profile page content
+* APP profile settings
 *
 */
-app.controller("profileController", ["$scope", "$http", "$rootScope", "Notification",
-    function($scope, $http, $rootScope, Notification) {
+app.controller("ProfileController", ["$http", "Notification", "$rootScope", "$scope",
+    function($http, Notification, $rootScope, $scope) {
 
-	/* ==================== INITIALIZATION ==================== */
+  /* ==================== INITIALIZATION ==================== */
 
-	// Scope variables initialization
-	$scope.data = { onLoad: true, userInformation: "", isValid: false };
-	$scope.data.toUpdate = { firstname: "", lastname: "", birthday: "", avatar: "", email: "", phone: "", country: "", linkedin: "", viadeo: "", twitter: "" };
-
-	// Get information for current user
-  $http.get($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }})
-	.then(function userInformationReceived(response) {
-		$scope.data.userInformation = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
-		$scope.data.isValid = true;
-		$scope.data.onLoad = false;
-
-		// Bind existing data to view
-		$scope.data.toUpdate.firstname = ($scope.data.userInformation.firstname != "" ? $scope.data.userInformation.firstname : "");
-		$scope.data.toUpdate.lastname = ($scope.data.userInformation.lastname != "" ? $scope.data.userInformation.lastname : "");
-		$scope.data.toUpdate.birthday = ($scope.data.userInformation.birthday != "" ? new Date($scope.data.userInformation.birthday) : "");
-		$scope.data.toUpdate.email = ($scope.data.userInformation.email != "" ? $scope.data.userInformation.email : "");
-		$scope.data.toUpdate.phone = ($scope.data.userInformation.phone != "" ? $scope.data.userInformation.phone : "");
-		$scope.data.toUpdate.country = ($scope.data.userInformation.country != "" ? $scope.data.userInformation.country : "");
-		$scope.data.toUpdate.linkedin = ($scope.data.userInformation.linkedin != "" ? $scope.data.userInformation.linkedin : "");
-		$scope.data.toUpdate.viadeo = ($scope.data.userInformation.viadeo != "" ? $scope.data.userInformation.viadeo : "");
-		$scope.data.toUpdate.twitter = ($scope.data.userInformation.twitter != "" ? $scope.data.userInformation.twitter : "");
-	},
-	function userInformationNotReceived(response) {
-		$scope.data.userInformation = null;
-		$scope.data.isValid = false;
-		$scope.data.onLoad = false;
-
-		if (response.data.info && response.data.info.return_code == "7.1.3")
-			context.rootScope.onUserTokenError();
-	});
+  // Scope variables initialization
+  $scope.view = { loaded: false, valid: false };
+  $scope.profile = { update: "", updatePassword: "", passwordBlur: "" }
+  $scope.user = { firstname: "", lastname: "", birthday: "", avatar: "", email: "", phone: "", country: "", linkedin: "", viadeo: "", twitter: "" };
+  $scope.local = { firstname: "", lastname: "", birthday: "", avatar: "", email: "", phone: "", country: "", linkedin: "", viadeo: "", twitter: "" };
+  $scope.password = { current: "", new: "", confirmation: "", error: { current: false, new: false } };
+  $scope.disabled = { update: false, updatePassword: false }
 
 
 
-	/* ==================== UPDATE OBJECT (PROFILE) ==================== */
+  /* ==================== GET USER DATA ==================== */
 
-	// "Update" button handler
-	$scope.view_updateUserProfile = function() {
-		$http.put($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }}, {
-			data: {
-				firstname: ($scope.data.toUpdate.firstname != "" ? $scope.data.toUpdate.firstname : null),
-				lastname: ($scope.data.toUpdate.lastname != "" ? $scope.data.toUpdate.lastname : null),
-				birthday: ($scope.data.toUpdate.birthday != "" ? $scope.data.toUpdate.birthday : null),
-				avatar: ($scope.data.toUpdate.avatar.base64 != "" ? $scope.data.toUpdate.avatar.base64 : null),
-				email: ($scope.data.toUpdate.email != "" ? $scope.data.toUpdate.email : null),
-				phone: ($scope.data.toUpdate.phone != "" ? $scope.data.toUpdate.phone : null),
-				country: ($scope.data.toUpdate.country != "" ? $scope.data.toUpdate.country : null),
-				linkedin: ($scope.data.toUpdate.linkedin != "" ? $scope.data.toUpdate.linkedin : null),
-				viadeo: ($scope.data.toUpdate.viadeo != "" ? $scope.data.toUpdate.viadeo : null),
-				twitter: ($scope.data.toUpdate.twitter != "" ? $scope.data.toUpdate.twitter : null)
-			}})
-		.then(function userInformationUpdateSuccess(response) {
-			Notification.success({ message: "Update success.", delay: 5000 });
-		},
-		function userInformationUpdateFailure(response) {
-			if (response.data.info && response.data.info.return_code == "7.1.3")
-				context.rootScope.onUserTokenError();
-			else
-				Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
-		})};
+  var userDataReceived = function(response) {
+    $scope.view.loaded = true;
+    $scope.view.valid = true;
+    $scope.user = (!angular.isUndefined(response.data.data) ? response.data.data : null);
+
+    $scope.local.firstname = ($scope.user.firstname != "" ? $scope.user.firstname : "");
+    $scope.local.lastname = ($scope.user.lastname != "" ? $scope.user.lastname : "");
+    $scope.local.birthday = ($scope.user.birthday != "" ? new Date($scope.user.birthday) : "");
+    $scope.local.email = ($scope.user.email != "" ? $scope.user.email : "");
+    $scope.local.phone = ($scope.user.phone != "" ? $scope.user.phone : "");
+    $scope.local.country = ($scope.user.country != "" ? $scope.user.country : "");
+    $scope.local.linkedin = ($scope.user.linkedin != "" ? $scope.user.linkedin : "");
+    $scope.local.viadeo = ($scope.user.viadeo != "" ? $scope.user.viadeo : "");
+    $scope.local.twitter = ($scope.user.twitter != "" ? $scope.user.twitter : "");
+  };
+
+  var userDataNotReceived = function(response) {
+    $scope.view.loaded = true;
+    $scope.view.valid = false;
+    $scope.user = null;
+    $scope.local = null;
+
+    if (!angular.isUndefined(response.data.info.return_code) && response.data.info.return_code == "7.1.3")
+      $rootScope.onUserTokenError();
+  };
+
+  // Get current user's data
+  $http.get($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }}).then(
+    function onSuccess(response) { userDataReceived(response) },
+    function onError(response) { userDataNotReceived(response) }
+  );
+
+
+
+	/* ==================== UPDATE USER PROFILE ==================== */
+
+  var userDataUpdated = function() {
+    $scope.disabled.update = false;
+    Notification.success({ title: "Profile", message: "Update success.", delay: 5000 });
+  };
+
+  var userDataNotUpdated = function(response) {
+    $scope.disabled.update = false;
+    if (!angular.isUndefined(response.data.info.return_code) && response.data.info.return_code == "7.1.3")
+      $rootScope.onUserTokenError();
+    else {
+      $scope.view.loaded = true;
+      $scope.view.valid = false;
+    }
+  };
+
+  // "Update" (profile) button handler
+  $scope.profile.update = function() {
+    if (!$scope.disabled.update && $scope.local.firstname && $scope.local.lastname) {
+      $scope.disabled.update = true;
+      $http.put($rootScope.api.url + "/user",
+        { data: { firstname: $scope.local.firstname, lastname: $scope.local.lastname, birthday: $scope.local.birthday, avatar: $scope.local.avatar, email: $scope.local.email,
+                  phone: $scope.local.phone, country: $scope.local.country, linkedin: $scope.local.linkedin, viadeo: $scope.local.viadeo, twitter: $scope.local.twitter }},
+        { headers: { 'Authorization': $rootScope.user.token }}).then(
+        function onSuccess() { userDataUpdated() },
+        function onError(response) { userDataNotUpdated(response) }
+      );
+    }
+  };
+
+
+
+  /* ==================== UPDATE USER PASSWORD ==================== */
+
+  var userPasswordUpdated = function() {
+    $scope.disabled.updatePassword = false;
+    $scope.password.error.current = false;
+    $scope.password.error.new = false;
+    $scope.password.current = "";
+    $scope.password.new = "";
+    $scope.password.confirmation = "";
+    Notification.success({ title: "Profile", message: "Password successfully changed.", delay: 5000 });
+  };
+
+  var userPasswordNotUpdated = function(response) {
+    $scope.disabled.updatePassword = false;
+    if (!angular.isUndefined(response.data.info.return_code)) {
+      switch (response.data.info.return_code) {
+        case "7.1.3":
+        $rootScope.onUserTokenError();
+        break;
+
+        case "7.1.4":
+        $scope.password.error.current = 2;
+        break;
+
+        default:
+        $scope.view.valid = false;
+        break;        
+      }
+    }
+    else
+      $scope.view.valid = false;
+  };
+
+  // "Password confirmation" input focusout handler
+  $scope.profile.passwordChange = function() {
+    $scope.password.error.current = (!$scope.password.current ? 1 : false);
+    $scope.password.error.new = (!$scope.password.new ? 1 : ($scope.password.new != $scope.password.confirmation ? 2 : ($scope.password.new.length < 8 ? 3 : false)));
+  };
+
+  // "Change" (password) button handler
+  $scope.profile.updatePassword = function() {
+    if (!$scope.disabled.updatePassword && !$scope.password.error.current && !$scope.password.error.new) {
+      $scope.disabled.updatePassword = true;
+      $http.put($rootScope.api.url + "/user",
+        { data: { oldPassword: $scope.password.current, password: $scope.password.new }},
+        { headers: { 'Authorization': $rootScope.user.token }}).then(
+        function onSuccess() { userPasswordUpdated() },
+        function onError(response) { userPasswordNotUpdated(response) }
+      );
+    }
+  };
 
 }]);
