@@ -70,8 +70,7 @@ a { color: #333; }
 
 .well a,
 a.raised { color: #4bf; }
-.well,
-p { -webkit-transition: 0.3s ease all; -moz-transition: 0.3s ease all; -o-transition: 0.3s ease all; -ms-transition: 0.3s ease all; transition: 0.3s ease all; }
+.well { -webkit-transition: 0.3s ease all; -moz-transition: 0.3s ease all; -o-transition: 0.3s ease all; -ms-transition: 0.3s ease all; transition: 0.3s ease all; }
 
 .well a:active,
 .well a:focus,
