@@ -6,8 +6,11 @@ php:
   - '7.0'
   - hhvm
   - nightly
+env:
+  global:
+    - SYMFONY_ENV=prod
 sudo: required
 script:
-  - cd ./Grappbox/Web
-  - chmod +x ./composer.prod.sh
+  - cd ./Web
+  - chmod +x composer.prod.sh
   - ./composer.prod.sh
