@@ -3,9 +3,11 @@
 > *A strong project manager with truly useful features. Everything you need, everywhere.*
 
 ## Web
+[![Build Status](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-dev)](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-dev)
+[![Build Status](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)
+
 Built with Symfony (2.8 LTS minimum) and AngularJS (1.5.x minimum).<br>
 Requires PHP >= 5.6.
-
 
 #### Installation (prod)
 Use the following commands to deploy a **prod** version:
