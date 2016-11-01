@@ -70,7 +70,7 @@ public class GrappboxProvider extends ContentProvider {
     public static final int ROLE_ASSIGNATION_BY_GRAPPBOX_ROLE_ID = 192;
     public static final int ROLE_ASSIGNATION_BY_USER_ID = 193;
     public static final int ROLE_ASSIGNATION_BY_GRAPPBOX_USER_ID = 194;
-    public static final int ROLE_ASSIGNATION_BY_USER_ID_AND_PROJECT_ID = 195;
+    public static final int ROLE_ASSIGNATION_WITH_USER_ID_AND_PROJECT_ID = 195;
 
     public static final int TAG = 200;
     public static final int TAG_BY_ID = 201;
@@ -166,7 +166,7 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE_ASSIGNATION + "/role/*", ROLE_ASSIGNATION_BY_GRAPPBOX_ROLE_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE_ASSIGNATION + "/user/#", ROLE_ASSIGNATION_BY_USER_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE_ASSIGNATION + "/user/*", ROLE_ASSIGNATION_BY_GRAPPBOX_USER_ID);
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE_ASSIGNATION + "/projectuser/#/#", ROLE_ASSIGNATION_BY_USER_ID_AND_PROJECT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE_ASSIGNATION + "/projectuser", ROLE_ASSIGNATION_WITH_USER_ID_AND_PROJECT_ID);
 
         //Tag related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TAG, TAG);
@@ -272,7 +272,7 @@ public class GrappboxProvider extends ContentProvider {
             case ROLE_ASSIGNATION_BY_GRAPPBOX_USER_ID:
             case ROLE_ASSIGNATION_BY_USER_ID:
                 return GrappboxContract.RolesAssignationEntry.CONTENT_TYPE;
-            case ROLE_ASSIGNATION_BY_USER_ID_AND_PROJECT_ID:
+            case ROLE_ASSIGNATION_WITH_USER_ID_AND_PROJECT_ID:
                 return GrappboxContract.RolesAssignationEntry.CONTENT_ITEM_TYPE;
 
             case TAG:
@@ -467,8 +467,8 @@ public class GrappboxProvider extends ContentProvider {
             case ROLE_ASSIGNATION_BY_GRAPPBOX_USER_ID:
                 retCursor = RoleAssignationCursors.query_RoleAssignationByGrappboxUserId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
-            case ROLE_ASSIGNATION_BY_USER_ID_AND_PROJECT_ID:
-                retCursor = RoleAssignationCursors.query_RoleAssignationByUserIdAndProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+            case ROLE_ASSIGNATION_WITH_USER_ID_AND_PROJECT_ID:
+                retCursor = RoleAssignationCursors.query_RoleAssignationWithUserIdAndProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG:
                 retCursor = TagCursors.query_Tag(uri, projection, selection, args, sortOrder, mOpenHelper);

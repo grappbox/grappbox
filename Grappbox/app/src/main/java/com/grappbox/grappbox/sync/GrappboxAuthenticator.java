@@ -94,11 +94,21 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             Log.d(LOG_TAG, json.toString());
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty()){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    am.removeAccountExplicitly(account);
+                } else {
+                    am.removeAccount(account, null, null);
+                }
                 return constructLoginIntent(response);
             }
 
             json = new JSONObject(returnedJson);
             if (Utils.Errors.checkAPIError(json)){
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                    am.removeAccountExplicitly(account);
+                } else {
+                    am.removeAccount(account, null, null);
+                }
                 return constructLoginIntent(response);
             }
             data = json.getJSONObject("data");
@@ -112,7 +122,12 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             am.setUserData(account, Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(cal.getTimeInMillis()));
 
         } catch (IOException | JSONException e) {
-            e.printStackTrace();
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+                am.removeAccountExplicitly(account);
+            } else {
+                am.removeAccount(account, null, null);
+            }
+            return constructLoginIntent(response);
         } finally {
             if (connection != null)
                 connection.disconnect();

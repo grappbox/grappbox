@@ -104,6 +104,13 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_SET_PARTICIPANT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT";
     public static final String ACTION_LOGIN = "com.grappbox.grappbox.sync.ACTION_LOGIN";
     public static final String ACTION_UPDATE_USER_SETTINGS = "com.grappbox.grappbox.sync.ACTION_UPDATE_USER_SETTINGS";
+    public static final String ACTION_UPDATE_PROJECT_SETTINGS = "com.grappbox.grappbox.sync.ACTION_UPDATE_PROJECT_SETTINGS";
+    public static final String ACTION_REMOVE_PROJECT = "com.grappbox.grappbox.sync.ACTION_REMOVE_PROJECT";
+    public static final String ACTION_RETRIEVE_PROJECT = "com.grappbox.grappbox.sync.ACTION_RETRIEVE_PROJECT";
+    public static final String ACTION_ADD_USER_TO_PROJECT = "com.grappbox.grappbox.sync.ACTION_ADD_USER_TO_PROJECT";
+    public static final String ACTION_ASSIGN_USER_ROLE = "com.grappbox.grappbox.sync.ACTION_ASSIGN_USER_ROLE";
+    public static final String ACTION_DELETE_USER_FROM_PROJECT = "com.grappbox.grappbox.sync.ACTION_DELETE_USER_FROM_PROJECT";
+    public static final String ACTION_UNASSIGN_USER_ROLE = "com.grappbox.grappbox.sync.ACTION_UNASSIGN_USER_ROLE";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -131,6 +138,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_ADD_PARTICIPANT = "toAdd";
     public static final String EXTRA_DEL_PARTICIPANT = "toDel";
     public static final String EXTRA_COLOR = "color";
+    public static final String EXTRA_ROLE_ID = "role_id";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -238,7 +246,485 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleLogin(intent.getStringExtra(EXTRA_MAIL), Utils.Security.decryptString(intent.getStringExtra(EXTRA_CRYPTED_PASSWORD)), responseObserver);
             } else if (ACTION_UPDATE_USER_SETTINGS.equals(action)){
                 handleUpdateUserSettings(intent.getBundleExtra(EXTRA_BUNDLE), responseObserver);
+            } else if (ACTION_UPDATE_PROJECT_SETTINGS.equals(action)){
+                handleUpdateProjectSettings(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getBundleExtra(EXTRA_BUNDLE), responseObserver);
+            } else if (ACTION_REMOVE_PROJECT.equals(action)){
+                handleRemoveProject(intent.getLongExtra(EXTRA_PROJECT_ID, -1), responseObserver);
+            } else if (ACTION_RETRIEVE_PROJECT.equals(action)){
+                handleRetrieveProject(intent.getLongExtra(EXTRA_PROJECT_ID, -1), responseObserver);
+            } else if (ACTION_ADD_USER_TO_PROJECT.equals(action)){
+                handleAddUserToProject(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_MAIL), responseObserver);
+            } else if (ACTION_ASSIGN_USER_ROLE.equals(action)){
+                handleSetUserRole(intent.getLongExtra(EXTRA_ROLE_ID, -1), intent.getLongExtra(EXTRA_USER_ID, -1), responseObserver);
+            } else if (ACTION_DELETE_USER_FROM_PROJECT.equals(action)){
+                handleRemoveUserFromProject(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_USER_ID, -1), responseObserver);
+            } else if (ACTION_UNASSIGN_USER_ROLE.equals(action)){
+                handleUnassignRole(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_USER_ID, -1), intent.getLongExtra(EXTRA_ROLE_ID, -1), responseObserver);
             }
+        }
+    }
+
+    public void handleUnassignRole(long projectId, long uid, long roleId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor role = null, user = null, project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            role = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID+"=?", new String[]{String.valueOf(roleId)}, null);
+            user = getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI, new String[]{GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.UserEntry._ID+"=?", new String[]{String.valueOf(uid)}, null);
+            if (role == null || !role.moveToFirst() || user == null || !user.moveToFirst() || project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/role/user/"+project.getString(0)+"/"+user.getString(0)+"/"+role.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            getContentResolver().delete(GrappboxContract.RolesAssignationEntry.CONTENT_URI, GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID+"=? AND "+ GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"=?", new String[]{String.valueOf(roleId), String.valueOf(uid)});
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (role != null)
+                role.close();
+            if (user != null)
+                user.close();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    public void handleRemoveUserFromProject(long projectId, long userId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null, user = null, role = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            user = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry._ID+"=?", new String[]{String.valueOf(userId)}, null);
+            role = getContentResolver().query(GrappboxContract.RolesAssignationEntry.buildRoleAssignationWithUIDAndPID(), new String[]{GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID}, GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"=? AND "+ ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID+"=?", new String[]{String.valueOf(userId), String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst() || user == null || !user.moveToFirst() || role == null || !role.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/user/"+project.getString(0)+"/"+user.getString(0));
+            handleUnassignRole(projectId, userId, role.getLong(0), responseObserver);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            getContentResolver().notifyChange(GrappboxContract.UserEntry.buildUserWithProject(), null);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+            if (user != null)
+                user.close();
+            if (role != null)
+                role.close();
+            if (role != null)
+                role.close();
+        }
+    }
+
+    public void handleAddUserToProject(long projectId, String email, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/user");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("POST");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            data.put("id", project.getString(0));
+            data.put("email", email);
+            json.put("data", data);
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            data = json.getJSONObject("data");
+            ContentValues values = new ContentValues();
+            values.put(UserEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+            values.put(UserEntry.COLUMN_FIRSTNAME, data.getString("firstname"));
+            values.put(UserEntry.COLUMN_LASTNAME, data.getString("lastname"));
+            Uri lastIdUri = getContentResolver().insert(UserEntry.CONTENT_URI, values);
+            if (lastIdUri == null)
+                throw new OperationApplicationException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+            long id = Long.parseLong(lastIdUri.getLastPathSegment());
+            Cursor adminRole = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID}, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_NAME+"=?", new String[]{"Admin"}, null);
+            adminRole.moveToFirst();
+            handleSetUserRole(adminRole.getLong(0
+            ), id, responseObserver);
+            handleUserDetailSync(data.getString("id"));
+        } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    public void handleSetUserRole(long roleId, long uid, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor role = null, user = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            role = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID+"=?", new String[]{String.valueOf(roleId)}, null);
+            user = getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI, new String[]{GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.UserEntry._ID+"=?", new String[]{String.valueOf(uid)}, null);
+            if (role == null || !role.moveToFirst() || user == null || !user.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/role/user");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("POST");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            data.put("userId", user.getString(0));
+            data.put("roleId", role.getString(0));
+            json.put("data", data);
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            ContentValues values = new ContentValues();
+            values.put(GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, roleId);
+            values.put(GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
+            getContentResolver().insert(GrappboxContract.RolesAssignationEntry.CONTENT_URI, values);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (role != null)
+                role.close();
+            if (user != null)
+                user.close();
+        }
+    }
+
+    private void syncProjectUserRole(String apiToken, long pid, long uid){
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+        Cursor user = null;
+
+        try {
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(pid)}, null);
+            user = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry._ID+"=?", new String[]{String.valueOf(uid)}, null);
+            if (project == null || user == null || !project.moveToFirst() || !user.moveToFirst())
+                throw new SQLException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/roles/project/user/"+ project.getString(0) + "/" + user.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty())
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
+            JSONObject currentRole = json.getJSONObject("data");
+
+            ContentValues roleValue = new ContentValues();
+            ContentValues roleAssignationValue = new ContentValues();
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("roleId"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_LOCAL_PROJECT_ID, pid);
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_NAME, currentRole.getString("name"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_BUGTRACKER, currentRole.getString("bugtracker"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_CLOUD, currentRole.getString("cloud"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_CUSTOMER_TIMELINE, currentRole.getString("customerTimeline"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_TEAM_TIMELINE, currentRole.getString("teamTimeline"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_EVENT, currentRole.getString("event"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_GANTT, currentRole.getString("gantt"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_WHITEBOARD, currentRole.getString("whiteboard"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_TASK, currentRole.getString("task"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_PROJECT_SETTINGS, currentRole.getString("projectSettings"));
+            Uri returnedUri = getContentResolver().insert(GrappboxContract.RolesEntry.CONTENT_URI, roleValue);
+            if (returnedUri == null)
+                throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+            long id = Long.valueOf(returnedUri.getLastPathSegment());
+            if (id <= 0)
+                throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+            roleAssignationValue.put(GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID, id);
+            roleAssignationValue.put(GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID, uid);
+            Cursor roleUser = getContentResolver().query(GrappboxContract.RolesAssignationEntry.CONTENT_URI, new String[]{GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry._ID}, GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID+"=? AND " + GrappboxContract.RolesAssignationEntry.TABLE_NAME + "." + GrappboxContract.RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"=?", new String[]{String.valueOf(id), String.valueOf(uid)}, null);
+            if (roleUser == null || !roleUser.moveToFirst() || roleUser.getCount() <= 0){
+                getContentResolver().insert(GrappboxContract.RolesAssignationEntry.CONTENT_URI, roleAssignationValue);
+            } else {
+                roleUser.close();
+            }
+        } catch (IOException | JSONException | OperationApplicationException | NetworkErrorException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+            if (user != null)
+                user.close();
+        }
+    }
+
+    public void handleRetrieveProject(long projectId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/retrieve/"+project.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            ContentValues values = new ContentValues();
+            values.putNull(ProjectEntry.COLUMN_DATE_DELETED_UTC);
+            values.put(ProjectEntry.COLUMN_GRAPPBOX_ID, project.getString(0));
+            getContentResolver().insert(ProjectEntry.CONTENT_URI, values);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    public void handleRemoveProject(long projectId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/"+project.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            ContentValues values = new ContentValues();
+            Calendar cal = Calendar.getInstance();
+            cal.set(Calendar.DATE, cal.get(Calendar.DATE)+7);
+            values.put(ProjectEntry.COLUMN_DATE_DELETED_UTC, Utils.Date.grappboxFormatter.format(cal.getTime()));
+            values.put(ProjectEntry.COLUMN_GRAPPBOX_ID, project.getString(0));
+            getContentResolver().insert(ProjectEntry.CONTENT_URI, values);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    public void handleUpdateProjectSettings(long projectId, Bundle keys, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/"+project.getString(0));
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            for (String key : keys.keySet()){
+                data.put(key, keys.get(key));
+            }
+            json.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("PUT");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            Log.d(LOG_TAG, returnedJson);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            Log.d(LOG_TAG, returnedJson);
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            data = json.getJSONObject("data");
+            ContentValues values = new ContentValues();
+            values.put(ProjectEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+            for (String key : keys.keySet()){
+                if (!key.equals("password") && !key.equals("oldPassword"))
+                    values.put(Utils.Database.sProjectApiDBMap.get(key), keys.getString(key));
+            }
+            getContentResolver().insert(ProjectEntry.CONTENT_URI, values);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
         }
     }
 

@@ -11,10 +11,60 @@
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <EditTextPreference
-        android:defaultValue="Default value"
-        android:selectAllOnFocus="true"
-        android:singleLine="true"
-        android:title="Edit text preference"
-        android:key="edit_text_preference_1" />
+    <PreferenceCategory android:title="Basic Informations">
+
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Name"
+            android:key="name" />
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="false"
+            android:title="Desription"
+            android:key="description" />
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Company Name"
+            android:key="company" />
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Email"
+            android:key="email"
+            android:inputType="textEmailAddress" />
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Phone"
+            android:key="phone"
+            android:inputType="phone" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Social Networks">
+
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Facebook"
+            android:key="facebook" />
+        <EditTextPreference
+            android:persistent="false"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Twitter"
+            android:key="twitter" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Danger Zone">
+        <com.grappbox.grappbox.custom_preferences.PasswordPreference android:title="Change cloud password" android:key="password" />
+        <Preference
+            android:title="Delete project"
+            android:key="delete" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -19,9 +19,11 @@ import android.database.Cursor;
 import android.database.DatabaseUtils;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.EditTextPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -97,7 +99,6 @@ public class UserSettingsActivity extends AppCompatActivity {
     private static void bindPreferenceSummaryToValue(Preference preference) {
         // Set the listener to watch for value changes.
         preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListener);
-
         // Trigger the listener immediately with the preference's
         // current value.
         sBindPreferenceSummaryToValueListener.onPreferenceChange(preference,"");
@@ -152,10 +153,14 @@ public class UserSettingsActivity extends AppCompatActivity {
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
             final String[] preferences = {"firstname", "lastname", "birthday", "phone", "country", "twitter", "linkedin"};
-            DatabaseUtils.dumpCursor(data);
+
             if (data.moveToFirst())
                 for (String pref : preferences){
-                    findPreference(pref).setSummary(data.getString(data.getColumnIndex(Utils.Database.sUserApiDBMap.get(pref))));
+                    Preference view = findPreference(pref);
+                    String value = data.getString(data.getColumnIndex(Utils.Database.sUserApiDBMap.get(pref)));
+                    view.setSummary(value);
+                    view.setDefaultValue(value);
+                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit().putString(pref, value).apply();
                 }
         }
 

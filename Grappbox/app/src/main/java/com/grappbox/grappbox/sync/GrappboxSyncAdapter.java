@@ -544,7 +544,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 syncTimeline(token, projectId);
             } while (projectsCursor.moveToNext());
 
-        } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {
+        } catch (IOException | JSONException | OperationApplicationException | NumberFormatException | AuthenticatorException e) {
             e.printStackTrace();
         } finally {
             if (projectsCursor != null)

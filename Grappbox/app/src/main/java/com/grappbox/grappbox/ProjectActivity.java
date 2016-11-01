@@ -50,6 +50,7 @@ import com.grappbox.grappbox.project_fragments.WhiteboardFragment;
 import com.grappbox.grappbox.settings.ProjectSettingsActivity;
 import com.grappbox.grappbox.settings.UserSettingsActivity;
 import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 import com.grappbox.grappbox.sync.GrappboxSyncAdapter;
 
 import java.io.IOException;
@@ -230,6 +231,7 @@ public class ProjectActivity extends AppCompatActivity implements LoaderManager.
                 break;
             case R.id.nav_project_settings:
                 Intent launchProjectSettings = new Intent(this, ProjectSettingsActivity.class);
+                launchProjectSettings.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getIntent().getLongExtra(EXTRA_PROJECT_ID, -1));
                 startActivity(launchProjectSettings);
                 break;
             case R.id.nav_change_project:

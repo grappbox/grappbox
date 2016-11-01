@@ -20,5 +20,10 @@
   -->
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceCategory android:key="user_container" android:title="Users list">
 
+    </PreferenceCategory>
+    <PreferenceCategory android:title="User action">
+        <EditTextPreference android:key="add_user" android:title="Add user" android:inputType="textEmailAddress" />
+    </PreferenceCategory>
 </PreferenceScreen>

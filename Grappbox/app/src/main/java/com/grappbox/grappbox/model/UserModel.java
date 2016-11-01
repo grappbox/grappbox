@@ -13,6 +13,7 @@ import java.util.Objects;
  */
 
 public class UserModel implements Parcelable {
+
     private boolean mAvatarLoaded;
     public long _id;
     public String mFirstname;

@@ -65,13 +65,8 @@ public class RoleAssignationCursors {
         return sQueryBuilder.query(openHelper.getReadableDatabase(), projection, sGrappboxUserIdSelection, new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
     }
 
-    public static Cursor query_RoleAssignationByUserIdAndProjectId(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {
-        List<String> pathSegments = uri.getPathSegments();
-        String[] queryArgs = new String[] {
-                pathSegments.get(pathSegments.size() - 2),
-                pathSegments.get(pathSegments.size() - 1),
-        };
-        return sUserProjectQueryBuilder.query(openHelper.getReadableDatabase(), projection, sUserIdAndProjectIdSelection, queryArgs, null, null, sortOrder);
+    public static Cursor query_RoleAssignationWithUserIdAndProjectId(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {
+        return sUserProjectQueryBuilder.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static Uri insert(@NonNull Uri uri, ContentValues contentValues, GrappboxDBHelper openHelper)

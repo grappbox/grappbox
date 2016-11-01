@@ -318,8 +318,8 @@ public class GrappboxContract {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
 
-        public static Uri buildRoleAssignationWithUIDAndPID(long uid, long pid) {
-            return CONTENT_URI.buildUpon().appendPath("projectuser").appendPath(String.valueOf(uid)).appendPath(String.valueOf(pid)).build();
+        public static Uri buildRoleAssignationWithUIDAndPID() {
+            return CONTENT_URI.buildUpon().appendPath("projectuser").build();
         }
     }
 

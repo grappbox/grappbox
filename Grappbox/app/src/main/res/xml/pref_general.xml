@@ -5,8 +5,8 @@
     <PreferenceCategory android:title="Basic Informations">
 
         <EditTextPreference
+            android:persistent="false"
             android:capitalize="words"
-            android:defaultValue="@string/pref_default_display_name"
             android:inputType="textCapWords"
             android:maxLines="1"
             android:key="firstname"
@@ -14,26 +14,28 @@
             android:singleLine="true"
             android:title="Firstname" />
         <EditTextPreference
+            android:persistent="false"
             android:key="lastname"
             android:capitalize="words"
-            android:defaultValue="@string/pref_default_display_name"
             android:inputType="textCapWords"
             android:maxLines="1"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Lastname" />
         <com.grappbox.grappbox.custom_preferences.DatePreference
+            android:persistent="false"
             android:key="birthday"
             android:title="Birthday"
             android:inputType="textCapWords" />
         <EditTextPreference
+            android:persistent="false"
             android:key="phone"
-            android:defaultValue="Default value"
             android:selectAllOnFocus="true"
             android:singleLine="true"
             android:title="Phone"
             android:inputType="phone" />
         <ListPreference
+            android:persistent="false"
             android:key="country"
             android:defaultValue="1"
             android:title="Country"
@@ -43,6 +45,7 @@
     <PreferenceCategory android:title="Social Media">
 
         <EditTextPreference
+            android:persistent="false"
             android:key="twitter"
             android:defaultValue="Default value"
             android:selectAllOnFocus="true"
@@ -51,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditTextPreference
+            android:persistent="false"
             android:key="linkedin"
             android:defaultValue="Default value"
             android:selectAllOnFocus="true"

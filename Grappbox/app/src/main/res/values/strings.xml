@@ -282,4 +282,12 @@
     <string name="old_password">Old password</string>
     <string name="title_activity_project_settings">Project Settings</string>
     <string name="settings">Settings</string>
+
+    <string name="manage_user_role">Manage user role</string>
+    <string name="delete_user">Delete user</string>
+
+    <string-array name="user_preference_dialog_choice_entry">
+        <item>@string/manage_user_role</item>
+        <item>@string/delete_user</item>
+    </string-array>
 </resources>

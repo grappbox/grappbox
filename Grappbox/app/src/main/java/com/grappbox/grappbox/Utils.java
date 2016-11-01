@@ -270,6 +270,8 @@ public class Utils {
 
     public static class Database{
         public final static Map<String, String> sUserApiDBMap = new HashMap<>();
+        public final static Map<String, String> sProjectApiDBMap = new HashMap<>();
+
         static{
             sUserApiDBMap.put("firstname", GrappboxContract.UserEntry.COLUMN_FIRSTNAME);
             sUserApiDBMap.put("lastname", GrappboxContract.UserEntry.COLUMN_LASTNAME);
@@ -279,6 +281,14 @@ public class Utils {
             sUserApiDBMap.put("country", GrappboxContract.UserEntry.COLUMN_COUNTRY);
             sUserApiDBMap.put("linkedin", GrappboxContract.UserEntry.COLUMN_SOCIAL_LINKEDIN);
             sUserApiDBMap.put("twitter", GrappboxContract.UserEntry.COLUMN_SOCIAL_TWITTER);
+
+            sProjectApiDBMap.put("name", GrappboxContract.ProjectEntry.COLUMN_NAME);
+            sProjectApiDBMap.put("description", GrappboxContract.ProjectEntry.COLUMN_DESCRIPTION);
+            sProjectApiDBMap.put("company", GrappboxContract.ProjectEntry.COLUMN_COMPANY_NAME);
+            sProjectApiDBMap.put("email", GrappboxContract.ProjectEntry.COLUMN_CONTACT_EMAIL);
+            sProjectApiDBMap.put("phone", GrappboxContract.ProjectEntry.COLUMN_CONTACT_PHONE);
+            sProjectApiDBMap.put("twitter", GrappboxContract.ProjectEntry.COLUMN_SOCIAL_TWITTER);
+            sProjectApiDBMap.put("facebook", GrappboxContract.ProjectEntry.COLUMN_SOCIAL_FACEBOOK);
         }
     }
 
