@@ -9,6 +9,5 @@ php:
 sudo: required
 script:
   - cd ./Grappbox/Web
-  - php app/check.php
   - chmod +x ./composer.prod.sh
   - ./composer.prod.sh
