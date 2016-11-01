@@ -2280,7 +2280,6 @@ public class GrappboxJustInTimeService extends IntentService {
                 Cursor check = getContentResolver().query(TimelineMessageEntry.CONTENT_URI, null, checkSelection, checkArgs, null);
                 if (check != null && check.moveToFirst()) {
                     existingMessage.add(check.getLong(check.getColumnIndex(TimelineMessageEntry._ID)));
-                    handleTimelineMessagesCommentSync(localTimelineId, Long.valueOf(current.getString("id")));
                     check.close();
                 }
                 messagesValues[i] = message;

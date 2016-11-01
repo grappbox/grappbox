@@ -82,6 +82,8 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     public TimelineMessageCommentFragment(){
         // Required empty public constructor
+        super();
+
     }
 
     @Nullable
@@ -103,7 +105,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mRefresher = (SwipeRefreshLayout) view.findViewById(R.id.refresh);
         mLoader = (ProgressBar) view.findViewById(R.id.loader);
         mAdapter.registerAdapterDataObserver(new AdapterObserver());
-
         mRefreshReceiver = new RefreshReceiver(new Handler(), mRefresher, getActivity());
         mRefresher.setOnRefreshListener(this);
         mLoader.setVisibility(View.GONE);
@@ -165,6 +166,22 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                 }
             }
         });
+        long projectId = getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1);
+        Cursor cursorTimelineId = getActivity().getContentResolver().query(GrappboxContract.TimelineEntry.CONTENT_URI,
+                new String[] {GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID},
+                GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND "
+                        + GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_TYPE_ID + "=?",
+                new String[]{String.valueOf(projectId), String.valueOf(parent._timelineType)},
+                null);
+        if (cursorTimelineId != null && cursorTimelineId.moveToFirst()) {
+            Intent commentSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
+            commentSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_TIMELINE_COMMENTS);
+            commentSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, cursorTimelineId.getLong(0));
+            commentSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_PARENT_ID, Long.valueOf(parent._grappboxId));
+            getActivity().startService(commentSync);
+        }
+        if (cursorTimelineId != null)
+            cursorTimelineId.close();
         getLoaderManager().initLoader(TIMELINE_COMMENT, null, this);
         return view;
     }
