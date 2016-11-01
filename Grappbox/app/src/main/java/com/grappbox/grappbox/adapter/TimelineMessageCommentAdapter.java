@@ -11,7 +11,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,6 @@ import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
-import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -38,7 +36,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Locale;
 
 public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -56,7 +53,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
 
 
     private List<TimelineMessageCommentModel>   mComments;
-    private TimelineModel   mParent;
     private RefreshReceiver mRefreshReceiver;
     private LayoutInflater  mInflater;
     private Activity        mContext;
@@ -69,10 +65,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
         mComments = new ArrayList<>();
         mLinearLayoutManager = linearLayoutManager;
         _currentAction = 0;
-    }
-
-    public void setTimelineModel(TimelineModel model){
-        mParent = model;
     }
 
     public void setRefreshReceiver(RefreshReceiver rf){
@@ -95,8 +87,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     }
 
     private RecyclerView.ViewHolder createCommentViewHolder(ViewGroup parent){
-        RecyclerView.ViewHolder vh = new TimelineMessageCommentHolder(mInflater.inflate(R.layout.list_item_timeline_message_comment_list, parent, false), parent);
-        return vh;
+        return new TimelineMessageCommentHolder(mInflater.inflate(R.layout.list_item_timeline_message_comment_list, parent, false), parent);
     }
 
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -277,9 +268,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             case TYPE_MESSAGE_COMMENTS :
                 bindComment((TimelineMessageCommentHolder) holder, mComments.get(position), position);
                 break;
-            /*case TYPE_MESSAGE_REPLY :
-                bindReply((CommentReplyHolder) holder);
-                break;*/
             default :
                 throw new IllegalArgumentException("Bad viewType : " + getItemViewType(position));
         }
@@ -288,10 +276,6 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
     @Override
     public int getItemCount() {
         return  mComments.size();
-    }
-
-    public void clear(){
-        mComments.clear();
     }
 
     public int getSize() {return mComments.size();}

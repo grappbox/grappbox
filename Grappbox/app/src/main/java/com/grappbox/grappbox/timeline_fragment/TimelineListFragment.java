@@ -98,10 +98,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     private LinearLayoutManager mLinearLayoutManager;
     private int loaderPosition = 0;
 
-    private TimelineListFragment fragment = this;
-
     public TimelineListFragment(){
-        // Required empty public constructor
     }
 
     @Override

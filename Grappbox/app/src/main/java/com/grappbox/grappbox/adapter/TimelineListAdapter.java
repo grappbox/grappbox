@@ -75,19 +75,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView    mRecyclerView;
     private int             mExpandedPosition = -1;
-    private int             mTypeAction = 0;
-
-    public static final String[] projectionMessageRow = {
-            GrappboxContract.TimelineEntry._ID,
-            GrappboxContract.TimelineEntry.COLUMN_TYPE_ID,
-            GrappboxContract.TimelineMessageEntry._ID,
-            GrappboxContract.TimelineMessageEntry.COLUMN_GRAPPBOX_ID,
-            GrappboxContract.TimelineMessageEntry.COLUMN_TITLE,
-            GrappboxContract.TimelineMessageEntry.COLUMN_MESSAGE,
-            GrappboxContract.TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC,
-            GrappboxContract.TimelineMessageEntry.COLUMN_COUNT_ANSWER,
-            GrappboxContract.TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID
-    };
 
     public TimelineListAdapter(Activity context, RecyclerView rv)
     {
@@ -274,6 +261,8 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
         if (Long.valueOf(item._createID) == cursorUserId.getLong(0)) {
+            holder.mEdit.setVisibility(View.VISIBLE);
+            holder.mDelete.setVisibility(View.VISIBLE);
             holder.mEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -289,10 +278,8 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 }
             });
         } else {
-            holder.mEdit.setClickable(false);
-            holder.mEdit.setBackgroundColor(ContextCompat.getColor(mContext, R.color.GrappBlackLight));
-            holder.mDelete.setClickable(false);
-            holder.mDelete.setBackgroundColor(ContextCompat.getColor(mContext, R.color.GrappBlackLight));
+            holder.mEdit.setVisibility(View.GONE);
+            holder.mDelete.setVisibility(View.GONE);
         }
         holder.mToBugtracker.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -74,9 +74,6 @@ public class TimelineMessageCommentModel implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TimelineMessageCommentModel){
-            return (Integer.valueOf(_id) == Integer.valueOf(((TimelineMessageCommentModel) obj)._id));
-        }
-        return false;
+        return ((obj instanceof TimelineMessageCommentModel) && (_grappboxId.equals(((TimelineMessageCommentModel) obj)._grappboxId)));
     }
 }

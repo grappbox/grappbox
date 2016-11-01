@@ -86,12 +86,13 @@
 
         <LinearLayout
             android:id="@+id/message_action"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:gravity="end"
-            android:visibility="gone">
+            android:visibility="visible"
+            android:layout_gravity="end">
 
             <ImageButton
                 android:id="@+id/to_comment"

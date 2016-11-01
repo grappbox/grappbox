@@ -86,9 +86,6 @@ public class TimelineModel implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof TimelineModel) {
-            return (_id == ((TimelineModel) obj)._id);
-        }
-        return false;
+        return ((obj instanceof TimelineModel) && (_grappboxId.equals(((TimelineModel) obj)._grappboxId)));
     }
 }

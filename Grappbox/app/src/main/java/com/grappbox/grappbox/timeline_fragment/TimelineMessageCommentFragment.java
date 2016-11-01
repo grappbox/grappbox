@@ -95,7 +95,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         mLinearLayoutManager = new LinearLayoutManager(getContext());
         mRecycler = (RecyclerView) view.findViewById(R.id.scrollable_content);
         mAdapter = new TimelineMessageCommentAdapter(getActivity(), mLinearLayoutManager);
-        mAdapter.setTimelineModel(parent);
         mRecycler.setAdapter(mAdapter);
         mLinearLayoutManager.setReverseLayout(true);
         mRecycler.setLayoutManager(mLinearLayoutManager);
