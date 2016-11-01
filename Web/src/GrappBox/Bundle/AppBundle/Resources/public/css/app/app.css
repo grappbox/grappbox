@@ -25,8 +25,13 @@
   .container { width: 1370px; }
 }
 
-@media (min-width: 1600px) {
-  .container-lg { width: 1570px; }
+@media (min-width: 1600px) and (max-width: 1650px) {
+  .open .container { width: 1270px; }  
+}
+
+@media (min-width: 1800px) {
+  .container { width: 1570px; }
+  .open .container { width: 1470px; }
 }
 
 
@@ -70,6 +75,7 @@ a { color: #333; }
 
 .well a,
 a.raised { color: #4bf; }
+.container,
 .well { -webkit-transition: 0.3s ease all; -moz-transition: 0.3s ease all; -o-transition: 0.3s ease all; -ms-transition: 0.3s ease all; transition: 0.3s ease all; }
 
 .well a:active,
@@ -303,14 +309,28 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 /* ==================== SIDEBAR ==================== */
 /* ================================================= */
 
-@media (min-width: 1600px) {
+@media (min-width: 1601px) {
   .page-content.open { width: calc(100% - 240px); margin-left: 240px; }
-  .sidebar { width: 240px; }
+  .sidebar {
+    width: 240px;
+    -webkit-transform: translate3d(-240px, 0, 0);
+    -moz-transform: translate3d(-240px, 0, 0);
+    -o-transform: translate3d(-240px, 0, 0);
+    -ms-transform: translate3d(-240px, 0, 0);
+    transform: translate3d(-240px, 0, 0);
+  }
   .sidebar .toggle { display: none; }
 }
 
 @media (max-width: 1600px) {
-  .sidebar { width: 300px; }
+  .sidebar {
+    width: 300px;
+    -webkit-transform: translate3d(-300px, 0, 0);
+    -moz-transform: translate3d(-300px, 0, 0);
+    -o-transform: translate3d(-300px, 0, 0);
+    -ms-transform: translate3d(-300px, 0, 0);
+    transform: translate3d(-300px, 0, 0);
+  }
 }
 
 .page-content {
@@ -336,11 +356,6 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
   -moz-transition: all .3s ease;
   -o-transition: all .3s ease;
   transition: all .3s ease;
-  -webkit-transform: translate3d(-305px, 0, 0);
-  -moz-transform: translate3d(-305px, 0, 0);
-  -o-transform: translate3d(-305px, 0, 0);
-  -ms-transform: translate3d(-305px, 0, 0);
-  transform: translate3d(-305px, 0, 0);
   background: #666;
   color: #fafafa;
 }
@@ -371,7 +386,7 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 /* ==================== NAVBAR ==================== */
 /* ================================================ */
 
-@media (min-width: 1399px) {
+@media (min-width: 1601px) {
   .navigation.open { width: calc(100% - 240px); margin-left: 240px; }
 }
 
