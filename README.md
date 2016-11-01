@@ -3,7 +3,6 @@
 > *A strong project manager with truly useful features. Everything you need, everywhere.*
 
 ## Web
-[![Build Status](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-dev)](https://travis-ci.com/nadeaul/Grappbox)
 [![Build Status](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)](https://travis-ci.com/nadeaul/Grappbox)
 
 Built with Symfony (2.8 LTS minimum) and AngularJS (1.5.x minimum).<br>
@@ -51,6 +50,6 @@ Confidential.<br>
 Copyright &copy; GrappBox 2016. All rights reserved.
 
    [Mail]: <mailto:grappbox@gmail.com>
-   [Facebook]:  <https://facebook.com/grappbox>
+   [Facebook]: <https://facebook.com/grappbox>
    [Twitter]: <https://twitter.com/grappbox>
    [Google+]: <https://plus.google.com/115657691021326143456>
