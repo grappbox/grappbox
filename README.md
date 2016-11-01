@@ -4,7 +4,7 @@
 
 ## Web
 Built with Symfony (2.8 LTS minimum) and AngularJS (1.5.x minimum).<br>
-Requires PHP >= 5.4.
+Requires PHP >= 5.6.
 
 
 #### Installation (prod)
