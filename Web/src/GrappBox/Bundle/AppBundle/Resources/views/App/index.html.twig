@@ -7,29 +7,27 @@
 {% spaceless %}
 
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <!-- Meta -->  
-    <meta http-equiv="content-type" content="text/html;charset=UTF-8">
-    <meta http-equiv="content-language" content="en-us">
+    <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="author" content="The GrappBox team">
     <meta name="description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
     <meta name="keywords" content="project,management,teamwork,team,information technology,collaborative,collaboration,online">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta charset="UTF-8">
     <base href="/app/">
     <title>GrappBox</title>
     <!-- Social -->
     <meta property="og:title" content="GrappBox"/>
     <meta property="og:url" content="https://grappbox.com"/>
-    <meta name="og:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">    
+    <meta name="og:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">    
     <meta name="og:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
     <meta name="twitter:card" content="summary_large_image">    
     <meta name="twitter:site" content="@GrappBox">
     <meta name="twitter:title" content="GrappBox">
-    <meta name="twitter:description" content="A strong project manager with truly useful features. Everything you need to manage your projects, teams, issues, files, and customers. Maximize your productivity thanks to all the GrappBox tools, on mobile, Web and desktop. Your projects, anywhere, at anytime.">
+    <meta name="twitter:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">
     <meta name="twitter:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
     <!-- SEO -->
     <link rel="canonical" href="https://grappbox.com/app">
@@ -247,7 +245,7 @@
                   </div>
                 </div>
                 <div data-ng-if="!page.onLoad">
-                  <div class="container-content" data-ng-view></div>
+                  <div class="container-content" data-ng-view autoscroll="true"></div>
                 </div>
               </div>
             </div>
