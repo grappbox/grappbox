@@ -449,7 +449,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             for (TimelineModel model : mDataset) {
                 exist = false;
                 for (TimelineModel item : newItems) {
-                    if (item._id == model._id)
+                    if (item._grappboxId.equals(model._grappboxId))
                         exist = true;
                 }
                 if (!exist)

@@ -11,6 +11,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,6 +38,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Locale;
 
 public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
@@ -350,7 +352,7 @@ public class TimelineMessageCommentAdapter extends RecyclerView.Adapter<Recycler
             for (TimelineMessageCommentModel model : mComments) {
                 exist = false;
                 for (TimelineMessageCommentModel item : newItems) {
-                    if (item._id.equals(model._id))
+                    if (item._grappboxId.equals(model._grappboxId))
                         exist = true;
                 }
                 if (!exist)

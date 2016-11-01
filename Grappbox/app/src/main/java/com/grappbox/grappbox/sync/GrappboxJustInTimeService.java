@@ -2202,12 +2202,16 @@ public class GrappboxJustInTimeService extends IntentService {
                 messagesValues[i] = message;
                 creator.close();
             }
-            String deleteIds = "";
-            for (Long id : existingMessage) {
-                deleteIds += deleteIds.isEmpty() ? id.toString() : "," + id.toString();
+            if (existingMessage.size() == 0){
+                getContentResolver().delete(TimelineMessageEntry.CONTENT_URI, TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + "=?", new String[] {String.valueOf(localTimelineId)});
+            } else {
+                String deleteIds = "";
+                for (Long id : existingMessage) {
+                    deleteIds += deleteIds.isEmpty() ? id.toString() : "," + id.toString();
+                }
+                String deleteSelection = GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + "=? AND " + GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID + "=? AND " + GrappboxContract.TimelineCommentEntry._ID + " NOT IN (" + deleteIds + ")";
+                getContentResolver().delete(GrappboxContract.TimelineCommentEntry.CONTENT_URI, deleteSelection, new String[]{String.valueOf(localTimelineId), String.valueOf(localTimelineParentId)});
             }
-            String deleteSelection = GrappboxContract.TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + "=? AND " + GrappboxContract.TimelineCommentEntry.COLUMN_PARENT_ID + "=? AND " + GrappboxContract.TimelineCommentEntry._ID + " NOT IN (" + deleteIds + ")";
-            getContentResolver().delete(GrappboxContract.TimelineCommentEntry.CONTENT_URI, deleteSelection, new String[]{String.valueOf(localTimelineId), String.valueOf(localTimelineParentId)});
             getContentResolver().bulkInsert(GrappboxContract.TimelineCommentEntry.CONTENT_URI, messagesValues);
         } catch (IOException | JSONException e) {
             e.printStackTrace();
