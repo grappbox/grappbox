@@ -62,7 +62,7 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     public static final int COMMENT_LIMIT = 10;
     public static final int TIMELINE_COMMENT = 0;
-    private int loaderPosition = 0;
+    private int loaderPosition = 1;
     private boolean isFirst = true;
 
     private ImageView           mAvatar;
@@ -140,16 +140,16 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
                 mComment.setText("");
                 InputMethodManager imm = (InputMethodManager)getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                mLinearLayoutManager.scrollToPosition(0);
             }
         });
         mRecycler.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                Log.v(LOG_TAG, "scrolled");
                 if (dy > 0) {
                     int pastVisible = mLinearLayoutManager.findFirstVisibleItemPosition();
-                    if (pastVisible <= loaderPosition){
+                    if (pastVisible < loaderPosition){
                         initLoader();
                         loaderPosition -= COMMENT_LIMIT;
                     }
@@ -197,9 +197,12 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Log.v(LOG_TAG, "onCreateLoader");
-        String offset = String.valueOf(mLinearLayoutManager.findFirstCompletelyVisibleItemPosition());
-        String limit = String.valueOf(COMMENT_LIMIT);
+        int itemPosition = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int valueOffset = itemPosition - COMMENT_LIMIT;
+        if (valueOffset < 0)
+            valueOffset = 0;
+        String offset = String.valueOf(valueOffset);
+        String limit = String.valueOf(itemPosition + COMMENT_LIMIT);
         String sortOrder = "datetime(" + GrappboxContract.TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC +
                 ") DESC LIMIT " + offset + ", " + limit;
         String selection;
@@ -222,23 +225,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
         return new CursorLoader(getActivity(), GrappboxContract.TimelineCommentEntry.CONTENT_URI, projectionMessage, selection, selectionArgs, sortOrder);
     }
 
-    class StringDateComparator implements Comparator<TimelineMessageCommentModel>
-    {
-
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-
-        @Override
-        public int compare(TimelineMessageCommentModel o1, TimelineMessageCommentModel o2) {
-
-            try {
-                return dateFormat.parse(o1._lastupdate).compareTo(dateFormat.parse(o2._lastupdate));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
-    }
-
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (loader.getId() == TIMELINE_COMMENT) {
@@ -248,7 +234,6 @@ public class TimelineMessageCommentFragment extends Fragment implements LoaderMa
             do {
                 models.add(new TimelineMessageCommentModel(getActivity(), data));
             } while (data.moveToNext());
-            Collections.sort(models, new StringDateComparator());
             mAdapter.mergeItem(models);
             if (isFirst) {
                 mLinearLayoutManager.scrollToPosition(mAdapter.getSize());

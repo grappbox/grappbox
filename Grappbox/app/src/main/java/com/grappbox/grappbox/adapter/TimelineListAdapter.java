@@ -19,6 +19,7 @@ import android.support.v4.view.animation.LinearOutSlowInInterpolator;
 import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.CardView;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.TransitionManager;
 import android.util.Log;
@@ -74,6 +75,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private RefreshReceiver mRefreshReceiver = null;
     private RecyclerView    mRecyclerView;
     private int             mExpandedPosition = -1;
+    private int             mTypeAction = 0;
 
     public static final String[] projectionMessageRow = {
             GrappboxContract.TimelineEntry._ID,
@@ -198,6 +200,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     alertDialog.cancel();
                     return;
                 }
+                mRecyclerView.getLayoutManager().scrollToPosition(0);
                 Intent editMessage = new Intent(mContext, GrappboxJustInTimeService.class);
                 editMessage.setAction(GrappboxJustInTimeService.ACTION_TIMELINE_EDIT_MESSAGE);
                 editMessage.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, token);
@@ -274,12 +277,14 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             holder.mEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mDataset.remove(position);
                     messageEdit(item);
                 }
             });
             holder.mDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    mDataset.remove(position);
                     messageDelete(item);
                 }
             });
@@ -325,13 +330,13 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                                 break;
 
                             case TIMELINE_ACTION_EDIT_MESSAGE:
-                                messageEdit(item);
                                 mDataset.remove(position);
+                                messageEdit(item);
                                 break;
 
                             case TIMELINE_ACTION_DELETE_MESSAGE:
-                                messageDelete(item);
                                 mDataset.remove(position);
+                                messageDelete(item);
                                 break;
 
                             default:
@@ -378,11 +383,6 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public boolean isEmpty(){
         return mDataset.isEmpty();
-    }
-
-    public void clear(){
-        mDataset.clear();
-        notifyDataSetChanged();
     }
 
     @Override

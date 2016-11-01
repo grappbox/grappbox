@@ -191,6 +191,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
+                        mLinearLayoutManager.scrollToPosition(0);
                     }
                 });
                 builder.setNegativeButton(getActivity().getString(R.string.negative_response), new DialogInterface.OnClickListener() {
@@ -218,8 +219,13 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        String offset = String.valueOf(mLinearLayoutManager.findFirstVisibleItemPosition());
-        String limit = String.valueOf(TIMELINE_LIMIT);
+        int position = mLinearLayoutManager.findFirstVisibleItemPosition();
+        int offsetValue = position - TIMELINE_LIMIT;
+        if (offsetValue < 0)
+            offsetValue = 0;
+
+        String offset = String.valueOf(offsetValue);
+        String limit = String.valueOf(position + TIMELINE_LIMIT);
 
         String sortOrder = "date(" + TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + ") DESC LIMIT " +
                 offset + ", " + limit;
