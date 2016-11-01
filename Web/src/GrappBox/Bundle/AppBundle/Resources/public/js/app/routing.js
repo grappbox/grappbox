@@ -124,6 +124,23 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		homepage: false,
 		resolve: { factory: isBugtrackerAccessible }
 	})
+  // Calendar-related pages
+  .when("/calendar", {
+    title: "Calendar",
+    templateUrl : "../resources/pages/calendar.html",
+    controller  : null,
+    caseInsensitiveMatch : true,
+    homepage: false
+  })
+  // Cloud-related pages
+  .when("/cloud/:project_id", {
+    title: "Cloud",
+    templateUrl : "../resources/pages/cloud.html",
+    controller  : "cloudController",
+    caseInsensitiveMatch : true,
+    homepage: false,
+    resolve: { factory: isProjectAccessible }
+  })  
   // Gantt-related pages
   .when("/gantt/:project_id", {
 		title: "Gantt",
@@ -133,6 +150,31 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		homepage: false,
 		resolve: { factory: isProjectAccessible }
 	})
+  // Notifications-related pages
+  .when("/notifications", {
+    title: "Notifications",
+    templateUrl : "../resources/pages/notifications.html",
+    controller  : "notificationsController",
+    caseInsensitiveMatch : true,
+    homepage: false
+  })
+  // User-related pages
+  .when("/profile", {
+    title: "Profile",
+    templateUrl : "../resources/pages/profile.html",
+    controller  : "ProfileController",
+    caseInsensitiveMatch : true,
+    homepage: false
+  })  
+  // Project settings page
+  .when("/settings/:project_id", {
+    title: "Project settings",
+    templateUrl : "../resources/pages/project-settings.html",
+    controller  : "projectSettingsController",
+    caseInsensitiveMatch : true,
+    homepage: false,
+    resolve: { factory: isProjectSettingsPageAccessible }
+  })
   // Task-related pages
 	.when("/tasks/:project_id", {
 		title: "Tasks",
@@ -149,48 +191,6 @@ app.config(["$routeProvider", "$locationProvider", function($routeProvider, $loc
 		caseInsensitiveMatch : true,
 		homepage: false,
 		resolve: { factory: isTaskAccessible }
-	})
-	// Calendar-related pages
-	.when("/calendar", {
-		title: "Calendar",
-		templateUrl : "../resources/pages/calendar.html",
-		controller  : null,
-		caseInsensitiveMatch : true,
-		homepage: false
-	})
-	// Cloud-related pages
-	.when("/cloud/:project_id", {
-		title: "Cloud",
-		templateUrl : "../resources/pages/cloud.html",
-		controller  : "cloudController",
-		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
-	})
-	// Notifications-related pages
-	.when("/notifications", {
-		title: "Notifications",
-		templateUrl : "../resources/pages/notifications.html",
-		controller  : "notificationsController",
-		caseInsensitiveMatch : true,
-		homepage: false
-	})
-	// User-related pages
-	.when("/profile", {
-		title: "Profile",
-		templateUrl : "../resources/pages/profile.html",
-		controller  : "profileController",
-		caseInsensitiveMatch : true,
-		homepage: false
-	})
-	// Project settings page
-	.when("/settings/:project_id", {
-		title: "Project settings",
-		templateUrl : "../resources/pages/project-settings.html",
-		controller  : "projectSettingsController",
-		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectSettingsPageAccessible }
 	})
 	// Timeline-related pages
 	.when("/timeline/:project_id", {
