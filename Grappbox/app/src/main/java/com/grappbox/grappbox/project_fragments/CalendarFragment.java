@@ -17,9 +17,7 @@ import com.grappbox.grappbox.R;
  */
 public class CalendarFragment extends Fragment {
 
-    CalendarView    mCalendar;
     RecyclerView    mRecycler;
-    ImageView       mCenterBar;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -31,15 +29,7 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mCalendar = (CalendarView) v.findViewById(R.id.calendar_view);
         mRecycler = (RecyclerView) v.findViewById(R.id.agendalist);
-        mCenterBar = (ImageView) v.findViewById(R.id.slide_button);
-        mCenterBar.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
 
         return v;
     }

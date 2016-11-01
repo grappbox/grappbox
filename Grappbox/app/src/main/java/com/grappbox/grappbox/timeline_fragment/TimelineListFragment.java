@@ -191,7 +191,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         addMessage.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_MESSAGE, message.getText().toString());
                         getActivity().startService(addMessage);
                         cursorTimelineId.close();
-                        mLinearLayoutManager.scrollToPosition(0);
                     }
                 });
                 builder.setNegativeButton(getActivity().getString(R.string.negative_response), new DialogInterface.OnClickListener() {
@@ -239,7 +238,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_TEAM + 1)
+                        String.valueOf(2)
                 };
                 break;
 
@@ -248,7 +247,7 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         + TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_TYPE_ID + "=?";
                 selectionArgs = new String[]{
                         String.valueOf(lpid),
-                        String.valueOf(TIMELINE_CLIENT + 1)
+                        String.valueOf(1)
                 };
                 break;
 
