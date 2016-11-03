@@ -92,6 +92,7 @@
   </PropertyGroup>
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
+    <Content Include="Assets\desk_office.png" />
     <Content Include="Assets\MaterialIcons-Regular.otf" />
     <None Include="GrappBox_StoreKey.pfx" />
     <None Include="project.json" />
@@ -124,6 +125,7 @@
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\AppGlobalHelper.cs" />
     <Compile Include="HttpRequest\NotificationManager.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
@@ -138,9 +140,7 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
-    <Compile Include="Resources\NavigationHelper.cs" />
     <Compile Include="Resources\RelayCommand.cs" />
-    <Compile Include="Resources\SuspensionManager.cs" />
     <Compile Include="Utils\SystemInformation.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
@@ -189,6 +189,7 @@
     <Content Include="Assets\StoreLogo.scale-200.png" />
     <Content Include="Assets\StoreLogo.scale-400.png" />
     <None Include="Package.StoreAssociation.xml" />
+    <Content Include="Assets\user_default.png" />
     <Content Include="Properties\Default.rd.xml" />
   </ItemGroup>
   <ItemGroup>

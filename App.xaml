@@ -3,9 +3,11 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:GrappBox"
+    xmlns:helpers="using:GrappBox.Helpers"
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
+            <helpers:AppGlobalHelper x:Key="global" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/GrappboxColors.xaml" />
                 <ResourceDictionary Source="Resources/CustomStyle.xaml" />

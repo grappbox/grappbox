@@ -6,45 +6,19 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    HorizontalAlignment="Stretch"
+    HorizontalContentAlignment="Stretch">
 
-    <StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <Image HorizontalAlignment="Left" Width="100" Height="100" Source="{Binding Logo}" />
-            <TextBlock Name="projectName" Text="{Binding Name}" Style="{StaticResource GenericDashboardProjectTitleStyle}" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="10,0,0,0" />
-                </Style>
-            </StackPanel.Resources>
-            <Image Source="/Assets/bug.png" />
-            <TextBlock Text="{Binding Bugs}" />
-            <TextBlock Text="bugs" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="10,0,0,0" />
-                </Style>
-            </StackPanel.Resources>
-            <Image Source="/Assets/chat.png" />
-            <TextBlock Text="{Binding Messages}" />
-            <TextBlock Text="messages" />
-        </StackPanel>
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-            <StackPanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="Margin" Value="10,0,0,0" />
-                </Style>
-            </StackPanel.Resources>
-            <Image Source="/Assets/task_ongoing.png" />
-            <TextBlock Text="{Binding OngoingTasks}" />
-            <TextBlock Text="/" Margin="0" />
-            <TextBlock Text="{Binding TotalTasks}" Margin="0" />
-            <TextBlock Text="finished tasks" />
-        </StackPanel>
-    </StackPanel>
+    <Border BorderBrush="DarkGray" BorderThickness="0,0,0,1">
+        <RelativePanel>
+            <Image RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True" x:Name="projectLogo" Height="50" Width="50" Source="{Binding Logo}" />
+            <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="5,0,5,0"  x:Name="projectTitle" Text="{Binding Name}" TextWrapping="Wrap" MaxWidth="200" Style="{StaticResource GenericDashboardProjectTitleStyle}" />
+            <RelativePanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" >
+                <TextBlock RelativePanel.LeftOf="bugsIcon" RelativePanel.AlignVerticalCenterWith="bugsIcon" x:Name="bugsText" Text="{Binding Bugs}" />
+                <FontIcon RelativePanel.AlignRightWithPanel="True" x:Name="bugsIcon" FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE868;" Foreground="{StaticResource PurpleGrappboxBrush}" />
+                <TextBlock RelativePanel.LeftOf="msgIcon" RelativePanel.AlignVerticalCenterWith="msgIcon" x:Name="msgText" Text="{Binding OngoingTasks}" />
+                <FontIcon RelativePanel.Below="bugsIcon" RelativePanel.AlignRightWithPanel="True" x:Name="msgIcon" FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE03B;" Foreground="{StaticResource BlueGrappboxBrush}"/>
+            </RelativePanel>
+        </RelativePanel>
+    </Border>
 </UserControl>

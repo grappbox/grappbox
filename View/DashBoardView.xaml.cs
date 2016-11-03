@@ -20,7 +20,6 @@ namespace GrappBox.View
         private PivotItem team;
         private PivotItem meetings;
         private DashBoardViewModel dvm;
-        private NavigationHelper navigationHelper;
 
         public DashBoardView()
         {
@@ -28,62 +27,11 @@ namespace GrappBox.View
             this.DataContext = DashBoardViewModel.GetViewModel();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
             team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
             meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
             team = new PivotItem();
             meetings = new PivotItem();
         }
-
-        #region NavigationHelper
-
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
-        public NavigationHelper NavigationHelper
-        {
-            get { return this.navigationHelper; }
-        }
-
-        /// <summary>
-        /// Populates the page with content passed during navigation. Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>.
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session. The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache. Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/>.</param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
-        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
-        {
-            this.db_pivot.Items.Remove(this.team);
-            this.db_pivot.Items.Remove(this.meetings);
-            team = null;
-            meetings = null;
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            this.navigationHelper.OnNavigatedFrom(e);
-        }
-
-        #endregion NavigationHelper
 
         /// <summary>
         /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
@@ -92,24 +40,22 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
-            //this.navigationHelper.OnNavigatedTo(e);
-            //SettingsPopUp.Visibility = Visibility.Collapsed;
-            //SettingsPopUp.IsOpen = true;
-            //db_pivot.IsEnabled = true;
-            //DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
-            //this.dvm = DashBoardViewModel.GetViewModel();
-            //LoadingBar.IsEnabled = true;
-            //LoadingBar.Visibility = Visibility.Visible;
-            //await this.dvm.InitialiseAsync();
-            //team = CreateOccupationTab();
-            //meetings = CreateMeetingsTab();
-            //team_cb.IsChecked = true;
-            //this.db_pivot.Items.Add(this.team);
-            //this.db_pivot.Items.Add(this.meetings);
-            //team_cb.IsChecked = true;
-            //meetings_cb.IsChecked = true;
-            //LoadingBar.IsEnabled = false;
-            //LoadingBar.Visibility = Visibility.Collapsed;
+            SettingsPopUp.Visibility = Visibility.Collapsed;
+            SettingsPopUp.IsOpen = true;
+            db_pivot.IsEnabled = true;
+            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            this.dvm = DashBoardViewModel.GetViewModel();
+            LoadingBar.IsEnabled = true;
+            LoadingBar.Visibility = Visibility.Visible;
+            team = CreateOccupationTab();
+            meetings = CreateMeetingsTab();
+            this.db_pivot.Items.Add(this.team);
+            this.db_pivot.Items.Add(this.meetings);
+            team_cb.IsChecked = true;
+            meetings_cb.IsChecked = true;
+            await this.dvm.InitialiseAsync();
+            LoadingBar.IsEnabled = false;
+            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void team_cb_Checked(object sender, RoutedEventArgs e)
@@ -117,7 +63,8 @@ namespace GrappBox.View
             SettingsManager.setOption("team_cb", team_cb.IsChecked);
             if (team_cb.IsChecked == true)
             {
-                db_pivot.Items.Add(team);
+                if (db_pivot.Items.Where(i => i.GetType() == typeof(TeamDashBoard)).FirstOrDefault() == null)
+                    db_pivot.Items.Add(team);
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
                 await this.dvm.InitialiseAsync();
@@ -133,7 +80,8 @@ namespace GrappBox.View
             SettingsManager.setOption("meetings_cb", meetings_cb.IsChecked);
             if (meetings_cb.IsChecked == true)
             {
-                db_pivot.Items.Add(meetings);
+                if (db_pivot.Items.Where(i => i.GetType() == typeof(MeetingDashBoardPanel)).FirstOrDefault() == null)
+                    db_pivot.Items.Add(meetings);
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
                 await this.dvm.InitialiseAsync();

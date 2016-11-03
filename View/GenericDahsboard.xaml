@@ -9,10 +9,6 @@
     xmlns:customControl="using:GrappBox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.Resources>
-        <Style TargetType="ListViewItem" BasedOn="{StaticResource RedListview}"/>
-        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
-    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add" />
@@ -21,31 +17,36 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="65" />
-            <RowDefinition Height="1*" />
+            <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
             <customControl:PageHeader.HeaderContent>
                 <TextBlock Name="title" Text="Dashboard" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ListView
-                    Grid.Row="1"
+        <ScrollViewer Grid.Row="1">
+            <StackPanel
+                ScrollViewer.HorizontalScrollMode="Disabled"
+                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                ScrollViewer.VerticalScrollMode="Auto"
+                ScrollViewer.VerticalScrollBarVisibility="Hidden">
+                <StackPanel Background="{StaticResource RedGrappboxBrush}">
+                    <Image Source="ms-appx:///Assets/desk_office.png" />
+                    <TextBlock Text="Select your project" Style="{StaticResource WelcomeTextStyle}"/>
+                </StackPanel>
+                <ListView
                     ItemsSource="{Binding ProjectList}"
+                    ItemContainerStyle="{StaticResource GenericDashboardListViewitemStyle}"
                     SelectionChanged="ListView_SelectionChanged"
-                    ScrollViewer.HorizontalScrollMode="Disabled"
-                    ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                    ScrollViewer.VerticalScrollMode="Auto"
-                    ScrollViewer.VerticalScrollBarVisibility="Hidden"
                     HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <customControl:GenericDashboardItem/>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-            <ListViewItem>
-                
-            </ListViewItem>
-        </ListView>
-        <ProgressBar VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <customControl:GenericDashboardItem/>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </ScrollViewer>
+        <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
     </Grid>
 </Page>

@@ -28,7 +28,6 @@ namespace GrappBox
     public sealed partial class AppShell : Page
     {
         private bool isPaddingAdded = false;
-
         // Declare the top level nav items
         private List<NavMenuItem> navlist = new List<NavMenuItem>(
             new[]
@@ -230,7 +229,7 @@ namespace GrappBox
             }
             if (e.NavigationMode == NavigationMode.Back)
             {
-                var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).SingleOrDefault();
+                var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).FirstOrDefault();
                 if (item == null && this.AppFrame.BackStackDepth > 0)
                 {
                     // In cases where a page drills into sub-pages then we'll highlight the most recent
@@ -344,6 +343,11 @@ namespace GrappBox
             {
                 args.ItemContainer.ClearValue(AutomationProperties.NameProperty);
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.AppFrame.Navigate(typeof(GenericDahsboard));
         }
     }
 }

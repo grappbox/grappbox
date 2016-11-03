@@ -7,9 +7,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:customControl="using:GrappBox.CustomControls"
-    mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    mc:Ignorable="d">
 
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
     HorizontalAlignment="Stretch"
@@ -20,56 +18,46 @@
     ScrollViewer.VerticalScrollBarVisibility="Hidden"
     IsDoubleTapEnabled="False" IsRightTapEnabled="False">
         <ListView.ItemTemplate>
-        <DataTemplate>
-                <Grid >
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Ellipse Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Center" Width="80" Height="80">
+            <DataTemplate>
+                <Grid Height="100">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="3*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding OccupationColor}" />
+                    <Ellipse Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="80" Height="80">
                         <Ellipse.Fill>
-                            <ImageBrush ImageSource="{Binding Avatar, Mode=TwoWay}"></ImageBrush>
+                            <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
                         </Ellipse.Fill>
                     </Ellipse>
 
-                    <TextBlock Margin="0,10,0,0" Grid.Row="1" Name="name_tb" Text="{Binding UserName }" VerticalAlignment="Center" FontSize="16" FontWeight="Bold"></TextBlock>
-
-                    <StackPanel Margin="0,10,0,0" Grid.Row="2" Orientation="Horizontal">
+                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{Binding UserName }" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" />
+                    <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
-                                <Setter Property="Margin" Value="10,0,0,0"/>
+                                <Setter Property="Margin" Value="10,0,0,0" />
+                                <Setter Property="FontSize" Value="16" />
+                                <Setter Property="VerticalAlignment" Value="Center" />
                             </Style>
                         </StackPanel.Resources>
-                        <Image VerticalAlignment="Center" Source="/Assets/task_begin.png"/>
-                        <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                        <TextBlock Text="started tasks" VerticalAlignment="Center" FontSize="16" />
-                    </StackPanel>
+                        <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="{StaticResource BlueGrappboxBrush}" />
+                            <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}"></TextBlock>
+                        </StackPanel>
 
-                    <StackPanel Margin="0,10,0,10" Grid.Row="3" Orientation="Horizontal">
-                        <StackPanel.Resources>
-                            <Style TargetType="TextBlock">
-                                <Setter Property="Margin" Value="10,0,0,0"/>
-                            </Style>
-                        </StackPanel.Resources>
-                        <Image VerticalAlignment="Center" Source="/Assets/task_ongoing.png"/>
-                        <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}" VerticalAlignment="Center" FontSize="16"></TextBlock>
-                        <TextBlock Text="remaining tasks" VerticalAlignment="Center" FontSize="16"></TextBlock>
+                        <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
+                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="Red" />
+                            <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}"></TextBlock>
+                        </StackPanel>
                     </StackPanel>
-
-                    <Border Grid.Row="4" Height="25" Name="occupation_back" Background="{Binding Occupation, Converter={StaticResource OccupationColorConverter}}" Margin="-15,0,-15,-15">
-                        <TextBlock  Name="occupation_tb" Text="{Binding Occupation}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="14" Foreground="White" FontWeight="Bold"></TextBlock>
-                    </Border>
                 </Grid>
-        </DataTemplate>
+            </DataTemplate>
         </ListView.ItemTemplate>
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
                 <Setter Property="Background" Value="White" />
-                <Setter Property="Padding" Value="15" />
-                <Setter Property="Margin" Value="15" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />
             </Style>
