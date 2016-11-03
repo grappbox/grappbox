@@ -8,6 +8,7 @@ env:
   global:
     - SYMFONY_ENV=prod
 sudo: required
+before_script: echo 'extension = "mongo.so"' >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
 script:
   - cd ./API
   - chmod +x composer.prod.sh
