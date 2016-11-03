@@ -9,8 +9,8 @@
 * APP whiteboard page content
 *
 */
-app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "whiteboardRenderFactory", "whiteboardObjectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval", "$filter",
-    function($rootScope, $scope, $route, whiteboardRenderFactory, whiteboardObjectFactory, $http, $location, Notification, $q, moment, $interval, $filter) {
+app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory",
+    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -249,7 +249,7 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
 
             case "10.3.4":
             $location.path("whiteboard/" + $route.  current.params.project_id);
-            Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
+            notificationFactory.warning("This whiteboard has been deleted.");
             deferred.reject();
             break;
 
@@ -336,7 +336,7 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
 
             case "10.5.4":
             $location.path("whiteboard/" + $route.current.params.project_id);
-            Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
+            notificationFactory.warning("This whiteboard has been deleted.");
             break;
 
             default:
@@ -373,12 +373,12 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
               break;
 
               default:
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
               break;
             }
           }
           else
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
         },
         function onWhiteboardPushFail(response) {
           if (response.data.info) {
@@ -388,16 +388,16 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
               break;
 
               case "10.4.9":
-              Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+              notificationFactory.warning("You don't have sufficient rights to perform this operation.");
               break;
 
               default:
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
               break;
             }
           }
           else
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
         }
       );
   };
@@ -424,12 +424,12 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
             break;
 
             default:
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else
-          Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
       },
       function onWhiteboardEraseFail(response) {
         if (response.data.info) {
@@ -439,16 +439,16 @@ app.controller("WhiteboardController", ["$rootScope", "$scope", "$route", "white
             break;
 
             case "10.4.9":
-            Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+            notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
             break;
 
             default:
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else
-          Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
       }
     );
   };

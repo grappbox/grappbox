@@ -9,7 +9,7 @@
 * APP whiteboard canvas factory
 *
 */
-app.factory("whiteboardCanvasFactory", function() {
+app.factory("whiteboardRenderFactory", function() {
 
 	/* ==================== INITIALIZATION ==================== */
 
