@@ -181,10 +181,23 @@ label { font-weight: 400; display: inline; margin: 0; }
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
-.ui-notification > h3 { font-weight: 400; }
-.ui-notification.info { background: #4bf; }
-.ui-notification.success { background: #27ae60; }
-.ui-notification.warning { background: #ff9f55; }
+.ui-notification > .message i { position: absolute; top: 25%; right: 4%; }
+.ui-notification:active,
+.ui-notification:focus,
+.ui-notification:hover { background: #555!important; }
+.ui-notification {
+  background: #333!important;
+  color: #f0f0f0!important;
+  width: 30%!important;
+  box-shadow: none!important;
+  bottom: 0!important;
+  padding: 5px 10px;
+  -webkit-transition: 0.3s ease all;
+  -moz-transition: 0.3s ease all;
+  -o-transition: 0.3s ease all;
+  -ms-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+}
 
 
 
