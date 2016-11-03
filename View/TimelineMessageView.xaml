@@ -1,0 +1,73 @@
+﻿<Page
+    x:Class="GrappBox.View.TimelineMessageView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    xmlns:customControl="using:GrappBox.CustomControls"
+    DataContext="GrappBox.ViewModel.TimelineViewModel">
+
+    <Page.Resources>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource OrangeListview}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource OrangeButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource OrangeTexBox}">
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65"/>
+            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Timeline message" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
+        <ProgressBar VerticalAlignment="Top" Grid.Row="2" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+        <StackPanel Grid.Row="1">
+            <TextBox IsEnabled="False" PlaceholderText="Title" BorderThickness="0" Text="{Binding Title, Mode=OneTime}" FontSize="20"/>
+            <TextBox IsEnabled="False" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+        </StackPanel>
+        <customControl:CustomListView x:Name="CommentsListView"  IncrementalLoadingThreshold="2" Grid.Row="2" ItemsSource="{Binding Comments}" VerticalAlignment="Stretch" SelectionMode="None" HorizontalAlignment="Stretch" >
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Background="{StaticResource OrangeGrappboxBrush}">
+                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="8*"/>
+                                <ColumnDefinition Width="2*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
+                                <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                            </StackPanel>
+                            <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
+                        </Grid>
+                    </StackPanel>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="20"></Setter>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </customControl:CustomListView>
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+            </Grid.ColumnDefinitions>
+            <TextBox x:Name="MessageTextBox" AcceptsReturn="True" TextWrapping="Wrap"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" PlaceholderText="Type a message and press Send" Background="{StaticResource Grey1GrappboxBrush}" KeyUp="MessageTextBox_KeyUp" Margin="0"/>
+            <Button Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Click="PostComment_Click" Margin="0">
+                <SymbolIcon Symbol="Send" />
+            </Button>
+        </Grid>
+    </Grid>
+</Page>

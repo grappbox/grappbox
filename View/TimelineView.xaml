@@ -1,0 +1,140 @@
+﻿<Page
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ViewModel="using:GrappBox.ViewModel"
+    x:Class="GrappBox.View.TimelineView"
+    mc:Ignorable="d"
+    xmlns:customControl="using:GrappBox.CustomControls">
+
+    <Page.Resources>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource OrangeListview}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource OrangeButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource OrangeTexBox}">
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+    </Page.Resources>
+    <Page.BottomAppBar>
+        <CommandBar Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Name="AddTeamMessage" Label="Add" Click="AddTeam_Click" Icon="Add"/>
+            <AppBarButton Name="AddCustomerMessage" Visibility="Collapsed" Label="Add" Click="AddCustomer_Click" Icon="Add"/>
+        </CommandBar>
+    </Page.BottomAppBar>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="1*" />
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Timeline" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
+        <ProgressBar Grid.Row="1" VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
+        <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
+            <PivotItem>
+                <PivotItem.Header>
+                    <customControl:TabHeader Label="Team" Glyph="&#xE8F2;" />
+                </PivotItem.Header>
+                <Grid>
+                    <customControl:CustomListView x:Name="TeamListView" IncrementalLoadingThreshold="4" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
+                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
+                                            <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE868;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Bug_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                            <Button Content="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
+                                    </Grid>
+                                    <Border Margin="0,20,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,0.5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </customControl:CustomListView>
+                    <Popup Name="PostTeamMesPopUp" Visibility="Collapsed" IsOpen="True" HorizontalAlignment="Stretch" Loaded="PostTeamMesPopUp_Loaded" HorizontalOffset="25">
+                        <StackPanel Name="TeamStackPanel" Background="{StaticResource OrangeGrappboxBrush}">
+                            <TextBlock Text="Post Message" Foreground="{StaticResource Black3GrappboxBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="20" Margin="15"/>
+                            <TextBox Name="MessageTitle" PlaceholderText="Title" Margin="15" BorderThickness="0"/>
+                            <TextBox Name="Message" TextWrapping="Wrap" Height="100" BorderThickness="0" AcceptsReturn="True" Margin="15" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="0" Click="CancelTeam_Click" HorizontalAlignment="Center" Margin="10"/>
+                                <Button Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="1" Click="PostTeamMessage_Click" HorizontalAlignment="Center" Margin="10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Popup>
+                </Grid>
+            </PivotItem>
+            <PivotItem>
+                <PivotItem.Header>
+                    <customControl:TabHeader Label="Customer" Glyph="&#xE716;" />
+                </PivotItem.Header>
+                <Grid>
+                    <customControl:CustomListView x:Name="CustomerListView" IncrementalLoadingThreshold="1" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
+                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" />
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
+                                            <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE868;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Bug_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                            <Button Content="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                        </StackPanel>
+                                        <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
+                                    </Grid>
+                                    <Border Margin="0,20,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,0.5"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="15"></Setter>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </customControl:CustomListView>
+                    <Popup Name="PostCustomerMesPopUp" Visibility="Collapsed" IsOpen="True" Loaded="PostCustomerMesPopUp_Loaded" HorizontalOffset="25">
+                        <StackPanel  Name="CustStackPanel" Background="{StaticResource OrangeGrappboxBrush}">
+                            <TextBlock Text="Post Message" Foreground="{StaticResource White1GrappboxBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="15" TextWrapping="Wrap" FontSize="20"/>
+                            <TextBox Name="CustomerTitle" PlaceholderText="Title" Margin="15" BorderThickness="0"/>
+                            <TextBox Name="CustomerMessage" TextWrapping="Wrap" Height="100" BorderThickness="0" Margin="15" AcceptsReturn="True" PlaceholderText="Message" ScrollViewer.VerticalScrollBarVisibility="Visible"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Content="&#xE711;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="0" Click="CancelCustomer_Click" HorizontalAlignment="Center" Margin="10"/>
+                                <Button Content="&#xE73E;" FontFamily="Segoe MDL2 Assets" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="1" Click="PostCustomerMessage_Click" HorizontalAlignment="Center" Margin="10"/>
+                            </Grid>
+                        </StackPanel>
+                    </Popup>
+                </Grid>
+            </PivotItem>
+        </Pivot>
+        <Border Name="BorderUp" Visibility="Collapsed" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource Black3GrappboxBrush}" Opacity=".5"/>
+        <Border Name="BorderDown" Visibility="Collapsed" Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource Black3GrappboxBrush}" Opacity=".5"/>
+    </Grid>
+</Page>
