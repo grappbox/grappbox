@@ -11,6 +11,7 @@ using System.Text.RegularExpressions;
 using GrappBox.HttpRequest;
 using GrappBox.Resources;
 using System.Diagnostics;
+using GrappBox.Helpers;
 
 namespace GrappBox.ViewModel
 {
@@ -46,7 +47,7 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", name);
             HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
@@ -67,7 +68,7 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", _customerSelected.Name);
             HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
@@ -86,7 +87,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/customeraccesses");
             if (res.IsSuccessStatusCode)
             {
@@ -106,7 +107,7 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _customerSelected.Id };
+                object[] token = { AppGlobalHelper.ProjectId, _customerSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "project/customeraccess");
                 if (res.IsSuccessStatusCode)
                 {
@@ -146,7 +147,7 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", _role.Name);
             props.Add("teamTimeline", _role.TeamTimeline);
             props.Add("customerTimeline", _role.CustomerTimeline);
@@ -243,7 +244,7 @@ namespace GrappBox.ViewModel
         {
             HttpRequestManager api = HttpRequestManager.Instance;
 
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), userId, roleId };
+            object[] token = { AppGlobalHelper.ProjectId, userId, roleId };
             HttpResponseMessage res = await api.Delete(token, "role/user");
             if (res.IsSuccessStatusCode)
             {
@@ -279,7 +280,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getRoles()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "roles");
             if (res.IsSuccessStatusCode)
             {
@@ -504,7 +505,7 @@ namespace GrappBox.ViewModel
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
                 props.Add("twitter", _projectSettingsModel.Twitter);
-            HttpResponseMessage res = await api.Put(props, "project/" + SettingsManager.getOption<int>("ProjectIdChoosen"));
+            HttpResponseMessage res = await api.Put(props, "project/" + AppGlobalHelper.ProjectId);
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
@@ -588,7 +589,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectSettings()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project");
             if (res.IsSuccessStatusCode)
             {
@@ -605,7 +606,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task deleteProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Delete(token, "project");
             if (res.IsSuccessStatusCode)
             {
@@ -628,7 +629,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task retrieveProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/retrieve");
             if (res.IsSuccessStatusCode)
             {
@@ -824,7 +825,7 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("id", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("id", AppGlobalHelper.ProjectId);
             props.Add("email", email);
             HttpResponseMessage res = await api.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
@@ -844,7 +845,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectUsers()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
@@ -861,7 +862,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task<ProjectRoleModel> getUserRole(int id)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), id };
+            object[] token = { AppGlobalHelper.ProjectId, id };
             HttpResponseMessage res = await api.Get(token, "roles/project/user");
             if (res.IsSuccessStatusCode)
             {
@@ -882,7 +883,7 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _userSelected.Id };
+                object[] token = { AppGlobalHelper.ProjectId, _userSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "project/user");
                 if (res.IsSuccessStatusCode)
                 {

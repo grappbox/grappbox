@@ -13,6 +13,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
+using GrappBox.Helpers;
 
 namespace GrappBox.ViewModel
 {
@@ -125,7 +126,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task<bool> getTimelines()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "timelines");
             if (res == null)
                 return false;
@@ -214,27 +215,20 @@ namespace GrappBox.ViewModel
             return true;
         }
 
-        public async System.Threading.Tasks.Task<bool> postComment(int timelineId, string message)
+        public async System.Threading.Tasks.Task<bool> postComment(int timelineId, string message, int commentedId)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("title", title);
-            props.Add("message", message);
-            HttpResponseMessage res = await api.Post(props, "timeline/message/" + timelineId);
+            props.Add("commentedId", commentedId);
+            props.Add("comment", message);
+            HttpResponseMessage res = await api.Post(props, "timeline/comment/" + timelineId);
             if (res == null)
                 return false;
             string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                if (timelineId == _Customer.Id)
-                {
-                    _CustomerMessages.Insert(0, api.DeserializeJson<TimelineModel>(json));
-                }
-                else if (timelineId == _Team.Id)
-                {
-                    _TeamMessages.Insert(0, api.DeserializeJson<TimelineModel>(json));
-                }
+               _Comments.Add(api.DeserializeJson<TimelineModel>(json));
             }
             else
             {

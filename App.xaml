@@ -7,7 +7,6 @@
     RequestedTheme="Light">
     <Application.Resources>
         <ResourceDictionary>
-            <helpers:AppGlobalHelper x:Key="global" />
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/GrappboxColors.xaml" />
                 <ResourceDictionary Source="Resources/CustomStyle.xaml" />

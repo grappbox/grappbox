@@ -105,6 +105,7 @@
       <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
+    <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
     </Compile>
@@ -140,11 +141,14 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
+    <Compile Include="Model\Timeline\TimelineListModel.cs" />
+    <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Resources\RelayCommand.cs" />
     <Compile Include="Utils\SystemInformation.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
+    <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\DashBoardView.xaml.cs">
@@ -161,6 +165,12 @@
     </Compile>
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TimelineMessageView.xaml.cs">
+      <DependentUpon>TimelineMessageView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TimelineView.xaml.cs">
+      <DependentUpon>TimelineView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
@@ -279,6 +289,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\RoleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TimelineMessageView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TimelineView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

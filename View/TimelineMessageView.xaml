@@ -34,39 +34,49 @@
             <TextBox IsEnabled="False" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
         <customControl:CustomListView x:Name="CommentsListView"  IncrementalLoadingThreshold="2" Grid.Row="2" ItemsSource="{Binding Comments}" VerticalAlignment="Stretch" SelectionMode="None" HorizontalAlignment="Stretch" >
+            <ListView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView" VerticalAlignment="Bottom"/>
+                </ItemsPanelTemplate>
+            </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
                     <StackPanel Background="{StaticResource OrangeGrappboxBrush}">
-                        <TextBox TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}"/>
+                        <TextBox TextWrapping="Wrap" BorderBrush="{StaticResource OrangeGrappboxBrush}" BorderThickness=".5" Margin="0" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="{Binding ReadOnly}"/>
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="8*"/>
                                 <ColumnDefinition Width="2*"/>
                             </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
-                                <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
-                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,0,0">
+                                <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
+                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
+                            <TextBlock Text="{Binding TextDate}" Padding="5,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="13"/>
                         </Grid>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="Padding" Value="20"></Setter>
+                    <Setter Property="Padding" Value="5"></Setter>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListView.ItemContainerStyle>
         </customControl:CustomListView>
+        <Border Grid.Row="2" Margin="0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderThickness="0,0.5"/>
         <Grid Grid.Row="3">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="1*"/>
+            </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition />
                 <ColumnDefinition Width="Auto" />
             </Grid.ColumnDefinitions>
-            <TextBox x:Name="MessageTextBox" AcceptsReturn="True" TextWrapping="Wrap"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" PlaceholderText="Type a message and press Send" Background="{StaticResource Grey1GrappboxBrush}" KeyUp="MessageTextBox_KeyUp" Margin="0"/>
-            <Button Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Click="PostComment_Click" Margin="0">
-                <SymbolIcon Symbol="Send" />
+            <TextBox Grid.Row="1" x:Name="MessageTextBox" AcceptsReturn="True" TextWrapping="Wrap"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" PlaceholderText="Type a message and press Send" Background="White" Margin="0"/>
+            <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Click="PostComment_Click" Margin="0">
+                <SymbolIcon Symbol="Send" Foreground="White" />
             </Button>
         </Grid>
     </Grid>

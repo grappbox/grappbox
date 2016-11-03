@@ -79,7 +79,7 @@
                                 <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
                             </Ellipse.Fill>
                         </Ellipse>
-                        <TextBlock x:Name="UserNameTextBlock" Text="{Binding CurrentUserFullName, Source={StaticResource global}}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Style="{StaticResource PageTitleTextBlockStyle}" />
+                        <!--<TextBlock x:Name="UserNameTextBlock" Text="{Binding CurrentUserFullName, Source={StaticResource global}}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Style="{StaticResource PageTitleTextBlockStyle}" />-->
                         <Button RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="UserAvatar"
                                 Content="Change project" Click="Button_Click">
                             <Button.Style>

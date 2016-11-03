@@ -1,5 +1,7 @@
-﻿using Newtonsoft.Json;
+﻿using GrappBox.Helpers;
+using Newtonsoft.Json;
 using System;
+using Windows.UI.Xaml;
 
 namespace GrappBox.Model
 {
@@ -38,7 +40,11 @@ namespace GrappBox.Model
 
         public bool IdCheck
         {
-            get { if (Creator.Id != HttpRequest.User.GetUser().Id) return false; return true; }
+            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return false; return true; }
+        }
+        public bool ReadOnly
+        {
+            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return true; return false; }
         }
 
         public string TextDate
