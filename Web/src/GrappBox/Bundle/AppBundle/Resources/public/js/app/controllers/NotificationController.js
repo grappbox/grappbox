@@ -9,4 +9,4 @@
 * APP notifications page content
 *
 */
-app.controller("notificationsController", ["$scope", function($scope) { }]);
+app.controller("NotificationController", ["$scope", function($scope) { }]);

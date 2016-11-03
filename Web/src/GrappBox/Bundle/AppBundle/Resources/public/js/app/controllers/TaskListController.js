@@ -9,7 +9,7 @@
 * APP task page list (one per project)
 *
 */
-app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $location, $filter) {
+app.controller("TaskListController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $location, $filter) {
 
   var content = "";
 

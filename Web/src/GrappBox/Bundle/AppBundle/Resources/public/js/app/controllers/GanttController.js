@@ -37,7 +37,7 @@ app.filter('objInArray', function() {
 
 
 
-app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", 'ganttUtils', 'ganttMouseOffset', 'moment', "$uibModal", "$filter",
+app.controller("GanttController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", 'ganttUtils', 'ganttMouseOffset', 'moment', "$uibModal", "$filter",
 function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, utils, mouseOffset, moment, $uibModal, $filter) {
 
 

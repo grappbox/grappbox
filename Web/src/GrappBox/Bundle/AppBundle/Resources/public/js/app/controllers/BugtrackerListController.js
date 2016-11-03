@@ -9,7 +9,7 @@
 * APP bugtracker page list (one per project)
 *
 */
-app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$location', function($rootScope, $scope, $routeParams, $http, Notification, $location) {
+app.controller('BugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$location', function($rootScope, $scope, $routeParams, $http, Notification, $location) {
 
   var content = "";
 

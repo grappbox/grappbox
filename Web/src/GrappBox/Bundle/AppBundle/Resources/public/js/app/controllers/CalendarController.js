@@ -25,7 +25,7 @@ app.config(["calendarConfig", function(calendarConfig) {
 * APP calendar page
 *
 */
-app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "moment", "Notification", "$uibModal",
+app.controller("CalendarController", ["$rootScope", "$scope", "$q", "$http", "moment", "Notification", "$uibModal",
     function($rootScope, $scope, $q, $http, moment, Notification, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
@@ -73,13 +73,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
           deferred.reject();
         }
       },
@@ -92,19 +92,19 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             case "6.12.9":
-            Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+            Notification.error({ message: "You don't have sufficient rights to perform this operation.<i class=\"material-icons\">clear</i>", delay: 3500 });
             $scope.view.authorized = false;
             deferred.reject();
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
           deferred.reject();
         }
       }
@@ -134,13 +134,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
           deferred.reject();
         }
       },
@@ -153,13 +153,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
           deferred.reject();
         }
       }
@@ -187,13 +187,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
           deferred.reject();
         }
       },
@@ -207,13 +207,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
 
             default:
             deferred.reject();            
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             break;
           }
         }
         else {
           deferred.reject();          
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
         }
       }
     );
@@ -263,12 +263,12 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
         }
       },
       function onGetPlanningFail(response) {
@@ -279,12 +279,12 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
         }
       }
     );
@@ -370,9 +370,9 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
         }}).then(
           function onPostEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             else
-              Notification.success({ title: "Calendar", message: "Event successfully created.", delay: 2000 });
+              Notification.success({ message: "Event successfully created.", delay: 2000 });
             $scope.action.onRefreshView();      
           },
           function onPostEventFail(response) {
@@ -383,11 +383,11 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
                 break;
 
                 case "5.4.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                Notification.error({ message: "You don't have sufficient rights to perform this operation.<i class=\"material-icons\">clear</i>", delay: 3500 });
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
                 break;
               }
             }
@@ -415,9 +415,9 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
           { token: $rootScope.user.token, eventId: $scope.edit.id, title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, typeId: $scope.edit.type.id, icon: "DATA", projectId: $scope.edit.project.id })}).then(
           function onPutEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             else
-              Notification.success({ title: "Calendar", message: "Event successfully edited.", delay: 2000 });
+              Notification.success({ message: "Event successfully edited.", delay: 2000 });
             $scope.action.onRefreshView();      
           },
           function onPutEventFail(response) {
@@ -428,11 +428,11 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
                 break;
 
                 case "5.5.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                Notification.error({ message: "You don't have sufficient rights to perform this operation.<i class=\"material-icons\">clear</i>", delay: 3500 });
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
                 break;
               }
             }
@@ -454,9 +454,9 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
         $http.delete($rootScope.api.url + "/event/delevent/" + $rootScope.user.token + "/" + event.id).then(
           function onDeleteEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
             else
-              Notification.success({ title: "Calendar", message: "Event successfully deleted.", delay: 2000 });
+              Notification.success({ message: "Event successfully deleted.", delay: 2000 });
             $scope.action.onRefreshView();
           },
           function onDeleteEventFail(response) {
@@ -467,11 +467,11 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
                 break;
 
                 case "5.6.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                Notification.error({ message: "You don't have sufficient rights to perform this operation.", delay: "false" });
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                Notification.error({ message: "Someting is wrong with GrappBox. Please try again.<i class=\"material-icons\">warning</i>", delay: "false" });
                 break;
               }
             }

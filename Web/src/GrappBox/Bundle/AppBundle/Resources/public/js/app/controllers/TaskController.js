@@ -35,7 +35,7 @@ app.directive('convertToNumber', function() {
   };
 });
 
-app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, $filter) {
+app.controller("TaskController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, $filter) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION

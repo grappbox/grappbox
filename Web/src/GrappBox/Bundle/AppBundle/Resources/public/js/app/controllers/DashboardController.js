@@ -9,7 +9,8 @@
 * APP dashboard
 *
 */
-app.controller("dashboardController", ["$rootScope", "$scope", "$route", "$http", function($rootScope, $scope, $route, $http) {
+app.controller("DashboardController", ["$http", "$rootScope", "$route", "$scope",
+    function($http, $rootScope, $route, $scope) {
 
   /* ==================== INITIALIZATION ==================== */
 

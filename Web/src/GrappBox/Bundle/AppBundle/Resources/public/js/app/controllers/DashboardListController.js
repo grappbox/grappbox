@@ -9,7 +9,7 @@
 * APP dashboard list
 *
 */
-app.controller("dashboardListController", ["$rootScope", "$scope", "localStorageService", "$base64", "$location", "$http",
+app.controller("DashboardListController", ["$rootScope", "$scope", "localStorageService", "$base64", "$location", "$http",
     function($rootScope, $scope, localStorageService, $base64, $location, $http) {
 
   /* ==================== INITIALIZATION ==================== */
@@ -30,9 +30,9 @@ app.controller("dashboardListController", ["$rootScope", "$scope", "localStorage
     localStorageService.set("PROJECT_ID", $base64.encode(project.id));
     localStorageService.set("PROJECT_NAME", $base64.encode(project.name));
 
-    $rootScope.project.id = project.id;
-    $rootScope.project.name = project.name;
-    $rootScope.project.set = true;
+    $scope.project.id = project.id;
+    $scope.project.name = project.name;
+    $scope.project.set = true;
 
     $location.path("/dashboard/" + project.id);
   };
@@ -53,7 +53,7 @@ app.controller("dashboardListController", ["$rootScope", "$scope", "localStorage
     },
     function onGetGlobalProgressFail(response) {
       if (response.data.info && response.data.info.return_code == "2.3.3")
-        $rootScope.onUserTokenError();
+        $rootScope.userTokenError();
       $scope.data.projects = null;
       $scope.view.valid = false;
       $scope.view.onLoad = false;

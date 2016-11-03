@@ -81,7 +81,7 @@ isProjectSettingsPageAccessible["$inject"] = ["$q", "$http", "$rootScope", "$rou
 * APP project page
 *
 */
-app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location",
+app.controller("ProjectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location",
     function($rootScope, $scope, $routeParams, $http, $uibModal, Notification, $route, $location) {
 
 

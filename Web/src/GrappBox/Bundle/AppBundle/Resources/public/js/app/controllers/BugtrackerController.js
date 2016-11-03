@@ -9,7 +9,7 @@
 * APP bugtracker page
 *
 */
-app.controller('bugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$route', '$location', 'timelineFactory', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, timelineFactory) {
+app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$route', '$location', 'timelineFactory', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, timelineFactory) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION

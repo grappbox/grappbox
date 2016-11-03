@@ -9,8 +9,8 @@
 * APP timeline
 *
 */
-app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", "timelineFactory", "$location",
-    function($rootScope, $scope, $route, $http, $q, $uibModal, Notification, timelineFactory, $location) {
+app.controller("TimelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", "timelineIssueFactory", "$location",
+    function($rootScope, $scope, $route, $http, $q, $uibModal, Notification, timelineIssueFactory, $location) {
 
 	/* ==================== INITIALIZATION ==================== */
 
@@ -378,8 +378,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   // "Convert to issue" button handler
   $scope.action.onNewIssue = function(message) {
-    timelineFactory.clear();
-    timelineFactory.setMessage(message);
+    timelineIssueFactory.clear();
+    timelineIssueFactory.setMessage(message);
     $location.path("/bugtracker/" + $scope.timeline.project_id + "/0");
   };
 

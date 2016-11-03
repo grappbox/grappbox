@@ -9,7 +9,7 @@
 * APP whiteboard list
 *
 */
-app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$http", "$uibModal", "Notification",
+app.controller("WhiteboardListController", ["$rootScope", "$scope", "$route", "$http", "$uibModal", "Notification",
     function($rootScope, $scope, $route, $http, $uibModal, Notification) {
 
   /* ==================== INITIALIZATION ==================== */
