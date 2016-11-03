@@ -5,13 +5,25 @@
     tools:context="com.grappbox.grappbox.project_fragments.CalendarFragment">
 
 
-        <android.support.v7.widget.RecyclerView
+        <ListView
+            android:id="@+id/agenda_listview"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animationCache="false"
+            android:overScrollMode="never"
+            android:scrollbars="none"
+            android:scrollingCache="false"
+            android:dividerHeight="1dp">
+
+        </ListView>
+
+        <!--<android.support.v7.widget.RecyclerView
             android:id="@+id/agendalist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1.2"
             android:overScrollMode="never"
             android:scrollbars="none"
-        />
+        /> -->
 
 </LinearLayout>

@@ -3,6 +3,7 @@ package com.grappbox.grappbox.model;
 import com.grappbox.grappbox.Utils;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by tan_f on 01/11/2016.
@@ -15,6 +16,7 @@ public class CalendarWeekModel {
     private int mMonth;
     private Date mDate;
     private String  mLabel;
+    private List<CalendarDayModel> mDays;
 
     public CalendarWeekModel(int weekYear, int year, Date date, String label, int month) {
         mWeekYear = weekYear;
@@ -43,6 +45,8 @@ public class CalendarWeekModel {
 
     public Date getDate() { return mDate; }
 
+    public List<CalendarDayModel> getDays() { return mDays; }
+
     public String getLabel() { return mLabel; }
 
     public void setWeekYear(int weekYear) { mWeekYear = weekYear; }
@@ -54,6 +58,8 @@ public class CalendarWeekModel {
     public void setDate(Date date) { mDate = date; }
 
     public void setLabel(String label) { mLabel = label; }
+
+    public void setDays(List<CalendarDayModel> days) { mDays = days; }
 
     public CalendarWeekModel copy() { return new CalendarWeekModel(this); }
 
