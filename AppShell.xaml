@@ -7,7 +7,6 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
       Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-      TabNavigation="Cycle"
       mc:Ignorable="d">
 
     <!-- Using a Page as the root for the app provides a design time experience as well as ensures that
@@ -36,7 +35,7 @@
                           VerticalAlignment="Center"
                           Glyph="{x:Bind Symbol}"
                           HorizontalAlignment="Center"
-                          FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"
+                          FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons"
                           Foreground="{x:Bind SelectedColorBrush, Mode=TwoWay}" />
                 <TextBlock x:Name="Text"
                            Grid.Column="1"
@@ -61,7 +60,7 @@
 
         <!-- Top-level navigation menu + app content -->
         <SplitView x:Name="RootSplitView"
-                   DisplayMode="Inline"
+                   DisplayMode="Overlay"
                    OpenPaneLength="300"
                    IsPaneOpen="False"
                    PaneBackground="{ThemeResource ApplicationPageBackgroundThemeBrush}"
@@ -71,26 +70,42 @@
             <SplitView.Pane>
                 <Grid x:Name="PaneContentGrid">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="152" />
                         <RowDefinition Height="*" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="6" />
                     </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                        <ColumnDefinition Width="48" />
-                        <ColumnDefinition Width="48" />
-                    </Grid.ColumnDefinitions>
+                    <RelativePanel Margin="0,52,0,0" Background="DarkGray">
+                        <Ellipse x:Name="UserAvatar" Width="50" Height="50" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <TextBlock x:Name="UserNameTextBlock" Text="{Binding CurrentUserFullName, Source={StaticResource global}}" RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Style="{StaticResource PageTitleTextBlockStyle}" />
+                        <Button RelativePanel.AlignHorizontalCenterWithPanel="True" RelativePanel.Below="UserAvatar"
+                                Content="Change project" Click="Button_Click">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Background" Value="Transparent" />
+                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                    <Setter Property="BorderThickness" Value="0" />
+                                    <Setter Property="Foreground" Value="White" />
+                                    <Setter Property="FontSize" Value="16" />
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </RelativePanel>
 
-                    <!-- A custom ListView to display the items in the pane.  The automation Name is set in the ContainerContentChanging event. -->
-                    <controls:NavMenuListView x:Name="NavMenuList"
-                                              Grid.ColumnSpan="3"
-                                              TabIndex="3"
-                                              Margin="0,52,0,0"
+                    <ScrollViewer Grid.Row="1">
+                        <!-- A custom ListView to display the items in the pane.  The automation Name is set in the ContainerContentChanging event. -->
+                        <controls:NavMenuListView x:Name="NavMenuList"
                                               ContainerContentChanging="NavMenuItemContainerContentChanging"
                                               ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
                                               ItemTemplate="{StaticResource NavMenuItemTemplate}"
-                                              ItemInvoked="NavMenuList_ItemInvoked" />
+                                              ItemInvoked="NavMenuList_ItemInvoked"
+                                              ScrollViewer.HorizontalScrollMode="Disabled"
+                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                              ScrollViewer.VerticalScrollMode="Enabled"
+                                              ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+                    </ScrollViewer>
                 </Grid>
             </SplitView.Pane>
 

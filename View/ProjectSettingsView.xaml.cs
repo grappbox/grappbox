@@ -35,9 +35,6 @@ namespace GrappBox.View
         private DateTime defaultDate = DateTime.MinValue;
         private bool isNew = false;
 
-        //Required for navigation
-        private readonly NavigationHelper navigationHelper;
-
         public ProjectSettingsView()
         {
             this.InitializeComponent();
@@ -46,149 +43,9 @@ namespace GrappBox.View
 
             //Required for navigation
             this.NavigationCacheMode = NavigationCacheMode.Required;
-            this.navigationHelper = new NavigationHelper(this);
-            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
-            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
         }
 
         //Required for navigation
-
-        #region NavigationHelper
-
-        /// <summary>
-        /// Gets the <see cref="NavigationHelper"/> associated with this <see cref="Page"/>.
-        /// </summary>
-        public NavigationHelper NavigationHelper
-        {
-            get { return this.navigationHelper; }
-        }
-
-        /// <summary>
-        /// Populates the page with content passed during navigation. Any saved state is also
-        /// provided when recreating a page from a prior session.
-        /// </summary>
-        /// <param name="sender">
-        /// The source of the event; typically <see cref="NavigationHelper"/>.
-        /// </param>
-        /// <param name="e">Event data that provides both the navigation parameter passed to
-        /// <see cref="Frame.Navigate(Type, Object)"/> when this page was initially requested and
-        /// a dictionary of state preserved by this page during an earlier
-        /// session. The state will be null the first time a page is visited.</param>
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// Preserves state associated with this page in case the application is suspended or the
-        /// page is discarded from the navigation cache. Values must conform to the serialization
-        /// requirements of <see cref="SuspensionManager.SessionState"/>.
-        /// </summary>
-        /// <param name="sender">The source of the event; typically <see cref="NavigationHelper"/>.</param>
-        /// <param name="e">Event data that provides an empty dictionary to be populated with
-        /// serializable state.</param>
-        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
-        {
-        }
-
-        /// <summary>
-        /// The methods provided in this section are simply used to allow
-        /// NavigationHelper to respond to the page's navigation methods.
-        /// <para>
-        /// Page specific logic should be placed in event handlers for the
-        /// <see cref="NavigationHelper.LoadState"/>
-        /// and <see cref="NavigationHelper.SaveState"/>.
-        /// The navigation parameter is available in the LoadState method
-        /// in addition to page state preserved during an earlier session.
-        /// </para>
-        /// </summary>
-        /// <param name="e">Provides data for navigation methods and event
-        /// handlers that cannot cancel the navigation request.</param>
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
-        {
-            //Mobile customization
-            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
-            {
-                var statusBar = StatusBar.GetForCurrentView();
-                if (statusBar != null)
-                {
-                    statusBar.BackgroundOpacity = 1;
-                    statusBar.BackgroundColor = (Color)Application.Current.Resources["RedGrappbox"];
-                    statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
-                }
-            }
-            if (e.NavigationMode == NavigationMode.New)
-                PivotPS.SelectedIndex = 0;
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
-            ProjectName.Text = "";
-            ProjectDescription.Text = "";
-            img.Source = null;
-            Phone.Text = "";
-            Company.Text = "";
-            Mail.Text = "";
-            Facebook.Text = "";
-            Twitter.Text = "";
-            password.Password = "";
-            oldPassword.Password = "";
-            newPassword.Password = "";
-            retypePassword.Password = "";
-            UserMail.Text = "";
-            CustomerName.Text = "";
-            isNew = false;
-            User.IsEnabled = true;
-            CustomerAccess.IsEnabled = true;
-            Roles.IsEnabled = true;
-            DeleteDate.Visibility = Visibility.Collapsed;
-
-            this.navigationHelper.OnNavigatedTo(e);
-            if (e.Parameter == null)
-            {
-                await vm.getProjectSettings();
-                await vm.getProjectUsers();
-                await vm.getCustomerAccesses();
-                await vm.getRoles();
-                await vm.getProjectLogo();
-
-                UpdatePassword.Visibility = Visibility.Visible;
-                NewPassword.Visibility = Visibility.Collapsed;
-
-                if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
-                {
-                    DeleteDate.Visibility = Visibility.Visible;
-                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
-                }
-                else
-                {
-                    DeleteDate.Visibility = Visibility.Collapsed;
-                }
-            }
-            else
-            {
-                isNew = true;
-                User.IsEnabled = false;
-                CustomerAccess.IsEnabled = false;
-                Roles.IsEnabled = false;
-
-                vm.UserList = null;
-                vm.CustomerList = null;
-                vm.RoleList = null;
-
-                UpdatePassword.Visibility = Visibility.Collapsed;
-                NewPassword.Visibility = Visibility.Visible;
-            }
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
-        }
-
-        protected override void OnNavigatedFrom(NavigationEventArgs e)
-        {
-            this.navigationHelper.OnNavigatedFrom(e);
-            vm.RoleList = null;
-        }
-
-        #endregion NavigationHelper
 
         #region imgClicked
 

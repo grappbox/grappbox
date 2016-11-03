@@ -8,28 +8,36 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    >
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting"/>
+            <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting" />
         </CommandBar>
     </Page.BottomAppBar>
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-        <Pivot Name="db_pivot" Style="{StaticResource DefaultPivotStyle}" >
+        <Grid.RowDefinitions>
+            <RowDefinition Height="65" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Dashboard" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
+        <Pivot Grid.Row="1"  Name="db_pivot" Style="{StaticResource DefaultPivotStyle}">
         </Pivot>
-        <Popup x:Name="SettingsPopUp" Visibility="Collapsed" IsOpen="True">
+        <Popup Grid.Row="1" x:Name="SettingsPopUp" Visibility="Collapsed" IsOpen="True">
             <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
-                <TextBlock Text="Settings" Margin="15" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18"/>
+                <TextBlock Text="Settings" Margin="15" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" />
                 <StackPanel Margin="15,15,0,0">
                     <TextBlock FontSize="24" Foreground="White">Displayed Pans</TextBlock>
                     <CheckBox Name="team_cb" Click="team_cb_Checked" Foreground="White" RequestedTheme="Light">Team</CheckBox>
                     <CheckBox Name="meetings_cb" Click="meetings_cb_Checked" Foreground="White" RequestedTheme="Light">Meetings</CheckBox>
                 </StackPanel>
-                <Button Content="Close" Click="CloseSettings_Click" Margin="15,0,0,0"/>
+                <Button Content="Close" Click="CloseSettings_Click" Margin="15,0,0,0" />
             </StackPanel>
         </Popup>
-        <ProgressBar VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch"/>
+        <ProgressBar VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
     </Grid>
 </Page>

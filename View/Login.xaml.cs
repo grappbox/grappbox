@@ -39,8 +39,6 @@ namespace GrappBox.View
             bool result = await api.Login(loginBlock.Text, pwdBlock.Password);
             if (result == true)
             {
-                SettingsManager.setOption("login", loginBlock.Text);
-                SettingsManager.setOption("password", pwdBlock.Password);
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));

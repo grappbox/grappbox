@@ -1,4 +1,5 @@
-﻿using GrappBox.Resources;
+﻿using GrappBox.Helpers;
+using GrappBox.Resources;
 using GrappBox.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -139,14 +140,14 @@ namespace GrappBox.HttpRequest
             {
                 try
                 {
-                    DeserializeJson<User>(await res.Content.ReadAsStringAsync());
+                    AppGlobalHelper.CurrentUser = DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 }
                 catch (Exception ex)
                 {
                     Debug.WriteLine(ex.Message);
                     return false;
                 }
-                string token = User.GetUser().Token;
+                string token = AppGlobalHelper.CurrentUser.Token;
                 Debug.WriteLine(token);
                 webclient.DefaultRequestHeaders.Authorization = new HttpCredentialsHeaderValue(token);
                 return true;

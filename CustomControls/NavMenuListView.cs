@@ -52,19 +52,6 @@ namespace GrappBox.CustomControls
                 if (parent != null)
                 {
                     this.splitViewHost = parent as SplitView;
-
-                    splitViewHost.RegisterPropertyChangedCallback(SplitView.IsPaneOpenProperty, (sender, args) =>
-                    {
-                        this.OnPaneToggled();
-                    });
-
-                    splitViewHost.RegisterPropertyChangedCallback(SplitView.DisplayModeProperty, (sender, args) =>
-                    {
-                        this.OnPaneToggled();
-                    });
-
-                    // Call once to ensure we're in the correct state
-                    this.OnPaneToggled();
                 }
             };
         }
@@ -116,40 +103,6 @@ namespace GrappBox.CustomControls
         public event EventHandler<ListViewItem> ItemInvoked;
 
         /// <summary>
-        /// Custom keyboarding logic to enable movement via the arrow keys without triggering selection 
-        /// until a 'Space' or 'Enter' key is pressed. 
-        /// </summary>
-        /// <param name="e"></param>
-        protected override void OnKeyDown(KeyRoutedEventArgs e)
-        {
-            var focusedItem = FocusManager.GetFocusedElement();
-
-            switch (e.Key)
-            {
-                case VirtualKey.Up:
-                    this.TryMoveFocus(FocusNavigationDirection.Up);
-                    e.Handled = true;
-                    break;
-
-                case VirtualKey.Down:
-                    this.TryMoveFocus(FocusNavigationDirection.Down);
-                    e.Handled = true;
-                    break;
-
-                case VirtualKey.Space:
-                case VirtualKey.Enter:
-                    // Fire our event using the item with current keyboard focus
-                    this.InvokeItem(focusedItem);
-                    e.Handled = true;
-                    break;
-
-                default:
-                    base.OnKeyDown(e);
-                    break;
-            }
-        }
-
-        /// <summary>
         /// This method is a work-around until the bug in FocusManager.TryMoveFocus is fixed.
         /// </summary>
         /// <param name="direction"></param>
@@ -191,25 +144,6 @@ namespace GrappBox.CustomControls
             if (focusedItem is ListViewItem)
             {
                 ((ListViewItem)focusedItem).Focus(FocusState.Programmatic);
-            }
-        }
-
-        /// <summary>
-        /// Re-size the ListView's Panel when the SplitView is compact so the items
-        /// will fit within the visible space and correctly display a keyboard focus rect.
-        /// </summary>
-        private void OnPaneToggled()
-        {
-            if (this.splitViewHost.IsPaneOpen)
-            {
-                this.ItemsPanelRoot.ClearValue(FrameworkElement.WidthProperty);
-                this.ItemsPanelRoot.ClearValue(FrameworkElement.HorizontalAlignmentProperty);
-            }
-            else if (this.splitViewHost.DisplayMode == SplitViewDisplayMode.CompactInline ||
-                this.splitViewHost.DisplayMode == SplitViewDisplayMode.CompactOverlay)
-            {
-                this.ItemsPanelRoot.SetValue(FrameworkElement.WidthProperty, this.splitViewHost.CompactPaneLength);
-                this.ItemsPanelRoot.SetValue(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             }
         }
     }

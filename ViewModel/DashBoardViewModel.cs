@@ -1,4 +1,5 @@
-﻿using GrappBox.HttpRequest;
+﻿using GrappBox.Helpers;
+using GrappBox.HttpRequest;
 using GrappBox.Model;
 using GrappBox.Resources;
 using System;
@@ -34,27 +35,14 @@ namespace GrappBox.ViewModel
             await this.getNextMeetings();
         }
 
-        public async Task getUserLogo(Occupations model)
-        {
-            await model.LogoUpdate();
-            await model.SetLogo();
-            NotifyPropertyChanged("Avatar");
-        }
-
         public async Task getTeam()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            int id = SettingsManager.getOption<int>("ProjectIdChoosen");
-            object[] token = { User.GetUser().Token, id };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, Constants.DashboardTeamOccupationCall);
             if (res.IsSuccessStatusCode)
             {
                 OccupationList = api.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
-                foreach (Occupations item in OccupationList)
-                {
-                    await getUserLogo(item);
-                    NotifyPropertyChanged("Avatar");
-                }
                 NotifyPropertyChanged("OccupationList");
             }
             else
@@ -66,7 +54,7 @@ namespace GrappBox.ViewModel
         public async Task<bool> getNextMeetings()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, Constants.DashboardMeetingsCall);
             if (res == null)
                 return false;

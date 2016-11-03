@@ -1,7 +1,9 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.Helpers;
+using GrappBox.Model;
 using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
+using System.Diagnostics;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -12,15 +14,10 @@ namespace GrappBox.View
 {
     public sealed partial class GenericDahsboard : Page
     {
-        private NavigationHelper navigationHelper;
-        Frame frame = Window.Current.Content as Frame;
         public GenericDahsboard()
         {
             this.InitializeComponent();
             this.DataContext = new GenericDashboardViewModel();
-
-            this.NavigationCacheMode = NavigationCacheMode.Disabled;
-            this.navigationHelper = new NavigationHelper(this);
         }
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
@@ -32,24 +29,25 @@ namespace GrappBox.View
             {
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
-                this.navigationHelper.GoBack();
             }
             await vmdl.getProjectsLogo();
             LoadingBar.IsEnabled = false;
             LoadingBar.Visibility = Visibility.Collapsed;
         }
-        private async void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             ListView lv = sender as ListView;
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
-            SettingsManager.setOption("ProjectIdChoosen", plm.Id);
-            SettingsManager.setOption("ProjectNameChoosen", plm.Name);
-            //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.DashBoardView)));
+            AppGlobalHelper.ProjectId = plm.Id;
+            AppGlobalHelper.ProjectName = plm.Name;
+            Debug.WriteLine("ProjectId= {0}", plm.Id);
+            Frame.Navigate(typeof(View.DashBoardView));
         }
 
-        private async void CreateProject_Click(object sender, RoutedEventArgs e)
+        private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
-            //await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => frame.Navigate(typeof(View.ProjectSettingsView), "newProject"));
+            Frame.Navigate(typeof(View.ProjectSettingsView), "newProject");
         }
     }
 }

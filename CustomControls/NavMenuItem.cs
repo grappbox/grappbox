@@ -16,13 +16,20 @@ namespace GrappBox.CustomControls
     /// </summary>
     public class NavMenuItem : INotifyPropertyChanged
     {
-        public string Label { get; set; }
+        private string _label;
+        public string Label
+        {
+            get { return _label; }
+            set { _label = value;
+                this.OnPropertyChanged("PageHeaderTitle");
+            }
+        }
         public String Symbol { get; set; }
         public SolidColorBrush ForegroundColor { get; set; }
 
-        private SolidColorBrush defaultColorBrush = Constants.DefaultGray;
+        private SolidColorBrush defaultColorBrush = new SolidColorBrush(Colors.Black);
 
-        private SolidColorBrush _selectedColorBrush = Constants.DefaultGray;
+        private SolidColorBrush _selectedColorBrush = new SolidColorBrush(Colors.Black);
 
         public SolidColorBrush SelectedColorBrush
         {
@@ -31,6 +38,7 @@ namespace GrappBox.CustomControls
             {
                 _selectedColorBrush = value;
                 this.OnPropertyChanged("SelectedColorBrush");
+                this.OnPropertyChanged("PageHeaderColor");
             }
         }
 
