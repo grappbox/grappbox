@@ -9,6 +9,9 @@
     xmlns:valueconverter="using:GrappBox.ViewModel"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar ClosedDisplayMode="Compact">
             <AppBarButton Name="UpdateSettings" Label="Update" Click="Update_Click" Icon="Save" />

@@ -11,6 +11,9 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     >
 
+    <Page.Resources>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting"/>

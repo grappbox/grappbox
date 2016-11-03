@@ -2,7 +2,10 @@
 using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
+using Windows.Foundation.Metadata;
+using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -25,6 +28,17 @@ namespace GrappBox.View
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            //Mobile customization
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                if (statusBar != null)
+                {
+                    statusBar.BackgroundOpacity = 1;
+                    statusBar.BackgroundColor = (Color)Application.Current.Resources["RedGrappbox"];
+                    statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
+                }
+            }
             GenericDashboardViewModel vmdl = this.DataContext as GenericDashboardViewModel;
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;

@@ -51,7 +51,7 @@ namespace GrappBox
                 {
                     Symbol = Constants.TimelineSymbol,
                     Label = "Timeline",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(TimelineView),
                     ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()

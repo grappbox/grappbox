@@ -9,6 +9,10 @@
     xmlns:customControl="using:GrappBox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+    <Page.Resources>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource RedListview}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+    </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add" />
@@ -38,9 +42,6 @@
                     <customControl:GenericDashboardItem/>
                 </DataTemplate>
             </ListView.ItemTemplate>
-            <ListView.ItemContainerStyle>
-
-            </ListView.ItemContainerStyle>
             <ListViewItem>
                 
             </ListViewItem>

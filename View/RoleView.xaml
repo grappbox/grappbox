@@ -166,6 +166,7 @@
                 </Setter.Value>
             </Setter>
         </Style>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
     </Page.Resources>
     <Page.BottomAppBar>
         <CommandBar Visibility="Visible" x:Name="CB" ClosedDisplayMode="Compact">
