@@ -6,6 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:customControl="using:GrappBox.CustomControls"
+    xmlns:valueconverter="using:GrappBox.ViewModel"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.BottomAppBar>
@@ -30,42 +31,28 @@
                     <Style TargetType="TextBox">
                         <Setter Property="FontSize" Value="15" />
                         <Setter Property="FontFamily" Value="Segoe WP" />
+                        <Setter Property="Margin" Value="0,20,0,0" />
                     </Style>
-                    <Style TargetType="TextBlock">
-                        <Setter Property="Margin" Value="0,20,0,5" />
-                        <Setter Property="FontFamily" Value="Segoe WP" />
-                        <Setter Property="FontSize" Value="15" />
-                    </Style>
+                    <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
                 </StackPanel.Resources>
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Firstname" />
-                <TextBox x:Name="FirstName" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Lastname" />
-                <TextBox x:Name="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Birthday" />
-                <DatePicker Date="{Binding Birthday}" HorizontalAlignment="Stretch" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Avatar" />
+                <TextBox x:Name="FirstName" Header="Firstname" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}" />
+                <TextBox x:Name="Lastname" Header="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}" />
+                <DatePicker Date="{Binding Birthday, Converter={StaticResource DateConverter}}" Header="Birthday" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
+                <TextBox Header="Avatar" Height="1" MinHeight="26" />
                 <Grid>
                     <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
                     <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click" />
                     <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
                 </Grid>
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Phone" />
-                <TextBox x:Name="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Country" />
-                <TextBox x:Name="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Linkedin" />
-                <TextBox x:Name="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Viadeo" />
-                <TextBox x:Name="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}" />
-                <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Twitter" />
-                <TextBox x:Name="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
-                <StackPanel x:Name="PasswordStackPanel" Visibility="Collapsed" Margin="5,0,5,0">
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Old Password" />
-                    <PasswordBox x:Name="oldPassword" VerticalAlignment="Stretch" />
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="New Password" />
-                    <PasswordBox x:Name="newPassword" VerticalAlignment="Stretch" />
-                    <TextBlock HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" Text="Retype Password" />
-                    <PasswordBox x:Name="retypePassword" VerticalAlignment="Stretch" />
+                <TextBox x:Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
+                <TextBox x:Name="Country" Header="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}" />
+                <TextBox x:Name="Linkedin" Header="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}" />
+                <TextBox x:Name="Viadeo" Header="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}" />
+                <TextBox x:Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
+                <StackPanel x:Name="PasswordStackPanel" Visibility="Collapsed">
+                    <PasswordBox x:Name="oldPassword" Header="Old Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
+                    <PasswordBox x:Name="newPassword" Header="New Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
+                    <PasswordBox x:Name="retypePassword" Header="Retype Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
                 </StackPanel>
                 <Button Margin="0,20,0,0" Content="Change Password" HorizontalAlignment="Center" Click="Password_Click" />
             </StackPanel>
