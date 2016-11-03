@@ -4,225 +4,152 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/* ===================================================== */
-/* ==================== PAGE ACCESS ==================== */
-/* ===================================================== */
-
-// Routine definition
-// APP project-related page access
-var isProjectAccessible = function($rootScope, $q, $http, $route, $location, Notification) {
-  var deferred = $q.defer();
-
-
-  $http.get($rootScope.api.url + "/project/"+ $route.current.params.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
-  	function onGetProjectInformationsSuccess(response) {
-      deferred.resolve();
-    },
-    function onGetProjectInformationsFail(response) {
-      if (response.data.info.return_code) {
-        switch(response.data.info.return_code) {
-          case "6.3.3":
-          deferred.reject();
-          $rootScope.onUserTokenError();
-          break;
-
-          case "6.3.4":
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ title: "GrappBox", message: "Project not found.", delay: 4500 });
-          break;
-
-          case "6.3.9":
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ title: "GrappBox", message: "You don\'t have access to this part of the project.", delay: 4500 });
-          break;
-
-          default:
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
-          break;
-        }
-      }
-      else {
-        deferred.reject();
-        $location.path("./");
-        Notification.warning({ title: "GrappBox", message: "Someting is wrong with GrappBox. Please try again.", delay: 4500 });
-      }
-    });
-
-    return deferred.promise;
-};
-
-// "isProjectSettingsPageAccessible" routine injection
-isProjectAccessible["$inject"] = ["$rootScope", "$q", "$http", "$route", "$location", "Notification"];
-
-
-
 /* ======================================================= */
 /* ==================== ROUTING TABLE ==================== */
 /* ======================================================= */
 
-// GRAPPBOX
 // APP routing definition
-app.config(["$routeProvider", "$locationProvider", function($routeProvider, $locationProvider) {
+app.config(["$locationProvider", "$routeProvider", function($locationProvider, $routeProvider) {
 	$routeProvider
-	// Homepage
-	.when("/", {
+  // Homepage
+  .when("/", {
 		title: "GrappBox",
+    controller  : "DashboardListController",
 		templateUrl : "../resources/pages/dashboard-list.html",
-		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
-		homepage: true,
-		resolve: { factory: isProjectSelected }
+		resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
 	})
 	.when("/dashboard/", {
 		title: "GrappBox",
+    controller  : "DashboardListController",
 		templateUrl : "../resources/pages/dashboard-list.html",
-		controller  : "dashboardListController",
 		caseInsensitiveMatch : true,
-		homepage: true,
-		resolve: { factory: isProjectSelected }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
 	})
 	// Project dashboard
-	.when("/dashboard/:project_id/", {
+  .when("/dashboard/:project_id/", {
 		title: "Dashboard",
+    controller  : "DashboardController",
 		templateUrl : "../resources/pages/dashboard.html",
-		controller  : "dashboardController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
 	// Login
-	.when("/login", {
+  .when("/login", {
+    title: "Loading...",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: redirectOnLogin }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.login; }]}
 	})
 	// Logout
-	.when("/logout", {
+  .when("/logout", {
 		title: "Logging out...",
 		caseInsensitiveMatch : true,
-		homepage: true,
-		resolve: { factory: redirectOnLogout }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.logout; }]}
 	})
-	// Bugtracker-related pages
-	.when("/bugtracker/:project_id", {
+	// Bugtracker pages
+  .when("/bugtracker/:project_id", {
 		title: "Bugtracker",
+    controller  : "BugtrackerListController",
 		templateUrl : "../resources/pages/bugtracker-list.html",
-		controller  : "bugtrackerListController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
-	.when("/bugtracker/:project_id/:id", {
+  .when("/bugtracker/:project_id/:id", {
 		title: "Bugtracker",
+    controller  : "BugtrackerController",
 		templateUrl : "../resources/pages/bugtracker.html",
-		controller  : "bugtrackerController",
 		caseInsensitiveMatch : true,
-		homepage: false,
 		resolve: { factory: isBugtrackerAccessible }
 	})
-  // Calendar-related pages
+  // Calendar pages
   .when("/calendar", {
     title: "Calendar",
+    controller    : "CalendarController",
+    controllerAs  : "vm",
     templateUrl : "../resources/pages/calendar.html",
-    controller  : null,
     caseInsensitiveMatch : true,
-    homepage: false
   })
-  // Cloud-related pages
+  // Cloud pages
   .when("/cloud/:project_id", {
     title: "Cloud",
+    controller  : "CloudController",
     templateUrl : "../resources/pages/cloud.html",
-    controller  : "cloudController",
     caseInsensitiveMatch : true,
-    homepage: false,
-    resolve: { factory: isProjectAccessible }
-  })  
-  // Gantt-related pages
-  .when("/gantt/:project_id", {
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+  })
+  // Gantt pages
+    .when("/gantt/:project_id", {
 		title: "Gantt",
+    controller  : "GanttController",
 		templateUrl : "../resources/pages/gantt.html",
-		controller  : "ganttController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
-  // Notifications-related pages
+  // Notifications pages
   .when("/notifications", {
     title: "Notifications",
+    controller  : "NotificationController",
     templateUrl : "../resources/pages/notifications.html",
-    controller  : "notificationsController",
     caseInsensitiveMatch : true,
-    homepage: false
   })
-  // User-related pages
+  // User pages  
   .when("/profile", {
     title: "Profile",
-    templateUrl : "../resources/pages/profile.html",
     controller  : "ProfileController",
+    templateUrl : "../resources/pages/profile.html",
     caseInsensitiveMatch : true,
-    homepage: false
-  })  
+  })
   // Project settings page
   .when("/settings/:project_id", {
     title: "Project settings",
+    controller  : "ProjectSettingsController",
     templateUrl : "../resources/pages/project-settings.html",
-    controller  : "projectSettingsController",
     caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { factory: isProjectSettingsPageAccessible }
   })
-  // Task-related pages
-	.when("/tasks/:project_id", {
+  // Task pages	
+  .when("/tasks/:project_id", {
 		title: "Tasks",
+    controller  : "TaskListController",
 		templateUrl : "../resources/pages/task-list.html",
-		controller  : "taskListController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
-	.when("/tasks/:project_id/:id", {
+  .when("/tasks/:project_id/:id", {
 		title: "Tasks",
+    controller  : "TaskController",
 		templateUrl : "../resources/pages/task.html",
-		controller  : "taskController",
 		caseInsensitiveMatch : true,
-		homepage: false,
 		resolve: { factory: isTaskAccessible }
 	})
-	// Timeline-related pages
-	.when("/timeline/:project_id", {
+
+	// Timeline pages
+  .when("/timeline/:project_id", {
 		title: "Timeline",
+    controller  : "TimelineController",
 		templateUrl : "../resources/pages/timeline.html",
-		controller  : "timelineController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
-	// Whiteboard-related pages
-	.when("/whiteboard/:project_id", {
+	// Whiteboard pages
+  .when("/whiteboard/:project_id", {
 		title: "Whiteboard",
+    controller  : "WhiteboardListController",
 		templateUrl : "../resources/pages/whiteboard-list.html",
-		controller  : "whiteboardListController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isProjectAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
-	.when("/whiteboard/:project_id/:id", {
+  .when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",
+    controller  : "WhiteboardController",
 		templateUrl : "../resources/pages/whiteboard.html",
-		controller  : "whiteboardController",
 		caseInsensitiveMatch : true,
-		homepage: false,
-		resolve: { factory: isWhiteboardAccessible }
+    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.whiteboard; }]}
 	})
 	// Error page (default behavior)
 	.otherwise({
 		title: "Error",
 		templateUrl : "../resources/pages/404.html",
-		homepage: false
 	});
 
 	$locationProvider.html5Mode(true);
