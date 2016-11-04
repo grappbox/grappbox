@@ -4,9 +4,6 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP notifications page content
-*
-*/
+// Controller definition
+// APP notifications
 app.controller("NotificationController", ["$scope", function($scope) { }]);
