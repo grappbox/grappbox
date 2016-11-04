@@ -45,9 +45,9 @@ var app = angular.module("grappbox", [
 /* ======================================================= */
 
 // Production compilation settings
-// app.config(["$compileProvider", function($compileProvider) {
-//  $compileProvider.debugInfoEnabled(false);
-// }]);
+app.config(["$compileProvider", function($compileProvider) {
+  $compileProvider.debugInfoEnabled(false);
+}]);
 
 // TWIG template conflict fix
 app.config(["$interpolateProvider", function($interpolateProvider) {
