@@ -4,13 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP whiteboard page content
-*
-*/
-app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canvasFactory", "objectFactory", "$http", "$location", "Notification", "$q", "moment", "$interval", "$filter",
-    function($rootScope, $scope, $route, canvasFactory, objectFactory, $http, $location, Notification, $q, moment, $interval, $filter) {
+// Controller definition
+// APP whiteboard
+app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory",
+    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -113,9 +110,9 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     document.addEventListener('fullscreenchange', _onFullscreenChange(), false);
 
     $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
-    canvasFactory.setCanvas($scope.whiteboard.canvas);
-    canvasFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
-    canvasFactory.clearCanvasBuffer();
+    whiteboardRenderFactory.setCanvas($scope.whiteboard.canvas);
+    whiteboardRenderFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
+    whiteboardRenderFactory.clearCanvasBuffer();
   };
 
   // Routine definition (setup)
@@ -131,7 +128,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
         $scope.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
         $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
         if ($scope.selected.tool != "eraser")
-          _renderObject(objectFactory.setRenderObject(0, $scope));
+          _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope));
       }
     };
 
@@ -144,7 +141,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           $scope.mouse.end.x = last.x;
           $scope.mouse.end.y = last.y;
           if ($scope.selected.tool != "eraser")
-            _renderObject(objectFactory.setRenderObject(0, $scope));
+            _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope));
         }
       }
     };
@@ -153,8 +150,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
     $scope.whiteboard.canvas.onmouseup = function() {
       if ($scope.selected.tool) {
         if ($scope.selected.tool != "eraser") {
-          canvasFactory.addToCanvasBuffer(objectFactory.setRenderObject(0, $scope));
-          _push(objectFactory.convertToAPIObject($scope));
+          whiteboardRenderFactory.addToCanvasBuffer(whiteboardObjectFactory.setRenderObject(0, $scope));
+          _push(whiteboardObjectFactory.convertToAPIObject($scope));
         }
         else
           _erase($scope);
@@ -173,11 +170,11 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
   /* ==================== ROUTINES (LOCAL) ==================== */
   
   // Routine definition (local)
-  // Render/display canvas data using canvasFactory
+  // Render/display canvas data using whiteboardRenderFactory
   var _renderObject = function(data) {
     if (data.tool === "line" || data.tool === "rectangle" || data.tool === "diamond" || data.tool === "ellipse")
-      canvasFactory.renderCanvasBuffer();
-    canvasFactory.renderObject(data);
+      whiteboardRenderFactory.renderCanvasBuffer();
+    whiteboardRenderFactory.renderObject(data);
   };
 
   // Routine definition (local)
@@ -194,8 +191,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             _setMouseHandlers();
 
             $scope.whiteboard.objects = [];
-            canvasFactory.clearCanvasBuffer();
-            canvasFactory.clearCanvas();
+            whiteboardRenderFactory.clearCanvasBuffer();
+            whiteboardRenderFactory.clearCanvas();
 
             $scope.data.name = response.data.data.name;
             $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
@@ -204,10 +201,10 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
 
             if (response.data.data.content)
             angular.forEach(response.data.data.content, function(value, key) {
-              var data = objectFactory.convertToLocalObject(value.id, value.object);
+              var data = whiteboardObjectFactory.convertToLocalObject(value.id, value.object);
               this.whiteboard.objects.push(data);
-              canvasFactory.addToCanvasBuffer(data);
-              canvasFactory.renderObject(data);
+              whiteboardRenderFactory.addToCanvasBuffer(data);
+              whiteboardRenderFactory.renderObject(data);
             }, $scope);
 
             deferred.resolve();
@@ -249,7 +246,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
 
             case "10.3.4":
             $location.path("whiteboard/" + $route.  current.params.project_id);
-            Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
+            notificationFactory.warning("This whiteboard has been deleted.");
             deferred.reject();
             break;
 
@@ -290,17 +287,17 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
 
             angular.forEach($scope.pull.add, function(value, key) {
-              var data = objectFactory.convertToLocalObject(value.id, value.object);
+              var data = whiteboardObjectFactory.convertToLocalObject(value.id, value.object);
               $scope.whiteboard.objects.push(data);
-              canvasFactory.addToCanvasBuffer(data);
-              canvasFactory.renderObject(data);
+              whiteboardRenderFactory.addToCanvasBuffer(data);
+              whiteboardRenderFactory.renderObject(data);
             });
             angular.forEach($scope.pull.delete, function(value, key) {
               for (i = 0; i < $scope.whiteboard.objects.length; ++i)
                 if ($scope.whiteboard.objects[i].id == value.id || $scope.whiteboard.objects[i].id == 0 || $scope.whiteboard.objects[i].with <= 0 || $scope.whiteboard.objects[i].height <= 0) {
                   $scope.whiteboard.objects.splice(i, 1);
-                  canvasFactory.setCanvasBuffer($scope.whiteboard.objects);
-                  canvasFactory.renderCanvasBuffer();
+                  whiteboardRenderFactory.setCanvasBuffer($scope.whiteboard.objects);
+                  whiteboardRenderFactory.renderCanvasBuffer();
                 }
             });            
             break;
@@ -336,7 +333,7 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
 
             case "10.5.4":
             $location.path("whiteboard/" + $route.current.params.project_id);
-            Notification.warning({ title: "Whiteboard", message: "This whiteboard has been deleted.", delay: 4500 });
+            notificationFactory.warning("This whiteboard has been deleted.");
             break;
 
             default:
@@ -366,19 +363,19 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
           if (response.data.info) {
             switch(response.data.info.return_code) {
               case "1.10.1":
-              var data = objectFactory.convertToLocalObject(response.data.data.id, response.data.data.object);
+              var data = whiteboardObjectFactory.convertToLocalObject(response.data.data.id, response.data.data.object);
               $scope.whiteboard.objects.push(data);
-              canvasFactory.addToCanvasBuffer(data);
-              canvasFactory.renderObject(data);            
+              whiteboardRenderFactory.addToCanvasBuffer(data);
+              whiteboardRenderFactory.renderObject(data);            
               break;
 
               default:
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
               break;
             }
           }
           else
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
         },
         function onWhiteboardPushFail(response) {
           if (response.data.info) {
@@ -388,16 +385,16 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
               break;
 
               case "10.4.9":
-              Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+              notificationFactory.warning("You don't have sufficient rights to perform this operation.");
               break;
 
               default:
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
               break;
             }
           }
           else
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
         }
       );
   };
@@ -415,8 +412,8 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             for (i = 0; i < $scope.whiteboard.objects.length; ++i)
               if ($scope.whiteboard.objects[i].id == response.data.data.id || $scope.whiteboard.objects[i].id == 0 || $scope.whiteboard.objects[i].with <= 0 || $scope.whiteboard.objects[i].height <= 0) {
                 $scope.whiteboard.objects.splice(i, 1);
-                canvasFactory.setCanvasBuffer($scope.whiteboard.objects);
-                canvasFactory.renderCanvasBuffer();
+                whiteboardRenderFactory.setCanvasBuffer($scope.whiteboard.objects);
+                whiteboardRenderFactory.renderCanvasBuffer();
               }
             break;
 
@@ -424,12 +421,12 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             default:
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else
-          Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
       },
       function onWhiteboardEraseFail(response) {
         if (response.data.info) {
@@ -439,16 +436,16 @@ app.controller("whiteboardController", ["$rootScope", "$scope", "$route", "canva
             break;
 
             case "10.4.9":
-            Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+            notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
             break;
 
             default:
-            Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else
-          Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
       }
     );
   };

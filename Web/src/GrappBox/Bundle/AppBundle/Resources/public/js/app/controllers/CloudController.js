@@ -9,7 +9,7 @@
 * APP Cloud page content
 *
 */
-app.controller("cloudController", ["$rootScope", "$scope", "$routeParams", "$http", "localStorageService", "$base64", "$window", "Notification", "$uibModal", "$q",
+app.controller("CloudController", ["$rootScope", "$scope", "$routeParams", "$http", "localStorageService", "$base64", "$window", "Notification", "$uibModal", "$q",
     function($rootScope, $scope, $routeParams, $http, localStorageService, $base64, $window, Notification, $uibModal, $q) {
 
   /* ==================== INITIALIZATION ==================== */

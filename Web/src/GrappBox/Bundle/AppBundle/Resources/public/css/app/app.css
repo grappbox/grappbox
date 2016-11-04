@@ -62,27 +62,28 @@ h3, h4 { font-weight: 500; color: #666; }
 h3 { font-size: 20px; }
 h4 { font-size: 18px; }
 
-b,
-strong { font-weight: 900; }
-p { font-size: 14px; }
+section { margin-top: 40px; }
+section.no-margin { margin: 0; }
 
-body .container .well p,
-body .container-fluid .well p,
-body .container .jumbotron p,
-body .container-fluid .jumbotron p { font-weight: 400; }
+b, strong { font-weight: 900; }
+p { font-size: 14px!important; font-weight: 400!important; }
 
 a { color: #333; }
 
-.well a,
-a.raised { color: #4bf; }
-.container,
-.well { -webkit-transition: 0.3s ease all; -moz-transition: 0.3s ease all; -o-transition: 0.3s ease all; -ms-transition: 0.3s ease all; transition: 0.3s ease all; }
+.well, .container {
+  -webkit-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  -moz-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  -o-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  -ms-transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+  transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1);
+}
 
-.well a:active,
-.well a:focus,
+.well a,
+.well a.raised,
+a.raised { color: #4bf; }
+
 .well a:hover,
-a.raised:active,
-a.raised:focus,
+.well a.raised:hover,
 a.raised:hover { text-decoration: underline; color: #4bf; }
 
 ul, ol { padding: 0; list-style: none; }
@@ -117,25 +118,12 @@ label { font-weight: 400; display: inline; margin: 0; }
 .blue-color { color: #4bf!important; }
 .default-color { color: #4bf!important; }
 
-.red-hover:active,
 .red-hover:hover { color: #fc575e!important; }
-
-.yellow-hover:active,
 .yellow-hover:hover { color: #f1c40f!important; }
-
-.green-hover:active,
 .green-hover:hover { color: #27ae60!important; }
-
-.orange-hover:active,
 .orange-hover:hover { color: #ff9f55!important; }
-
-.purple-hover:active,
 .purple-hover:hover { color: #9e58dc!important; }
-
-.blue-hover:active,
 .blue-hover:hover { color: #4bf!important; }
-
-.default-hover:active,
 .default-hover:hover { color: #fc575e!important; }
 
 .red-background { background: #fc575e!important; }
@@ -181,10 +169,23 @@ label { font-weight: 400; display: inline; margin: 0; }
 .alert { margin: 30px 15px 0 15px; border-radius: 0; }
 
 .ui-notification > .message { overflow: hidden!important; text-overflow: ellipsis; }
-.ui-notification > h3 { font-weight: 400; }
-.ui-notification.info { background: #4bf; }
-.ui-notification.success { background: #27ae60; }
-.ui-notification.warning { background: #ff9f55; }
+.ui-notification > .message i { position: absolute; top: 25%; right: 4%; }
+.ui-notification:active,
+.ui-notification:focus,
+.ui-notification:hover { background: #555!important; }
+.ui-notification {
+  background: #333!important;
+  color: #f0f0f0!important;
+  width: 30%!important;
+  box-shadow: none!important;
+  bottom: 0!important;
+  padding: 5px 10px;
+  -webkit-transition: 0.3s ease all;
+  -moz-transition: 0.3s ease all;
+  -o-transition: 0.3s ease all;
+  -ms-transition: 0.3s ease all;
+  transition: 0.3s ease all;
+}
 
 
 
@@ -367,15 +368,12 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .sidebar .avatar { float: left; width: 35px; height: 35px; margin: 7px 20px 7px 25px; border-radius: 50%; vertical-align: initial!important; }
 .sidebar .user { display: inline-block; }
 .sidebar .user a { float: left; padding: 15px 5px; color: #fafafa; }
-.sidebar .user a:active,
 .sidebar .user a:hover { color: #4bf; text-decoration: none; }
 .sidebar .user a:focus { text-decoration: none; }
 
 .sidebar .sidebar-content ul { margin: 0; padding: 0; list-style: none; }
 .sidebar .sidebar-content ul a { width: 100%; margin: 5px 0; padding: 12px 30px; text-align: left; text-transform: none; color: #ccc; border-radius: 0; transition: none!important; }
 
-.sidebar .sidebar-content ul a:active,
-.sidebar .sidebar-content ul a:focus,
 .sidebar .sidebar-content ul a:hover,
 .sidebar .sidebar-content ul a.active { background: #ccc!important; color: #333; }
 .sidebar .sidebar-content ul a > i { margin: 0 30px 0 0; }
@@ -459,15 +457,12 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .well .tab-content > .active { position: relative; display: table; width: 100%; }
 .well-soft { background: #fafafa!important; }
 
+.well .btn { float: right; }
 .well .btn.btn-default { color: #44BBFF!important; }
-.well .btn.btn-default:active,
-.well .btn.btn-default:hover,
-.well .btn.btn-default:focus { color: #fafafa!important; background: #44BBFF!important; }
+.well .btn.btn-default:hover { color: #fafafa!important; background: #44BBFF!important; text-decoration: none; }
 
 .well .btn.btn-danger { color: #fc575e!important; }
-.well .btn.btn-danger:active,
-.well .btn.btn-danger:hover,
-.well .btn.btn-danger:focus { color: #fafafa!important; background: #fc575e!important; }
+.well .btn.btn-danger:hover { color: #fafafa!important; background: #fc575e!important; text-decoration: none; }
 
 
 
@@ -476,21 +471,23 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 /* ============================================================ */
 
 .each-data { padding: 0 5px; }
-.each-data .well { padding: 19px 19px 5px 19px!important; margin-bottom: 10px!important; transition: all 200ms cubic-bezier(0.23, 1, 0.32, 1); }
-.each-data .well:active,
-.each-data .well:focus,
+.each-data .well { padding: 25px 15px 0px 15px!important; }
 .each-data .well:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)!important; cursor: pointer; }
 
+@media (min-width: 992px) and (max-width: 1401px) {
+  .each-data { width: 33.33333333%; }
+}
+
+@media (min-width: 992px) and (max-width: 1199px) {
+  .each-data { width: 50%; }
+}
+
+.each-data .avatar { float: left; margin-right: 20px }
 .each-data ul { font-weight: 400; padding: 0; list-style: none; }
-.each-data ul li { padding: 5px 0; }
+.each-data ul li { padding: 3px 0; }
 .each-data ul li i { margin: 0 10px 0 0; vertical-align: middle!important; }
 .each-data ul img { border-radius: 50%; }
 .each-data ul .title { font-weight: 900; }
-
-.each-data a { float: right; }
-.each-data a:active,
-.each-data a:focus,
-.each-data a:hover { text-decoration: none; }
 
 @media (min-width: 1199px) {
   #dashboard-list .each-data ul .avatar { float: left; margin: 5px 15px 0 0; }

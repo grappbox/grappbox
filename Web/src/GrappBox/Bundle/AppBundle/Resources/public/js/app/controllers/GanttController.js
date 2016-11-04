@@ -1,15 +1,10 @@
-e:
 /*
 * This file is subject to the terms and conditions defined in
 * file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP gantt page (one per project)
-*
-*/
+// APP Gantt filter
 app.filter('range', function() {
   return function(input, total) {
       total = parseInt(total);
@@ -36,9 +31,10 @@ app.filter('objInArray', function() {
 });
 
 
-
-app.controller("ganttController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", 'ganttUtils', 'ganttMouseOffset', 'moment', "$uibModal", "$filter",
-function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, utils, mouseOffset, moment, $uibModal, $filter) {
+// Controller definition
+// APP Gantt
+app.controller("GanttController", ["$filter", "$http", "$location", "moment", "mouseOffset", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
+function($filter, $http, $location, moment, mouseOffset, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal) {
 
 
   // ------------------------------------------------------
@@ -70,7 +66,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "12.14.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "12.14.9":
@@ -233,7 +229,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
         //$scope.reload();
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to update task. Please try again.", delay: 5000 });
+        notificationFactory.warning("Unable to update task. Please try again.");
         $scope.reload();
       })
   }
@@ -472,7 +468,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       if (dep == "")
         return ;
       else if (type == "") {
-        Notification.warning({ message: "You must select a type of dependency before adding the dependency.", delay: 5000 });
+        notificationFactory.warning("You must select a type of dependency before adding the dependency.");
         return ;
       }
 
@@ -501,7 +497,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find dependency for update.", delay: 5000 });
+        notificationFactory.warning("Unable to find dependency for update.");
         return;
       }
 
@@ -534,7 +530,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find dependency to remove.", delay: 5000 });
+        notificationFactory.warning("Unable to find dependency to remove.");
         return;
       }
       $('#dependency-'+index).addClass('old');
@@ -560,7 +556,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find dependency to recover.", delay: 5000 });
+        notificationFactory.warning("Unable to find dependency to recover.");
         return;
       }
       $('#dependency-'+index).removeClass('old');
@@ -574,7 +570,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
       if (user == "")
         return ;
       else if (workcharge == "") {
-        Notification.warning({ message: "You must select a workcharge percent before adding the user as resource.", delay: 5000 });
+        notificationFactory.warning("You must select a workcharge percent before adding the user as resource.");
         return ;
       }
 
@@ -609,7 +605,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find resource for update.", delay: 5000 });
+        notificationFactory.warning("Unable to find resource for update.");
         return;
       }
 
@@ -642,7 +638,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find resource to remove.", delay: 5000 });
+        notificationFactory.warning("Unable to find resource to remove.");
         return;
       }
       $('#resource-'+index).addClass('old');
@@ -666,7 +662,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
           index = i;
       }
       if (index < 0) {
-        Notification.warning({ message: "Unable to find resource to recover.", delay: 5000 });
+        notificationFactory.warning("Unable to find resource to recover.");
         return;
       }
       $('#resource-'+index).removeClass('old');
@@ -716,7 +712,7 @@ function($rootScope, $scope, $routeParams, $http, Notification, $route, $locatio
             $scope.reload();
           },
           function errorCallback(response) {
-            Notification.warning({ message: "Unable to update task. Please try again.", delay: 5000 });
+            notificationFactory.warning("Unable to update task. Please try again.");
             $scope.reload();
           })
       },

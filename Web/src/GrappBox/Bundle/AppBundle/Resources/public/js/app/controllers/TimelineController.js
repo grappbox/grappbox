@@ -4,13 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP timeline
-*
-*/
-app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http", "$q", "$uibModal", "Notification", "timelineFactory", "$location",
-    function($rootScope, $scope, $route, $http, $q, $uibModal, Notification, timelineFactory, $location) {
+// Controller definition
+// APP timeline
+app.controller("TimelineController", ["$http", "$location", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "timelineIssueFactory", "$uibModal",
+    function($http, $location, notificationFactory, $q, $rootScope, $route, $scope, timelineIssueFactory, $uibModal) {
 
 	/* ==================== INITIALIZATION ==================== */
 
@@ -93,7 +90,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
   		},
   		function onGetTimelineListFail(response) {
   			if (response.data.info && response.data.info.return_code == "11.1.3")
-  				$rootScope.onUserTokenError();
+  				$rootScope.reject();
 				$scope.timeline.team = null;
 				$scope.timeline.customer = null;
   			deferred.reject();
@@ -145,7 +142,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "11.4.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "11.4.9":
@@ -253,7 +250,7 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "11.6.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "11.6.9":
@@ -307,9 +304,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
           { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPostMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Timeline", message: "Message successfully posted.", delay: 2000 });
+              notificationFactory.success("Message posted.");
             if ($scope.timeline.team.active)
               $scope.timeline.team.messages = _getTimelineMessages($scope.timeline.team);
             else
@@ -319,15 +316,15 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.2.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.2.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -349,24 +346,24 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
         { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPostCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Timeline", message: "Comment successfully posted.", delay: 2000 });
+              notificationFactory.success("Comment posted.");
             _getMessageComments(message);
           },
           function onPostCommentFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.2.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.2.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -378,8 +375,8 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
 
   // "Convert to issue" button handler
   $scope.action.onNewIssue = function(message) {
-    timelineFactory.clear();
-    timelineFactory.setMessage(message);
+    timelineIssueFactory.clear();
+    timelineIssueFactory.setMessage(message);
     $location.path("/bugtracker/" + $scope.timeline.project_id + "/0");
   };
 
@@ -400,9 +397,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
           { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPutMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else {
-              Notification.success({ title: "Timeline", message: "Message updated.", delay: 2000 });
+              notificationFactory.success("Message edited.");
               $scope.active.message.title = $scope.new.message.title;
               $scope.active.message.message = $scope.new.message.message;
             }
@@ -415,15 +412,15 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.3.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.3.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -444,9 +441,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
         { headers: { "Authorization": $rootScope.user.token }}).then(
           function onPutCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else {
-              Notification.success({ title: "Timeline", message: "Comment updated.", delay: 2000 });
+              notificationFactory.success("Comment edited.");
               $scope.active.comment = $scope.new.comment;
             }
             _getMessageComments($scope.active.message);
@@ -455,15 +452,15 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.3.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.3.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -485,9 +482,9 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
           { headers: { "Authorization": $rootScope.user.token }}).then(
           function onDeleteMessageSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Timeline", message: "Message successfully deleted.", delay: 2000 });
+              notificationFactory.success("Message deleted.");
             if ($scope.timeline.team.active)
               $scope.timeline.team.messages = _getTimelineMessages($scope.timeline.team);
             else
@@ -498,15 +495,15 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.6.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.6.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -523,24 +520,24 @@ app.controller("timelineController", ["$rootScope", "$scope", "$route", "$http",
         $http.delete($rootScope.api.url + "/timeline/comment/" + comment_id, { headers: { "Authorization": $rootScope.user.token }}).then(
           function onDeleteCommentSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.11.1")
-              Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Timeline", message: "Comment successfully deleted.", delay: 2000 });
+              notificationFactory.success("Comment deleted.");
             _getMessageComments($scope.active.message);    
           },
           function onDeleteCommentFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "11.6.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "11.6.9":
-                Notification.error({ title: "Timeline", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Timeline", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }

@@ -4,11 +4,7 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP task page
-*
-*/
+// APP task filter
 app.filter('range', function() {
   return function(input, total) {
       total = parseInt(total);
@@ -35,7 +31,10 @@ app.directive('convertToNumber', function() {
   };
 });
 
-app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$route", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, $filter) {
+// Controller definition
+// APP tasks
+app.controller("TaskController", ["$http", "$filter", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope",
+    function($http, $filter, $location, notificationFactory, $rootScope, $route, $routeParams, $scope) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -73,7 +72,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           if (response.data.info && response.data.info.return_code)
             switch(response.data.info.return_code) {
               case "12.10.3":
-              $rootScope.onUserTokenError();
+              $rootScope.reject();
               break;
 
               case "12.10.9":
@@ -252,7 +251,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
   };
 
   var memorizeTags = function() {
-    var context = {"rootScope": $rootScope, "http": $http, "Notification": Notification, "scope": $scope};
+    var context = {"rootScope": $rootScope, "http": $http, "notificationFactory": notificationFactory, "scope": $scope};
 
     angular.forEach($scope.tagToAdd, function(tag) {
       if (!tag.id) {
@@ -262,7 +261,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
               tag.id = (response.data.data.id);
           },
           function errorCallback(response) {
-              Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
+              notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
           });
       }
 
@@ -273,7 +272,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       //
       //   },
       //   function errorCallback(resposne) {
-      //       Notification.warning({ message: "Unable to assign tag: " + tag.name + ". Please try again.", delay: 5000 });
+      //       notificationFactory.warning("Unable to assign tag: " + tag.name + ". Please try again.");
       //   });
     });
 
@@ -283,7 +282,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       //
       //   },
       //   function errorCallback(response) {
-      //       Notification.warning({ message: "Unable to remove tag: " + tag.name + ". Please try again.", delay: 5000 });
+      //       notificationFactory.warning("Unable to remove tag: " + tag.name + ". Please try again.");
       //   });
     });
   };
@@ -322,7 +321,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     if (user == "")
       return ;
     else if (workcharge == "") {
-      Notification.warning({ message: "You must select a workcharge before adding the user.", delay: 5000 });
+      notificationFactory.warning("You must select a workcharge before adding the user.");
       return ;
     }
 
@@ -335,7 +334,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           index = i;
       }
       if (index >= 0) {
-        Notification.warning({ message: "User already assigned.", delay: 5000 });
+        notificationFactory.warning("User already assigned.");
         return;
       }
       $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
@@ -358,7 +357,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         $scope.data.task.users[index].percent = workcharge;
         return;
       }
-      Notification.warning({ message: "Unable to update user.", delay: 5000 });
+      notificationFactory.warning("Unable to update user.");
       return;
     }
 
@@ -382,7 +381,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find resource for update.", delay: 5000 });
+      notificationFactory.warning("Unable to find resource for update.");
       return;
     }
 
@@ -428,7 +427,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find resource to remove.", delay: 5000 });
+      notificationFactory.warning("Unable to find resource to remove.");
       return;
     }
     $scope.data.task.users[index].old = true;
@@ -451,7 +450,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find resource to recover.", delay: 5000 });
+      notificationFactory.warning("Unable to find resource to recover.");
       return;
     }
     $scope.data.task.users[index].old = false;
@@ -464,7 +463,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
     if (dep == "")
       return ;
     else if (type == "") {
-      Notification.warning({ message: "You must select a type of dependency before adding the dependency.", delay: 5000 });
+      notificationFactory.warning("You must select a type of dependency before adding the dependency.");
       return ;
     }
 
@@ -475,7 +474,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
           index = i;
       }
       if (index >= 0) {
-        Notification.warning({ message: "Dependency already existing.", delay: 5000 });
+        notificationFactory.warning("Dependency already existing.");
         return;
       }
       $scope.data.task.dependencies.push({id: dep.id, name: type, title: dep.title});
@@ -498,7 +497,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         $scope.data.task.dependencies[index].name = dep.name;
         return;
       }
-      Notification.warning({ message: "Unable to update dependency.", delay: 5000 });
+      notificationFactory.warning("Unable to update dependency.");
       return;
     }
 
@@ -522,7 +521,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find dependency for update.", delay: 5000 });
+      notificationFactory.warning("Unable to find dependency for update.");
       return;
     }
 
@@ -568,7 +567,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find dependency to remove.", delay: 5000 });
+      notificationFactory.warning("Unable to find dependency to remove.");
       return;
     }
     $('#dependency-'+index).addClass('old');
@@ -592,7 +591,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         index = i;
     }
     if (index < 0) {
-      Notification.warning({ message: "Unable to find dependency to recover.", delay: 5000 });
+      notificationFactory.warning("Unable to find dependency to recover.");
       return;
     }
     $('#dependency-'+index).removeClass('old');
@@ -607,7 +606,6 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
 
   $scope.createTask = function(task) {
 
-    Notification.info({ message: "Posting task...", delay: 5000 });
     var elem = {"projectId": $scope.projectID,
                 "title": task.title,
                 "description": task.description ? task.description : null,
@@ -644,7 +642,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 this.push(response.data.data.id);
             },
             function errorCallback(response) {
-                Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
+                notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
             });
         } else {
           this.push(value.id);
@@ -663,16 +661,15 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         $scope.data.message = '_valid';
         memorizeTags();
         //assignUsers(task);
-        Notification.success({ message: "Task posted", delay: 5000 });
+        notificationFactory.success("Task posted");
         $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to post task. Please try again.", delay: 5000 });
+        notificationFactory.warning("Unable to post task. Please try again.");
       }, $scope);
   };
 
   $scope.editTask = function(task) {
-    Notification.info({ message: "Saving task...", delay: 5000 });
 
     var elem = {"id": $scope.taskID,
                 "title": $scope.data.edit.title,
@@ -716,7 +713,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
                 newTags.push(response.data.data.id);
             },
             function errorCallback(response) {
-                Notification.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.", delay: 5000 });
+                notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
             });
         } else {
           this.push(value.id);
@@ -760,10 +757,10 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         formatTasks();
         formatUsers();
         formatDependencies();
-        Notification.success({ message: "Task saved", delay: 5000 });
+        notificationFactory.success("Task saved");
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to save task. Please try again.", delay: 5000 });
+        notificationFactory.warning("Unable to save task. Please try again.");
       });
       $scope.data.editMode["task"] = false;
   };
@@ -775,7 +772,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
       .then(function successCallback(response) {
         memorizeTags();
         $scope.data.task = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
-        Notification.success({ message: "Task saved", delay: 5000 });
+        notificationFactory.success("Task saved");
       },
       function errorCallback(response) {
         $scope.data.task = null;
@@ -784,7 +781,7 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "12.10.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "12.10.9":
@@ -795,19 +792,18 @@ app.controller("taskController", ["$rootScope", "$scope", "$routeParams", "$http
             $scope.data.message = "_invalid";
             break;
           }
-        Notification.warning({ message: "Unable to save task. Please try again.", delay: 5000 });
+        notificationFactory.warning("Unable to save task. Please try again.");
       });
   };
 
   $scope.deleteTask = function() {
-    Notification.info({ message: "Deleting task ...", delay: 5000 });
     $http.delete($rootScope.api.url + "/task/" + $scope.taskID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
-          Notification.success({ message: "Task deleted", delay: 5000 });
+          notificationFactory.success("Task deleted");
           $route.reload();
       },
       function errorCallback(resposne) {
-          Notification.warning({ message: "Unable to delete task. Please try again.", delay: 5000 });
+          notificationFactory.warning("Unable to delete task. Please try again.");
       });
   };
 

@@ -4,11 +4,8 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Module configuation
-* APP calendar page
-*
-*/
+// Module configuation
+// APP calendar
 app.config(["calendarConfig", function(calendarConfig) {
   calendarConfig.dateFormatter = "moment";
   calendarConfig.allDateFormats.moment.date.hour = "HH:mm";
@@ -20,13 +17,10 @@ app.config(["calendarConfig", function(calendarConfig) {
 
 
 
-/**
-* Controller definition
-* APP calendar page
-*
-*/
-app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "moment", "Notification", "$uibModal",
-    function($rootScope, $scope, $q, $http, moment, Notification, $uibModal) {
+// Controller definition
+// APP calendar page
+app.controller("CalendarController", ["$http", "moment", "$q", "notificationFactory", "$rootScope", "$scope", "$uibModal",
+    function($http, moment, $q, notificationFactory, $rootScope, $scope, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -40,8 +34,8 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
   vm.events = [];
 
   // Scope variables initialization
-  $scope.view = { onLoad: true, valid: false, authorized: false };
-  $scope.modal = { onLoad: true, valid: false, authorized: false };
+  $scope.view = { load: true, valid: false, authorized: false };
+  $scope.modal = { load: true, valid: false, authorized: false };
 
   $scope.data = { events: [], tasks: [], projects: [], types: [], members: [] };
   $scope.action = { onRefreshView: "", onNewEvent: "", onEditEvent: "", onDeleteEvent: "", onProjectChange: "" };
@@ -73,13 +67,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
           deferred.reject();
         }
       },
@@ -88,23 +82,23 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
           switch(response.data.info.return_code) {
             case "6.12.3":
             deferred.reject();
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "6.12.9":
-            Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+            notificationFactory.warning("You don't have sufficient rights to perform this operation.");
             $scope.view.authorized = false;
             deferred.reject();
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
           deferred.reject();
         }
       }
@@ -134,13 +128,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
           deferred.reject();
         }
       },
@@ -148,18 +142,18 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "7.7.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             deferred.reject();
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
           deferred.reject();
         }
       }
@@ -187,13 +181,13 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             deferred.reject();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
           deferred.reject();
         }
       },
@@ -202,18 +196,18 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
           switch(response.data.info.return_code) {
             case "5.1.3":
             deferred.reject();
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             default:
             deferred.reject();            
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
           deferred.reject();          
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
         }
       }
     );
@@ -263,28 +257,28 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
         }
       },
       function onGetPlanningFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "5.3.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             default:
-            Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+          notificationFactory.error();
         }
       }
     );
@@ -303,7 +297,7 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
       var eventTypes_promise = _getEventTypes();
       eventTypes_promise.then(
         function onGetEventTypesSuccess() {
-          $scope.view.onLoad = false;
+          $scope.view.load = false;
 
           /* ==================== REFRESH OBJECT (EVENT) ==================== */
 
@@ -370,24 +364,24 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
         }}).then(
           function onPostEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Calendar", message: "Event successfully created.", delay: 2000 });
+              notificationFactory.success("Event created.");
             $scope.action.onRefreshView();      
           },
           function onPostEventFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "5.4.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "5.4.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                Notification.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -415,24 +409,24 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
           { token: $rootScope.user.token, eventId: $scope.edit.id, title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, typeId: $scope.edit.type.id, icon: "DATA", projectId: $scope.edit.project.id })}).then(
           function onPutEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Calendar", message: "Event successfully edited.", delay: 2000 });
+              Notification.success({ message: "Event successfully edited.", delay: 2000 });
             $scope.action.onRefreshView();      
           },
           function onPutEventFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "5.5.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "5.5.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                Notification.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -454,24 +448,24 @@ app.controller("calendarController", ["$rootScope", "$scope", "$q", "$http", "mo
         $http.delete($rootScope.api.url + "/event/delevent/" + $rootScope.user.token + "/" + event.id).then(
           function onDeleteEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
-              Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Calendar", message: "Event successfully deleted.", delay: 2000 });
+              notificationFactory.success("Event deleted.");
             $scope.action.onRefreshView();
           },
           function onDeleteEventFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "5.6.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "5.6.9":
-                Notification.error({ title: "Calendar", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Calendar", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }

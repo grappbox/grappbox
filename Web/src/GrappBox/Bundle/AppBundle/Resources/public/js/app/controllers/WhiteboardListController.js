@@ -4,13 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP whiteboard list
-*
-*/
-app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$http", "$uibModal", "Notification",
-    function($rootScope, $scope, $route, $http, $uibModal, Notification) {
+// Controller definition
+// APP whiteboard list
+app.controller("WhiteboardListController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope", "$uibModal",
+    function($http, notificationFactory, $rootScope, $route, $scope, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -129,9 +126,9 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
           { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onPostWhiteboardSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.10.1")
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Whiteboard", message: "Whiteboard successfully created.", delay: 2000 });
+              notificationFactory.success("Whiteboard successfully created.");
             _getWhiteboardList();     
           },
           function onPostWhiteboardFail(response) {
@@ -142,11 +139,11 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
                 break;
 
                 case "10.2.9":
-                Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -168,9 +165,9 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
         $http.delete($rootScope.api.url + "/whiteboard/" + whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onDeleteWhiteboardSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.10.1")
-              Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Whiteboard", message: "Whiteboard successfully deleted.", delay: 2000 });
+              notificationFactory.success("Whiteboard successfully deleted.");
             _getWhiteboardList();
           },
           function onDeleteWhiteboardFail(response) {
@@ -181,11 +178,11 @@ app.controller("whiteboardListController", ["$rootScope", "$scope", "$route", "$
                 break;
 
                 case "10.6.9":
-                Notification.error({ title: "Whiteboard", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Whiteboard", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }

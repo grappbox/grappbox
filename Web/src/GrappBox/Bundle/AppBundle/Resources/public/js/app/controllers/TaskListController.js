@@ -4,12 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP task page list (one per project)
-*
-*/
-app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$http", "Notification", "$location", "$filter", function($rootScope, $scope, $routeParams, $http, Notification, $location, $filter) {
+// Controller definition
+// APP tasks list
+app.controller("TaskListController", ["$http", "$filter", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope",
+    function($http, $filter, $location, notificationFactory, $rootScope, $route, $routeParams, $scope) {
 
   var content = "";
 
@@ -32,7 +30,7 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
       if (response.data.info && response.data.info.return_code)
         switch(response.data.info.return_code) {
           case "12.14.3":
-          $rootScope.onUserTokenError();
+          $rootScope.reject();
           break;
 
           case "12.14.9":
@@ -244,71 +242,3 @@ app.controller("taskListController", ["$rootScope", "$scope", "$routeParams", "$
   /*============================================================================*/
 
 }]);
-
-
-/**
-* Routine definition
-* APP task page access
-*
-*/
-
-// Routine definition [3/3]
-// Common behavior for isTaskAccessible
-var isTaskAccessible_commonBehavior = function(deferred, $location) {
-  deferred.reject();
-  $location.path("tasks");
-};
-
-// Routine definition [2/3]
-// Default behavior for isWTaskAccessible
-var isTaskAccessible_defaultBehavior = function(deferred, $location) {
-  isTaskAccessible_commonBehavior(deferred, $location);
-  Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
-};
-
-// Routine definition [1/3]
-// Check if requested task is accessible
-var isTaskAccessible = function($q, $http, $rootScope, $route, $location, Notification) {
-  var deferred = $q.defer();
-
-  if ($route.current.params.id == 0)
-  {
-    deferred.resolve();
-    return deferred.promise;
-  }
-
-  $http.get($rootScope.api.url + "/task/" + $route.current.params.id, {headers: { 'Authorization': $rootScope.user.token }})
-    .then(function successCallback(response) {
-      deferred.resolve();
-    },
-    function errorCallback(response) {
-      if (response.data.info.return_code) {
-        switch(response.data.info.return_code) {
-          case "12.3.3":
-          deferred.reject();
-          $rootScope.onUserTokenError();
-          break;
-
-          case "12.3.4":
-          isTaskAccessible_commonBehavior(deferred, $location);
-          Notification.warning({ message: "Task not found.", delay: 10000 });
-          break;
-
-          case "12.3.9":
-          isTaskAccessible_commonBehavior(deferred, $location);
-          Notification.warning({ message: "You don\'t have access to this task.", delay: 10000 });
-          break;
-
-          default:
-          isTaskAccessible_defaultBehavior(deferred, $location);
-          break;
-        }
-      }
-      else { isTaskAccessible_defaultBehaviorv(deferred, $location); }
-    });
-
-    return deferred.promise;
-};
-
-// "isTaskAccessible" routine injection
-isTaskAccessible["$inject"] = ["$q", "$http", "$rootScope", "$route", "$location", "Notification"];

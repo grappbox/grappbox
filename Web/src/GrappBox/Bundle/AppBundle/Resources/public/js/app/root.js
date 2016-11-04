@@ -8,22 +8,18 @@
 /* ==================== ROOTSCOPE ==================== */
 /* =================================================== */
 
-/**
-* ROOTSCOPE definition
-* "layout, loading, api, project, user"
-*
-*/
-app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies", "$window", "$http",
-    function($rootScope, $base64, localStorageService, $location, $cookies, $window, $http) {
+// ROOTSCOPE definition
+app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "rootFactory", "$rootScope", "$window",
+    function(accessFactory, $base64, $cookies, $http, localStorageService, $location, notificationFactory, rootFactory, $rootScope, $window) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // ROOTSCOPE variables
   $rootScope.api = { version: "", url: "" };
-  $rootScope.page = { onLoad: false, title: "", isHome: false };
-  $rootScope.project = { set: false, id: "", name: "", switch : "" };
-  $rootScope.sidebar = { open: true, toggle: "" };
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
+  $rootScope.page = { load: false, title: "" };
+  $rootScope.project = { set: false, id: "", name: "", disconnect : "" };
+  $rootScope.sidebar = { open: true, toggle: "" };
 
   $rootScope.api.version = "0.3";
   $rootScope.api.url = "https://api.grappbox.com/" + $rootScope.api.version;
@@ -31,29 +27,55 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
   $rootScope.user.id = $base64.decode($cookies.get("ID"));
   $rootScope.user.token = $base64.decode($cookies.get("TOKEN"));
 
+  $rootScope.path = {
+    current: "/",
+    colors: {
+      "/": "default", "/bugtracker": "purple", "/calendar": "blue", "/cloud": "yellow", "/dashboard": "red", "/gantt":"blue", "/logout": "default",       
+      "/notifications": "default", "/profile": "red", "/settings": "red", "/tasks": "blue", "/timeline": "orange", "/whiteboard": "green"
+    },
+    icons: {
+      "/": "default", "/bugtracker": "bug_report", "/calendar": "event", "/cloud": "cloud_upload", "/dashboard": "dashboard", "/gantt": "sort", "/logout": "exit_to_app",
+      "/notifications": "notifications", "/profile": "person", "/settings": "settings", "/tasks": "view_list", "/timeline": "forum", "/whiteboard": "create"
+    },
+    routes: {
+      "/bugtracker": false, "/calendar": false, "/cloud": false, "/dashboard": false, "/gantt": false, "/logout": false,
+      "/notifications": false, "/profile": false, "/settings": false, "/tasks": false, "/timeline": false, "/whiteboard": false
+    }
+  };
 
 
-  /* ==================== ROOTSCOPE ROUTINES ==================== */
 
-  // ROOTSCOPE routine definition
+  /* ==================== SIDEBAR ==================== */
+
+  // ROOTSCOPE routine
   // Toggle sidebar state
   $rootScope.sidebar.toggle = function() {
     $rootScope.sidebar.open = !$rootScope.sidebar.open;
-	};
+  };
 
-  // Routine definition
+
+
+  /* ==================== PROJECT SELECTION ==================== */
+
   // Project change button handler
-  $rootScope.project.switch = function() {
+  $rootScope.project.disconnect = function(error) {
     $rootScope.project.id = null;
     $rootScope.project.name = null;
     $rootScope.project.set = false;
     localStorageService.clearAll();
+    if (!error)
+      notificationFactory.clear();
     $location.path("/");
+    $rootScope.path.current = "/";
   };
 
-  // ROOTSCOPE routine definition
+
+
+  /* ==================== USER TOKEN ERROR ==================== */
+
+  // ROOTSCOPE routine
   // Clear cookies and redirect user to login (with error)
-  $rootScope.onUserTokenError = function() {
+  $rootScope.reject = function() {
     $cookies.put("LOGIN", $base64.encode("_denied"), { path: "/" });
     $cookies.remove("TOKEN", { path: "/" });
     $cookies.remove("ID", { path: "/" });
@@ -62,56 +84,24 @@ app.run(["$rootScope", "$base64", "localStorageService", "$location", "$cookies"
 
 
 
-  /* ==================== ROOTSCOPE PAGE CHANGE HANDLERS ==================== */
+  /* ==================== ON ROUTE EVENTS ==================== */
 
-  // ROOTSCOPE handler definition
+  // ROOTSCOPE routine
   // On route change (start)
   $rootScope.$on("$routeChangeStart", function() {
-    $rootScope.page.onLoad = true;
-
-    if (!$cookies.get("LOGIN") || !$cookies.get("ID")) {
-      if ($cookies.get("TOKEN"))
-        $http.get($rootScope.api.url + "/account/logout", { headers: { 'Authorization': $rootScope.user.token }});
-      $rootScope.onUserTokenError();
-    }
+    rootFactory.routeChangeStart();
   });
 
-  // ROOTSCOPE handler definition
+  // ROOTSCOPE routine
   // On route change (success)
   $rootScope.$on("$routeChangeSuccess", function(event, current, previous) {
-    if (current.$$route) {
-      $rootScope.page.title = current.$$route.title;
-      $rootScope.page.isHome = current.$$route.homepage;
-    }
-    $http.get($rootScope.api.url + "/user", { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onGetBasicInformationsSuccess(response) {
-        var data = (response.data && Object.keys(response.data.data).length ? response.data.data : null);
-
-        if (!data)
-          $rootScope.onUserTokenError();
-
-        $rootScope.user.firstname = data.firstname;
-        $rootScope.user.lastname = data.lastname;
-        $rootScope.user.email = data.email;
-      },
-      function onGetBasicInformationsFail(response) {
-        $rootScope.onUserTokenError();
-      }
-    );
-
-    if (!$rootScope.project.set)
-      if (localStorageService.get("HAS_PROJECT")) {
-        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
-        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
-        $rootScope.project.set = true;
-      }
-    $rootScope.page.onLoad = false;
+    rootFactory.routeChangeSuccess(current);
   });
 
-  // ROOTSCOPE handler definition
+  // ROOTSCOPE routine
   // On route change (error)
-  $rootScope.$on("$routeChangeError", function() {
-    $rootScope.page.onLoad = false;
+  $rootScope.$on("$routeChangeError", function() {    
+    rootFactory.routeChangeError();
   });
 
 }]);

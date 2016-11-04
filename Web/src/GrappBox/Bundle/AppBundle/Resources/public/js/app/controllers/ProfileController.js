@@ -4,13 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP profile settings
-*
-*/
-app.controller("ProfileController", ["$http", "Notification", "$rootScope", "$scope",
-    function($http, Notification, $rootScope, $scope) {
+// Controller definition
+// APP profile settings
+app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope", "$scope",
+    function($http, notificationFactory, $rootScope, $scope) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -64,7 +61,7 @@ app.controller("ProfileController", ["$http", "Notification", "$rootScope", "$sc
 
   var userDataUpdated = function() {
     $scope.disabled.update = false;
-    Notification.success({ title: "Profile", message: "Update success.", delay: 5000 });
+    notificationFactory.success("Update success.");
   };
 
   var userDataNotUpdated = function(response) {
@@ -102,7 +99,7 @@ app.controller("ProfileController", ["$http", "Notification", "$rootScope", "$sc
     $scope.password.current = "";
     $scope.password.new = "";
     $scope.password.confirmation = "";
-    Notification.success({ title: "Profile", message: "Password successfully changed.", delay: 5000 });
+    notificationFactory.success("Password successfully changed.");
   };
 
   var userPasswordNotUpdated = function(response) {

@@ -4,85 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-
-
-/* ===================================================== */
-/* ==================== PAGE ACCESS ==================== */
-/* ===================================================== */
-
-/**
-* Routine definition
-* APP project settings page access
-*
-*/
-
-// Check if requested project is accessible
-var isProjectSettingsPageAccessible = function($q, $http, $rootScope, $route, $location, Notification) {
-  var deferred = $q.defer();
-
-  // Project creation page
-  if ($route.current.params.project_id == 0) {
-    deferred.resolve();
-    return deferred.promise;
-  }
-
-  $http.get($rootScope.api.url + "/project/" + $route.current.params.project_id, {headers: {"Authorization": $rootScope.user.token}})
-    .then(function onGetSuccess(response) {
-      deferred.resolve();
-    },
-    function onGetFail(response) {
-      if (response.data.info.return_code) {
-        switch(response.data.info.return_code) {
-          case "6.3.3":
-          deferred.reject();
-          $rootScope.onUserTokenError();
-          break;
-
-          case "6.3.4":
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ message: "Project not found.", delay: 10000 });
-          break;
-
-          case "6.3.9":
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ message: "You don\'t have access to the settings of this project.", delay: 10000 });
-          break;
-
-          default:
-          deferred.reject();
-          $location.path("./");
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
-          break;
-        }
-      }
-      else {
-        deferred.reject();
-        $location.path("./");
-        Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
-      }
-    });
-
-    return deferred.promise;
-};
-
-// "isProjectSettingsPageAccessible" routine injection
-isProjectSettingsPageAccessible["$inject"] = ["$q", "$http", "$rootScope", "$route", "$location", "Notification"];
-
-
-
-/* ====================================================== */
-/* ==================== PAGE CONTENT ==================== */
-/* ====================================================== */
-
-/**
-* Controller definition
-* APP project page
-*
-*/
-app.controller("projectSettingsController", ["$rootScope", "$scope", "$routeParams", "$http", "$uibModal", "Notification", "$route", "$location",
-    function($rootScope, $scope, $routeParams, $http, $uibModal, Notification, $route, $location) {
+// Controller definition
+// APP project settings
+app.controller("ProjectSettingsController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
+    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal) {
 
 
   // ------------------------------------------------------
@@ -137,10 +62,9 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     };
     var data = {"data": elem};
 
-    Notification.info({ message: "Updating project...", delay: 5000 });
     $http.put($rootScope.api.url + "/projects/"+ $scope.projectID, data, { headers: {"Authorization": $rootScope.user.token }})
       .then(function successCallback(response) {
-        Notification.success({ message: "Project updated", delay: 5000 });
+        notificationFactory.success("Project updated");
         $location.path("/settings/" + $scope.projectID);
       },
       function errorCallback(response) {
@@ -148,16 +72,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "6.2.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       }, $scope);
       $scope.editMode = false;
@@ -166,7 +90,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.createProject = function(project){
     //var logo = ;
     if (project.password != project.confirm_password) {
-      Notification.warning({ message: "'Cloud Password' and 'Confirmation' should be the same !", delay: 5000 });
+      notificationFactory.warning("'Cloud Password' and 'Confirmation' should be the same !");
       return 0;
     }
 
@@ -185,26 +109,24 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     };
     var data = {"data": elem};
 
-    Notification.info({ message: "Creating project...", delay: 5000 });
-    $http.post($rootScope.api.url + "/project", data, { headers: { 'Authorization': $rootScope.user.token }})
+    $http.post($rootScope.api.url + "/project", data, { headers: { "Authorization": $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.data.project_error = false;
         $scope.data.project_new = false;
         $scope.projectID = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data.id : null);
-        Notification.success({ message: "Project created", delay: 5000 });
+        notificationFactory.success("Project created.");
         $location.path("./");
       },
       function errorCallback(response) {
-        Notification.warning({ message: "Unable to create project. Please try again.", delay: 5000 });
+        notificationFactory.warning("Unable to create project. Please try again.");
       }, $scope);
 
   };
 
   $scope.retrieveProject = function(){
-    Notification.info({ message: "Retrieving project...", delay: 5000 });
     $http.get($rootScope.api.url + "/project/retrieve/" + $scope.projectID, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Project retrieved", delay: 5000 });
+        notificationFactory.success("Project retrieved.");
         $route.reload();
       },
       function errorCallback(response) {
@@ -212,16 +134,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "6.5.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "Unable to retrieve project. Please try again.", delay: 5000 });
+            notificationFactory.warning("Unable to retrieve project. Please try again.");
             break;
           }
         }
         else {
-          Notification.warning({ message: "Unable to retrieve project. Please try again.", delay: 5000 });
+          notificationFactory.warning("Unable to retrieve project. Please try again.");
         }
 
       }, $scope);
@@ -233,7 +155,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     }
 
     if (project.password != project.confirm_password) {
-      Notification.warning({ message: "'New password' and 'Confirmation' should be the same !", delay: 5000 });
+      notificationFactory.warning("'New password' and 'Confirmation' should be the same !");
       return 0;
     }
 
@@ -246,10 +168,9 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     };
     var data = {"data": elem};
 
-    Notification.info({ message: "Updating password...", delay: 5000 });
     $http.put($rootScope.api.url + "/project/"+ $scope.projectID, data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Password updated", delay: 5000 });
+        notificationFactory.success("Password updated");
         $location.path("/settings/" + $scope.projectID);
       },
       function errorCallback(response) {
@@ -257,16 +178,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "6.2.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 5000 });
+          notificationFactory.error();
         }
       }, $scope);
   }
@@ -277,28 +198,28 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     var modal_deleteProject = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "modal_deleteProject.html", controller: "modal_deleteProject" });
     modal_deleteProject.result.then(
       function onModalConfirm(data) {
-        Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
+        notificationFactory.success("Project successfully deleted.");
         $http.delete($rootScope.api.url + "/project/" + $scope.projectID,{headers: {"Authorization": $rootScope.user.token}}).then(
           function onDeleteProjectSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.6.1")
-              Notification.error({ title: "Project", message: "Someting is wrong with GrappBox. Please try again.", delay: 3000 });
+              notificationFactory.error();
             else
-              Notification.success({ title: "Project", message: "Project successfully deleted.", delay: 2000 });
+              notificationFactory.success("Project successfully deleted.");
             $route.reload();
           },
           function onDeleteProjectFail(response) {
             if (response.data.info)
               switch(response.data.info.return_code) {
                 case "6.4.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "6.4.9":
-                Notification.error({ title: "Project", message: "You don't have sufficient rights to perform this operation.", delay: 3000 });
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
-                Notification.error({ title: "Project", message: "An error occurred. Please try again.", delay: 3000 });
+                notificationFactory.error();
                 break;
               }
             }
@@ -326,7 +247,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           if (response.data.info && response.data.info.return_code)
             switch(response.data.info.return_code) {
               case "6.3.3":
-              $rootScope.onUserTokenError();
+              $rootScope.reject();
               break;
 
               case "6.3.9":
@@ -383,7 +304,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "6.8.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "6.8.9":
@@ -398,7 +319,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.createCustomersAccess = function(new_customer) {
-    Notification.info({ message: "Creating customer access...", delay: 5000 });
     var elem = {
       //"token": $rootScope.user.token,
       "projectId": $scope.projectID,
@@ -408,7 +328,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $http.post($rootScope.api.url + "/project/customeraccess", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Customer access created", delay: 5000 });
+        notificationFactory.success("Customer access created");
         getCustomers();
       },
       function errorCallback(response) {
@@ -416,25 +336,24 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "6.6.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       }, $scope);
   };
 
   $scope.deleteCustomerAccess = function(customer) {
-    Notification.info({ message: "Deleting customer access...", delay: 5000 });
     $http.delete($rootScope.api.url + "/project/customeraccess/" + $scope.projectID + "/" + customer.id, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Customer access deleted", delay: 5000 });
+        notificationFactory.success("Customer access deleted.");
         getCustomers();
       },
       function errorCallback(response) {
@@ -442,16 +361,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "6.9.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       }, $scope);
   };
@@ -481,7 +400,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           if (response.data.info && response.data.info.return_code)
             switch(response.data.info.return_code) {
               case "13.10.3":
-              $rootScope.onUserTokenError();
+              $rootScope.reject();
               break;
 
               case "13.10.9":
@@ -514,7 +433,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "6.12.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "6.12.9":
@@ -529,7 +448,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.addUser = function(new_user) {
-    Notification.info({ message: "Adding user...", delay: 5000 });
     var elem = {//"token": $rootScope.user.token,
                 "id": $scope.projectID,
                 "email": new_user};
@@ -537,49 +455,48 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
     $http.post($rootScope.api.url + "/project/user", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         getUsers();
-        Notification.success({ message: "User added", delay: 5000 });
+        notificationFactory.success("User added.");
       },
       function errorCallback(response) {
         if (response.data.info.return_code) {
           switch(response.data.info.return_code) {
 
             case "6.10.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       }, $scope);
   };
 
   $scope.removeUser = function(user) {
-    Notification.info({ message: "Removing user...", delay: 5000 });
     $http.delete($rootScope.api.url + "/project/user/" + $scope.projectID + "/" + user.id, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         getUsers();
-        Notification.success({ message: "User removed", delay: 5000 });
+        notificationFactory.success("User removed.");
       },
       function errorCallback(response) {
         if (response.data.info.return_code) {
           switch(response.data.info.return_code) {
 
             case "6.11.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       }, $scope);
   };
@@ -589,7 +506,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.assignRoleToUser = function(user) {
-    Notification.info({ message: "Changing user role...", delay: 5000 });
     if (user.actualRole) {
       var elem = {//"token": $rootScope.user.token,
                   "userId": user.id,
@@ -600,11 +516,11 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           $http.delete($rootScope.api.url + "/role/user/" + $scope.projectID + "/" + user.id + "/" + user.actualRole, {headers: {"Authorization": $rootScope.user.token}})
             .then(function successCallback(response) {
               getUsersRoles();
-              Notification.success({ message: "User role changed", delay: 5000 });
+              notificationFactory.success("User role changed.");
             },
             function errorCallback(response) {
               getUsersRoles();
-              Notification.warning({ message: "Unable to change user role. Please try again.", delay: 5000 });
+              notificationFactory.warning("Unable to change user role. Please try again.");
             }, $scope);
         },
         function errorCallback(response) {
@@ -613,16 +529,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
             switch(response.data.info.return_code) {
 
               case "13.5.9":
-              Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+              notificationFactory.warning("You don't have enought rights for this action.");
               break;
 
               default:
-              Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+              notificationFactory.error();
               break;
             }
           }
           else {
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
           }
         }, $scope);
     }
@@ -634,7 +550,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
       $http.post($rootScope.api.url + "/role/user", data, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
           getUsersRoles();
-          Notification.success({ message: "User role changed", delay: 5000 });
+          notificationFactory.success("User role changed");
         },
         function errorCallback(response) {
           getUsersRoles();
@@ -642,16 +558,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
             switch(response.data.info.return_code) {
 
               case "13.5.9":
-              Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+              notificationFactory.warning("You don't have enought rights for this action.");
               break;
 
               default:
-              Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+              notificationFactory.error();
               break;
             }
           }
           else {
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
           }
         }, $scope);
     }
@@ -695,7 +611,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "13.4.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "13.4.9":
@@ -710,7 +626,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   };
 
   $scope.editRole = function(role) {
-    Notification.info({ message: "Editing role...", delay: 5000 });
     var elem = {
       //"token": $rootScope.user.token,
 		  //"roleId": role.roleId,
@@ -729,7 +644,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $http.put($rootScope.api.url + "/role/" + role.roleId, data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Role edited", delay: 5000 });
+        notificationFactory.success("Role edited.");
 
         getRoles();
         // TODO recharge role list for users
@@ -739,16 +654,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "13.3.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       // TODO check error -> do switch
       });
@@ -757,7 +672,6 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
   $scope.createRole = function(new_role) {
     console.log($scope.new_role);
     console.log(new_role);
-    Notification.info({ message: "Creating role...", delay: 5000 });
 
     var elem = {//"token": $rootScope.user.token,
 	              "projectId": $scope.projectID,
@@ -775,7 +689,7 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
 
     $http.post($rootScope.api.url + "/role", data, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Role created", delay: 5000 });
+        notificationFactory.success("Role created.");
         getRoles();
         // TODO recharge role list for users
       },
@@ -784,26 +698,25 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "13.1.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
       // TODO check error -> do switch
       });
   };
 
   $scope.deleteRole = function(role) {
-    Notification.info({ message: "Deleting role...", delay: 5000 });
     $http.delete($rootScope.api.url + "/role/" + role.roleId, {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        Notification.success({ message: "Role deleted", delay: 5000 });
+        notificationFactory.success("Role deleted.");
         // TODO remove users assign to role
         // TODO recharge role list for users
         getRoles();
@@ -813,16 +726,16 @@ app.controller("projectSettingsController", ["$rootScope", "$scope", "$routePara
           switch(response.data.info.return_code) {
 
             case "13.2.9":
-            Notification.warning({ message: "You don\'t have enought rights for this action.", delay: 10000 });
+            notificationFactory.warning("You don't have enought rights for this action.");
             break;
 
             default:
-            Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+            notificationFactory.error();
             break;
           }
         }
         else {
-          Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
+          notificationFactory.error();
         }
         // TODO check error -> do switch
       });

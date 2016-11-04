@@ -4,12 +4,10 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP bugtracker page list (one per project)
-*
-*/
-app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$location', function($rootScope, $scope, $routeParams, $http, Notification, $location) {
+// Controller definition
+// APP bugtracker list
+app.controller("BugtrackerListController", ["$http", "$location", "notificationFactory", "$rootScope", "$routeParams", "$scope",
+    function($http, $location, notificationFactory, $rootScope, $routeParams, $scope) {
 
   var content = "";
 
@@ -32,7 +30,7 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "4.9.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "4.9.9":
@@ -63,7 +61,7 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "4.22.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "4.22.9":
@@ -94,7 +92,7 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "4.22.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "4.22.9":
@@ -186,72 +184,3 @@ app.controller('bugtrackerListController', ['$rootScope', '$scope', '$routeParam
   }
 
 }]);
-
-
-
-/**
-* Routine definition
-* APP bugtracker page access
-*
-*/
-
-// Routine definition [3/3]
-// Common behavior for isBugtrackerAccessible
-var isBugtrackerAccessible_commonBehavior = function(deferred, $location) {
-  deferred.reject();
-  $location.path("bugtracker");
-};
-
-// Routine definition [2/3]
-// Default behavior for isWBugtrackerAccessible
-var isBugtrackerAccessible_defaultBehavior = function(deferred, $location) {
-  isBugtrackerAccessible_commonBehavior(deferred, $location);
-  Notification.warning({ message: "An error occurred. Please try again.", delay: 10000 });
-};
-
-// Routine definition [1/3]
-// Check if requested bugtracker is accessible
-var isBugtrackerAccessible = function($q, $http, $rootScope, $route, $location, Notification) {
-  var deferred = $q.defer();
-
-  if ($route.current.params.id == 0)
-  {
-    deferred.resolve();
-    return deferred.promise;
-  }
-
-  $http.get($rootScope.api.url + '/bugtracker/getticket/' + $rootScope.user.token + '/' + $route.current.params.id)
-    .then(function successCallback(response) {
-      deferred.resolve();
-    },
-    function errorCallback(response) {
-      if (response.data.info.return_code) {
-        switch(response.data.info.return_code) {
-          case "4.1.3":
-          deferred.reject();
-          $rootScope.onUserTokenError();
-          break;
-
-          case "4.1.4":
-          isBugtrackerAccessible_commonBehavior(deferred, $location);
-          Notification.warning({ message: "Ticket not found.", delay: 10000 });
-          break;
-
-          case "4.1.9":
-          isBugtrackerAccessible_commonBehavior(deferred, $location);
-          Notification.warning({ message: "You don\'t have access to this ticket.", delay: 10000 });
-          break;
-
-          default:
-          isBugtrackerAccessible_defaultBehavior(deferred, $location);
-          break;
-        }
-      }
-      else { isBugtrackerAccessible_defaultBehaviorv(deferred, $location); }
-    });
-
-    return deferred.promise;
-};
-
-// "isBugtrackerAccessible" routine injection
-isBugtrackerAccessible["$inject"] = ["$q", "$http", "$rootScope", "$route", "$location", "Notification"];
