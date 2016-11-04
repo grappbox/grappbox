@@ -267,8 +267,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$project->setSafePassword($content->password);
 		if (array_key_exists('description', $content))
 			$project->setDescription($content->description);
-		if (array_key_exists('logo', $content))
-			$project->setLogo($content->logo);
+
 		if (array_key_exists('phone', $content))
 			$project->setPhone($content->phone);
 		if (array_key_exists('company', $content))
@@ -282,6 +281,14 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->persist($project);
 		$project->addUser($user);
+		if (array_key_exists('logo', $content)) {
+			$dir="/web/resources/projects/";
+			$filename = 'project-'+$project->getId()+"-"+md5($this->get('security.secure_random')->nextBytes(10));
+
+			$content->logo->getData()->move($dir, $filename);
+			$project->setLogo($dir + $filename);
+			$project->setLogoDate(new \DateTime);
+		}
 
 		//Create admin role
 		$role = new Role();
@@ -740,8 +747,17 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
 		{
-			$project->setLogo($content->logo);
-			$project->setLogoDate(new \Datetime("now"));
+			if (array_key_exists('logo', $content)) {
+				$dir="/web/resources/projects/";
+				$filename = 'project-'+$project->getId()+"-"+md5($this->get('security.secure_random')->nextBytes(10))+'.'+$content->logo->guessExtension();
+
+				$content->logo->getData()->move($dir, $filename);
+				$project->setLogo($dir + $filename);
+				$project->setLogoDate(new \DateTime);
+			}
+			//
+			// $project->setLogo($content->logo);
+			// $project->setLogoDate(new \Datetime("now"));
 
 
 			$mdata['mtitle'] = "logo project";
@@ -2252,7 +2268,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$em->remove($userRole);
 			$em->flush();
 		}
-		
+
 		$bugs = $em->getRepository('SQLBundle:Bug')->findBy(array('projects'=> $project->getId()));
 		foreach ($bugs as $key => $bug) {
 			$bug->removeUser($userToRemove);
@@ -2713,7 +2729,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*
 	* @apiParam {Number} id Id of the project
 	*
-	* @apiSuccess {Text} logo Logo of the project
+	* @apiSuccess {string} logo Logo of the project
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
@@ -2723,7 +2739,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - getProjectLogo - Complete Success"
 	*		},
 	*		"data": {
-	*			"logo": "10100011000011001"
+	*			"logo": "/web/resources/projects/project-12-az5fse4sdf6e5s3d5fsd.png"
 	*		},
 	*	}
 	*
