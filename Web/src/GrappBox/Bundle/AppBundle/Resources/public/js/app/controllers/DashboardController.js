@@ -78,7 +78,7 @@ app.controller("DashboardController", ["$http", "$rootScope", "$route", "$scope"
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "2.1.3":
-            $rootScope.onUserTokenError()
+            $rootScope.reject()
             break;
 
             case "2.1.9":
@@ -139,7 +139,7 @@ app.controller("DashboardController", ["$http", "$rootScope", "$route", "$scope"
         if (response.data.info) {
           switch(response.data.info.return_code) {
             case "2.2.3":
-            $rootScope.onUserTokenError()
+            $rootScope.reject()
             break;
 
             case "2.2.9":
