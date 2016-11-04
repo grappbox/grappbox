@@ -1,15 +1,13 @@
 /*
 * This file is subject to the terms and conditions defined in
-* file 'LICENSE.txt', which is part of the GRAPPBOX source code package.
+* file "LICENSE.txt", which is part of the GRAPPBOX source code package.
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP bugtracker page
-*
-*/
-app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', '$http', 'Notification', '$route', '$location', 'timelineFactory', function($rootScope, $scope, $routeParams, $http, Notification, $route, $location, timelineFactory) {
+// Controller definition
+// APP bugtracker
+app.controller("BugtrackerController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "timelineIssueFactory",
+    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, timelineIssueFactory) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -23,7 +21,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
 
   //Get bugtracker informations set up data
   if ($scope.ticketID != 0) {
-    $http.get($rootScope.api.url + '/bugtracker/getticket/' + $rootScope.user.token + '/' + $scope.ticketID)
+    $http.get($rootScope.api.url + "/bugtracker/getticket/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
         $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
         $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
@@ -36,7 +34,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         if (response.data.info && response.data.info.return_code)
           switch(response.data.info.return_code) {
             case "4.1.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "4.1.9":
@@ -50,11 +48,11 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
       });
   }
   else {
-    if (timelineFactory.isMessageLoaded())
+    if (timelineIssueFactory.isMessageLoaded())
     {
-      var data = timelineFactory.getMessageData();
+      var data = timelineIssueFactory.getMessageData();
       $scope.data.ticket = {"title": data.title, "description": data.message };
-      timelineFactory.clear();
+      timelineIssueFactory.clear();
     }
     else {
       $scope.data.ticket = null;
@@ -67,7 +65,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
 
   // Get ticket related comments
   var getComments = function() {
-    $http.get($rootScope.api.url + '/bugtracker/getcomments/' + $rootScope.user.token + '/' + $scope.projectID + '/' + $scope.ticketID)
+    $http.get($rootScope.api.url + "/bugtracker/getcomments/" + $rootScope.user.token + "/" + $scope.projectID + "/" + $scope.ticketID)
       .then(function successCallback(response) {
         $scope.commentsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       },
@@ -80,7 +78,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
 
   // Get all tags from the project
   var getProjectTags = function() {
-    $http.get($rootScope.api.url + '/bugtracker/getprojecttags/' + $rootScope.user.token + '/' + $scope.projectID)
+    $http.get($rootScope.api.url + "/bugtracker/getprojecttags/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
         $scope.tagsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
       },
@@ -92,12 +90,12 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
 
   // Get all users from the project
   var getProjectUsers = function() {
-    $http.get($rootScope.api.url + '/dashboard/getprojectpersons/' + $rootScope.user.token + '/' + $scope.projectID)
+    $http.get($rootScope.api.url + "/dashboard/getprojectpersons/" + $rootScope.user.token + "/" + $scope.projectID)
       .then(function successCallback(response) {
         $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         angular.forEach($scope.usersList, function(user){
 
-          user['name'] = user.first_name + ' ' + user.last_name;
+          user["name"] = user.first_name + " " + user.last_name;
 
         });
       },
@@ -146,37 +144,37 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   };
 
   var memorizeTags = function() {
-    var context = {"rootScope": $rootScope, "http": $http, "Notification": Notification, "scope": $scope};
+    var context = {"rootScope": $rootScope, "http": $http, "notificationFactory": notificationFactory, "scope": $scope};
 
     angular.forEach($scope.data.tagToAdd, function(tag) {
       if (!tag.id) {
         var data = {"data": {"token": context.rootScope.user.token, "projectId": context.scope.projectID, "name": tag.name}};
-        context.http.post(context.rootScope.api.url + '/bugtracker/tagcreation', data)
+        context.http.post(context.rootScope.api.url + "/bugtracker/tagcreation", data)
           .then(function successCallback(response) {
               tag.id = (response.data.data.id);
 
               var data = {"data": {"token": context.rootScope.user.token, "bugId": context.scope.ticketID, "tagId": tag.id}};
-              context.http.put(context.rootScope.api.url + '/bugtracker/assigntag', data)
+              context.http.put(context.rootScope.api.url + "/bugtracker/assigntag", data)
                 .then(function successCallback(response) {
 
                 },
                 function errorCallback(resposne) {
-                    Notification.warning({ message: 'Unable to assign tag: ' + tag.name + '. Please try again.', delay: 5000 });
+                    notificationFactory.warning("Unable to assign tag: " + tag.name + ". Please try again.");
                 });
           },
           function errorCallback(resposne) {
-              Notification.warning({ message: 'Unable to create tag: ' + tag.name + '. Please try again.', delay: 5000 });
+              notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
           });
       }
     }, context);
 
     angular.forEach($scope.data.tagToRemove, function(tag) {
-      context.http.delete(context.rootScope.api.url + '/bugtracker/removetag/' + context.rootScope.user.token + '/' + context.scope.ticketID + '/' + tag.id)
+      context.http.delete(context.rootScope.api.url + "/bugtracker/removetag/" + context.rootScope.user.token + "/" + context.scope.ticketID + "/" + tag.id)
         .then(function successCallback(response) {
 
         },
         function errorCallback(resposne) {
-            Notification.warning({ message: 'Unable to remove tag: ' + tag.name + '. Please try again.', delay: 5000 });
+            notificationFactory.warning("Unable to remove tag: " + tag.name + ". Please try again.");
         });
     }, context);
   };
@@ -223,13 +221,12 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
 
     var data = {"data": {"token": $rootScope.user.token, "bugId": $scope.ticketID, "toAdd": toAdd, "toRemove": toRemove}};
 
-    Notification.info({ message: 'Saving users...', delay: 5000 });
-    $http.put($rootScope.api.url + '/bugtracker/setparticipants', data)
+    $http.put($rootScope.api.url + "/bugtracker/setparticipants", data)
       .then(function successCallback(response) {
-          Notification.success({ message: 'Users saved', delay: 5000 });
+          notificationFactory.success("Users saved");
       },
       function errorCallback(resposne) {
-          Notification.warning({ message: 'Unable to save users. Please try again.', delay: 5000 });
+          notificationFactory.warning("Unable to save users. Please try again.");
       });
 
   };
@@ -238,7 +235,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
   //                EDITION SWITCH
   // ------------------------------------------------------
   $scope.data.editMode = {};
-  $scope.data.editMode['ticket'] = false;
+  $scope.data.editMode["ticket"] = false;
 
   $scope.bugtracker_switchEditMode = function(elem) {
     $scope.data.editMode[elem] = ($scope.data.editMode[elem] ? false : true);
@@ -260,8 +257,7 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
                 };
     var data = {"data": elem};
 
-    Notification.info({ message: 'Posting ticket...', delay: 5000 });
-    $http.post($rootScope.api.url + '/bugtracker/postticket', data)
+    $http.post($rootScope.api.url + "/bugtracker/postticket", data)
       .then(function successCallback(response) {
         // $scope.data.message = "_valid";
         // $scope.data.bugtracker_new = false;
@@ -269,11 +265,11 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
         $scope.ticketID = $scope.data.ticket.id;
         memorizeTags();
         memorizeUsers();
-        Notification.success({ message: 'Ticket posted', delay: 5000 });
-        $location.path('/bugtracker/' + $scope.projectID + '/' + $scope.ticketID);
+        notificationFactory.success("Ticket posted");
+        $location.path("/bugtracker/" + $scope.projectID + "/" + $scope.ticketID);
       },
       function errorCallback(response) {
-        Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
+        notificationFactory.warning("Unable to post comment. Please try again.");
       }, $scope);
   };
 
@@ -289,44 +285,42 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
               };
     var data = {"data": elem};
 
-    Notification.info({ message: 'Saving ticket...', delay: 5000 });
-    $http.put($rootScope.api.url + '/bugtracker/editticket', data)
+    $http.put($rootScope.api.url + "/bugtracker/editticket", data)
       .then(function successCallback(response) {
-        Notification.success({ message: 'Ticket saved', delay: 5000 });
+        notificationFactory.success("Ticket saved");
         memorizeTags();
         memorizeUsers();
       },
       function errorCallback(response) {
-        Notification.warning({ message: 'Unable to save ticket. Please try again.', delay: 5000 });
+        notificationFactory.warning("Unable to save ticket. Please try again.");
       });
-      $scope.data.editMode['ticket'] = false;
+      $scope.data.editMode["ticket"] = false;
   };
 
 
 
   $scope.closeTicket = function() {
-    Notification.info({ message: 'Closing ticket ...', delay: 5000 });
-    $http.delete($rootScope.api.url + '/bugtracker/closeticket/' + $rootScope.user.token + '/' + $scope.ticketID)
+    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
-          Notification.success({ message: 'Ticket closed', delay: 5000 });
+          notificationFactory.success("Ticket closed");
           //$location.reload();
           $route.reload();
       },
       function errorCallback(resposne) {
-          Notification.warning({ message: 'Unable to close ticket. Please try again.', delay: 5000 });
+          notificationFactory.warning("Unable to close ticket. Please try again.");
       });
   };
 
   $scope.reopenTicket = function() {
-    Notification.info({ message: 'Reopening ticket ...', delay: 5000 });
-    $http.put($rootScope.api.url + '/bugtracker/reopenticket/' + $rootScope.user.token + '/' + $scope.ticketID)
+    Notification.info({ message: "Reopening ticket ...", delay: 5000 });
+    $http.put($rootScope.api.url + "/bugtracker/reopenticket/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
-          Notification.success({ message: 'Ticket reopened', delay: 5000 });
+          notificationFactory.success("Ticket reopened");
           //$location.reload();
           $route.reload();
       },
       function errorCallback(resposne) {
-          Notification.warning({ message: 'Unable to reopen ticket. Please try again.', delay: 5000 });
+          notificationFactory.warning("Unable to reopen ticket. Please try again.");
       });
   };
 
@@ -342,15 +336,14 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
                 };
     var data = {"data": elem};
 
-    Notification.info({ message: 'Saving comment...', delay: 5000 });
-    $http.put($rootScope.api.url + '/bugtracker/editcomment', data)
+    $http.put($rootScope.api.url + "/bugtracker/editcomment", data)
       .then(function successCallback(response) {
-        Notification.success({ message: 'Comment saved', delay: 5000 });
+        notificationFactory.success("Comment saved");
         $scope.data.editMode[comment.id] = false;
         getComments();
       },
       function errorCallback(response) {
-        Notification.warning({ message: 'Unable to save comment. Please try again.', delay: 5000 });
+        notificationFactory.warning("Unable to save comment. Please try again.");
         $scope.data.editMode[comment.id] = false;
         getComments();
       });
@@ -366,27 +359,26 @@ app.controller('BugtrackerController', ['$rootScope', '$scope', '$routeParams', 
                 };
     var data = {"data": elem};
 
-    Notification.info({ message: 'Posting comment...', delay: 5000 });
-    $http.post($rootScope.api.url + '/bugtracker/postcomment', data)
+    $http.post($rootScope.api.url + "/bugtracker/postcomment", data)
       .then(function successCallback(response) {
-        Notification.success({ message: 'Comment posted', delay: 5000 });
+        notificationFactory.success("Comment posted");
         new_comment.title = "";
         new_comment.description = "";
         getComments();
       },
       function errorCallback(response) {
-        Notification.warning({ message: 'Unable to post comment. Please try again.', delay: 5000 });
+        notificationFactory.warning("Unable to post comment. Please try again.");
       }, new_comment);
   };
 
   $scope.deleteComment = function(comment_id) {
-    $http.delete($rootScope.api.url + '/bugtracker/closeticket/' + $rootScope.user.token + '/' + comment_id)
+    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + comment_id)
       .then(function successCallback(response) {
-          Notification.success({ message: 'Comment deleted', delay: 5000 });
+          notificationFactory.success("Comment deleted");
           getComments();
       },
       function errorCallback(resposne) {
-          Notification.warning({ message: 'Unable to delete comment. Please try again.', delay: 5000 });
+          notificationFactory.warning("Unable to delete comment. Please try again.");
       });
   };
 
