@@ -5,7 +5,7 @@ d* This file is subject to the terms and conditions defined in
 */
 
 // Factory definition
-// APP timeline message to issue conversion factory
+// APP timeline message to issue conversion
 app.factory("timelineIssueFactory", function() {
 
 	/* ==================== INITIALIZATION ==================== */
