@@ -222,4 +222,7 @@
     <string name="tag_name">Tag name</string>
     <string name="upload_progress">Upload in progress</string>
     <string name="upload_ended">Upload ended</string>
+
+    <string name="title_activity_new_event">Create event</string>
+    <string name="participants_word">Participants</string>
 </resources>

@@ -1,29 +1,43 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="com.grappbox.grappbox.project_fragments.CalendarFragment">
+    android:layout_height="match_parent">
 
-
-        <ListView
-            android:id="@+id/agenda_listview"
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            tools:context="com.grappbox.grappbox.project_fragments.CalendarFragment">
+
+                <CalendarView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/agendalist"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:overScrollMode="never"
+                    android:scrollbars="none"
+                />
+
+        </LinearLayout>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:animationCache="false"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-            android:scrollingCache="false"
-            android:dividerHeight="1dp">
+            android:layout_gravity="bottom|end"
+            android:layout_margin="@dimen/fab_margin"
+            android:src="@android:drawable/ic_input_add"
+            android:tint="@color/GrappWhiteLight"
+            app:backgroundTint="@color/GrappBlue"
+            android:background="?android:attr/selectableItemBackground"
+            android:clickable="true"
+            android:focusable="true"/>
 
-        </ListView>
-
-        <!--<android.support.v7.widget.RecyclerView
-            android:id="@+id/agendalist"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1.2"
-            android:overScrollMode="never"
-            android:scrollbars="none"
-        /> -->
-
-</LinearLayout>
+</android.support.design.widget.CoordinatorLayout>

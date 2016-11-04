@@ -1,7 +1,9 @@
 package com.grappbox.grappbox.project_fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,13 +15,14 @@ import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.calendar_fragment.NewEventActivity;
 import com.grappbox.grappbox.interfaces.CalendarPickerController;
 import com.grappbox.grappbox.singleton.CalendarManager;
 
 public class CalendarFragment extends Fragment {
 
-    private ListView    mListView;
-    private CalendarPickerController mCalendarPickerController;
+    private RecyclerView mRecyclerView;
+    private FloatingActionButton    mAddEvent;
 
     public CalendarFragment() {
         // Required empty public constructor
@@ -31,11 +34,15 @@ public class CalendarFragment extends Fragment {
                              Bundle savedInstanceState) {
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
-        mListView = (ListView) v.findViewById(R.id.agenda_listview);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.agendalist);
+
+
+        mAddEvent = (FloatingActionButton) v.findViewById(R.id.fab);
+        mAddEvent.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                mCalendarPickerController.onEventSelected(CalendarManager.getInstance().getEvents().get(position));
+            public void onClick(View v) {
+                Intent newEvent = new Intent(getContext(), NewEventActivity.class);
+                getContext().startActivity(newEvent);
             }
         });
 

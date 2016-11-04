@@ -2,27 +2,12 @@ package com.grappbox.grappbox.adapter;
 
 import android.accounts.AccountManager;
 import android.app.Activity;
-import android.content.ContentValues;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.DataSetObserver;
-import android.database.DatabaseUtils;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
-import android.media.Image;
 import android.os.AsyncTask;
-import android.os.Parcelable;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.view.animation.LinearOutSlowInInterpolator;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.TransitionManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,19 +16,16 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.bugtracker_fragments.NewBugActivity;
 import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.model.TimelineMessageCommentModel;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentActivity;
-import com.grappbox.grappbox.timeline_fragment.TimelineMessageCommentFragment;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -53,8 +35,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.MissingResourceException;
-import java.util.Objects;
 
 /**
  * Created by tan_f on 28/09/2016.

@@ -2627,7 +2627,79 @@ public class GrappboxJustInTimeService extends IntentService {
     }
 
     private void handleEventCreate(Long localProjectId, String title, String description, String begin, String end, List<Long> addParticipant, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/event");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            JSONArray users = new JSONArray();
+            data.put("title", title);
+            data.put("description", description);
+            data.put("begin", begin);
+            data.put("end", end);
+            if (localProjectId != -1)
+                data.put("projectId", localProjectId);
+            for (Long user : addParticipant){
+                users.put(user);
+            }
+            data.put("users", users);
+            json.put("data", data);
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("POST");
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                throw new NetworkErrorException("Returned JSON is empty");
+            } else {
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)){
+                    if (responseObserver != null){
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
+                    }
+                } else {
+                    data = json.getJSONObject("data");
+                    ContentValues values = new ContentValues();
+                    values.put(EventEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+                    values.put(EventEntry.COLUMN_EVENT_TITLE, data.getString("title"));
+                    values.put(EventEntry.COLUMN_EVENT_DESCRIPTION, data.getString("description"));
+                    values.put(EventEntry.COLUMN_DATE_BEGIN_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(data.getString("beginDate")));
+                    values.put(EventEntry.COLUMN_DATE_END_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(data.getString("endDate")));
 
+                    String grappboxCID = data.getJSONObject("creator").getString("id");
+                    Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                    if (creatorId == null || !creatorId.moveToFirst()){
+                        handleUserDetailSync(grappboxCID);
+                        creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                        if (creatorId == null || !creatorId.moveToFirst()){
+                            throw new UnknownError();
+                        }
+                    }
+                    Cursor project;
+                    project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, EventEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{data.getString("projectId")}, null);
+                    if (project == null || !project.moveToFirst())
+                        throw new NetworkErrorException("Returned grappboxId is invalid try to resynchronized your project");
+
+                    values.put(EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                    values.put(EventEntry.COLUMN_LOCAL_CREATOR_ID, project.getLong(0));
+                    Uri res = getContentResolver().insert(EventEntry.CONTENT_URI, values);
+                    if (res == null)
+                        throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+                    creatorId.close();
+                    project.close();
+                }
+            }
+        } catch (IOException | JSONException | NetworkErrorException | ParseException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
     }
 
     private void handleEventEdit(Long localEventId, Long localProjectId, String title, String description, String begin, String end, List<Long> toAdd, List<Long> toRemove, ResultReceiver resultReceiver){
