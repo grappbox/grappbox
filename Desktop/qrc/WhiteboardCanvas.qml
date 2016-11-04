@@ -17,9 +17,98 @@ Item {
     property string text
     property int sizeText
     property string colorBorder: "#000000"
-    property string colorFill: "Translucent"
-    property double tick: 1
+    property string colorFill: null
+    property string colorText: "#000000"
+    property double tick: 0.5
     property double minimumDistHandWrite: 0.1
+
+    property WhiteboardModel whiteModel
+
+    function refreshWhiteboard()
+    {
+        canvasMain.requestPaint();
+    }
+
+    function removeObjectTmp(id)
+    {
+        console.log("Remove object ", id, " before length : ", canvasMain.objectsAdded.length)
+        canvasMain.objectsAdded.splice(id, 1);
+        console.log("After length : ", canvasMain.objectsAdded.length)
+        refreshWhiteboard();
+    }
+
+    signal pushObject(var obj, var id)
+
+    function getAPIObjectFormat(obj) {
+        switch (obj.type)
+        {
+        case 1: //HANDWRITE
+            var ret = {
+                type: "HANDWRITE",
+                lineWeight: obj.tickness,
+                points: obj.arrayPoint,
+                color: obj.borderCol
+            }
+            return ret
+        case 2: //LINE
+            var ret = {
+                type: "LINE",
+                lineWeight: obj.tickness,
+                color: obj.borderCol,
+                positionStart: obj.begin,
+                positionEnd: obj.end
+            }
+            return ret
+        case 3: //RECTANGLE
+            var ret = {
+                type: "RECTANGLE",
+                lineWeight: obj.tickness,
+                color: obj.borderCol,
+                background: obj.fillCol,
+                positionStart: obj.begin,
+                positionEnd: obj.end
+            }
+            return ret
+        case 4: //ELLIPSE
+            var ret = {
+                type: "ELLIPSE",
+                color: obj.borderCol,
+                background: obj.fillCol,
+                lineWeight: obj.tickness,
+                positionStart: obj.begin,
+                positionEnd: obj.end,
+                radius: {
+                    x: Math.abs(obj.begin.x - obj.end.x),
+                    y: Math.abs(obj.begin.y - obj.end.y)
+                }
+            }
+            return ret
+        case 5: //DIAMOND
+            var ret = {
+                type: "DIAMOND",
+                lineWeight: obj.tickness,
+                color: obj.borderCol,
+                background: obj.fillCol,
+                positionStart: obj.begin,
+                positionEnd: obj.end
+            }
+            return ret
+        case 7: //TEXT
+            var ret = {
+                type: "TEXT",
+                color: obj.textColor,
+                positionStart: obj.end,
+                positionEnd: obj.end,
+                text: obj.text,
+                size: obj.sizeText,
+                isItalic: obj.italicM,
+                isBold: obj.boldM
+            }
+            return ret
+        default:
+            return null
+        }
+    }
 
     Flickable {
         id: flickableMain
@@ -32,7 +121,7 @@ Item {
         Canvas {
             id: canvasMain
             width: 4096
-            height: 4096
+            height: 2160
 
             renderTarget: Canvas.FramebufferObject
 
@@ -63,7 +152,7 @@ Item {
                 context.strokeStyle = colorBorder;
                 context.lineWidth = tick;
                 context.beginPath();
-                if (colorFil !== "Translucent")
+                if (colorFil !== null)
                 {
                     context.fillStyle = colorFil;
                     context.fillRect(Math.min(startX, endX), Math.min(startY, endY), Math.abs(startX - endX), Math.abs(startY - endY));
@@ -78,7 +167,7 @@ Item {
                 context.beginPath();
                 context.fillStyle = colorFil;
                 context.ellipse(Math.min(startX, endX), Math.min(startY, endY), Math.abs(startX - endX), Math.abs(startY - endY));
-                if (colorFil !== "Translucent")
+                if (colorFil !== null)
                 {
                     context.fillStyle = colorFil;
                     context.fill();
@@ -96,12 +185,12 @@ Item {
                 var realEdY = Math.max(startY, endY);
                 var realWidth = realEdX - realStX;
                 var realHeight = realEdY - realStY;
-                context.moveTo(startX + realWidth / 2, startY);
-                context.lineTo(endX, startY + realHeight / 2);
-                context.lineTo(startX + realWidth / 2, endY);
-                context.lineTo(startX, startY + realHeight / 2);
-                context.lineTo(startX + realWidth / 2, startY);
-                if (colorFil !== "Translucent")
+                context.moveTo(realStX + realWidth / 2, realStY);
+                context.lineTo(realEdX, realStY + realHeight / 2);
+                context.lineTo(realStX + realWidth / 2, realEdY);
+                context.lineTo(realStX, realStY + realHeight / 2);
+                context.lineTo(realStX + realWidth / 2, realStY);
+                if (colorFil !== null)
                 {
                     context.fillStyle = colorFil;
                     context.fill();
@@ -131,11 +220,42 @@ Item {
                 context.stroke();
             }
 
+            onAvailableChanged: {
+                console.log("Available changed !")
+            }
+
             onPaint: {
                 context = getContext("2d");
                 context.clearRect(0, 0, width, height);
                 context.fillStyle = "#FFFFFF";
                 context.fillRect(0, 0, width, height);
+                if (whiteModel.currentItem != -1)
+                {
+                    var data = whiteModel.whiteboardList[whiteModel.currentItem];
+                    for (var i = 0; i < data.content.length; ++i) {
+                        var obj = data.content[i];
+                        switch (obj.type) {
+                        case "HANDWRITE":
+                            drawHand(obj.points, obj.lineWeight, obj.color);
+                            break;
+                        case "LINE":
+                            drawLine(obj.positionStart.x, obj.positionStart.y, obj.positionEnd.x, obj.positionEnd.y, obj.lineWeight, obj.color, fillColor);
+                            break;
+                        case "RECTANGLE":
+                            drawRect(obj.positionStart.x, obj.positionStart.y, obj.positionEnd.x, obj.positionEnd.y, obj.lineWeight, obj.color, obj.background);
+                            break;
+                        case "ELLIPSE":
+                            drawCircle(obj.positionStart.x, obj.positionStart.y, obj.positionEnd.x, obj.positionEnd.y, obj.lineWeight, obj.color, obj.background);
+                            break;
+                        case "DIAMOND":
+                            drawDiamond(obj.positionStart.x, obj.positionStart.y, obj.positionEnd.x, obj.positionEnd.y, obj.lineWeight, obj.color, obj.background);
+                            break;
+                        case "TEXT":
+                            drawText(obj.positionStart.x, obj.positionStart.y, obj.text, obj.color, obj.size, obj.isBold, obj.isItalic);
+                            break;
+                        }
+                    }
+                }
                 for (var i = 0; i < objectsAdded.length; ++i) {
                     var obj = objectsAdded[i];
                     switch (obj.type)
@@ -158,7 +278,7 @@ Item {
                     case 6:
                         break;
                     case 7:
-                        drawText(obj.end.x, obj.end.y, obj.text, obj.borderCol, obj.sizeText, obj.boldM, obj.italicM);
+                        drawText(obj.end.x, obj.end.y, obj.text, obj.textColor, obj.sizeText, obj.boldM, obj.italicM);
                         break;
                     }
                 }
@@ -182,7 +302,7 @@ Item {
                 case 6:
                     break;
                 case 7:
-                    drawText(endX, endY, text, colorBorder, sizeText, bold, italic);
+                    drawText(endX, endY, text, colorText, sizeText, bold, italic);
                     break;
                 }
             }
@@ -213,11 +333,37 @@ Item {
                         }
                         canvasMain.requestPaint()
                     }
+                    else if (canvasMain.currentMode == 0) {
+                        var sensitivity = 0.3
+                        flickableMain.contentX += (canvasMain.startX - canvasMain.endX) * sensitivity
+                        flickableMain.contentY += (canvasMain.startY - canvasMain.endY) * sensitivity
+                        if (flickableMain.contentX < 0)
+                            flickableMain.contentX = 0
+                        if (flickableMain.contentX + flickableMain.width > flickableMain.contentWidth)
+                            flickableMain.contentX = flickableMain.contentWidth - flickableMain.width
+                        if (flickableMain.contentY < 0)
+                            flickableMain.contentY = 0
+                        if (flickableMain.contentY + flickableMain.height > flickableMain.contentHeight)
+                            flickableMain.contentY = flickableMain.contentHeight - flickableMain.height
+                        canvasMain.startX = canvasMain.endX
+                        canvasMain.startY = canvasMain.endY
+                    }
                     else
                         canvasMain.requestPaint()
                 }
 
                 onReleased: {
+                    if (canvasMain.currentMode == 0)
+                    {
+                        canvasMain.currentMode = -1;
+                        return
+                    }
+                    if (canvasMain.currentMode == 6)
+                    {
+                        canvasMain.currentMode = -1;
+                        whiteModel.removeObjectAt({x: mouseX, y: mouseY}, 20);
+                    }
+
                     canvasMain.currentMode = -1
                     var newObj = {type: mode,
                                     begin: {x: canvasMain.startX,
@@ -226,15 +372,25 @@ Item {
                                           y: mouseY},
                                     text: mainItem.text,
                                     sizeText: mainItem.sizeText,
+                                    textColor: colorText,
                                     arrayPoint: canvasMain.tabHandWrite.slice(),
                                     borderCol: colorBorder,
                                     fillCol: colorFill,
                                     tickness: tick,
                                     boldM: bold,
                                     italicM: italic}
-                    canvasMain.tabHandWrite = []
-                    canvasMain.objectsAdded.push(newObj)
-                    canvasMain.requestPaint()
+                    var toSendObj = getAPIObjectFormat(newObj)
+                    if (toSendObj === null)
+                    {
+                        console.log("Error in code, toSendObj is null. ")
+                    }
+                    else
+                    {
+                        canvasMain.tabHandWrite = []
+                        canvasMain.objectsAdded.push(newObj)
+                        pushObject(toSendObj, canvasMain.objectsAdded.length - 1)
+                        canvasMain.requestPaint()
+                    }
                 }
             }
         }

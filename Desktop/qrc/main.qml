@@ -47,6 +47,7 @@ Item {
 
         minimumWidth: Units. dp(1280)
         minimumHeight: Units. dp(720)
+        visibility: "Maximized"
 
         title: SDataManager.hasProject ? "GrappBox - " + SDataManager.project.name : "GrappBox"
         visible: true// !loginPage.visible && controller.isLoged

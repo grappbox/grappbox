@@ -8,17 +8,18 @@ import Material.Extras 0.1
 import GrappBoxController 1.0
 import QtQuick.Controls.Styles 1.3 as Styles
 
-View {
+CustomDropdown {
     id: mainView
-    elevation: 1
 
     property double buttonSize: Units.dp(32)
     property int numberPerRow: 5
+    property string color
+    property string selectedColor: "#FF0000"
+    readonly property int numberOfRow: Math.ceil(repeater.model.length / 5)
 
-    height: buttonFlow.height + Units.dp(32)
+    //anchor: Item.Bottom
+    height: (buttonSize * numberOfRow) + buttonFlow.spacing * (numberOfRow - 1) + Units.dp(32)
     width: (buttonSize * numberPerRow) + (buttonFlow.spacing * (numberPerRow - 1)) + Units.dp(32)
-
-    visible: false
 
     signal chooseColor(var color)
 
@@ -32,20 +33,32 @@ View {
         anchors.margins: Units.dp(16)
 
         Repeater {
-            model: ["#000000", "Translucent", "#FFFFFF", "#EEEEEE", "#BDBDBD", "#757575", "#424242", "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B"]
-            delegate: Rectangle {
+            id: repeater
+            model: ["#000000", null, "#FFFFFF", "#EEEEEE", "#BDBDBD", "#757575", "#424242", "#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B"]
+            delegate: Item {
                 height: mainView.buttonSize
                 width: mainView.buttonSize
-                radius: Math.max(width/2, height/2)
-
-                color: (modelData == "Translucent") ? "#FFFFFF" : modelData
-
-                MouseArea {
+                Rectangle {
                     anchors.fill: parent
+                    radius: Math.max(width/2, height/2)
+                    opacity: modelData == mainView.color ? 1 : 0
+                    color: selectedColor
+                }
+                Rectangle {
+                    anchors.fill: parent
+                    anchors.margins: Units.dp(2)
+                    radius: Math.max(width/2, height/2)
 
-                    onClicked: {
-                        chooseColor(modelData)
-                        mainView.visible = false
+                    color: (modelData == null) ? "#FFFFFF" : modelData
+
+                    MouseArea {
+                        anchors.fill: parent
+
+                        onClicked: {
+                            mainView.color = modelData
+                            chooseColor(modelData)
+                            mainView.close()
+                        }
                     }
                 }
             }

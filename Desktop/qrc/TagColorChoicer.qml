@@ -38,7 +38,7 @@ View {
                 width: mainView.buttonSize
                 radius: Math.max(width/2, height/2)
 
-                color: (modelData == "Translucent") ? "#FFFFFF" : modelData
+                color: (modelData == "#00000000") ? "#FFFFFF" : modelData
 
                 MouseArea {
                     anchors.fill: parent

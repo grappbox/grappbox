@@ -43,6 +43,11 @@
         <file>qrc/Login.qml</file>
         <file>qrc/TagColorChoicer.qml</file>
         <file>qrc/CalendarTimePicker.qml</file>
+        <file>qrc/WhiteboardText.qml</file>
+        <file>qrc/CustomDropdown.qml</file>
+        <file>qrc/CustomMenuField.qml</file>
+        <file>qrc/WhiteboardDrawingPage.qml</file>
+        <file>qrc/WhiteboardChoosingPage.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

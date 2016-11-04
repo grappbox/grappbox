@@ -38,11 +38,6 @@ namespace API
 
         virtual void unregisterObjectRequest(QObject *obj);
 
-        virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-        virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-        virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-		virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
-
 		virtual int Request(RequestType type, DataPart part, int request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure);
     signals:
         void responseAPISuccess(int, QByteArray);

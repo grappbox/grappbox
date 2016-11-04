@@ -22,7 +22,8 @@ SOURCES += main.cpp \
     Manager/SInfoManager.cpp \
     Manager/DataImageProvider.cpp \
     CalendarModel.cpp \
-    WhiteboardController.cpp
+    WhiteboardController.cpp \
+    WhiteboardModel.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -63,6 +64,9 @@ HEADERS += \
     Manager/DataImageProvider.h \
     CalendarModel.h \
     eventmodeldata.h \
-    WhiteboardController.h
+    WhiteboardController.h \
+    WhiteboardModel.h
 
 RCC_DIR = qrc
+
+RC_ICONS = icons/app-icon.ico

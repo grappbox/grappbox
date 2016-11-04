@@ -70,7 +70,9 @@ namespace API
         GR_DOWNLOAD_SECURE_FILE,
         GR_PROJECT_LOGO,
         GR_USER_AVATAR,
-        GR_REOPEN_BUG
+        GR_REOPEN_BUG,
+        GR_LIST_WHITEBOARD,
+        GR_OPEN_WHITEBOARD
     };
 
     enum PostRequest
@@ -91,7 +93,9 @@ namespace API
         PR_OPEN_STREAM,
         PR_ADD_TAG_TASK,
         PR_ADD_USER_PROJECT,
-        PR_CREATE_PROJECT
+        PR_CREATE_PROJECT,
+        PR_CREATE_WHITEBOARD,
+        PR_PULL_WHITEBOARD
     };
 
     enum DeleteRequest
@@ -111,7 +115,9 @@ namespace API
         DR_DELETE_SECURE_ITEM,
         DR_TASK_TAG,
         DR_REMOVE_TAG_TO_BUG,
-        DR_DELETE_COMMENT_TIMELINE
+        DR_DELETE_COMMENT_TIMELINE,
+        DR_DELETE_WHITEBOARD,
+        DR_DELETE_OBJECT
     };
 
     enum PutRequest
@@ -131,7 +137,9 @@ namespace API
         PUTR_EDIT_PROJECT,
         PUTR_ROLE_USER,
         PUTR_ROLE,
-        PUTR_SET_EVENT_PARTICIPANT
+        PUTR_SET_EVENT_PARTICIPANT,
+        PUTR_PUSH_WHITEBOARD,
+        PUTR_CLOSE_WHITEBOARD
     };
 
 	enum RequestType
@@ -150,11 +158,6 @@ namespace API
         virtual ~IDataConnector() {}
 
         virtual void unregisterObjectRequest(QObject *obj) = 0;
-
-        virtual int Post(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
-        virtual int Get(DataPart part, int request, QVector<QString> &data, QObject *requestReturn, const char* slotSuccess, const char* slotFailure) = 0;
-        virtual int Delete(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
-        virtual int Put(DataPart part, int request, QVector<QString> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 
 		virtual int Request(RequestType, DataPart part, int request, QMap<QString, QVariant> &data, QObject *requestResponseObject, const char* slotSuccess, const char* slotFailure) = 0;
 	};
