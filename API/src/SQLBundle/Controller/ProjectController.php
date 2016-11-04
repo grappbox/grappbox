@@ -753,7 +753,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 				// move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
 
-				$file $content->logo->getData();
+				$file = $content->logo->getData();
 				print_r($file);
 				//$file->move($dir, $file->getClientOriginalName());
 				//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
