@@ -1218,13 +1218,13 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("6.5.3", "Project", "retrieveproject"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
-			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
-
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 		if ($project === null)
 			return $this->setBadRequest("6.5.4", "Project", "retrieveproject", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 2)
+			return ($this->setNoRightsError("6.5.9", "Project", "retrieveproject"));
 
 		$project->setDeletedAt(null);
 		$em->flush();

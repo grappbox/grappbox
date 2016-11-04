@@ -990,14 +990,13 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
-		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
-			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
-
 		$em = $this->getDoctrine()->getManager();
 		$roles = $em->getRepository('SQLBundle:Role')->findByprojects($projectId);
-
 		if ($roles === null)
 			return $this->setBadRequest("13.4.4", "Role", "getprojectroles", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
+			return $this->setNoRightsError("13.4.9", "Role", "getprojectroles");
 
 		if (count($roles) == 0)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getprojectroles");
@@ -1457,12 +1456,15 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("13.6.3", "Role", "putpersonrole"));
 
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		if ($project === null)
+			return $this->setBadRequest("13.5.4", "Role", "putpersonrole", "Bad Parameter: projectId");
+
 		if ($this->checkRoles($user, $content->projectId, "projectSettings") < 2)
 			return $this->setNoRightsError("13.5.9", "Role", "putpersonrole");
 
-		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('SQLBundle:ProjectUserRole');
-
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		->setParameter('projectId', $content->projectId)->setParameter('userId', $userId)->setParameter('roleId', $content->old_roleId)->getQuery();
 		$pur = $qb->setMaxResults(1)->getOneOrNullResult();
@@ -2027,13 +2029,21 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("13.9.3", "Role", "getrolebyprojectanduser"));
 
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
+		if ($project === null)
+			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameter: projectId");
+
+		$u = $em->getRepository('SQLBundle:User')->find($userId);
+		if ($u === null)
+			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameter: userId");
+
 		if ($this->checkRoles($user, $projectId, "projectSettings") < 1)
 			return $this->setNoRightsError("13.9.9", "Role", "getrolebyprojectanduser");
 
 		if ($userId == 0)
 			$userId = $user->getId();
 
-		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('SQLBundle:ProjectUserRole');
 		$qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId')->setParameter('projectId', $projectId)->setParameter('userId', $userId)->getQuery();
 		$purs = $qb->getResult();
