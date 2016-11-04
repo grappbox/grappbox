@@ -2034,7 +2034,7 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameter: projectId");
 
-		$u = $em->getRepository('SQLBundle:Project')->find($userId);
+		$u = $em->getRepository('SQLBundle:User')->find($userId);
 		if ($u === null)
 			return $this->setBadRequest("13.9.4", "Role", "getrolebyprojectanduser", "Bad Parameter: userId");
 
