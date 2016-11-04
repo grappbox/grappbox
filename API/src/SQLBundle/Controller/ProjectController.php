@@ -748,12 +748,17 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('logo', $content))
 		{
 			if (array_key_exists('logo', $content)) {
-				$dir="/web/resources/projects/";
-				$filename = 'project-'+$project->getId()+"-"+md5($this->get('security.secure_random')->nextBytes(10))+'.'+$content->logo->guessExtension();
+				$dir = "/web/resources/projects/";
+				$filename = basename($_FILES['userfile']['name']);
 
-				$content->logo->getData()->move($dir, $filename);
-				$project->setLogo($dir + $filename);
-				$project->setLogoDate(new \DateTime);
+				move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+
+				print_r($_FILES);
+				//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
+
+				//$content->logo->getData()->move($dir, $filename);
+				//$project->setLogo($dir + $filename);
+				//$project->setLogoDate(new \DateTime);
 			}
 			//
 			// $project->setLogo($content->logo);
