@@ -3735,7 +3735,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");
 
@@ -3941,7 +3941,7 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("12.15.3", "Task", "getprojecttags"));
 
 		$em = $this->getDoctrine()->getManager();
-		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.15.4", "Task", "getprojecttags", "Bad Parameter: projectId");
 
