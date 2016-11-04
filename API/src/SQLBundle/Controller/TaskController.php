@@ -3734,10 +3734,14 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		if ($project === null)
+			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");
+
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.14.9", "Task", "getprojecttasks"));
 
-		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('SQLBundle:Task');
 		$qb = $repository->createQueryBuilder('t')->join('t.projects', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tasks = $qb->getResult();
@@ -3936,10 +3940,14 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.15.3", "Task", "getprojecttags"));
 
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
+		if ($project === null)
+			return $this->setBadRequest("12.15.4", "Task", "getprojecttags", "Bad Parameter: projectId");
+
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.15.9", "Task", "getprojecttags"));
 
-		$em = $this->getDoctrine()->getManager();
 		$repository = $em->getRepository('SQLBundle:Tag');
 		$qb = $repository->createQueryBuilder('t')->join('t.project', 'p')->where('p.id = :id')->setParameter('id', $projectId)->getQuery();
 		$tags = $qb->getResult();
