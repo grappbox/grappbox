@@ -31,11 +31,11 @@ app.filter('objInArray', function() {
 });
 
 
+
 // Controller definition
 // APP Gantt
-app.controller("GanttController", ["$filter", "$http", "$location", "moment", "mouseOffset", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
-function($filter, $http, $location, moment, mouseOffset, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal) {
-
+app.controller("GanttController", ["$filter", "$http", "ganttUtils", "ganttMouseOffset", "$location", "moment", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
+function($filter, $http, utils, mouseOffset, $location, moment, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
