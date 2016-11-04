@@ -4,11 +4,8 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP whiteboard list
-*
-*/
+// Controller definition
+// APP whiteboard list
 app.controller("WhiteboardListController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope", "$uibModal",
     function($http, notificationFactory, $rootScope, $route, $scope, $uibModal) {
 

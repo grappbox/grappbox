@@ -4,11 +4,8 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP whiteboard objects factory
-*
-*/
+// Factory definition
+// APP whiteboard objects creation
 app.factory("whiteboardObjectFactory", function() {
 
 	/* ==================== ROUTINES (LOCAL OBJECT) ==================== */

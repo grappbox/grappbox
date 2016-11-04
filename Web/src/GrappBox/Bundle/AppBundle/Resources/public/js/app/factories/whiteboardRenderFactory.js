@@ -4,11 +4,8 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP whiteboard canvas factory
-*
-*/
+// Factory definition
+// APP whiteboard render
 app.factory("whiteboardRenderFactory", function() {
 
 	/* ==================== INITIALIZATION ==================== */
