@@ -749,11 +749,13 @@ class ProjectController extends RolesAndTokenVerificationController
 		{
 			if (array_key_exists('logo', $content)) {
 				$dir = "/web/resources/projects/";
-				$filename = basename($_FILES['userfile']['name']);
+				// $filename = basename($_FILES['userfile']['name']);
 
-				move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+				// move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
 
 				print_r($_FILES);
+				print_r('----------------');
+				print_r($content->logo);
 				//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
 
 				//$content->logo->getData()->move($dir, $filename);
