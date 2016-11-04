@@ -9,8 +9,8 @@
 /* =================================================== */
 
 // ROOTSCOPE definition
-app.run(["$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "$rootScope", "$window",
-    function($base64, $cookies, $http, localStorageService, $location, notificationFactory, $rootScope, $window) {
+app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "rootFactory", "$rootScope", "$window",
+    function(accessFactory, $base64, $cookies, $http, localStorageService, $location, notificationFactory, rootFactory, $rootScope, $window) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -18,7 +18,7 @@ app.run(["$base64", "$cookies", "$http", "localStorageService", "$location", "no
   $rootScope.api = { version: "", url: "" };
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
   $rootScope.page = { load: false, title: "" };
-  $rootScope.project = { set: false, id: "", name: "", change : "" };
+  $rootScope.project = { set: false, id: "", name: "", disconnect : "" };
   $rootScope.sidebar = { open: true, toggle: "" };
 
   $rootScope.api.version = "0.3";
@@ -58,13 +58,15 @@ app.run(["$base64", "$cookies", "$http", "localStorageService", "$location", "no
   /* ==================== PROJECT SELECTION ==================== */
 
   // Project change button handler
-  $rootScope.project.change = function() {
+  $rootScope.project.disconnect = function(error) {
     $rootScope.project.id = null;
     $rootScope.project.name = null;
     $rootScope.project.set = false;
     localStorageService.clearAll();
-    notificationFactory.clear();
+    if (!error)
+      notificationFactory.clear();
     $location.path("/");
+    $rootScope.path.current = "/";
   };
 
 
@@ -82,79 +84,24 @@ app.run(["$base64", "$cookies", "$http", "localStorageService", "$location", "no
 
 
 
-  /* ==================== ON ROUTE CHANGE START ==================== */
-
-  // Routine definition (local)
-  // Check if the request route is not a subsection of another one
-  var _isRouteFrom = function(routeToTest, routeToLoad) {
-    var isRouteKnown = false;
-
-    if (routeToLoad.indexOf(routeToTest) > -1) {
-      $rootScope.path.routes["/" + routeToTest] = true;
-      isRouteKnown = true;
-    }
-    return isRouteKnown;
-  };
+  /* ==================== ON ROUTE EVENTS ==================== */
 
   // ROOTSCOPE routine
   // On route change (start)
   $rootScope.$on("$routeChangeStart", function() {
-    if (!$cookies.get("LOGIN") || !$cookies.get("ID")) {
-      if ($cookies.get("TOKEN"))
-        $http.get($rootScope.api.url + "/account/logout", { headers: { "Authorization": $rootScope.user.token }});
-      $rootScope.reject();
-    }
-
-    notificationFactory.clear();
-    $rootScope.page.load = true;
-    $rootScope.path.current = "/";
-    angular.forEach($rootScope.path.routes, function(key, value) {
-      if (value === $location.path() || _isRouteFrom(value, $location.path())) {
-        $rootScope.path.routes[value] = true;
-        $rootScope.path.current = value;
-      }
-      else
-        $rootScope.path.routes[value] = false;
-    }, $rootScope);
+    rootFactory.routeChangeStart();
   });
 
-
-
-  /* ==================== ON ROUTE CHANGE SUCCESS ==================== */
-
-  // APP routine
+  // ROOTSCOPE routine
   // On route change (success)
   $rootScope.$on("$routeChangeSuccess", function(event, current, previous) {
-    if (current.$$route)
-      $rootScope.page.title = current.$$route.title;
-    $http.get($rootScope.api.url + "/user", { headers: { "Authorization": $rootScope.user.token }}).then(
-      function onSuccess(response) {
-        if (angular.isUndefined(response.data.data))
-          $rootScope.reject();
-        $rootScope.user.firstname = response.data.data.firstname;
-        $rootScope.user.lastname = response.data.data.lastname;
-        $rootScope.user.email = response.data.data.email;
-      },
-      function onError(response) { $rootScope.reject(); }
-    );
-
-    if (!$rootScope.project.set)
-      if (localStorageService.get("HAS_PROJECT")) {
-        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
-        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
-        $rootScope.project.set = true;
-      }
-    $rootScope.page.load = false;
+    rootFactory.routeChangeSuccess(current);
   });
 
-
-
-  /* ==================== ON ROUTE CHANGE ERROR ==================== */
-
-  // APP routine
+  // ROOTSCOPE routine
   // On route change (error)
-  $rootScope.$on("$routeChangeError", function() {
-    $rootScope.page.load = false;
+  $rootScope.$on("$routeChangeError", function() {    
+    rootFactory.routeChangeError();
   });
 
 }]);

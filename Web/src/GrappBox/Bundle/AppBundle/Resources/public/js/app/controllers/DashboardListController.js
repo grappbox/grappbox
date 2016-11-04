@@ -52,7 +52,7 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
     },
     function onGetGlobalProgressFail(response) {
       if (!angular.isUndefined(response.data.info.return_code) && response.data.info.return_code == "2.3.3")
-        $rootScope.disconnect();
+        $rootScope.reject();
       $scope.data.projects = null;
       $scope.view.valid = false;
       $scope.view.load = false;

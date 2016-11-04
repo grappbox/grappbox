@@ -4,6 +4,8 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
+// Factory definition
+// APP notifications (actions)
 app.factory("notificationFactory", ['Notification', function(Notification) {
 
   /* ==================== EXECUTION ==================== */

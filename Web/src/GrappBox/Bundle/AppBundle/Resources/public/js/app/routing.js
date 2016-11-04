@@ -17,14 +17,14 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "DashboardListController",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		caseInsensitiveMatch : true,
-		resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
+		resolve: { projectSelection: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
 	})
 	.when("/dashboard/", {
 		title: "GrappBox",
     controller  : "DashboardListController",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
+    resolve: { projectSelection: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected; }]}
 	})
 	// Project dashboard
   .when("/dashboard/:project_id/", {
@@ -32,19 +32,19 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "DashboardController",
 		templateUrl : "../resources/pages/dashboard.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
 	// Login
   .when("/login", {
     title: "Loading...",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.login; }]}
+    resolve: { redirection: ["accessFactory", function(accessFactory) { return accessFactory.login; }]}
 	})
 	// Logout
   .when("/logout", {
 		title: "Logging out...",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.logout; }]}
+    resolve: { redirection: ["accessFactory", function(accessFactory) { return accessFactory.logout; }]}
 	})
 	// Bugtracker pages
   .when("/bugtracker/:project_id", {
@@ -52,14 +52,17 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "BugtrackerListController",
 		templateUrl : "../resources/pages/bugtracker-list.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
   .when("/bugtracker/:project_id/:id", {
 		title: "Bugtracker",
     controller  : "BugtrackerController",
 		templateUrl : "../resources/pages/bugtracker.html",
 		caseInsensitiveMatch : true,
-		resolve: { factory: isBugtrackerAccessible }
+    resolve: {
+      projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }],
+      bugAvailability: ["accessFactory", function(accessFactory) { return accessFactory.bugAvailable; }]
+    }
 	})
   // Calendar pages
   .when("/calendar", {
@@ -75,7 +78,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "CloudController",
     templateUrl : "../resources/pages/cloud.html",
     caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
   })
   // Gantt pages
     .when("/gantt/:project_id", {
@@ -83,7 +86,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "GanttController",
 		templateUrl : "../resources/pages/gantt.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
   // Notifications pages
   .when("/notifications", {
@@ -105,7 +108,10 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "ProjectSettingsController",
     templateUrl : "../resources/pages/project-settings.html",
     caseInsensitiveMatch : true,
-    resolve: { factory: isProjectSettingsPageAccessible }
+    resolve: {
+      projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }],
+      projectSettingsAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectSettingsAvailable; }]
+    }
   })
   // Task pages	
   .when("/tasks/:project_id", {
@@ -113,23 +119,25 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "TaskListController",
 		templateUrl : "../resources/pages/task-list.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
   .when("/tasks/:project_id/:id", {
 		title: "Tasks",
     controller  : "TaskController",
 		templateUrl : "../resources/pages/task.html",
 		caseInsensitiveMatch : true,
-		resolve: { factory: isTaskAccessible }
-	})
-
+    resolve: {
+      projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }],
+      taskAvailability: ["accessFactory", function(accessFactory) { return accessFactory.taskAvailable; }]
+    }
+  })
 	// Timeline pages
   .when("/timeline/:project_id", {
 		title: "Timeline",
     controller  : "TimelineController",
 		templateUrl : "../resources/pages/timeline.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
 	// Whiteboard pages
   .when("/whiteboard/:project_id", {
@@ -137,14 +145,14 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "WhiteboardListController",
 		templateUrl : "../resources/pages/whiteboard-list.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable; }]}
 	})
   .when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",
     controller  : "WhiteboardController",
 		templateUrl : "../resources/pages/whiteboard.html",
 		caseInsensitiveMatch : true,
-    resolve: { factory: ["accessFactory", function(accessFactory) { return accessFactory.whiteboard; }]}
+    resolve: { whiteboardAvailability: ["accessFactory", function(accessFactory) { return accessFactory.whiteboardAvailable; }]}
 	})
 	// Error page (default behavior)
 	.otherwise({
