@@ -19,19 +19,18 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="65"/>
-            <RowDefinition Height="0.3*"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}">
             <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="Timeline message" Style="{StaticResource PageTitleTextBlockStyle}" />
+                <TextBlock Name="TimelineMessage" Text="{Binding Title, Mode=OneTime}" TextTrimming="CharacterEllipsis" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
         <ProgressBar VerticalAlignment="Top" Grid.Row="2" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
         <StackPanel Grid.Row="1">
-            <TextBox IsEnabled="False" PlaceholderText="Title" BorderThickness="0" Text="{Binding Title, Mode=OneTime}" FontSize="20"/>
-            <TextBox IsEnabled="False" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+            <TextBox IsEnabled="False" Margin="0,0,0,5" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>
         <customControl:CustomListView x:Name="CommentsListView"  IncrementalLoadingThreshold="2" Grid.Row="2" ItemsSource="{Binding Comments}" VerticalAlignment="Stretch" SelectionMode="None" HorizontalAlignment="Stretch" >
             <ListView.ItemsPanel>
@@ -41,25 +40,37 @@
             </ListView.ItemsPanel>
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Background="{StaticResource OrangeGrappboxBrush}">
-                        <TextBox TextWrapping="Wrap" BorderBrush="{StaticResource OrangeGrappboxBrush}" BorderThickness=".5" Margin="0" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsReadOnly="{Binding ReadOnly}"/>
-                        <Grid>
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="8*"/>
-                                <ColumnDefinition Width="2*"/>
-                            </Grid.ColumnDefinitions>
-                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,0,0">
-                                <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
-                                <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding TextDate}" Padding="5,0" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="13"/>
-                        </Grid>
-                    </StackPanel>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <Ellipse x:Name="UserAvatar" Margin="5" Width="50" Height="50" RelativePanel.AlignLeftWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" Visibility="{Binding Visible}">
+                            <Ellipse.Fill>
+                                <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
+                            </Ellipse.Fill>
+                        </Ellipse>
+                        <StackPanel Grid.Column="1">
+                            <TextBox TextWrapping="Wrap" BorderThickness=".5" Margin="0" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}"/>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="8*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+                                <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,0,0">
+                                    <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
+                                    <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding TextDate}" Padding="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="13"/>
+                            </Grid>
+                        </StackPanel>
+                    </Grid>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemContainerStyle>
                 <Style TargetType="ListViewItem">
-                    <Setter Property="Padding" Value="5"></Setter>
+                    <Setter Property="Padding" Value="5"/>
+                    <Setter Property="Margin" Value="0,0,0,10"/>
                     <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 </Style>
             </ListView.ItemContainerStyle>

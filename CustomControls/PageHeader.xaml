@@ -15,8 +15,8 @@
         <Grid x:Name="titleBar">
             <ContentPresenter x:Name="content"
                               VerticalAlignment="Center"
-                              HorizontalAlignment="Center"
-                              Margin="{x:Bind Padding}"
+                              HorizontalAlignment="Left"
+                              Margin="20,0,0,0"
                               Content="{x:Bind HeaderContent}"/>
         </Grid>
     </Grid>

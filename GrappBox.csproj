@@ -123,6 +123,9 @@
     <Compile Include="CustomControls\TeamDashBoard.xaml.cs">
       <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\TimelineContentDialog.xaml.cs">
+      <DependentUpon>TimelineContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
@@ -230,6 +233,10 @@
     <Page Include="CustomControls\TeamDashBoard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\TimelineContentDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\UserRoleCB.xaml">
       <SubType>Designer</SubType>

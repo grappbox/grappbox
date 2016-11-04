@@ -1,4 +1,5 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.CustomControls;
+using GrappBox.Model;
 using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
@@ -58,14 +59,7 @@ namespace GrappBox.View
             LoadingBar.IsEnabled = true;
             LoadingBar.Visibility = Visibility.Visible;
 
-            BorderUp.Visibility = Visibility.Collapsed;
-            BorderDown.Visibility = Visibility.Collapsed;
-            PostTeamMesPopUp.Visibility = Visibility.Collapsed;
-            PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
-
             vm.MessageSelected = null;
-            MessageTitle.Text = "";
-            Message.Text = "";
             result = await vm.getTimelines();
             if (result == false)
             {
@@ -95,18 +89,6 @@ namespace GrappBox.View
             vm.CustomerOffset = 0;
         }
         #endregion
-
-        private void PostTeamMesPopUp_Loaded(object sender, RoutedEventArgs e)
-        {
-            PostTeamMesPopUp.VerticalOffset = (ApplicationView.GetForCurrentView().VisibleBounds.Height - (TeamStackPanel.ActualHeight * 1.5)) / 2;
-            TeamStackPanel.Width = ApplicationView.GetForCurrentView().VisibleBounds.Width - 50;
-        }
-
-        private void PostCustomerMesPopUp_Loaded(object sender, RoutedEventArgs e)
-        {
-            PostCustomerMesPopUp.VerticalOffset = (ApplicationView.GetForCurrentView().VisibleBounds.Height - (TeamStackPanel.ActualHeight * 1.5)) / 2;
-            CustStackPanel.Width = ApplicationView.GetForCurrentView().VisibleBounds.Width - 50;
-        }
 
         #region Selection changed
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -143,46 +125,6 @@ namespace GrappBox.View
         #endregion
 
         #region Click
-        private async void PostTeamMessage_Click(object sender, RoutedEventArgs e)
-        {
-            if (MessageTitle.Text != "" && Message.Text != "")
-            {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
-
-                await vm.postMessage(vm.TeamId, MessageTitle.Text, Message.Text);
-                PostTeamMesPopUp.Visibility = Visibility.Collapsed;
-                BorderUp.Visibility = Visibility.Collapsed;
-                BorderDown.Visibility = Visibility.Collapsed;
-
-                MessageTitle.Text = "";
-                Message.Text = "";
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
-            }
-        }
-
-        private async void PostCustomerMessage_Click(object sender, RoutedEventArgs e)
-        {
-            if (CustomerTitle.Text != "" && CustomerMessage.Text != "")
-            {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
-
-                await vm.postMessage(vm.CustomerId, CustomerTitle.Text, CustomerMessage.Text);
-                PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
-                BorderUp.Visibility = Visibility.Collapsed;
-                BorderDown.Visibility = Visibility.Collapsed;
-
-                CustomerTitle.Text = "";
-                CustomerMessage.Text = "";
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
-            }
-        }
-
         private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -249,32 +191,18 @@ namespace GrappBox.View
             //}
         }
 
-        private void CancelTeam_Click(object sender, RoutedEventArgs e)
+        private async void AddTeam_Click(object sender, RoutedEventArgs e)
         {
-            PostTeamMesPopUp.Visibility = Visibility.Collapsed;
-            BorderUp.Visibility = Visibility.Collapsed;
-            BorderDown.Visibility = Visibility.Collapsed;
-        }
+            TimelineContentDialog dialog = new TimelineContentDialog(vm.TeamId);
+            await dialog.ShowAsync();
 
-        private void AddTeam_Click(object sender, RoutedEventArgs e)
-        {
-            BorderUp.Visibility = Visibility.Visible;
-            BorderDown.Visibility = Visibility.Visible;
-            PostTeamMesPopUp.Visibility = Visibility.Visible;
         }
+        
 
-        private void CancelCustomer_Click(object sender, RoutedEventArgs e)
+        private async void AddCustomer_Click(object sender, RoutedEventArgs e)
         {
-            PostCustomerMesPopUp.Visibility = Visibility.Collapsed;
-            BorderUp.Visibility = Visibility.Collapsed;
-            BorderDown.Visibility = Visibility.Collapsed;
-        }
-
-        private void AddCustomer_Click(object sender, RoutedEventArgs e)
-        {
-            BorderUp.Visibility = Visibility.Visible;
-            BorderDown.Visibility = Visibility.Visible;
-            PostCustomerMesPopUp.Visibility = Visibility.Visible;
+            TimelineContentDialog dialog = new TimelineContentDialog(vm.CustomerId);
+            await dialog.ShowAsync();
         }
         #endregion
     }

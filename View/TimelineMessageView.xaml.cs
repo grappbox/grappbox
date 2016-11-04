@@ -2,8 +2,12 @@
 using GrappBox.Resources;
 using GrappBox.ViewModel;
 using Windows.ApplicationModel.Core;
+using Windows.Foundation.Metadata;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
@@ -31,7 +35,17 @@ namespace GrappBox.View
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            
+            //Mobile customization
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                if (statusBar != null)
+                {
+                    statusBar.BackgroundOpacity = 1;
+                    statusBar.BackgroundColor = (Color)Application.Current.Resources["OrangeGrappbox"];
+                    statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
+                }
+            }
         }
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
@@ -89,6 +103,7 @@ namespace GrappBox.View
             if (args.InRecycleQueue) return;
             TimelineModel message = (TimelineModel)args.Item;
             args.ItemContainer.HorizontalAlignment = message.IdCheck ? Windows.UI.Xaml.HorizontalAlignment.Right : Windows.UI.Xaml.HorizontalAlignment.Left;
+            args.ItemContainer.Background = message.IdCheck ? (SolidColorBrush)Application.Current.Resources["OrangeGrappboxBrush"] : (SolidColorBrush)Application.Current.Resources["Grey3GrappboxBrush"];
         }
     }
 }
