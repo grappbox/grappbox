@@ -101,6 +101,8 @@ public class GrappboxProvider extends ContentProvider {
     public static final int CLOUD_BY_ID = 241;
     public static final int CLOUD_WITH_PROJECT = 242;
 
+    public static final int CUSTOMER_ACCESS = 250;
+    public static final int CUSTOMER_ACCESS_WITH_PROJECT = 251;
 
 
 
@@ -200,6 +202,10 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD, CLOUD);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/#", CLOUD_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/withproject", CLOUD_WITH_PROJECT);
+
+        //Customer access related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CUSTOMER_ACCESS, CUSTOMER_ACCESS);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CUSTOMER_ACCESS + "/project" , CUSTOMER_ACCESS_WITH_PROJECT);
         return matcher;
     }
 
@@ -339,6 +345,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.EventEntry.TABLE_NAME;
             case TAG:
                 return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
+            case CUSTOMER_ACCESS:
+                return GrappboxContract.CustomerAccessEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -533,6 +541,12 @@ public class GrappboxProvider extends ContentProvider {
             case CLOUD_WITH_PROJECT:
                 retCursor = CloudCursors.query_CloudWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case CUSTOMER_ACCESS:
+                retCursor = CustomerAccessCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case CUSTOMER_ACCESS_WITH_PROJECT:
+                retCursor = CustomerAccessCursors.query_withProject(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -597,6 +611,9 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 returnedUri = EventCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case CUSTOMER_ACCESS:
+                returnedUri = CustomerAccessCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -660,6 +677,9 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 ret = EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case CUSTOMER_ACCESS:
+                ret = CustomerAccessCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -706,6 +726,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case EVENT:
                 returnCount = EventCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case CUSTOMER_ACCESS:
+                returnCount = CustomerAccessCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

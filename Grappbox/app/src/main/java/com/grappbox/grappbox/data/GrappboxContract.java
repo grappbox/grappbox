@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.data;
 
+import android.content.ContentProvider;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
@@ -31,6 +32,7 @@ public class GrappboxContract {
     public static final String PATH_BUG_TAG = "bug_tag";
     public static final String PATH_BUG_ASSIGNATION = "bug_assignations";
     public static final String PATH_CLOUD = "cloud";
+    public static final String PATH_CUSTOMER_ACCESS = "customer_access";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -84,6 +86,25 @@ public class GrappboxContract {
         public static final String COLUMN_ACCOUNT_NAME = "account_name";
 
         public static Uri buildProjectAccountWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class CustomerAccessEntry implements BaseColumns{
+        public static final String TABLE_NAME = "customer_access";
+
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_PROJECT_ID = "project_id";
+        public static final String COLUMN_GRAPPBOX_ID = "grappbox_id";
+        public static final String COLUMN_TOKEN = "token";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_CUSTOMER_ACCESS).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CUSTOMER_ACCESS;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_CUSTOMER_ACCESS;
+
+        public static Uri buildCustomerAccessWithProject = CONTENT_URI.buildUpon().appendPath("project").build();
+
+        public static Uri buildTimelineMessageWithLocalIdUri(long id){
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
@@ -161,6 +182,7 @@ public class GrappboxContract {
         public static Uri buildOccupationWithUserAndProjectUri(long project_id, long user_id){
             return buildOccupationWithLocalIdUri(project_id).buildUpon().appendEncodedPath(Long.toString(user_id)).build();
         }
+
     }
 
 

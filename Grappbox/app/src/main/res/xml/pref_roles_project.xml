@@ -22,4 +22,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
+    <PreferenceCategory android:title="Existing roles" android:key="roles_container">
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Roles action">
+        <Preference android:title="@string/create_new_role" android:key="create_role"/>
+    </PreferenceCategory>
 </PreferenceScreen>

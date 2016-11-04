@@ -22,4 +22,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
 
+    <PreferenceCategory android:title="Registered customer access" android:key="customer_access_container">
+
+    </PreferenceCategory>
+    <PreferenceCategory android:title="Add customer access">
+
+        <EditTextPreference
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="Add customer"
+            android:key="add_customer_access" />
+    </PreferenceCategory>
 </PreferenceScreen>

@@ -17,7 +17,7 @@ import com.grappbox.grappbox.data.GrappboxContract.*;
   * GrappBox © 2016
   */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 4;
+    private static final int DATABASE_VERSION  = 5;
     public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
@@ -200,6 +200,15 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 CloudEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY ("+CloudEntry.COLUMN_LOCAL_PROJECT_ID+") REFERENCES "+ProjectEntry.TABLE_NAME+" ("+ProjectEntry._ID+")); ";
 
+        final String SQL_CREATE_CUSTOMER_ACCESS_TABLE = "CREATE TABLE IF NOT EXISTS " + CustomerAccessEntry.TABLE_NAME + " (" +
+                CustomerAccessEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                CustomerAccessEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                CustomerAccessEntry.COLUMN_PROJECT_ID + " INTEGER NOT NULL, " +
+                CustomerAccessEntry.COLUMN_NAME + " TEXT, " +
+                CustomerAccessEntry.COLUMN_TOKEN + " TEXT, " +
+                " FOREIGN KEY (" + CustomerAccessEntry.COLUMN_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
+                " UNIQUE (" + CustomerAccessEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
@@ -215,6 +224,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_BUG_TAG_TABLE);
         db.execSQL(SQL_CREATE_BUG_ASSIGNATION_TABLE);
         db.execSQL(SQL_CREATE_CLOUD_TABLE);
+        db.execSQL(SQL_CREATE_CUSTOMER_ACCESS_TABLE);
     }
 
     @Override

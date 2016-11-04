@@ -111,6 +111,9 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_ASSIGN_USER_ROLE = "com.grappbox.grappbox.sync.ACTION_ASSIGN_USER_ROLE";
     public static final String ACTION_DELETE_USER_FROM_PROJECT = "com.grappbox.grappbox.sync.ACTION_DELETE_USER_FROM_PROJECT";
     public static final String ACTION_UNASSIGN_USER_ROLE = "com.grappbox.grappbox.sync.ACTION_UNASSIGN_USER_ROLE";
+    public static final String ACTION_SYNC_CUSTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_SYNC_CUSTOMER_ACCESS";
+    public static final String ACTION_DELETE_CUTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_DELETE_CUSTOMER_ACCESS";
+    public static final String ACTION_ADD_CUSTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_ADD_CUSTOMER_ACCESS";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -139,6 +142,8 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_DEL_PARTICIPANT = "toDel";
     public static final String EXTRA_COLOR = "color";
     public static final String EXTRA_ROLE_ID = "role_id";
+    public static final String EXTRA_CUSTOMER_ACCESS_ID = "customer_access_ID";
+    public static final String EXTRA_NAME = "name";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -260,7 +265,181 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleRemoveUserFromProject(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_USER_ID, -1), responseObserver);
             } else if (ACTION_UNASSIGN_USER_ROLE.equals(action)){
                 handleUnassignRole(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_USER_ID, -1), intent.getLongExtra(EXTRA_ROLE_ID, -1), responseObserver);
+            } else if (ACTION_SYNC_CUSTOMER_ACCESS.equals(action)){
+                handleSyncCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), responseObserver);
+            } else if (ACTION_DELETE_CUTOMER_ACCESS.equals(action)){
+                handleDeleteCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_CUSTOMER_ACCESS_ID, -1), responseObserver);
+            } else if (ACTION_ADD_CUSTOMER_ACCESS.equals(action)){
+                handleAddCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_NAME), responseObserver);
             }
+        }
+    }
+
+    public void handleAddCustomerAccess(long projectId, String name, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry.COLUMN_GRAPPBOX_ID }, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/customeraccess");
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("POST");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+
+            data.put("projectId", project.getString(0));
+            data.put("name", name);
+            json.put("data", data);
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            data = json.getJSONObject("data");
+            ContentValues customer = new ContentValues();
+            customer.put(GrappboxContract.CustomerAccessEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
+            customer.put(GrappboxContract.CustomerAccessEntry.COLUMN_TOKEN, data.getString("token"));
+            customer.put(GrappboxContract.CustomerAccessEntry.COLUMN_PROJECT_ID, projectId);
+            customer.put(GrappboxContract.CustomerAccessEntry.COLUMN_NAME, name);
+            getContentResolver().insert(GrappboxContract.CustomerAccessEntry.CONTENT_URI, customer);
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+        }
+    }
+
+    public void handleDeleteCustomerAccess(long projectId, long customerAccessId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null, customer = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry.COLUMN_GRAPPBOX_ID }, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            customer = getContentResolver().query(GrappboxContract.CustomerAccessEntry.CONTENT_URI, new String[]{GrappboxContract.CustomerAccessEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.CustomerAccessEntry._ID+"=?", new String[]{String.valueOf(customerAccessId)}, null);
+            if (project == null || !project.moveToFirst() || customer == null || !customer.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/customeraccess/"+project.getString(0)+"/"+customer.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            getContentResolver().delete(GrappboxContract.CustomerAccessEntry.CONTENT_URI, GrappboxContract.CustomerAccessEntry._ID+"=?", new String[]{String.valueOf(customerAccessId)});
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
+            if (customer != null)
+                customer.close();
+        }
+    }
+
+    public void handleSyncCustomerAccess(long projectId, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry.COLUMN_GRAPPBOX_ID }, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/customeraccesses/"+project.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+
+            JSONArray data = json.getJSONObject("data").getJSONArray("array");
+            for (int i = 0; i < data.length(); ++i){
+                JSONObject current = data.getJSONObject(i);
+                ContentValues values = new ContentValues();
+                values.put(GrappboxContract.CustomerAccessEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
+                values.put(GrappboxContract.CustomerAccessEntry.COLUMN_NAME, current.getString("name"));
+                values.put(GrappboxContract.CustomerAccessEntry.COLUMN_PROJECT_ID, projectId);
+                values.put(GrappboxContract.CustomerAccessEntry.COLUMN_TOKEN, current.getString("token"));
+                getContentResolver().insert(GrappboxContract.CustomerAccessEntry.CONTENT_URI, values);
+            }
+
+        } catch (NetworkErrorException | JSONException | IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
         }
     }
 

@@ -286,8 +286,17 @@
     <string name="manage_user_role">Manage user role</string>
     <string name="delete_user">Delete user</string>
 
+    <string name="copy_access">Copy customer access</string>
+    <string name="delete_access">Delete customer access</string>
+    <string name="create_new_role">Create a new role</string>
+
     <string-array name="user_preference_dialog_choice_entry">
         <item>@string/manage_user_role</item>
+        <item>@string/delete_access</item>
+    </string-array>
+
+    <string-array name="customer_access_dialog_choice_entry">
+        <item>@string/copy_access</item>
         <item>@string/delete_user</item>
     </string-array>
 </resources>

@@ -55,31 +55,24 @@ import android.view.ViewGroup;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
+import com.grappbox.grappbox.custom_preferences.CustomerAccessPreference;
 import com.grappbox.grappbox.custom_preferences.PasswordPreference;
 import com.grappbox.grappbox.custom_preferences.UserPreference;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.data.GrappboxContract.CustomerAccessEntry;
+import com.grappbox.grappbox.model.CustomerAccessModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.util.List;
 
-/**
- * A {@link PreferenceActivity} that presents a set of application settings. On
- * handset devices, settings are presented as a single list. On tablets,
- * settings are split by category, with category headers shown to the left of
- * the list of settings.
- * <p>
- * See <a href="http://developer.android.com/design/patterns/settings.html">
- * Android Design: Settings</a> for design guidelines and the <a
- * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
- * API Guide</a> for more information on developing a Settings UI.
- */
 public class ProjectSettingsActivity extends AppCompatActivity {
-    /**
-     * A preference value change listener that updates the preference's summary
-     * to reflect its new value.
-     */
     private static Intent activityIntent = null;
+    private static final int LOADER_GENERAL_SETTINGS = 0;
+    private static final int LOADER_USER_LIST = 1;
+    private static final int LOADER_ROLES_LIST = 2;
+    private static final int LOADER_CUSTOMER_ACCESS = 3;
+    private static final int LOADER_ROLES_ACCESS = 4;
 
     @Override
     public View onCreateView(View parent, String name, Context context, AttributeSet attrs) {
@@ -127,6 +120,22 @@ public class ProjectSettingsActivity extends AppCompatActivity {
             update.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, activityIntent.getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
             update.putExtra(GrappboxJustInTimeService.EXTRA_MAIL, stringValue);
             preference.getContext().startService(update);
+            return true;
+        }
+    };
+
+    private static Preference.OnPreferenceChangeListener sBindPreferenceSummaryToValueListenerCustomers = new Preference.OnPreferenceChangeListener(){
+
+        @Override
+        public boolean onPreferenceChange(Preference preference, Object value) {
+            String stringValue = value.toString();
+            if (activityIntent == null || stringValue.isEmpty())
+                return true;
+            Intent add = new Intent(preference.getContext(), GrappboxJustInTimeService.class);
+            add.setAction(GrappboxJustInTimeService.ACTION_ADD_CUSTOMER_ACCESS);
+            add.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, activityIntent.getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
+            add.putExtra(GrappboxJustInTimeService.EXTRA_NAME, stringValue);
+            preference.getContext().startService(add);
             return true;
         }
     };
@@ -183,6 +192,7 @@ public class ProjectSettingsActivity extends AppCompatActivity {
                 preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListenerUsers);
                 break;
             case 2:
+                preference.setOnPreferenceChangeListener(sBindPreferenceSummaryToValueListenerCustomers);
                 break;
             case 3:
                 break;
@@ -282,8 +292,8 @@ public class ProjectSettingsActivity extends AppCompatActivity {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            if (id == 0)
-                return new CursorLoader(getActivity(), GrappboxContract.ProjectEntry.CONTENT_URI, null, GrappboxContract.UserEntry._ID+"=?", new String[]{String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1))}, null);
+            if (id == LOADER_GENERAL_SETTINGS)
+                return new CursorLoader(getActivity(), GrappboxContract.ProjectEntry.CONTENT_URI, null, GrappboxContract.ProjectEntry._ID+"=?", new String[]{String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1))}, null);
             return null;
         }
 
@@ -336,30 +346,42 @@ public class ProjectSettingsActivity extends AppCompatActivity {
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            final String[] projection = {
-                    " DISTINCT "+GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_DATE_BIRTHDAY_UTC,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL,
-            };
-            if (id == 1)
-                return new CursorLoader(getActivity(), GrappboxContract.UserEntry.buildUserWithProject(), projection, GrappboxContract.ProjectEntry.TABLE_NAME+"."+GrappboxContract.ProjectEntry._ID+"=?", new String[]{String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1))}, null);
+            String localProjectID = String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
+            if (id == LOADER_USER_LIST){
+                final String[] projection = {
+                        " DISTINCT "+GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_DATE_BIRTHDAY_UTC,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL,
+                };
+                return new CursorLoader(getActivity(), GrappboxContract.UserEntry.buildUserWithProject(), projection, GrappboxContract.ProjectEntry.TABLE_NAME+"."+GrappboxContract.ProjectEntry._ID+"=?", new String[]{localProjectID}, null);
+            }
+            else if (id == LOADER_ROLES_LIST){
+                final String[] projection = {
+                        " DISTINCT "+GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID,
+                        GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_NAME
+                };
+                return new CursorLoader(getActivity(), GrappboxContract.RolesEntry.CONTENT_URI, projection, GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID+"=?", new String[]{localProjectID}, null);
+            }
             return null;
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-            if (data == null || !data.moveToFirst() || loader.getId() != 1)
+            if (data == null || !data.moveToFirst())
                 return;
-            PreferenceCategory screen = (PreferenceCategory) findPreference("user_container");
-            screen.removeAll();
-            do{
-                Preference user = new UserPreference(getActivity(), new UserModel(data), getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
-
-                screen.addPreference(user);
-            }while(data.moveToNext());
+            int loaderId = loader.getId();
+            if (loaderId == LOADER_USER_LIST) {
+                PreferenceCategory screen = (PreferenceCategory) findPreference("user_container");
+                screen.removeAll();
+                do {
+                    Preference user = new UserPreference(getActivity(), new UserModel(data), getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
+                    user.setKey("user_" + String.valueOf(data.getLong(0)));
+                    screen.addPreference(user);
+                } while (data.moveToNext());
+            }
         }
 
         @Override
@@ -369,28 +391,79 @@ public class ProjectSettingsActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class CustomerPreferenceFragment extends PreferenceFragment {
+    public static class CustomerPreferenceFragment extends PreferenceFragment implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_customer_project);
-
+            bindPreferenceSummaryToValue(findPreference("add_customer_access"), 2);
             //bindPreferenceSummaryToValue(findPreference("example_text"));
             //bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            ((AppCompatActivity)getActivity()).getSupportLoaderManager().initLoader(LOADER_CUSTOMER_ACCESS, null, this);
+        }
+
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            if (id == LOADER_CUSTOMER_ACCESS){
+                return new CursorLoader(getActivity(), CustomerAccessEntry.buildCustomerAccessWithProject, CustomerAccessModel.projection, GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID + "=?", new String[]{String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1))}, null);
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if (data == null || !data.moveToFirst())
+                return;
+            if (loader.getId() == LOADER_CUSTOMER_ACCESS){
+                PreferenceCategory category = (PreferenceCategory) findPreference("customer_access_container");
+                category.removeAll();
+                do{
+                    category.addPreference(new CustomerAccessPreference(getActivity(), new CustomerAccessModel(data)));
+                }while(data.moveToNext());
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+        }
     }
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
-    public static class RolePreferenceFragment extends PreferenceFragment {
+    public static class RolePreferenceFragment extends PreferenceFragment implements LoaderManager.LoaderCallbacks<Cursor> {
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_roles_project);
 
+
             //bindPreferenceSummaryToValue(findPreference("example_text"));
             //bindPreferenceSummaryToValue(findPreference("example_list"));
         }
 
+        @Override
+        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+            if (id == LOADER_ROLES_LIST){
+                //TODO : cursor loader return new CursorLoader(getActivity(), , )
+            }
+            return null;
+        }
+
+        @Override
+        public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if (loader.getId() == LOADER_ROLES_LIST){
+
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<Cursor> loader) {
+
+        }
     }
 }
