@@ -3,7 +3,7 @@
 
 #include <QtNetwork/QNetworkAccessManager>
 #include <QtNetwork/QNetworkReply>
-#include <QJSONObject>
+#include <QJsonObject>
 #include <QJsonDocument>
 #include <QJsonArray>
 #include <QMap>

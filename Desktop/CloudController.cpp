@@ -578,7 +578,7 @@ void CloudController::OnOpenStreamSuccess(int id, QByteArray array)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
-    _CurrentUploadID = obj["stream_id"].toVariant().toString();
+    _CurrentUploadID = obj["stream_id"].toString();
     _ChunckNumber = 0;
     SendChunckFile();
 }
