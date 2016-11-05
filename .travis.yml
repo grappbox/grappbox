@@ -13,8 +13,9 @@ addons:
     packages:
       - apache2
 install:
-  - sudo add-apt-repository -y ppa:ondrej/php; sudo apt-get -qq update; fi
-  - sudo apt-get -y install php5.6 php5.6-dev libapache2-mod-php5.6 apache2-threaded-dev php5.6php.net/-pear php5.6-mongo php5.6-intl; fi
+  - sudo add-apt-repository -y ppa:ondrej/php
+  - sudo apt-get -qq update
+  - sudo apt-get -y install php5.6 php5.6-dev libapache2-mod-php5.6 apache2-threaded-dev php5.6php.net/-pear php5.6-mongo php5.6-intl
 before_script:
   - sudo phpenv config-add myconfig.ini
   - sudo pecl install mongo
