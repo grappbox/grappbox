@@ -292,11 +292,32 @@
 
     <string-array name="user_preference_dialog_choice_entry">
         <item>@string/manage_user_role</item>
-        <item>@string/delete_access</item>
+        <item>@string/delete_user</item>
     </string-array>
 
     <string-array name="customer_access_dialog_choice_entry">
         <item>@string/copy_access</item>
-        <item>@string/delete_user</item>
+        <item>@string/delete_access</item>
+    </string-array>
+
+
+
+    <string name="title_activity_role_edit">Edit role</string>
+    <string name="project_settings">Project Settings</string>
+    <string name="gantt">GANTT</string>
+    <string name="customer_timeline">Customer timeline</string>
+    <string name="team_timeline">Team timeline</string>
+    <string name="cloud">Cloud</string>
+    <string name="task">Task</string>
+    <string name="calendar">Calendar</string>
+    <string name="bugtracker">Bugtracker</string>
+    <string name="whiteboard">Whiteboard</string>
+    <string name="no_access">No access</string>
+    <string name="read_only">Read Only</string>
+    <string name="read_write">Read / Write</string>
+    <string-array name="access_types">
+        <item>@string/no_access</item>
+        <item>@string/read_only</item>
+        <item>@string/read_write</item>
     </string-array>
 </resources>

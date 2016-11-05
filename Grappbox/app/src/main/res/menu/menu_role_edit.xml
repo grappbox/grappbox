@@ -1,0 +1,19 @@
+<!--
+  ~ Created by Marc Wieser on 5/11/2016
+  ~ If you have any problem or question about this work
+  ~ please contact the author at marc.wieser@gmail.com
+  ~
+  ~ The following code is owned by GrappBox you can't
+  ~ use it without any authorization or special instructions
+  ~ GrappBox © 2016
+  -->
+
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.grappbox.grappbox.RoleEditActivity">
+    <item
+        android:id="@+id/action_settings"
+        android:orderInCategory="100"
+        android:showAsAction="never"
+        android:title="@string/action_settings" />
+</menu>

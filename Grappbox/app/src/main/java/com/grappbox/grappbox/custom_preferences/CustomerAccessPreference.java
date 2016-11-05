@@ -37,6 +37,8 @@ public class CustomerAccessPreference extends DialogPreference {
     protected void onPrepareDialogBuilder(AlertDialog.Builder builder) {
         super.onPrepareDialogBuilder(builder);
         builder.setTitle(mModel.name);
+        builder.setPositiveButton(null, null);
+        builder.setNegativeButton(null, null);
         builder.setItems(R.array.customer_access_dialog_choice_entry, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

@@ -22,6 +22,7 @@
     </android.support.design.widget.AppBarLayout>
 
     <fragment android:name="com.grappbox.grappbox.bugtracker_fragments.BugDetailsFragment"
+        android:layout_marginTop="3dp"
         android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

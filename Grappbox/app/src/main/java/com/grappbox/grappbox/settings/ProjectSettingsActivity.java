@@ -54,6 +54,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.RoleEditActivity;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.custom_preferences.CustomerAccessPreference;
 import com.grappbox.grappbox.custom_preferences.PasswordPreference;
@@ -61,6 +62,7 @@ import com.grappbox.grappbox.custom_preferences.UserPreference;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.CustomerAccessEntry;
 import com.grappbox.grappbox.model.CustomerAccessModel;
+import com.grappbox.grappbox.model.RoleModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
@@ -436,28 +438,62 @@ public class ProjectSettingsActivity extends AppCompatActivity {
 
     @TargetApi(Build.VERSION_CODES.HONEYCOMB)
     public static class RolePreferenceFragment extends PreferenceFragment implements LoaderManager.LoaderCallbacks<Cursor> {
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            ((AppCompatActivity)getActivity()).getSupportLoaderManager().initLoader(LOADER_ROLES_LIST, null, this);
+        }
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.pref_roles_project);
-
-
-            //bindPreferenceSummaryToValue(findPreference("example_text"));
-            //bindPreferenceSummaryToValue(findPreference("example_list"));
+            findPreference("create_role").setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    Intent launchRoleActivity = new Intent(preference.getContext(), RoleEditActivity.class);
+                    launchRoleActivity.setAction(RoleEditActivity.ACTION_NEW);
+                    launchRoleActivity.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, activityIntent.getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
+                    getActivity().startActivity(launchRoleActivity);
+                    return true;
+                }
+            });
         }
 
         @Override
         public Loader<Cursor> onCreateLoader(int id, Bundle args) {
             if (id == LOADER_ROLES_LIST){
-                //TODO : cursor loader return new CursorLoader(getActivity(), , )
+                Log.e("Test", "Loader roles launched");
+                return new CursorLoader(getActivity(), GrappboxContract.RolesEntry.CONTENT_URI, RoleModel.projection, GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID+"=?", new String[]{String.valueOf(getActivity().getIntent().getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1))}, null);
             }
             return null;
         }
 
         @Override
         public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+            if (data == null || !data.moveToFirst())
+                return;
             if (loader.getId() == LOADER_ROLES_LIST){
-
+                PreferenceCategory container = (PreferenceCategory) findPreference("roles_container");
+                container.removeAll();
+                do{
+                    final RoleModel model = new RoleModel(data);
+                    final Preference pref = new Preference(getActivity());
+                    pref.setTitle(model.name);
+                    pref.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                        @Override
+                        public boolean onPreferenceClick(Preference preference) {
+                            Intent launchRoleActivity = new Intent(preference.getContext(), RoleEditActivity.class);
+                            launchRoleActivity.setAction(RoleEditActivity.ACTION_EDIT);
+                            launchRoleActivity.putExtra(RoleEditActivity.EXTRA_MODEL, model);
+                            launchRoleActivity.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, activityIntent.getLongExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, -1));
+                            getActivity().startActivity(launchRoleActivity);
+                            return true;
+                        }
+                    });
+                    container.addPreference(pref);
+                } while (data.moveToNext());
             }
         }
 

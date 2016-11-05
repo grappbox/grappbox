@@ -39,6 +39,21 @@ public class RoleModel implements Parcelable {
     public String grappbox_id, name;
     public int bugtrackerAccess, cloudAccess, customerTimelineAccess, teamTimelineAccess, eventAccess, ganttAccess, projectSettingsAccess, taskAccess, whiteboardAccess;
 
+    public RoleModel(){
+        _id = -1;
+        grappbox_id = "";
+        name = "";
+        bugtrackerAccess = 0;
+        cloudAccess = 0;
+        customerTimelineAccess = 0;
+        teamTimelineAccess = 0;
+        eventAccess = 0;
+        ganttAccess = 0;
+        projectSettingsAccess = 0;
+        taskAccess = 0;
+        whiteboardAccess = 0;
+    }
+
     public RoleModel(Cursor data){
         _id = data.getLong(_ID);
         grappbox_id = data.getString(GRAPPBOX_ID);

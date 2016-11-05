@@ -114,6 +114,8 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_SYNC_CUSTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_SYNC_CUSTOMER_ACCESS";
     public static final String ACTION_DELETE_CUTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_DELETE_CUSTOMER_ACCESS";
     public static final String ACTION_ADD_CUSTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_ADD_CUSTOMER_ACCESS";
+    public static final String ACTION_CREATE_ROLE = "com.grappbox.grappbox.sync.ACTION_CREATE_ROLE";
+    public static final String ACTION_UPDATE_ROLE = "com.grappbox.grappbox.sync.ACTION_UPDATE_ROLE";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -148,6 +150,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
     public static final String CATEGORY_CLOSED = "com.grappbox.grappbox.sync.CATEGORY_CLOSED";
+    public static final String CATEGORY_NEW = "com.grappbox.grappbox.sync.NEW";
 
 
     public static final String BUNDLE_KEY_JSON = "com.grappbox.grappbox.sync.BUNDLE_KEY_JSON";
@@ -271,7 +274,88 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleDeleteCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getLongExtra(EXTRA_CUSTOMER_ACCESS_ID, -1), responseObserver);
             } else if (ACTION_ADD_CUSTOMER_ACCESS.equals(action)){
                 handleAddCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_NAME), responseObserver);
+            } else if (ACTION_CREATE_ROLE.equals(action) || ACTION_UPDATE_ROLE.equals(action)){
+                handleRole(intent.getBundleExtra(EXTRA_BUNDLE), intent.hasCategory(CATEGORY_NEW), responseObserver);
             }
+        }
+    }
+
+    public void handleRole(Bundle args, boolean isNew, ResultReceiver responseObserver){
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            if (isNew)
+                project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry.COLUMN_GRAPPBOX_ID }, ProjectEntry._ID + "=?", new String[]{String.valueOf(args.getLong("_id"))}, null);
+            else
+                project = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{ GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID }, GrappboxContract.RolesEntry._ID + "=?", new String[]{String.valueOf(args.getLong("_id"))}, null);
+            if (project == null || !project.moveToFirst())
+                throw new OperationApplicationException();
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/role" + (!isNew ? "/" + project.getString(0) : ""));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod(isNew ? "POST" : "PUT");
+            JSONObject json = new JSONObject();
+            JSONObject data = new JSONObject();
+            if (isNew){
+                data.put("projectId", project.getString(0));
+            }
+            for (String key : args.keySet()) {
+                if (key.startsWith("_"))
+                    continue;
+                data.put(key, args.getString(key));
+            }
+            json.put("data", data);
+            Utils.JSON.sendJsonOverConnection(connection, json);
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            JSONObject currentRole = json.getJSONObject("data");
+            ContentValues roleValue = new ContentValues();
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry._ID }, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{json.getString("projectId")}, null);
+            if (project == null || !project.moveToFirst())
+                throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("roleId"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_LOCAL_PROJECT_ID, project.getLong(0));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_NAME, currentRole.getString("name"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_BUGTRACKER, currentRole.getString("bugtracker"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_CLOUD, currentRole.getString("cloud"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_CUSTOMER_TIMELINE, currentRole.getString("customerTimeline"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_TEAM_TIMELINE, currentRole.getString("teamTimeline"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_EVENT, currentRole.getString("event"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_GANTT, currentRole.getString("gantt"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_WHITEBOARD, currentRole.getString("whiteboard"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_TASK, currentRole.getString("task"));
+            roleValue.put(GrappboxContract.RolesEntry.COLUMN_ACCESS_PROJECT_SETTINGS, currentRole.getString("projectSettings"));
+            getContentResolver().insert(GrappboxContract.RolesEntry.CONTENT_URI, roleValue);
+        } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null)
+                project.close();
         }
     }
 

@@ -1,0 +1,37 @@
+<!--
+  ~ Created by Marc Wieser on 5/11/2016
+  ~ If you have any problem or question about this work
+  ~ please contact the author at marc.wieser@gmail.com
+  ~
+  ~ The following code is owned by GrappBox you can't
+  ~ use it without any authorization or special instructions
+  ~ GrappBox © 2016
+  -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <android.support.design.widget.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/BaseTheme.AppBarOverlay"
+        app:elevation="0dp">
+
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            app:popupTheme="@style/BaseTheme.PopupOverlay"
+            android:layout_height="match_parent"
+            android:background="@color/GrappRed">
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+    <fragment
+        android:id="@+id/fragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:name="com.grappbox.grappbox.RoleEditActivityFragment"
+        tools:layout="@layout/fragment_role_edit" />
+</LinearLayout>

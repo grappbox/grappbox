@@ -129,6 +129,14 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ChooseProjectActivity" />
         </activity>
+        <activity
+            android:name=".RoleEditActivity"
+            android:label="@string/title_activity_role_edit"
+            android:parentActivityName=".settings.ProjectSettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.settings.ProjectSettingsActivity" />
+        </activity>
     </application>
 
 </manifest>
