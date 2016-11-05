@@ -4,9 +4,11 @@ before_install:
     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
     - sudo add-apt-repository --yes ppa:beineri/opt-qt542-trusty
     - sudo apt-get update -qq
-    - sudo apt-get install -qq libqt5quick5 qt5-qmake qt54base qt54declarative libqt5webkit5-dev libsqlite3-dev
+    - sudo apt-get install -qq libqt5quick5 qt5-qmake qtbase5-dev qtdeclarative5-dev qt54base qt54declarative libqt5webkit5-dev libsqlite3-dev
     - sudo apt-get install -qq qtquick1-5-dev qtquick1-qml-plugins qt54quick1 qt54quickcontrols
 before_script:
+    - ls /opt/qt54
+    - PATH="/opt/qt54/bin:$PATH" && qt54-env.sh
     - export QT_SELECT=5
 
 script:
