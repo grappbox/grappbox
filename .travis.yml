@@ -5,13 +5,7 @@ env:
   global:
     - SYMFONY_ENV=prod
 sudo: required
-addons:
-  apt:
-    packages:
-      - php5.6-cli
-      - php-pear
 before_script:
-  - sudo pecl install mongo
   - sudo phpenv config-add myconfig.ini
 script:
   - cd ./API
