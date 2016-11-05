@@ -1,16 +1,14 @@
 language: php
 php:
   - '5.6'
-  - '7.0'
-  - hhvm
-  - nightly
 env:
   global:
     - SYMFONY_ENV=prod
 sudo: required
 before_script:
+  - apt-get install php5.6-dev php5.6php.net/-pear php5.6-mongo php5.6-intl
   - phpenv config-add myconfig.ini
-  - pecl install -f mongo-1.3.0
+  - pecl install mongo
 script:
   - cd ./API
   - chmod +x composer.prod.sh
