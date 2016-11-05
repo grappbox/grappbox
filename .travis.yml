@@ -6,7 +6,7 @@ env:
     - SYMFONY_ENV=prod
 sudo: required
 before_script:
-  - sudo phpenv config-add myconfig.ini
+  - phpenv config-add myconfig.ini
 script:
   - cd ./API
   - chmod +x composer.prod.sh
