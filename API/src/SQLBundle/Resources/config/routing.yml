@@ -837,7 +837,7 @@ whiteboard_list:
   path:		whiteboards/{projectId}
   defaults:	{ _controller: SQLBundle:Whiteboard:listWhiteboard, _format: json }
   requirements:
-    userId: \d+projectId: \d+
+    projectId: \d+
   methods: [GET]
 
 whiteboard_new:
