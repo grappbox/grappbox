@@ -46,7 +46,7 @@ class RegisterController extends Controller
   private function onCriticalError()
   {
     $redirect = new RedirectResponse("/register");
-    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
     return $redirect;
@@ -58,7 +58,7 @@ class RegisterController extends Controller
   private function onPasswordMismatchError()
   {
     $redirect = new RedirectResponse("/register");
-    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_mismatch"),
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_mismatch"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
     return $redirect;
@@ -89,18 +89,18 @@ class RegisterController extends Controller
     if ($response["info"]["return_code"]) {
       switch ($response["info"]["return_code"]) {
         case "1.14.1":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_success"),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_success"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("TOKEN", base64_encode($response["data"]["token"]),
+        $redirect->headers->setCookie(new Cookie("G_TOKEN", base64_encode($response["data"]["token"]),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("ID", base64_encode($response["data"]["id"]),
+        $redirect->headers->setCookie(new Cookie("G_ID", base64_encode($response["data"]["id"]),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         case "14.3.7":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_already"),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_already"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 

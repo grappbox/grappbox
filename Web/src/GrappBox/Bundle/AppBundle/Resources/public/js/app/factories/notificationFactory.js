@@ -21,13 +21,13 @@ app.factory("notificationFactory", ['Notification', function(Notification) {
     // "Success" routine
     // Operation validated
     success: function(message) {
-      Notification.success({ message: message + "<i class=\"material-icons\">check</i>", delay: 3500 });
+      Notification.success({ message: message + "<i class=\"material-icons\">check</i>", delay: 1000 });
     },
     
     // "Warning" routine
     // Operation failed, or succeed but with non-blocking errors
     warning: function(message) {
-      Notification.warning({ message: message + "<i class=\"material-icons\">warning</i>", delay: 3500 });
+      Notification.warning({ message: message + "<i class=\"material-icons\">warning</i>", delay: 2500 });
     },
 
     // "Error" routine

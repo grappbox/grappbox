@@ -28,7 +28,7 @@ $(document).ready(function() {
   // Routine definition
   // Set alert message depending on cookies content
   function getUserStatus() {
-    var status = Cookies.get("LOGIN");
+    var status = Cookies.get("G_LOGIN");
 
     $("#form-message").removeClass("show");
     if (status != undefined && window.atob(status) != "_success") {
@@ -60,9 +60,9 @@ $(document).ready(function() {
         default:
         break;
       }
-      Cookies.remove("LOGIN", { path: "/" });
-      Cookies.remove("TOKEN", { path: "/" });
-      Cookies.remove("ID", { path: "/" });
+      Cookies.remove("G_LOGIN", { path: "/" });
+      Cookies.remove("G_TOKEN", { path: "/" });
+      Cookies.remove("G_ID", { path: "/" });
 
       $("#form-message").addClass("show");
     }
