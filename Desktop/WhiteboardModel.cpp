@@ -90,11 +90,10 @@ void WhiteboardModel::pullObject()
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_currentId);
         ADD_FIELD("lastUpdate", item->editDate().toString("yyyy-MM-dd hh:mm:ss"));
-        qDebug() << "Update : " << item->editDate();
         POST(API::DP_WHITEBOARD, API::PR_PULL_WHITEBOARD);
     }
     END_REQUEST;
-    item->setEditDate(QDateTime(QDate(), QTime(), QTimeZone::utc()));
+   // item->setEditDate(QDateTime(QDate(), QTime(), QTimeZone::utc()));
 }
 
 void WhiteboardModel::removeObjectAt(QVariantMap center, float radius)
@@ -124,7 +123,6 @@ void WhiteboardModel::onUpdateListDone(int id, QByteArray data)
         onUpdateListFail(id, data);
         return;
     }
-    qDebug() << "Parsing ids";
     for (QJsonValueRef ref : obj["array"].toArray())
     {
         QJsonObject objRef = ref.toObject();
@@ -277,9 +275,12 @@ void WhiteboardModel::onPullObjectDone(int id, QByteArray data)
         return;
     }
     WhiteboardData *item = qobject_cast<WhiteboardData*>(m_whiteboardList[m_currentItem].value<WhiteboardData*>());
-    SHOW_JSON(data);
-    item->loadContent(obj["add"].toArray());
-    item->removeContents(obj["remove"].toArray());
+    if (obj["add"].toArray().size() > 0)
+        item->loadContent(obj["add"].toArray(), obj["remove"].toArray().size() == 0);
+    if (obj["remove"].toArray().size() > 0)
+        item->removeContents(obj["remove"].toArray());
+    emit forceUpdate();
+
 }
 
 void WhiteboardModel::onPullObjectFail(int id, QByteArray data)

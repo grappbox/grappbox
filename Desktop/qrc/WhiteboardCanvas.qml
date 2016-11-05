@@ -152,7 +152,7 @@ Item {
                 context.strokeStyle = colorBorder;
                 context.lineWidth = tick;
                 context.beginPath();
-                if (colorFil !== null)
+                if (colorFil !== undefined)
                 {
                     context.fillStyle = colorFil;
                     context.fillRect(Math.min(startX, endX), Math.min(startY, endY), Math.abs(startX - endX), Math.abs(startY - endY));
@@ -167,7 +167,7 @@ Item {
                 context.beginPath();
                 context.fillStyle = colorFil;
                 context.ellipse(Math.min(startX, endX), Math.min(startY, endY), Math.abs(startX - endX), Math.abs(startY - endY));
-                if (colorFil !== null)
+                if (colorFil !== undefined)
                 {
                     context.fillStyle = colorFil;
                     context.fill();
@@ -190,7 +190,7 @@ Item {
                 context.lineTo(realStX + realWidth / 2, realEdY);
                 context.lineTo(realStX, realStY + realHeight / 2);
                 context.lineTo(realStX + realWidth / 2, realStY);
-                if (colorFil !== null)
+                if (colorFil !== undefined)
                 {
                     context.fillStyle = colorFil;
                     context.fill();

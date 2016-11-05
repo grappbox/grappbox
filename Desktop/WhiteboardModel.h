@@ -33,25 +33,41 @@ public:
         m_id = obj["id"].toInt();
         m_creationDate = JSON_TO_DATETIME(obj["createdAt"].toString());
         m_editDate = JSON_TO_DATETIME(obj["updatedAt"].toString());
+         qDebug() << obj["createdAt"].toString() << " : " << m_creationDate.isValid();
         emit titleChanged(title());
         emit idChanged(id());
         emit creationDateChanged(creationDate());
         emit editDateChanged(editDate());
     }
 
-    void loadContent(QJsonArray obj)
+    void loadContent(QJsonArray obj, bool updateContent = true)
     {
+        qDebug() << "Load new content ! (" << obj.size() << ")";
+        QDateTime time;
+        bool isInitialized = false;
         QList<QVariantMap> values;
         for (QJsonValueRef ref : obj)
         {
             m_ids.push_back(ref.toObject()["id"].toInt());
             values.push_back(jsonToJS(ref.toObject()["object"].toObject()));
+            QDateTime tmpTime = JSON_TO_DATETIME(ref.toObject()["createdAt"].toString());
+            if (!isInitialized || tmpTime > time)
+            {
+                isInitialized = true;
+                time = tmpTime;
+            }
         }
         for (QVariantMap val : values)
         {
             m_content.push_back(val);
         }
-        contentChanged(content());
+        if (updateContent)
+        {
+            contentChanged(content());
+            qDebug() << "Call content Change";
+        }
+        if (time > m_editDate)
+            setEditDate(time);
     }
 
     void addContent(QJsonObject obj)
@@ -69,15 +85,27 @@ public:
         contentChanged(content());
     }
 
-    void removeContents(QJsonArray obj)
+    void removeContents(QJsonArray obj, bool updateContent = true)
     {
+        qDebug() << "Remove content !(" << obj.size() << ")";
+        QDateTime time;
+        bool isInitialized = false;
         for (QJsonValueRef ref : obj)
         {
             int idx = m_ids.indexOf(ref.toObject()["id"].toInt());
+            QDateTime tmpTime = JSON_TO_DATETIME(ref.toObject()["deletedAt"].toString());
+            if (!isInitialized || tmpTime > time)
+            {
+                isInitialized = true;
+                time = tmpTime;
+            }
             m_ids.removeAt(idx);
             m_content.removeAt(idx);
         }
-        contentChanged(content());
+        if (updateContent)
+            contentChanged(content());
+        if (time > m_editDate)
+            setEditDate(time);
     }
 
     static QVariantMap jsonToJS(QJsonObject obj)
