@@ -5,9 +5,13 @@ before_install:
     - sudo apt-get update -qq
     - sudo apt-get install -qq libqt5quick5 qt5-qmake qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
     - sudo apt-get install -qq qtquick1-5-dev qtquick1-qml-plugins
+before_script:
+    - export QT_SELECT=5
+    - locate qmake
+
 script:
-    - qmake-qt5 --version
-    - qmake-qt5 -project
-    - qmake-qt5 Desktop/QMLGrappBox.pro
+    - qmake --version
+    - qmake -project
+    - qmake Desktop/QMLGrappBox.pro
     - make
 language: cpp
