@@ -4,6 +4,7 @@ before_install:
     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
     - sudo apt-get update -qq
     - sudo apt-get install -qq libqt5quick5 qt5-qmake qtbase5-dev qtdeclarative5-dev libqt5webkit5-dev libsqlite3-dev
+    - sudo apt-get install -qq qtquick1-5-dev qtquick-qml-plugins
 script:
     - qmake -project
     - qmake Desktop/QMLGrappBox.pro
