@@ -2,13 +2,13 @@ dist: trusty
 sudo: required
 before_install:
     - sudo add-apt-repository --yes ppa:ubuntu-sdk-team/ppa
-    - sudo add-apt-repository --yes ppa:beineri/opt-qt542-trusty
+    - sudo add-apt-repository --yes ppa:beineri/opt-qt551-trusty
     - sudo apt-get update -qq
-    - sudo apt-get install -qq libqt5quick5 qt5-qmake qtbase5-dev qtdeclarative5-dev qt54base qt54declarative libqt5webkit5-dev libsqlite3-dev
-    - sudo apt-get install -qq qtquick1-5-dev qtquick1-qml-plugins qt54quick1 qt54quickcontrols
+    - sudo apt-get install -qq libqt5quick5 qt5-qmake qtbase5-dev qtdeclarative5-dev qt55base qt55declarative libqt5webkit5-dev libsqlite3-dev
+    - sudo apt-get install -qq qtquick1-5-dev qtquick1-qml-plugins qt55quick1 qt55quickcontrols
 before_script:
-    - ls /opt/qt54
-    - PATH="/opt/qt54/bin:$PATH" && qt54-env.sh
+    - ls /opt/qt55
+    - PATH="/opt/qt55/bin:$PATH" && qt55-env.sh
     - export QT_SELECT=5
 
 script:
