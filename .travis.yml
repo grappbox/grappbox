@@ -6,6 +6,7 @@ env:
     - SYMFONY_ENV=prod
 sudo: required
 before_script:
+  - sudo apt-get update -qq
   - sudo apt-get install php5.6-dev php5.6php.net/-pear php5.6-mongo php5.6-intl
   - sudo phpenv config-add myconfig.ini
   - sudo pecl install mongo
