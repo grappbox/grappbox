@@ -7,8 +7,8 @@
 // Factory definition
 // APP page access checks and actions
 // (login, logout, bugtracker, project, whiteboard)
-app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "$q", "$rootScope", "$window",
-    function($base64, $cookies, $http, localStorageService, $location, notificationFactory, $q, $rootScope, $window) {
+app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$location", "notificationFactory", "$q", "$rootScope", "$route",
+    function($base64, $http, localStorageService, $location, notificationFactory, $q, $rootScope, $route) {
 
   /* ==================== LOGIN ==================== */
 
@@ -19,32 +19,6 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
     $location.path("/");
     $rootScope.path.current = "/";
     deferred.resolve(true);
-    return deferred.promise;
-  };
-
-
-
-  /* ==================== LOGOUT ==================== */
-
-  // Routine definition
-  // APP logout
-  var _logout = function() {
-    var deferred = $q.defer();
-
-    $http.get($rootScope.api.url + "/account/logout", { headers: { "Authorization": $rootScope.user.token }}).then(
-      function logoutSuccess() {
-        $cookies.remove("LOGIN", { path: "/" });
-        $cookies.remove("TOKEN", { path: "/" });
-        $cookies.remove("ID", { path: "/" });
-        localStorageService.clearAll();
-        notificationFactory.clear();
-
-        $window.location.href = "/";
-        deferred.resolve(true);
-      },
-      function logoutFail() { }
-    );
-
     return deferred.promise;
   };
 
@@ -67,7 +41,7 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
       deferred.resolve();
     },
     function getTicketFail(response) {
-      if (!angular.isUndefined(response.data.info.return_code)) {
+      if (response && response.data && response.data.info && response.data.info.return_code) {
         switch(response.data.info.return_code) {
           case "4.1.3":
           deferred.reject();
@@ -117,36 +91,35 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
         deferred.resolve();
       },
       function projectNotAvailable(response) {
-        if (!angular.isUndefined(response.data.info.return_code)) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "6.3.3":
             deferred.reject();
             $rootScope.reject();
-            $rootScope.project.disconnect(true);
             break;
 
             case "6.3.4":
             deferred.reject();
-            $rootScope.project.disconnect(true);
+            $rootScope.project.logout(true);
             notificationFactory.warning("Project not found.");
             break;
 
             case "6.3.9":
             deferred.reject();
-            $rootScope.project.disconnect(true);
+            $rootScope.project.logout(true);
             notificationFactory.warning("You don't have access to this part of the project.");
             break;
 
             default:
             deferred.reject();
-            $rootScope.project.disconnect(true);
+            $rootScope.project.logout(true);
             notificationFactory.error();
             break;
           }
         }
         else {
           deferred.reject();
-          $rootScope.project.disconnect(true);
+          $rootScope.project.logout(true);
           notificationFactory.error();
         }
       }
@@ -164,15 +137,15 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
   var _projectSelected = function() {
     var deferred = $q.defer();
     
-    if (!localStorageService.get("HAS_PROJECT") || !localStorageService.get("PROJECT_ID")) {
-      $rootScope.project.disconnect();
-      notificationFactory.error();
-      deferred.reject();
-    }
-    else {
-      $location.path("/dashboard/" + $base64.decode(localStorageService.get("PROJECT_ID")));
+    if (!$rootScope.project.set)
       deferred.resolve();
-    }
+    else
+      if (!localStorageService.get("project.id"))
+        deferred.resolve();
+      else {
+        $location.path("/dashboard/" + $base64.decode(localStorageService.get("project.id")));
+        deferred.resolve();
+      }
 
     return deferred.promise;
   };
@@ -186,49 +159,47 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
   var _projectSettingsAvailable = function() {
     var deferred = $q.defer();
 
-    if ($route.current.params.project_id == 0) {
+    if ($route.current.params.project_id == 0)
       deferred.resolve();
-      return deferred.promise;
-    }
+    else
+      $http.get($rootScope.api.url + "/project/" + $route.current.params.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
+        function projectSettingsAvailable(response) {
+          deferred.resolve();
+        },
+        function projectSettingsNotAvailable(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+              case "6.3.3":
+              deferred.reject();
+              $rootScope.reject();
+              break;
 
-    $http.get($rootScope.api.url + "/project/" + $route.current.params.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
-      function projectSettingsAvailable(response) {
-        deferred.resolve();
-      },
-      function projectSettingsNotAvailable(response) {
-        if (response.data.info.return_code) {
-          switch(response.data.info.return_code) {
-            case "6.3.3":
-            deferred.reject();
-            $rootScope.reject();
-            break;
+              case "6.3.4":
+              deferred.reject();
+              $location.path("/");
+              notificationFactory.warning("Project not found.");
+              break;
 
-            case "6.3.4":
-            deferred.reject();
-            $location.path("/");
-            notificationFactory.warning("Project not found.");
-            break;
+              case "6.3.9":
+              deferred.reject();
+              $location.path("/");
+              notificationFactory.warning("You don't have access to the settings of this project.");
+              break;
 
-            case "6.3.9":
-            deferred.reject();
-            $location.path("/");
-            notificationFactory.warning("You don't have access to the settings of this project.");
-            break;
-
-            default:
+              default:
+              deferred.reject();
+              $location.path("/");
+              notificationFactory.error();
+              break;
+            }
+          }
+          else {
             deferred.reject();
             $location.path("/");
             notificationFactory.error();
-            break;
           }
         }
-        else {
-          deferred.reject();
-          $location.path("/");
-          notificationFactory.error();
-        }
-      }
-    );
+      );
 
     return deferred.promise;
   };
@@ -242,49 +213,47 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
   var _taskAvailable = function() {
     var deferred = $q.defer();
 
-    if ($route.current.params.id == 0) {
+    if ($route.current.params.id == 0)
       deferred.resolve();
-      return deferred.promise;
-    }
+    else
+      $http.get($rootScope.api.url + "/task/" + $route.current.params.id, { headers: { "Authorization": $rootScope.user.token }}).then(
+        function taskAvailable(response) {
+          deferred.resolve();
+        },
+        function taskNotAvailable(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+              case "12.3.3":
+              deferred.reject();
+              $rootScope.reject();
+              break;
 
-    $http.get($rootScope.api.url + "/task/" + $route.current.params.id, { headers: { "Authorization": $rootScope.user.token }}).then(
-      function taskAvailable(response) {
-        deferred.resolve();
-      },
-      function taskNotAvailable(response) {
-        if (!angular.isUndefined(response.data.info.return_code)) {
-          switch(response.data.info.return_code) {
-            case "12.3.3":
-            deferred.reject();
-            $rootScope.reject();
-            break;
+              case "12.3.4":
+              deferred.reject();
+              $location.path("tasks");
+              notificationFactory.warning("Task not found.");
+              break;
 
-            case "12.3.4":
-            deferred.reject();
-            $location.path("tasks");
-            notificationFactory.warning("Task not found.");
-            break;
+              case "12.3.9":
+              deferred.reject();
+              $location.path("tasks");
+              notificationFactory.warning("You don't have access to this task.");
+              break;
 
-            case "12.3.9":
-            deferred.reject();
-            $location.path("tasks");
-            notificationFactory.warning("You don't have access to this task.");
-            break;
-
-            default:
+              default:
+              deferred.reject();
+              $location.path("tasks");
+              notificationFactory.error();
+              break;
+            }
+          }
+          else {
             deferred.reject();
             $location.path("tasks");
             notificationFactory.error();
-            break;
           }
         }
-        else {
-          deferred.reject();
-          $location.path("tasks");
-          notificationFactory.error();
-        }
-      }
-    );
+      );
 
     return deferred.promise;
   };
@@ -300,7 +269,7 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
 
     $http.get($rootScope.api.url + "/whiteboards/" + $route.current.params.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
       function whiteboardListSuccess(response) {
-        if (!angular.isUndefined(response.data.info.return_code)) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "1.10.1":
             var whiteboardList = (!angular.isUndefined(response.data.data.array) ? response.data.data.array : null);
@@ -340,7 +309,7 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
         }
       },
       function whiteboardListFail(response) {
-        if (!angular.isUndefined(response.data.info.return_code)) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "10.1.3":
             deferred.reject();
@@ -379,10 +348,6 @@ app.factory("accessFactory", ["$base64", "$cookies", "$http", "localStorageServi
   return {
     login: function() {
       return _login();
-    },
-    
-    logout: function() {
-      return _logout();
     },
 
     bugAvailable: function() {

@@ -26,17 +26,17 @@ app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope
   var userDataReceived = function(response) {
     $scope.view.loaded = true;
     $scope.view.valid = true;
-    $scope.user = (!angular.isUndefined(response.data.data) ? response.data.data : null);
+    $scope.user = (response && response.data && response.data.data ? response.data.data : null);
 
-    $scope.local.firstname = ($scope.user.firstname != "" ? $scope.user.firstname : "");
-    $scope.local.lastname = ($scope.user.lastname != "" ? $scope.user.lastname : "");
+    $scope.local.firstname = $scope.user.firstname;
+    $scope.local.lastname = $scope.user.lastname;
     $scope.local.birthday = ($scope.user.birthday != "" ? new Date($scope.user.birthday) : "");
-    $scope.local.email = ($scope.user.email != "" ? $scope.user.email : "");
-    $scope.local.phone = ($scope.user.phone != "" ? $scope.user.phone : "");
-    $scope.local.country = ($scope.user.country != "" ? $scope.user.country : "");
-    $scope.local.linkedin = ($scope.user.linkedin != "" ? $scope.user.linkedin : "");
-    $scope.local.viadeo = ($scope.user.viadeo != "" ? $scope.user.viadeo : "");
-    $scope.local.twitter = ($scope.user.twitter != "" ? $scope.user.twitter : "");
+    $scope.local.email = $scope.user.email;
+    $scope.local.phone = $scope.user.phone;
+    $scope.local.country = $scope.user.country;
+    $scope.local.linkedin = $scope.user.linkedin;
+    $scope.local.viadeo = $scope.user.viadeo;
+    $scope.local.twitter = $scope.user.twitter;
   };
 
   var userDataNotReceived = function(response) {
@@ -45,8 +45,8 @@ app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope
     $scope.user = null;
     $scope.local = null;
 
-    if (!angular.isUndefined(response.data.info.return_code) && response.data.info.return_code == "7.1.3")
-      $rootScope.onUserTokenError();
+    if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "7.1.3")
+      $rootScope.reject();
   };
 
   // Get current user's data
@@ -61,13 +61,13 @@ app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope
 
   var userDataUpdated = function() {
     $scope.disabled.update = false;
-    notificationFactory.success("Update success.");
+    notificationFactory.success("Profile updated.");
   };
 
   var userDataNotUpdated = function(response) {
     $scope.disabled.update = false;
-    if (!angular.isUndefined(response.data.info.return_code) && response.data.info.return_code == "7.1.3")
-      $rootScope.onUserTokenError();
+    if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "7.1.3")
+      $rootScope.reject();
     else {
       $scope.view.loaded = true;
       $scope.view.valid = false;
@@ -99,15 +99,15 @@ app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope
     $scope.password.current = "";
     $scope.password.new = "";
     $scope.password.confirmation = "";
-    notificationFactory.success("Password successfully changed.");
+    notificationFactory.success("Password changed.");
   };
 
   var userPasswordNotUpdated = function(response) {
     $scope.disabled.updatePassword = false;
-    if (!angular.isUndefined(response.data.info.return_code)) {
+    if (response && response.data && response.data.info && response.data.info.return_code) {
       switch (response.data.info.return_code) {
         case "7.1.3":
-        $rootScope.onUserTokenError();
+        $rootScope.reject();
         break;
 
         case "7.1.4":

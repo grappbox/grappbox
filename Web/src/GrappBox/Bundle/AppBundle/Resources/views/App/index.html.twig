@@ -117,6 +117,7 @@
     '@AppBundle/Resources/public/js/app/controllers/DashboardController.js'
     '@AppBundle/Resources/public/js/app/controllers/DashboardListController.js'
     '@AppBundle/Resources/public/js/app/controllers/GanttController.js'
+    '@AppBundle/Resources/public/js/app/controllers/LogoutController.js'
     '@AppBundle/Resources/public/js/app/controllers/NotificationController.js'
     '@AppBundle/Resources/public/js/app/controllers/ProfileController.js'
     '@AppBundle/Resources/public/js/app/controllers/ProjectSettingsController.js'
@@ -176,7 +177,7 @@
         <div class="sidebar-content">
           <ul>
             <li data-ng-if="project.set">
-              <a href="" title="Sign out of this project" data-ng-click="project.disconnect()" class="btn">
+              <a href="" title="Sign out of this project" data-ng-click="project.logout()" class="btn">
                 <i class="material-icons">arrow_back</i>Change project</a>
             </li>            
             <li>

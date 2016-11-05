@@ -43,7 +43,7 @@ class LoginController extends Controller
   private function onCriticalError()
   {
     $redirect = new RedirectResponse("/login");
-    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
     return $redirect;
@@ -74,18 +74,18 @@ class LoginController extends Controller
     if ($response["info"]["return_code"]) {
       switch ($response["info"]["return_code"]) {
         case "1.14.1":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_success"),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_success"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("TOKEN", base64_encode($response["data"]["token"]),
+        $redirect->headers->setCookie(new Cookie("G_TOKEN", base64_encode($response["data"]["token"]),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
-        $redirect->headers->setCookie(new Cookie("ID", base64_encode($response["data"]["id"]),
+        $redirect->headers->setCookie(new Cookie("G_ID", base64_encode($response["data"]["id"]),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         case "14.1.4":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
@@ -131,17 +131,17 @@ class LoginController extends Controller
         break;
 
         case "7.1.3":
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_denied"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        $redirect->headers->clearCookie("TOKEN");
-        $redirect->headers->clearCookie("ID");
+        $redirect->headers->clearCookie("G_TOKEN");
+        $redirect->headers->clearCookie("G_ID");
         break;
 
         default:
-        $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_critical"),
+        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_critical"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        $redirect->headers->clearCookie("TOKEN");
-        $redirect->headers->clearCookie("ID");
+        $redirect->headers->clearCookie("G_TOKEN");
+        $redirect->headers->clearCookie("G_ID");
         break;
       }
     }
@@ -161,8 +161,8 @@ class LoginController extends Controller
     $browscap = new Browscap();
     $browserData = $browscap->getBrowser();
 
-    if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
-      return $this->setLoginState(base64_decode($cookieData->get("TOKEN")));
+    if ($cookieData->has("G_TOKEN") && $cookieData->get("G_TOKEN"))
+      return $this->setLoginState(base64_decode($cookieData->get("G_TOKEN")));
 
     $form_options = array();
     $form = $this->createFormBuilder($form_options)

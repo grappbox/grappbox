@@ -18,14 +18,14 @@ app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService",
   $rootScope.api = { version: "", url: "" };
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
   $rootScope.page = { load: false, title: "" };
-  $rootScope.project = { set: false, id: "", name: "", disconnect : "" };
+  $rootScope.project = { set: false, id: "", name: "", logout: "" };
   $rootScope.sidebar = { open: true, toggle: "" };
 
   $rootScope.api.version = "0.3";
   $rootScope.api.url = "https://api.grappbox.com/" + $rootScope.api.version;
 
-  $rootScope.user.id = $base64.decode($cookies.get("ID"));
-  $rootScope.user.token = $base64.decode($cookies.get("TOKEN"));
+  $rootScope.user.id = $base64.decode($cookies.get("G_ID"));
+  $rootScope.user.token = $base64.decode($cookies.get("G_TOKEN"));
 
   $rootScope.path = {
     current: "/",
@@ -57,16 +57,10 @@ app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService",
 
   /* ==================== PROJECT SELECTION ==================== */
 
-  // Project change button handler
-  $rootScope.project.disconnect = function(error) {
-    $rootScope.project.id = null;
-    $rootScope.project.name = null;
-    $rootScope.project.set = false;
-    localStorageService.clearAll();
-    if (!error)
-      notificationFactory.clear();
-    $location.path("/");
-    $rootScope.path.current = "/";
+  // ROOTSCOPE routine
+  // Project logout handler
+  $rootScope.project.logout = function(error) {
+    rootFactory.logout(error);
   };
 
 
@@ -74,12 +68,9 @@ app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService",
   /* ==================== USER TOKEN ERROR ==================== */
 
   // ROOTSCOPE routine
-  // Clear cookies and redirect user to login (with error)
+  // Clear cookies and redirect to login (with error)
   $rootScope.reject = function() {
-    $cookies.put("LOGIN", $base64.encode("_denied"), { path: "/" });
-    $cookies.remove("TOKEN", { path: "/" });
-    $cookies.remove("ID", { path: "/" });
-    $window.location.href = "/login";
+    rootFactory.reject();
   };
 
 

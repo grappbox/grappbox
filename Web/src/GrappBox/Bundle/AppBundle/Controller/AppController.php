@@ -42,18 +42,18 @@ class AppController extends Controller
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
 
-    if ($cookieData->has("TOKEN") && $cookieData->get("TOKEN"))
+    if ($cookieData->has("G_TOKEN") && $cookieData->get("G_TOKEN"))
       return $this->render("AppBundle:App:index.html.twig");
 
     $redirect = new RedirectResponse("/login");
 
-    $redirect->headers->setCookie(new Cookie("LOGIN", base64_encode("_denied"),
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_denied"),
       $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-    $redirect->headers->setCookie(new Cookie("TOKEN", null,
+    $redirect->headers->setCookie(new Cookie("G_TOKEN", null,
       $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
-    $redirect->headers->setCookie(new Cookie("ID", null,
+    $redirect->headers->setCookie(new Cookie("G_ID", null,
       $cookies["time"], $cookies["base"], $cookies["domain"], $cookies["secure"], $cookies["httponly"]));
 
     return $redirect;

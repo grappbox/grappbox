@@ -77,8 +77,8 @@ app.controller("CloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     var deferred = "";
 
     deferred = $q.defer();
-    if (localStorageService.get("_SAFE")) {
-      $scope.safe.password = $base64.decode(localStorageService.get("_SAFE"));
+    if (localStorageService.get("cloud::safe")) {
+      $scope.safe.password = $base64.decode(localStorageService.get("cloud::safe"));
       deferred.resolve();
     }
     else {
@@ -98,7 +98,7 @@ app.controller("CloudController", ["$rootScope", "$scope", "$routeParams", "$htt
     if ($scope.safe.password) {
       if (!$scope.safe.isSet)
         Notification.info({ message: "\"Safe\" password saved for this session.", delay: 5000 });
-      localStorageService.set("_SAFE", $base64.encode($scope.safe.password));
+      localStorageService.set("cloud::safe", $base64.encode($scope.safe.password));
       $scope.safe.isSet = true;
     }
   };
@@ -106,7 +106,7 @@ app.controller("CloudController", ["$rootScope", "$scope", "$routeParams", "$htt
   // Routine definition
   // Remove "Safe" folder password from current session storage
   var resetSafePassword = function() {
-    localStorageService.remove("_SAFE");
+    localStorageService.remove("cloud::safe");
     $scope.safe.isSet = false;
   };
 

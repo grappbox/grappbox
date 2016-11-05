@@ -6,12 +6,43 @@
 
 // Factory definition
 // APP ROOTSCOPE checks
-app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService", "$location", "$rootScope",
-    function($base64, $cookies, $http, localStorageService, $location, $rootScope) {
+app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "$rootScope", "$window",
+    function($base64, $cookies, $http, localStorageService, $location, notificationFactory, $rootScope, $window) {
+
+  /* ==================== PROJECT LOGOUT ==================== */
+ 
+  // ROOTSCOPE routine definition 
+  // Project logout handler
+  var _logout = function(error) {
+    $rootScope.project.id = null;
+    $rootScope.project.name = null;
+    $rootScope.project.set = false;
+    localStorageService.clearAll();
+    notificationFactory.clear();
+    if (error)
+      notificationFactory.error();
+    $location.path("/");
+    $rootScope.path.current = "/";
+  };
+
+
+
+  /* ==================== REJECT ==================== */
+
+  // ROOTSCOPE routine definition
+  // Clear cookies and redirect to login (with error)
+  var _reject = function() {
+    $cookies.put("G_LOGIN", $base64.encode("_denied"), { path: "/" });
+    $cookies.remove("G_TOKEN", { path: "/" });
+    $cookies.remove("G_ID", { path: "/" });
+    $window.location.href = "/login";
+  };
+
+
 
   /* ==================== ROUTE CHANGE START ==================== */
 
-  // Routine definition (local)
+  // ROOTSCOPE routine definition (local)
   // Check if the request route is not a subsection of another one
   var _isRouteFrom = function(routeToTest, routeToLoad) {
     var isRouteKnown = false;
@@ -23,16 +54,46 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
     return isRouteKnown;
   };
 
-  // Routine definition
-  // On route change start (ROOTSCOPE)
+  // ROOTSCOPE routine definition
+  // On route change start
   var _routeChangeStart = function() {
-    if (!$cookies.get("LOGIN") || !$cookies.get("ID")) {
-      if ($cookies.get("TOKEN"))
+    $rootScope.page.load = true;
+
+    // Authentication cookies check
+    if (!$cookies.get("G_LOGIN") || !$cookies.get("G_ID")) {
+      if ($cookies.get("G_TOKEN"))
         $http.get($rootScope.api.url + "/account/logout", { headers: { "Authorization": $rootScope.user.token }});
       $rootScope.reject();
     }
-    $rootScope.page.current = "/";
-    $rootScope.page.load = true;
+
+    // Authentication token check
+    $http.get($rootScope.api.url + "/user", { headers: { "Authorization": $rootScope.user.token }}).then(
+      function onSuccess(response) {
+        if (!response || !response.data || !response.data.data)
+          $rootScope.reject();
+        $rootScope.user.firstname = response.data.data.firstname;
+        $rootScope.user.lastname = response.data.data.lastname;
+        $rootScope.user.email = response.data.data.email;
+      },
+      function onError(response) {
+        $rootScope.reject();
+      }
+    );
+
+    // Project selection check
+    if ($rootScope.project.set) {
+      if (!localStorageService.get("project.set") || !localStorageService.get("project.id") || !localStorageService.get("project.name"))
+        $rootScope.project.logout(true);
+    }
+    else {
+      if (localStorageService.get("project.set") && localStorageService.get("project.id") && localStorageService.get("project.name")) {
+        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
+        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
+        $rootScope.project.set = true;
+      }
+    } 
+
+    // Route settings
     angular.forEach($rootScope.path.routes, function(key, value) {
       if (value === $location.path() || _isRouteFrom(value, $location.path())) {
         $rootScope.path.routes[value] = true;
@@ -47,54 +108,23 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
 
   /* ==================== ROUTE CHANGE SUCCESS ==================== */
 
-  // Routine definition
-  // On route change success (ROOTSCOPE)
+  // ROOTSCOPE routine definition
+  // On route change success
   var _routeChangeSuccess = function(current) {
-    if (current.$$route)
-      $rootScope.page.title = current.$$route.title;    
-    $http.get($rootScope.api.url + "/user", { headers: { "Authorization": $rootScope.user.token }}).then(
-      function onSuccess(response) {
-        if (angular.isUndefined(response.data.data))
-          $rootScope.reject();
-        $rootScope.user.firstname = response.data.data.firstname;
-        $rootScope.user.lastname = response.data.data.lastname;
-        $rootScope.user.email = response.data.data.email;
-      },
-      function onError(response) {
-        $rootScope.reject();
-      }
-    );
-
-    if ($rootScope.project.set)
-      if (!localStorageService.get("HAS_PROJECT") || !localStorageService.get("PROJECT_ID") || !localStorageService.get("PROJECT_NAME")) {
-        $rootScope.project.disconnect(true);
-        notificationFactory.error();
-      }
-
-    if (!$rootScope.project.set)
-      if (localStorageService.get("HAS_PROJECT")) {
-        if (!localStorageService.get("PROJECT_ID") || !localStorageService.get("PROJECT_NAME")) {
-          $rootScope.project.disconnect(true);
-          notificationFactory.error();
-        }
-        else {
-          $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
-          $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
-          $rootScope.project.set = true;
-        }
-      }
-    
     $rootScope.page.load = false;
+    if (current.$$route)
+      $rootScope.page.title = current.$$route.title;
   };
 
 
 
   /* ==================== ROUTE CHANGE ERROR ==================== */
 
-  // Routine definition
-  // On route change error (ROOTSCOPE)
+  // ROOTSCOPE routine definition
+  // On route change error
   var _routeChangeError = function() {
     $rootScope.page.load = false;
+    notificationFactory.error();
   };
 
 
@@ -103,6 +133,14 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
 
   // Give access to built-in routines
   return {
+    logout: function(error) {
+      return _logout(error);
+    },
+
+    reject: function() {
+      return _reject();
+    },
+
     routeChangeStart: function() {
       return _routeChangeStart();
     },

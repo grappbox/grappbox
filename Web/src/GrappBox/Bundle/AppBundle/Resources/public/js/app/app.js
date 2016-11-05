@@ -64,7 +64,7 @@ app.config(["$httpProvider", function($httpProvider) {
 // Local storage settings
 app.config(["localStorageServiceProvider", function(localStorageServiceProvider) {
   localStorageServiceProvider
-    .setPrefix("_grappbox_")
+    .setPrefix("grappbox.")
     .setStorageCookie(30, "/")
     .setStorageType("localStorage")
     .setNotify(true, true);
