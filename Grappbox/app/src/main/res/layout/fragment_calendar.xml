@@ -13,6 +13,7 @@
             tools:context="com.grappbox.grappbox.project_fragments.CalendarFragment">
 
                 <CalendarView
+                    android:id="@+id/calendarview"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content" />
 

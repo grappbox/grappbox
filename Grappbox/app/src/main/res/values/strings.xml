@@ -225,4 +225,6 @@
 
     <string name="title_activity_new_event">Create event</string>
     <string name="participants_word">Participants</string>
+    <string name="change_participant">Change participant</string>
+    <string name="change_project">Change project</string>
 </resources>

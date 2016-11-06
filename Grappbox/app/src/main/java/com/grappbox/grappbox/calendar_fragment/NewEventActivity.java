@@ -22,7 +22,7 @@ public class NewEventActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setTheme(R.style.CalendarTheme);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.GrappPurple));
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.GrappBlue));
         }
         setContentView(R.layout.activity_new_event);
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
