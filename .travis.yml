@@ -5,8 +5,14 @@ env:
   global:
     - SYMFONY_ENV=prod
 sudo: required
-before_install: phpenv config-add myconfig.ini
+services:
+  - mysql
+before_script:
+  - composer self-update
+  - composer install --prefer-source --no-interaction --dev
+  - phpenv config-add myconfig.ini
 script:
+  - php -m
   - cd ./API
   - chmod +x composer.prod.sh
   - sudo ./composer.prod.sh
