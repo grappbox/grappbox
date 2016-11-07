@@ -24,9 +24,9 @@ public class CalendarProjectModel implements Parcelable {
     }
 
     public CalendarProjectModel(Cursor cursor) {
-        _localProjectId = cursor.getLong(cursor.getColumnIndex(GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID));
-        _grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID));
-        _projectName = cursor.getString(cursor.getColumnIndex(GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_NAME));
+        _localProjectId = cursor.getLong(cursor.getColumnIndex(GrappboxContract.ProjectEntry._ID));
+        _grappboxId = cursor.getString(cursor.getColumnIndex(GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID));
+        _projectName = cursor.getString(cursor.getColumnIndex(GrappboxContract.ProjectEntry.COLUMN_NAME));
     }
 
     public CalendarProjectModel(Parcel source) {

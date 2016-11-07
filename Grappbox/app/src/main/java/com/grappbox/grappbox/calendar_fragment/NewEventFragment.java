@@ -2,6 +2,7 @@ package com.grappbox.grappbox.calendar_fragment;
 
 import android.content.DialogInterface;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -42,12 +43,14 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
 
     private RecyclerView mParticipantsRecycler;
     private LinearLayout mChangeProject;
+    private LinearLayout mChangeParticipants;
     private TextView mProjectName;
     private CalendarListProjectAdapter mProjectAdapter;
 
     private List<CalendarProjectModel> mProjectList;
 
     private NewEventFragment mFragment = this;
+    private long mProjectSelected = -1;
 
     @Nullable
     @Override
@@ -57,6 +60,8 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         mChangeProject = (LinearLayout) v.findViewById(R.id.project_btn);
         mProjectName = (TextView) v.findViewById(R.id.event_project_name);
         mProjectAdapter = new CalendarListProjectAdapter(getActivity());
+        mProjectAdapter.setItem(null);
+        mProjectName.setText(mProjectAdapter.getItemAt(0)._projectName);
         mChangeProject.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,9 +73,18 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
                     public void onClick(DialogInterface dialog, int which) {
                         CalendarProjectModel model = mProjectAdapter.getItemAt(which);
                         mProjectName.setText(model._projectName);
+                        mProjectSelected = model._localProjectId;
+                        getLoaderManager().initLoader(LOAD_USERS, null, mFragment);
                     }
                 });
                 builder.show();
+            }
+        });
+        mChangeParticipants = (LinearLayout) v.findViewById(R.id.participant_btn);
+        mChangeParticipants.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         getLoaderManager().initLoader(LOAD_PROJECT, null, mFragment);
@@ -79,44 +93,55 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        Log.v(LOG_TAG, "onCreateLoader");
         String accountName = Session.getInstance(getContext()).getCurrentAccount().name;
+        String[] projection = null;
+        String selection = null;
+        String[] arguments = null;
+        String sort = null;
+        Uri uri = null;
         if (id == LOAD_PROJECT) {
-            CursorLoader cursor = new CursorLoader(getContext(),
-                    GrappboxContract.ProjectEntry.buildWithoint(),
-                    new String[]{GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID,
-                            GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID,
-                            GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_NAME},
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL + "=?",
-                    new String[]{String.valueOf(accountName)},
-                    null);
-            return cursor;
+            uri = GrappboxContract.ProjectEntry.buildWithoint();
+            projection = new String[]{GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID,
+                    GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID,
+                    GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_NAME};
+            selection = GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL + "=?";
+            arguments = new String[]{String.valueOf(accountName)};
         } else if (id == LOAD_USERS){
-            CursorLoader cursor = new CursorLoader(getContext(),
-                    GrappboxContract.UserEntry.buildUserWithProject(),
-                    new String[]{GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID,
-                            GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID,
-                            GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
-                            GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME},
-                    GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL + "=?",
-                    new String[]{String.valueOf(accountName)},
-                    null);
-            return cursor;
+            if (mProjectSelected != -1) {
+                uri = GrappboxContract.UserEntry.buildUserWithProject();
+                projection = new String[]{GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_DATE_BIRTHDAY_UTC,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_URI_AVATAR,
+                        GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_CONTACT_EMAIL};
+                selection = GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry._ID + "=?";
+                arguments = new String[]{String.valueOf(mProjectSelected)};
+            } else {
+                return null;
+            }
         }
-        return null;
+        return new CursorLoader(getContext(), uri, projection, selection, arguments, sort);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        if (data == null || !data.moveToFirst())
+            return;
         if (loader.getId() == LOAD_PROJECT) {
-            if (data != null && data.moveToFirst())
-            {
-                List<CalendarProjectModel> project = new ArrayList<>();
-                do {
-                    project.add(new CalendarProjectModel(data));
-                    Log.v(LOG_TAG, data.getString(data.getColumnIndex(GrappboxContract.ProjectEntry.TABLE_NAME + "." + GrappboxContract.ProjectEntry.COLUMN_NAME)));
-                } while (data.moveToNext());
-                mProjectAdapter.setItem(project);
-            }
+            List<CalendarProjectModel> project = new ArrayList<>();
+            do {
+                project.add(new CalendarProjectModel(data));
+            } while (data.moveToNext());
+            mProjectAdapter.setItem(project);
+        } else if (loader.getId() == LOAD_USERS) {
+            do {
+                for (int i = 0; i < data.getColumnCount(); ++i){
+                    Log.v(LOG_TAG, "data column name :" + data.getColumnName(i));
+                }
+            } while (data.moveToNext());
         }
     }
 

@@ -10,7 +10,6 @@ import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.model.CalendarProjectModel;
-import com.grappbox.grappbox.model.TimelineModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,8 +39,10 @@ public class CalendarListProjectAdapter extends RecyclerView.Adapter<RecyclerVie
         notifyDataSetChanged();
         mDataSet.add(new CalendarProjectModel());
         notifyDataSetChanged();
-        mDataSet.addAll(items);
-        notifyDataSetChanged();
+        if (items != null) {
+            mDataSet.addAll(items);
+            notifyDataSetChanged();
+        }
     }
 
     private RecyclerView.ViewHolder createCalendarProjectEntryHolder(ViewGroup parent) {
