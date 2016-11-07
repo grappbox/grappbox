@@ -1,76 +1,76 @@
-﻿/* Just a little enhancement on browser debug pointer */
+/* Just a little enhancement on browser debug pointer */
 body {
-    cursor: url('http://ionicframework.com/img/finger.png'), auto;
+  cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
 /* Text areas auto adapting screen */
 textarea {
-    width: 100%;
-    height: auto;
-    border: 1px solid #EEEEEE;
+  width: 100%;
+  height: auto;
+  border: 1px solid #EEEEEE;
 }
 
 /* icons in item dividers */
 .item-divider i {
-    position: absolute;
-    right: 10px;
+  position: absolute;
+  right: 10px;
 }
 
 /*
 ** Stylizing action sheets on Android
 */
 .platform-android .action-sheet-backdrop.active {
-    background-color: rgba(0, 0, 0, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
 }
 
 .platform-android .action-sheet {
-    align-content: center;
-    margin: auto;
-    max-width: 96vw;
-    border-radius: 5px;
-    /*margin: 0;*/
-    margin-bottom: 10px;
+  align-content: center;
+  margin: auto;
+  max-width: 96vw;
+  border-radius: 5px;
+  /*margin: 0;*/
+  margin-bottom: 10px;
 }
 
-    .platform-android .action-sheet .action-sheet-title, .platform-android .action-sheet .button {
-        text-align: left;
-        /*border-color: #e2e2e2;*/
-        font-size: 16px;
-        color: inherit;
-    }
+.platform-android .action-sheet .action-sheet-title, .platform-android .action-sheet .button {
+  text-align: left;
+  /*border-color: #e2e2e2;*/
+  font-size: 16px;
+  color: inherit;
+}
 
-    .platform-android .action-sheet .action-sheet-title {
-        font-size: 14px;
-        padding: 16px;
-        color: #666;
-    }
+.platform-android .action-sheet .action-sheet-title {
+  font-size: 14px;
+  padding: 16px;
+  color: #666;
+}
 
-    .platform-android .action-sheet .button {
-        border-color: #e2e2e2;
-        padding-left: 16px;
-        color: #104e89;
-    }
+.platform-android .action-sheet .button {
+  border-color: #e2e2e2;
+  padding-left: 16px;
+  color: #104e89;
+}
 
-        .platform-android .action-sheet .button.destructive {
-            color: red;
-        }
+.platform-android .action-sheet .button.destructive {
+  color: red;
+}
 
-        .platform-android .action-sheet .button.active, .platform-android .action-sheet .button.activated {
-            background: #e8e8e8;
-        }
+.platform-android .action-sheet .button.active, .platform-android .action-sheet .button.activated {
+  background: #e8e8e8;
+}
 
 .platform-android .action-sheet-group {
-    /*margin: 0;*/
-    border-radius: 0;
-    background-color: #fafafa;
+  /*margin: 0;*/
+  border-radius: 0;
+  background-color: #fafafa;
 }
 
 .platform-android .action-sheet-cancel {
-    display: none;
+  display: none;
 }
 
 .platform-android .action-sheet-has-icons .button {
-    padding-left: 56px;
+  padding-left: 56px;
 }
 
 /* Make the blue background in disabled text area white */
@@ -80,17 +80,17 @@ textarea[disabled],
 input[readonly]:not(.cloned-text-input),
 textarea[readonly]:not(.cloned-text-input),
 select[readonly] {
-    background-color: white;
+  background-color: white;
 }
 
 /* Put a black border around canvas in whiteboard */
 canvas {
-    border: solid black 1px;
+  border: solid black 1px;
 }
 
 /* Fit the height of the popover with content */
 ion-popover-view {
-    height: auto;
+  height: auto;
 }
 
 /*
@@ -99,86 +99,147 @@ ion-popover-view {
 
 /* Nav bars, see app.js $rootScope */
 .nav-bar-block, .bar-header { /* , .bar */
-    background-color: inherit !important;
+  background-color: inherit !important;
 }
 
 /* Tab text container and container of this container */
 .tabs, .gb-tab {
-    background-color: #BDBDBD !important;
+  background-color: #BDBDBD !important;
 }
 
 /* Active tab */
 .tab-item.tab-item-active, .tab-item.active, .tab-item.activated {
-    opacity: 1 !important;
-    border-top-color: #FC575E !important;
+  opacity: 1 !important;
+  border-top-color: #FC575E !important;
 }
 
 /* Text in tabs */
 .tab-title {
-    color: white;
+  color: white;
 }
 
 .tab-item.tab-item-active .tab-title, .tab-item.active .tab-title, .tab-item.activated .tab-title {
-    color: #FC575E !important;
+  color: #FC575E !important;
 }
 
 /* Buttons */
 .button-positive {
-    background-color: #FC575E !important;
-    border-color: white !important;
+  background-color: #FC575E !important;
+  border-color: white !important;
 }
 
 .button-positive.button:active, .button-positive.button.active {
-    box-shadow: none !important;
-    opacity: 0.8 !important;
+  box-shadow: none !important;
+  opacity: 0.8 !important;
 }
 
 /*.button-icon.button:active, .button-icon.button.active {
-    border-color: transparent !important;
-    background: none !important;
-    box-shadow: none !important;
-    opacity: 0.3 !important;
+border-color: transparent !important;
+background: none !important;
+box-shadow: none !important;
+opacity: 0.3 !important;
 }*/
 
 /* Default red buttons to make them same "size" as button-positive */
 .button-assertive {
-    border-color: white !important;
+  border-color: white !important;
 }
 
 /* Button tags */
 .gb-button-tag {
-    margin-left: 1px !important;
-    margin-right: 1px !important;
+  margin-left: 1px !important;
+  margin-right: 1px !important;
 }
 
 .progressLabel {
-    position: relative;
-    top: -1.5em;
-    margin-left: 50%;
+  position: relative;
+  top: -1.5em;
+  margin-left: 50%;
 }
 
 /*
 **  Calendar
 */
 
-.odd-cell {
-    background-color: pink !important;
+/*.odd-cell {
+  background-color: pink !important;
 }
 
 .cal-year-box [class*=span] {
-    min-height: 60px !important;
+  min-height: 60px !important;
 }
 
-    .cal-year-box [class*=span]:nth-child(1), .cal-year-box [class*=span]:nth-child(2) {
-        border-bottom: none !important;
-    }
+.cal-year-box [class*=span]:nth-child(1), .cal-year-box [class*=span]:nth-child(2) {
+  border-bottom: none !important;
+}*/
+
+/* display dots near events */
+.event-block {
+  /*display: inline-block !important;*/
+  display: none !important;
+}
+
+.event {
+  vertical-align: top !important;
+  display: none !important;
+  /*display: inline-block !important;*/
+}
+
+/* calendar background and no shadow in events cells */
+.cal-slide-content {
+  background-color: #44BBFF;
+  box-shadow: none;
+}
+
+/* no underline on links in events cells */
+.cal-slide-content a.event-item {
+  text-decoration: none;
+}
+
+/* little badge number of events */
+.badge-important {
+  background-color: #44BBFF;
+}
+
+.badge {
+  /*display: none;*/
+  color: white;
+}
+
+/* center the badge */
+.cal-month-day .cal-events-num {
+  margin-left: 13px;
+  margin-top: 5px;
+}
+
+/* set month cell height */
+.cal-month-day {
+  height: 65px;
+}
+
+/* center month numbers */
+span[data-cal-date] {
+  position: relative;
+  top: 5px;
+  left: 14px;
+}
+
+/* display better month height cells */
+.cal-month-box [class*=cal-cell], .cal-year-box [class*=span] {
+  min-height: 65px;
+}
+
+/* remove bugging white bar over event cell */
+.cal-day-tick {
+  border: none;
+}
 
 /*.col-md-3 {
-    width: 30% !important;
-    padding-left: 0px;
-    padding-right: 0px;
+width: 30% !important;
+padding-left: 0px;
+padding-right: 0px;
 }
 
 .col-xs-6 {
-    width: 50% !important;
+width: 50% !important;
 }*/

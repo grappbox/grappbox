@@ -25,7 +25,7 @@ angular.module('GrappBox.controllers')
     ** TO REMOVE FOR PROD
     */
     $scope.user.email = "pierre.hofman@epitech.eu";
-    $scope.user.password = "tan_p";
+    $scope.user.password = "tan_f";
     $scope.device.model = "HTC_One_M8";
     $scope.device.platform = "ios";
     $scope.device.uuid = "424242";

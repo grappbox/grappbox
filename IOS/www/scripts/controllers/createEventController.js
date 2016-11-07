@@ -11,6 +11,14 @@ angular.module('GrappBox.controllers')
     });
 
     $scope.event = {};
+    $scope.selectedUsers = [];
+    $scope.startTime = new Date();
+    $scope.endTime = new Date();
+
+    //Assign user list manually to scope because it seems that Ionic bug with ng-model and <select>
+    $scope.updateUserList = function (selectedUsers) {
+      $scope.selectedUsers = selectedUsers;
+    }
 
     /*
     ** Create event
@@ -22,14 +30,15 @@ angular.module('GrappBox.controllers')
             data: {
                 projectId: $stateParams.projectId,
                 title: $scope.event.title,
-                begin: "2016-10-13 12:00:00",
-                end: "2016-10-13 13:00:00",
+                begin: $scope.startTime,
+                end: $scope.endTime,
                 description: $scope.event.description,
-                users: [14]
+                users: $scope.selectedUsers
             }
         }).$promise
             .then(function (data) {
                 console.log('Create event successful !');
+                console.log(data);
                 Toast.show("Event created");
                 $ionicHistory.clearCache().then(function () {
                     $state.go('app.calendar', { projectId: $stateParams.projectId });

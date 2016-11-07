@@ -90,6 +90,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
     //Calendar
     calendarConfig.dateFormatter = "moment";
     calendarConfig.allDateFormats.moment.date.hour = "HH:mm";
+    calendarConfig.allDateFormats.moment.date.weekDay = "ddd";
     calendarConfig.allDateFormats.moment.title.day = "ddd D MMM";
     calendarConfig.displayAllMonthEvents = true;
     calendarConfig.displayEventEndTimes = true;
