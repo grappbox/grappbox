@@ -94,6 +94,10 @@
         <item name="colorAccent">@color/GrappBlue</item>
     </style>
 
+    <style name="CaledarDialogOverride" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/GrappBlue</item>
+    </style>
+
     <style name="CloudTheme" parent="BaseTheme">
         <item name="colorPrimary">@color/GrappYellow</item>
         <item name="colorAccent">@color/GrappYellow</item>
