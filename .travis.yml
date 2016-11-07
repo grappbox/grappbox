@@ -5,7 +5,8 @@ sudo: required
 services:
   - mysql
 before_script:
-  - sudo apt-get install php7-mongo
+  - sudo apt-get install php-pear
+  - sudo pecl install mongodb
   - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer selfupdate
   - cd API
