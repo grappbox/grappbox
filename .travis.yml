@@ -1,13 +1,14 @@
 language: php
 php:
   - '7.0'
-env:
-  global:
-    - SYMFONY_ENV=prod
 sudo: required
 services:
   - mysql
-before_install: echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+before_script:
+    - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini"
+    - composer selfupdate
+    - cd API
+    - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 script:
   - cd ./API
   - chmod +x composer.prod.sh
