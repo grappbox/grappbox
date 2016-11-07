@@ -7,9 +7,7 @@ env:
 sudo: required
 services:
   - mysql
-before_script:
-  - composer self-update
-  - phpenv config-add myconfig.ini
+before_install: echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 script:
   - cd ./API
   - chmod +x composer.prod.sh
