@@ -315,6 +315,7 @@
     <string name="no_access">No access</string>
     <string name="read_only">Read Only</string>
     <string name="read_write">Read / Write</string>
+    <string name="delete_word">Delete</string>
     <string-array name="access_types">
         <item>@string/no_access</item>
         <item>@string/read_only</item>

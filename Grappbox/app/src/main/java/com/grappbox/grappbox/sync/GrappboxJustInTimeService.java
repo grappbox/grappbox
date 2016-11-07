@@ -116,6 +116,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_ADD_CUSTOMER_ACCESS = "com.grappbox.grappbox.sync.ACTION_ADD_CUSTOMER_ACCESS";
     public static final String ACTION_CREATE_ROLE = "com.grappbox.grappbox.sync.ACTION_CREATE_ROLE";
     public static final String ACTION_UPDATE_ROLE = "com.grappbox.grappbox.sync.ACTION_UPDATE_ROLE";
+    public static final String ACTION_DELETE_ROLE = "com.grappbox.grappbox.sync.ACTION_DELETE_ROLE";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -160,7 +161,6 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final int NOTIF_CLOUD_FILE_UPLOAD = 2000;
 
     public static final int CLOUD_DATA_BYTE_READ = 5242880; //Thanks to a quick and simple calculation, this is the good number to upload in a chunk
-
 
 
     public GrappboxJustInTimeService() {
@@ -276,6 +276,56 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleAddCustomerAccess(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_NAME), responseObserver);
             } else if (ACTION_CREATE_ROLE.equals(action) || ACTION_UPDATE_ROLE.equals(action)){
                 handleRole(intent.getBundleExtra(EXTRA_BUNDLE), intent.hasCategory(CATEGORY_NEW), responseObserver);
+            } else if (ACTION_DELETE_ROLE.equals(action)){
+                handleDeleteRole(intent.getLongExtra(EXTRA_ROLE_ID, -1), responseObserver);
+            }
+        }
+    }
+
+    private void handleDeleteRole(long roleId, ResultReceiver responseObserver) {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor role = null;
+
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            role = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID}, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID+"=?", new String[]{String.valueOf(roleId)}, null);
+            if (role == null || !role.moveToFirst())
+                throw new OperationApplicationException();
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/role/"+role.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()){
+                if (responseObserver != null)
+                {
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, "0.0.9"));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            }
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)){
+                if (responseObserver != null){
+                    Bundle answer = new Bundle();
+                    answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                    responseObserver.send(Activity.RESULT_CANCELED, answer);
+                }
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            }
+            getContentResolver().delete(GrappboxContract.RolesEntry.CONTENT_URI, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID +"=?", new String[]{String.valueOf(roleId)});
+        } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (null != role) {
+                role.close();
             }
         }
     }
@@ -292,10 +342,10 @@ public class GrappboxJustInTimeService extends IntentService {
             if (isNew)
                 project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry.COLUMN_GRAPPBOX_ID }, ProjectEntry._ID + "=?", new String[]{String.valueOf(args.getLong("_id"))}, null);
             else
-                project = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{ GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID }, GrappboxContract.RolesEntry._ID + "=?", new String[]{String.valueOf(args.getLong("_id"))}, null);
+                project = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID }, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID + "=?", new String[]{String.valueOf(args.getLong("_id"))}, null);
             if (project == null || !project.moveToFirst())
                 throw new OperationApplicationException();
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/role" + (!isNew ? "/" + project.getString(0) : ""));
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/role" + (!isNew ? "/" + project.getString(0) : ""));
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod(isNew ? "POST" : "PUT");
@@ -307,9 +357,15 @@ public class GrappboxJustInTimeService extends IntentService {
             for (String key : args.keySet()) {
                 if (key.startsWith("_"))
                     continue;
-                data.put(key, args.getString(key));
+                if (key.equals("name"))
+                    data.put(key, args.getString(key));
+                else
+                    data.put(key, args.getInt(key));
             }
             json.put("data", data);
+            Log.d(LOG_TAG, apiToken);
+            Log.d(LOG_TAG, url.toString());
+            Log.d(LOG_TAG, json.toString());
             Utils.JSON.sendJsonOverConnection(connection, json);
             connection.connect();
             returnedJson = Utils.JSON.readDataFromConnection(connection);
@@ -333,7 +389,7 @@ public class GrappboxJustInTimeService extends IntentService {
             }
             JSONObject currentRole = json.getJSONObject("data");
             ContentValues roleValue = new ContentValues();
-            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry._ID }, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{json.getString("projectId")}, null);
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ ProjectEntry._ID }, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentRole.getString("projectId")}, null);
             if (project == null || !project.moveToFirst())
                 throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
             roleValue.put(GrappboxContract.RolesEntry.COLUMN_GRAPPBOX_ID, currentRole.getString("roleId"));

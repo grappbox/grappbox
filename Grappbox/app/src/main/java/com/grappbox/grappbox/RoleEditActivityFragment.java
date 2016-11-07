@@ -194,4 +194,12 @@ public class RoleEditActivityFragment extends Fragment implements View.OnClickLi
         save.putExtra(GrappboxJustInTimeService.EXTRA_BUNDLE, args);
         getActivity().startService(save);
     }
+
+    @Override
+    public void onDelete() {
+        Intent delete = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        delete.setAction(GrappboxJustInTimeService.ACTION_DELETE_ROLE);
+        delete.putExtra(GrappboxJustInTimeService.EXTRA_ROLE_ID, model._id);
+        getActivity().startService(delete);
+    }
 }

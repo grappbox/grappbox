@@ -35,6 +35,7 @@ public class RoleEditActivity extends AppCompatActivity {
 
     public interface SaveCallback{
         void onSave();
+        void onDelete();
     }
 
     public void registerSaveCallback(SaveCallback callback){
@@ -64,7 +65,12 @@ public class RoleEditActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.bug_new_menu, menu);
+        if (getIntent().getAction().equals(ACTION_NEW)){
+            getMenuInflater().inflate(R.menu.bug_new_menu, menu);
+        } else {
+            getMenuInflater().inflate(R.menu.role_edit_menu, menu);
+        }
+
         return true;
     }
 
@@ -76,6 +82,14 @@ public class RoleEditActivity extends AppCompatActivity {
                     return false;
                 for (SaveCallback saveCallback : mSaveCallback) {
                     saveCallback.onSave();
+                }
+                onBackPressed();
+                return true;
+            case R.id.action_delete:
+                if (mSaveCallback == null)
+                    return false;
+                for (SaveCallback saveCallback : mSaveCallback){
+                    saveCallback.onDelete();
                 }
                 onBackPressed();
                 return true;
