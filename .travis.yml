@@ -5,10 +5,11 @@ sudo: required
 services:
   - mysql
 before_script:
-    - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-    - composer selfupdate
-    - cd API
-    - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
+  - sudo apt-get install php7-mongo
+  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+  - composer selfupdate
+  - cd API
+  - composer update --prefer-dist --no-interaction $COMPOSER_FLAGS
 script:
   - cd ./API
   - chmod +x composer.prod.sh
