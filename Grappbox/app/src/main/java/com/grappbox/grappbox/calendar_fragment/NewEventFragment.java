@@ -2,6 +2,7 @@ package com.grappbox.grappbox.calendar_fragment;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
@@ -24,9 +26,12 @@ import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.CalendarListProjectAdapter;
 import com.grappbox.grappbox.adapter.CalendarParticipantAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.model.CalendarProjectModel;
 import com.grappbox.grappbox.model.UserModel;
+import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import org.w3c.dom.Text;
 
@@ -37,7 +42,7 @@ import java.util.List;
  * Created by tan_f on 04/11/2016.
  */
 
-public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>{
+public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CalendarEventReceiver.Callback{
 
     private static final String LOG_TAG = NewEventFragment.class.getSimpleName();
 
@@ -55,6 +60,14 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     private NewEventFragment mFragment = this;
     private long mProjectSelected = -1;
 
+    public NewEventFragment() {
+    }
+
+    @Override
+    public void onDataReceived(CalendarEventModel model) {
+
+    }
+
     @Nullable
     @Override
     public View onCreateView(final LayoutInflater inflater, @Nullable final ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -69,11 +82,19 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         mParticipantsRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         mParticipantsRecycler.setAdapter(mParticipantAdapter);
 
+        if (getActivity() instanceof NewEventActivity) {
+            ((NewEventActivity) getActivity()).registerActivityActionCallback(this);
+        }
         v.findViewById(R.id.project_btn).setOnClickListener(new OnChangeProject(getActivity()));
         v.findViewById(R.id.participant_btn).setOnClickListener(new OnChangeParticipant(getActivity()));
 
-        getLoaderManager().initLoader(LOAD_PROJECT, null, mFragment);
         return v;
+    }
+
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        getActivity().getSupportLoaderManager().initLoader(LOAD_PROJECT, null, mFragment);
     }
 
     @Override

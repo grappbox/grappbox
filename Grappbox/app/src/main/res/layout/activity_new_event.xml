@@ -89,6 +89,40 @@
 
                 </LinearLayout>
 
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/event_begin_label"
+                    android:padding="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:background="@drawable/bg_bottom_border"/>
+
+                <TextView
+                    android:id="@+id/event_begin"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="yyyy-MM-dd hh-mm-ss"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/event_end_label"
+                    android:padding="10dp"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:background="@drawable/bg_bottom_border"/>
+
+                <TextView
+                    android:id="@+id/event_end"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="yyyy-MM-dd hh-mm-ss"
+                    android:padding="10dp"
+                    android:clickable="true"
+                    android:focusable="true"/>
+
                 <fragment android:name="com.grappbox.grappbox.calendar_fragment.NewEventFragment" android:layout_height="wrap_content" android:layout_width="match_parent"
                     tools:layout="@layout/fragment_new_event"
                     android:id="@+id/fragment2" />

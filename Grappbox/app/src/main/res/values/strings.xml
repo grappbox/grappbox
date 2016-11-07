@@ -228,4 +228,6 @@
     <string name="set_participants">Event participants</string>
     <string name="change_participant">Change participant</string>
     <string name="change_project">Change project</string>
+    <string name="event_begin_label">Event begin</string>
+    <string name="event_end_label">Event end</string>
 </resources>
