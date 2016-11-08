@@ -1,13 +1,12 @@
 language: php
 php:
-  - 7.0
+  - 5.6
 sudo: required
 services:
   - mysql
 before_install:
-  - pecl install --force mongodb
+  - pecl install --force mongo
 before_script:
-  - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - cd API
