@@ -6,8 +6,8 @@ services:
   - mysql
 before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
-  - composer self-update
   - cd API
-  - composer -n --no-ansi install --prefer-source
+  - php composer.phar self-update
+  - php composer.phar -n --no-ansi install --prefer-source
 script:
   - php app/check.php
