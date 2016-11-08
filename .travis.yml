@@ -10,4 +10,4 @@ before_script:
   - php composer.phar self-update
   - php composer.phar -n --no-ansi install --prefer-source
 script:
-  - php app/check.php
+  - sudo ./composer.prod.sh
