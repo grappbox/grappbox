@@ -1,109 +1,109 @@
 SQLBundle\Entity\User:
-    type: entity
-    table: users
+  type: entity
+  table: users
+  id:
     id:
-        id:
-            type: integer
-            id: true
-            generator:
-                strategy: AUTO
-    fields:
-        firstname:
-            type: string
-            length: 255
-        lastname:
-            type: string
-            length: 255
-        birthday:
-            type: date
-            nullable: TRUE
-        avatar:
-            type: text
-            nullable: TRUE
-        avatarDate:
-            type: date
-            nullable: TRUE
-        password:
-            type: string
-            length: 255
-        email:
-            type: string
-            length: 255
-            unique: TRUE
-        phone:
-            type: string
-            length: 255
-            nullable: TRUE
-        country:
-            type: string
-            length: 255
-            nullable: TRUE
-        linkedin:
-            type: string
-            length: 255
-            nullable: TRUE
-        viadeo:
-            type: string
-            length: 255
-            nullable: TRUE
-        twitter:
-            type: string
-            length: 255
-            nullable: TRUE
-        isClient:
-            type: boolean
-            column: is_client
-    manyToMany:
-        projects:
-          targetEntity: Project
-          mappedBy: users
-        events:
-          targetEntity: Event
-          mappedBy: users
-    oneToMany:
-        bug_creator:
-          targetEntity: Bug
-          mappedBy: creator
-        message_creator:
-          targetEntity: TimelineMessage
-          mappedBy: creator
-        event_creator:
-          targetEntity: Event
-          mappedBy: creator_user
-        project_creator:
-          targetEntity: Project
-          mappedBy: creator_user
-        whiteboard_creator:
-          targetEntity: Whiteboard
-          mappedBy: creator_user
-        whiteboard_updator:
-          targetEntity: Whiteboard
-          mappedBy: updator_user
-        whiteboard_user:
-          targetEntity: WhiteboardPerson
-          mappedBy: user
-        gantt_updator:
-          targetEntity: Gantt
-          mappedBy: updator_id
-        notifications:
-          targetEntity: Notification
-          mappedBy: user
-          cascade: [remove]
-        devices:
-          targetEntity: Devices
-          mappedBy: user
-          cascade: [remove]
-        task_creator:
-          targetEntity: Task
-          mappedBy: creator_user
-        colors:
-          targetEntity: Color
-          mappedBy: user
-          cascade: [remove]
-        ressources:
-          targetEntity: Ressources
-          mappedBy: user
-        authentications:
-          targetEntity: Authentication
-          mappedBy: user
-    lifecycleCallbacks: {  }
+      type: integer
+      id: true
+      generator:
+        strategy: AUTO
+  fields:
+    firstname:
+      type: string
+      length: 255
+    lastname:
+      type: string
+      length: 255
+    birthday:
+      type: date
+      nullable: TRUE
+    avatar:
+      type: text
+      nullable: TRUE
+    avatarDate:
+      type: date
+      nullable: TRUE
+    password:
+      type: string
+      length: 255
+    email:
+      type: string
+      length: 255
+      unique: TRUE
+    phone:
+      type: string
+      length: 255
+      nullable: TRUE
+    country:
+      type: string
+      length: 255
+      nullable: TRUE
+    linkedin:
+      type: string
+      length: 255
+      nullable: TRUE
+    viadeo:
+      type: string
+      length: 255
+      nullable: TRUE
+    twitter:
+      type: string
+      length: 255
+      nullable: TRUE
+    isClient:
+      type: boolean
+      column: is_client
+  manyToMany:
+    projects:
+      targetEntity: Project
+      mappedBy: users
+    events:
+      targetEntity: Event
+      mappedBy: users
+  oneToMany:
+    bug_creator:
+      targetEntity: Bug
+      mappedBy: creator
+    message_creator:
+      targetEntity: TimelineMessage
+      mappedBy: creator
+    event_creator:
+      targetEntity: Event
+      mappedBy: creator_user
+    project_creator:
+      targetEntity: Project
+      mappedBy: creator_user
+    whiteboard_creator:
+      targetEntity: Whiteboard
+      mappedBy: creator_user
+    whiteboard_updator:
+      targetEntity: Whiteboard
+      mappedBy: updator_user
+    whiteboard_user:
+      targetEntity: WhiteboardPerson
+      mappedBy: user
+    gantt_updator:
+      targetEntity: Gantt
+      mappedBy: updator_id
+    notifications:
+      targetEntity: Notification
+      mappedBy: user
+      cascade: [remove]
+    devices:
+      targetEntity: Devices
+      mappedBy: user
+      cascade: [remove]
+    task_creator:
+      targetEntity: Task
+      mappedBy: creator_user
+    colors:
+      targetEntity: Color
+      mappedBy: user
+      cascade: [remove]
+    ressources:
+      targetEntity: Ressources
+      mappedBy: user
+    authentications:
+      targetEntity: Authentication
+      mappedBy: user
+  lifecycleCallbacks: {  }
