@@ -13,7 +13,7 @@ class AccountAdministrationControllerTest extends WebTestCase
 
         $crawler = $client->request(
         	'POST',
-        	'http://127.0.0.1:8000/app_dev.php/account/register',
+        	'/account/register',
         	array(),
         	array(),
         	array('CONTENT_TYPE' => 'application/json'),
