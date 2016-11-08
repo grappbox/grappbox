@@ -9,7 +9,8 @@ before_install:
 before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
-script:
   - cd API
   - chmod +x composer.prod.sh
   - sudo ./composer.prod.sh
+script:
+  - php -m
