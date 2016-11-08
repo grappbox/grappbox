@@ -469,7 +469,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Save</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-cloud',
                   onTap: function (e) {
                       if (!$scope.fileDeletePassword.pass) {
                           // Don't allow the user to close unless he enters file password
@@ -503,7 +503,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Save</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-cloud',
                   onTap: function (e) {
                       $scope.UploadFile(fileUpload);
                   }
@@ -526,7 +526,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Create</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-cloud',
                   onTap: function (e) {
                       if (!$scope.dir.dirName)
                           e.preventDefault();
@@ -547,7 +547,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Save</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-cloud',
                   onTap: function (e) {
                       if (!$scope.filePassword.pass) {
                           // Don't allow the user to close unless he enters file password
@@ -581,7 +581,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Save</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-cloud',
                   onTap: function (e) {
                       if (!$scope.safePassword.pass) {
                           // Don't allow the user to close unless he enters safe password

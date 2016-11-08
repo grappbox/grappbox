@@ -17,13 +17,11 @@
 
                     <!-- Create & Tags buttons -->
                     <div class="button-bar">
-                        <a class="button button-block button-positive"
+                        <a class="button button-clear gb-color-bugtracker icon ion-plus"
                            ui-sref="app.createTicket({projectId: projectId})">
-                            Create
                         </a>
-                        <a class="button button-block button-positive"
+                        <a class="button button-clear gb-color-bugtracker icon ion-ios-pricetag"
                            ui-sref="app.tags({projectId: projectId})">
-                            Tags
                         </a>
                     </div>
 
@@ -41,14 +39,20 @@
                             </p>
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
-                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
+                            <!-- Tags on ticket -->
+                            <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+                            <!-- Users on ticket -->
+                            <i ng-if="ticket.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />-->
+
                         </ion-item>
                     </ion-list>
                     <!-- Button "More" open tickets -->
-                    <button class="button button-block button-positive"
-                            ng-click="GetLastOpenTickets(true)">
-                        More
-                    </button>
+                    <div class="text-center">
+                      <button class="button button-clear gb-color-bugtracker"
+                      ng-click="GetLastOpenTickets(true)">
+                      MORE
+                      </button>
+                    </div>
                 </ion-content>
             </ion-pane>
 
@@ -78,15 +82,21 @@
                             </p>
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
-                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
+                            <!-- Tags on ticket -->
+                            <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+                            <!-- Users on ticket -->
+                            <i ng-if="ticket.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />-->
+
                         </ion-item>
                     </ion-list>
 
                     <!-- Button "More" closed tickets -->
-                    <button class="button button-block button-positive"
-                            ng-click="GetLastClosedTickets(true)">
-                        More
-                    </button>
+                    <div class="text-center">
+                      <button class="button button-clear gb-color-bugtracker"
+                              ng-click="GetLastClosedTickets(true)">
+                              MORE
+                      </button>
+                    </div>
                 </ion-content>
             </ion-pane>
         </ion-tab>
@@ -115,15 +125,21 @@
                             </p>
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
-                            <button ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button>
+                            <!-- Tags on ticket -->
+                            <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+                            <!-- Users on ticket -->
+                            <i ng-if="ticket.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />-->
+
                         </ion-item>
                     </ion-list>
 
                     <!-- Button "More" user connected and open tickets -->
-                    <button class="button button-block button-positive"
-                            ng-click="GetLastOpenTickets(true)">
-                        More
-                    </button>
+                    <div class="text-center">
+                      <button class="button button-clear gb-color-bugtracker"
+                              ng-click="GetLastOpenTickets(true)">
+                              More
+                      </button>
+                    </div>
                 </ion-content>
             </ion-pane>
         </ion-tab>

@@ -19,25 +19,26 @@
             <!-- Year button -->
             <!--<a class="button button-positive" ng-click="calendar.typeView='year'">Year</a>-->
             <!-- Month button -->
-            <a class="button button-positive" ng-click="calendar.typeView='month'">Month</a>
+            <a class="button button-clear gb-color-calendar" ng-click="calendar.typeView='month'">MONTH</a>
             <!-- Week button -->
             <!--<a class="button button-positive" ng-click="calendar.typeView='week'">Week</a>-->
             <!-- Day button -->
-            <a class="button button-positive" ng-click="calendar.typeView='day'">Day</a>
+            <a class="button button-clear gb-color-calendar" ng-click="calendar.typeView='day'">DAY</a>
         </div>
         <div class="button-bar">
-            <button class="button button-small icon ion-ios-arrow-back button-positive"
+          <!--button button-small icon ion-ios-arrow-back button-positive -->
+            <button class="button button-small button-clear icon ion-ios-arrow-back gb-color-calendar"
                     mwl-date-modifier
                     date="calendar.date"
                     decrement="calendar.typeView">
             </button>
-            <button class="button button-small button-positive"
+            <button class="button button-small button-clear gb-color-calendar"
                     mwl-date-modifier
                     date="calendar.date"
                     set-to-today>
-                Today
+                TODAY
             </button>
-            <button class="button button-small icon ion-ios-arrow-forward button-positive"
+            <button class="button button-small button-clear icon ion-ios-arrow-forward gb-color-calendar"
                     mwl-date-modifier
                     date="calendar.date"
                     increment="calendar.typeView">

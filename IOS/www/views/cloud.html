@@ -15,10 +15,10 @@
             <!-- Go back button -->
             <a ng-show="path"
                ng-click="GoBack()"
-               class="button icon ion-ios-arrow-thin-left button-positive">
+               class="button icon ion-ios-arrow-back button-clear gb-color-cloud">
             </a>
             <!-- New folder button -->
-            <a class="button ion-ios-folder button-positive"
+            <a class="button icon ion-ios-folder button-clear gb-color-cloud"
                ng-click="showCreateDirPopup()"><!--ng-click="dirModal.show()"-->
             </a>
             <!-- Upload file button -->
@@ -28,7 +28,7 @@
                    data-ng-model="fileUpload"
                    ng-change="showAskPasswordChoicePopup(fileUpload)"
                    base-sixty-four-input />
-            <a class="button icon ion-ios-cloud-upload button-positive"
+            <a class="button icon ion-ios-cloud-upload button-clear gb-color-cloud"
                onclick="document.getElementById('fileUploadId').click();">
             </a>
         </div>
@@ -40,9 +40,8 @@
                       ng-show="dir.type == 'dir'"
                       ng-click="checkSafe(dir.is_secured, dir.filename)">
                 <h2 class="icon ion-ios-folder">&nbsp;<span ng-class="dir.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp;{{ dir.filename }}</h2>
-                <ion-option-button class="button-assertive"
+                <ion-option-button class="button-assertive icon ion-ios-trash"
                                    ng-click="deleteFileOrFolder(dir.filename)">
-                    Delete
                 </ion-option-button>
             </ion-item>
         </ion-list>
@@ -54,9 +53,8 @@
                       ng-show="file.type == 'file'"
                       ng-click="checkFileProtected(file.is_secured, file.filename)">
                 <h2 class="icon ion-document">&nbsp;<span ng-class="file.is_secured ? 'icon ion-ios-locked' : ''"></span>&nbsp; {{ file.filename }}</h2>
-                <ion-option-button class="button-assertive"
+                <ion-option-button class="button-assertive icon ion-ios-trash"
                                    ng-click="checkDeleteFile(file.filename, file.is_secured)">
-                    Delete
                 </ion-option-button>
             </ion-item>
         </ion-list>

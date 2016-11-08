@@ -11,27 +11,57 @@
         </ion-refresher>
 
         <!-- Project information -->
-        <div class="item item-divider">Project information</div>
-        <ion-list class="card">
-            <ion-item class="item-body">
+        <div class="item item-divider item-icon-right">Project information<i class="icon ion-edit gb-color-dashboard" ui-sref="app.editProject({projectId: projectId})"></i></div>
+        <ion-list class="list card">
+            <ion-item>
                 <!--<img class="full-image" data-ng-src="data:image/png;base64, {{projectInfo.logo}}" />-->
                 <!--<img class="full-image" ng-src="data:image/png;base64, {{ projectLogo.logo ? projectLogo.logo : './images/noproject.png' }}" />-->
                 <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                 <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
-                <p ng-show="projectInfo.name"><strong>Name: </strong> {{ projectInfo.name }}</p>
-                <p ng-show="projectInfo.description"><strong>Description: </strong> {{ projectInfo.description }}</p>
-                <p ng-show="projectInfo.phone"><strong>Phone: </strong> {{ projectInfo.phone }}</p>
-                <p ng-show="projectInfo.company"><strong>Company: </strong> {{ projectInfo.company }}</p>
-                <p ng-show="projectInfo.contact_mail"><strong>Email: </strong> {{ projectInfo.contact_mail }}</p>
-                <p ng-show="projectInfo.creation_date.date"><strong>Creation date: </strong> {{ projectInfo.creation_date.date }}</p>
-                <p ng-show="projectInfo.facebook"><strong>Facebook: </strong> {{ projectInfo.facebook }}</p>
-                <p ng-show="projectInfo.twitter"><strong>Twitter: </strong> {{ projectInfo.twitter }}</p>
-                <p ng-show="projectInfo.deleted_at != null"><strong style="color:red">IN DELETION :(</strong></p>
 
                 <!-- Edit project button -->
-                <button class="button button-block icon ion-edit button-positive"
-                   ui-sref="app.editProject({projectId: projectId})">
-                </button>
+                <!-- <div class="text-center">
+                  <button class="button icon ion-edit button-clear gb-color-dashboard text-center"
+                    ui-sref="app.editProject({projectId: projectId})">
+                  </button>
+                </div> -->
+
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.name">
+              <i class="icon ion-code-working gb-color-dashboard"></i>
+              <strong>Name: </strong> {{ projectInfo.name }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.description">
+              <i class="icon ion-clipboard gb-color-dashboard"></i>
+              <strong>Description: </strong> {{ projectInfo.description }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.phone">
+              <i class="icon ion-iphone gb-color-dashboard"></i>
+              <strong>Phone: </strong> {{ projectInfo.phone }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.company">
+              <i class="icon ion-home gb-color-dashboard"></i>
+              <strong>Company: </strong> {{ projectInfo.company }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.contact_mail">
+              <i class="icon ion-ios-email gb-color-dashboard"></i>
+              <strong>Email: </strong> {{ projectInfo.contact_mail }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.creation_date.date">
+              <i class="icon ion-ios-calendar gb-color-dashboard"></i>
+              <strong>Creation date: </strong> {{ projectInfo.creation_date.date }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.facebook">
+              <i class="icon ion-social-facebook gb-color-dashboard"></i>
+              <strong>Facebook: </strong> {{ projectInfo.facebook }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.twitter">
+              <i class="icon ion-social-twitter gb-color-dashboard"></i>
+              <strong>Twitter: </strong> {{ projectInfo.twitter }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.deleted_at != null">
+              <i class="icon ion-sad gb-color-dashboard"></i>
+              <strong style="color:red">IN DELETION</strong>
             </ion-item>
         </ion-list>
         <!-- Users on project -->
@@ -46,7 +76,7 @@
                 <img ng-if="!findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
 
                 <h2>{{ userOnProject.firstname }} {{ userOnProject.lastname }}</h2>
-                <ion-option-button class="button-assertive ion-ios-trash"
+                <ion-option-button class="button-assertive icon ion-ios-trash"
                                    ng-click="PopupRemoveUserFromProject(userOnProject.id)">
                 </ion-option-button>
             </ion-item>
@@ -60,14 +90,14 @@
                            name="userToAdd_email" ng-model="userToAdd.userEmail" required>
                 </label>
                 <button ng-disabled="add_user_form.$invalid"
-                        class="button button-small button-positive icon ion-plus"
+                        class="button button-clear icon ion-plus gb-color-dashboard"
                         ng-click="AddUserToProject()">
                 </button>
             </ion-item>
         </form>
 
         <!-- Roles on project -->
-        <div class="item item-divider">Roles</div>
+        <div class="item item-divider item-icon-right">Roles<i class="icon ion-plus gb-color-dashboard" ui-sref="app.createRole({projectId: projectId})"></i></div>
         <ion-list can-swipe="true">
             <ion-item ng-show="noRole">{{noRole}}</ion-item>
             <ion-item ng-show="!noRole"
@@ -81,13 +111,11 @@
         </ion-list>
 
         <!-- Add a role on project -->
-        <form>
-            <ion-item class="item-input-inset">
-                <button class="button button-block button-positive icon ion-plus"
-                        ui-sref="app.createRole({projectId: projectId})">
-                </button>
-            </ion-item>
-        </form>
+        <!-- <ion-item class="item-input-inset">
+          <button class="button button-block button-positive icon ion-plus"
+          ui-sref="app.createRole({projectId: projectId})">
+          </button>
+        </ion-item> -->
 
 
         <!-- Customers accesses on project -->
@@ -118,7 +146,7 @@
                            name="customerAccessToAdd_email" ng-model="customerAccessToAdd.accessName" required />
                 </label>
                 <button ng-disabled="gen_access_form.$invalid"
-                        class="button button-small button-positive icon ion-link"
+                        class="button button-clear icon ion-link gb-color-dashboard"
                         ng-click="GenerateAccess()">
                 </button>
             </ion-item>

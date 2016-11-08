@@ -93,7 +93,7 @@ angular.module('GrappBox.controllers')
               { text: 'Cancel' },
               {
                   text: '<b>Save</b>',
-                  type: 'button-positive',
+                  type: 'button-clear gb-color-whiteboard',
                   onTap: function (e) {
                       if (!$scope.whiteboardName.name) {
                           // Don't allow the user to close unless he enters file password

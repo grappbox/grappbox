@@ -12,7 +12,6 @@
 
         <!-- Project information -->
         <div class="item item-divider">Ticket information</div>
-        <p>Type your new ticket information</p>
         <form name="ticket_form">
             <ion-input class="item item-input item-floating-label">
                 <ion-label>Title</ion-label>
@@ -26,22 +25,23 @@
                           rows="5"
                           placeholder="Leave a comment"
                           ng-model="ticket.description"></textarea>
+                          <!-- Edit ticket button -->
+                <div class="text-center">
+                  <a class="button button-clear gb-color-bugtracker icon ion-edit" ng-click="EditTicket()"></a>
+                </div>
             </ion-item>
-
-            <!-- Edit ticket button -->
-            <a class="button button-block button-positive icon ion-edit" ng-click="EditTicket()">
-            </a>
         </form>
 
         <!-- Tags information -->
         <div class="item item-divider">Tags</div>
+        <p>These tags are local to ticket</p>
         <!-- Tags on project -->
         <p ng-show="noTag">{{noTag}}</p>
+        <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp
         <button ng-repeat="tag in ticket.tags"
                 class="button button-small button-balanced gb-button-tag"
                 ng-click="showRemoveTagActionSheet(tag.id)">{{ tag.name }}
         </button><br />
-        <p>Choose your tag(s)</p>
         <div ng-show="tagsOnProject[0] != null">
             <ion-list>
                 <label class="item item-input item-select">
@@ -55,13 +55,13 @@
                         </option>
                     </select>
                 </label>
+                <!-- Assign tag to ticket -->
+                <div class="text-center">
+                  <button class="button button-clear gb-color-bugtracker" ng-click="AssignTag()">
+                    ASSIGN TAG
+                  </button>
+                </div>
             </ion-list>
-
-            <!-- Assign tag to ticket -->
-            <button class="button button-block button-positive"
-                    ng-click="AssignTag()">
-                Assign tag
-            </button>
         </div>
         <div>
             <form name="createTag_form">
@@ -73,9 +73,10 @@
                            ng-model="createTag.name" required />
                 </ion-input>
                 <!-- Create Tag -->
-                <button class="button button-block button-positive icon ion-plus"
-                        ng-click="CreateTag()">
-                </button>
+                <div class="text-center">
+                  <button class="button button-clear gb-color-bugtracker icon ion-plus" ng-click="CreateTag()">
+                  </button>
+                </div>
             </form>
         </div>
         <!-- Member list -->
@@ -87,8 +88,10 @@
                 <!--{{ user.name }}-->{{ user.firstname }} {{ user.lastname }}
             </ion-checkbox>
         </ion-list>
-        <a class="button button-block button-positive" ng-click="SetUsersToTicket()">
-            Assign to member(s)
-        </a>
+        <div class="text-center">
+          <a class="button button-clear gb-color-bugtracker" ng-click="SetUsersToTicket()">
+              ASSIGN TICKET
+          </a>
+        </div>
     </ion-content>
 </ion-view>

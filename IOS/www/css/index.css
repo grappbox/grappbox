@@ -3,19 +3,6 @@ body {
   cursor: url('http://ionicframework.com/img/finger.png'), auto;
 }
 
-/* Text areas auto adapting screen */
-textarea {
-  width: 100%;
-  height: auto;
-  border: 1px solid #EEEEEE;
-}
-
-/* icons in item dividers */
-.item-divider i {
-  position: absolute;
-  right: 10px;
-}
-
 /*
 ** Stylizing action sheets on Android
 */
@@ -83,6 +70,29 @@ select[readonly] {
   background-color: white;
 }
 
+/* textarea margin left */
+.textarea_left {
+  margin-left: 17px;
+}
+
+/* Text areas auto adapting screen */
+textarea {
+  width: 100%;
+  height: auto;
+  border: 1px solid #EEEEEE;
+}
+
+/* icons in item dividers */
+.item-divider i {
+  position: absolute;
+  right: 10px;
+}
+
+/* put floating labels items in blue */
+.item-floating-label .input-label.has-input {
+    color: blue;
+}
+
 /* Put a black border around canvas in whiteboard */
 canvas {
   border: solid black 1px;
@@ -93,9 +103,52 @@ ion-popover-view {
   height: auto;
 }
 
+/* larger icons */
+.larger {
+  font-size: 32px;
+}
+
 /*
 ** GrappBox colors
 */
+
+.gb-color-dashboard {
+  /*background-color: #FC575E !important;*/
+  /*border-color: white !important;*/
+  color: #FC575E !important;
+}
+
+.gb-color-calendar {
+  color: #44BBFF !important;
+}
+
+.gb-color-cloud {
+  color: #F1C40F !important;
+}
+
+.gb-color-bugtracker {
+  color: #9E58DC !important;
+}
+
+.gb-color-timeline {
+  color: #FF9F55 !important;
+}
+
+.gb-color-whiteboard {
+  color: #27AE60 !important;
+}
+
+/* transparent border in header bar */
+.gb-border-transparent
+{
+  border-color: transparent !important;
+}
+
+/* button positive on click */
+.button-positive.button:active, .button-positive.button.active {
+  box-shadow: none !important;
+  opacity: 0.8 !important;
+}
 
 /* Nav bars, see app.js $rootScope */
 .nav-bar-block, .bar-header { /* , .bar */
@@ -120,17 +173,6 @@ ion-popover-view {
 
 .tab-item.tab-item-active .tab-title, .tab-item.active .tab-title, .tab-item.activated .tab-title {
   color: #FC575E !important;
-}
-
-/* Buttons */
-.button-positive {
-  background-color: #FC575E !important;
-  border-color: white !important;
-}
-
-.button-positive.button:active, .button-positive.button.active {
-  box-shadow: none !important;
-  opacity: 0.8 !important;
 }
 
 /*.button-icon.button:active, .button-icon.button.active {

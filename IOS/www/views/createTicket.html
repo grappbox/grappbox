@@ -14,11 +14,11 @@
                        ng-model="ticket.title" required />
             </ion-input>
             <!-- <ion-input class="item item-input"> -->
-                <ion-label>Description</ion-label>
-                <textarea name="createTicket_description"
-                          rows="6"
-                          placeholder="Here is exactly how I can reproduce the bug, and where it is"
-                          ng-model="ticket.description" required></textarea>
+            <ion-label class="textarea_left">Description</ion-label>
+            <textarea name="createTicket_description"
+            rows="6"
+            placeholder="Here is exactly how I can reproduce the bug, and where it is"
+            ng-model="ticket.description" required></textarea>
             <!-- </ion-input> -->
         </form>
         <!--<div class="item item-divider"> Members assignable</div>
@@ -29,9 +29,11 @@
         <select ng-model="selectedTags" multiple>
             <option ng-repeat="tag in tagsOnProject" value="{{tag.id}}">{{tag.name}}</option>
         </select>-->
-        <button ng-disabled="createTicket_form.$invalid"
-                class="button button-block button-positive icon ion-plus"
-                ng-click="CreateTicket()">
-        </button>
+        <div class="text-center">
+          <button ng-disabled="createTicket_form.$invalid"
+          class="button button-clear gb-color-bugtracker icon ion-plus"
+          ng-click="CreateTicket()">
+          </button>
+        </div>
     </ion-content>
 </ion-view>

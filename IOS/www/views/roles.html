@@ -24,9 +24,9 @@
         <div class="item item-divider">Add a role</div>
         <form name="form_roleType">
             <ion-list>
-                <ion-item class="item-input">
-                    <ion-label class="input-label">Role name: </ion-label>
-                    <input type="text" ng-model="roleType.name" placeholder="Your role name" required>
+                <ion-item class="item-input item-floating-label">
+                    <ion-label class="input-label">Role name</ion-label>
+                    <input type="text" ng-model="roleType.name" placeholder="Role name" required>
                 </ion-item>
                 <ion-item>
                     <h2 style="text-align:center">Team Timeline</h2>
@@ -84,11 +84,12 @@
                 </ion-item>
             </ion-list>
             <!-- Add a role on project -->
-            <button ng-disabled="form_roleType.$invalid"
-                    class="button button-block button-positive"
-                    ng-click="AddNewRole()">
-                Add
-            </button>
+            <div class="text-center">
+              <button ng-disabled="form_roleType.$invalid"
+                      class="button button-clear icon ion-plus gb-color-dashboard"
+                      ng-click="AddNewRole()">
+              </button>
+            </div>
         </form>
     </ion-content>
 </ion-view>

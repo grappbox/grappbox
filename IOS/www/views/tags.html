@@ -13,7 +13,7 @@
 
         <!-- Tags list -->
         <div class="item item-divider">Tags available</div>
-        <p>These tags are affiliated to whole project.</p>
+        <p>These tags are global to whole project.</p>
         <ion-list can-swipe="true">
             <ion-item ng-show="noTag">{{noTag}}</ion-item>
             <ion-item ng-show="!noTag"
@@ -39,10 +39,12 @@
                 </ion-input>
 
                 <!-- Create tag button -->
-                <button ng-disabled="createTag_form.$invalid"
-                        class="button button-block button-positive icon ion-plus"
-                        ng-click="CreateTag()">
-                </button>
+                <div class="text-center">
+                  <button ng-disabled="createTag_form.$invalid"
+                          class="button button-clear gb-color-bugtracker icon ion-plus"
+                          ng-click="CreateTag()">
+                  </button>
+                </div>
             </form>
         </div>
     </ion-content>

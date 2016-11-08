@@ -5,8 +5,7 @@
 <ion-view>
     <ion-nav-title>Create Project</ion-nav-title>
     <ion-content>
-        <div class="item item-divider"></div>
-        <p>Type your project informations</p>
+        <div class="item item-divider">Project information</div>
         <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo.base64}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <form name="createProject_form">
@@ -67,10 +66,12 @@
             </ion-input>
             <span ng-show="project.password != project.confirmPassword">Passwords do not match.</span>
             <p>Fields with a '*' are required.</p>
-            <a class="button button-block button-positive icon ion-plus"
-               ng-disabled="createProject_form.$invalid || (project.password != project.confirmPassword)"
-               ng-click="CreateProject()">
-            </a>
+            <div class="text-center">
+              <a class="button button-clear gb-color-dashboard icon ion-plus"
+                ng-disabled="createProject_form.$invalid || (project.password != project.confirmPassword)"
+                ng-click="CreateProject()">
+              </a>
+            </div>
         </form>
     </ion-content>
 </ion-view>

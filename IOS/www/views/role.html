@@ -40,20 +40,22 @@
         </ion-list>
 
         <!-- Assign role -->
-        <button ng-show="!userNonAssignedOnRole"
-                class="button button-block button-positive"
-                ng-click="AssignToRole()"
-                ng-disabled="form_usersNotAssigned.$invalid">
-            Assign
-        </button>
+        <div class="text-center">
+          <button ng-show="!userNonAssignedOnRole"
+                  class="button button-clear gb-color-dashboard"
+                  ng-click="AssignToRole()"
+                  ng-disabled="form_usersNotAssigned.$invalid">
+            ASSIGN
+          </button>
+        </div>
 
         <!-- Update a role -->
         <div class="item item-divider">Update role</div>
         <form name="form_roleType">
             <ion-list>
-                <ion-item class="item-input">
-                    <ion-label class="input-label">Role name: </ion-label>
-                    <input type="text" name="name" ng-model="role.name" placeholder="New role name">
+                <ion-item class="item-input item-floating-label">
+                    <ion-label class="input-label">Role name</ion-label>
+                    <input type="text" name="name" ng-model="role.name" placeholder="Role name">
                 </ion-item>
                 <ion-item>
                     <h2 style="text-align:center">Team Timeline</h2>
@@ -111,10 +113,12 @@
                 </ion-item>
             </ion-list>
             <!-- Update role button-->
-            <button ng-disabled="form_roleType.$invalid"
-                    class="button button-block button-positive icon ion-edit"
-                    ng-click="UpdateProjectRole()">
-            </button>
+            <div class="text-center">
+              <button ng-disabled="form_roleType.$invalid"
+                      class="button button-clear gb-color-dashboard icon ion-edit"
+                      ng-click="UpdateProjectRole()">
+              </button>
+            </div>
         </form>
 
         <!-- Danger zone -->

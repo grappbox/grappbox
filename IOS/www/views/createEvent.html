@@ -1,47 +1,55 @@
-﻿<!--
-    Summary: Create event on calendar view
+<!--
+Summary: Create event on calendar view
 -->
 
 <ion-view>
-    <ion-nav-title class="item-text-wrap">Create event</ion-nav-title>
-    <ion-content overflow-scroll="false" scroll="false">
-        <form name="createEvent_form">
-            <ion-input class="item item-input item-floating-label">
-                <ion-label>Title</ion-label>
-                <input type="text"
-                       placeholder="Title"
-                       name="createEvent_title"
-                       ng-model="event.title" required />
-            </ion-input>
-            <!-- <ion-input class="item item-input"> -->
-                <ion-label>Description</ion-label>
-                <textarea name="createEvent_description"
-                          rows="6"
-                          placeholder="Place..."
-                          ng-model="event.description" required></textarea>
-            <!-- </ion-input> -->
-        </form>
+  <ion-nav-title class="item-text-wrap">Create event</ion-nav-title>
+  <ion-content overflow-scroll="false" scroll="false">
+    <form name="createEvent_form">
+      <ion-input class="item item-input item-floating-label">
+        <ion-label>Title</ion-label>
+        <input type="text"
+        placeholder="Title"
+        name="createEvent_title"
+        ng-model="event.title" required />
+      </ion-input>
+      <!-- <ion-input class="item item-input"> -->
+      <ion-label class="textarea_left">Description</ion-label>
+      <textarea name="createEvent_description"
+      rows="6"
+      placeholder="Place..."
+      ng-model="event.description" required></textarea>
+      <!-- </ion-input> -->
 
-        <label class="item item-input">
-          <span class="input-label">Begin</span>
-          <input type="datetime-local" ng-model="startTime"></input>
-        </label>
-        <pre>Date start = {{ startTime }}</pre>
-        <label class="item item-input">
-          <span class="input-label">End</span>
-          <input type="datetime-local" ng-model="endTime"></input>
-        </label>
-        <pre>Date end = {{ endTime }}</pre>
-        <!-- <button ng-click="showDates()"></button> -->
-        <!--<div class="item item-divider"> Members assignable</div>-->
-        <select ng-model="selectedUsers" ng-change="updateUserList(selectedUsers)" multiple>
-            <option ng-repeat="user in userList" value="{{user.id}}">{{user.firstname}} {{user.lastname}}</option>
+      <label class="item item-input">
+        <span class="input-label">Begin</span>
+        <input type="datetime-local" name="createEvent_startTime" ng-model="startTime" required></input>
+      </label>
+      <!--<pre>Date start = {{ startTime }}</pre>-->
+      <label class="item item-input">
+        <span class="input-label">End</span>
+        <input type="datetime-local" name="createEvent_endTime" ng-model="endTime" required></input>
+      </label>
+      <!--<pre>Date end = {{ endTime }}</pre>-->
+      <!-- <button ng-click="showDates()"></button> -->
+      <!--<div class="item item-divider"> Members assignable</div>-->
+      <label class="item item-input">
+        <span class="input-label">Participants</span>
+        <select ng-model="selectedUsers" ng-change="updateUserList(selectedUsers)" name="createEvent_selectedUsers" multiple required>
+          <option ng-repeat="user in userList" value="{{user.id}}">{{user.firstname}} {{user.lastname}}</option>
         </select>
-        <button ng-disabled="createEvent_form.$invalid" class="button button-block button-positive icon ion-plus" ng-click="CreateEvent()"></button>
-        <!--<div class="item item-divider"> Members assignable</div>-->
-        <!--<div class="item item-divider"> Tags on this ticket</div>
-        <select ng-model="selectedTags" multiple>
-            <option ng-repeat="tag in tagsOnProject" value="{{tag.id}}">{{tag.name}}</option>
-        </select>-->
-    </ion-content>
+      </label>
+    </form>
+    <div class="text-center">
+      <button ng-disabled="createEvent_form.$invalid"
+      class="button button-clear gb-color-calendar icon ion-plus"
+      ng-click="CreateEvent()">
+      </button>
+    </div>
+  <!--<div class="item item-divider"> Members assignable</div>-->
+  <!--<div class="item item-divider"> Tags on this ticket</div>
+  <select ng-model="selectedTags" multiple>
+  <option ng-repeat="tag in tagsOnProject" value="{{tag.id}}">{{tag.name}}</option>
+</select>-->
+</ion-content>
 </ion-view>

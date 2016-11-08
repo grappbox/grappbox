@@ -14,19 +14,46 @@
         <div class="item item-divider">
             Information
         </div>
-        <ion-list class="card">
-            <ion-item class="item-body">
+        <ion-list class="list card">
+            <ion-item>
                 <img ng-if="userAvatar.avatar" id="userAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                 <img ng-if="!userAvatar.avatar" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
-                <p ng-show="userInfo.firstname"><strong>First Name: </strong> {{ userInfo.firstname }}</p>
-                <p ng-show="userInfo.lastname"><strong>Last Name: </strong> {{ userInfo.lastname }}</p>
-                <p ng-show="userInfo.birthday.date"><strong>birthday: </strong> {{ userInfo.birthday.date }}</p>
-                <p ng-show="userInfo.phone"><strong>Phone: </strong> {{ userInfo.phone }}</p>
-                <p ng-show="userInfo.email"><strong>Email: </strong> {{ userInfo.email }}</p>
-                <p ng-show="userInfo.country"><strong>Country: </strong> {{ userInfo.country }}</p>
-                <p ng-show="userInfo.linkedin"><strong>LinkedIn: </strong> {{ userInfo.linkedin }}</p>
-                <p ng-show="userInfo.twitter"><strong>Twitter: </strong> {{ userInfo.twitter }}</p>
-                <p ng-show="userInfo.viadeo"><strong>Viadeo: </strong> {{ userInfo.viadeo }}</p>
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.firstname">
+              <i class="icon ion-ios-person gb-color-dashboard"></i>
+              <strong>First Name: </strong> {{ userInfo.firstname }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.lastname">
+              <i class="icon ion-ios-person gb-color-dashboard"></i>
+              <strong>Last Name: </strong> {{ userInfo.lastname }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.birthday.date">
+              <i class="icon ion-beer gb-color-dashboard"></i>
+              <strong>birthday: </strong> {{ userInfo.birthday.date }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.phone">
+              <i class="icon ion-iphone gb-color-dashboard"></i>
+              <strong>Phone: </strong> {{ userInfo.phone }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.email">
+              <i class="icon ion-ios-email gb-color-dashboard"></i>
+              <strong>Email: </strong> {{ userInfo.email }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.country">
+              <i class="icon ion-ios-location gb-color-dashboard"></i>
+              <strong>Country: </strong> {{ userInfo.country }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.linkedin">
+              <i class="icon ion-social-linkedin gb-color-dashboard"></i>
+              <strong>LinkedIn: </strong> {{ userInfo.linkedin }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.twitter">
+              <i class="icon ion-social-twitter gb-color-dashboard"></i>
+              <strong>Twitter: </strong> {{ userInfo.twitter }}
+            </ion-item>
+            <ion-item class="item-icon-left item-text-wrap" ng-show="userInfo.viadeo">
+              <i class="icon ion-close-round gb-color-dashboard"></i>
+              <strong>Viadeo: </strong> {{ userInfo.viadeo }}
             </ion-item>
         </ion-list>
 

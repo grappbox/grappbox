@@ -11,8 +11,7 @@
         </ion-refresher>
 
         <!-- Profile information -->
-        <div class="item item-divider"></div>
-        <p>Type your personal informations</p>
+        <div class="item item-divider">Personal information</div>
         <img ng-if="userAvatar.avatar" id="profileAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <img ng-if="!userAvatar.avatar" id="profileAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
         <form name="profile_form">
@@ -101,13 +100,15 @@
                        ng-model="profileInfo.confirmPassword"/>
             </ion-input>
             <span ng-show="profileInfo.newPassword != profileInfo.confirmPassword">Passwords do not match.</span>
-            <a class="button button-block button-positive ion-edit"
+            <div class="text-center">
+              <a class="button button-clear icon ion-edit gb-color-dashboard"
                ng-disabled="profile_form.$invalid
                || (profileInfo.newPassword != profileInfo.confirmPassword)
                || (profileInfo.newPassword && !profileInfo.oldPassword)
                || (!profileInfo.newPassword && profileInfo.oldPassword)"
                ng-click="EditProfile()"><!--profile_form.$invalid-->
-            </a>
+              </a>
+            </div>
         </form>
     </ion-content>
 </ion-view>
