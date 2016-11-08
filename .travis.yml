@@ -10,6 +10,6 @@ before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
   - cd API
-  - composer -n --no-ansi install --dev --prefer-source
+  - composer -n --no-ansi install --prefer-source
 script:
-  - php -m
+  - php app/check.php
