@@ -4,8 +4,6 @@ php:
 sudo: required
 services:
   - mysql
-before_install:
-  - pecl install --force mongo | echo "no"
 before_script:
   - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - composer self-update
