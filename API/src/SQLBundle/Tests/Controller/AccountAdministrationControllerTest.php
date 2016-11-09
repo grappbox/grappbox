@@ -13,7 +13,7 @@ class AccountAdministrationControllerTest extends WebTestCase
 
         $crawler = $client->request(
         	'POST',
-        	'127.0.0.1/app_dev.php/account/register',
+        	'/account/register',
         	array(),
         	array(),
         	array('CONTENT_TYPE' => 'application/json'),
@@ -21,7 +21,6 @@ class AccountAdministrationControllerTest extends WebTestCase
         );
 
         var_dump($crawler);
-
         // Assert a specific 200 status code
 		$this->assertEquals(
 		    201, // or Symfony\Component\HttpFoundation\Response::HTTP_OK
