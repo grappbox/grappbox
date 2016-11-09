@@ -20,7 +20,7 @@ class AccountAdministrationControllerTest extends WebTestCase
         	'{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
-        var_dump(json_decode($client->getResponse()->getContent(), true));
+        var_dump($crawler);
 
         // Assert a specific 200 status code
 		$this->assertEquals(
