@@ -22,4 +22,5 @@ before_script:
   - php app/console doctrine:database:create --env=test
   - php app/console doctrine:schema:create --env=test
 script:
-  - phpunit -c app
+  - cd bin
+  - phpunit -c ../app
