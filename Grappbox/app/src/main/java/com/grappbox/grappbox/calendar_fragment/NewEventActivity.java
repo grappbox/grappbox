@@ -83,8 +83,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
                 datePicker.show(getFragmentManager(), "Date end");
             }
         });
-        mEventBegin.setText(mBeginDateFormat.getDate() + " " + mBeginDateFormat.getHour());
-        mEventEnd.setText(mEndDateFormat.getDate() + " " + mEndDateFormat.getHour());
+        mEventBegin.setText(mBeginDateFormat.toString());
+        mEventEnd.setText(mEndDateFormat.toString());
     }
 
     public void registerActivityActionCallback(CalendarEventReceiver.Callback action) {
@@ -121,16 +121,26 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void actionSave(){
+        if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()){
+            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
+            builder.setTitle("Calendar create event error");
+            builder.setMessage("Put title and description of the event");
+            builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            builder.show();
+            return;
+        }
         Intent save = new Intent(this, GrappboxJustInTimeService.class);
         save.setAction(GrappboxJustInTimeService.ACTION_CREATE_EVENT);
-        /*Intent save = new Intent(this, GrappboxJustInTimeService.class);
-        save.setAction(mIsEditMode ? GrappboxJustInTimeService.ACTION_EDIT_BUG : GrappboxJustInTimeService.ACTION_CREATE_BUG);
-        save.putExtra(mIsEditMode ? GrappboxJustInTimeService.EXTRA_BUG_ID : GrappboxJustInTimeService.EXTRA_PROJECT_ID, mIsEditMode ? mModel._id : mProjectID);
         save.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, mTitle.getText().toString());
         save.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, mDescription.getText().toString());
-        save.putExtra(GrappboxJustInTimeService.EXTRA_CLIENT_ACTION, false);
-        save.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, receiver);
-        startService(save);*/
+        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_BEGIN, mEventBegin.getText().toString());
+        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_END, mEventEnd.getText().toString());
+        startService(save);
     }
 
     @Override
@@ -187,6 +197,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public static class TimePickerFragment extends DialogFragment {
+
+
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

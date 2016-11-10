@@ -282,8 +282,7 @@ public class GrappboxJustInTimeService extends IntentService {
             } else if (ACTION_GET_MONTH_PLANNING.equals(action)){
                 handleCalendarMonthSync(intent.getStringExtra(EXTRA_CALENDAR_FIRST_DAY));
             } else if (ACTION_CREATE_EVENT.equals(action)) {
-                Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
-                handleEventCreate(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END),(List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), responseObserver);
+                handleEventCreate(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END), responseObserver);
             } else if (ACTION_EDIT_EVENT.equals(action)) {
                 Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
                 handleEventEdit(intent.getLongExtra(EXTRA_EVENT_ID, -1) ,intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END),(List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
@@ -2626,10 +2625,11 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    private void handleEventCreate(Long localProjectId, String title, String description, String begin, String end, List<Long> addParticipant, ResultReceiver responseObserver){
+    private void handleEventCreate(Long localProjectId, String title, String description, String begin, String end, ResultReceiver responseObserver){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         HttpURLConnection connection = null;
         String returnedJson;
+        Log.v(LOG_TAG, "title : " + title + ", desc : " + description + ", begin date : " + begin + ", end date : " + end);
         try {
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/event");
             JSONObject json = new JSONObject();
@@ -2641,9 +2641,6 @@ public class GrappboxJustInTimeService extends IntentService {
             data.put("end", end);
             if (localProjectId != -1)
                 data.put("projectId", localProjectId);
-            for (Long user : addParticipant){
-                users.put(user);
-            }
             data.put("users", users);
             json.put("data", data);
             connection = (HttpURLConnection)url.openConnection();
@@ -2664,15 +2661,17 @@ public class GrappboxJustInTimeService extends IntentService {
                     }
                 } else {
                     data = json.getJSONObject("data");
+                    Log.v(LOG_TAG, data.toString());
                     ContentValues values = new ContentValues();
                     values.put(EventEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
                     values.put(EventEntry.COLUMN_EVENT_TITLE, data.getString("title"));
                     values.put(EventEntry.COLUMN_EVENT_DESCRIPTION, data.getString("description"));
                     values.put(EventEntry.COLUMN_DATE_BEGIN_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(data.getString("beginDate")));
                     values.put(EventEntry.COLUMN_DATE_END_UTC, Utils.Date.getDateFromGrappboxAPIToUTC(data.getString("endDate")));
-
                     String grappboxCID = data.getJSONObject("creator").getString("id");
                     Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                    if (localProjectId != -1)
+                        values.put(EventEntry.COLUMN_LOCAL_PROJECT_ID, localProjectId);
                     if (creatorId == null || !creatorId.moveToFirst()){
                         handleUserDetailSync(grappboxCID);
                         creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
@@ -2680,18 +2679,11 @@ public class GrappboxJustInTimeService extends IntentService {
                             throw new UnknownError();
                         }
                     }
-                    Cursor project;
-                    project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, EventEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{data.getString("projectId")}, null);
-                    if (project == null || !project.moveToFirst())
-                        throw new NetworkErrorException("Returned grappboxId is invalid try to resynchronized your project");
-
                     values.put(EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
-                    values.put(EventEntry.COLUMN_LOCAL_CREATOR_ID, project.getLong(0));
                     Uri res = getContentResolver().insert(EventEntry.CONTENT_URI, values);
                     if (res == null)
                         throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
                     creatorId.close();
-                    project.close();
                 }
             }
         } catch (IOException | JSONException | NetworkErrorException | ParseException e) {

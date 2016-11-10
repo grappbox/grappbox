@@ -90,7 +90,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT, " +
                 EventEntry.COLUMN_DATE_BEGIN_UTC + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_DATE_END_UTC + " TEXT NOT NULL, " +
-                EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
+                EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER, " +
                 EventEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +

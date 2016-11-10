@@ -11,21 +11,14 @@ import java.util.Date;
 public class CalendarEventDateFormatModel {
 
     private Calendar _calendar;
-    private SimpleDateFormat _dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private SimpleDateFormat _hourFormat = new SimpleDateFormat("HH:mm");
+    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public CalendarEventDateFormatModel() {
         _calendar = Calendar.getInstance();
     }
 
-    public String getDate(){
-        Date date = _calendar.getTime();
-        return _dateFormat.format(date);
-    }
-
-    public String getHour(){
-        Date hour = _calendar.getTime();
-        return _hourFormat.format(hour);
+    public Date getDate(){
+        return  _calendar.getTime();
     }
 
     public void setDate(int year, int month, int dayOfMonth){
@@ -42,6 +35,6 @@ public class CalendarEventDateFormatModel {
     @Override
     public String toString() {
         Date date = _calendar.getTime();
-        return _dateFormat.format(date) + " " + _hourFormat.format(date);
+        return mFormat.format(date);
     }
 }

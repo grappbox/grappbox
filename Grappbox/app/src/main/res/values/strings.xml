@@ -230,4 +230,5 @@
     <string name="change_project">Change project</string>
     <string name="event_begin_label">Event begin</string>
     <string name="event_end_label">Event end</string>
+    <string name="event_error_date">Date event error</string>
 </resources>
