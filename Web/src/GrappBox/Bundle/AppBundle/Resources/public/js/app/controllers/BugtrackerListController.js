@@ -112,7 +112,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
-    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "-");
   };
 
   // Tags in string format
@@ -123,7 +123,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
       tagsInString += (i != 0 ? ", " : "") + tags[i].name;
     }
     if (tags.length <= 0)
-      tagsInString = "N/A";
+      tagsInString = "-";
     return tagsInString;
   };
 
@@ -132,10 +132,10 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
     var usersInString = "";
 
     for(var i = 0; i < users.length; ++i) {
-      usersInString += (i != 0 ? ", " : "") + users[i].name;
+      usersInString += (i != 0 ? ", " : "") + users[i].firstname + " " + users[i].lastname;
     }
     if (users.length <= 0)
-      usersInString = "N/A";
+      usersInString = "-";
     return usersInString;
   };
 

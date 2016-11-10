@@ -278,10 +278,10 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   $scope.createTicket = function(ticket) {
       var elem = {"projectId": $scope.projectID,
                   "title": ticket.title,
-                  "description": ticket.description ? ticket.description : null,
+                  "description": ticket.description ? ticket.description : "",
                   "clientOrigin": false,
                   "tags": [],
-                  "users": $scope.data.userToAdd.length ? $scope.userToAdd : []
+                  "users": $scope.data.userToAdd.length ? $scope.data.userToAdd : []
                   };
 
       if ($scope.data.tagToAdd) {
@@ -307,16 +307,15 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
 
       var data = {"data": elem};
 
-      notificationFactory.info('Posting issue...');
       $http.post($rootScope.api.url + '/bugtracker/ticket', data, {headers: { 'Authorization': $rootScope.user.token }})
         .then(function successCallback(response) {
           $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
           $scope.ticketID = $scope.data.ticket.id;
           notificationFactory.success('Issue posted');
-          $location.path('/bugtracker/' + $scope.projectID + '/' + $scope.ticketID);
+          $location.path('/turlututu/' + $scope.projectID + '/' + $scope.ticketID);
         },
         function errorCallback(response) {
-          notificationFactory.warning('Unable to post issue. Please try again.');
+          notificationFactory.error('Unable to post issue. Please try again.');
         }, $scope);
     };
 
@@ -372,7 +371,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     console.log(data);
     return;
 
-    notificationFactory.info('Saving issue...');
     $http.put($rootScope.api.url + '/bugtracker/ticket/' + $scope.ticketID, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.data.ticket = $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
@@ -395,20 +393,19 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
           $route.reload();
       },
       function errorCallback(resposne) {
-          notificationFactory.warning("Unable to close ticket. Please try again.");
+          notificationFactory.error("Unable to close issue. Please try again.");
       });
   };
 
   $scope.reopenTicket = function() {
-    notificationFactory.info("Reopening ticket ...");
     $http.put($rootScope.api.url + "/bugtracker/reopenticket/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
-          notificationFactory.success("Ticket reopened");
+          notificationFactory.success("issue reopened");
           //$location.reload();
           $route.reload();
       },
       function errorCallback(resposne) {
-          notificationFactory.warning("Unable to reopen ticket. Please try again.");
+          notificationFactory.error("Unable to reopen issue. Please try again.");
       });
   };
 
@@ -430,7 +427,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
         getComments();
       },
       function errorCallback(response) {
-        notificationFactory.warning('Unable to save comment. Please try again.');
+        notificationFactory.error('Unable to save comment. Please try again.');
         $scope.data.editMode[comment.id] = false;
         getComments();
       });
@@ -441,7 +438,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
 
     var data = {"data": elem};
 
-    notificationFactory.info('Saving comment...');
     $http.put($rootScope.api.url + '/bugtracker/comment/'+comment.id, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         notificationFactory.success('Comment edited');
@@ -449,7 +445,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
         getComments();
       },
       function errorCallback(response) {
-        notificationFactory.warning('Unable to save comment. Please try again.');
+        notificationFactory.error('Unable to save comment. Please try again.');
         $scope.data.editMode[comment.id] = false;
         getComments();
       });
@@ -462,7 +458,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
           getComments();
       },
       function errorCallback(resposne) {
-          notificationFactory.warning("Unable to delete comment. Please try again.");
+          notificationFactory.error("Unable to delete comment. Please try again.");
       });
   };
 
