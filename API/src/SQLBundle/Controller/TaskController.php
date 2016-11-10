@@ -676,7 +676,7 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setDueDate(new \Datetime($content->due_date));
 		$task->setStartedAt(new \Datetime($content->started_at));
 
-		if ($task->getStartedAt() >= $task->getDueDate())
+		if ((!$content->is_container) && $task->getStartedAt() >= $task->getDueDate())
 			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
 
 		//finished at
@@ -1610,7 +1610,7 @@ class TaskController extends RolesAndTokenVerificationController
 		{
 			$dueDate = $task->getDueDate();
 			$newDate = new \Datetime($content->due_date);
-			if ($task->getStartedAt() >= $newDate)
+			if ((!$task->getIsContainer()) && $task->getStartedAt() >= $newDate)
 				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
 
 			if ($dueDate != null)
@@ -1646,8 +1646,8 @@ class TaskController extends RolesAndTokenVerificationController
 		{
 			$startedAt = $task->getStartedAt();
 			$newDate = new \Datetime($content->started_at);
-			if ($newDate >= $task->getDueDate())
-				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: started_at can't be after to due_date");
+			if ((!$task->getIsContainer()) && $newDate >= $task->getDueDate())
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: started_at can't be after due_date");
 
 			if ($startedAt != null)
 				$diff = date_diff($startedAt, $newDate);
