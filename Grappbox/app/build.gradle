@@ -27,18 +27,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'GRAPPBOX_API_URL', '"https://api.grappbox.com/"'
         }
-        speed {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'GRAPPBOX_API_URL', '"https://beta.api.grappbox.com/app_dev.php/"'
-            debuggable true
-            pseudoLocalesEnabled true
-        }
-        beta {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField 'String', 'GRAPPBOX_API_URL', '"https://beta.api.grappbox.com/app_dev.php/"'
-        }
+
     }
     buildTypes.each {
         it.buildConfigField 'String', 'GRAPPBOX_API_VERSION', '"0.3"'
