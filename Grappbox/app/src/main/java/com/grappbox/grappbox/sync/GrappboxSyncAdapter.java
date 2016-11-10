@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteAbortException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -45,7 +46,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Marc Wieser on 30/08/2016.
@@ -442,6 +445,55 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(syncTags);
     }
 
+    private void syncPlanningMonth(String apiToken, long uid){
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDayOfTheMonth = format.format(calendar.getTime());
+        HttpURLConnection connection = null;
+        String returnedJson;
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/planning/month/" + firstDayOfTheMonth);
+            Log.v(LOG_TAG, "url : " + url + ", apiToken : " + apiToken);
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty())
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            Log.v(LOG_TAG, "returned JSON : " + returnedJson);
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
+            JSONArray arrayEvent = json.getJSONObject("data").getJSONObject("array").getJSONArray("events");
+            for (int i = 0; i < arrayEvent.length(); ++i) {
+                JSONObject currentEvent = arrayEvent.getJSONObject(i);
+                ContentValues event = new ContentValues();
+
+                event.put(GrappboxContract.EventEntry.COLUMN_GRAPPBOX_ID, currentEvent.getString("id"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_DESCRIPTION, currentEvent.getString("description"));
+                event.put(GrappboxContract.EventEntry.COLUMN_DATE_BEGIN_UTC, currentEvent.getString("beginDate"));
+                event.put(GrappboxContract.EventEntry.COLUMN_DATE_END_UTC, currentEvent.getString("endDate"));
+                String grappboxCID = currentEvent.getJSONObject("creator").getString("id");
+                Cursor creatorId = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                if (creatorId == null || !creatorId.moveToFirst()){
+                        throw new UnknownError();
+                }
+                event.put(GrappboxContract.EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                creatorId.close();
+                getContext().getContentResolver().insert(GrappboxContract.EventEntry.CONTENT_URI, event);
+            }
+        } catch (IOException | NetworkErrorException | JSONException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
     private void syncTimeline(String apiToken, long projectId) {
         //synchronize Timeline's list
         Cursor grappboxProjectIdCursor = getContext().getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(projectId), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
@@ -541,6 +593,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 syncNextMeeting(token, projectId);
                 syncBug(token, projectId, uid);
                 syncTimeline(token, projectId);
+                syncPlanningMonth(token, uid);
             } while (projectsCursor.moveToNext());
 
         } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {
