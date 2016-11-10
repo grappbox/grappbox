@@ -5,15 +5,16 @@ import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Intent;
-import android.os.IBinder;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.content.ContextCompat;
 import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.grappbox.grappbox.DebugActivity;
 import com.grappbox.grappbox.R;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -28,7 +29,15 @@ import java.util.Map;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     public static final String TAG = FirebaseMessagingService.class.getSimpleName();
+    private static ArrayList<String> sBugDispatching;
+    private static MessagingDispatcher sBugDispatcher;
     static int idNotif = 0;
+
+    static {
+        sBugDispatcher = new BugMessagingDispatcher();
+        sBugDispatching = new ArrayList<>();
+        sBugDispatching.add("bug");
+    }
 
     public FirebaseMessagingService() {
     }
@@ -36,13 +45,18 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
 
-        // TODO(developer): Handle FCM messages here.
-        // If the application is in the foreground handle both data and notification messages here.
-        // Also if you intend on generating your own notifications as a result of a received FCM
-        // message, here is where that should be initiated. See sendNotification method below.
         Log.d(TAG, "Notif received");
         Notification.Builder builder = new Notification.Builder(this);
         Map<String, String> data = remoteMessage.getData();
+        String[] splittedAction = data.get("title").split(" ");
+        String actionType = splittedAction[splittedAction.length - 1];
+        try {
+            if (sBugDispatching.contains(actionType)){
+                sBugDispatcher.dispatch(data.get("title"), new JSONObject(data.get("body")));
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         builder.setContentTitle(data.get("title"));
         builder.setContentText(data.get("body"));
         builder.setSmallIcon(R.drawable.grappbox_mini_logo);
@@ -55,6 +69,5 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         nm.notify(idNotif++, notif);
         Log.d("Test", data.get("title"));
-        
     }
 }

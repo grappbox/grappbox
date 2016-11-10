@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.sync;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.NetworkErrorException;
 import android.annotation.SuppressLint;
@@ -117,6 +118,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_CREATE_ROLE = "com.grappbox.grappbox.sync.ACTION_CREATE_ROLE";
     public static final String ACTION_UPDATE_ROLE = "com.grappbox.grappbox.sync.ACTION_UPDATE_ROLE";
     public static final String ACTION_DELETE_ROLE = "com.grappbox.grappbox.sync.ACTION_DELETE_ROLE";
+    public static final String ACTION_REGISTER_DEVICE = "com.grappbox.grappbox.sync.ACTION_REGISTER_DEVICE";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -147,6 +149,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_ROLE_ID = "role_id";
     public static final String EXTRA_CUSTOMER_ACCESS_ID = "customer_access_ID";
     public static final String EXTRA_NAME = "name";
+    public static final String EXTRA_ACCOUNT = "account";
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -278,6 +281,59 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleRole(intent.getBundleExtra(EXTRA_BUNDLE), intent.hasCategory(CATEGORY_NEW), responseObserver);
             } else if (ACTION_DELETE_ROLE.equals(action)){
                 handleDeleteRole(intent.getLongExtra(EXTRA_ROLE_ID, -1), responseObserver);
+            } else if (ACTION_REGISTER_DEVICE.equals(action)){
+                handleRegisterDevice(intent.hasExtra(EXTRA_ACCOUNT) ? (Account) intent.getParcelableExtra(EXTRA_ACCOUNT) : null);
+            }
+        }
+    }
+
+    private void handleRegisterDevice(Account account){
+        String[] tokens;
+        String firebaseToken = getSharedPreferences(FirebaseCloudMessagingService.SHARED_FIREBASE_PREF, MODE_PRIVATE).getString(FirebaseCloudMessagingService.FIREBASE_PREF_TOKEN, null);
+        if (account == null){
+            tokens = Utils.Account.getAllAccountAuthTokenService(this);
+        }
+        else {
+            tokens = new String[1];
+            tokens[0] = Utils.Account.getAuthTokenService(this, account);
+        }
+
+        if (firebaseToken == null || tokens == null)
+            return;
+        for (String token : tokens) {
+            if (token == null)
+                continue;
+            HttpURLConnection connection = null;
+            String returnedJson;
+
+            try {
+                final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/notification/device");
+                JSONObject json = new JSONObject();
+                JSONObject data = new JSONObject();
+
+                data.put("device_type", "Android");
+                data.put("device_token", firebaseToken);
+                data.put("device_name", "My Android Device");
+                json.put("data", data);
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("Authorization", token);
+                connection.setRequestMethod("POST");
+                Utils.JSON.sendJsonOverConnection(connection, json);
+                connection.connect();
+                returnedJson = Utils.JSON.readDataFromConnection(connection);
+                if (returnedJson == null || returnedJson.isEmpty()){
+                    throw new NetworkErrorException("Returned JSON is empty");
+                } else {
+                    json = new JSONObject(returnedJson);
+                    if (Utils.Errors.checkAPIError(json)){
+                        throw new NetworkErrorException("API error");
+                    }
+                }
+            } catch (IOException | JSONException | NetworkErrorException e) {
+                e.printStackTrace();
+            } finally {
+                if (connection != null)
+                    connection.disconnect();
             }
         }
     }

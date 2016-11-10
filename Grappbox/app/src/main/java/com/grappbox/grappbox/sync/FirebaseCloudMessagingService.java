@@ -4,6 +4,7 @@ import android.accounts.NetworkErrorException;
 import android.app.Service;
 import android.content.ContentValues;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.IBinder;
@@ -38,6 +39,9 @@ import static com.google.android.gms.internal.zzs.TAG;
 
 public class FirebaseCloudMessagingService extends FirebaseInstanceIdService {
     public static final String APITOKEN_0_3 = "123456789";
+    public static final String SHARED_FIREBASE_PREF = "grappbox-firebase-prefs";
+    public static final String FIREBASE_PREF_TOKEN = "firebase-token";
+
     public FirebaseCloudMessagingService() {
     }
 
@@ -46,44 +50,10 @@ public class FirebaseCloudMessagingService extends FirebaseInstanceIdService {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
         Log.d(TAG, "Refreshed token: " + refreshedToken);
-
-        // TODO: Implement this method to send any registration to your app's servers.
-        sendRegistrationToServer(refreshedToken);
-    }
-
-    public void sendRegistrationToServer(String firebaseToken){
-        HttpURLConnection connection = null;
-        String returnedJson;
-
-
-        try {
-            final URL url = new URL("https://api.grappbox.com/0.3/notification/device");
-            JSONObject json = new JSONObject();
-            JSONObject data = new JSONObject();
-
-            data.put("device_type", "Android");
-            data.put("device_token", firebaseToken);
-            data.put("device_name", "My Android Device");
-            json.put("data", data);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Authorization", APITOKEN_0_3);
-            connection.setRequestMethod("POST");
-            Utils.JSON.sendJsonOverConnection(connection, json);
-            connection.connect();
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty()){
-                throw new NetworkErrorException("Returned JSON is empty");
-            } else {
-                json = new JSONObject(returnedJson);
-                if (Utils.Errors.checkAPIError(json)){
-                    throw new NetworkErrorException("API error");
-                }
-            }
-        } catch (IOException | JSONException | NetworkErrorException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null)
-                connection.disconnect();
-        }
+        SharedPreferences prefs = getSharedPreferences(SHARED_FIREBASE_PREF, MODE_PRIVATE);
+        prefs.edit().putString(FIREBASE_PREF_TOKEN, refreshedToken).apply();
+        Intent register = new Intent(this, GrappboxJustInTimeService.class);
+        register.setAction(GrappboxJustInTimeService.ACTION_REGISTER_DEVICE);
+        startService(register);
     }
 }

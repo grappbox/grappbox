@@ -577,6 +577,10 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
     public static void onAccountAdded(Account newAccount, Context context) {
         GrappboxSyncAdapter.configurePeriodicSync(context, SYNC_INTERVAL, SYNC_FLEXTIME);
         ContentResolver.setSyncAutomatically(newAccount, context.getString(R.string.content_authority), true);
+        Intent register = new Intent(context, GrappboxJustInTimeService.class);
+        register.setAction(GrappboxJustInTimeService.ACTION_REGISTER_DEVICE);
+        register.putExtra(GrappboxJustInTimeService.EXTRA_ACCOUNT, newAccount);
+        context.startService(register);
     }
 
     @NonNull

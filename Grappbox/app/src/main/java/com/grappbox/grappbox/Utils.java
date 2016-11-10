@@ -1,13 +1,16 @@
 package com.grappbox.grappbox;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.app.Activity;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.content.res.TypedArray;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.ActivityCompat;
 import android.util.Base64;
 import android.util.TypedValue;
 
@@ -76,7 +79,7 @@ public class Utils {
             return grappboxFormatter.parse(temp);
         }
 
-        public static java.util.Date convertUTCToGrappbox (java.util.Date date) throws ParseException {
+        public static java.util.Date convertUTCToGrappbox(java.util.Date date) throws ParseException {
             grappboxFormatter.setTimeZone(grappboxTZ);
             return grappboxFormatter.parse(grappboxFormatter.format(date));
         }
@@ -110,10 +113,10 @@ public class Utils {
             return !(json.getJSONObject("info").getString("return_code").startsWith("1."));
         }
 
-        public static String getClientMessageFromErrorCode(Context context, String errorCode){
+        public static String getClientMessageFromErrorCode(Context context, String errorCode) {
             int errorType = Integer.parseInt(errorCode.split("\\.")[2]);
 
-            switch (errorType){
+            switch (errorType) {
                 case 7:
                     return context.getString(R.string.error_already_in_database);
                 case 8:
@@ -183,10 +186,10 @@ public class Utils {
     }
 
     public static class Color {
-        public static int getThemeAccentColor(Context context){
+        public static int getThemeAccentColor(Context context) {
             TypedValue typedValue = new TypedValue();
 
-            TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[] { R.attr.colorAccent });
+            TypedArray a = context.obtainStyledAttributes(typedValue.data, new int[]{R.attr.colorAccent});
             int color = a.getColor(0, 0);
 
             a.recycle();
@@ -195,8 +198,8 @@ public class Utils {
         }
     }
 
-    public static class Account{
-        public static String getAuthToken(Activity activity){
+    public static class Account {
+        public static String getAuthToken(Activity activity) {
             String token = null;
             AccountManager am = AccountManager.get(activity);
             try {
@@ -207,7 +210,7 @@ public class Utils {
             return token;
         }
 
-        public static String getAuthTokenService(Context context, android.accounts.Account account){
+        public static String getAuthTokenService(Context context, android.accounts.Account account) {
             String token = null;
             AccountManager am = AccountManager.get(context);
             if (account == null)
@@ -218,6 +221,24 @@ public class Utils {
                 e.printStackTrace();
             }
             return token;
+        }
+
+        public static String[] getAllAccountAuthTokenService(Context context) {
+            AccountManager am = AccountManager.get(context);
+            if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.GET_ACCOUNTS) != PackageManager.PERMISSION_GRANTED) {
+                android.accounts.Account[] accounts = am.getAccountsByType(context.getString(R.string.sync_account_type));
+                String[] tokens = new String[accounts.length];
+                for (int i = 0; i < accounts.length; i++) {
+                    try {
+                        tokens[i] = am.getAuthToken(accounts[i], GrappboxAuthenticator.ACCOUNT_TOKEN_TYPE, null, true, null, null).getResult().getString(AccountManager.KEY_AUTHTOKEN);
+                    } catch (OperationCanceledException | IOException | AuthenticatorException e) {
+                        e.printStackTrace();
+                        tokens[i] = null;
+                    }
+                }
+                return tokens;
+            }
+            return null;
         }
     }
 
