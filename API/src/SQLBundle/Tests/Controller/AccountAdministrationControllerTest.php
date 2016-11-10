@@ -20,7 +20,7 @@ class AccountAdministrationControllerTest extends WebTestCase
         	'{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
-        var_dump($client);
+        var_dump($client->getResponse()->getContent());
         // Assert a specific 200 status code
 		$this->assertEquals(
 		    201, // or Symfony\Component\HttpFoundation\Response::HTTP_OK
