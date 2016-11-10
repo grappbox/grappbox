@@ -20,18 +20,31 @@ class AccountAdministrationControllerTest extends WebTestCase
         	'{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
-        var_dump($client->getResponse()->getContent());
         // Assert a specific 200 status code
 		$this->assertEquals(
-		    201, // or Symfony\Component\HttpFoundation\Response::HTTP_OK
+		    201,
 		    $client->getResponse()->getStatusCode()
 		);
 
 		$data = json_decode($client->getResponse()->getContent(), true);
 		$data = $data['data'];
-        var_dump($data);
-		$this->assertEquals("john", $data->firstname);
-		$this->assertEquals("doe", $data->lastname);
-		$this->assertEquals("yolo@toto.com", $data->email);
+		$this->assertEquals("john", $data['firstname']);
+		$this->assertEquals("doe", $data['lastname']);
+		$this->assertEquals("yolo@toto.com", $data['email']);
+
+        $crawler = $client->request(
+            'POST',
+            '/account/register',
+            array(),
+            array(),
+            array('CONTENT_TYPE' => 'application/json'),
+            '{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
+        );
+
+        // Assert a specific 400 status code
+        $this->assertEquals(
+            400,
+            $client->getResponse()->getStatusCode()
+        );
     }
 }
