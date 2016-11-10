@@ -25,6 +25,7 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.model.CalendarEventDateFormatModel;
 import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
@@ -44,6 +45,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     private TextView mEventEnd;
     private CalendarEventReceiver mReceiver;
     private static boolean _isBegin;
+    private CalendarEventDateFormatModel mBeginDateFormat;
+    private CalendarEventDateFormatModel mEndDateFormat;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -60,6 +63,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
         getSupportActionBar().setHomeAsUpIndicator(ContextCompat.getDrawable(this, R.drawable.ic_cross));
         mTitle = (EditText) findViewById(R.id.title);
         mDescription = (EditText) findViewById(R.id.description);
+        mBeginDateFormat = new CalendarEventDateFormatModel();
+        mEndDateFormat = new CalendarEventDateFormatModel();
         mEventBegin = (TextView)findViewById(R.id.event_begin);
         mEventBegin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -78,6 +83,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
                 datePicker.show(getFragmentManager(), "Date end");
             }
         });
+        mEventBegin.setText(mBeginDateFormat.getDate() + " " + mBeginDateFormat.getHour());
+        mEventEnd.setText(mEndDateFormat.getDate() + " " + mEndDateFormat.getHour());
     }
 
     public void registerActivityActionCallback(CalendarEventReceiver.Callback action) {
@@ -141,14 +148,14 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-        String date = String.valueOf(year) + "-" + String.valueOf(month) + "-" + String.valueOf(dayOfMonth);
-
         if (_isBegin){
-            mEventBegin.setText(date);
+            mBeginDateFormat.setDate(year, month, dayOfMonth);
+            mEventBegin.setText(mBeginDateFormat.toString());
             TimePickerFragment timepicker = new TimePickerFragment();
             timepicker.show(getFragmentManager(), "Hour begin");
         } else {
-            mEventEnd.setText(date);
+            mEndDateFormat.setDate(year, month, dayOfMonth);
+            mEventEnd.setText(mEndDateFormat.toString());
             TimePickerFragment timepicker = new TimePickerFragment();
             timepicker.show(getFragmentManager(), "Hour end");
         }
@@ -156,11 +163,12 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        String hour = String.valueOf(hourOfDay) + ":" + String.valueOf(minute);
         if (_isBegin) {
-            mEventBegin.setText(mEventBegin.getText() + " " + hour);
+            mBeginDateFormat.setHour(hourOfDay, minute);
+            mEventBegin.setText(mBeginDateFormat.toString());
         } else {
-            mEventEnd.setText(mEventEnd.getText() + " " + hour);
+            mEndDateFormat.setHour(hourOfDay, minute);
+            mEventEnd.setText(mEndDateFormat.toString());
         }
     }
 
@@ -173,6 +181,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
             int month = c.get(Calendar.MONTH);
             int day = c.get(Calendar.DAY_OF_MONTH);
 
+            // Create a new instance of DatePickerDialog and return it
             return new DatePickerDialog(getActivity(), (NewEventActivity)getActivity(), year, month, day);
         }
     }
@@ -190,5 +199,4 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
                     DateFormat.is24HourFormat(getActivity()));
         }
     }
-
 }
