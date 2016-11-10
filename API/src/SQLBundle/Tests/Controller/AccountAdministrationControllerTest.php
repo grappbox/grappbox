@@ -29,6 +29,7 @@ class AccountAdministrationControllerTest extends WebTestCase
 
 		$data = json_decode($client->getResponse()->getContent(), true);
 		$data = $data['data'];
+        var_dump($data);
 		$this->assertEquals("john", $data->firstname);
 		$this->assertEquals("doe", $data->lastname);
 		$this->assertEquals("yolo@toto.com", $data->email);
