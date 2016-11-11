@@ -9,11 +9,26 @@ app.filter('range', function() {
   return function(input, total) {
       total = parseInt(total);
 
-      for (var i=0; i<total; i++) {
-        input.push(i);
+      for (var i=0; i < total; i++) {
+        input.push(i*10);
       }
 
       return input;
+    };
+});
+
+app.filter('dependencies', function() {
+  return function(input, ref) {
+    var list = [];
+
+      angular.forEach(input, function(value, key) {
+        if (!value.is_container && ref.id != value.id) {
+          value.name = value.title;
+          list.push(value);
+        }
+      });
+
+      return list;
     };
 });
 
@@ -130,9 +145,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.tasksList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
-        angular.forEach($scope.tasksList, function(task){
-          task["name"] = task.title;
-        });
+        $scope.tasksList = $filter('dependencies')($scope.tasksList, $scope.data.task);
       },
       function errorCallback(response) {
         $scope.tasksList = [];
@@ -301,8 +314,6 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       return ;
     }
 
-    var user = JSON.parse(user);
-
     if ($scope.data.task_new) {
       var index = -1;
       for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
@@ -316,6 +327,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
       return;
     }
+    //var user = JSON.parse(user);
 
     $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
     $scope.data.edit.newRes.push({"id": user.id, "percent": workcharge});
@@ -600,7 +612,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     if (task.type == "milestone") {
       elem['is_milestone'] = true;
       elem['dependencies'] = task.dependencies;
-      elem['started_at'] = $filter('date')(new Date(task.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
+      elem['due_date'] = $filter('date')(new Date(task.due_date), "yyyy-MM-dd H:mm:01", "GMT");
     }
     if (task.type == "regular") {
       elem['dependencies'] = task.dependencies;
@@ -638,38 +650,58 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
         $scope.taskID = $scope.data.task.id;
         $scope.data.message = '_valid';
         //memorizeTags();
-        //assignUsers(task);
         notificationFactory.success("Task posted");
         $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
       },
       function errorCallback(response) {
-        notificationFactory.warning("Unable to post task. Please try again.");
+        notificationFactory.error("Unable to post task. Please try again.");
       }, $scope);
   };
+
+  var setTags = function(tags) {
+    var list = [];
+    angular.forEach(tags, function(value, key) {
+      if (!value.id) {
+        var randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+        var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": randomColor}};
+        $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+          .then(function successCallback(response) {
+              //tag.id = (response.data.data.id);
+              list.push(response.data.data.id);
+          },
+          function errorCallback(response) {
+              notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
+          });
+      } else {
+        list.push(value.id);
+      }
+    });
+    return list;
+  }
 
   $scope.editTask = function(task) {
 
     var elem = {"id": $scope.taskID,
                 "title": $scope.data.edit.title,
                 "description": $scope.data.edit.description,
-                "is_milestone": false,
-                "is_container": false,
+                //"is_milestone": false,
+                //"is_container": false,
                 "advance": $scope.data.edit.advance,
                 };
 
-    if ($scope.data.edit.type == "container") {
-      elem['is_container'] = true;
+    if ($scope.data.task.is_container) {
+      //elem['is_container'] = true;
       elem["tasksAdd"] = $scope.data.taskToAdd;
       elem["tasksRemove"] = $scope.data.taskToRemove;
     }
-    if ($scope.data.edit.type == "milestone") {
+    if ($scope.data.task.is_milestone) {
       if ($scope.data.edit.due_date.getTime() != (new Date($scope.data.task.due_date).getTime())) {
-        elem['due_date'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT"); // add 1h
+        elem['due_date'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:01", "GMT");
         elem['started_at'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
       }
       elem['is_milestone'] = true;
     }
-    if ($scope.data.edit.type == "regular") {
+    if (!$scope.data.task.is_container && !$scope.data.task.is_milestone) {
       if ($scope.data.edit.due_date.getTime() != (new Date($scope.data.task.due_date).getTime()))
         elem['due_date'] = $filter('date')(new Date($scope.data.edit.due_date), "yyyy-MM-dd H:mm:ss", "GMT");
       if ($scope.data.edit.started_at.getTime() != (new Date($scope.data.task.started_at).getTime()))
@@ -681,22 +713,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       elem['finished_at'] = null;
 
     if ($scope.tagToAdd) {
-      var newTags = [];
-      angular.forEach($scope.tagToAdd, function(value, key) {
-        if (!value.id) {
-          var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
-          $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-            .then(function successCallback(response) {
-                //tag.id = (response.data.data.id);
-                newTags.push(response.data.data.id);
-            },
-            function errorCallback(response) {
-                notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-            });
-        } else {
-          this.push(value.id);
-        }
-      }, newTags);
+      var newTags = setTags($scope.tagToAdd);
       if (newTags.length)
         elem['tagsAdd'] = newTags;
     }

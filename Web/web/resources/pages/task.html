@@ -119,7 +119,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </select>
                 </div>
                 <div class="col-md-4">
-                  <select class="form-control" data-ng-model="user_percent" id="workcharge" convert-to-number data-ng-options="($index*10) as ($index*10 + '%') for n in [] | range:11">
+                  <select class="form-control" data-ng-model="user_percent" id="workcharge" convert-to-number data-ng-options="n as (n + '%') for n in [] | range:11">
                     <option value="" disabled selected>Select user's work charge</option>
                     <!-- <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option> -->
                   </select>
@@ -139,7 +139,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </select>
                 </div>
                 <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default btn-sm" data-ng-click="removeResource(user)"><i class="material-icons">delete</i></a>
+                  <a href="" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)"><i class="material-icons">delete</i></a>
                 </div>
               </div>
 
@@ -197,7 +197,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </select>
                 </div>
                 <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default btn-xs" data-ng-click="removeDependency(dependency)"><i class="material-icons">delete</i></a>
+                  <a href="" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeDependency(dependency)"><i class="material-icons">delete</i></a>
                 </div>
               </div>
 
@@ -247,7 +247,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="form-group">
                   <label class="col-md-1 control-label">Object type</label>
                   <div class="col-md-11">
-                    <select class="form-control" data-ng-model="data.edit.type">
+                    <select class="form-control" data-ng-model="data.edit.type" disabled="true">
                       <option value="regular">Regular</option>
                       <option value="milestone">Milestone</option>
                       <option value="Container">Container</option>
@@ -298,9 +298,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="form-group" data-ng-if="data.edit.type == 'regular'">
                   <label for="users" class="col-md-1 control-label">Add a user</label>
                   <div class="col-md-4">
-                    <select class="form-control" name="users" data-ng-model="new_user">
+                    <select class="form-control" name="users" data-ng-model="new_user" data-ng-options="user as user.name for user in usersList">
                       <option value="" disabled selected>Select a user</option>
-                      <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option>
+                      <!-- <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option> -->
                     </select>
                   </div>
                   <div class="col-md-4">
@@ -322,14 +322,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
                     </select>
                   </div>
-                  <!-- <div class="col-md-1 col-xs-6">
+                  <div class="col-md-1 col-xs-6">
                     <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></button>
                     <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></button>
-                  </div> -->
-                  <div class="col-md-1 col-xs-6" data-ng-switch="user.old"> <!-- TODO: replace ng-if for ng-switch -->
-                    <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)" ng-switch-when="false"><i class="material-icons">delete</i></button>
-                    <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverResource(user)" ng-switch-when="true" alt="recover"><i class="material-icons">refresh</i></button>
                   </div>
+                  <!-- <div class="col-md-1 col-xs-6" data-ng-switch="user.old">
+                    <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet"
+                            data-ng-click="removeResource(user)" ng-switch-when="false"><i class="material-icons">delete</i></button>
+                    <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet"
+                            data-ng-click="recoverResource(user)" ng-switch-when="true" alt="recover"><i class="material-icons">refresh</i></button>
+                  </div> -->
                 </div>
 
                 <!-- CONTAINER EDITION -->
@@ -436,6 +438,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <fieldset>
               <div class="col-md-12">
                 <h1 class="ellipsis">{[{data.task.title}]}</h1>
+                <h3>{[{data.task.is_container ? 'container' : (data.task.is_milestone ? 'milestone' : 'regular task')}]}</h3>
                 <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">{[{ data.task.started_at ? formatObjectDate(data.task.started_at) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date) }]}</h4>
                 <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date) }]}</h4>
               </div>
@@ -516,8 +519,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
               <div class="col-md-12 task-section" data-ng-if="data.task.is_container">
                 <h4>Tasks</h4>
-                <div class="panel panel-default col-md-6" ng-repeat="task in data.task.tasks">
-                  <div class="panel-body">{[{task.title}]}</div>
+                <div>
+                  <div class="md-chip" ng-repeat="task in data.task.tasks">
+                    <div class="md-chip-img">
+                      <span class="md-chip-span">{[{task.is_container ? 'C' : (task.is_milestone ? 'M' : 'T') }]}</span>
+                    </div>
+                    <span class="md-chip-text">{[{ task.title }]}</span>
+                  </div>
                 </div>
                 <div class="col-md-12" data-ng-if="!((data.task.tasks).length)">
                   <div class="">No task</div>
