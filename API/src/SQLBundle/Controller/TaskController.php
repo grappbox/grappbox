@@ -332,6 +332,83 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"tasks_modified": []
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new task",
+	*			"body": {
+	*				"id": 2,
+	*				"title": "Update servers",
+	*				"description": "update all the servers",
+	*				"due_date": "2015-10-15 11:00:00",
+	*				"started_at": "2015-10-10 11:00:00",
+	*				"finished_at": "2015-10-15 18:23:00",
+	*				"created_at": "2015-10-09 11:00:00",
+	*				"is_milestone": false,
+	*				"is_container": true,
+	*				"tasks":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					},
+	*					{
+	*						"id": 3,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
+	*				],
+	*				"advance": 20,
+	*				"creator": {
+	*					"id": 1,
+	*					"firstname": "john",
+	*					"lastname": "doe"
+	*				},
+	*				"users": [
+	*					{
+	*						"id": 13,
+	*						"firstname": "Jane",
+	*						"lastname": "Doe",
+	*						"percent": 50
+	*					}
+	*				],
+	*				"tags": [
+	*					{
+	*						"id": 2,
+	*						"name": "Urgent",
+	*						"color": "FFFFFF"
+	*					}
+	*				],
+	*				"dependencies":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"name": "fs",
+	*						"task": {
+	*							"id": 12,
+	*							"title": "Add users to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
+	*						}
+	*					},
+	*					{
+	*						"id": 3,
+	*						"name": "ss",
+	*						"task": {
+	*							"id": 10,
+	*							"title": "Add customers to project",
+	*							"started_at": "2015-10-15 11:00:00",
+	*							"due_date": "2015-10-20 18:23:00"
+	*						}
+	*					}
+	*				],
+	*				"tasks_modified": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1209,6 +1286,83 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"tags": [],
 	*			"dependencies": [],
 	*			"tasks_modified": []
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update task",
+	*			"body": {
+	*				"id": 2,
+	*				"title": "Update servers",
+	*				"description": "update all the servers",
+	*				"due_date": "2015-10-15 11:00:00",
+	*				"started_at": "2015-10-10 11:00:00",
+	*				"finished_at": "2015-10-15 18:23:00",
+	*				"created_at": "2015-10-09 11:00:00",
+	*				"is_milestone": false,
+	*				"is_container": true,
+	*				"tasks":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					},
+	*					{
+	*						"id": 3,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
+	*				],
+	*				"advance": 20,
+	*				"creator": {
+	*					"id": 1,
+	*					"firstname": "john",
+	*					"lastname": "doe"
+	*				},
+	*				"users": [
+	*					{
+	*						"id": 13,
+	*						"firstname": "Jane",
+	*						"lastname": "Doe",
+	*						"percent": 50
+	*					}
+	*				],
+	*				"tags": [
+	*					{
+	*						"id": 2,
+	*						"name": "Urgent",
+	*						"color": "FFFFFF"
+	*					}
+	*				],
+	*				"dependencies":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"name": "fs",
+	*						"task": {
+	*							"id": 12,
+	*							"title": "Add users to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
+	*						}
+	*					},
+	*					{
+	*						"id": 3,
+	*						"name": "ss",
+	*						"task": {
+	*							"id": 10,
+	*							"title": "Add customers to project",
+	*							"started_at": "2015-10-15 11:00:00",
+	*							"due_date": "2015-10-20 18:23:00"
+	*						}
+	*					}
+	*				],
+	*				"tasks_modified": []
+	*			}
 	*		}
 	*	}
 	*
@@ -2450,6 +2604,83 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id" : 3
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "archive task",
+	*			"body": {
+	*				"id": 2,
+	*				"title": "Update servers",
+	*				"description": "update all the servers",
+	*				"due_date": "2015-10-15 11:00:00",
+	*				"started_at": "2015-10-10 11:00:00",
+	*				"finished_at": "2015-10-15 18:23:00",
+	*				"created_at": "2015-10-09 11:00:00",
+	*				"is_milestone": false,
+	*				"is_container": true,
+	*				"tasks":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					},
+	*					{
+	*						"id": 3,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
+	*				],
+	*				"advance": 20,
+	*				"creator": {
+	*					"id": 1,
+	*					"firstname": "john",
+	*					"lastname": "doe"
+	*				},
+	*				"users": [
+	*					{
+	*						"id": 13,
+	*						"firstname": "Jane",
+	*						"lastname": "Doe",
+	*						"percent": 50
+	*					}
+	*				],
+	*				"tags": [
+	*					{
+	*						"id": 2,
+	*						"name": "Urgent",
+	*						"color": "FFFFFF"
+	*					}
+	*				],
+	*				"dependencies":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"name": "fs",
+	*						"task": {
+	*							"id": 12,
+	*							"title": "Add users to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
+	*						}
+	*					},
+	*					{
+	*						"id": 3,
+	*						"name": "ss",
+	*						"task": {
+	*							"id": 10,
+	*							"title": "Add customers to project",
+	*							"started_at": "2015-10-15 11:00:00",
+	*							"due_date": "2015-10-20 18:23:00"
+	*						}
+	*					}
+	*				],
+	*				"tasks_modified": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -2618,6 +2849,83 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"return_message": "Task - taskdelete - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete task",
+	*			"body": {
+	*				"id": 2,
+	*				"title": "Update servers",
+	*				"description": "update all the servers",
+	*				"due_date": "2015-10-15 11:00:00",
+	*				"started_at": "2015-10-10 11:00:00",
+	*				"finished_at": "2015-10-15 18:23:00",
+	*				"created_at": "2015-10-09 11:00:00",
+	*				"is_milestone": false,
+	*				"is_container": true,
+	*				"tasks":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"title": "Add users to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					},
+	*					{
+	*						"id": 3,
+	*						"title": "Add customers to project",
+	*						"started_at": "2015-10-10 11:00:00",
+	*						"due_date": "2015-10-15 18:23:00"
+	*					}
+	*				],
+	*				"advance": 20,
+	*				"creator": {
+	*					"id": 1,
+	*					"firstname": "john",
+	*					"lastname": "doe"
+	*				},
+	*				"users": [
+	*					{
+	*						"id": 13,
+	*						"firstname": "Jane",
+	*						"lastname": "Doe",
+	*						"percent": 50
+	*					}
+	*				],
+	*				"tags": [
+	*					{
+	*						"id": 2,
+	*						"name": "Urgent",
+	*						"color": "FFFFFF"
+	*					}
+	*				],
+	*				"dependencies":
+	*				[
+	*					{
+	*						"id": 1,
+	*						"name": "fs",
+	*						"task": {
+	*							"id": 12,
+	*							"title": "Add users to project",
+	*							"started_at": "2015-10-10 11:00:00",
+	*							"due_date": "2015-10-15 18:23:00"
+	*						}
+	*					},
+	*					{
+	*						"id": 3,
+	*						"name": "ss",
+	*						"task": {
+	*							"id": 10,
+	*							"title": "Add customers to project",
+	*							"started_at": "2015-10-15 11:00:00",
+	*							"due_date": "2015-10-20 18:23:00"
+	*						}
+	*					}
+	*				],
+	*				"tasks_modified": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -2776,6 +3084,17 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 1,
 	*			"name": "Urgent",
 	*			"color": "FFFFFF"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new tag task",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
 	*		}
 	*	}
 	*
@@ -2966,6 +3285,17 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id" : 1,
 	*			"name": "ASAP",
 	*			"color": "FFFFFF"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update tag task",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
 	*		}
 	*	}
 	*
@@ -3263,6 +3593,17 @@ class TaskController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.12.1",
 	*			"return_message": "Task - deletetag - Complete Success"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete tag task",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
 	*		}
 	*	}
 	*

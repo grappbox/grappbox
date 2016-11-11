@@ -86,7 +86,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
 	*					"editedAt": "1945-06-18 08:00:00",
-	*					"users": []
+	*					"users": [
+	*						{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*						{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*					]
 	*					},
 	*					...
 	*				]
@@ -302,7 +305,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
 	*					"editedAt": "1945-06-18 08:00:00",
-	*					"users": []
+	*					"users": [
+	*						{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*						{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*					]
 	*					},
 	*					...
 	*				]
@@ -519,7 +525,10 @@ class PlanningController extends RolesAndTokenVerificationController
 	*					"endDate": "1945-06-18 08:00:00",
 	*					"createdAt": "1945-06-18 08:00:00",
 	*					"editedAt": "1945-06-18 08:00:00",
-	*					"users": []
+	*					"users": [
+	*						{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*						{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*					]
 	*					},
 	*					...
 	*				]

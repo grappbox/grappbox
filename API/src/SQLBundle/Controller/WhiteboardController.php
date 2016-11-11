@@ -304,6 +304,30 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	    "deletedAt": null
 	*	  }
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new whiteboard",
+	*			"body": {
+	*				"id": 7,
+	*	    		"projectId": 1,
+	*	    		"user": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				},
+	*	    		"name": "Test Whiteboard #42",
+	*	    		"updator": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				},
+	*	    		"updatedAt": "2016-05-21 08:16:01",
+	*	    		"createdAt": "2016-05-21 08:16:01",
+	*	    		"deletedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -570,6 +594,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		]
 	*	  }
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "login whiteboard",
+	*			"body": {
+	*				"id": 7,
+	*	    		"user": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				}
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -749,10 +787,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "login whiteboard";
-		$mdata['mdesc'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		$wdata['type'] = "login whiteboard";
 		$wdata['targetId'] = $whiteboard->getId();
-		$wdata['message'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
 			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
@@ -817,6 +855,20 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	  },
 	*	  "data": {}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "logout whiteboard",
+	*			"body": {
+	*				"id": 7,
+	*	    		"user": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				}
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -876,10 +928,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "logout whiteboard";
-		$mdata['mdesc'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		$wdata['type'] = "logout whiteboard";
 		$wdata['targetId'] = $whiteboard->getId();
-		$wdata['message'] = json_encode(array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname()));
+		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
 			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
@@ -942,6 +994,23 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			},
 	*			"createdAt": "2015-11-27 11:31:24",
 	*			"deletedAt": null
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new object",
+	*			"body": {
+	*				"id": 5,
+	*				"whiteboardId": "2",
+	*				"object": {
+	*					"type": "RECTANGLE",
+	*					"color": "#8BC800",
+	*					...
+	*				},
+	*				"createdAt": "2015-11-27 11:31:24",
+	*				"deletedAt": null
+	*			}
 	*		}
 	*	}
 	*
@@ -1398,6 +1467,30 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"return_message": "Whiteboard - delete - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete whiteboard",
+	*			"body": {
+	*				"id": 7,
+	*	    		"projectId": 1,
+	*	    		"user": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				},
+	*	    		"name": "Test Whiteboard #42",
+	*	    		"updator": {
+	*					"id": 13,
+	*					"fistname": "john",
+	*					"lastname": "Doe"
+	*				},
+	*	    		"updatedAt": "2016-05-21 08:16:01",
+	*	    		"createdAt": "2016-05-21 08:16:01",
+	*	    		"deletedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1567,6 +1660,23 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*		},
 	*		"data": {
 	*			"array": []
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete object",
+	*			"body": {
+	*				"id": 5,
+	*				"whiteboardId": "2",
+	*				"object": {
+	*					"type": "RECTANGLE",
+	*					"color": "#8BC800",
+	*					...
+	*				},
+	*				"createdAt": "2015-11-27 11:31:24",
+	*				"deletedAt": null
+	*			}
 	*		}
 	*	}
 	*

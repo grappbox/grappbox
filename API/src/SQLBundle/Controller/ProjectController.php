@@ -138,6 +138,31 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"deleted_at": null
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new project",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Grappbox",
+	*				"description": "grappbox est un projet de gestion de projets",
+	*				"creator": {
+	*					"id": 13,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				},
+	*				"logo": "2016-10-04 18:00:00",
+	*				"phone": "+335 65 23 45 94",
+	*				"company": "L'oie oppressée",
+	*				"contact_mail": "contact@oieoppresee.com",
+	*				"facebook": "www.facebook.com/OieOpp",
+	*				"twitter": "www.twitter.com/OieOpp",
+	*				"color": "#333333",
+	*				"created_at": "2016-10-04 18:00:00",
+	*				"deleted_at": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -506,6 +531,56 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"color": "#333333",
 	*			"created_at": "2016-10-04 18:00:00",
 	*			"deleted_at": null
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update project",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Grappbox",
+	*				"description": "grappbox est un projet de gestion de projets",
+	*				"creator": {
+	*					"id": 13,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				},
+	*				"logo": "2016-10-04 18:00:00",
+	*				"phone": "+335 65 23 45 94",
+	*				"company": "L'oie oppressée",
+	*				"contact_mail": "contact@oieoppresee.com",
+	*				"facebook": "www.facebook.com/OieOpp",
+	*				"twitter": "www.twitter.com/OieOpp",
+	*				"color": "#333333",
+	*				"created_at": "2016-10-04 18:00:00",
+	*				"deleted_at": null
+	*			}
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications Logo
+	*	{
+	*		"data": {
+	*			"title": "logo project",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Grappbox",
+	*				"description": "grappbox est un projet de gestion de projets",
+	*				"creator": {
+	*					"id": 13,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				},
+	*				"logo": "2016-10-04 18:00:00",
+	*				"phone": "+335 65 23 45 94",
+	*				"company": "L'oie oppressée",
+	*				"contact_mail": "contact@oieoppresee.com",
+	*				"facebook": "www.facebook.com/OieOpp",
+	*				"twitter": "www.twitter.com/OieOpp",
+	*				"color": "#333333",
+	*				"created_at": "2016-10-04 18:00:00",
+	*				"deleted_at": null
+	*			}
 	*		}
 	*	}
 	*
@@ -1014,6 +1089,31 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - delproject - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete project",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Grappbox",
+	*				"description": "grappbox est un projet de gestion de projets",
+	*				"creator": {
+	*					"id": 13,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				},
+	*				"logo": "2016-10-04 18:00:00",
+	*				"phone": "+335 65 23 45 94",
+	*				"company": "L'oie oppressée",
+	*				"contact_mail": "contact@oieoppresee.com",
+	*				"facebook": "www.facebook.com/OieOpp",
+	*				"twitter": "www.twitter.com/OieOpp",
+	*				"color": "#333333",
+	*				"created_at": "2016-10-04 18:00:00",
+	*				"deleted_at": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1144,6 +1244,31 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.6.1",
 	*			"return_message": "Project - retrieveproject - Complete Success"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "retrieve project",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Grappbox",
+	*				"description": "grappbox est un projet de gestion de projets",
+	*				"creator": {
+	*					"id": 13,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				},
+	*				"logo": "2016-10-04 18:00:00",
+	*				"phone": "+335 65 23 45 94",
+	*				"company": "L'oie oppressée",
+	*				"contact_mail": "contact@oieoppresee.com",
+	*				"facebook": "www.facebook.com/OieOpp",
+	*				"twitter": "www.twitter.com/OieOpp",
+	*				"color": "#333333",
+	*				"created_at": "2016-10-04 18:00:00",
+	*				"deleted_at": null
+	*			}
 	*		}
 	*	}
 	*
@@ -1298,6 +1423,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"name": "access for Toyota",
 	*			"token": "246107b11d98a9546978a2c20632bb2d",
 	*			"project_id": 2
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new customeraccess",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "access for Toyota",
+	*				"token": "246107b11d98a9546978a2c20632bb2d",
+	*				"project_id": 2
+	*			}
 	*		}
 	*	}
 	*
@@ -1664,6 +1801,18 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - delcustomeraccess - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete customeraccess",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "access for Toyota",
+	*				"token": "246107b11d98a9546978a2c20632bb2d",
+	*				"project_id": 2
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1812,6 +1961,21 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"firstname": "john",
 	*			"lastname": "doe",
 	*			"avatar": "2016-11-09"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "user assign project",
+	*			"body": {
+	*				"id": 1,
+	*				"user":{
+	*					"id": 1
+	*					"firstname": "john",
+	*					"lastname": "doe",
+	*					"avatar": "2016-11-09"
+	*				}
+	*			}
 	*		}
 	*	}
 	*
@@ -2027,6 +2191,21 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - removeuserconnected - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "user unassign project",
+	*			"body": {
+	*				"id": 1,
+	*				"user":{
+	*					"id": 1
+	*					"firstname": "john",
+	*					"lastname": "doe",
+	*					"avatar": "2016-11-09"
+	*				}
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -2100,10 +2279,10 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		// Notifications
 		$mdata['mtitle'] = "user unassign project";
-		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$mdata['mdesc'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "avatar" => $user->getAvatarDate())));
 		$wdata['type'] = "user unassign project";
 		$wdata['targetId'] = $project->getId();
-		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$wdata['message'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname(), "avatar" => $user->getAvatarDate())));
 		$userNotif = array();
 		$userNotif[] = $user->getId();
 		foreach ($project->getUsers() as $key => $value) {
@@ -2139,6 +2318,21 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.6.1",
 	*			"return_message": "Project - removeusertoproject - Complete Success"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "user unassign project",
+	*			"body": {
+	*				"id": 1,
+	*				"user":{
+	*					"id": 1
+	*					"firstname": "john",
+	*					"lastname": "doe",
+	*					"avatar": "2016-11-09"
+	*				}
+	*			}
 	*		}
 	*	}
 	*
@@ -2290,10 +2484,10 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		// Notifications
 		$mdata['mtitle'] = "user unassign project";
-		$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
+		$mdata['mdesc'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToRemove->getId(), "firstname" => $userToRemove->getFirstname(), "lastname" => $userToRemove->getLastname(), "avatar" => $userToRemove->getAvatarDate())));
 		$wdata['type'] = "user unassign project";
 		$wdata['targetId'] = $project->getId();
-		$wdata['message'] = json_encode($project->objectToArray($em, $user));
+		$wdata['message'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToRemove->getId(), "firstname" => $userToRemove->getFirstname(), "lastname" => $userToRemove->getLastname(), "avatar" => $userToRemove->getAvatarDate())));
 		$userNotif = array();
 		$userNotif[] = $userToRemove->getId();
 		foreach ($project->getUsers() as $key => $value) {

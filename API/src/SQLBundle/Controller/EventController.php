@@ -108,9 +108,32 @@ class EventController extends RolesAndTokenVerificationController
 	*			"endDate": "1945-06-18 08:00:00",
 	*			"createdAt": "1945-02-18 06:00:00",
 	*			"editedAt": null,
-	*			"users": []
+	*			"users": [
+	*				{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*				{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*			]
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new event",
+	*			"body": {
+	*				"id": 12, "projectId": 21,
+	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
+	*				"title": "Brainstorming",
+	*				"description": "blablabla",
+	*				"beginDate": "1945-06-18 06:00:00",
+	*				"endDate": "1945-06-18 08:00:00",
+	*				"createdAt": "1945-02-18 06:00:00",
+	*				"editedAt": null,
+	*				"users": [
+	*					{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*					{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*				]
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
@@ -405,9 +428,32 @@ class EventController extends RolesAndTokenVerificationController
 	*			"endDate": "1945-06-18 08:00:00",
 	*			"createdAt": "1945-02-18 06:00:00",
 	*			"editedAt": null,
-	*			"users": []
+	*			"users": [
+	*				{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*				{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*			]
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update event",
+	*			"body": {
+	*				"id": 12, "projectId": 21,
+	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
+	*				"title": "Brainstorming",
+	*				"description": "blablabla",
+	*				"beginDate": "1945-06-18 06:00:00",
+	*				"endDate": "1945-06-18 08:00:00",
+	*				"createdAt": "1945-02-18 06:00:00",
+	*				"editedAt": null,
+	*				"users": [
+	*					{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*					{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*				]
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
@@ -690,6 +736,26 @@ class EventController extends RolesAndTokenVerificationController
 	*			"return_message": "Calendar - delEvent - Complete success"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete event",
+	*			"body": {
+	*				"id": 12, "projectId": 21,
+	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
+	*				"title": "Brainstorming",
+	*				"description": "blablabla",
+	*				"beginDate": "1945-06-18 06:00:00",
+	*				"endDate": "1945-06-18 08:00:00",
+	*				"createdAt": "1945-02-18 06:00:00",
+	*				"editedAt": null,
+	*				"users": [
+	*					{"id": 95, "firsname": "John", "lastname": "Doe"},
+	*					{"id": 96, "firsname": "Joanne", "lastname": "Doe"}
+	*				]
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -1078,6 +1144,26 @@ class EventController extends RolesAndTokenVerificationController
 	*			]
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "participants event",
+	*			"body": {
+	*				"id": 12, "projectId": 21,
+	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
+	*				"title": "Brainstorming",
+	*				"description": "blablabla",
+	*				"beginDate": "1945-06-18 06:00:00",
+	*				"endDate": "1945-06-18 08:00:00",
+	*				"createdAt": "1945-02-18 06:00:00",
+	*				"editedAt": null,
+	*				"users": [
+	*					{"id": 95, "firstname": "John", "lastname": "Doe"},
+	*					{"id": 96, "firstname": "Joanne", "lastname": "Doe"}
+	*				]
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
