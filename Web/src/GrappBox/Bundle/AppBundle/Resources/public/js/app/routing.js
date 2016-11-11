@@ -20,7 +20,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		resolve: { projectSelection: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected(); }]}
 	})
 	// Project dashboard
-  .when("/dashboard/:project_id/", {
+  .when("/dashboard/:project_id", {
 		title: "Dashboard",
     controller  : "DashboardController",
 		templateUrl : "../resources/pages/dashboard.html",
