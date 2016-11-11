@@ -495,7 +495,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
 		$result = array();
 		foreach ($project->getTimelines() as $key => $timeline) {
-			$result[$timeline->getId()] = $em->getRepository('SQLBundle:TimelineMessage')->createQueryBuilder('t')
+			$result[($timeline->getTypeId() == 1 ? 'customer' : 'team')] = $em->getRepository('SQLBundle:TimelineMessage')->createQueryBuilder('t')
 												->select('count(t)')
 												->where(' t = :timeline')
 												->setParameters(array('timeline' => $timeline))
