@@ -61,7 +61,7 @@ namespace GrappBox.View
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
 
-                await vm.updateMessage(vm.CommentSelected);
+                await vm.updateComment(vm.CommentSelected);
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;
@@ -76,7 +76,7 @@ namespace GrappBox.View
                 LoadingBar.IsEnabled = true;
                 LoadingBar.Visibility = Visibility.Visible;
 
-                await vm.removeMessage(vm.CommentSelected);
+                await vm.removeComment(vm.CommentSelected);
 
                 LoadingBar.IsEnabled = false;
                 LoadingBar.Visibility = Visibility.Collapsed;

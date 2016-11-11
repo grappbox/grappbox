@@ -63,7 +63,7 @@ namespace GrappBox.ViewModel
                 if (res.IsSuccessStatusCode)
                 {
                     Messages newMessages = api.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
-                    if (newMessages.Count <= 0)
+                    if (newMessages.Count <= 0 && TeamOffset > 0 + _incrementation)
                     {
                         TeamOffset -= _incrementation;
                         return false;
@@ -102,7 +102,7 @@ namespace GrappBox.ViewModel
                 if (res.IsSuccessStatusCode)
                 {
                     Messages newMessages = api.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
-                    if (newMessages.Count <= 0)
+                    if (newMessages.Count <= 0 && CustomerOffset > 0 + _incrementation)
                     {
                         TeamOffset -= _incrementation;
                         return false;
@@ -228,7 +228,7 @@ namespace GrappBox.ViewModel
             string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-               _Comments.Add(api.DeserializeJson<TimelineModel>(json));
+                _Comments.Add(api.DeserializeJson<TimelineModel>(json));
             }
             else
             {
@@ -275,11 +275,41 @@ namespace GrappBox.ViewModel
             return false;
         }
 
+        public async System.Threading.Tasks.Task<bool> removeComment(TimelineModel message)
+        {
+            if (_commentSelected != null)
+            {
+                HttpRequestManager api = HttpRequestManager.Instance;
+
+                object[] token = { message.Id };
+                HttpResponseMessage res = await api.Delete(token, "timeline/comment");
+                if (res == null)
+                    return false;
+                if (res.IsSuccessStatusCode)
+                {
+                    _Comments.Remove(message);
+                    if (_commentSelected == message)
+                        _commentSelected = null;
+                    NotifyPropertyChanged("CommentList");
+                }
+                else
+                {
+                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                    await msgbox.ShowAsync();
+                    return false;
+                }
+                return true;
+            }
+            return false;
+        }
+
         public async System.Threading.Tasks.Task<bool> updateMessage(TimelineModel message)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
+            if (message.Title == "" || message.Message == "")
+                return false;
             props.Add("title", message.Title);
             props.Add("message", message.Message);
             HttpResponseMessage res = await api.Put(props, "timeline/message/" + message.TimelineId + "/" + message.Id);
@@ -299,23 +329,53 @@ namespace GrappBox.ViewModel
             }
             else
             {
-                if (message.ParentId == 0)
+                if (message.TimelineId == _Customer.Id)
                 {
-                    if (message.TimelineId == _Customer.Id)
-                    {
-                        _CustomerMessages.Clear();
-                        CustomerOffset = 0;
-                        await getCustomerMessages();
-                    }
-                    else
-                    {
-                        _TeamMessages.Clear();
-                        TeamOffset = 0;
-                        await getTeamMessages();
-                    }
+                    _CustomerMessages.Clear();
+                    CustomerOffset = 0;
+                    await getCustomerMessages();
                 }
                 else
-                    await getComments(message.TimelineId, message.ParentId);
+                {
+                    _TeamMessages.Clear();
+                    TeamOffset = 0;
+                    await getTeamMessages();
+                }
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
+                await msgbox.ShowAsync();
+                return false;
+            }
+            props.Clear();
+            return true;
+        }
+
+        public async System.Threading.Tasks.Task<bool> updateComment(TimelineModel message)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            if (message.Comment == "")
+                return false;
+            props.Add("commentId", message.Id);
+            props.Add("comment", message.Comment);
+            HttpResponseMessage res = await api.Put(props, "timeline/comment/" + _messageSelected.TimelineId);
+            if (res == null)
+                return false;
+            string json = await res.Content.ReadAsStringAsync();
+            if (res.IsSuccessStatusCode)
+            {
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(json);
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
+                await getComments(message.TimelineId, message.ParentId);
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(json));
                 await msgbox.ShowAsync();
                 return false;
