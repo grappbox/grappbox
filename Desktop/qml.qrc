@@ -28,8 +28,7 @@
         <file>qrc/CreateProject.qml</file>
         <file>qrc/ImageAsync.qml</file>
         <file>qrc/CircleImageAsync.qml</file>
-        <file>qrc/TaskView.qml</file>
-        <file>qrc/TaskBox.qml</file>
+        <file>qrc/Tasks.qml</file>
         <file>qrc/Calendar.qml</file>
         <file>qrc/CalendarCase.qml</file>
         <file>qrc/CalendarTaskView.qml</file>
@@ -48,6 +47,10 @@
         <file>qrc/CustomMenuField.qml</file>
         <file>qrc/WhiteboardDrawingPage.qml</file>
         <file>qrc/WhiteboardChoosingPage.qml</file>
+        <file>qrc/TasksView.qml</file>
+        <file>qrc/TaskInfoView.qml</file>
+        <file>qrc/FiltersMenuField.qml</file>
+        <file>qrc/CustomProgressCircle.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>
