@@ -101,11 +101,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": null,
 	*			"clientOrigin": false,
 	*			"state": true,
-	*			"tags": [],
-	*			"users": []
+	*			"tags": [
+	*			  	{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  	{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*			],
+	*			"users": [
+	*			  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*			  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*			]
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "new bug",
@@ -119,8 +125,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -433,11 +445,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": "2015-11-30 10:26:58",
 	*			"clientOrigin": false,
 	*			"state": true,
-	*			"tags": [],
-	*			"users": []
+	*			"tags": [
+	*			  	{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  	{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*			],
+	*			"users": [
+	*			  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*			  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*			]
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "update bug",
@@ -451,8 +469,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -737,7 +761,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - closeTicket - Complete Success"
 	*		}
 	* 	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "close bug",
@@ -751,8 +775,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -890,7 +920,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteTicket - Complete Success"
 	*		}
 	* 	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "delete bug",
@@ -904,8 +934,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -997,7 +1033,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - reopenTicket - Complete Success"
 	*		}
 	* 	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "reopen bug",
@@ -1011,8 +1047,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -3018,7 +3060,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			]
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "participants bug",
@@ -3032,8 +3074,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -3525,7 +3573,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "new comment bug",
@@ -3761,7 +3809,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "edit comment bug",
@@ -3964,7 +4012,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteComment - Complete Success"
 	*		}
 	* 	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "delete comment bug",
@@ -4089,7 +4137,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"color": "FFFFFF"
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "new tag bug",
@@ -4289,7 +4337,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"color": "FFFFFF"
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "update tag bug",
@@ -4595,7 +4643,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteTag - Complete Success"
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "delete tag bug",
@@ -4716,7 +4764,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @api {put} /0.3/bugtracker/tag/assign/:bugId Assign tag
 	* @apiName assignTagToBug
 	* @apiGroup Bugtracker
-	* @apiDescription Assign a tag to a bug /!\ Use [editTicket](/#api-Bugtracker-editTicket) instead /!\
+	* @apiDescription Assign a tag to a bug
 	* @apiVersion 0.3.0
 	*
 	* @apiHeader {string} Authorization user's authentication token
@@ -4732,17 +4780,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*	{
 	*		"data": {
 	*			"tagId": 3
-	*		}
-	*	}
-	* @apiSuccessExample {json} Notifications:
-	*	{
-	*		"data": {
-	*			"title": "delete tag bug",
-	*			"body": {
-	*				"id": 1,
-	*				"name": "Urgent",
-	*				"color": "FFFFFF"
-	*			}
 	*		}
 	*	}
 	*
@@ -4768,7 +4805,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			}
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "assign tag bug",
@@ -4782,8 +4819,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}
@@ -4985,7 +5028,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @api {delete} /0.3/bugtracker/tag/remove/:bugId/:tagId Remove tag
 	* @apiName removeTagToBug
 	* @apiGroup Bugtracker
-	* @apiDescription Remove a tag to a bug /!\ Use [editTicket](/#api-Bugtracker-editTicket) instead /!\
+	* @apiDescription Remove a tag to a bug
 	* @apiVersion 0.3.0
 	*
 	* @apiHeader {string} Authorization user's authentication token
@@ -5005,7 +5048,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - removeTagToBug - Complete Success"
 	*		}
 	*	}
-	* @apiSuccessExample {json} Notifications:
+	* @apiSuccessExample {json} Notifications
 	*	{
 	*		"data": {
 	*			"title": "remove tag bug",
@@ -5019,8 +5062,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"editedAt": null,
 	*				"clientOrigin": false,
 	*				"state": true,
-	*				"tags": [],
-	*				"users": []
+	*				"tags": [
+	*			  		{ "id": 1, "name": "To Do", "color": "FFFAFA"},
+	*			  		{ "id": 4, "name": "ASAP", "color": "F0F0F0"}
+	*				],
+	*				"users": [
+	*				  	{ "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				  	{ "id": 16, "firstname": "Jane", "lastname": "Doe" }
+	*				]
 	*			}
 	*		}
 	*	}

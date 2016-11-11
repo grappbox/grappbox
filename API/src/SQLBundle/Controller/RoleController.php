@@ -107,6 +107,26 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"cloud": 1
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new role",
+	*			"body": {
+	*				"projectId": 1,
+	*				"roleId": 1,
+	*				"name": "Intern",
+	*				"teamTimeline": 2,
+	*				"customerTimeline": 0,
+	*				"gantt": 0,
+	*				"whiteboard": 2,
+	*				"bugtracker": 1,
+	*				"event": 1,
+	*				"task": 1,
+	*				"projectSettings": 1,
+	*				"cloud": 1
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -334,6 +354,26 @@ class RoleController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.13.1",
 	*			"return_message": "Role - delprojectroles - Complete Success"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete role",
+	*			"body": {
+	*				"projectId": 1,
+	*				"roleId": 1,
+	*				"name": "Intern",
+	*				"teamTimeline": 2,
+	*				"customerTimeline": 0,
+	*				"gantt": 0,
+	*				"whiteboard": 2,
+	*				"bugtracker": 1,
+	*				"event": 1,
+	*				"task": 1,
+	*				"projectSettings": 1,
+	*				"cloud": 1
+	*			}
 	*		}
 	*	}
 	*
@@ -565,6 +605,26 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"task": 1,
 	*			"projectSettings": 1,
 	*			"cloud": 2
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update role",
+	*			"body": {
+	*				"projectId": 1,
+	*				"roleId": 1,
+	*				"name": "Intern",
+	*				"teamTimeline": 2,
+	*				"customerTimeline": 0,
+	*				"gantt": 0,
+	*				"whiteboard": 2,
+	*				"bugtracker": 1,
+	*				"event": 1,
+	*				"task": 1,
+	*				"projectSettings": 1,
+	*				"cloud": 1
+	*			}
 	*		}
 	*	}
 	*
@@ -1047,6 +1107,17 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"id": 1
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "assign user role",
+	*			"body": {
+	*				"user_id": 1,
+	*				"role_id": 1,
+	*				"project_id": 3
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1255,10 +1326,10 @@ class RoleController extends RolesAndTokenVerificationController
 
 			//notifs
 			$mdata['mtitle'] = "assign user role";
-			$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+			$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
 			$wdata['type'] = "assign user role";
 			$wdata['targetId'] = $role->getId();
-			$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+			$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
 			$userNotif = array();
 			foreach ($role->getProjects()->getUsers() as $key => $value) {
 				$userNotif[] = $value->getId();
@@ -1311,6 +1382,17 @@ class RoleController extends RolesAndTokenVerificationController
 	*		"data":
 	*		{
 	*			"id": 1
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update user role",
+	*			"body": {
+	*				"user_id": 1,
+	*				"role_id": 1,
+	*				"project_id": 2
+	*			}
 	*		}
 	*	}
 	*
@@ -1484,10 +1566,10 @@ class RoleController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "update user role";
-		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId));
+		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
 		$wdata['type'] = "update user role";
 		$wdata['targetId'] = $role->getId();
-		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId));
+		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
 		$userNotif = array();
 		foreach ($role->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -1694,6 +1776,17 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - delpersonrole - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete user role",
+	*			"body": {
+	*				"user_id": 1,
+	*				"role_id": 1,
+	*				"project_id": 2
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1846,10 +1939,10 @@ class RoleController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "delete user role";
-		$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+		$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
 		$wdata['type'] = "delete user role";
 		$wdata['targetId'] = $role->getId();
-		$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId));
+		$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
 		$userNotif = array();
 		foreach ($role->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();

@@ -82,6 +82,21 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"timelineId": 14,
+	*				"title": "hello",
+	*				"message": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	*
 	* @apiErrorExample Bad Token
@@ -325,6 +340,21 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"editedAt": "1945-06-18 07:00:00"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"timelineId": 14,
+	*				"title": "hello",
+	*				"message": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
@@ -518,6 +548,22 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		{
 	*			"id" : 3
 	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"timelineId": 14,
+	*				"title": "hello",
+	*				"message": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -1552,6 +1598,20 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "new comment message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"parentId": 10,
+	*				"comment": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
@@ -1702,6 +1762,20 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"editedAt": "1945-06-18 07:00:00"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "update comment message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"parentId": 10,
+	*				"comment": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 401 Unauthorized
@@ -1826,6 +1900,21 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		{
 	*			"id" : 3
 	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications
+	*	{
+	*		"data": {
+	*			"title": "delete comment message",
+	*			"body": {
+	*				"id": "154",
+	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
+	*				"parentId": 10,
+	*				"comment": "What about a meeting tomorrow morning ?",
+	*				"createdAt": "1945-06-18 06:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized

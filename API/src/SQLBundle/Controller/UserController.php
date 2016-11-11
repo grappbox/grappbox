@@ -404,6 +404,25 @@ class UserController extends RolesAndTokenVerificationController
 	*			"twitter": "twitter.com/john.doe"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications Avatar
+	*	{
+	*		"data": {
+	*			"title": "avatar user",
+	*			"body": {
+	*				"id": 1
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"birthday": "1945-06-18"
+	*				"avatar": "1945-06-18 06:00:00",
+	*				"email": "john.doe@gmail.com"
+	*				"phone": "+33984231475",
+	*				"country": "France",
+	*				"linkedin": "linkedin.com/john.doe",
+	*				"viadeo": "viadeo.com/john.doe",
+	*				"twitter": "twitter.com/john.doe"
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
