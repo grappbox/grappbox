@@ -600,6 +600,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"title": "login whiteboard",
 	*			"body": {
 	*				"id": 7,
+	*				"projectId": 1,
 	*	    		"user": {
 	*					"id": 13,
 	*					"fistname": "john",
@@ -787,10 +788,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "login whiteboard";
-		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
+		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		$wdata['type'] = "login whiteboard";
 		$wdata['targetId'] = $whiteboard->getId();
-		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
+		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
 			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
@@ -861,6 +862,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"title": "logout whiteboard",
 	*			"body": {
 	*				"id": 7,
+	*				"projectId": 1,
 	*	    		"user": {
 	*					"id": 13,
 	*					"fistname": "john",
@@ -928,10 +930,10 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		//notifs
 		$mdata['mtitle'] = "logout whiteboard";
-		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
+		$mdata['mdesc'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		$wdata['type'] = "logout whiteboard";
 		$wdata['targetId'] = $whiteboard->getId();
-		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
+		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
 			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
@@ -1003,6 +1005,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*			"body": {
 	*				"id": 5,
 	*				"whiteboardId": "2",
+	*				"projectId": 1,
 	*				"object": {
 	*					"type": "RECTANGLE",
 	*					"color": "#8BC800",
@@ -1163,12 +1166,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$em->persist($object);
 		$em->flush();
 
+		$objectArray = $object->objectToArray();
+		$objectArray['projectId'] = $object->getWhiteboard()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "new object";
-		$mdata['mdesc'] = json_encode($object->objectToArray());
+		$mdata['mdesc'] = json_encode($objectArray);
 		$wdata['type'] = "new object";
 		$wdata['targetId'] = $object->getId();
-		$wdata['message'] = json_encode($object->objectToArray());
+		$wdata['message'] = json_encode($objectArray);
 		$userNotif = array();
 		foreach ($whiteboard->getProjects()->getUsers() as $key => $value) {
 			if ($this->checkRoles($value, $whiteboard->getProjects()->getId(), "whiteboard") > 0)
@@ -1640,6 +1646,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	*	      {
 	*	        "id": 11,
 	*	        "whiteboardId": 3,
+	*			"projectId": 1,
 	*	        "object": {
 	*	          "type": "RECTANGLE",
 	*	          "color": "#009D98",
@@ -1837,12 +1844,15 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$em->flush();
 			$data = $value->objectToArray();
 
+			$objectArray = $data;
+			$objectArray['projectId'] = $object->getWhiteboard()->getProjects()->getId();
+
 			//notifs
 			$mdata['mtitle'] = "delete object";
-			$mdata['mdesc'] = json_encode($data);
+			$mdata['mdesc'] = json_encode($objectArray);
 			$wdata['type'] = "delete object";
 			$wdata['targetId'] = $value->getId();
-			$wdata['message'] = json_encode($data);
+			$wdata['message'] = json_encode($objectArray);
 			$userNotif = array();
 			foreach ($whiteboard->getProjects()->getUsers() as $key => $value) {
 				if ($this->checkRoles($value, $whiteboard->getProjects()->getId(), "whiteboard") > 0)

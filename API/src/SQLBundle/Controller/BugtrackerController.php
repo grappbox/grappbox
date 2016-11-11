@@ -3579,6 +3579,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "new comment bug",
 	*			"body": {
 	*				"id": 11,
+	*				"projectId": 1,
 	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
 	*				"parentId": 1,
 	*				"comment": "Ceci est un comment de test",
@@ -3744,6 +3745,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$ticket = $comment->objectToArray();
+		$ticket['projectId'] = $parent->getProjects()->getId();
 
 		$mdata['mtitle'] = "new comment bug";
 		$mdata['mdesc'] = json_encode($ticket);
@@ -3815,6 +3817,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "edit comment bug",
 	*			"body": {
 	*				"id": 11,
+	*				"projectId": 1,
 	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
 	*				"parentId": 1,
 	*				"comment": "Ceci est un comment de test",
@@ -3974,12 +3977,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em->persist($comment);
 		$em->flush();
+		$com = $comment->objectToArray();
+		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
 		$mdata['mtitle'] = "edit comment bug";
-		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$mdata['mdesc'] = json_encode($com);
 		$wdata['type'] = "edit comment bug";
 		$wdata['targetId'] = $comment->getId();
-		$wdata['message'] = json_encode($comment->objectToArray());
+		$wdata['message'] = json_encode($com);
 		$userNotif = array();
 		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -4018,6 +4023,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "delete comment bug",
 	*			"body": {
 	*				"id": 11,
+	*				"projectId": 1,
 	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
 	*				"parentId": 1,
 	*				"comment": "Ceci est un comment de test",
@@ -4068,11 +4074,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($comment->getCreator()->getId() != $user->getId())
 			return ($this->setNoRightsError("4.24.9", "Bugtracker", "deleteComment"));
 
+		$com = $comment->objectToArray();
+		$com['projectId'] = $com->getBugs()->getProjects()->getId();
+
 		$mdata['mtitle'] = "delete comment bug";
-		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$mdata['mdesc'] = json_encode($com);
 		$wdata['type'] = "delete comment bug";
 		$wdata['targetId'] = $comment->getId();
-		$wdata['message'] = json_encode($comment->objectToArray());
+		$wdata['message'] = json_encode($com);
 		$userNotif = array();
 		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -4143,6 +4152,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "new tag bug",
 	*			"body": {
 	*				"id": 1,
+	*				"projectId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -4278,11 +4288,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tagArray->getProject()->getId();
+
 		$mdata['mtitle'] = "new tag bug";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "new tag bug";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($project->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -4343,6 +4356,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "update tag bug",
 	*			"body": {
 	*				"id": 1,
+	*				"projectId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -4477,11 +4491,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tag->setColor($content->color);
 		$em->flush();
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
 		$mdata['mtitle'] = "update tag bug";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "update tag bug";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($tag->getProject()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -4649,6 +4666,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"title": "delete tag bug",
 	*			"body": {
 	*				"id": 1,
+	*				"proejctId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -4738,11 +4756,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.18.9", "Bugtracker", "deleteTag"));
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
 		$mdata['mtitle'] = "delete tag bug";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "delete tag bug";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($tag->getProject()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();

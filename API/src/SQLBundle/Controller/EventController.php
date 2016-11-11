@@ -119,7 +119,8 @@ class EventController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"title": "new event",
 	*			"body": {
-	*				"id": 12, "projectId": 21,
+	*				"id": 12,
+	*				"projectId": 21,
 	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
 	*				"title": "Brainstorming",
 	*				"description": "blablabla",
@@ -439,7 +440,8 @@ class EventController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"title": "update event",
 	*			"body": {
-	*				"id": 12, "projectId": 21,
+	*				"id": 12,
+	*				"projectId": 21,
 	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
 	*				"title": "Brainstorming",
 	*				"description": "blablabla",
@@ -741,7 +743,8 @@ class EventController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"title": "delete event",
 	*			"body": {
-	*				"id": 12, "projectId": 21,
+	*				"id": 12,
+	*				"projectId": 21,
 	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
 	*				"title": "Brainstorming",
 	*				"description": "blablabla",
@@ -1149,7 +1152,8 @@ class EventController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"title": "participants event",
 	*			"body": {
-	*				"id": 12, "projectId": 21,
+	*				"id": 12,
+	*				"projectId": 21,
 	*				"creator": {"id": 15, "firstname": "John", "lastname": "Doe"},
 	*				"title": "Brainstorming",
 	*				"description": "blablabla",

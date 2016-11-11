@@ -88,6 +88,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "new message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"timelineId": 14,
 	*				"title": "hello",
@@ -269,12 +270,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
+		$messageArray = $message->objectToArray();
+		$messageArray['projectId'] = $message->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "new message";
-		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$mdata['mdesc'] = json_encode($messageArray);
 		$wdata['type'] = "new message";
 		$wdata['targetId'] = $message->getId();
-		$wdata['message'] = json_encode($message->objectToArray());
+		$wdata['message'] = json_encode($messageArray);
 		$userNotif = array();
 		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -346,6 +350,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "update message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"timelineId": 14,
 	*				"title": "hello",
@@ -503,12 +508,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($message);
 		$em->flush();
 
+		$messageArray = $message->objectToArray();
+		$messageArray['projectId'] = $message->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "update message";
-		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$mdata['mdesc'] = json_encode($messageArray);
 		$wdata['type'] = "update message";
 		$wdata['targetId'] = $message->getId();
-		$wdata['message'] = json_encode($message->objectToArray());
+		$wdata['message'] = json_encode($messageArray);
 		$userNotif = array();
 		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -555,6 +563,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "delete message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"timelineId": 14,
 	*				"title": "hello",
@@ -665,12 +674,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		if ($message === null)
 			return $this->setBadRequest("11.6.4", "Timeline", "deletemessage", "Bad Parameter: messageId");			
 
+		$messageArray = $message->objectToArray();
+		$messageArray['projectId'] = $message->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "delete message";
-		$mdata['mdesc'] = json_encode($message->objectToArray());
+		$mdata['mdesc'] = json_encode($messageArray);
 		$wdata['type'] = "delete message";
 		$wdata['targetId'] = $message->getId();
-		$wdata['message'] = json_encode($message->objectToArray());
+		$wdata['message'] = json_encode($messageArray);
 		$userNotif = array();
 		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -1604,6 +1616,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "new comment message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"parentId": 10,
 	*				"comment": "What about a meeting tomorrow morning ?",
@@ -1695,12 +1708,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($comment);
 		$em->flush();
 
+		$commentArray = $comment->objectToArray();
+		$commentArray['projectId'] = $comment->getMessages()->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "new comment message";
-		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$mdata['mdesc'] = json_encode($commentArray);
 		$wdata['type'] = "new comment message";
 		$wdata['targetId'] = $comment->getId();
-		$wdata['message'] = json_encode($comment->objectToArray());
+		$wdata['message'] = json_encode($commentArray);
 		$userNotif = array();
 		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -1768,6 +1784,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "update comment message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"parentId": 10,
 	*				"comment": "What about a meeting tomorrow morning ?",
@@ -1856,12 +1873,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		$em->persist($comment);
 		$em->flush();
 
+		$commentArray = $comment->objectToArray();
+		$commentArray['projectId'] = $comment->getMessages()->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "update comment message";
-		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$mdata['mdesc'] = json_encode($commentArray);
 		$wdata['type'] = "update comment message";
 		$wdata['targetId'] = $comment->getId();
-		$wdata['message'] = json_encode($comment->objectToArray());
+		$wdata['message'] = json_encode($commentArray);
 		$userNotif = array();
 		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -1907,6 +1927,7 @@ class TimelineController extends RolesAndTokenVerificationController
 	*			"title": "delete comment message",
 	*			"body": {
 	*				"id": "154",
+	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
 	*				"parentId": 10,
 	*				"comment": "What about a meeting tomorrow morning ?",
@@ -1956,12 +1977,15 @@ class TimelineController extends RolesAndTokenVerificationController
 		if ($user->getId() != $comment->getCreator()->getId())
 			return ($this->setNoRightsError("11.10.9", "Timeline", "deleteComment"));
 
+		$commentArray = $comment->objectToArray();
+		$commentArray['projectId'] = $comment->getMessages()->getTimelines()->getProjects()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "delete comment message";
-		$mdata['mdesc'] = json_encode($comment->objectToArray());
+		$mdata['mdesc'] = json_encode($commentArray);
 		$wdata['type'] = "delete comment message";
 		$wdata['targetId'] = $comment->getId();
-		$wdata['message'] = json_encode($comment->objectToArray());
+		$wdata['message'] = json_encode($commentArray);
 		$userNotif = array();
 		foreach ($comment->getMessages()->getTimelines()->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();

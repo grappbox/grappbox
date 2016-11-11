@@ -181,6 +181,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {Number} projectId Id of the project
 	* @apiSuccess {string} due_date Due date of the task
 	* @apiSuccess {string} started_at Date of start of the task
 	* @apiSuccess {string} finished_at Date of finish of the task
@@ -232,6 +233,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"projectId": 1,
 	*			"due_date": "2015-10-15 11:00:00",
 	*			"started_at": "2015-10-10 11:00:00",
 	*			"finished_at": "2015-10-15 18:23:00",
@@ -1125,6 +1127,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {Number} id Id of the task
 	* @apiSuccess {String} title Title of the task
 	* @apiSuccess {String} description Description of the task
+	* @apiSuccess {Number} projectId Id of the project
 	* @apiSuccess {string} due_date Due date of the task
 	* @apiSuccess {string} started_at Date of start of the task
 	* @apiSuccess {string} finished_at Date of finish of the task
@@ -1176,6 +1179,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"projectId": 1,
 	*			"due_date": "2015-10-15 11:00:00",
 	*			"started_at": "2015-10-10 11:00:00",
 	*			"finished_at": "2015-10-15 18:23:00",
@@ -1269,6 +1273,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"id": 2,
 	*			"title": "Update servers",
 	*			"description": "update all the servers",
+	*			"projectId": 1,
 	*			"due_date": "2015-10-15 11:00:00",
 	*			"is_milestone": true,
 	*			"is_container": false,
@@ -1296,6 +1301,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"id": 2,
 	*				"title": "Update servers",
 	*				"description": "update all the servers",
+	*				"projectId": 1,
 	*				"due_date": "2015-10-15 11:00:00",
 	*				"started_at": "2015-10-10 11:00:00",
 	*				"finished_at": "2015-10-15 18:23:00",
@@ -2612,6 +2618,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"id": 2,
 	*				"title": "Update servers",
 	*				"description": "update all the servers",
+	*				"project_id": 1,
 	*				"due_date": "2015-10-15 11:00:00",
 	*				"started_at": "2015-10-10 11:00:00",
 	*				"finished_at": "2015-10-15 18:23:00",
@@ -2857,6 +2864,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*				"id": 2,
 	*				"title": "Update servers",
 	*				"description": "update all the servers",
+	*				"project_id": 1,
 	*				"due_date": "2015-10-15 11:00:00",
 	*				"started_at": "2015-10-10 11:00:00",
 	*				"finished_at": "2015-10-15 18:23:00",
@@ -3092,6 +3100,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"title": "new tag task",
 	*			"body": {
 	*				"id": 1,
+	*				"projectId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -3227,12 +3236,15 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->persist($tag);
 		$em->flush();
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "new tag task";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "new tag task";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($project->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -3293,6 +3305,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"title": "update tag task",
 	*			"body": {
 	*				"id": 1,
+	*				"projectId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -3427,12 +3440,15 @@ class TaskController extends RolesAndTokenVerificationController
 		$tag->setColor($content->color);
 		$em->flush();
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "update tag task";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "update tag task";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($tag->getProject()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
@@ -3601,6 +3617,7 @@ class TaskController extends RolesAndTokenVerificationController
 	*			"title": "delete tag task",
 	*			"body": {
 	*				"id": 1,
+	*				"projectId": 1,
 	*				"name": "Urgent",
 	*				"color": "FFFFFF"
 	*			}
@@ -3690,12 +3707,15 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "task") < 2)
 			return ($this->setNoRightsError("12.11.9", "Task", "deletetag"));
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
 		//notifs
 		$mdata['mtitle'] = "delete tag task";
-		$mdata['mdesc'] = json_encode($tag->objectToArray());
+		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "delete tag task";
 		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tag->objectToArray());
+		$wdata['message'] = json_encode($tagArray);
 		$userNotif = array();
 		foreach ($tag->getProject()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
