@@ -51,6 +51,7 @@
         <file>qrc/TaskInfoView.qml</file>
         <file>qrc/FiltersMenuField.qml</file>
         <file>qrc/CustomProgressCircle.qml</file>
+        <file>qrc/CustomListStandart.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

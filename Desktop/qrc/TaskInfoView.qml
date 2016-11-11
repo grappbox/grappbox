@@ -35,138 +35,134 @@ Column {
         width: parent.width
     }
 
-    Row {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        height: columnMainMessage.implicitHeight
+    Column {
+        id: columnMainMessage
+        width: parent.width - Units.dp(56)
 
-        CircleImageAsync {
-            width: Units.dp(48)
-            height: Units.dp(48)
-            Layout.alignment: Qt.AlignTop
+        Label {
+            id: titleTicket
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
 
+            text: "Title"
+            style: "title"
+            visible: !infoView.onEdit
+        }
 
+        TextField {
+            id: editTitleTicket
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
+
+            text: titleTicket.text
+            visible: infoView.onEdit
+            placeholderText: "Title"
         }
 
         Item {
-            width: Units.dp(8)
-            height: parent.height
+            height: Units.dp(8)
+            width: parent.width
         }
 
-        Column {
-            id: columnMainMessage
-            width: parent.width - Units.dp(56)
+        Label {
+            id: messageTicket
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
 
-            Row {
-                height: Math.max(columnTitles.implicitHeight, columnProgression)
+            text: "Description"
+            style: "body2"
+            visible: !infoView.onEdit
+            wrapMode: Text.Wrap
+        }
+
+        TextArea {
+            id: editMessageTicket
+            text: messageTicket.text
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
+
+            height: Units.dp(64)
+
+            visible: infoView.onEdit
+            placeHolderText: "Message"
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        Item {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
+            height: Units.dp(32)
+
+            Label {
+                id: labelProgression
                 anchors.left: parent.left
-                anchors.right: parent.right
-                spacing: Units.dp(8)
-
-                Column {
-                    id: columnTitles
-                    anchors.top: parent.top
-                    width: parent.width - columnProgression.width - parent.spacing
-
-                    Label {
-                        id: titleTicket
-                        text: "Title"
-                        style: "title"
-                        visible: !infoView.onEdit
-                    }
-
-                    TextField {
-                        id: editTitleTicket
-                        width: parent.width
-                        text: titleTicket.text
-                        visible: infoView.onEdit
-                        placeholderText: "Title"
-                    }
-
-                    Item {
-                        height: Units.dp(8)
-                        width: parent.width
-                    }
-
-                    Label {
-                        id: messageTicket
-                        text: "Description"
-                        style: "body2"
-                        visible: !infoView.onEdit
-                        wrapMode: Text.Wrap
-                    }
-
-                    TextArea {
-                        id: editMessageTicket
-                        text: messageTicket.text
-
-                        width: parent.width
-                        height: Units.dp(64)
-
-                        visible: infoView.onEdit
-                        placeHolderText: "Message"
-                    }
-                }
-
-                Column {
-                    id: columnProgression
-                    anchors.top: parent.top
-
-                    width: Math.max(taskProgression.width, labelProgression.width)
-
-                    Label {
-                        id: labelProgression
-                        text: "Progression"
-                    }
-
-                    CustomProgressCircle {
-                        id: taskProgression
-                        Layout.alignment: Qt.AlignCenter
-                        width: Units.dp(64)
-                        height: Units.dp(64)
-                        indeterminate: false
-                        dashThickness: Units.dp(8)
-                        minimumValue: 0
-                        maximumValue: 100
-                        value: 60
-
-                        Label {
-                            anchors.centerIn: parent
-                            text: Math.round(taskProgression.value) + "%"
-                        }
-                    }
-                }
+                anchors.verticalCenter: parent.verticalCenter
+                text: "Progression"
             }
 
-            Item {
-                height: Units.dp(8)
-                width: parent.width
+            ProgressBar {
+                id: taskProgression
+                anchors.left: labelProgression.right
+                anchors.leftMargin: Units.dp(8)
+                anchors.verticalCenter: parent.verticalCenter
+                width: Units.dp(200)
+                color: "#44BBFF"
+                minimumValue: 0
+                maximumValue: 100
+                value: 60
+            }
+
+            Label {
+                anchors.left: taskProgression.right
+                anchors.leftMargin: Units.dp(8)
+                anchors.verticalCenter: parent.verticalCenter
+                text: Math.round(taskProgression.value) + "%"
+            }
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        CustomListStandart {
+            id: sectionHeaderTag
+            expanded: true
+            expandedColor: "#44BBFF"
+            text: "Tags"
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        View {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: sectionHeaderTag.expanded ? Units.dp(48) : 0
+
+            visible: repeaterTag.model.length === 0
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                }
             }
 
             ListItem.Standard {
 
-                interactive: false
-
-                action: Icon {
-                    anchors.centerIn: parent
-                    name: "device/access_alarm"
-                    size: Units.dp(32)
-                }
-
-                text: "Tags"
-            }
-
-            Item {
-                height: Units.dp(8)
-                width: parent.width
-            }
-
-            ListItem.Standard {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: Units.dp(16)
-
-                visible: repeaterTag.model.length === 0
+                anchors.fill: parent
 
                 action: Icon {
                     anchors.centerIn: parent
@@ -176,19 +172,34 @@ Column {
 
                 text: "Add a tag to the task"
             }
+        }
+
+
+        View {
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
+            height: sectionHeaderTag.expanded ? flowTag.implicitHeight + Units.dp(16) : 0
+
+            visible: repeaterTag.model.length > 0
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                }
+            }
 
             Flow {
-                visible: repeaterTag.model.length > 0
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: Units.dp(16)
-                height: implicitHeight
+                id: flowTag
+                anchors.fill: parent
+                anchors.topMargin: Units.dp(8)
+                anchors.bottomMargin: Units.dp(8)
 
                 spacing: Units.dp(8)
 
                 Repeater {
                     id: repeaterTag
-                    model: []//["Tag #1", "Tag #2", "Tag #3"]
+                    model: ["Tag #1", "Tag #2", "Tag #3", "Tag #4"]
                     delegate: Button {
                         text: modelData
                         visible: text !== ""
@@ -241,149 +252,300 @@ Column {
                     }
                 }
             }
+        }
 
-            Item {
-                height: Units.dp(8)
-                width: parent.width
-            }
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
 
-            ListItem.Standard {
+        CustomListStandart {
+            id: headerUserAssigned
+            text: "Assigned users"
+            expandedColor: "#44BBFF"
+            expanded: true
+        }
 
-                interactive: false
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
 
-                action: Icon {
-                    anchors.centerIn: parent
-                    name: "device/access_alarm"
-                    size: Units.dp(32)
+        View {
+
+            id: viewUserAssigned
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: headerUserAssigned.expanded ? columnUserAssigned.implicitHeight : 0
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
                 }
-
-                text: "Assigned users"
-            }
-
-            Item {
-                height: Units.dp(8)
-                width: parent.width
             }
 
             Column {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.leftMargin: Units.dp(16)
-                height: implicitHeight
+                id: columnUserAssigned
+                anchors.fill: parent
 
                 spacing: Units.dp(8)
 
-                Repeater {
-                    model: [{name: "Marc Wieser", percent: 30}, {name: "Leo Nadeau", percent: 50}, {name: "Frederic Tan", percent: 20}]
-                    delegate: ListItem.Standard {
+                    Repeater {
+                        model: [{name: "Marc Wieser", percent: 30}, {name: "Leo Nadeau", percent: 120}, {name: "Frederic Tan", percent: 20}]
+                        delegate: ListItem.Subtitled {
 
-                        action: CircleImageAsync {
-                            anchors.centerIn: parent
-                            width: Units.dp(32)
-                            height: Units.dp(32)
-                        }
-
-                        secondaryItem: CustomProgressCircle {
-                            id: userProgress
-                            anchors.centerIn: parent
-                            Layout.alignment: Qt.AlignCenter
-                            width: Units.dp(32)
-                            height: Units.dp(32)
-                            dashThickness: Units.dp(1)
-                            indeterminate: false
-                            minimumValue: 0
-                            maximumValue: 100
-                            value: modelData.percent
-
-                            Label {
+                            action: CircleImageAsync {
                                 anchors.centerIn: parent
-                                text: Math.round(userProgress.value) + "%"
-                                font.pixelSize: Units.dp(8)
+                                width: Units.dp(32)
+                                height: Units.dp(32)
                             }
-                        }
 
-                        text: modelData.name
-                    }
-                }
-                ListItem.Standard {
-                    action: Icon {
-                        anchors.centerIn: parent
-                        name: "content/add_circle_outline"
-                        size: Units.dp(32)
-                    }
+                            content: Item {
+                                anchors.left: parent.left
+                                anchors.top: parent.top
+                                anchors.bottom: parent.bottom
 
-                    text: "Add a new user to the task"
-                }
-            }
+                                width: progressUser.width + percentUser.width + Units.dp(8)
 
-            Item {
-                height: Units.dp(8)
-                width: parent.width
-            }
+                                ProgressBar {
+                                    id: progressUser
+                                    anchors.left: parent.left
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    width: Units.dp(120)
+                                    value: modelData.percent
+                                    minimumValue: 0
+                                    maximumValue: 100
+                                    color: modelData.percent >= 100 ? Theme.primaryColor : "#44BBFF"
+                                }
 
-            Item {
+                                Label {
+                                    id: percentUser
+                                    anchors.left: progressUser.right
+                                    anchors.leftMargin:  Units.dp(8)
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: Math.round(modelData.percent) + "%"
+                                }
+                            }
 
-                anchors.left: parent.left
-                anchors.right: parent.right
-                height: closeButton.height
-
-                Label {
-                    anchors.left: parent.left
-                    anchors.verticalCenter: parent.verticalCenter
-
-                    text: "Created by XXX XXX the YYYY-MM-DD hh:mm:ss"
-                    style: "caption"
-                }
-
-                Button {
-                    anchors.right: closeButton.left
-                    anchors.rightMargin: Units.dp(8)
-
-                    text: infoView.onEdit ? "Save" : "Edit"
-
-                    onClicked: {
-                        if (infoView.onEdit)
-                        {
-                            infoView.onEdit = false
-                        }
-                        else
-                        {
-                            infoView.onEdit = true
+                            text: modelData.name
                         }
                     }
-                }
 
-                Button {
-                    id: closeButton
-                    anchors.right: parent.right
-                    text: infoView.onEdit ? "Cancel" : "Delete"
-                    textColor: Theme.primaryColor
+                    ListItem.Standard {
+                        action: Icon {
+                            anchors.centerIn: parent
+                            name: "content/add_circle_outline"
+                            size: Units.dp(32)
+                        }
 
-                    onClicked: {
-                        if (infoView.onEdit)
-                        {
-                            infoView.onEdit = false
-                        }
-                        else if (ticket.isClosed)
-                        {
-                            bugModel.reopenTicket(ticket.id)
-                            back()
-                        }
-                        else
-                        {
-                            bugModel.closeTicket(ticket.id)
-                            back()
-                        }
+                        text: "Add a new user to the task"
                     }
-                }
-
-            }
-
-            Item {
-                height: Units.dp(8)
-                width: parent.width
             }
         }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        CustomListStandart {
+            id: headerDependencies
+            expandedColor: "#44BBFF"
+            text: "Dependencies"
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        View {
+
+            id: viewDependencies
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: headerDependencies.expanded ? columnDependencies.implicitHeight : 0
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                }
+            }
+
+            Column {
+                id: columnDependencies
+                anchors.fill: parent
+
+                spacing: Units.dp(8)
+
+                    Repeater {
+                        model: [{name: "Task #1", type: "Finish to start"}, {name: "Task #2", type: "Start to Finish"}]
+                        delegate: ListItem.Standard {
+                            secondaryItem: Label {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+
+                                text: modelData.type
+                            }
+
+                            text: modelData.name
+                        }
+                    }
+
+                    ListItem.Standard {
+                        action: Icon {
+                            anchors.centerIn: parent
+                            name: "content/add_circle_outline"
+                            size: Units.dp(32)
+                        }
+
+                        text: "Add a new dependency to the task"
+                    }
+            }
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        CustomListStandart {
+            id: headerTaskContain
+
+            expandedColor: "#44BBFF"
+
+            text: "Contained task"
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        View {
+
+            id: viewContain
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: headerTaskContain.expanded ? columnContain.implicitHeight : 0
+
+            Behavior on height {
+                NumberAnimation {
+                    duration: 200
+                }
+            }
+
+            Column {
+                id: columnContain
+                anchors.fill: parent
+
+                spacing: Units.dp(8)
+
+                    Repeater {
+                        model: [{name: "Task #3", type: "YYYY-MM-DD hh:mm:ss"}, {name: "Task #4", type: "YYYY-MM-DD hh:mm:ss"}]
+                        delegate: ListItem.Standard {
+                            secondaryItem: Label {
+                                anchors.verticalCenter: parent.verticalCenter
+                                anchors.right: parent.right
+
+                                text: modelData.type
+                            }
+
+                            text: modelData.name
+                        }
+                    }
+
+                    ListItem.Standard {
+                        action: Icon {
+                            anchors.centerIn: parent
+                            name: "content/add_circle_outline"
+                            size: Units.dp(32)
+                        }
+
+                        text: "Add a new child task"
+                    }
+            }
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        Item {
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+            height: closeButton.height
+
+            CircleImageAsync {
+                id: image
+                width: parent.height
+                height: parent.height
+                anchors.left: parent.left
+                anchors.verticalCenter: parent.verticalCenter
+
+
+            }
+
+            Label {
+                anchors.left: image.right
+                anchors.leftMargin: Units.dp(8)
+                anchors.verticalCenter: parent.verticalCenter
+
+                text: "Created by XXX XXX the YYYY-MM-DD hh:mm:ss"
+                style: "caption"
+            }
+
+            Button {
+                anchors.right: closeButton.left
+                anchors.rightMargin: Units.dp(8)
+
+                text: infoView.onEdit ? "Save" : "Edit"
+
+                onClicked: {
+                    if (infoView.onEdit)
+                    {
+                        infoView.onEdit = false
+                    }
+                    else
+                    {
+                        infoView.onEdit = true
+                    }
+                }
+            }
+
+            Button {
+                id: closeButton
+                anchors.right: parent.right
+                text: infoView.onEdit ? "Cancel" : "Delete"
+                textColor: Theme.primaryColor
+
+                onClicked: {
+                    if (infoView.onEdit)
+                    {
+                        infoView.onEdit = false
+                    }
+                    else if (ticket.isClosed)
+                    {
+                        bugModel.reopenTicket(ticket.id)
+                        back()
+                    }
+                    else
+                    {
+                        bugModel.closeTicket(ticket.id)
+                        back()
+                    }
+                }
+            }
+
+        }
+
+        Item {
+            height: Units.dp(8)
+            width: parent.width
+        }
     }
+
 }
 

@@ -29,13 +29,7 @@ Item {
             anchors.right: parent.right
             anchors.top: parent.top
 
-            //elevation: 1
-            height: ((state == "CommentView")
-                     ? ticketColumn.implicitHeight
-                     : (state == "AddView"
-                        ? addTicketColumn.implicitHeight
-                        : tabColumn.implicitHeight))
-                    + Units. dp(32)
+            height: (state == "TasksView" ? tabColumn.implicitHeight : viewInfo.height)
 
             states: [
                 State {
@@ -67,7 +61,7 @@ Item {
             }
 
             View {
-
+                id: viewInfo
                 anchors.horizontalCenter: parent.horizontalCenter
                 anchors.top: parent.top
                 anchors.topMargin: Units. dp(16)
@@ -77,10 +71,6 @@ Item {
                 visible: mainView.state != "TasksView"
 
                 elevation: 1
-
-                Behavior on height {
-                    NumberAnimation { duration: 200 }
-                }
 
                 height: taskColumn.implicitHeight + Units. dp(32)
 
