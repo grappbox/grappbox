@@ -367,8 +367,8 @@ class EventController extends RolesAndTokenVerificationController
 	* @apiParam {string} description event description
 	* @apiParam {string} begin beginning date & hour of the event
 	* @apiParam {string} end ending date & hour of the event
-	* @apiParam {int[]} toAddUsers array of users id to add to the event
-	* @apiParam {int[]} toRemoveUsers array of users id to remove of the event
+	* @apiParam {int[]} [toAddUsers] array of users id to add to the event
+	* @apiParam {int[]} [toRemoveUsers] array of users id to remove of the event
 	*
 	* @apiParamExample {json} Request-Exemple No project:
 	* 	{
@@ -624,8 +624,7 @@ class EventController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists("title", $content) || !array_key_exists("description", $content)
-			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content)
-			|| !array_key_exists("toAddUsers", $content) || !array_key_exists("toRemoveUsers", $content))
+			|| !array_key_exists("begin", $content)|| !array_key_exists("end", $content))
 			return $this->setBadRequest("5.5.6", "Calendar", "editEvent", "Missing Parameter");
 
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -672,34 +671,38 @@ class EventController extends RolesAndTokenVerificationController
 		$userNotif = array();
 		$userNotif[] = $event->getCreatorUser()->getId();
 
-		foreach ($content->toRemoveUsers as $key => $guest) {
-				$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
-				if ($oldGuest instanceof User) {
-					$creator = false;
-					if ($guest == $event->getCreatorUser()->getId())
-						$creator = true;
-					if (!$creator) {
-						$userNotif[] = $oldGuest;
+		if (array_key_exists("toRemoveUsers", $content)) {
+			foreach ($content->toRemoveUsers as $key => $guest) {
+					$oldGuest = $em->getRepository('SQLBundle:User')->find($guest);
+					if ($oldGuest instanceof User) {
+						$creator = false;
+						if ($guest == $event->getCreatorUser()->getId())
+							$creator = true;
+						if (!$creator) {
+							$userNotif[] = $oldGuest;
 
-						$event->removeUser($oldGuest);
-						$em->flush();
+							$event->removeUser($oldGuest);
+							$em->flush();
+						}
 					}
-				}
+			}
 		}
 
-		foreach ($content->toAddUsers as $key => $guest) {
-				$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
-				if ($newGuest instanceof User) {
-					$alreadyAdded = false;
-					foreach ($event->getUsers() as $key => $event_value) {
-						if ($guest == $event_value->getId())
-							$alreadyAdded = true;
+		if (array_key_exists("toAddUsers", $content)) {
+			foreach ($content->toAddUsers as $key => $guest) {
+					$newGuest = $em->getRepository('SQLBundle:User')->find($guest);
+					if ($newGuest instanceof User) {
+						$alreadyAdded = false;
+						foreach ($event->getUsers() as $key => $event_value) {
+							if ($guest == $event_value->getId())
+								$alreadyAdded = true;
+						}
+						if (!$alreadyAdded) {
+							$event->addUser($newGuest);
+							$em->flush();
+						}
 					}
-					if (!$alreadyAdded) {
-						$event->addUser($newGuest);
-						$em->flush();
-					}
-				}
+			}
 		}
 
 		$mdata['mtitle'] = "update event";
