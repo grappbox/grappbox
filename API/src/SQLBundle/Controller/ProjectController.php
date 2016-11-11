@@ -1797,7 +1797,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiSuccess id Id of the user add
 	* @apiSuccess firstname First name of the user add
 	* @apiSuccess lastname Last name of the user add
-	* @apiSuccess avatar Avatar of the user add
+	* @apiSuccess avatar Date Avatar of the user add
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
@@ -1810,7 +1810,8 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		{
 	*			"id": 1
 	*			"firstname": "john",
-	*			"lastname": "doe"
+	*			"lastname": "doe",
+	*			"avatar": "2016-11-09"
 	*		}
 	*	}
 	*
@@ -1988,7 +1989,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$mdata['mtitle'] = "user assign project";
-		$mdata['mdesc'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname())));
+		$mdata['mdesc'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate())));
 		$wdata['type'] = "user assign project";
 		$wdata['targetId'] = $project->getId();
 		$wdata['message'] = json_encode(array("id" => $project->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname())));
@@ -2000,7 +2001,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
-			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname()));
+			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate()));
 	}
 
 	/**

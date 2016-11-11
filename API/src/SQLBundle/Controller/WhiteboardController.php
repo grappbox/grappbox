@@ -910,7 +910,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Add-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"object": {
 	*				"type": "RECTANGLE",
 	*				"color": "#8BC800",
@@ -1131,7 +1130,6 @@ class WhiteboardController extends RolesAndTokenVerificationController
 	* @apiParamExample {json} Request-Delete-Example:
 	*	{
 	*		"data": {
-	*			"token": "aeqf231ced651qcd",
 	*			"lastUpdate": "2015-11-27 11:31:24"
 	*		}
 	*	}

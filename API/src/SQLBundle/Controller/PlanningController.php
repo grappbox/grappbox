@@ -246,7 +246,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/planning/week/:token/:date Get week planning
+	* @api {get} /0.3/planning/week/:date Get week planning
 	* @apiName getWeekPlanning
 	* @apiGroup Planning
 	* @apiDescription Get planning of a week
@@ -463,7 +463,7 @@ class PlanningController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /0.3/planning/month/:token/:date Get month planning
+	* @api {get} /0.3/planning/month/:date Get month planning
 	* @apiName getMonthPlanning
 	* @apiGroup Planning
 	* @apiDescription Get planning of a month

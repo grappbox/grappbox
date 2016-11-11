@@ -105,6 +105,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"users": []
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "new bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -418,6 +437,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"users": []
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "update bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -699,6 +737,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - closeTicket - Complete Success"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "close bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -833,6 +890,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteTicket - Complete Success"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "delete bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -921,6 +997,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - reopenTicket - Complete Success"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "reopen bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -2923,6 +3018,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			]
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "participants bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Missing Parameter
 	* 	HTTP/1.1 400 Bad Request
@@ -3411,6 +3525,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "new comment bug",
+	*			"body": {
+	*				"id": 11,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				"parentId": 1,
+	*				"comment": "Ceci est un comment de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -3633,6 +3761,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"editedAt": null
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "edit comment bug",
+	*			"body": {
+	*				"id": 11,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				"parentId": 1,
+	*				"comment": "Ceci est un comment de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -3822,6 +3964,20 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteComment - Complete Success"
 	*		}
 	* 	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "delete comment bug",
+	*			"body": {
+	*				"id": 11,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe" },
+	*				"parentId": 1,
+	*				"comment": "Ceci est un comment de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
@@ -3931,6 +4087,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"id": 1,
 	*			"name": "Urgent",
 	*			"color": "FFFFFF"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "new tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
 	*		}
 	*	}
 	*
@@ -4120,6 +4287,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"id" : 1,
 	*			"name": "ASAP",
 	*			"color": "FFFFFF"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "update tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
 	*		}
 	*	}
 	*
@@ -4417,6 +4595,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"return_message": "Bugtracker - deleteTag - Complete Success"
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "delete tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
+	*		}
+	*	}
 	*
 	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
@@ -4527,7 +4716,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @api {put} /0.3/bugtracker/tag/assign/:bugId Assign tag
 	* @apiName assignTagToBug
 	* @apiGroup Bugtracker
-	* @apiDescription Assign a tag to a bug
+	* @apiDescription Assign a tag to a bug /!\ Use [editTicket](/#api-Bugtracker-editTicket) instead /!\
 	* @apiVersion 0.3.0
 	*
 	* @apiHeader {string} Authorization user's authentication token
@@ -4545,13 +4734,23 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*			"tagId": 3
 	*		}
 	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "delete tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"name": "Urgent",
+	*				"color": "FFFFFF"
+	*			}
+	*		}
+	*	}
 	*
 	* @apiSuccess {Number} id Id of the bug
 	* @apiSuccess {Object[]} tag Tag's informations
 	* @apiSuccess {Number} tag.id Id of the tag
 	* @apiSuccess {String} tag.name Name of the tag
 	* @apiSuccess {string} tag.color Color of the tag in hexa
-	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
@@ -4566,6 +4765,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*				"id": 18
 	*				"name": "To Do",
 	*				"color": "FFFFFF"
+	*			}
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "assign tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
 	*			}
 	*		}
 	*	}
@@ -4767,7 +4985,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @api {delete} /0.3/bugtracker/tag/remove/:bugId/:tagId Remove tag
 	* @apiName removeTagToBug
 	* @apiGroup Bugtracker
-	* @apiDescription Remove a tag to a bug
+	* @apiDescription Remove a tag to a bug /!\ Use [editTicket](/#api-Bugtracker-editTicket) instead /!\
 	* @apiVersion 0.3.0
 	*
 	* @apiHeader {string} Authorization user's authentication token
@@ -4785,6 +5003,25 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "1.4.1",
 	*			"return_message": "Bugtracker - removeTagToBug - Complete Success"
+	*		}
+	*	}
+	* @apiSuccessExample {json} Notifications:
+	*	{
+	*		"data": {
+	*			"title": "remove tag bug",
+	*			"body": {
+	*				"id": 1,
+	*				"creator": { "id": 13, "firstname": "John", "lastname": "Doe"},
+	*				"projectId": 1,
+	*				"title": "Ticket de Test",
+	*				"description": "Ceci est un ticket de test",
+	*				"createdAt": "2015-11-30 00:00:00",
+	*				"editedAt": null,
+	*				"clientOrigin": false,
+	*				"state": true,
+	*				"tags": [],
+	*				"users": []
+	*			}
 	*		}
 	*	}
 	*

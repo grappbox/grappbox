@@ -2065,11 +2065,7 @@ class TaskController extends RolesAndTokenVerificationController
 	* @apiSuccess {string} dependencies.task.title Task depende title
 	* @apiSuccess {string} dependencies.task.started_at Task depende started date
 	* @apiSuccess {string} dependencies.task.due_date Task depende due date
-	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies
-	* @apiSuccess {Number} tasks_modified.id Id of the task modified
-	* @apiSuccess {String} tasks_modified.title Title of the task modified
-	* @apiSuccess {string} tasks_modified.started_at Date of start of the task modified
-	* @apiSuccess {string} tasks_modified.due_date Due date of the task modified
+	* @apiSuccess {Object[]} tasks_modified Array of infos on the tasks modified because of the dependencies. Always null because no modifications on GET
 	*
 	* @apiSuccessExample Success-Full-Data-Response
 	*	HTTP/1.1 200 OK
