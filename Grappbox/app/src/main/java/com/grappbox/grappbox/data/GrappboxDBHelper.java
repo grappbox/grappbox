@@ -17,7 +17,7 @@ import com.grappbox.grappbox.data.GrappboxContract.*;
   * GrappBox © 2016
   */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 5;
+    private static final int DATABASE_VERSION  = 6;
     public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
@@ -170,6 +170,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 BugEntry.COLUMN_TITLE + " TEXT NOT NULL, " +
                 BugEntry.COLUMN_DESCRIPTION + " TEXT, " +
                 BugEntry.COLUMN_LOCAL_PARENT_ID + " INTEGER, " +
+                BugEntry.COLUMN_IS_CLIENT_ORIGIN + " INTEGER, " +
                 " FOREIGN KEY (" + BugEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
                 " FOREIGN KEY (" + BugEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " UNIQUE (" + BugEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";

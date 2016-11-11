@@ -36,7 +36,6 @@
     <string name="non_associate_resource">N/A</string>
     <string name="error_hacker_detected">You tried to access to a non existing resource</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="title_change_account">Change Account</string>
     <string name="title_change_project">Change Project</string>

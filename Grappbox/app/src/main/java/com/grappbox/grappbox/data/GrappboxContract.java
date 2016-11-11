@@ -373,6 +373,7 @@ public class GrappboxContract {
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_DESCRIPTION = "description";
         public static final String COLUMN_LOCAL_PARENT_ID = "parent_id";
+        public static final String COLUMN_IS_CLIENT_ORIGIN = "client_origin";
 
         public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BUG).build();
         public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BUG;

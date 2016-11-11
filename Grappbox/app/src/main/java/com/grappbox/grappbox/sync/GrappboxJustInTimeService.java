@@ -800,10 +800,12 @@ public class GrappboxJustInTimeService extends IntentService {
                 throw new OperationApplicationException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
             long id = Long.parseLong(lastIdUri.getLastPathSegment());
             Cursor adminRole = getContentResolver().query(GrappboxContract.RolesEntry.CONTENT_URI, new String[]{GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry._ID}, GrappboxContract.RolesEntry.TABLE_NAME + "." + GrappboxContract.RolesEntry.COLUMN_NAME+"=?", new String[]{"Admin"}, null);
-            adminRole.moveToFirst();
+            if (adminRole == null || !adminRole.moveToFirst())
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_ID);
             handleSetUserRole(adminRole.getLong(0
             ), id, responseObserver);
             handleUserDetailSync(data.getString("id"));
+            adminRole.close();
         } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
             e.printStackTrace();
         } finally {
@@ -1604,7 +1606,7 @@ public class GrappboxJustInTimeService extends IntentService {
                         project.close();
                     project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{data.getString("projectId")}, null);
                     if (project == null || !project.moveToFirst())
-                        throw new NetworkErrorException("Returned grappboxID is invalid, try to resynchronize your project");
+                        throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_ID);
                     values.put(BugEntry.COLUMN_GRAPPBOX_ID, data.getString("id"));
                     values.put(BugEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
                     values.put(BugEntry.COLUMN_LOCAL_PROJECT_ID, project.getLong(0));

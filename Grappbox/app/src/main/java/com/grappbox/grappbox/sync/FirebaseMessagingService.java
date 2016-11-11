@@ -10,11 +10,11 @@ import android.util.Log;
 import com.google.firebase.messaging.RemoteMessage;
 import com.grappbox.grappbox.DebugActivity;
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.interfaces.MessagingDispatcher;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -29,17 +29,12 @@ import java.util.Map;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     public static final String TAG = FirebaseMessagingService.class.getSimpleName();
-    private static ArrayList<String> sBugDispatching;
-    private static MessagingDispatcher sBugDispatcher;
+    private MessagingDispatcher mBugDispatcher, mEventDispatcher;
     static int idNotif = 0;
 
-    static {
-        sBugDispatcher = new BugMessagingDispatcher();
-        sBugDispatching = new ArrayList<>();
-        sBugDispatching.add("bug");
-    }
-
     public FirebaseMessagingService() {
+        mBugDispatcher = new BugMessagingDispatcher(this);
+        mEventDispatcher = new EventMessagingDispatcher();
     }
 
     @Override
@@ -51,12 +46,19 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         String[] splittedAction = data.get("title").split(" ");
         String actionType = splittedAction[splittedAction.length - 1];
         try {
-            if (sBugDispatching.contains(actionType)){
-                sBugDispatcher.dispatch(data.get("title"), new JSONObject(data.get("body")));
+            String action = data.get("title");
+            JSONObject body = new JSONObject(data.get("body"));
+            if ("bug".equals(actionType)){
+                mBugDispatcher.dispatch(action, body);
+            } else if ("event".equals(actionType)){
+                mEventDispatcher.dispatch(action, body);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        //The following code is a debug code to show API sended messages
+        //TODO : delete it
         builder.setContentTitle(data.get("title"));
         builder.setContentText(data.get("body"));
         builder.setSmallIcon(R.drawable.grappbox_mini_logo);

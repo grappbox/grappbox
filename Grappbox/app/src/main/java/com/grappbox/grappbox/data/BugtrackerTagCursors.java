@@ -12,7 +12,7 @@ import com.grappbox.grappbox.data.GrappboxContract.BugtrackerTagEntry;
 /**
  * Created by marcw on 30/08/2016.
  */
-public class TagCursors {
+public class BugtrackerTagCursors {
     private static final SQLiteQueryBuilder sQueryBuilder;
 
     private static final String sTagIdSelection = BugtrackerTagEntry.TABLE_NAME + "." + BugtrackerTagEntry._ID + "=?";

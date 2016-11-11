@@ -479,19 +479,19 @@ public class GrappboxProvider extends ContentProvider {
                 retCursor = RoleAssignationCursors.query_RoleAssignationWithUserIdAndProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG:
-                retCursor = TagCursors.query_Tag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugtrackerTagCursors.query_Tag(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG_BY_ID:
-                retCursor = TagCursors.query_TagById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugtrackerTagCursors.query_TagById(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG_BY_GRAPPBOX_ID:
-                retCursor = TagCursors.query_TagByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugtrackerTagCursors.query_TagByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG_BY_PROJECT_ID:
-                retCursor = TagCursors.query_TagByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugtrackerTagCursors.query_TagByProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case TAG_BY_GRAPPBOX_PROJECT_ID:
-                retCursor = TagCursors.query_TagByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = BugtrackerTagCursors.query_TagByGrappboxProjectId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case BUG:
                 retCursor = BugCursors.query_Bug(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -588,7 +588,7 @@ public class GrappboxProvider extends ContentProvider {
                 returnedUri = RoleAssignationCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case TAG:
-                returnedUri = TagCursors.insert(uri, contentValues, mOpenHelper);
+                returnedUri = BugtrackerTagCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case BUG:
                 returnedUri = BugCursors.insert(uri, contentValues, mOpenHelper);
@@ -654,7 +654,7 @@ public class GrappboxProvider extends ContentProvider {
                 ret = RoleAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             case TAG:
-                ret = TagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = BugtrackerTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             case BUG:
                 ret = BugCursors.update(uri, contentValues, selection, args, mOpenHelper);
