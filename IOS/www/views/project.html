@@ -13,6 +13,7 @@
         <!-- Project information -->
         <div class="item item-divider item-icon-right">Project information<i class="icon ion-edit gb-color-dashboard" ui-sref="app.editProject({projectId: projectId})"></i></div>
         <ion-list class="list card">
+            <!-- Logo -->
             <ion-item>
                 <!--<img class="full-image" data-ng-src="data:image/png;base64, {{projectInfo.logo}}" />-->
                 <!--<img class="full-image" ng-src="data:image/png;base64, {{ projectLogo.logo ? projectLogo.logo : './images/noproject.png' }}" />-->
@@ -25,40 +26,48 @@
                     ui-sref="app.editProject({projectId: projectId})">
                   </button>
                 </div> -->
-
             </ion-item>
+            <!-- Name -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.name">
               <i class="icon ion-code-working gb-color-dashboard"></i>
               <strong>Name: </strong> {{ projectInfo.name }}
             </ion-item>
+            <!-- Description -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.description">
               <i class="icon ion-clipboard gb-color-dashboard"></i>
               <strong>Description: </strong> {{ projectInfo.description }}
             </ion-item>
+            <!-- Phone -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.phone">
               <i class="icon ion-iphone gb-color-dashboard"></i>
               <strong>Phone: </strong> {{ projectInfo.phone }}
             </ion-item>
+            <!-- Company -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.company">
               <i class="icon ion-home gb-color-dashboard"></i>
               <strong>Company: </strong> {{ projectInfo.company }}
             </ion-item>
+            <!-- Email -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.contact_mail">
               <i class="icon ion-ios-email gb-color-dashboard"></i>
               <strong>Email: </strong> {{ projectInfo.contact_mail }}
             </ion-item>
+            <!-- Creation date -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.creation_date.date">
               <i class="icon ion-ios-calendar gb-color-dashboard"></i>
               <strong>Creation date: </strong> {{ projectInfo.creation_date.date }}
             </ion-item>
+            <!-- Facebook -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.facebook">
               <i class="icon ion-social-facebook gb-color-dashboard"></i>
               <strong>Facebook: </strong> {{ projectInfo.facebook }}
             </ion-item>
+            <!-- Twitter -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.twitter">
               <i class="icon ion-social-twitter gb-color-dashboard"></i>
               <strong>Twitter: </strong> {{ projectInfo.twitter }}
             </ion-item>
+            <!-- If project is in deletion -->
             <ion-item class="item-icon-left item-text-wrap" ng-show="projectInfo.deleted_at != null">
               <i class="icon ion-sad gb-color-dashboard"></i>
               <strong style="color:red">IN DELETION</strong>

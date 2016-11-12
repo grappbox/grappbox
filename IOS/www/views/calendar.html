@@ -26,11 +26,11 @@
             <a class="button button-clear gb-color-calendar" ng-click="calendar.typeView='day'">DAY</a>
         </div>
         <div class="button-bar">
-          <!--button button-small icon ion-ios-arrow-back button-positive -->
-            <button class="button button-small button-clear icon ion-ios-arrow-back gb-color-calendar"
+            <button class="button button-small icon ion-ios-arrow-back button-clear gb-color-calendar"
                     mwl-date-modifier
                     date="calendar.date"
-                    decrement="calendar.typeView">
+                    decrement="calendar.typeView"
+                    ng-click="doRefresh()">
             </button>
             <button class="button button-small button-clear gb-color-calendar"
                     mwl-date-modifier
@@ -38,10 +38,11 @@
                     set-to-today>
                 TODAY
             </button>
-            <button class="button button-small button-clear icon ion-ios-arrow-forward gb-color-calendar"
+            <button class="button button-small icon ion-ios-arrow-forward button-clear gb-color-calendar"
                     mwl-date-modifier
                     date="calendar.date"
-                    increment="calendar.typeView">
+                    increment="calendar.typeView"
+                    ng-click="doRefresh()">
             </button>
         </div>
         <h2 class="title">{{ calendar.title }}</h2>

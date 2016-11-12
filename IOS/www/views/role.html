@@ -12,12 +12,15 @@
 
         <!-- Users on role -->
         <div class="item item-divider">Members</div>
-        <ion-list>
+        <ion-list can-swipe="true">
             <ion-item ng-show="userAssignedOnRole">{{userAssignedOnRole}}</ion-item>
             <ion-item ng-show="!userAssignedOnRole"
                       ng-repeat="userAssigned in usersForRole.users_assigned"
-                      ng-click="showMemberActionSheet(userAssigned.id)">
+                      ui-sref="app.user({ userId: userAssigned.id })"><!--ng-click="showMemberActionSheet(userAssigned.id)"-->
                 <h2>{{ userAssigned.firstname }} {{ userAssigned.lastname }}</h2>
+                <ion-option-button class="button-assertive icon ion-ios-trash"
+                                   ng-click="PopupRemoveUserFromRole(userAssigned.id)">
+                </ion-option-button>
             </ion-item>
         </ion-list>
 

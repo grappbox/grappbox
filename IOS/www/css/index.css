@@ -94,7 +94,7 @@ textarea {
 }
 
 /* Put a black border around canvas in whiteboard */
-canvas {
+#canvasWhiteboard {
   border: solid black 1px;
 }
 
@@ -105,8 +105,16 @@ ion-popover-view {
 
 /* larger icons */
 .larger {
-  font-size: 32px;
+  font-size: 32px !important;
 }
+
+.button-bar-icon-larger:before {
+    font-size: 35px !important;
+}
+
+/*.floating-icon-right {
+  top: 13px !important;
+}*/
 
 /*
 ** GrappBox colors
@@ -183,9 +191,9 @@ opacity: 0.3 !important;
 }*/
 
 /* Default red buttons to make them same "size" as button-positive */
-.button-assertive {
+/*.button-assertive {
   border-color: white !important;
-}
+}*/
 
 /* Button tags */
 .gb-button-tag {

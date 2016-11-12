@@ -47,7 +47,7 @@
                     <div class="item item-divider">Next Meetings</div>
                     <ion-list>
                         <ion-item ng-show="noMeeting">{{noMeeting}}</ion-item>
-                        <ion-item ng-show="!noMeeting" class="item-body">
+                        <ion-item ng-show="!noMeeting" class="item">
                             <a class="item item-thumbnail-left"
                                ng-repeat="nextMeeting in nextMeetingsTab"
                                ui-sref="app.calendar({projectId: projectId})">
@@ -67,28 +67,22 @@
         <!-- Statistics -->
         <ion-tab icon-on="ion-ios-pie" icon-off="ion-ios-pie-outline" class="gb-tab">
             <ion-pane>
-                <ion-content overflow-scroll="false">
-                    <!-- Refresher -->
-                    <ion-refresher pulling-text="Pull to refresh..."
-                                   on-refresh="doRefreshStats()">
-                    </ion-refresher>
-                    <div class="item item-divider">Statistics</div>
-                    <ion-list>
-                        <ion-item ng-show="noMeeting">{{noMeeting}}</ion-item>
-                        <ion-item ng-show="!noMeeting" class="item-body">
-                            <a class="item item-thumbnail-left"
-                               ng-repeat="nextMeeting in nextMeetingsTab"
-                               ui-sref="app.calendar({projectId: projectId})">
-                                <img data-ng-src="data:image/png;base64, {{nextMeeting.projects.logo}}" />
-                                <h2>{{ nextMeeting.type }}: {{ nextMeeting.title }}</h2>
-                                <p><strong>Project: </strong> {{ nextMeeting.projects.name }}</p>
-                                <p>"{{ nextMeeting.description }}"</p>
-                                <p class="icon-left ion-ios-calendar-outline"> {{ nextMeeting.begin_date.date }}</p>
-                                <p class="icon-left ion-ios-clock-outline"> {{ nextMeeting.end_date.date }}</p>
-                            </a>
-                        </ion-item>
-                    </ion-list>
-                </ion-content>
+              <ion-content overflow-scroll="false">
+                <!-- Refresher -->
+                <ion-refresher pulling-text="Pull to refresh..."
+                  on-refresh="doRefreshStats()">
+                </ion-refresher>
+                <div class="item item-divider">Statistics</div>
+                <ion-item ng-show="noStats">{{noStats}}</ion-item>
+                <div ng-show="!noStats" class="card">
+                  <div class="item item-divider">Line chart</div>
+                  <div class="item item-text-wrap">
+                    <canvas id="line" class="chart chart-line" chart-data="data"
+                    chart-labels="labels" chart-series="series" chart-options="options"
+                    chart-dataset-override="datasetOverride" chart-click="onClick"</canvas>
+                  </div>
+                </div>
+              </ion-content>
             </ion-pane>
         </ion-tab>
 

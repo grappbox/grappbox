@@ -40,9 +40,9 @@
                             <!-- Show tags if they are there -->
                             <!--<span ng-show="ticket.tags[0] != null" ng-repeat="tag in ticket.tags">{{ tag.name }}</span>-->
                             <!-- Tags on ticket -->
-                            <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+                            <i ng-if="ticket.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="ticket.tags[0]" ng-repeat="tag in ticket.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
                             <!-- Users on ticket -->
-                            <i ng-if="ticket.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp<button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />-->
+                            <i ng-if="ticket.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="ticket.users[0]" ng-repeat="user in ticket.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="ticket.users[0]" /><br ng-if="ticket.users[0]" />-->
 
                         </ion-item>
                     </ion-list>

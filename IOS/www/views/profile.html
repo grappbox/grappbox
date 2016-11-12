@@ -11,46 +11,57 @@
                        on-refresh="doRefresh()">
         </ion-refresher>
 
+        <!-- Personal information -->
         <div class="item item-divider item-icon-right">Personal information<i class="icon ion-edit gb-color-dashboard" ui-sref="app.editProfile"></i></div>
         <ion-list class="list card">
+          <!-- Avatar -->
           <ion-item>
             <!--<img class="full-image" ng-src="#" />-->
             <!--<img ng-src="{{ userAvatar.avatar }} ? 'data:image/png;base64, {{userAvatar.avatar}}' : './images/noavatar.png' }}" />-->
             <img ng-if="userAvatar.avatar" id="userAvatar" ng-src="data:image/png;base64, {{userAvatar.avatar}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
             <img ng-if="!userAvatar.avatar" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;"/>
           </ion-item>
+          <!-- Firstname -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.firstname">
             <i class="icon ion-ios-person gb-color-dashboard"></i>
             <strong>First Name: </strong> {{ profileInfo.firstname }}
           </ion-item>
+          <!-- Lastname -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.lastname">
             <i class="icon ion-ios-person gb-color-dashboard"></i>
             <strong>Last Name: </strong> {{ profileInfo.lastname }}
           </ion-item>
+          <!-- Birthday -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.birthday.date">
             <i class="icon ion-beer gb-color-dashboard"></i>
             <strong>birthday: </strong> {{ profileInfo.birthday.date }}
           </ion-item>
+          <!-- Phone -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.phone">
             <i class="icon ion-iphone gb-color-dashboard"></i>
             <strong>Phone: </strong> {{ profileInfo.phone }}
           </ion-item>
+          <!-- Email -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.email">
             <i class="icon ion-ios-email gb-color-dashboard"></i>
             <strong>Email: </strong> {{ profileInfo.email }}
           </ion-item>
+          <!-- Country -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.country">
             <i class="icon ion-ios-location gb-color-dashboard"></i>
             <strong>Country: </strong> {{ profileInfo.country }}
           </ion-item>
+          <!-- LinkedIn -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.linkedin">
             <i class="icon ion-social-linkedin gb-color-dashboard"></i>
             <strong>LinkedIn: </strong> {{ profileInfo.linkedin }}
           </ion-item>
+          <!-- Twitter -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.twitter">
             <i class="icon ion-social-twitter gb-color-dashboard"></i>
             <strong>Twitter: </strong> {{ profileInfo.twitter }}
           </ion-item>
+          <!-- Viadeo -->
           <ion-item class="item-icon-left item-text-wrap" ng-show="profileInfo.viadeo">
             <i class="icon ion-close-round gb-color-dashboard"></i>
             <strong>Viadeo: </strong> {{ profileInfo.viadeo }}

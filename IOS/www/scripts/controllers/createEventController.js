@@ -12,8 +12,7 @@ angular.module('GrappBox.controllers')
 
     $scope.event = {};
     $scope.selectedUsers = [];
-    $scope.startTime = new Date();
-    $scope.endTime = new Date();
+    $scope.projectId = $stateParams.projectId;
 
     //Assign user list manually to scope because it seems that Ionic bug with ng-model and <select>
     $scope.updateUserList = function (selectedUsers) {
@@ -26,25 +25,37 @@ angular.module('GrappBox.controllers')
     */
     $scope.CreateEvent = function () {
         //$rootScope.showLoading();
+        console.log($scope.event.beginDate);
         Event.Create().save({
-            data: {
-                projectId: $stateParams.projectId,
-                title: $scope.event.title,
-                begin: $scope.startTime,
-                end: $scope.endTime,
-                description: $scope.event.description,
-                users: $scope.selectedUsers
+          data: ($stateParams.projectId ?
+            {
+              projectId: $stateParams.projectId,
+              title: $scope.event.title,
+              begin: $scope.event.beginDate,
+              end: $scope.event.endDate,
+              description: $scope.event.description,
+              users: $scope.selectedUsers ? $scope.selectedUsers : []
+            } :
+            {
+              title: $scope.event.title,
+              begin: $scope.event.beginDate,
+              end: $scope.event.endDate,
+              description: $scope.event.description,
+              users: []
             }
+          )
         }).$promise
             .then(function (data) {
                 console.log('Create event successful !');
                 console.log(data);
+                //$rootScope.hideLoading();
                 Toast.show("Event created");
                 $ionicHistory.clearCache().then(function () {
                     $state.go('app.calendar', { projectId: $stateParams.projectId });
                 });
             })
             .catch(function (error) {
+                //$rootScope.hideLoading();
                 Toast.show("Event creation error");
                 console.error('Event creation failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
@@ -76,5 +87,6 @@ angular.module('GrappBox.controllers')
                 //$rootScope.hideLoading();
             })
     }
-    $scope.GetUsersOnProject();
+    if ($stateParams.projectId)
+      $scope.GetUsersOnProject();
 })

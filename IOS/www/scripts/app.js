@@ -399,7 +399,7 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
 
     // Calendar view
     .state('app.calendar', {
-        url: "/projects/:projectId/calendar",
+        url: "/projects/?projectId/calendar",
         views: {
             'menuList': {
                 templateUrl: "views/calendar.html",
@@ -410,11 +410,33 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
 
     // Event creation view
     .state('app.createEvent', {
-        url: "/projects/:projectId/calendar/createEvent",
+        url: "/projects/?projectId/calendar/createEvent",
         views: {
             'menuList': {
                 templateUrl: "views/createEvent.html",
                 controller: 'CreateEventCtrl'
+            }
+        }
+    })
+
+    // Event view
+    .state('app.event', {
+        url: "/projects/?projectId/calendar/event/:eventId",
+        views: {
+            'menuList': {
+                templateUrl: "views/event.html",
+                controller: 'EventCtrl'
+            }
+        }
+    })
+
+    // Event edition view
+    .state('app.editEvent', {
+        url: "/projects/:projectId/calendar/event/:eventId/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editEvent.html",
+                controller: 'EditEventCtrl'
             }
         }
     })

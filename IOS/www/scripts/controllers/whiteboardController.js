@@ -83,6 +83,7 @@ angular.module('GrappBox.controllers')
 
     // Cancel interval when quitting view
     $scope.$on("$ionicView.leave", function () {
+      console.log("I LEFT !");
         $interval.cancel(myInterval);
     });
 
@@ -485,7 +486,7 @@ angular.module('GrappBox.controllers')
         //$rootScope.showLoading();
         Whiteboard.DeleteObject().delete({
             id: $scope.whiteboardId,
-            data: {         
+            data: {
                 center: { x: mouse_pos.x, y: mouse_pos.y },
                 radius: 10
             }
@@ -512,25 +513,25 @@ angular.module('GrappBox.controllers')
     $scope.openWhiteboardData = {};
     $scope.objects = {};
     $scope.OpenWhiteboard = function () {
-        //$rootScope.showLoading();
-        Whiteboard.Open().get({
-            id: $scope.whiteboardId
-        }).$promise
-            .then(function (data) {
-                console.log('Open whiteboard successful !');
-                console.log(data.data);
-                $scope.openWhiteboardData = data.data;
-                $scope.objects = data.data.content;
-                $scope.addOnWhiteboard($scope.objects);
-            })
-            .catch(function (error) {
-                console.error('Open whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                //$scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
-            })
+      //$rootScope.showLoading();
+      Whiteboard.Open().get({
+        id: $scope.whiteboardId
+      }).$promise
+      .then(function (data) {
+        console.log('Open whiteboard successful !');
+        console.log(data.data);
+        $scope.openWhiteboardData = data.data;
+        $scope.objects = data.data.content;
+        $scope.addOnWhiteboard($scope.objects);
+      })
+      .catch(function (error) {
+        console.error('Open whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
+        console.error(error);
+      })
+      .finally(function () {
+        //$scope.$broadcast('scroll.refreshComplete');
+        //$rootScope.hideLoading();
+      })
     }
 
     $scope.addOnWhiteboard = function (obj) {

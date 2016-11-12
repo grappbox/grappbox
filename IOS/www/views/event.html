@@ -1,0 +1,52 @@
+<!--
+Summary: Event on calendar view
+-->
+
+<ion-view>
+  <ion-nav-title class="item-text-wrap">{{event.title}}</ion-nav-title>
+  <ion-content overflow-scroll="false">
+
+    <!-- Refresher -->
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+
+  <!-- Event information -->
+  <div class="item item-divider item-icon-right">Event information<i class="icon ion-edit gb-color-calendar" ui-sref="app.editEvent({projectId: projectId, eventId: eventId})"></i></div>
+  <ion-list class="list card">
+    <!-- Title -->
+    <ion-item class="item-icon-left item-text-wrap">
+      <i class="icon ion-easel gb-color-calendar"></i>
+      <strong>Title: </strong> {{ event.title }}
+    </ion-item>
+    <!-- Description -->
+    <ion-item class="item-icon-left">
+      <ion-label><i class="icon ion-document-text gb-color-calendar"></i> Description:</ion-label>
+      <textarea rows="6" ng-model="event.description" readonly></textarea>
+    </ion-item>
+    <!-- Creator & creating time -->
+    <ion-item class="item-icon-left item-text-wrap">
+      <i class="icon ion-ios-person gb-color-calendar"></i>
+      <strong>Creator: </strong> {{ event.creator.firstname }} {{ event.creator.lastname }}<br />
+      At: {{ event.createdAt }}
+    </ion-item>
+    <!-- Begin datetime -->
+    <ion-item class="item-icon-left">
+      <i class="icon ion-ios-calendar gb-color-calendar"></i>
+      <strong>Begin at: </strong> {{ event.beginDate }}
+    </ion-item>
+    <!-- End datetime -->
+    <ion-item class="item-icon-left">
+      <i class="icon ion-ios-calendar gb-color-calendar"></i>
+      <strong>End at: </strong> {{ event.endDate }}
+    </ion-item>
+    <!-- Edited last time at -->
+    <ion-item class="item-icon-left" ng-show="event.editedAt != null">
+      <i class="icon ion-edit gb-color-calendar"></i>
+      <strong>Edited at: </strong> {{ event.editedAt }}
+    </ion-item>
+  </ion-list>
+  <div ng-if="projectId" class="item item-divider">Members</div>
+  <ion-item ng-if="projectId">
+    <i class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-repeat="user in event.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button>
+  </ion-item>
+</ion-content>
+</ion-view>

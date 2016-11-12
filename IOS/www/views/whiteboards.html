@@ -4,6 +4,9 @@
 
 <ion-view>
     <ion-nav-title>Whiteboards</ion-nav-title>
+    <!-- Floating button -->
+    <ion-floating-button ng-click="showNameWhiteboardPopup()" has-footer="false" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF">
+    </ion-floating-button>
     <ion-content>
         <ion-refresher pulling-text="Pull to refresh..."
                        on-refresh="doRefresh()">
@@ -16,13 +19,13 @@
                 <h2>{{whiteboardInfo.name}}</h2>
                 <p>Edited by {{whiteboardInfo.updator.firstname}} {{whiteboardInfo.updator.lastname}}<br />
                 at {{whiteboardInfo.updatedAt}}</p>
-                <ion-option-button class="button-assertive ion-ios-trash"
+                <ion-option-button class="button-assertive icon ion-ios-trash"
                                    ng-click="DeleteWhiteboard(whiteboardInfo)">
                 </ion-option-button>
             </ion-item>
         </ion-list>
-        <div class="text-center">
+        <!-- <div class="text-center">
           <button class="button button-clear icon ion-plus gb-color-whiteboard" ng-click="showNameWhiteboardPopup()"></button>
-        </div>
+        </div> -->
     </ion-content>
 </ion-view>

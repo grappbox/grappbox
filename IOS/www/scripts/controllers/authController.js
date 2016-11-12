@@ -21,6 +21,17 @@ angular.module('GrappBox.controllers')
         $ionicHistory.clearCache();
     });
 
+    // Set the default value of inputType
+    $scope.inputType = "password";
+
+    // Hide & show password function
+    $scope.hideShowPassword = function(){
+      if ($scope.inputType == "password")
+        $scope.inputType = "text";
+      else
+        $scope.inputType = "password";
+    };
+
     /*
     ** TO REMOVE FOR PROD
     */

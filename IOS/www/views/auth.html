@@ -9,14 +9,14 @@
             <form name="auth_form">
                 <div class="list">
                     <ion-input class="item item-input item-floating-label">
-                        <i class="icon icon-person"></i>
                         <ion-label>Email</ion-label>
                         <input type="text" placeholder="Email" name="user_email" ng-model="user.email" required />
                     </ion-input>
-                    <ion-input class="item item-input item-floating-label">
-                        <i class="icon icon-person"></i>
+                    <ion-input class="item item-input item-icon-right item-floating-label">
                         <ion-label>Password</ion-label>
-                        <input type="password" placeholder="Password" name="user_password" ng-model="user.password" required />
+                        <input type="{{inputType}}" placeholder="Password" name="user_password" ng-model="user.password" required />
+                        <i ng-if="inputType == 'password'" class="icon ion-ios-eye-outline" ng-click="hideShowPassword()"></i>
+                        <i ng-if="inputType == 'text'" class="icon ion-ios-eye" ng-click="hideShowPassword()"></i>
                     </ion-input>
                 </div>
                 <a class="button button-block button-clear gb-color-dashboard icon ion-log-in"

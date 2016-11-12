@@ -44,7 +44,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get user connected avatar successful !');
                 $scope.userAvatar.avatar = data.data.avatar;
-                console.log(data.data);
+                //console.log(data.data);
             })
             .catch(function (error) {
                 console.error('Get user connected avatar failed ! Reason: ' + error.status + ' ' + error.statusText);
