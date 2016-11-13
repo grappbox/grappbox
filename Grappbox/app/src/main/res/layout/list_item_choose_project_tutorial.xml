@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/GrappRed"
@@ -8,10 +9,11 @@
     android:paddingRight="20dp">
 
     <ImageView
+        android:contentDescription="@string/your_workspace"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/imageView2"
-        android:src="@drawable/img_desk"
+        app:srcCompat="@drawable/img_desk"
         android:cropToPadding="false"
         android:scaleType="fitStart"
         android:adjustViewBounds="true" />
@@ -22,7 +24,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         style="@style/TitleTextView"
-        android:text="Welcome!\nOn what project do you want to work?"
+        android:text="@string/choose_project_tutorial"
         android:textColor="@color/GrappWhiteLight"
         android:gravity="center_vertical|center_horizontal"
         />

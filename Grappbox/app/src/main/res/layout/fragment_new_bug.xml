@@ -1,4 +1,5 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -53,9 +54,10 @@
         android:theme="@style/BugtrackerTheme"
         >
         <ImageView
+            android:contentDescription="@string/tag_icon"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/ic_label"
+            app:srcCompat="@drawable/ic_label"
             android:layout_gravity="center_horizontal"/>
         <TextView
             android:layout_width="wrap_content"
@@ -89,9 +91,10 @@
         android:focusable="true"
         android:theme="@style/BugtrackerTheme">
         <ImageView
+            android:contentDescription="@string/add_user_icon"
             android:layout_width="25dp"
             android:layout_height="wrap_content"
-            android:src="@drawable/default_logo_avatar"
+            app:srcCompat="@drawable/default_logo_avatar"
             android:layout_gravity="center_horizontal"/>
         <TextView
             android:layout_width="wrap_content"

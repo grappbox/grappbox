@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:paddingTop="15dp"
     android:paddingBottom="15dp"
     android:paddingStart="10dp"
+    android:paddingEnd="10dp"
     android:descendantFocusability="blocksDescendants">
 
     <android.support.v7.widget.AppCompatImageView
@@ -12,7 +14,7 @@
         android:layout_height="match_parent"
         android:id="@+id/ic_type"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_folder"
+        app:srcCompat="@drawable/ic_folder"
         android:layout_weight="3"
         android:paddingStart="5dp"
         android:paddingEnd="15dp"
@@ -50,7 +52,7 @@
         android:layout_height="match_parent"
         android:id="@+id/more"
         android:layout_gravity="center_vertical"
-        android:src="@drawable/ic_more"
+        app:srcCompat="@drawable/ic_more"
         android:background="@android:color/transparent"
         android:layout_weight="3"
         android:tint="@color/GrappBlackMedium"/>

@@ -315,6 +315,26 @@
     <string name="read_only">Read Only</string>
     <string name="read_write">Read / Write</string>
     <string name="delete_word">Delete</string>
+    <string name="not_yet_defined">Not yet defined</string>
+    <string name="default_user_photo">Default user photo</string>
+    <string name="locker_icon">Locker icon</string>
+    <string name="upload_icon">Upload icon</string>
+    <string name="folder_icon">Folder icon</string>
+    <string name="grappbox_slogan">GrappBox : Efficient Everywhere</string>
+    <string name="tag_icon">Tag icon</string>
+    <string name="add_user_icon">Add user icon</string>
+    <string name="go_to_reply">Go to reply</string>
+    <string name="edit_your_comment">Edit your comment</string>
+    <string name="delete_your_comment">Delete your comment</string>
+    <string name="send_your_comment">Send your comment</string>
+    <string name="your_workspace">Your workspace</string>
+    <string name="choose_project_tutorial">Welcome!\nOn what project do you want to work?</string>
+    <string name="bug_number_in_project">Number of bug in this project</string>
+    <string name="task_number_in_project">Number of task in this project</string>
+    <string name="delete_tag">Delete the tag</string>
+    <string name="modification">Modification</string>
+    <string name="icon_download">Download icon</string>
+    <string name="icon_delete">Delete icon</string>
     <string-array name="access_types">
         <item>@string/no_access</item>
         <item>@string/read_only</item>

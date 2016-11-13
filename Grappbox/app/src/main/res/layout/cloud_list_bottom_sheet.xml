@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,7 +25,8 @@
         android:orientation="horizontal"
         android:paddingTop="5dp"
         android:paddingStart="15dp"
-        android:paddingEnd="15dp">
+        android:paddingEnd="15dp"
+        android:baselineAligned="false">
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -35,11 +37,13 @@
             android:paddingStart="20dp"
             android:paddingEnd="20dp">
             <ImageView
+                android:contentDescription="@string/folder_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_folder"
+                app:srcCompat="@drawable/ic_folder"
                 android:layout_weight="1"
-                style="@style/BottomSheetImageView"/>
+                style="@style/BottomSheetImageView"
+                tools:ignore="NestedWeights" />
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -56,11 +60,13 @@
             android:id="@+id/importfile"
             android:layout_weight="1"
             android:paddingEnd="20dp"
-            android:paddingStart="20dp">
+            android:paddingStart="20dp"
+            tools:ignore="UseCompoundDrawables">
             <ImageView
+                android:contentDescription="@string/upload_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_upload"
+                app:srcCompat="@drawable/ic_upload"
                 style="@style/BottomSheetImageView"/>
             <TextView
                 android:layout_width="match_parent"
@@ -77,11 +83,13 @@
             android:layout_weight="1"
             android:id="@+id/importsecure"
             android:paddingEnd="20dp"
-            android:paddingStart="20dp">
+            android:paddingStart="20dp"
+            tools:ignore="UseCompoundDrawables">
             <ImageView
+                android:contentDescription="@string/locker_icon"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/ic_lock"
+                app:srcCompat="@drawable/ic_lock"
                 style="@style/BottomSheetImageView"/>
             <TextView
                 android:layout_width="match_parent"

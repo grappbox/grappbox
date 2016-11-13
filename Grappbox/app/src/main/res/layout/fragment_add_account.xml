@@ -15,11 +15,12 @@
         android:orientation="vertical">
 
         <ImageView
+            android:contentDescription="@string/grappbox_slogan"
             android:layout_marginTop="20dp"
             android:layout_marginBottom="20dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/grappbox_big_logo"/>
+            app:srcCompat="@drawable/grappbox_big_logo"/>
 
         <android.support.design.widget.TextInputLayout
             android:layout_width="match_parent"

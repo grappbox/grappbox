@@ -1,13 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal" android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingTop="10dp"
     android:paddingBottom="10dp">
     <ImageView
+        android:contentDescription="@string/default_user_photo"
         android:layout_width="60dp"
         android:layout_height="40dp"
-        android:src="@drawable/default_logo_avatar"
+        app:srcCompat="@drawable/default_logo_avatar"
         android:id="@+id/avatar"/>
 
     <LinearLayout
@@ -23,7 +25,7 @@
                 android:textSize="15sp"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="John Doe"
+                android:text="@string/not_yet_defined"
                 android:id="@+id/username"
                 android:layout_weight="1"
                 android:textStyle="bold"/>
@@ -33,14 +35,14 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="25dp"
                 android:gravity="center"
-                android:text="10-09-2016"/>
+                android:text="@string/not_yet_defined"/>
         </LinearLayout>
 
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginEnd="25dp"
-            android:text="This is a comment, really long comment, pass to a new line if its a long comment. You know what it is."
+            android:text="@string/not_yet_defined"
             android:id="@+id/comment" />
         <LinearLayout
             android:layout_width="wrap_content"
@@ -51,26 +53,29 @@
             android:layout_marginEnd="25dp"
             android:visibility="gone">
             <ImageButton
+                android:contentDescription="@string/go_to_reply"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/GrappTransparent"
-                android:src="@drawable/ic_reply"
+                app:srcCompat="@drawable/ic_reply"
                 android:tint="@color/GrappBlackLight"
                 android:id="@+id/reply"/>
             <ImageButton
+                android:contentDescription="@string/edit_your_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/GrappTransparent"
-                android:src="@drawable/ic_edit_white"
+                app:srcCompat="@drawable/ic_edit_white"
                 android:tint="@color/GrappBlackLight"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="15dp"
                 android:id="@+id/edit"/>
             <ImageButton
+                android:contentDescription="@string/delete_your_comment"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@color/GrappTransparent"
-                android:src="@drawable/ic_delete"
+                app:srcCompat="@drawable/ic_delete"
                 android:tint="@color/GrappBlackLight"
                 android:id="@+id/delete"/>
         </LinearLayout>

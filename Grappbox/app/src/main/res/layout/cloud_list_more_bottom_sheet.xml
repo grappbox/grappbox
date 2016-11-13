@@ -16,7 +16,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="More Title"
+        android:text="@string/not_yet_defined"
         android:id="@+id/title" />
     <LinearLayout
         android:layout_width="match_parent"
@@ -32,14 +32,14 @@
             android:layout_height="wrap_content"
             android:text="@string/file_size"
             style="@style/SubHeadTextView"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
             android:layout_weight="2"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="250Mo"
+            android:text="@string/not_yet_defined"
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:id="@+id/filesize"
@@ -59,14 +59,14 @@
             android:layout_height="wrap_content"
             android:text="@string/file_type"
             style="@style/SubHeadTextView"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd="20dp"
             android:gravity="center_vertical"
             android:layout_weight="2"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="application/octet-stream"
+            android:text="@string/not_yet_defined"
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:id="@+id/filetype"
@@ -86,16 +86,16 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Modification"
+            android:text="@string/modification"
             style="@style/SubHeadTextView"
-            android:layout_marginRight="20dp"
+            android:layout_marginEnd ="20dp"
             android:gravity="center_vertical"
             android:layout_weight="2"
             />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="25 Juin 2015"
+            android:text="@string/not_yet_defined"
             android:gravity="center_vertical"
             android:layout_weight="1"
             android:id="@+id/last_modified"
@@ -107,14 +107,15 @@
         android:orientation="horizontal"
         android:paddingTop="25dp"
         android:paddingBottom="15dp"
-        android:layout_gravity="center_vertical|left"
+        android:layout_gravity="center_vertical|start"
         android:id="@+id/download">
         <ImageView
+            android:contentDescription="@string/icon_download"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_download"
+            app:srcCompat="@drawable/ic_download"
             android:layout_weight="6"
-            android:gravity="left"
+            android:gravity="start"
             />
         <TextView
             android:layout_width="match_parent"
@@ -131,15 +132,16 @@
         android:orientation="horizontal"
         android:paddingTop="15dp"
         android:paddingBottom="15dp"
-        android:layout_gravity="center_vertical|left"
+        android:layout_gravity="center_vertical|start"
         android:id="@+id/delete">
         <ImageView
+            android:contentDescription="@string/icon_delete"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:src="@drawable/ic_delete"
+            app:srcCompat="@drawable/ic_delete"
             android:layout_weight="6"
             android:tint="@color/GrappRed"
-            android:gravity="left"
+            android:gravity="start"
              />
         <TextView
             android:layout_width="match_parent"
