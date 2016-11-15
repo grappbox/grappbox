@@ -497,7 +497,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		foreach ($project->getTimelines() as $key => $timeline) {
 			$result[($timeline->getTypeId() == 1 ? 'customer' : 'team')] = $em->getRepository('SQLBundle:TimelineMessage')->createQueryBuilder('t')
 												->select('count(t)')
-												->where(' t = :timeline')
+												->where('t.timelines = :timeline')
 												->setParameters(array('timeline' => $timeline))
 												->getQuery()->getSingleScalarResult();
 		}
@@ -794,7 +794,7 @@ class StatisticController extends RolesAndTokenVerificationController
 			}
 
 			$statBugsTagsRepartition = $em->getRepository('SQLBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project, "user" => $user->getFirstname().' '.$user->getLastName()));
-			if ($statBugsTagsRepartition === null)
+			if ($statBugsTagsRepartition instanceof StatBugsUsersRepartition)
 			{
 				$statBugsTagsRepartition = new StatBugsUsersRepartition();
 				$statBugsTagsRepartition->setProject($project);
@@ -996,30 +996,32 @@ class StatisticController extends RolesAndTokenVerificationController
 						->setMaxResults(1)
 						->getQuery()->getResult();
 
-			foreach ($ontimeProjectTasks as $key => $task) {
-				foreach ($task->getRessources() as $key => $res) {
-					if ($res->getUser()->getId() == $user->getId())
-						$ontimeTasks += 1;
+			if ($role && $role[0]) {
+				foreach ($ontimeProjectTasks as $key => $task) {
+					foreach ($task->getRessources() as $key => $res) {
+						if ($res->getUser()->getId() == $user->getId())
+							$ontimeTasks += 1;
+					}
 				}
-			}
 
-			foreach ($lateProjectTasks as $key => $task) {
-				foreach ($task->getRessources() as $key => $res) {
-					if ($res->getUser()->getId() == $user->getId())
-						$lateTasks += 1;
+				foreach ($lateProjectTasks as $key => $task) {
+					foreach ($task->getRessources() as $key => $res) {
+						if ($res->getUser()->getId() == $user->getId())
+							$lateTasks += 1;
+					}
 				}
+
+				$statLateTasks = new statLateTasks();
+				$statLateTasks->setProject($project);
+				$statLateTasks->setUser($user->getFirstname().' '.$user->getLastName());
+				$statLateTasks->setRole($role[0]['name']);
+				$statLateTasks->setLateTasks($lateTasks);
+				$statLateTasks->setOntimeTasks($ontimeTasks);
+				$statLateTasks->setDate(new DateTime('now'));
+
+				$em->persist($statLateTasks);
+				$em->flush();
 			}
-
-			$statLateTasks = new statLateTasks();
-			$statLateTasks->setProject($project);
-			$statLateTasks->setUser($user->getFirstname().' '.$user->getLastName());
-			$statLateTasks->setRole($role[0]['name']);
-			$statLateTasks->setLateTasks($lateTasks);
-			$statLateTasks->setOntimeTasks($ontimeTasks);
-			$statLateTasks->setDate(new DateTime('now'));
-
-			$em->persist($statLateTasks);
-			$em->flush();
 		}
 
 		return "Data updated";
