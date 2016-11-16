@@ -47,6 +47,11 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<RecyclerView.View
         notifyDataSetChanged();
     }
 
+    public void clear(){
+        mDataSet.clear();
+        notifyDataSetChanged();
+    }
+
     private RecyclerView.ViewHolder createEventEntryHolder(ViewGroup parent) {
         final CalendarEventHolder holder = new CalendarEventHolder(inflater.inflate(R.layout.list_item_calendar, parent, false), parent);
         return holder;
