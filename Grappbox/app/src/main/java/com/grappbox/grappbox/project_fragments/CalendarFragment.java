@@ -5,6 +5,7 @@ import android.accounts.AccountManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -14,6 +15,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -77,7 +79,7 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
         mCalendar.setTimeInMillis(mCalendarView.getDate());
         mCalendarView.setOnDateChangeListener(new CalendarView.OnDateChangeListener() {
             @Override
-            public void onSelectedDayChange(CalendarView view, int year, int month, int dayOfMonth) {
+            public void onSelectedDayChange(@NonNull CalendarView view, int year, int month, int dayOfMonth) {
                 mCalendar.set(Calendar.YEAR, year);
                 mCalendar.set(Calendar.MONTH, month);
                 mCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);

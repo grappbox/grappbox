@@ -128,6 +128,14 @@
                 android:value="com.grappbox.grappbox.ProjectActivity"/>
         </activity>
 
+        <activity android:name=".calendar_fragment.EventDetailsActivity"
+            android:label="@string/title_activity_new_event"
+            android:parentActivityName=".ProjectActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity"/>
+        </activity>
+
     </application>
 
 </manifest>
