@@ -1,23 +1,22 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.Helpers;
+using GrappBox.HttpRequest;
+using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Windows.Web.Http;
-using Windows.UI.Popups;
-using Windows.UI.Xaml.Controls;
-using GrappBox.HttpRequest;
-using GrappBox.Resources;
-using Windows.UI.Xaml.Data;
-using Windows.Foundation;
-using System.Threading.Tasks;
 using System.Diagnostics;
+using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
-using GrappBox.Helpers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
+using Windows.Web.Http;
 
 namespace GrappBox.ViewModel
 {
-    class TimelineViewModel : ViewModelBase
+    internal class TimelineViewModel : ViewModelBase
     {
         static private TimelineViewModel instance = null;
         private TimelineListModel _Customer = new TimelineListModel();
@@ -39,12 +38,14 @@ namespace GrappBox.ViewModel
             else
                 return new TimelineViewModel();
         }
+
         public TimelineViewModel()
         {
             instance = this;
         }
 
         #region API
+
         public async System.Threading.Tasks.Task<bool> getTeamMessages()
         {
             if (_Team.Id != 0)
@@ -62,7 +63,7 @@ namespace GrappBox.ViewModel
                 string json = await res.Content.ReadAsStringAsync();
                 if (res.IsSuccessStatusCode)
                 {
-                    Messages newMessages = api.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
+                    Messages newMessages = HttpRequestManager.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
                     if (newMessages.Count <= 0 && TeamOffset > 0 + _incrementation)
                     {
                         TeamOffset -= _incrementation;
@@ -101,7 +102,7 @@ namespace GrappBox.ViewModel
                 string json = await res.Content.ReadAsStringAsync();
                 if (res.IsSuccessStatusCode)
                 {
-                    Messages newMessages = api.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
+                    Messages newMessages = HttpRequestManager.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
                     if (newMessages.Count <= 0 && CustomerOffset > 0 + _incrementation)
                     {
                         TeamOffset -= _incrementation;
@@ -133,7 +134,7 @@ namespace GrappBox.ViewModel
             string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                _Timelines = api.DeserializeArrayJson<ObservableCollection<TimelineListModel>>(json);
+                _Timelines = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TimelineListModel>>(json);
                 foreach (var item in _Timelines)
                 {
                     if (item.TypeName == "customerTimeline")
@@ -171,7 +172,7 @@ namespace GrappBox.ViewModel
             {
                 if (_Comments != null && _Comments.Count != 0)
                     _Comments.Clear();
-                _Comments = api.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
+                _Comments = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TimelineModel>>(json);
                 NotifyPropertyChanged("Comments");
             }
             else
@@ -198,11 +199,11 @@ namespace GrappBox.ViewModel
             {
                 if (timelineId == _Customer.Id)
                 {
-                    _CustomerMessages.Insert(0, api.DeserializeJson<TimelineModel>(json));
+                    _CustomerMessages.Insert(0, HttpRequestManager.DeserializeJson<TimelineModel>(json));
                 }
                 else if (timelineId == _Team.Id)
                 {
-                    _TeamMessages.Insert(0, api.DeserializeJson<TimelineModel>(json));
+                    _TeamMessages.Insert(0, HttpRequestManager.DeserializeJson<TimelineModel>(json));
                 }
             }
             else
@@ -228,7 +229,7 @@ namespace GrappBox.ViewModel
             string json = await res.Content.ReadAsStringAsync();
             if (res.IsSuccessStatusCode)
             {
-                _Comments.Add(api.DeserializeJson<TimelineModel>(json));
+                _Comments.Add(HttpRequestManager.DeserializeJson<TimelineModel>(json));
             }
             else
             {
@@ -383,9 +384,11 @@ namespace GrappBox.ViewModel
             props.Clear();
             return true;
         }
-        #endregion
+
+        #endregion API
 
         #region Observable Collection
+
         public Messages CustomerList
         {
             get { return _CustomerMessages; }
@@ -405,9 +408,11 @@ namespace GrappBox.ViewModel
         {
             get { return _Comments; }
         }
-        #endregion
+
+        #endregion Observable Collection
 
         #region Select
+
         public TimelineModel MessageSelected
         {
             get { return _messageSelected; }
@@ -419,9 +424,11 @@ namespace GrappBox.ViewModel
             get { return _commentSelected; }
             set { _commentSelected = value; }
         }
-        #endregion
+
+        #endregion Select
 
         #region Model
+
         public int Id
         {
             get { return _messageSelected.Id; }
@@ -462,6 +469,7 @@ namespace GrappBox.ViewModel
                 }
             }
         }
+
         public string TextDate
         {
             get { if (_messageSelected == null) return ""; return _messageSelected.TextDate; }
@@ -495,7 +503,8 @@ namespace GrappBox.ViewModel
                 return name;
             }
         }
-        #endregion
+
+        #endregion Model
 
         public string CustomerName
         {
@@ -525,7 +534,9 @@ namespace GrappBox.ViewModel
         private bool moreItems = true;
         private bool isTeam = false;
 
-        public Messages() { }
+        public Messages()
+        {
+        }
 
         public Messages(bool team)
         {
@@ -561,6 +572,5 @@ namespace GrappBox.ViewModel
                     moreItems = await vm.getCustomerMessages();
             }
         }
-
     }
 }

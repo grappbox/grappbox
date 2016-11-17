@@ -1,5 +1,4 @@
 ﻿using GrappBox.Model;
-using GrappBox.Resources;
 using GrappBox.ViewModel;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
@@ -19,9 +18,9 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class TimelineMessageView : Page
     {
-        CoreApplicationView view;
-        TimelineViewModel vm = TimelineViewModel.GetViewModel();
-        
+        private CoreApplicationView view;
+        private TimelineViewModel vm = TimelineViewModel.GetViewModel();
+
         public TimelineMessageView()
         {
             this.InitializeComponent();
@@ -31,6 +30,7 @@ namespace GrappBox.View
         }
 
         //Required for navigation
+
         #region NavigationHelper
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
@@ -47,11 +47,12 @@ namespace GrappBox.View
                 }
             }
         }
+
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
-            
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {

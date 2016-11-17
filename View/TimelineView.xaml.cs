@@ -1,6 +1,5 @@
 ﻿using GrappBox.CustomControls;
 using GrappBox.Model;
-using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
 using System.Collections.Generic;
@@ -29,9 +28,9 @@ namespace GrappBox.View
     /// </summary>
     public sealed partial class TimelineView : Page
     {
-        CoreApplicationView view;
-        TimelineViewModel vm = TimelineViewModel.GetViewModel();
-        
+        private CoreApplicationView view;
+        private TimelineViewModel vm = TimelineViewModel.GetViewModel();
+
         public TimelineView()
         {
             this.InitializeComponent();
@@ -40,6 +39,7 @@ namespace GrappBox.View
         }
 
         #region NavigationHelper
+
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Mobile customization
@@ -88,9 +88,11 @@ namespace GrappBox.View
             vm.TeamOffset = 0;
             vm.CustomerOffset = 0;
         }
-        #endregion
+
+        #endregion NavigationHelper
 
         #region Selection changed
+
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -107,6 +109,7 @@ namespace GrappBox.View
                 AddCustomerMessage.Visibility = Visibility.Visible;
             }
         }
+
         private async void TeamListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.MessageSelected = (sender as ListView).SelectedItem as TimelineModel;
@@ -122,9 +125,11 @@ namespace GrappBox.View
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(TimelineMessageView)));
             }
         }
-        #endregion
+
+        #endregion Selection changed
 
         #region Click
+
         private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -178,7 +183,7 @@ namespace GrappBox.View
             //{
             //    LoadingBar.IsEnabled = true;
             //    LoadingBar.Visibility = Visibility.Visible;
-                
+
             //    await bvm.getTagList();
             //    await bvm.getUsers();
             //    vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -195,15 +200,14 @@ namespace GrappBox.View
         {
             TimelineContentDialog dialog = new TimelineContentDialog(vm.TeamId);
             await dialog.ShowAsync();
-
         }
-        
 
         private async void AddCustomer_Click(object sender, RoutedEventArgs e)
         {
             TimelineContentDialog dialog = new TimelineContentDialog(vm.CustomerId);
             await dialog.ShowAsync();
         }
-        #endregion
+
+        #endregion Click
     }
 }
