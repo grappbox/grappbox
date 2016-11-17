@@ -55,8 +55,8 @@ namespace GrappBox.Model
         //#endregion
         //public async System.Threading.Tasks.Task LogoUpdate()
         //{
-        //    logoDateFmt = "LogoDate_" + SettingsManager.getOption<int>("ProjectIdChoosen");
-        //    logoImgFmt = "LogoImg_" + SettingsManager.getOption<int>("ProjectIdChoosen");
+        //    logoDateFmt = "LogoDate_" + AppGlobalHelper.ProjectId;
+        //    logoImgFmt = "LogoImg_" + AppGlobalHelper.ProjectId;
         //    if (LogoDate == null)
         //        return;
         //    DateTime update;
@@ -76,7 +76,7 @@ namespace GrappBox.Model
         //{
         //    LogoModel logoMod = null;
         //    ApiCommunication api = ApiCommunication.Instance;
-        //    object[] token = { User.GetUser().Token, SettingsManager.getOption<int>("ProjectIdChoosen") };
+        //    object[] token = { User.GetUser().Token, AppGlobalHelper.ProjectId };
         //    HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
         //    if (res.IsSuccessStatusCode)
         //    {

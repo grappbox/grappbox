@@ -16,8 +16,8 @@
             <ContentPresenter x:Name="content"
                               VerticalAlignment="Center"
                               HorizontalAlignment="Left"
-                              Margin="{x:Bind Padding}"
-                              Content="{x:Bind HeaderContent}" />
+                              Margin="20,0,0,0"
+                              Content="{x:Bind HeaderContent}"/>
         </Grid>
     </Grid>
 </UserControl>

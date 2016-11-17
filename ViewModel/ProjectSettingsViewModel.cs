@@ -1,21 +1,21 @@
-﻿using GrappBox.Helpers;
-using GrappBox.HttpRequest;
-using GrappBox.Model;
-
+﻿using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
-using System.Text.RegularExpressions;
+using Windows.Web.Http;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.Web.Http;
+using System.Text.RegularExpressions;
+using GrappBox.HttpRequest;
+using GrappBox.Resources;
+using System.Diagnostics;
+using GrappBox.Helpers;
 
 namespace GrappBox.ViewModel
 {
-    internal class ProjectSettingsViewModel : ViewModelBase
+    class ProjectSettingsViewModel : ViewModelBase
     {
         static private ProjectSettingsViewModel instance = null;
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
@@ -35,7 +35,6 @@ namespace GrappBox.ViewModel
             else
                 return new ProjectSettingsViewModel();
         }
-
         public ProjectSettingsViewModel()
         {
             instance = this;
@@ -43,13 +42,12 @@ namespace GrappBox.ViewModel
         }
 
         #region CustomerAccess
-
         public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", name);
             HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
@@ -70,7 +68,7 @@ namespace GrappBox.ViewModel
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", _customerSelected.Name);
             HttpResponseMessage res = await api.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
@@ -89,11 +87,11 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/customeraccesses");
             if (res.IsSuccessStatusCode)
             {
-                _customerAccessModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
+                _customerAccessModel = api.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("CustomerList");
             }
             else
@@ -109,7 +107,7 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _customerSelected.Id };
+                object[] token = { AppGlobalHelper.ProjectId, _customerSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "project/customeraccess");
                 if (res.IsSuccessStatusCode)
                 {
@@ -141,17 +139,15 @@ namespace GrappBox.ViewModel
                 }
             }
         }
-
         #endregion CustomerAccess
 
         #region ProjectRole
-
         public async System.Threading.Tasks.Task<bool> addRole()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("projectId", AppGlobalHelper.ProjectId);
             props.Add("name", _role.Name);
             props.Add("teamTimeline", _role.TeamTimeline);
             props.Add("customerTimeline", _role.CustomerTimeline);
@@ -248,7 +244,7 @@ namespace GrappBox.ViewModel
         {
             HttpRequestManager api = HttpRequestManager.Instance;
 
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), userId, roleId };
+            object[] token = { AppGlobalHelper.ProjectId, userId, roleId };
             HttpResponseMessage res = await api.Delete(token, "role/user");
             if (res.IsSuccessStatusCode)
             {
@@ -284,11 +280,11 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getRoles()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "roles");
             if (res.IsSuccessStatusCode)
             {
-                _projectRoleModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
+                _projectRoleModel = api.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("RoleList");
             }
             else
@@ -467,11 +463,9 @@ namespace GrappBox.ViewModel
                 }
             }
         }
-
         #endregion ProjectRole
 
         #region ProjectSettings
-
         public async System.Threading.Tasks.Task getProjectLogo()
         {
             //await _projectSettingsModel.LogoUpdate();
@@ -511,7 +505,7 @@ namespace GrappBox.ViewModel
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
                 props.Add("twitter", _projectSettingsModel.Twitter);
-            HttpResponseMessage res = await api.Put(props, "project/" + SettingsManager.getOption<int>("ProjectIdChoosen"));
+            HttpResponseMessage res = await api.Put(props, "project/" + AppGlobalHelper.ProjectId);
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
@@ -581,7 +575,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Post(props, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("ProjectIdChoosen", _projectSettingsModel.Id);
             }
             else
@@ -595,11 +589,11 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectSettings()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyProjectSettings();
             }
             else
@@ -612,7 +606,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task deleteProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Delete(token, "project");
             if (res.IsSuccessStatusCode)
             {
@@ -635,7 +629,7 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task retrieveProject()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/retrieve");
             if (res.IsSuccessStatusCode)
             {
@@ -826,18 +820,17 @@ namespace GrappBox.ViewModel
         #endregion ProjectSettings
 
         #region ProjectUser
-
         public async System.Threading.Tasks.Task addProjectUser(string email)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("id", SettingsManager.getOption<int>("ProjectIdChoosen"));
+            props.Add("id", AppGlobalHelper.ProjectId);
             props.Add("email", email);
             HttpResponseMessage res = await api.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
             {
-                UserModel newUser = HttpRequestManager.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
+                UserModel newUser = api.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
@@ -852,11 +845,11 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task getProjectUsers()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen") };
+            object[] token = { AppGlobalHelper.ProjectId };
             HttpResponseMessage res = await api.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _projectUserModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                _projectUserModel = api.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
@@ -869,12 +862,12 @@ namespace GrappBox.ViewModel
         public async System.Threading.Tasks.Task<ProjectRoleModel> getUserRole(int id)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), id };
+            object[] token = { AppGlobalHelper.ProjectId, id };
             HttpResponseMessage res = await api.Get(token, "roles/project/user");
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
-                return HttpRequestManager.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
+                return api.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
             }
             else
             {
@@ -890,7 +883,7 @@ namespace GrappBox.ViewModel
             {
                 HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { SettingsManager.getOption<int>("ProjectIdChoosen"), _userSelected.Id };
+                object[] token = { AppGlobalHelper.ProjectId, _userSelected.Id };
                 HttpResponseMessage res = await api.Delete(token, "project/user");
                 if (res.IsSuccessStatusCode)
                 {
@@ -922,7 +915,6 @@ namespace GrappBox.ViewModel
                 }
             }
         }
-
         #endregion ProjectUser
     }
 }
