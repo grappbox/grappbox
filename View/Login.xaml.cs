@@ -36,7 +36,7 @@ namespace GrappBox.View
 
         private async void DashBoardButton_Click(object sender, RoutedEventArgs e)
         {
-            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappBoxBrush"));
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             dialog.ShowAsync();
             HttpRequestManager api = HttpRequestManager.Instance;
             bool result = await api.Login(loginBlock.Text, pwdBlock.Password);
