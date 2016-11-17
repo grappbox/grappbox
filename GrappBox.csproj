@@ -105,7 +105,6 @@
       <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
     <Compile Include="Constants.cs" />
-    <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
     </Compile>
@@ -152,7 +151,6 @@
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
-    <Compile Include="Resources\RelayCommand.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
