@@ -1,4 +1,5 @@
-﻿using GrappBox.Helpers;
+﻿using GrappBox.CustomControls;
+using GrappBox.Helpers;
 using GrappBox.Model;
 using GrappBox.ViewModel;
 using System;
@@ -22,16 +23,11 @@ namespace GrappBox.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             GenericDashboardViewModel vmdl = this.DataContext as GenericDashboardViewModel;
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-            if (await vmdl.getProjectList() == false)
-            {
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
-            }
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
+            await vmdl.getProjectList();
             await vmdl.getProjectsLogo();
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)

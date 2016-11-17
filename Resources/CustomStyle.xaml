@@ -252,8 +252,14 @@
         </Setter>
     </Style>
 
-    <!--<ResourceDictionary.ThemeDictionaries>
+    <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="SystemControlPageBackgroundMediumAltMediumBrush" Color="White" Opacity="0.9" />
+        </ResourceDictionary>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="SystemControlPageBackgroundMediumAltMediumBrush" Color="White" Opacity="0.9" />
+        </ResourceDictionary>
+        <!--    <ResourceDictionary x:Key="Light">
             <SolidColorBrush x:Key="PivotHeaderBackgroundUnselectedBrush" Color="{StaticResource White1Grappbox}" />
             <SolidColorBrush x:Key="PivotHeaderBackgroundSelectedBrush" Color="{StaticResource Grey1Grappbox}" />
             <SolidColorBrush x:Key="PivotHeaderForegroundSelectedBrush" Color="{StaticResource White1Grappbox}" />
@@ -276,6 +282,6 @@
             <SolidColorBrush x:Key="ApplicationPageBackgroundThemeBrush" Color="{StaticResource Grey1Grappbox}" />
 
             <x:Double x:Key="ControlContentThemeFontSize">16</x:Double>
-        </ResourceDictionary>
-    </ResourceDictionary.ThemeDictionaries>-->
+        </ResourceDictionary>-->
+    </ResourceDictionary.ThemeDictionaries>
 </ResourceDictionary>

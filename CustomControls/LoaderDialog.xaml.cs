@@ -42,6 +42,7 @@ namespace GrappBox.CustomControls
             this.InitDefault();
             this.InitializeComponent();
             progressRing.Foreground = colorBrush;
+            loadingText.Foreground = colorBrush;
         }
 
         /// <summary>
@@ -55,6 +56,7 @@ namespace GrappBox.CustomControls
             this.InitDefault();
             this.InitializeComponent();
             progressRing.Foreground = new SolidColorBrush(color);
+            loadingText.Foreground = new SolidColorBrush(color);
         }
 
         private void InitDefault()

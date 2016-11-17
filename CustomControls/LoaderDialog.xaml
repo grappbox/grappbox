@@ -11,12 +11,19 @@
     HorizontalAlignment="Center"
     VerticalAlignment="Center">
 
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+    <RelativePanel HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
         <ProgressRing x:Name="progressRing"
+                      Canvas.ZIndex="100"
                       Width="100"
                       Height="100"
-                      HorizontalAlignment="Center"
-                      VerticalAlignment="Center"
+                      RelativePanel.AlignHorizontalCenterWithPanel="True"
+                      RelativePanel.AlignVerticalCenterWithPanel="True"
                       IsActive="True" />
-    </Grid>
+        <TextBlock x:Name="loadingText"
+                   Margin="0,25,0,0"
+                   RelativePanel.Below="progressRing"
+                   RelativePanel.AlignHorizontalCenterWith="progressRing"
+                   Text="Loading..."
+                   FontWeight="Bold" />
+    </RelativePanel>
 </ContentDialog>
