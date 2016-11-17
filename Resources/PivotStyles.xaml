@@ -6,7 +6,7 @@
     <Style TargetType="Pivot" x:Key="RedPivot">
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Background" Value="{StaticResource Grey2GrappboxBrush}" />
+        <Setter Property="Background" Value="{StaticResource White2GrappboxBrush}" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -299,7 +299,7 @@
     <Style TargetType="Pivot" x:Key="OrangePivot">
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
-        <Setter Property="Background" Value="{StaticResource Grey2GrappboxBrush}" />
+        <Setter Property="Background" Value="{StaticResource White2GrappboxBrush}" />
         <Setter Property="IsTabStop" Value="False" />
         <Setter Property="ItemsPanel">
             <Setter.Value>
@@ -706,7 +706,7 @@
 
     <!-- Default style for Windows.UI.Xaml.Controls.PivotItem -->
     <Style TargetType="PivotItem">
-        <Setter Property="Background" Value="{StaticResource Grey2GrappboxBrush}" />
+        <Setter Property="Background" Value="{StaticResource White2GrappboxBrush}" />
         <Setter Property="Margin" Value="0" />
         <Setter Property="Padding" Value="0" />
         <Setter Property="HorizontalContentAlignment" Value="Stretch" />

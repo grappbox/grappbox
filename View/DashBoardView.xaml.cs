@@ -5,7 +5,10 @@ using GrappBox.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
+using Windows.UI;
+using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -40,6 +43,17 @@ namespace GrappBox.View
         /// Ce paramètre est généralement utilisé pour configurer la page.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
+            //Mobile customization
+            if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
+            {
+                var statusBar = StatusBar.GetForCurrentView();
+                if (statusBar != null)
+                {
+                    statusBar.BackgroundOpacity = 1;
+                    statusBar.BackgroundColor = (Color)Application.Current.Resources["RedGrappbox"];
+                    statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
+                }
+            }
             SettingsPopUp.Visibility = Visibility.Collapsed;
             SettingsPopUp.IsOpen = true;
             db_pivot.IsEnabled = true;

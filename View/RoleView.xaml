@@ -171,7 +171,7 @@
     <Page.BottomAppBar>
         <CommandBar Visibility="Visible" x:Name="CB" ClosedDisplayMode="Compact">
             <AppBarButton Name="Update" Visibility="Collapsed" Label="Update" Click="Update_Click" Icon="Save" />
-            <AppBarButton Name="Add" Visibility="Collapsed" Label="Add" Click="AddRole_Click" Icon="Add" />
+            <AppBarButton Name="Add" Visibility="Collapsed" Label="Add" Click="AddRole_Click" Icon="Save" />
         </CommandBar>
     </Page.BottomAppBar>
     <Grid>
@@ -184,7 +184,6 @@
                 <TextBlock Name="title" Text="User settings" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
         <ScrollViewer Grid.Row="1" Padding="15">
             <StackPanel>
                 <TextBox x:Name="RoleName" Header="Name" PlaceholderText="Name" Text="{Binding RoleName, Mode=TwoWay}" />

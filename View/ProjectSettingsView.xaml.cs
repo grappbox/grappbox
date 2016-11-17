@@ -1,4 +1,5 @@
-﻿using GrappBox.Helpers;
+﻿using GrappBox.CustomControls;
+using GrappBox.Helpers;
 using GrappBox.Model;
 using GrappBox.ViewModel;
 using System;
@@ -72,8 +73,9 @@ namespace GrappBox.View
             }
             if (e.NavigationMode == NavigationMode.New)
                 PivotPS.SelectedIndex = 0;
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             ProjectName.Text = "";
             ProjectDescription.Text = "";
@@ -131,8 +133,7 @@ namespace GrappBox.View
                 NewPassword.Visibility = Visibility.Visible;
             }
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -208,9 +209,6 @@ namespace GrappBox.View
 
         private async void ProjectSettingsUpdate_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (isNew == false)
             {
                 if (oldPassword.Password == "" && newPassword.Password == "")
@@ -240,39 +238,31 @@ namespace GrappBox.View
                 if (SettingsManager.getOption("ProjectIdChoosen") != -1)
                     Frame.GoBack();
             }
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void AddUser_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             await vm.addProjectUser(UserMail.Text);
             UserMail.Text = "";
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private async void RemoveUserButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             await vm.removeProjectUser();
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
             {
                 //retreive
@@ -296,9 +286,6 @@ namespace GrappBox.View
                     ProjectDelete.Label = "Retreive Project";
                 }
             }
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void userListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -362,30 +349,18 @@ namespace GrappBox.View
 
         private async void RegenerateCU_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             await vm.regenerateCustomerAccess();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void RemoveCustomerButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             await vm.removeCustomerAccess();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void AddCU_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             ObservableCollection<CustomerAccessModel> cuList = vm.CustomerList;
             bool exist = false;
@@ -402,7 +377,7 @@ namespace GrappBox.View
             }
             else
             {
-                if (CustomerName.Text == "" && CustomerName.Text == null)
+                if (CustomerName.Text == "" || CustomerName.Text == null)
                 {
                     MessageDialog msgbox = new MessageDialog("The name must not be empty");
                     await msgbox.ShowAsync();
@@ -414,8 +389,7 @@ namespace GrappBox.View
                 }
             }
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private void customerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -437,23 +411,19 @@ namespace GrappBox.View
         {
             if (vm.RoleSelected != null)
             {
-                if (vm.RoleSelected != null)
-                {
-                    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected));
-                }
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(RoleView), vm.RoleSelected));
             }
         }
 
         private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             if (vm.RoleSelected != null)
                 await vm.removeRole();
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -479,6 +449,16 @@ namespace GrappBox.View
             ProjectRoleModel role = await vm.getUserRole(md.Id);
             if (role != null)
                 (sender as ComboBox).SelectedValue = role.RoleId;
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CB.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CB.Visibility = Visibility.Visible;
         }
     }
 }

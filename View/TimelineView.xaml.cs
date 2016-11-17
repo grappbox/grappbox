@@ -1,4 +1,5 @@
 ﻿using GrappBox.CustomControls;
+using GrappBox.Helpers;
 using GrappBox.Model;
 using GrappBox.ViewModel;
 using System;
@@ -56,15 +57,14 @@ namespace GrappBox.View
 
             bool result = true;
 
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+            dialog.ShowAsync();
 
             vm.MessageSelected = null;
             result = await vm.getTimelines();
             if (result == false)
             {
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 Frame.GoBack();
             }
             vm.CustomerList.Clear();
@@ -72,13 +72,11 @@ namespace GrappBox.View
             result = await vm.getCustomerMessages();
             if (result == false)
             {
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 Frame.GoBack();
             }
             result = await vm.getTeamMessages();
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
             if (result == false)
                 Frame.GoBack();
         }
@@ -87,6 +85,8 @@ namespace GrappBox.View
         {
             vm.TeamOffset = 0;
             vm.CustomerOffset = 0;
+            vm.TeamList.Clear();
+            vm.CustomerList.Clear();
         }
 
         #endregion NavigationHelper
@@ -115,13 +115,12 @@ namespace GrappBox.View
             vm.MessageSelected = (sender as ListView).SelectedItem as TimelineModel;
             if (vm.MessageSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
                 await vm.getComments(vm.MessageSelected.TimelineId, vm.MessageSelected.Id);
 
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(TimelineMessageView)));
             }
         }
@@ -135,13 +134,7 @@ namespace GrappBox.View
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.MessageSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
-
                 await vm.updateMessage(vm.MessageSelected);
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -150,13 +143,12 @@ namespace GrappBox.View
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.MessageSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
                 await vm.removeMessage(vm.MessageSelected);
 
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
             }
         }
 
@@ -165,13 +157,12 @@ namespace GrappBox.View
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.MessageSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
                 await vm.getComments(vm.MessageSelected.TimelineId, vm.MessageSelected.Id);
 
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(TimelineMessageView)));
             }
         }
@@ -181,8 +172,8 @@ namespace GrappBox.View
             //BugtrackerViewModel bvm = BugtrackerViewModel.GetViewModel();
             //if (bvm != null)
             //{
-            //    LoadingBar.IsEnabled = true;
-            //    LoadingBar.Visibility = Visibility.Visible;
+            //    var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                //dialog.ShowAsync();
 
             //    await bvm.getTagList();
             //    await bvm.getUsers();
@@ -190,8 +181,7 @@ namespace GrappBox.View
             //    bvm.Title = vm.MessageSelected.Title;
             //    bvm.Description = vm.MessageSelected.Message;
 
-            //    LoadingBar.IsEnabled = false;
-            //    LoadingBar.Visibility = Visibility.Collapsed;
+            //    dialog.Hide();
             //    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView)));
             //}
         }

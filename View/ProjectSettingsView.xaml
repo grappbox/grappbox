@@ -39,7 +39,6 @@
                 <TextBlock Name="title" Text="Project settings" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
         <Pivot Grid.Row="1" Name="PivotPS" Style="{StaticResource RedPivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem Margin="0" VerticalAlignment="Stretch">
                 <PivotItem.Header>
@@ -52,29 +51,33 @@
                                 <Setter Property="Margin" Value="0,20,0,0" />
                                 <Setter Property="FontSize" Value="15" />
                             </Style>
+                            <!--<Style TargetType="PasswordBox">
+                                <Setter Property="BorderBrush" Value="{StaticResource Grey3GrappboxBrush}"/>
+                            </Style>-->
                         </StackPanel.Resources>
                         <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="ProjectName" Header="Name" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" />
-                        <TextBox Name="ProjectDescription" Header="Description" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" />
-                        <TextBox Header="Logo" Height="1" MinHeight="26" />
+                        <TextBox Name="ProjectName" Header="Name" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="ProjectDescription" Header="Description" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Header="Logo" Height="1" MinHeight="26" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
                             <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100" />
                             <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click" />
                             <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100" />
                         </Grid>
-                        <TextBox Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
-                        <TextBox Name="Company" Header="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}" />
-                        <TextBox Name="Mail" Header="Contact mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress" />
-                        <TextBox Name="Facebook" Header="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}" />
-                        <TextBox Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
+                        <TextBox Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="Company" Header="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="Mail" Header="Contact mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="Facebook" Header="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                         <StackPanel Name="NewPassword" Visibility="Collapsed">
-                            <PasswordBox x:Name="password" Header="Cloud's safe folder password" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <PasswordBox x:Name="password" Header="Cloud's safe folder password" BorderBrush="Transparent" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                         </StackPanel>
                         <StackPanel Name="UpdatePassword" Visibility="Collapsed">
+                            <Border Margin="0,20,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,1"/>
                             <TextBlock Text="Cloud's safe folder password" Foreground="Black" Margin="0,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17" />
-                            <PasswordBox x:Name="oldPassword" Header="Old password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
-                            <PasswordBox x:Name="newPassword" Header="New password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
-                            <PasswordBox x:Name="retypePassword" Header="Retype password" Margin="0,20,0,0" BorderBrush="Transparent" VerticalAlignment="Stretch" />
+                            <PasswordBox x:Name="oldPassword" Header="Old password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                            <PasswordBox x:Name="newPassword" Header="New password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                            <PasswordBox x:Name="retypePassword" Header="Retype password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
@@ -111,7 +114,7 @@
                             <DataTemplate>
                                 <Grid Margin="0,0,0,10">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
+                                        <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
