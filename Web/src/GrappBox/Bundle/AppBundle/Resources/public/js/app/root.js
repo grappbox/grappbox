@@ -9,8 +9,8 @@
 /* =================================================== */
 
 // ROOTSCOPE definition
-app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService", "$location", "notificationFactory", "rootFactory", "$rootScope", "$window",
-    function(accessFactory, $base64, $cookies, $http, localStorageService, $location, notificationFactory, rootFactory, $rootScope, $window) {
+app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
+    function($base64, $cookies, rootFactory, $rootScope) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -30,16 +30,51 @@ app.run(["accessFactory", "$base64", "$cookies", "$http", "localStorageService",
   $rootScope.path = {
     current: "/",
     colors: {
-      "/": "default", "/bugtracker": "purple", "/calendar": "blue", "/cloud": "yellow", "/dashboard": "red", "/gantt":"blue", "/logout": "default",       
-      "/notifications": "default", "/profile": "red", "/settings": "red", "/tasks": "blue", "/timeline": "orange", "/whiteboard": "green"
+      "/": "default",
+      "/bugtracker": "purple",
+      "/calendar": "blue",
+      "/cloud": "yellow",
+      "/dashboard": "red",
+      "/gantt":"blue",
+      "/logout": "default",      
+      "/notifications": "default",
+      "/profile": "red",
+      "/settings": "red",
+      "/statistics": "red",
+      "/tasks": "blue",
+      "/timeline": "orange",
+      "/whiteboard": "green"
     },
     icons: {
-      "/": "default", "/bugtracker": "bug_report", "/calendar": "event", "/cloud": "cloud_upload", "/dashboard": "dashboard", "/gantt": "sort", "/logout": "exit_to_app",
-      "/notifications": "notifications", "/profile": "person", "/settings": "settings", "/tasks": "view_list", "/timeline": "forum", "/whiteboard": "create"
+      "/": "default",
+      "/bugtracker": "bug_report",
+      "/calendar": "event",
+      "/cloud": "cloud",
+      "/dashboard": "dashboard",
+      "/gantt": "sort",
+      "/logout": "exit_to_app",
+      "/notifications": "notifications",
+      "/profile": "person",
+      "/statistics": "equalizer",
+      "/settings": "settings",
+      "/tasks": "assignment",
+      "/timeline": "forum",
+      "/whiteboard": "create"
     },
     routes: {
-      "/bugtracker": false, "/calendar": false, "/cloud": false, "/dashboard": false, "/gantt": false, "/logout": false,
-      "/notifications": false, "/profile": false, "/settings": false, "/tasks": false, "/timeline": false, "/whiteboard": false
+      "/bugtracker": false,
+      "/calendar": false,
+      "/cloud": false,
+      "/dashboard": false,
+      "/gantt": false,
+      "/logout": false,
+      "/notifications": false,
+      "/profile": false,
+      "/settings": false,
+      "/statistics": false,
+      "/tasks": false,
+      "/timeline": false,
+      "/whiteboard": false
     }
   };
 

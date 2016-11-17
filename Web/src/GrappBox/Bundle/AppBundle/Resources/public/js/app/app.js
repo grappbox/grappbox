@@ -22,6 +22,7 @@ var app = angular.module("grappbox", [
   "LocalStorageModule",
   "ui.tree",
   "ang-drag-drop",
+  "googlechart",
   "gantt",
   //"gantt.sortable",
   "gantt.movable",

@@ -1,0 +1,121 @@
+<!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+
+<!-- Statistics page -->
+<section class="statistics no-margin">
+  <p>
+    This page shows a set of all the data we collected on your projects. Not particularly exciting, but very useful.
+  </p>
+  <div data-ng-if="!view.loaded">
+    <div class="spinner section">
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+    </div>
+  </div>
+  <div data-ng-if="view.loaded">  
+    <div data-ng-if="view.valid && user">
+      <div class="box-row">
+
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/tasks'] }]}</i>Tasks</h4>
+
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.task.current }]} tasks in progress<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
+            <span class="status-icon"><i class="material-icons blue-color">access_time</i></span>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.task.late }]} <strong>late</strong> tasks<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
+            <span class="status-icon">
+              <i class="material-icons {[{ statistics.task.late == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.task.late == '0' ? 'check' : 'warning' }]}</i>
+            </span>
+          </div>
+        </div>
+
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.task.done }]} finished tasks<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
+            <span class="status-icon"><i class="material-icons blue-color">done_all</i></span>
+          </div>
+        </div>
+
+        <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>Tasks repartition<br/><span>(by user)</span></p>
+            <div class="chart" google-chart chart="statistics.task.repartition.chart" data-ng-if="!statistics.task.repartition.empty"></div>
+            <p class="chart-message" data-ng-if="statistics.task.repartition.empty"><i class="material-icons">block</i>{[{ ::statistics.task.repartition.message }]}</p>
+          </div>
+        </div>
+
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</h4>
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.issue.assignation.assigned }]} assigned issues</p>
+            <span class="status-icon"><i class="material-icons blue-color">access_time</i></span>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.issue.assignation.unassigned }]} <strong>unassigned</strong> issues</p>
+            <span class="status-icon">
+              <i class="material-icons {[{ statistics.issue.assignation.unassigned == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.issue.assignation.unassigned == '0' ? 'check' : 'warning' }]}</i>
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.issue.byCustomer }]} issues reported by your customers</p>
+            <span class="status-icon">
+              <i class="material-icons {[{ statistics.issue.byCustomer == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.issue.byCustomer == '0' ? 'check' : 'warning' }]}</i>
+            </span>
+          </div>
+        </div>
+       <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
+          <div class="box">
+            <p>Issues repartition<br/><span>(by user)</span></p>
+            <div class="chart" google-chart chart="statistics.issue.repartition.user.chart" data-ng-if="!statistics.issue.repartition.user.empty"></div>
+            <p class="chart-message" data-ng-if="statistics.issue.repartition.user.empty"><i class="material-icons">block</i>{[{ ::statistics.issue.repartition.user.message }]}</p>
+          </div>
+        </div>
+       <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
+          <div class="box">
+            <p>Issues repartition<br/><span>(by tag)</span></p>
+            <div class="chart" google-chart chart="statistics.issue.repartition.tag.chart" data-ng-if="!statistics.issue.repartition.tag.empty"></div>
+            <p class="chart-message" data-ng-if="statistics.issue.repartition.tag.empty"><i class="material-icons">block</i>{[{ ::statistics.issue.repartition.tag.message }]}</p>
+          </div>
+        </div>
+
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/timeline'] }]}</i>Timeline</h4>
+        <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.timeline.count.team }]} messages on your <strong>team</strong> discussion section</p>
+          </div>
+        </div>
+
+        <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.timeline.count.customer }]} messages on your <strong>customer</strong> discussion section</p>
+          </div>
+        </div>
+
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">public</i>Customers</h4>
+        <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ statistics.customer.actual }]} registered customers<br/><span>On a maximum of {[{ statistics.customer.maximum }]}</span></p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div data-ng-if="!view.valid">
+      <div class="view-row">
+        <div class="col-lg-12 no-padding">
+          <div class="box box-error">
+            <p><i class="material-icons">warning</i>Something is wrong with GrappBox. Please give us a minute, and try again.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

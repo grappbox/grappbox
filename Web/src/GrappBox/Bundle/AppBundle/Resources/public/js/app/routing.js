@@ -104,6 +104,14 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     caseInsensitiveMatch : true,
     resolve: { projectSettingsAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectSettingsAvailable(); }]}
   })
+  // Project statistics
+  .when("/statistics/:project_id", {
+    title: "Statistics",
+    controller  : "StatisticsController",
+    templateUrl : "../resources/pages/statistics.html",
+    caseInsensitiveMatch : true,
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
+  })
   // Task pages	
   .when("/tasks/:project_id", {
 		title: "Tasks",
