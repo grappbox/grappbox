@@ -1,11 +1,15 @@
-﻿using System;
+﻿using GrappBox.CustomControls;
+using GrappBox.Helpers;
+using GrappBox.HttpRequest;
+
+using System;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using GrappBox.HttpRequest;
-using GrappBox.Resources;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
@@ -32,21 +36,18 @@ namespace GrappBox.View
 
         private async void DashBoardButton_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappBoxBrush"));
+            dialog.ShowAsync();
             HttpRequestManager api = HttpRequestManager.Instance;
             bool result = await api.Login(loginBlock.Text, pwdBlock.Password);
             if (result == true)
             {
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
             }
             else
             {
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
                 MessageDialog msgbox = new MessageDialog("Can't login");
                 await msgbox.ShowAsync();
             }

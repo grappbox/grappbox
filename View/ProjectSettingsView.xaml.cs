@@ -1,5 +1,5 @@
-﻿using GrappBox.Model;
-using GrappBox.Resources;
+﻿using GrappBox.Helpers;
+using GrappBox.Model;
 using GrappBox.ViewModel;
 using System;
 using System.Collections.ObjectModel;
@@ -42,7 +42,8 @@ namespace GrappBox.View
             this.DataContext = vm;
         }
 
-       #region NavigationHelper
+        #region NavigationHelper
+
         /// <summary>
         /// The methods provided in this section are simply used to allow
         /// NavigationHelper to respond to the page's navigation methods.
@@ -93,7 +94,7 @@ namespace GrappBox.View
             CustomerAccess.IsEnabled = true;
             Roles.IsEnabled = true;
             DeleteDate.Visibility = Visibility.Collapsed;
-            
+
             if (e.Parameter == null)
             {
                 await vm.getProjectSettings();

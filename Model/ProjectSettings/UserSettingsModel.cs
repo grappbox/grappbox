@@ -62,7 +62,7 @@ namespace GrappBox.Model
         //    HttpResponseMessage res = await api.Get(token, "user/getuseravatar");
         //    if (res.IsSuccessStatusCode)
         //    {
-        //        logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+        //        logoMod = HttpRequestManager.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
         //        Avatar = BytesToImage.String64ToImage(logoMod.Avatar);
         //        await BytesToImage.StoreImage(logoMod.Avatar, logoImgFmt);
         //    }

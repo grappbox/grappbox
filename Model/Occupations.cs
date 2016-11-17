@@ -1,7 +1,6 @@
 ﻿using GrappBox.Helpers;
 using GrappBox.HttpRequest;
 using GrappBox.Model.Global;
-using GrappBox.Resources;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -56,8 +55,8 @@ namespace GrappBox.Model
             get
             {
                 if (Occupation == "busy")
-                    return new SolidColorBrush(Colors.Red);
-                return new SolidColorBrush(Colors.Green);
+                    return SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush;
+                return SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush;
             }
         }
     }

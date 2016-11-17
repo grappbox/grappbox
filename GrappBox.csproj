@@ -108,6 +108,9 @@
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\LoaderDialog.xaml.cs">
+      <DependentUpon>LoaderDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
@@ -126,7 +129,10 @@
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
     <Compile Include="Helpers\AppGlobalHelper.cs" />
-    <Compile Include="HttpRequest\NotificationManager.cs" />
+    <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
+    <Compile Include="Model\CalendarModel.cs" />
+    <Compile Include="Model\Calendar\Creator.cs" />
+    <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
@@ -140,13 +146,16 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
-    <Compile Include="Resources\RelayCommand.cs" />
-    <Compile Include="Utils\SystemInformation.cs" />
+    <Compile Include="Helpers\SystemInformation.cs" />
+    <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\CalendarView.xaml.cs">
+      <DependentUpon>CalendarView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
     </Compile>
@@ -166,9 +175,9 @@
       <DependentUpon>UserView.xaml</DependentUpon>
     </Compile>
     <None Include="Model\Global\DateTimeFormator.cs" />
-    <Compile Include="HttpRequest\HttpRequestManager.cs" />
-    <Compile Include="Resources\SettingsManager.cs" />
-    <Compile Include="HttpRequest\User.cs" />
+    <Compile Include="Helpers\HttpRequest\HttpRequestManager.cs" />
+    <Compile Include="Helpers\SettingsManager.cs" />
+    <Compile Include="Helpers\HttpRequest\User.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -205,6 +214,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControls\LoaderDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\MeetingDashBoardPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -226,6 +239,11 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Resources\ButtonStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\CalendarStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -261,6 +279,10 @@
     <Page Include="Resources\Styles.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CalendarView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\DashBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>

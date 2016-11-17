@@ -1,5 +1,4 @@
 ﻿using GrappBox.Model;
-using GrappBox.Resources;
 using GrappBox.ViewModel;
 using Windows.UI;
 using Windows.UI.Xaml;

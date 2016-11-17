@@ -1,6 +1,5 @@
 ﻿using GrappBox.Helpers;
 using GrappBox.Model;
-using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System;
 using System.Diagnostics;

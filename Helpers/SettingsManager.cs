@@ -5,14 +5,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GrappBox.Resources
+namespace GrappBox.Helpers
 {
-    class SettingsManager
+    internal class SettingsManager
     {
         public static bool OptionExist(string optName)
         {
             return Windows.Storage.ApplicationData.Current.LocalSettings.Values.ContainsKey(optName);
         }
+
         public static T getOption<T>(string optName)
         {
             Object value = Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName];
@@ -23,6 +24,7 @@ namespace GrappBox.Resources
             else
                 return (T)value;
         }
+
         public static int getOption(string optName)
         {
             Object value = Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName];
@@ -33,6 +35,7 @@ namespace GrappBox.Resources
             else
                 return (int)value;
         }
+
         public static void setOption(string optName, Object value)
         {
             Windows.Storage.ApplicationData.Current.LocalSettings.Values[optName] = value;

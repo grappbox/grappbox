@@ -33,6 +33,7 @@ namespace GrappBox
         public const string DashboardGenericCall = "dashboard/projects";
         public const string DashboardTeamOccupationCall = "dashboard/occupation";
         public const string DashboardMeetingsCall = "dashboard/meetings";
+        public const string CalendarCall = "planning/day";
 
         #endregion Api calls string
     }

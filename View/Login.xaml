@@ -8,7 +8,7 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
-        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}" />
     </Page.Resources>
     <Border Padding="15,0">
         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -46,11 +46,6 @@
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
                     Click="DashBoardButton_Click" />
-            <ProgressRing Grid.Row="3" VerticalAlignment="Top"
-                          Name="LoadingBar"
-                          Visibility="Collapsed"
-                          IsEnabled="False"
-                          HorizontalAlignment="Stretch" />
         </Grid>
     </Border>
 </Page>

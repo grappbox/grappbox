@@ -91,7 +91,7 @@ namespace GrappBox.Model
             //string json = await res.Content.ReadAsStringAsync();
             //if (res.IsSuccessStatusCode)
             //{
-            //    logoMod = api.DeserializeJson<LogoModel>(json);
+            //    logoMod = HttpRequestManager.DeserializeJson<LogoModel>(json);
             //    await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
             //}
             //else

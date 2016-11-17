@@ -80,7 +80,7 @@ namespace GrappBox.Model
         //    HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
         //    if (res.IsSuccessStatusCode)
         //    {
-        //        logoMod = api.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+        //        logoMod = HttpRequestManager.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
         //        Logo = BytesToImage.String64ToImage(logoMod.Logo);
         //        await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
         //    }

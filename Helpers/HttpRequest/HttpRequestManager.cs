@@ -1,6 +1,7 @@
 ﻿using GrappBox.Helpers;
-using GrappBox.Resources;
-using GrappBox.Utils;
+
+using GrappBox.Helpers;
+
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -14,19 +15,22 @@ using Windows.Web.Http.Headers;
 namespace GrappBox.HttpRequest
 {
     //This class is a singleton
-    class HttpRequestManager
+    internal class HttpRequestManager
     {
         #region Private members
+
         private const string baseAdress = "https://api.grappbox.com/";
         private const string version = "0.3/";
 
-
         private const string baseUrl = baseAdress + version;
-        #endregion
+
+        #endregion Private members
+
         #region Singleton instantiation
 
         private static volatile HttpRequestManager instance;
         private static object syncRoot = new Object();
+
         public static HttpRequestManager Instance
         {
             get
@@ -43,31 +47,59 @@ namespace GrappBox.HttpRequest
                 return instance;
             }
         }
+
         private HttpClient webclient;
+
         private HttpRequestManager()
         {
             webclient = new HttpClient();
             webclient.DefaultRequestHeaders.Accept.Clear();
             webclient.DefaultRequestHeaders.Accept.Add(new Windows.Web.Http.Headers.HttpMediaTypeWithQualityHeaderValue("application/json"));
         }
-        #endregion
+
+        #endregion Singleton instantiation
+
         #region Utils
+
         public Uri RequestUri(string requestUrl)
         {
             Uri reqUri = new Uri(baseUrl + requestUrl);
             return reqUri;
         }
-        public T DeserializeJson<T>(string json)
+
+        public static T DeserializeJson<T>(string json)
         {
             string data = JObject.Parse(json).GetValue("data").ToString();
-            return JsonConvert.DeserializeObject<T>(data);
+            try
+            {
+                T obj;
+                obj = JsonConvert.DeserializeObject<T>(data);
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw (ex);
+            }
         }
-        public T DeserializeArrayJson<T>(string json)
+
+        public static T DeserializeArrayJson<T>(string json)
         {
             string data = JObject.Parse(json).GetValue("data").ToString();
             data = JObject.Parse(data).GetValue("array").ToString();
-            return JsonConvert.DeserializeObject<T>(data);
+            try
+            {
+                T obj;
+                obj = JsonConvert.DeserializeObject<T>(data);
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw (ex);
+            }
         }
+
         public string GetErrorMessage(string jsonTxt)
         {
             if (jsonTxt == "")
@@ -86,8 +118,11 @@ namespace GrappBox.HttpRequest
             }
             return message;
         }
-        #endregion
+
+        #endregion Utils
+
         #region Requests
+
         public async Task<HttpResponseMessage> Post(Dictionary<string, object> properties, string url)
         {
             JObject post = new JObject();
@@ -111,6 +146,7 @@ namespace GrappBox.HttpRequest
             }
             return res;
         }
+
         public async Task<bool> Login(string username, string password)
         {
             JObject post = new JObject();
@@ -140,7 +176,7 @@ namespace GrappBox.HttpRequest
             {
                 try
                 {
-                    AppGlobalHelper.CurrentUser = DeserializeJson<User>(await res.Content.ReadAsStringAsync());
+                    AppGlobalHelper.CurrentUser = HttpRequestManager.DeserializeJson<User>(await res.Content.ReadAsStringAsync());
                 }
                 catch (Exception ex)
                 {
@@ -155,6 +191,7 @@ namespace GrappBox.HttpRequest
             else
                 return false;
         }
+
         public async Task<HttpResponseMessage> Put(Dictionary<string, object> properties, string url)
         {
             JObject put = new JObject();
@@ -177,6 +214,7 @@ namespace GrappBox.HttpRequest
             }
             return res;
         }
+
         public async Task<HttpResponseMessage> Get(object[] values, string url)
         {
             HttpResponseMessage res = null;
@@ -203,6 +241,7 @@ namespace GrappBox.HttpRequest
             }
             return res;
         }
+
         public async Task<HttpResponseMessage> Delete(object[] values, string url)
         {
             HttpResponseMessage res = null;
@@ -224,6 +263,7 @@ namespace GrappBox.HttpRequest
             }
             return res;
         }
-        #endregion
+
+        #endregion Requests
     }
 }

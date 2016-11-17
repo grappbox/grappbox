@@ -1,8 +1,9 @@
 ﻿using GrappBox.CustomControls;
-using GrappBox.Utils;
+using GrappBox.Helpers;
 using GrappBox.View;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
@@ -27,9 +28,11 @@ namespace GrappBox
     /// </summary>
     public sealed partial class AppShell : Page
     {
+        private static AppShell instance;
         private bool isPaddingAdded = false;
+
         // Declare the top level nav items
-        private List<NavMenuItem> navlist = new List<NavMenuItem>(
+        private ObservableCollection<NavMenuItem> partialNavList = new ObservableCollection<NavMenuItem>(
             new[]
             {
                 new NavMenuItem()
@@ -43,14 +46,14 @@ namespace GrappBox
                 {
                     Symbol = Constants.CalendarSymbol,
                     Label = "Calendar",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(View.CalendarView),
                     ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
                     Label = "Timeline",
-                    DestPage = typeof(TimelineView),
+                    DestPage = typeof(DashBoardView),
                     ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
@@ -97,6 +100,51 @@ namespace GrappBox
                 },
             });
 
+        private ObservableCollection<NavMenuItem> completeNavList = new ObservableCollection<NavMenuItem>() {
+            new NavMenuItem()
+            {
+                Symbol = Constants.DashboardSymbol,
+                Label = "Dashboard",
+                DestPage = typeof(DashBoardView),
+                ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+            },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.TimelineSymbol,
+                    Label = "Timeline",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.BugtrackerSymbol,
+                    Label = "Bugtracker",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("PurpleGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.TasksSymbol,
+                    Label = "Tasks",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.WhiteboardSymbol,
+                    Label = "Whiteboard",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.ProjectSettingsSymbol,
+                    Label = "Project Settings",
+                    DestPage = typeof(ProjectSettingsView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                }
+        };
+
         public static AppShell Current = null;
 
         /// <summary>
@@ -113,9 +161,6 @@ namespace GrappBox
                 Current = this;
 
                 this.CheckTogglePaneButtonSizeChanged();
-
-                var titleBar = Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar;
-                titleBar.IsVisibleChanged += TitleBar_IsVisibleChanged;
             };
 
             this.RootSplitView.RegisterPropertyChangedCallback(
@@ -130,7 +175,19 @@ namespace GrappBox
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
-            NavMenuList.ItemsSource = navlist;
+            instance = null;
+            NavMenuList.ItemsSource = NavList;
+        }
+
+        public ObservableCollection<NavMenuItem> NavList
+        {
+            get
+            {
+                if (Helpers.AppGlobalHelper.ProjectName == null || Helpers.AppGlobalHelper.ProjectName == string.Empty)
+                    return partialNavList;
+                else
+                    return completeNavList;
+            }
         }
 
         public Frame AppFrame { get { return this.frame; } }
@@ -194,7 +251,7 @@ namespace GrappBox
         /// <param name="listViewItem"></param>
         private void NavMenuList_ItemInvoked(object sender, ListViewItem listViewItem)
         {
-            foreach (var i in navlist)
+            foreach (var i in NavList)
             {
                 i.IsSelected = false;
             }
@@ -229,20 +286,20 @@ namespace GrappBox
             }
             if (e.NavigationMode == NavigationMode.Back)
             {
-                var item = (from p in this.navlist where p.DestPage == e.SourcePageType select p).FirstOrDefault();
+                var item = (from p in this.NavList where p.DestPage == e.SourcePageType select p).FirstOrDefault();
                 if (item == null && this.AppFrame.BackStackDepth > 0)
                 {
                     // In cases where a page drills into sub-pages then we'll highlight the most recent
                     // navigation menu item that appears in the BackStack
                     foreach (var entry in this.AppFrame.BackStack.Reverse())
                     {
-                        item = (from p in this.navlist where p.DestPage == entry.SourcePageType select p).SingleOrDefault();
+                        item = (from p in this.NavList where p.DestPage == entry.SourcePageType select p).SingleOrDefault();
                         if (item != null)
                             break;
                     }
                 }
 
-                foreach (var i in navlist)
+                foreach (var i in NavList)
                 {
                     i.IsSelected = false;
                 }
@@ -298,6 +355,7 @@ namespace GrappBox
         /// <param name="e"></param>
         private void TogglePaneButton_Checked(object sender, RoutedEventArgs e)
         {
+            CheckUserIdentity();
             this.CheckTogglePaneButtonSizeChanged();
         }
 
@@ -348,6 +406,15 @@ namespace GrappBox
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.AppFrame.Navigate(typeof(GenericDahsboard));
+        }
+
+        private void CheckUserIdentity()
+        {
+            if (Helpers.AppGlobalHelper.CurrentUser != null)
+            {
+                UserNameTextBlock.Text = Helpers.AppGlobalHelper.CurrentUserFullName;
+            }
+            Debug.WriteLine("UserName= " + UserNameTextBlock.Text);
         }
     }
 }

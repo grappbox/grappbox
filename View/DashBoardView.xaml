@@ -11,24 +11,20 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource RedButton}" />
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting" />
-        </CommandBar>
-    </Page.BottomAppBar>
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
             <customControl:PageHeader.HeaderContent>
                 <TextBlock Name="title" Text="Dashboard" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <Pivot Grid.Row="1"  Name="db_pivot" Style="{StaticResource DefaultPivotStyle}">
+        <Pivot Grid.Row="1"  Name="db_pivot" Style="{StaticResource RedPivot}">
         </Pivot>
         <Popup Grid.Row="1" x:Name="SettingsPopUp" Visibility="Collapsed" IsOpen="True">
             <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
@@ -42,5 +38,8 @@
             </StackPanel>
         </Popup>
         <ProgressBar VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+        <CommandBar Grid.Row="2" x:Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting" />
+        </CommandBar>
     </Grid>
 </Page>

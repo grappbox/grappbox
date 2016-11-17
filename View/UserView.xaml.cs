@@ -1,4 +1,4 @@
-﻿using GrappBox.Resources;
+﻿using GrappBox.Helpers;
 using GrappBox.ViewModel;
 using System;
 using System.Threading.Tasks;

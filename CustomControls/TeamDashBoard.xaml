@@ -10,6 +10,7 @@
     mc:Ignorable="d">
 
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
+    Margin="0,2,0,0"
     HorizontalAlignment="Stretch"
     HorizontalContentAlignment="Stretch"
     ScrollViewer.HorizontalScrollMode="Disabled"
@@ -33,7 +34,7 @@
                         </Ellipse.Fill>
                     </Ellipse>
 
-                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{Binding UserName }" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" />
+                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{Binding UserName }" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" HorizontalAlignment="Left" />
                     <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
@@ -57,6 +58,8 @@
         </ListView.ItemTemplate>
         <ListView.ItemContainerStyle>
             <Style TargetType="ListViewItem">
+                <Setter Property="Padding" Value="0" />
+                <Setter Property="Margin" Value="0,0,0,2" />
                 <Setter Property="Background" Value="White" />
                 <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                 <Setter Property="HorizontalAlignment" Value="Stretch" />

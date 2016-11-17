@@ -1,0 +1,31 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:GrappBox.Resources">
+
+    <Style TargetType="CalendarView">
+        <Setter Property="OutOfScopeBackground" Value="Transparent" />
+        <Setter Property="CalendarItemBackground" Value="#FFDDEBF7" />
+        <Setter Property="FirstDayOfWeek" Value="Monday" />
+        <Setter Property="DayOfWeekFormat" Value="{}{dayofweek.abbreviated(3)}" />
+        <Setter Property="SelectedBorderBrush" Value="Transparent" />
+        <Setter Property="SelectedForeground" Value="{StaticResource BlueGrappboxBrush}" />
+        <Setter Property="CalendarItemBorderThickness" Value="0" />
+        <Setter Property="FirstOfMonthLabelFontWeight" Value="Bold" />
+        <Setter Property="DayItemFontSize" Value="18" />
+        <Setter Property="MonthYearItemFontSize" Value="18" />
+    </Style>
+
+    <Style TargetType="CalendarViewDayItem">
+        <Setter Property="MinWidth" Value="35" />
+        <Setter Property="MinHeight" Value="35" />
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Margin" Value="1" />
+        <Setter Property="Padding" Value="0,0,0,4" />
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="CalendarViewDayItem" />
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

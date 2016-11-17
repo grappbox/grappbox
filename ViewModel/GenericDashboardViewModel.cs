@@ -33,7 +33,7 @@ namespace GrappBox.ViewModel
             Debug.WriteLine("response= " + response);
             if (res.IsSuccessStatusCode)
             {
-                ProjectList = api.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(response);
+                ProjectList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(response);
             }
             else
             {

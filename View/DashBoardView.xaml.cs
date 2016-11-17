@@ -1,6 +1,6 @@
 ﻿using GrappBox.CustomControls;
+using GrappBox.Helpers;
 using GrappBox.Model;
-using GrappBox.Resources;
 using GrappBox.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -49,6 +49,7 @@ namespace GrappBox.View
             LoadingBar.Visibility = Visibility.Visible;
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
+            this.db_pivot.Items.Clear();
             this.db_pivot.Items.Add(this.team);
             this.db_pivot.Items.Add(this.meetings);
             team_cb.IsChecked = true;

@@ -9,15 +9,11 @@
     xmlns:customControl="using:GrappBox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.BottomAppBar>
-        <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add" />
-        </CommandBar>
-    </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
             <customControl:PageHeader.HeaderContent>
@@ -32,7 +28,7 @@
                 ScrollViewer.VerticalScrollBarVisibility="Hidden">
                 <StackPanel Background="{StaticResource RedGrappboxBrush}">
                     <Image Source="ms-appx:///Assets/desk_office.png" />
-                    <TextBlock Text="Select your project" Style="{StaticResource WelcomeTextStyle}"/>
+                    <TextBlock Text="Select your project" Style="{StaticResource WelcomeTextStyle}" />
                 </StackPanel>
                 <ListView
                     ItemsSource="{Binding ProjectList}"
@@ -41,12 +37,15 @@
                     HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <customControl:GenericDashboardItem/>
+                            <customControl:GenericDashboardItem />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>
             </StackPanel>
         </ScrollViewer>
         <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" />
+        <CommandBar Grid.Row="2" x:Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Name="CreateProject" Label="New Project" Click="CreateProject_Click" Icon="Add" />
+        </CommandBar>
     </Grid>
 </Page>

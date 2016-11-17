@@ -1,17 +1,17 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.HttpRequest;
+using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using Windows.Web.Http;
+using System.Globalization;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using GrappBox.HttpRequest;
-using System.Globalization;
+using Windows.Web.Http;
 
 namespace GrappBox.ViewModel
 {
-    class UserSettingsViewModel : ViewModelBase
+    internal class UserSettingsViewModel : ViewModelBase
     {
         static private UserSettingsViewModel instance = null;
         private UserSettingsModel model = new UserSettingsModel();
@@ -22,6 +22,7 @@ namespace GrappBox.ViewModel
                 return instance;
             else return new UserSettingsViewModel();
         }
+
         public UserSettingsViewModel()
         {
             instance = this;
@@ -65,7 +66,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Put(props, "user");
             if (res.IsSuccessStatusCode)
             {
-                model = api.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
+                model = HttpRequestManager.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyAll();
 
                 ContentDialog cd = new ContentDialog();
@@ -77,7 +78,8 @@ namespace GrappBox.ViewModel
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -91,11 +93,12 @@ namespace GrappBox.ViewModel
             Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
-                model = api.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
+                model = HttpRequestManager.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
                 Debug.WriteLine(model.Birthday);
                 notifyAll();
             }
-            else {
+            else
+            {
                 MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -115,6 +118,7 @@ namespace GrappBox.ViewModel
         }
 
         #region ModelBindedPropertiesNotifiers
+
         public string Firstname
         {
             get { if (model == null) return ""; string name = model.Firstname; if (name != null) { return name; } else return ""; }
@@ -245,6 +249,7 @@ namespace GrappBox.ViewModel
                 }
             }
         }
+
         #endregion ModelBindedPropertiesNotifiers
     }
 }

@@ -1,7 +1,7 @@
 ﻿using GrappBox.Helpers;
 using GrappBox.HttpRequest;
 using GrappBox.Model;
-using GrappBox.Resources;
+
 using System;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -42,7 +42,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, Constants.DashboardTeamOccupationCall);
             if (res.IsSuccessStatusCode)
             {
-                OccupationList = api.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
+                OccupationList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("OccupationList");
             }
             else
@@ -64,7 +64,7 @@ namespace GrappBox.ViewModel
                 ObservableCollection<MeetingDashBoard> tmp;
                 try
                 {
-                    tmp = api.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
+                    tmp = HttpRequestManager.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
                 }
                 catch (ArgumentException aEx)
                 {

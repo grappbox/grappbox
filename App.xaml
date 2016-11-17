@@ -9,14 +9,17 @@
         <ResourceDictionary>
             <helpers:AppGlobalHelper x:Key="global" />
             <ResourceDictionary.MergedDictionaries>
+                <!-- Generic Styles -->
                 <ResourceDictionary Source="Resources/GrappboxColors.xaml" />
-                <ResourceDictionary Source="Resources/CustomStyle.xaml" />
-                <ResourceDictionary Source="Resources/DashboardStyle.xaml" />
-                <ResourceDictionary Source="Resources/Styles.xaml" />
                 <ResourceDictionary Source="Resources/Converters.xaml" />
-                <ResourceDictionary Source="Resources/PivotStyles.xaml"/>
-                <ResourceDictionary Source="Resources/ButtonStyles.xaml"/>
-                <ResourceDictionary Source="Resources/ListviewStyles.xaml"/>
+                <ResourceDictionary Source="Resources/PivotStyles.xaml" />
+                <ResourceDictionary Source="Resources/ButtonStyles.xaml" />
+                <ResourceDictionary Source="Resources/ListviewStyles.xaml" />
+                <ResourceDictionary Source="Resources/CustomStyle.xaml" />
+                <ResourceDictionary Source="Resources/Styles.xaml" />
+                <!-- View Styles-->
+                <ResourceDictionary Source="Resources/DashboardStyle.xaml" />
+                <ResourceDictionary Source="Resources/CalendarStyle.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
