@@ -1,21 +1,20 @@
-﻿using GrappBox.Model;
+﻿using GrappBox.Helpers;
+using GrappBox.HttpRequest;
+using GrappBox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
-using Windows.Web.Http;
+using System.Text.RegularExpressions;
 using Windows.UI.Popups;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
-using System.Text.RegularExpressions;
-using GrappBox.HttpRequest;
-using GrappBox.Resources;
-using System.Diagnostics;
-using GrappBox.Helpers;
+using Windows.Web.Http;
 
 namespace GrappBox.ViewModel
 {
-    class ProjectSettingsViewModel : ViewModelBase
+    internal class ProjectSettingsViewModel : ViewModelBase
     {
         static private ProjectSettingsViewModel instance = null;
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
@@ -35,6 +34,7 @@ namespace GrappBox.ViewModel
             else
                 return new ProjectSettingsViewModel();
         }
+
         public ProjectSettingsViewModel()
         {
             instance = this;
@@ -42,6 +42,7 @@ namespace GrappBox.ViewModel
         }
 
         #region CustomerAccess
+
         public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
@@ -91,7 +92,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "project/customeraccesses");
             if (res.IsSuccessStatusCode)
             {
-                _customerAccessModel = api.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
+                _customerAccessModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("CustomerList");
             }
             else
@@ -139,9 +140,11 @@ namespace GrappBox.ViewModel
                 }
             }
         }
+
         #endregion CustomerAccess
 
         #region ProjectRole
+
         public async System.Threading.Tasks.Task<bool> addRole()
         {
             HttpRequestManager api = HttpRequestManager.Instance;
@@ -284,7 +287,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "roles");
             if (res.IsSuccessStatusCode)
             {
-                _projectRoleModel = api.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
+                _projectRoleModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("RoleList");
             }
             else
@@ -463,9 +466,11 @@ namespace GrappBox.ViewModel
                 }
             }
         }
+
         #endregion ProjectRole
 
         #region ProjectSettings
+
         public async System.Threading.Tasks.Task getProjectLogo()
         {
             //await _projectSettingsModel.LogoUpdate();
@@ -575,7 +580,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Post(props, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("ProjectIdChoosen", _projectSettingsModel.Id);
             }
             else
@@ -593,7 +598,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = api.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyProjectSettings();
             }
             else
@@ -820,6 +825,7 @@ namespace GrappBox.ViewModel
         #endregion ProjectSettings
 
         #region ProjectUser
+
         public async System.Threading.Tasks.Task addProjectUser(string email)
         {
             HttpRequestManager api = HttpRequestManager.Instance;
@@ -830,7 +836,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
             {
-                UserModel newUser = api.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
+                UserModel newUser = HttpRequestManager.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
@@ -849,7 +855,7 @@ namespace GrappBox.ViewModel
             HttpResponseMessage res = await api.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _projectUserModel = api.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                _projectUserModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
@@ -867,7 +873,7 @@ namespace GrappBox.ViewModel
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
-                return api.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
+                return HttpRequestManager.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
             }
             else
             {
@@ -915,6 +921,7 @@ namespace GrappBox.ViewModel
                 }
             }
         }
+
         #endregion ProjectUser
     }
 }

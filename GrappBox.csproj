@@ -153,7 +153,6 @@
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Resources\RelayCommand.cs" />
-    <Compile Include="Utils\SystemInformation.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
