@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,10 +15,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
@@ -33,8 +30,6 @@ import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
-import org.w3c.dom.Text;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +37,7 @@ import java.util.List;
  * Created by tan_f on 04/11/2016.
  */
 
-public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CalendarEventReceiver.Callback{
+public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NewEventActivity.OnEventSaveData{
 
     private static final String LOG_TAG = NewEventFragment.class.getSimpleName();
 
@@ -63,10 +58,6 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     public NewEventFragment() {
     }
 
-    @Override
-    public void onDataReceived(CalendarEventModel model) {
-
-    }
 
     @Nullable
     @Override
@@ -82,13 +73,34 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         mParticipantsRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         mParticipantsRecycler.setAdapter(mParticipantAdapter);
 
-        if (getActivity() instanceof NewEventActivity) {
-            ((NewEventActivity) getActivity()).registerActivityActionCallback(this);
-        }
         v.findViewById(R.id.project_btn).setOnClickListener(new OnChangeProject(getActivity()));
         v.findViewById(R.id.participant_btn).setOnClickListener(new OnChangeParticipant(getActivity()));
 
         return v;
+    }
+
+    @Override
+    public void onEventSave(String title, String desc, String begin, String end) {
+        ArrayList<Long> idGrappboxList = new ArrayList<>();
+        for (UserModel model : mParticipantAdapter.getDataSet()) {
+            idGrappboxList.add(model._id);
+        }
+        Intent save = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        Bundle apiPar = new Bundle();
+        apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_ADD_PARTICIPANT, idGrappboxList);
+        save.setAction(GrappboxJustInTimeService.ACTION_CREATE_EVENT);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, title);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, desc);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_BEGIN, begin);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_END, end);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, mProjectSelected);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_BUNDLE, apiPar);
+        getActivity().startService(save);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
     }
 
     @Override

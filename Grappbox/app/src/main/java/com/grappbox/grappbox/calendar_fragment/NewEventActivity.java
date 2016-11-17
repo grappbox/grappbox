@@ -11,11 +11,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.format.DateFormat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -47,6 +49,12 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     private static boolean _isBegin;
     private CalendarEventDateFormatModel mBeginDateFormat;
     private CalendarEventDateFormatModel mEndDateFormat;
+
+    OnEventSaveData mCallback;
+
+    public interface OnEventSaveData {
+        public void onEventSave(String title, String desc, String begin, String end);
+    }
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -87,11 +95,22 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
         mEventEnd.setText(mEndDateFormat.toString());
     }
 
-    public void registerActivityActionCallback(CalendarEventReceiver.Callback action) {
+    @Override
+    public void onAttachFragment(Fragment fragment) {
+        super.onAttachFragment(fragment);
+        try {
+            mCallback = (OnEventSaveData)fragment;
+        } catch (ClassCastException e) {
+            throw new ClassCastException(fragment.toString()
+                    + " must implement OnHeadlineSelectedListener");
+        }
+    }
+
+    /*public void registerActivityActionCallback(CalendarEventReceiver.Callback action) {
         if (mReceiver == null)
             mReceiver = new CalendarEventReceiver(this, new Handler());
         mReceiver.registerCallback(action);
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -134,13 +153,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
             builder.show();
             return;
         }
-        Intent save = new Intent(this, GrappboxJustInTimeService.class);
-        save.setAction(GrappboxJustInTimeService.ACTION_CREATE_EVENT);
-        save.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, mTitle.getText().toString());
-        save.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, mDescription.getText().toString());
-        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_BEGIN, mEventBegin.getText().toString());
-        save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_END, mEventEnd.getText().toString());
-        startService(save);
+        mCallback.onEventSave(mTitle.getText().toString(), mDescription.getText().toString(),
+                mEventBegin.getText().toString(), mEventEnd.getText().toString());
     }
 
     @Override
@@ -173,6 +187,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        Log.v(LOG_TAG, "hour : " + hourOfDay);
         if (_isBegin) {
             mBeginDateFormat.setHour(hourOfDay, minute);
             mEventBegin.setText(mBeginDateFormat.toString());
@@ -197,8 +212,6 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     }
 
     public static class TimePickerFragment extends DialogFragment {
-
-
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {

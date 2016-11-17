@@ -11,7 +11,7 @@ import java.util.Date;
 public class CalendarEventDateFormatModel {
 
     private Calendar _calendar;
-    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private SimpleDateFormat mFormat = new SimpleDateFormat("yyyy-MM-dd kk:mm");
 
     public CalendarEventDateFormatModel() {
         _calendar = Calendar.getInstance();
@@ -28,7 +28,7 @@ public class CalendarEventDateFormatModel {
     }
 
     public void setHour(int hour, int minute){
-        _calendar.set(Calendar.HOUR, hour);
+        _calendar.set(Calendar.HOUR_OF_DAY, hour);
         _calendar.set(Calendar.MINUTE, minute);
     }
 
