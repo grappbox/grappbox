@@ -1,30 +1,30 @@
-app_home:
+grappbox_app_home:
     path: /
     defaults: { _controller: AppBundle:Home:index }
 
-app_login:
+grappbox_app_login:
     path: /login
     defaults: { _controller: AppBundle:Login:index }
 
-app_register:
+grappbox_app_register:
     path: /register
     defaults: { _controller: AppBundle:Register:index }
 
-app_index:
+grappbox_app_index:
     path: /app/
     defaults: { _controller: AppBundle:App:index }
 
-app_routing:
+grappbox_app_routing:
     path: /app/{url}
     defaults: { _controller: AppBundle:App:rewrite }
 
-app_routing_advanced:
+grappbox_app_routing_advanced:
     path: /app/{url}/{parameters}
     defaults: { _controller: AppBundle:App:rewrite }
     requirements:
       parameters: ".+"
 
-app_resource:
+grappbox_app_resource:
     path: /{url}
     defaults: { _controller: AppBundle:Home:rewrite }
     requirements:
