@@ -3,7 +3,7 @@
 > *A strong project manager with truly useful features. Everything you need, everywhere.*
 
 ## Web
-[![Build Status](https://travis-ci.com/nadeaul/Grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)](https://travis-ci.com/nadeaul/Grappbox)
+[![Build Status](https://travis-ci.com/grappbox/grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)](https://travis-ci.com/grappbox/grappbox)
 
 Built with Symfony (2.8 LTS minimum) and AngularJS (1.5.x minimum).<br>
 Requires PHP >= 5.6.
