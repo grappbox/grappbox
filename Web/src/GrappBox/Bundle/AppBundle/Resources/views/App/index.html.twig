@@ -142,37 +142,45 @@
     <!-- Responsive for IE8 and lower -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="../resources/js/html5shiv.min.js"></script>
-    <script src="../resources/js/respond.min.js"></script>
+    <script src="../resources/static/html5shiv.min.js"></script>
+    <script src="../resources/static/respond.min.js"></script>
     <![endif]-->
   </head>
 
   <body>
     <div data-ng-app="grappbox" id="ng-app" data-ng-strict-di>
-      <!-- Brand -->
-      <div class="navigation-master {[{ sidebar.open ? 'open' : '' }]}">
+      <!-- Navgiation (master) -->
+      <div class="navigation-master {[{ sidebar.open ? 'open' : '' }]}" data-ng-cloak>
         <div class="container-fluid">
-          <div class="navigation-master-left">
-            <a href="/" title="Go to GrappBox website" class="{[{ path.colors[path.current] + '-hover' }]}"><img src="../resources/img/favicon/android-icon-192x192.png" height="35" width="35" alt="grappbox-logo">GrappBox</a>
-          </div> 
-          <div class="navigation-master-right {[{ path.colors[path.current] + '-color' }]}" data-ng-cloak>
-            <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
-              <i class="material-icons">{[{ path.icons['/notifications'] }]}</i></a>
-            <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
-              <i class="material-icons">{[{ path.icons['/profile'] }]}</i></a>
-            <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" >
-              <i class="material-icons">{[{ path.icons['/logout'] }]}</i></a>
+          <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs no-padding">
+            <div class="navigation-left hidden-xs">
+              <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
+              <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
+            </div>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 no-padding brand">
+            <a href="/" title="Go to GrappBox website" class="{[{ path.colors[path.current] + '-hover' }]}">
+              <img src="../resources/img/favicon/android-icon-192x192.png" height="35" width="35" alt="grappbox-logo">GrappBox</a>
+          </div>
+          <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs no-padding">
+            <div class="navigation-right {[{ path.colors[path.current] + '-color' }]}">
+              <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
+                <i class="material-icons">{[{ path.icons['/notifications'] }]}</i></a>
+              <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
+                <i class="material-icons">{[{ path.icons['/profile'] }]}</i></a>
+              <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" >
+                <i class="material-icons">{[{ path.icons['/logout'] }]}</i></a>
+            </div>
           </div>
           <div class="clearfix"></div>
         </div> 
       </div>
 
-      <!-- Navigation -->
-      <div class="navigation {[{ sidebar.open ? 'open' : '' }]}">
+      <!-- Navigation (visble-xs) -->
+      <div class="navigation visible-xs {[{ path.colors[path.current] + '-background' }]} {[{ sidebar.open ? 'open' : '' }]}" data-ng-cloak>
         <div class="container-fluid">
-          <div class="navigation-left" data-ng-cloak>
-            <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()">
-              <i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
+          <div class="navigation-left">
+            <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
             <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
           </div>
         </div>
