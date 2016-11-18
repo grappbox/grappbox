@@ -1,9 +1,20 @@
-package com.grappbox.grappbox.sync;
+/*
+ * Created by Marc Wieser on 16/11/2016
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
+ */
+
+package com.grappbox.grappbox.messaging;
 
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
@@ -15,6 +26,7 @@ import com.grappbox.grappbox.interfaces.MessagingDispatcher;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -29,36 +41,27 @@ import java.util.Map;
 
 public class FirebaseMessagingService extends com.google.firebase.messaging.FirebaseMessagingService {
     public static final String TAG = FirebaseMessagingService.class.getSimpleName();
-    private MessagingDispatcher mBugDispatcher, mEventDispatcher;
+    private MessagingDispatcher mMainDispatcher;
     static int idNotif = 0;
 
     public FirebaseMessagingService() {
-        mBugDispatcher = new BugMessagingDispatcher(this);
-        mEventDispatcher = new EventMessagingDispatcher();
+        mMainDispatcher = new MainDispatcher(this);
     }
 
     @Override
     public void onMessageReceived(RemoteMessage remoteMessage) {
-
-        Log.d(TAG, "Notif received");
-        Notification.Builder builder = new Notification.Builder(this);
         Map<String, String> data = remoteMessage.getData();
-        String[] splittedAction = data.get("title").split(" ");
-        String actionType = splittedAction[splittedAction.length - 1];
         try {
             String action = data.get("title");
             JSONObject body = new JSONObject(data.get("body"));
-            if ("bug".equals(actionType)){
-                mBugDispatcher.dispatch(action, body);
-            } else if ("event".equals(actionType)){
-                mEventDispatcher.dispatch(action, body);
-            }
+            mMainDispatcher.dispatch(action, body);
         } catch (JSONException e) {
             e.printStackTrace();
         }
 
         //The following code is a debug code to show API sended messages
         //TODO : delete it
+        Notification.Builder builder = new Notification.Builder(this);
         builder.setContentTitle(data.get("title"));
         builder.setContentText(data.get("body"));
         builder.setSmallIcon(R.drawable.grappbox_mini_logo);
@@ -70,6 +73,30 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         Notification notif = builder.build();
         NotificationManager nm = (NotificationManager) getSystemService(Service.NOTIFICATION_SERVICE);
         nm.notify(idNotif++, notif);
-        Log.d("Test", data.get("title"));
+    }
+
+    private class MainDispatcher implements MessagingDispatcher{
+        private Context mContext;
+        private Map<String, MessagingDispatcher> mDispatcher;
+
+        MainDispatcher(Context context){
+            mContext = context;
+            MessagingDispatcher projectDispatcher = new ProjectMessagingDispatcher(mContext);
+            mDispatcher = new HashMap<>();
+            mDispatcher.put("bug", new BugMessagingDispatcher(mContext));
+            mDispatcher.put("event", new EventMessagingDispatcher(mContext));
+            mDispatcher.put("project", projectDispatcher);
+            mDispatcher.put("customeraccess", projectDispatcher);
+            mDispatcher.put("message", new TimelineMessageDispatcher(mContext));
+            mDispatcher.put("role", new RoleMessagingDispatcher(mContext));
+            mDispatcher.put("task", new TaskMessagingDispatcher(mContext));
+        }
+
+        @Override
+        public void dispatch(String action, JSONObject body) {
+            String[] splittedAction = action.split(" ");
+            String actionType = splittedAction[splittedAction.length - 1];
+            mDispatcher.get(actionType).dispatch(action, body);
+        }
     }
 }

@@ -1,4 +1,14 @@
 /*
+ * Created by Marc Wieser on 16/11/2016
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
+ */
+
+/*
  * Created by Marc Wieser on 10/11/2016
  * If you have any problem or question about this work
  * please contact the author at marc.wieser@gmail.com
@@ -8,12 +18,13 @@
  * GrappBox © 2016
  */
 
-package com.grappbox.grappbox.sync;
+package com.grappbox.grappbox.messaging;
 
 
 import android.accounts.NetworkErrorException;
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
@@ -207,10 +218,20 @@ class BugMessagingDispatcher implements MessagingDispatcher {
 
         @Override
         public void dispatch(String action, JSONObject body) {
+            Cursor current = null;
             try {
+                current = mContext.getContentResolver().query(BugEntry.CONTENT_URI, new String[]{BugEntry._ID}, BugEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("id")}, null);
+                if (current == null || !current.moveToFirst()){
+                    throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
+                }
+                mContext.getContentResolver().delete(GrappboxContract.BugTagEntry.CONTENT_URI, GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID+"=?", new String[]{String.valueOf(current.getLong(0))});
+                mContext.getContentResolver().delete(GrappboxContract.BugAssignationEntry.CONTENT_URI, GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID+"=?", new String[]{String.valueOf(current.getLong(0))});
                 mContext.getContentResolver().delete(BugEntry.CONTENT_URI, BugEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("id")});
-            } catch (JSONException e) {
+            } catch (JSONException | OperationApplicationException e) {
                 e.printStackTrace();
+            } finally {
+                if (current != null)
+                    current.close();
             }
         }
     }
@@ -304,7 +325,27 @@ class BugMessagingDispatcher implements MessagingDispatcher {
 
         @Override
         public void dispatch(String action, JSONObject body) {
-            //TODO : Need API modifications
+            Cursor project = null;
+            ContentValues values = new ContentValues();
+
+            try {
+                project = mContext.getContentResolver().query(GrappboxContract.ProjectEntry.CONTENT_URI, new String[]{GrappboxContract.ProjectEntry._ID}, GrappboxContract.ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{body.getString("projectId")}, null);
+                if (project == null || !project.moveToFirst())
+                    throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
+                String color = body.getString("color");
+                color = color.startsWith("#") ? color : "#" + color;
+                values.put(GrappboxContract.BugtrackerTagEntry.COLUMN_LOCAL_PROJECT_ID, project.getLong(0));
+                values.put(GrappboxContract.BugtrackerTagEntry.COLUMN_COLOR, color);
+                values.put(GrappboxContract.BugtrackerTagEntry.COLUMN_GRAPPBOX_ID, body.getString("id"));
+                values.put(GrappboxContract.BugtrackerTagEntry.COLUMN_NAME, body.getString("name"));
+                mContext.getContentResolver().insert(GrappboxContract.BugtrackerTagEntry.CONTENT_URI, values);
+            } catch (JSONException | OperationApplicationException e) {
+                e.printStackTrace();
+            } finally {
+                if (project != null){
+                    project.close();
+                }
+            }
         }
     }
 
@@ -312,7 +353,11 @@ class BugMessagingDispatcher implements MessagingDispatcher {
 
         @Override
         public void dispatch(String action, JSONObject body) {
-            //TODO : Need API modifications
+            try {
+                mContext.getContentResolver().delete(GrappboxContract.BugtrackerTagEntry.CONTENT_URI, GrappboxContract.BugtrackerTagEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("id")});
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 

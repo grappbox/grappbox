@@ -33,8 +33,90 @@ public class GrappboxContract {
     public static final String PATH_BUG_ASSIGNATION = "bug_assignations";
     public static final String PATH_CLOUD = "cloud";
     public static final String PATH_CUSTOMER_ACCESS = "customer_access";
+    public static final String PATH_TASK = "task";
+    public static final String PATH_DEPENDENCIES = "task_dependencies";
+    public static final String PATH_TASK_USER_ASSIGNATION = "task_users";
+    public static final String PATH_TASK_TAGS = "task_tags";
+    public static final String PATH_TASK_TAGS_ASSIGNATION = "task_users";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
+
+    public static final class TaskEntry implements BaseColumns{
+        public static final String TABLE_NAME = "tasks";
+
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_DESCRIPTION = "desc";
+        public static final String COLUMN_LOCAL_PROJECT = "project_id";
+        public static final String COLUMN_DUE_DATE_UTC = "due_date";
+        public static final String COLUMN_START_DATE_UTC = "start_date";
+        public static final String COLUMN_FINISHED_DATE_UTC = "finished_date";
+        public static final String COLUMN_IS_MILESTONE = "is_milestone";
+        public static final String COLUMN_IS_CONTAINER = "is_container";
+        public static final String COLUMN_PARENT_ID = "parent_id";
+        public static final String COLUMN_ADVANCE = "advance";
+        public static final String COLUMN_LOCAL_CREATOR = "creator_id";
+        public static final String COLUMN_CREATED_AT_UTC = "created_at_date";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK).build();
+        public static Uri WITH_USERS = CONTENT_URI.buildUpon().appendPath("users").build();
+        public static Uri WITH_TAGS = CONTENT_URI.buildUpon().appendPath("tags").build();
+
+        public static Uri buildProjectWithId(long id){
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class TaskDependenciesEntry implements BaseColumns {
+        public static final String TABLE_NAME = "task_dependencies";
+
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
+        public static final String COLUMN_TYPE = "type";
+        public static final String COLUMN_LOCAL_TASK = "task_id";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_DEPENDENCIES).build();
+    }
+
+    public static final class TaskAssignationEntry implements BaseColumns {
+        public static final String TABLE_NAME = "task_assignation";
+
+        public static final String COLUMN_LOCAL_USER_ID  = "user_id";
+        public static final String COLUMN_PERCENTAGE = "percentage";
+        public static final String COLUMN_LOCAL_TASK = "task_id";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK_USER_ASSIGNATION).build();
+
+        public static Uri buildProjectWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class TaskTagEntry implements BaseColumns {
+        public static final String TABLE_NAME = "task_tags";
+
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_COLOR = "color";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK_TAGS).build();
+
+        public static Uri buildProjectWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class TaskTagAssignationEntry implements BaseColumns {
+        public static final String TABLE_NAME = "task_tag_assignation";
+
+        public static final String COLUMN_LOCAL_TAG = "tag_id";
+        public static final String COLUMN_LOCAL_TASK = "task_id";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_TASK_TAGS_ASSIGNATION).build();
+
+        public static Uri buildProjectWithId(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
 
     public static final class ProjectEntry implements BaseColumns {
         public static final String TABLE_NAME = "projects";

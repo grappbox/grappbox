@@ -1,4 +1,14 @@
-package com.grappbox.grappbox.sync;
+/*
+ * Created by Marc Wieser on 16/11/2016
+ * If you have any problem or question about this work
+ * please contact the author at marc.wieser@gmail.com
+ *
+ * The following code is owned by GrappBox you can't
+ * use it without any authorization or special instructions
+ * GrappBox © 2016
+ */
+
+package com.grappbox.grappbox.messaging;
 
 import android.accounts.NetworkErrorException;
 import android.app.Service;
@@ -15,6 +25,7 @@ import com.google.firebase.iid.FirebaseInstanceIdService;
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -38,7 +49,6 @@ import static com.google.android.gms.internal.zzs.TAG;
  */
 
 public class FirebaseCloudMessagingService extends FirebaseInstanceIdService {
-    public static final String APITOKEN_0_3 = "123456789";
     public static final String SHARED_FIREBASE_PREF = "grappbox-firebase-prefs";
     public static final String FIREBASE_PREF_TOKEN = "firebase-token";
 
@@ -49,7 +59,6 @@ public class FirebaseCloudMessagingService extends FirebaseInstanceIdService {
     public void onTokenRefresh() {
         // Get updated InstanceID token.
         String refreshedToken = FirebaseInstanceId.getInstance().getToken();
-        Log.d(TAG, "Refreshed token: " + refreshedToken);
         SharedPreferences prefs = getSharedPreferences(SHARED_FIREBASE_PREF, MODE_PRIVATE);
         prefs.edit().putString(FIREBASE_PREF_TOKEN, refreshedToken).apply();
         Intent register = new Intent(this, GrappboxJustInTimeService.class);

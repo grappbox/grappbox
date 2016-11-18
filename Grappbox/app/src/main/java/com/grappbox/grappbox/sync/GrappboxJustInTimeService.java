@@ -46,6 +46,7 @@ import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
+import com.grappbox.grappbox.messaging.FirebaseCloudMessagingService;
 import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.project_fragments.CloudFragment;
 import com.grappbox.grappbox.receiver.BugReceiver;
@@ -62,9 +63,7 @@ import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 /**

@@ -104,6 +104,15 @@ public class GrappboxProvider extends ContentProvider {
     public static final int CUSTOMER_ACCESS = 250;
     public static final int CUSTOMER_ACCESS_WITH_PROJECT = 251;
 
+    public static final int TASK = 260;
+    public static final int TASK_WITH_USER = 261;
+    public static final int TASK_WITH_TAG = 262;
+
+    public static final int TASK_TAG = 270;
+
+    public static final int TASK_USER_ASSIGN = 280;
+    public static final int TASK_TAG_ASSIGN = 290;
+
 
 
     public static UriMatcher buildUriMatcher() {
@@ -206,6 +215,18 @@ public class GrappboxProvider extends ContentProvider {
         //Customer access related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CUSTOMER_ACCESS, CUSTOMER_ACCESS);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CUSTOMER_ACCESS + "/project" , CUSTOMER_ACCESS_WITH_PROJECT);
+
+        //Task related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK, TASK);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK + "/users", TASK_WITH_USER);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK + "/tags", TASK_WITH_TAG);
+
+        //Task user assignation related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_USER_ASSIGNATION, TASK_USER_ASSIGN);
+
+        //Task tag related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_TAGS, TASK_TAG);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_TAGS_ASSIGNATION, TASK_TAG_ASSIGN);
         return matcher;
     }
 
@@ -347,6 +368,14 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
             case CUSTOMER_ACCESS:
                 return GrappboxContract.CustomerAccessEntry.TABLE_NAME;
+            case TASK:
+                return GrappboxContract.TaskEntry.TABLE_NAME;
+            case TASK_TAG:
+                return GrappboxContract.TaskTagEntry.TABLE_NAME;
+            case TASK_USER_ASSIGN:
+                return GrappboxContract.TaskAssignationEntry.TABLE_NAME;
+            case TASK_TAG_ASSIGN:
+                return GrappboxContract.TaskTagAssignationEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -547,6 +576,24 @@ public class GrappboxProvider extends ContentProvider {
             case CUSTOMER_ACCESS_WITH_PROJECT:
                 retCursor = CustomerAccessCursors.query_withProject(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case TASK:
+                retCursor = TaskCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_WITH_TAG:
+                retCursor = TaskCursors.query_withTag(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_WITH_USER:
+                retCursor = TaskCursors.query_withUser(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_TAG:
+                retCursor = TaskTagCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_USER_ASSIGN:
+                retCursor = TaskUserAssignationCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_TAG_ASSIGN:
+                retCursor = TaskTagAssignationCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -614,6 +661,18 @@ public class GrappboxProvider extends ContentProvider {
             case CUSTOMER_ACCESS:
                 returnedUri = CustomerAccessCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case TASK:
+                returnedUri = TaskCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case TASK_TAG:
+                returnedUri = TaskTagCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case TASK_USER_ASSIGN:
+                returnedUri = TaskUserAssignationCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case TASK_TAG_ASSIGN:
+                returnedUri = TaskTagAssignationCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -679,6 +738,18 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case CUSTOMER_ACCESS:
                 ret = CustomerAccessCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TASK:
+                ret = TaskCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TASK_TAG:
+                ret = TaskTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TASK_USER_ASSIGN:
+                ret = TaskUserAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TASK_TAG_ASSIGN:
+                ret = TaskTagAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");

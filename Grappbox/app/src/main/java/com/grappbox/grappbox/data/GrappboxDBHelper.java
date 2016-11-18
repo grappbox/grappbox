@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
+import com.google.android.gms.tasks.Task;
 import com.grappbox.grappbox.data.GrappboxContract.*;
 
  /**
@@ -17,7 +18,7 @@ import com.grappbox.grappbox.data.GrappboxContract.*;
   * GrappBox © 2016
   */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 6;
+    private static final int DATABASE_VERSION  = 7;
     public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
@@ -210,6 +211,55 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + CustomerAccessEntry.COLUMN_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
                 " UNIQUE (" + CustomerAccessEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
+        final String SQL_CREATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskEntry.TABLE_NAME + " (" +
+                TaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TaskEntry.COLUMN_LOCAL_PROJECT + " INTEGER NOT NULL, " +
+                TaskEntry.COLUMN_LOCAL_CREATOR + " INTEGER NOT NULL, " +
+                TaskEntry.COLUMN_TITLE + " TEXT, " +
+                TaskEntry.COLUMN_DESCRIPTION + " TEXT, " +
+                TaskEntry.COLUMN_DUE_DATE_UTC + " TEXT, " +
+                TaskEntry.COLUMN_START_DATE_UTC + " TEXT, " +
+                TaskEntry.COLUMN_FINISHED_DATE_UTC + " TEXT, " +
+                TaskEntry.COLUMN_CREATED_AT_UTC + " TEXT, " +
+                TaskEntry.COLUMN_IS_CONTAINER + " INTEGER, " +
+                TaskEntry.COLUMN_IS_MILESTONE + " INTEGER, " +
+                TaskEntry.COLUMN_ADVANCE + " INTEGER, " +
+                TaskEntry.COLUMN_PARENT_ID + " INTEGER, " +
+                "FOREIGN KEY (" + TaskEntry.COLUMN_LOCAL_CREATOR + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
+                "FOREIGN KEY (" + TaskEntry.COLUMN_LOCAL_PROJECT + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
+                "UNIQUE (" + TaskEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_TASK_DEPENDENCIES_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskDependenciesEntry.TABLE_NAME + " (" +
+                TaskDependenciesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskDependenciesEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TaskDependenciesEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
+                TaskDependenciesEntry.COLUMN_LOCAL_TASK + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + TaskDependenciesEntry.COLUMN_LOCAL_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "), " +
+                "UNIQUE (" + TaskDependenciesEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_TASK_ASSIGNATION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskAssignationEntry.TABLE_NAME + " (" +
+                TaskAssignationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskAssignationEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                TaskAssignationEntry.COLUMN_LOCAL_TASK + " INTEGER NOT NULL, " +
+                TaskAssignationEntry.COLUMN_PERCENTAGE + " INTEGER, " +
+                "FOREIGN KEY (" + TaskAssignationEntry.COLUMN_LOCAL_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "), " +
+                "FOREIGN KEY (" + TaskAssignationEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_TASK_TAG_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskTagEntry.TABLE_NAME + " (" +
+                TaskTagEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskTagEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TaskTagEntry.COLUMN_NAME + " TEXT NOT NULL, " +
+                TaskTagEntry.COLUMN_COLOR + " TEXT NOT NULL, " +
+                "UNIQUE (" + TaskTagEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_TASK_TAG_ASSIGNATION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskTagAssignationEntry.TABLE_NAME + " ( " +
+                TaskTagAssignationEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskTagAssignationEntry.COLUMN_LOCAL_TAG + " INTEGER NOT NULL, " +
+                TaskTagAssignationEntry.COLUMN_LOCAL_TASK + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + TaskTagAssignationEntry.COLUMN_LOCAL_TAG + ") REFERENCES " + TaskTagEntry.TABLE_NAME + " (" + TaskTagEntry._ID + "), " +
+                "FOREIGN KEY (" + TaskTagAssignationEntry.COLUMN_LOCAL_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "));";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
@@ -226,6 +276,11 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_BUG_ASSIGNATION_TABLE);
         db.execSQL(SQL_CREATE_CLOUD_TABLE);
         db.execSQL(SQL_CREATE_CUSTOMER_ACCESS_TABLE);
+        db.execSQL(SQL_CREATE_TASK_TABLE);
+        db.execSQL(SQL_CREATE_TASK_DEPENDENCIES_TABLE);
+        db.execSQL(SQL_CREATE_TASK_ASSIGNATION_TABLE);
+        db.execSQL(SQL_CREATE_TASK_TAG_TABLE);
+        db.execSQL(SQL_CREATE_TASK_TAG_ASSIGNATION_TABLE);
     }
 
     @Override
