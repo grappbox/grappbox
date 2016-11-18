@@ -639,6 +639,9 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 returnedUri = EventCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case EVENT_PARTICIPANT:
+                returnedUri = EventParticipantCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
