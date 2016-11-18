@@ -20,7 +20,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		resolve: { projectSelection: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected(); }]}
 	})
 	// Project dashboard
-  .when("/dashboard/:project_id/", {
+  .when("/dashboard/:project_id", {
 		title: "Dashboard",
     controller  : "DashboardController",
 		templateUrl : "../resources/pages/dashboard.html",
@@ -103,6 +103,14 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     templateUrl : "../resources/pages/project-settings.html",
     caseInsensitiveMatch : true,
     resolve: { projectSettingsAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectSettingsAvailable(); }]}
+  })
+  // Project statistics
+  .when("/statistics/:project_id", {
+    title: "Statistics",
+    controller  : "StatisticsController",
+    templateUrl : "../resources/pages/statistics.html",
+    caseInsensitiveMatch : true,
+    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Task pages	
   .when("/tasks/:project_id", {

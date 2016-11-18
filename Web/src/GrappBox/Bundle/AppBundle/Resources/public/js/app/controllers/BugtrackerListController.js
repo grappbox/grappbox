@@ -13,11 +13,13 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   // Scope variables initialization
   $scope.projectId = $routeParams.project_id;
-  $scope.data = { onLoad: true, tickets: { }, message: "_invalid" };
+  $scope.data = { onLoad: true, closedOnLoad: true, userOnLoad: true,
+                  tickets: { }, closedTicket: { }, userTickets: { },
+                  message: "_invalid", closedMessage: '_invalid', userMessage: '_invalid' };
 
   var getOpenTicketsContent = function() {
     // Get all open tickets of the project
-    $http.get($rootScope.api.url + '/bugtracker/gettickets/' + $rootScope.user.token + '/' + $scope.projectId)
+    $http.get($rootScope.api.url + '/bugtracker/tickets/opened/' + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function projectsReceived(response) {
         $scope.data.tickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.message = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
@@ -48,7 +50,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   var getClosedTicketsContent = function() {
     // Get all closed tickets of the project
-    $http.get($rootScope.api.url + '/bugtracker/getclosedtickets/' + $rootScope.user.token + '/' + $scope.projectId)
+    $http.get($rootScope.api.url + '/bugtracker/tickets/closed/' + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function projectsReceived(response) {
         $scope.data.closedTickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.closedMessage = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
@@ -79,7 +81,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   var getUserTicketsContent = function() {
     // Get all user tickets of the project
-    $http.get($rootScope.api.url + '/bugtracker/getticketsbyuser/' + $rootScope.user.token + '/' + $scope.projectId + '/' + $rootScope.user.id)
+    $http.get($rootScope.api.url + '/bugtracker/tickets/user/' + $scope.projectId + '/' + $rootScope.user.id, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function projectsReceived(response) {
         $scope.data.userTickets = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
         $scope.data.userMessage = (response.data.info && response.data.info.return_code == "1.4.1" ? "_valid" : "_empty");
@@ -110,7 +112,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {
-    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
+    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "-");
   };
 
   // Tags in string format
@@ -121,7 +123,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
       tagsInString += (i != 0 ? ", " : "") + tags[i].name;
     }
     if (tags.length <= 0)
-      tagsInString = "N/A";
+      tagsInString = "-";
     return tagsInString;
   };
 
@@ -130,10 +132,10 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
     var usersInString = "";
 
     for(var i = 0; i < users.length; ++i) {
-      usersInString += (i != 0 ? ", " : "") + users[i].name;
+      usersInString += (i != 0 ? ", " : "") + users[i].firstname + " " + users[i].lastname;
     }
     if (users.length <= 0)
-      usersInString = "N/A";
+      usersInString = "-";
     return usersInString;
   };
 

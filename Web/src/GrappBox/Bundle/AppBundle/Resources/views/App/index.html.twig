@@ -86,6 +86,7 @@
     '@AppBundle/Resources/public/js/vendor/angular-base64-upload.js'
     '@AppBundle/Resources/public/js/vendor/angular-bootstrap-calendar-tpls.js'
     '@AppBundle/Resources/public/js/vendor/angular-cookies.js'
+    '@AppBundle/Resources/public/js/vendor/angular-google-chart.js'
     '@AppBundle/Resources/public/js/vendor/angular-local-storage.js'
     '@AppBundle/Resources/public/js/vendor/angular-messages.js'
     '@AppBundle/Resources/public/js/vendor/angular-route.js'
@@ -107,6 +108,7 @@
     '@AppBundle/Resources/public/js/app/factories/accessFactory.js'
     '@AppBundle/Resources/public/js/app/factories/notificationFactory.js'
     '@AppBundle/Resources/public/js/app/factories/rootFactory.js'
+    '@AppBundle/Resources/public/js/app/factories/statisticFactory.js'
     '@AppBundle/Resources/public/js/app/factories/timelineIssueFactory.js'
     '@AppBundle/Resources/public/js/app/factories/whiteboardObjectFactory.js'
     '@AppBundle/Resources/public/js/app/factories/whiteboardRenderFactory.js'
@@ -121,6 +123,7 @@
     '@AppBundle/Resources/public/js/app/controllers/NotificationController.js'
     '@AppBundle/Resources/public/js/app/controllers/ProfileController.js'
     '@AppBundle/Resources/public/js/app/controllers/ProjectSettingsController.js'
+    '@AppBundle/Resources/public/js/app/controllers/StatisticsController.js'
     '@AppBundle/Resources/public/js/app/controllers/TaskController.js'
     '@AppBundle/Resources/public/js/app/controllers/TaskListController.js'
     '@AppBundle/Resources/public/js/app/controllers/TimelineController.js'
@@ -151,7 +154,7 @@
         <div class="container-fluid">
           <div class="navigation-left" data-ng-cloak>
             <a href="" title="Toggle navigation drawer" class="btn {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()">
-              <i class="material-icons">menu</i></a>
+              <i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
             <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
           </div>
           <div class="navigation-right">
@@ -169,7 +172,7 @@
       <!-- Navigation drawer -->
       <aside class="sidebar {[{ sidebar.open ? 'open' : '' }]}">
         <div class="sidebar-header">
-          <a class="toggle {[{ path.colors[path.current] + '-hover' }]}" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
+          <a class="toggle {[{ path.colors[path.current] + '-background-hover' }]}" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
           <a href="profile" title="View and edit your profile"><img class="avatar" src="../resources/img/default_avatar.min.png"></a>
           <p class="ellipsis user"><a href="profile" title="View and edit your profile">{[{ user.firstname }]} {[{ user.lastname }]}</a></p>
           <div class="clearfix"></div>
@@ -181,47 +184,51 @@
                 <i class="material-icons">arrow_back</i>Change project</a>
             </li>            
             <li>
-              <a href="notifications" title="See all your notifications" class="btn visible-xs {[{ path.routes['/notifications'] ? 'active' : '' }]}">
+              <a href="notifications" title="See all your notifications" class="btn visible-xs {[{ path.routes['/notifications'] ? path.colors['/notifications'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/notifications'] }]}</i>Notifications</a>
             </li>
             <li>
-              <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ path.routes['/dashboard'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ path.routes['/dashboard'] ? path.colors['/dashboard'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/dashboard'] }]}</i>Dashboard</a>
             </li>
             <li>
-              <a href="calendar" title="Go to your calendar" class="btn {[{ path.routes['/calendar'] ? 'active' : '' }]}">
+              <a href="calendar" title="Go to your calendar" class="btn {[{ path.routes['/calendar'] ? path.colors['/calendar'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/calendar'] }]}</i>Calendar</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ path.routes['/cloud'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ path.routes['/cloud'] ? path.colors['/cloud'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/cloud'] }]}</i>Cloud</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ path.routes['/timeline'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ path.routes['/timeline'] ? path.colors['/timeline'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/timeline'] }]}</i>Timeline</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ path.routes['/bugtracker'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ path.routes['/bugtracker'] ? path.colors['/bugtracker'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ path.routes['/tasks'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ path.routes['/tasks'] ? path.colors['/tasks'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/tasks'] }]}</i>Tasks</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ path.routes['/gantt'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ path.routes['/gantt'] ? path.colors['/gantt'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/gantt'] }]}</i>Gantt</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ path.routes['/whiteboard'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ path.routes['/whiteboard'] ? path.colors['/whiteboard'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/whiteboard'] }]}</i>Whiteboard</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ path.routes['/settings'] ? 'active' : '' }]}">
+              <a data-ng-href="{[{ 'statistics/' + project.id }]}" title="View all statistics for this project" class="btn {[{ path.routes['/statistics'] ? path.colors['/statistics'] + '-border active' : '' }]}">
+                <i class="material-icons">{[{ path.icons['/statistics'] }]}</i>Statistics</a>
+            </li>
+            <li data-ng-if="project.set">
+              <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ path.routes['/settings'] ? path.colors['/settings'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/settings'] }]}</i>Project settings</a>
             </li>
             <li>
-              <a href="profile" title="View and edit your profile" class="btn {[{ path.routes['/profile'] ? 'active' : '' }]}">
+              <a href="profile" title="View and edit your profile" class="btn {[{ path.routes['/profile'] ? path.colors['/profile'] + '-border active' : '' }]}">
                 <i class="material-icons">{[{ path.icons['/profile'] }]}</i>Profile</a>
             </li>
             <li>
@@ -233,18 +240,18 @@
       </aside>
 
       <!-- Page content -->
-      <div class="page-content {[{ sidebar.open ? 'open' : '' }]}">
+      <div class="page {[{ sidebar.open ? 'open' : '' }]}">
         <div class="container">
           <div class="row">
             <div class="col-lg-12">
               <!-- Dynamic view -->
               <div data-ng-if="page.load">
-                <div class="spinner view">
+                <div class="spinner main-spinner">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
                 </div>
               </div>
               <div data-ng-if="!page.load">
-                <div class="container-content" data-ng-view autoscroll="true"></div>
+                <div data-ng-view autoscroll="true"></div>
               </div>
             </div>
           </div>

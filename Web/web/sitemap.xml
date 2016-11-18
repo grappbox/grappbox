@@ -6,15 +6,15 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
 <url>
-  <loc>https://grappbox.com/</loc>
-  <changefreq>monthly</changefreq>
+  <loc>https://grappbox.com</loc>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://grappbox.com/login</loc>
-  <changefreq>monthly</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 <url>
   <loc>https://grappbox.com/register</loc>
-  <changefreq>monthly</changefreq>
+  <changefreq>weekly</changefreq>
 </url>
 </urlset>

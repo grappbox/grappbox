@@ -30,6 +30,20 @@ app.filter('objInArray', function() {
     };
 });
 
+app.filter('dependencies', function() {
+  return function(input, ref) {
+    var list = [];
+
+      angular.forEach(input, function(value, key) {
+        if (!value.is_container && ref.id != value.id) {
+          value.name = value.title;
+          list.push(value);
+        }
+      });
+
+      return list;
+    };
+});
 
 
 // Controller definition
@@ -104,9 +118,39 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
     var dep = {};
     angular.forEach($scope.data.tasks, function(value, key) {
 
-      if (!value.is_milestone && !value.is_container) {
-        console.log('-----------------------------------');
-        console.log(value.id+': '+value.title);
+      if (value.is_milestone) {
+        elem = {id: value.id,
+                name: value.title,
+                description: value.description,
+                type: "milestone",
+                from: new Date(value.due_date),
+                to: new Date(value.due_date),
+                tasks: [
+                  {id: value.id,
+                  name: value.title,
+                  color: "#44BBFF",
+                  from: new Date(value.due_date),
+                  to: new Date(value.due_date),
+                  type: "milestone"
+                  }
+                ]
+              };
+      }
+      else if (value.is_container) {
+        elem = {id: value.id,
+                name: value.title,
+                description: value.description,
+                type: "container",
+                elements: value.tasks,
+                children: []
+              };
+        angular.forEach(value.tasks, function (value2, key2) {
+          this.push(value2.id);
+        }, elem.children);
+      }
+      else if (!value.is_milestone && !value.is_container) {
+        // console.log('-----------------------------------');
+        // console.log(value.id+': '+value.title);
         elem = {id: value.id,
                 name: value.title,
                 description: value.description,
@@ -122,7 +166,8 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
                   color: "#BDBDBD",
                   from: new Date(value.started_at),
                   to: new Date(value.finished_at ? value.finished_at : value.due_date),
-                  progress: value.advance
+                  progress: value.advance,
+                  type: "regular"
                   }
                 ]
               };
@@ -135,28 +180,28 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
               dep = {from: value2.task.id
                     };
               this.push(dep);
-              console.log("fs with "+value2.task.title);
+              // console.log("fs with "+value2.task.title);
               break;
             case 'sf':
               dep = {to: value2.task.id,
                      type: "sf"
                     };
               this.push(dep);
-              console.log("sf with "+value2.task.title);
+              // console.log("sf with "+value2.task.title);
               break;
             case 'ss':
               dep = {from: value2.task.id,
                      type: "ss"
                     };
               this.push(dep);
-              console.log("ss with "+value2.task.title);
+              // console.log("ss with "+value2.task.title);
               break;
             case 'ff':
               dep = {from: value2.task.id,
                      type: "ff"
                     };
               this.push(dep);
-              console.log("ff with "+value2.task.title);
+              // console.log("ff with "+value2.task.title);
               break;
             default:
               dep = {from: value2.task.id,
@@ -168,34 +213,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
         }, elem.tasks[0].dependencies);
 
       }
-      else if (value.is_milestone) {
-        elem = {id: value.id,
-                name: value.title,
-                description: value.description,
-                type: "milestone",
-                from: new Date(value.due_date),
-                to: new Date(value.due_date),
-                tasks: [
-                  {id: value.id,
-                  name: value.title,
-                  color: "#44BBFF",
-                  from: new Date(value.due_date),
-                  to: new Date(value.due_date)
-                  }
-                ]
-              };
-      }
-      else if (value.is_container) {
-        elem = {id: value.id,
-                name: value.title,
-                description: value.description,
-                type: "container",
-                children: []
-              };
-        angular.forEach(value.tasks, function (value2, key2) {
-          this.push(value2.id);
-        }, elem.children);
-      }
+
       this.push(elem);
 
     }, $scope.data.gantt);
@@ -216,10 +234,20 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
   };
 
   var updateTask = function(eventName, task) {
-    var elem = {"id": task.model.id,
-                "started_at": moment(task.model.from).format("YYYY-MM-DD HH:mm:ss"),
-                "due_date": moment(task.model.to).format("YYYY-MM-DD HH:mm:ss")
-                };
+
+    if (task.model.type == 'milestone') {
+      var elem = {"id": task.model.id,
+                  "started_at": moment(task.model.to).format("YYYY-MM-DD 00:00:00"),
+                  "due_date": moment(task.model.to).format("YYYY-MM-DD 00:00:01")
+                  };
+      task.model.from = task.model.to;
+    } else {
+      var elem = {"id": task.model.id,
+                  "started_at": moment(task.model.from).format("YYYY-MM-DD HH:mm:ss"),
+                  "due_date": moment(task.model.to).format("YYYY-MM-DD HH:mm:ss")
+                  };
+    }
+
 
     var data = {"data": elem};
     //console.log(data);
@@ -256,12 +284,13 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
               return to !== undefined ? to.format('ll') : undefined;
           }
       },
-      columnsHeaders: {'model.name' : 'Name', 'from': 'From', 'to': 'To'},
+      columnsHeaders: { 'model.name' : 'Name', 'from': 'From', 'to': 'To'},
       columnsHeaderContents: {
           'model.name': '<i class="material-icons" style="font-size:14px">storage</i> {[{getHeader()}]}',
           'from': '<i class="material-icons" style="font-size:14px">date_range</i> {[{getHeader()}]}',
           'to': '<i class="material-icons" style="font-size:14px">date_range</i> {[{getHeader()}]}'
       },
+      containersExpansion: 'expand',
       currentDate: 'column', // ['none', 'line', 'column']
       currentDateValue: new Date(),
       daily: true,
@@ -286,17 +315,6 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
       treeTableColumns: ['from', 'to'],
       width: false,
       zoom: 1,
-      // canDraw: function(event) {
-      //     var isLeftMouseButton = event.button === 0 || event.button === 1;
-      //     return $scope.options.draw && !$scope.options.readOnly && isLeftMouseButton;
-      // },
-      // drawTaskFactory: function() {
-      //     return {
-      //         id: utils.randomUuid(),
-      //         name: 'Drawn task',
-      //         color: '#AA8833'
-      //     };
-      // },
       api: function(api) {
          $scope.api = api; //controll method and events from angular-gantt
 
@@ -304,7 +322,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
               //api.tasks.on.add($scope, addEventName('tasks.on.add', logTaskEvent));
               api.tasks.on.change($scope, addEventName('tasks.on.change', updateTask));
-              api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent)); // TODO: is called after every move/resize event ? (update task here) : (do nothing)
+              api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
               //api.tasks.on.rowChange($scope, addEventName('tasks.on.rowChange', logTaskEvent)); // TODO: block row change
               api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent)); // TODO: what ??
 
@@ -359,12 +377,11 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
       alert('Icon from ' + rowModel.name + ' row has been clicked.');
   };
 
-  $scope.expandAll = function() {
-      $scope.api.tree.expandAll();
-  };
-
-  $scope.collapseAll = function() {
+  $scope.containersExpansionChange = function() {
+    if ($scope.options.containersExpansion == "collapse")
       $scope.api.tree.collapseAll();
+    else
+      $scope.api.tree.expandAll();
   };
 
   $scope.canAutoWidth = function(scale) {
@@ -427,6 +444,19 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
   };
   getProjectUsers();
 
+  // Get all tasks from the project
+  var getProjectTasks = function() {
+    $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
+      .then(function successCallback(response) {
+        $scope.tasksList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
+        $scope.tasksList = $filter('dependencies')($scope.tasksList, $scope.data.task);
+      },
+      function errorCallback(response) {
+        $scope.tasksList = [];
+      });
+  };
+  getProjectTasks();
+
   // "Edit task" button handler
   var onEditTask = function(row) {
     console.info(row);
@@ -439,6 +469,9 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
       value.old = false;
       value.oldPercent = value.percent;
     });
+    angular.forEach(row.elements, function(value, key) {
+      value.name = value.title;
+    });
 
     // SET MODAL DATA
     $scope.data.edit = {id: row.id,
@@ -448,12 +481,15 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
                         type: row.type,
                         dependencies: row.dependencies,
                         users: row.users,
+                        tasks: row.elements,
                         newDep: [],
                         oldDep: [],
                         updateDep: [],
                         newRes: [],
                         oldRes: [],
-                        updateRes: []
+                        updateRes: [],
+                        taskToAdd: [],
+                        taskToRemove: []
                       };
 
     // FORMAT TASKS FOR DEPENDENCIES MANIPULATION
@@ -463,6 +499,32 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
     });
 
     // MODAL EDITION METHODS
+    //---------------------TASKS ASSIGNATION-----------------------//
+
+    $scope.taskAdded = function(task) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.edit.taskToRemove.length && index < 0; i++) {
+        if ($scope.data.edit.taskToRemove[i] == task.id || $scope.data.edit.taskToRemove[i] == task.id)
+          index = i;
+      }
+      if (index >= 0)
+        $scope.data.edit.taskToRemove.splice(index, 1);
+      else
+        $scope.data.edit.taskToAdd.push(task.id);
+    };
+
+    $scope.taskRemoved = function(task) {
+      var index = -1;
+      for (var i = 0; i < $scope.data.edit.taskToAdd.length && index < 0; i++) {
+        if ($scope.data.edit.taskToAdd[i] == task.id || $scope.data.edit.taskToAdd[i] == task.id)
+          index = i;
+      }
+      if (index >= 0)
+        $scope.data.edit.taskToAdd.splice(index, 1);
+      else
+        $scope.data.edit.taskToRemove.push(task.id);
+    };
+
     //-----------------DEPENDENCIES ASSIGNATION--------------------//
     $scope.addDependency = function(dep, type) {
       if (dep == "")
@@ -688,7 +750,6 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
         // else if ($scope.data.edit.advance < 100)
         //   elem['finished_at'] = null;
 
-        // TODO edit dates
         console.log($scope.data.edit);
 
         if ($scope.data.edit.newDep.length)
@@ -705,6 +766,11 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
         if ($scope.data.edit.oldRes.length)
           elem['usersRemove'] = $scope.data.edit.oldRes;
 
+        if ($scope.data.edit.taskToAdd)
+          elem["tasksAdd"] = $scope.data.edit.taskToAdd;
+        if ($scope.data.edit.taskToRemove)
+          elem["tasksRemove"] = $scope.data.edit.taskToRemove;
+
         var data = {"data": elem};
 
         $http.put($rootScope.api.url + "/task/" + $scope.data.edit.id, data, {headers: { 'Authorization': $rootScope.user.token }})
@@ -712,7 +778,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
             $scope.reload();
           },
           function errorCallback(response) {
-            notificationFactory.warning("Unable to update task. Please try again.");
+            notificationFactory.error("Unable to update task. Please try again.");
             $scope.reload();
           })
       },

@@ -31,8 +31,11 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
 
   // ROOTSCOPE routine definition
   // Clear cookies and redirect to login (with error)
-  var _reject = function() {
-    $cookies.put("G_LOGIN", $base64.encode("_denied"), { path: "/" });
+  var _reject = function(critical) {
+    if (critical)
+      $cookies.put("G_LOGIN", $base64.encode("_critical"), { path: "/" });
+    else
+      $cookies.put("G_LOGIN", $base64.encode("_denied"), { path: "/" });      
     $cookies.remove("G_TOKEN", { path: "/" });
     $cookies.remove("G_ID", { path: "/" });
     $window.location.href = "/login";
@@ -87,8 +90,8 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
     }
     else {
       if (localStorageService.get("project.set") && localStorageService.get("project.id") && localStorageService.get("project.name")) {
-        $rootScope.project.id = $base64.decode(localStorageService.get("PROJECT_ID"));
-        $rootScope.project.name = $base64.decode(localStorageService.get("PROJECT_NAME"));
+        $rootScope.project.id = $base64.decode(localStorageService.get("project.id"));
+        $rootScope.project.name = $base64.decode(localStorageService.get("project.name"));
         $rootScope.project.set = true;
       }
     } 

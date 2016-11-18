@@ -4,6 +4,8 @@
 User-agent: *
 Disallow: /resources
 Disallow: /bundles
+Allow: /resources/img/favicon
+Allow: /resources/img/team
 
 User-agent: Googlebot
 Allow: /resources
