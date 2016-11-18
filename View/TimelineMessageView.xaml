@@ -28,7 +28,6 @@
                 <TextBlock Name="TimelineMessage" Text="{Binding Title, Mode=OneTime}" TextTrimming="CharacterEllipsis" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ProgressBar VerticalAlignment="Top" Grid.Row="2" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
         <StackPanel Grid.Row="1">
             <TextBox IsEnabled="False" Margin="0,0,0,5" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>

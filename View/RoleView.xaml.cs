@@ -28,8 +28,8 @@ namespace Grappbox.View
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             RoleName.Text = "";
             TTNButton.IsChecked = true;
@@ -41,93 +41,91 @@ namespace Grappbox.View
             TNButton.IsChecked = true;
             PSNButton.IsChecked = true;
             CNButton.IsChecked = true;
+            
+            if (e.Parameter != null)
+            {
+                Update.Visibility = Visibility.Visible;
+                Add.Visibility = Visibility.Collapsed;
+                vm.role(e.Parameter as ProjectRoleModel);
+                //TeamTimeline
+                if (vm.TeamTimeline == 0)
+                    TTNButton.IsChecked = true;
+                else if (vm.TeamTimeline == 1)
+                    TTRradioButton.IsChecked = true;
+                else
+                    TTRWradioButton.IsChecked = true;
 
-            //this.navigationHelper.OnNavigatedTo(e);
-            //if (e.Parameter != null)
-            //{
-            //    Update.Visibility = Visibility.Visible;
-            //    Add.Visibility = Visibility.Collapsed;
-            //    vm.role(e.Parameter as ProjectRoleModel);
-            //    //TeamTimeline
-            //    if (vm.TeamTimeline == 0)
-            //        TTNButton.IsChecked = true;
-            //    else if (vm.TeamTimeline == 1)
-            //        TTRradioButton.IsChecked = true;
-            //    else
-            //        TTRWradioButton.IsChecked = true;
+                //CustomerTimeline
+                if (vm.CustomerTimeline == 0)
+                    CTNButton.IsChecked = true;
+                else if (vm.CustomerTimeline == 1)
+                    CTRradioButton.IsChecked = true;
+                else
+                    CTRWradioButton.IsChecked = true;
 
-            //    //CustomerTimeline
-            //    if (vm.CustomerTimeline == 0)
-            //        CTNButton.IsChecked = true;
-            //    else if (vm.CustomerTimeline == 1)
-            //        CTRradioButton.IsChecked = true;
-            //    else
-            //        CTRWradioButton.IsChecked = true;
+                //Gantt
+                if (vm.Gantt == 0)
+                    GNButton.IsChecked = true;
+                else if (vm.Gantt == 1)
+                    GRradioButton.IsChecked = true;
+                else
+                    GRWradioButton.IsChecked = true;
 
-            //    //Gantt
-            //    if (vm.Gantt == 0)
-            //        GNButton.IsChecked = true;
-            //    else if (vm.Gantt == 1)
-            //        GRradioButton.IsChecked = true;
-            //    else
-            //        GRWradioButton.IsChecked = true;
+                //Whiteboard
+                if (vm.Whiteboard == 0)
+                    WNButton.IsChecked = true;
+                else if (vm.Whiteboard == 1)
+                    WRradioButton.IsChecked = true;
+                else
+                    WRWradioButton.IsChecked = true;
 
-            //    //Whiteboard
-            //    if (vm.Whiteboard == 0)
-            //        WNButton.IsChecked = true;
-            //    else if (vm.Whiteboard == 1)
-            //        WRradioButton.IsChecked = true;
-            //    else
-            //        WRWradioButton.IsChecked = true;
+                //Bugtracker
+                if (vm.Bugtracker == 0)
+                    BNButton.IsChecked = true;
+                else if (vm.Bugtracker == 1)
+                    BRradioButton.IsChecked = true;
+                else
+                    BRWradioButton.IsChecked = true;
 
-            //    //Bugtracker
-            //    if (vm.Bugtracker == 0)
-            //        BNButton.IsChecked = true;
-            //    else if (vm.Bugtracker == 1)
-            //        BRradioButton.IsChecked = true;
-            //    else
-            //        BRWradioButton.IsChecked = true;
+                //Event
+                if (vm.Event == 0)
+                    ENButton.IsChecked = true;
+                else if (vm.Event == 1)
+                    ERradioButton.IsChecked = true;
+                else
+                    ERWradioButton.IsChecked = true;
 
-            //    //Event
-            //    if (vm.Event == 0)
-            //        ENButton.IsChecked = true;
-            //    else if (vm.Event == 1)
-            //        ERradioButton.IsChecked = true;
-            //    else
-            //        ERWradioButton.IsChecked = true;
+                //Task
+                if (vm.Task == 0)
+                    TNButton.IsChecked = true;
+                else if (vm.Task == 1)
+                    TRradioButton.IsChecked = true;
+                else
+                    TRWradioButton.IsChecked = true;
 
-            //    //Task
-            //    if (vm.Task == 0)
-            //        TNButton.IsChecked = true;
-            //    else if (vm.Task == 1)
-            //        TRradioButton.IsChecked = true;
-            //    else
-            //        TRWradioButton.IsChecked = true;
+                //ProjectSettings
+                if (vm.ProjectSettings == 0)
+                    PSNButton.IsChecked = true;
+                else if (vm.ProjectSettings == 1)
+                    PSRradioButton.IsChecked = true;
+                else
+                    PSRWradioButton.IsChecked = true;
 
-            //    //ProjectSettings
-            //    if (vm.ProjectSettings == 0)
-            //        PSNButton.IsChecked = true;
-            //    else if (vm.ProjectSettings == 1)
-            //        PSRradioButton.IsChecked = true;
-            //    else
-            //        PSRWradioButton.IsChecked = true;
+                //Cloud
+                if (vm.Cloud == 0)
+                    CNButton.IsChecked = true;
+                else if (vm.Cloud == 1)
+                    CRradioButton.IsChecked = true;
+                else
+                    CRWradioButton.IsChecked = true;
+            }
+            else
+            {
+                Update.Visibility = Visibility.Collapsed;
+                Add.Visibility = Visibility.Visible;
+            }
 
-            //    //Cloud
-            //    if (vm.Cloud == 0)
-            //        CNButton.IsChecked = true;
-            //    else if (vm.Cloud == 1)
-            //        CRradioButton.IsChecked = true;
-            //    else
-            //        CRWradioButton.IsChecked = true;
-            //}
-            //else
-            //{
-            //    Update.Visibility = Visibility.Collapsed;
-            //    Add.Visibility = Visibility.Visible;
-            //}
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private void Button_Checked(object sender, RoutedEventArgs e)
@@ -186,9 +184,6 @@ namespace Grappbox.View
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (RoleName.Text != "")
             {
                 RoleName.BorderBrush = new SolidColorBrush();
@@ -198,16 +193,10 @@ namespace Grappbox.View
             }
             else
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (RoleName.Text != "")
             {
                 RoleName.BorderBrush = new SolidColorBrush();
@@ -220,9 +209,6 @@ namespace Grappbox.View
             }
             else
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void setValues()

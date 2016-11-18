@@ -34,14 +34,13 @@
                 <TextBlock Name="title" Text="Timeline" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ProgressBar Grid.Row="1" VerticalAlignment="Center" Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1"/>
         <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem>
                 <PivotItem.Header>
                     <customControl:TabHeader Label="Team" Glyph="&#xE8F2;" />
                 </PivotItem.Header>
                 <Grid>
-                    <customControl:CustomListView x:Name="TeamListView" IncrementalLoadingThreshold="4" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
+                    <ListView x:Name="TeamListView" IncrementalLoadingThreshold="4" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
@@ -64,7 +63,7 @@
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
-                    </customControl:CustomListView>
+                    </ListView>
                 </Grid>
             </PivotItem>
             <PivotItem>

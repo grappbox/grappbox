@@ -59,13 +59,7 @@ namespace Grappbox.View
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.CommentSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
-
                 await vm.updateComment(vm.CommentSelected);
-
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -74,13 +68,12 @@ namespace Grappbox.View
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.CommentSelected != null)
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
                 await vm.removeComment(vm.CommentSelected);
 
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
             }
         }
 
@@ -88,14 +81,13 @@ namespace Grappbox.View
         {
             if (MessageTextBox.Text != "")
             {
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
                 await vm.postComment(vm.MessageSelected.TimelineId, MessageTextBox.Text, vm.MessageSelected.Id);
                 MessageTextBox.Text = "";
 
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
             }
         }
 

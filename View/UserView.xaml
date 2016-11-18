@@ -13,7 +13,7 @@
         <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
     </Page.Resources>
     <Page.BottomAppBar>
-        <CommandBar ClosedDisplayMode="Compact">
+        <CommandBar ClosedDisplayMode="Compact" Name="AppBar">
             <AppBarButton Name="UpdateSettings" Label="Update" Click="Update_Click" Icon="Save" />
         </CommandBar>
     </Page.BottomAppBar>
@@ -21,14 +21,14 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
             <customControl:PageHeader.HeaderContent>
                 <TextBlock Name="title" Text="User settings" Style="{StaticResource PageTitleTextBlockStyle}" />
             </customControl:PageHeader.HeaderContent>
         </customControl:PageHeader>
-        <ProgressBar Grid.Row="1" VerticalAlignment="Center" x:Name="LoadingBar" Visibility="Collapsed" IsEnabled="False" IsIndeterminate="true" Height="4" HorizontalAlignment="Stretch" Canvas.ZIndex="1" />
-        <ScrollViewer Padding="15" Grid.Row="1">
+        <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15" Grid.Row="1">
             <StackPanel>
                 <StackPanel.Resources>
                     <Style TargetType="TextBox">
@@ -38,24 +38,24 @@
                     </Style>
                     <valueconverter:DateTimeToDateConverter x:Key="DateConverter"/>
                 </StackPanel.Resources>
-                <TextBox x:Name="FirstName" Header="Firstname" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}" />
-                <TextBox x:Name="Lastname" Header="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}" />
+                <TextBox x:Name="FirstName" Header="Firstname" PlaceholderText="Firstname" Text="{Binding Firstname, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                <TextBox x:Name="Lastname" Header="Lastname" PlaceholderText="Lastname" Text="{Binding Lastname, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                 <DatePicker Date="{Binding Birthday, Converter={StaticResource DateConverter}}" Header="Birthday" HorizontalAlignment="Stretch" Margin="0,20,0,0"/>
-                <TextBox Header="Avatar" Height="1" MinHeight="26" />
+                <TextBox Header="Avatar" Height="1" MinHeight="26" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                 <Grid>
                     <Image x:Name="img" Source="{Binding Avatar, Mode=OneWay}" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
                     <Button Content="Button" HorizontalAlignment="Center" VerticalAlignment="Center" Opacity="0" Height="100" Width="100" Click="Img_Click" />
                     <Border BorderBrush="Black" BorderThickness="2" HorizontalAlignment="Center" Height="100" VerticalAlignment="Center" Width="100" />
                 </Grid>
-                <TextBox x:Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" />
-                <TextBox x:Name="Country" Header="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}" />
-                <TextBox x:Name="Linkedin" Header="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}" />
-                <TextBox x:Name="Viadeo" Header="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}" />
-                <TextBox x:Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" />
+                <TextBox x:Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                <TextBox x:Name="Country" Header="Country" PlaceholderText="Country" Text="{Binding Country, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                <TextBox x:Name="Linkedin" Header="Linkedin" PlaceholderText="Linkedin" Text="{Binding Linkedin, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                <TextBox x:Name="Viadeo" Header="Viadeo" PlaceholderText="Viadeo" Text="{Binding Viadeo, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                <TextBox x:Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                 <StackPanel x:Name="PasswordStackPanel" Visibility="Collapsed">
-                    <PasswordBox x:Name="oldPassword" Header="Old Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
-                    <PasswordBox x:Name="newPassword" Header="New Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
-                    <PasswordBox x:Name="retypePassword" Header="Retype Password" VerticalAlignment="Stretch" Margin="0,20,0,0"/>
+                    <PasswordBox x:Name="oldPassword" Header="Old Password" VerticalAlignment="Stretch" Margin="0,20,0,0" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                    <PasswordBox x:Name="newPassword" Header="New Password" VerticalAlignment="Stretch" Margin="0,20,0,0" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                    <PasswordBox x:Name="retypePassword" Header="Retype Password" VerticalAlignment="Stretch" Margin="0,20,0,0" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                 </StackPanel>
                 <Button Margin="0,20,0,0" Content="Change Password" HorizontalAlignment="Center" Click="Password_Click" />
             </StackPanel>

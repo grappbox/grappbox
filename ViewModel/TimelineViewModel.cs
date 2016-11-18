@@ -21,8 +21,8 @@ namespace Grappbox.ViewModel
         static private TimelineViewModel instance = null;
         private TimelineListModel _Customer = new TimelineListModel();
         private TimelineListModel _Team = new TimelineListModel();
-        private Messages _CustomerMessages = new Messages(false);
-        private Messages _TeamMessages = new Messages(true);
+        private ObservableCollection<TimelineModel> _CustomerMessages = new ObservableCollection<TimelineModel>();
+        private ObservableCollection<TimelineModel> _TeamMessages = new ObservableCollection<TimelineModel>();
         private ObservableCollection<TimelineListModel> _Timelines;
         private ObservableCollection<TimelineModel> _Comments;
         private TimelineModel _messageSelected = new TimelineModel();
@@ -53,7 +53,7 @@ namespace Grappbox.ViewModel
                 int offset = TeamOffset;
                 TeamOffset += _incrementation;
                 HttpRequestManager api = HttpRequestManager.Instance;
-                object[] token = { _Team.Id, offset, _incrementation };
+                object[] token = { _Team.Id };
                 HttpResponseMessage res = await api.Get(token, "timeline/messages");
                 if (res == null)
                 {
@@ -63,8 +63,8 @@ namespace Grappbox.ViewModel
                 string json = await res.Content.ReadAsStringAsync();
                 if (res.IsSuccessStatusCode)
                 {
-                    Messages newMessages = HttpRequestManager.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
-                    if (newMessages.Count <= 0 && TeamOffset > 0 + _incrementation)
+                    ObservableCollection<TimelineModel> newMessages = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
+                    if (newMessages.Count <= 0 && TeamOffset > (1 + _incrementation))
                     {
                         TeamOffset -= _incrementation;
                         return false;
@@ -92,7 +92,7 @@ namespace Grappbox.ViewModel
                 int offset = CustomerOffset;
                 CustomerOffset += _incrementation;
                 HttpRequestManager api = HttpRequestManager.Instance;
-                object[] token = { _Customer.Id, offset, _incrementation };
+                object[] token = { _Customer.Id };
                 HttpResponseMessage res = await api.Get(token, "timeline/messages");
                 if (res == null)
                 {
@@ -102,7 +102,7 @@ namespace Grappbox.ViewModel
                 string json = await res.Content.ReadAsStringAsync();
                 if (res.IsSuccessStatusCode)
                 {
-                    Messages newMessages = HttpRequestManager.DeserializeArrayJson<Messages>(await res.Content.ReadAsStringAsync());
+                    ObservableCollection<TimelineModel> newMessages = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TimelineModel>>(await res.Content.ReadAsStringAsync());
                     if (newMessages.Count <= 0 && CustomerOffset > 0 + _incrementation)
                     {
                         TeamOffset -= _incrementation;
@@ -389,12 +389,12 @@ namespace Grappbox.ViewModel
 
         #region Observable Collection
 
-        public Messages CustomerList
+        public ObservableCollection<TimelineModel> CustomerList
         {
             get { return _CustomerMessages; }
         }
 
-        public Messages TeamList
+        public ObservableCollection<TimelineModel> TeamList
         {
             get { return _TeamMessages; }
         }
@@ -563,12 +563,12 @@ namespace Grappbox.ViewModel
             TimelineViewModel vm = TimelineViewModel.GetViewModel();
             if (isTeam == true)
             {
-                if (Count <= vm.TeamOffset)
+                if (HasMoreItems)
                     moreItems = await vm.getTeamMessages();
             }
             else
             {
-                if (Count <= vm.CustomerOffset)
+                if (HasMoreItems)
                     moreItems = await vm.getCustomerMessages();
             }
         }

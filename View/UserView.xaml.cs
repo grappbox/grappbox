@@ -52,8 +52,8 @@ namespace Grappbox.View
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
 
             //Mobile customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
@@ -70,15 +70,11 @@ namespace Grappbox.View
             await vm.getAPI();
             //await vm.getProjectLogo();
 
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
-
             if (password != "")
             {
                 await vm.updateAPI(password, oldPwd);
@@ -90,9 +86,6 @@ namespace Grappbox.View
             }
             else
                 await vm.updateAPI();
-
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
         }
 
         private void Password_Click(object sender, RoutedEventArgs e)
@@ -230,6 +223,16 @@ namespace Grappbox.View
                 await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
                 t.Cancel();
             }
+        }
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            AppBar.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            AppBar.Visibility = Visibility.Visible;
         }
     }
 }
