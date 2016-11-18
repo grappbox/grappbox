@@ -148,33 +148,45 @@
   </head>
 
   <body>
-    <div data-ng-app="grappbox" id="ng-app" ng-strict-di>
-      <!-- Navigation -->
-      <div class="navigation {[{ path.colors[path.current] + '-background' }]} {[{ sidebar.open ? 'open' : '' }]}">
+    <div data-ng-app="grappbox" id="ng-app" data-ng-strict-di>
+      <!-- Brand -->
+      <div class="navigation-master {[{ sidebar.open ? 'open' : '' }]}">
         <div class="container-fluid">
-          <div class="navigation-left" data-ng-cloak>
-            <a href="" title="Toggle navigation drawer" class="btn {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()">
-              <i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
-            <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
-          </div>
-          <div class="navigation-right">
-            <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-hover' }]}">
+          <div class="navigation-master-left">
+            <a href="/" title="Go to GrappBox website" class="{[{ path.colors[path.current] + '-hover' }]}"><img src="../resources/img/favicon/android-icon-192x192.png" height="35" width="35" alt="grappbox-logo">GrappBox</a>
+          </div> 
+          <div class="navigation-master-right {[{ path.colors[path.current] + '-color' }]}" data-ng-cloak>
+            <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
               <i class="material-icons">{[{ path.icons['/notifications'] }]}</i></a>
-            <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-hover' }]}">
+            <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}">
               <i class="material-icons">{[{ path.icons['/profile'] }]}</i></a>
-            <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-hover' }]}" >
+            <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" >
               <i class="material-icons">{[{ path.icons['/logout'] }]}</i></a>
           </div>
           <div class="clearfix"></div>
+        </div> 
+      </div>
+
+      <!-- Navigation -->
+      <div class="navigation {[{ sidebar.open ? 'open' : '' }]}">
+        <div class="container-fluid">
+          <div class="navigation-left" data-ng-cloak>
+            <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()">
+              <i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
+            <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
+          </div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- Navigation drawer -->
       <aside class="sidebar {[{ sidebar.open ? 'open' : '' }]}">
         <div class="sidebar-header">
-          <a class="toggle {[{ path.colors[path.current] + '-background-hover' }]}" href="" data-ng-click="sidebar.toggle()"><i class="material-icons">arrow_back</i></a>
-          <a href="profile" title="View and edit your profile"><img class="avatar" src="../resources/img/default_avatar.min.png"></a>
-          <p class="ellipsis user"><a href="profile" title="View and edit your profile">{[{ user.firstname }]} {[{ user.lastname }]}</a></p>
+          <a class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" href="" data-ng-click="sidebar.toggle()" alt="Close navigation drawer"><i class="material-icons">arrow_back</i></a>
+          <div class="profile">
+            <img src="../resources/img/default_avatar.min.png" alt="{[{ user.firstname }]}-{[{ user.lastname }]}-avatar" width="65px" height="65px">
+            <p class="ellipsis">{[{ user.firstname }]} {[{ user.lastname }]}</p>
+          </div>
           <div class="clearfix"></div>
         </div>
         <div class="sidebar-content">
@@ -243,7 +255,7 @@
       <div class="page {[{ sidebar.open ? 'open' : '' }]}">
         <div class="container">
           <div class="row">
-            <div class="col-lg-12">
+            <div class="col-lg-12 col-md-12 col-xs-12">
               <!-- Dynamic view -->
               <div data-ng-if="page.load">
                 <div class="spinner main-spinner">

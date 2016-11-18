@@ -16,12 +16,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div data-ng-if="view.valid && user">
       <div class="box-row">
 
-        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/tasks'] }]}</i>Tasks</h4>
-
+        <!-- Tasks -->
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors['/tasks'] + '-background' }]}">{[{ path.icons['/tasks'] }]}</i>Tasks</h4>
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.task.current }]} tasks in progress<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
-            <span class="status-icon"><i class="material-icons blue-color">access_time</i></span>
+            <span class="status-icon"><i class="material-icons">access_time</i></span>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
@@ -32,14 +32,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </span>
           </div>
         </div>
-
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.task.done }]} finished tasks<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
-            <span class="status-icon"><i class="material-icons blue-color">done_all</i></span>
+            <span class="status-icon"><i class="material-icons">done_all</i></span>
           </div>
         </div>
-
         <div class="col-lg-12 col-md-12 col-xs-12 no-padding">
           <div class="box">
             <p>Tasks repartition<br/><span>(by user)</span></p>
@@ -48,11 +46,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
 
-        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</h4>
+        <!-- Issues -->
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors['/bugtracker'] + '-background' }]}">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</h4>
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.issue.assignation.assigned }]} assigned issues</p>
-            <span class="status-icon"><i class="material-icons blue-color">access_time</i></span>
+            <span class="status-icon"><i class="material-icons">access_time</i></span>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
@@ -86,20 +85,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           </div>
         </div>
 
-        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">{[{ path.icons['/timeline'] }]}</i>Timeline</h4>
+        <!-- Messages -->
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors['/timeline'] + '-background' }]}">{[{ path.icons['/timeline'] }]}</i>Timeline</h4>
         <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.timeline.count.team }]} messages on your <strong>team</strong> discussion section</p>
           </div>
         </div>
-
         <div class="col-lg-6 col-md-6 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.timeline.count.customer }]} messages on your <strong>customer</strong> discussion section</p>
           </div>
         </div>
 
-        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons">public</i>Customers</h4>
+        <!-- Customers -->
+        <h4 class="col-lg-12 col-md-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors['/settings'] + '-background' }]}">public</i>Customers</h4>
         <div class="col-lg-4 col-md-4 col-xs-12 no-padding">
           <div class="box">
             <p>{[{ statistics.customer.actual }]} registered customers<br/><span>On a maximum of {[{ statistics.customer.maximum }]}</span></p>

@@ -13,7 +13,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 	$routeProvider
   // Homepage
   .when("/", {
-		title: "GrappBox",
+		title: "Home",
     controller  : "DashboardListController",
 		templateUrl : "../resources/pages/dashboard-list.html",
 		caseInsensitiveMatch : true,
