@@ -1,4 +1,4 @@
-﻿using GrappBox.HttpRequest;
+﻿using Grappbox.HttpRequest;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -18,9 +18,9 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Application template is documented at http://go.microsoft.com/fwlink/?LinkId=402347&clcid=0x409
 
-namespace GrappBox
+namespace Grappbox
 {
-    using GrappBox.View;
+    using Grappbox.View;
     using System.Diagnostics;
     using Windows.ApplicationModel.Resources.Core;
     using Windows.Networking.PushNotifications;

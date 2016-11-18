@@ -1,4 +1,4 @@
-﻿using GrappBox.Model;
+﻿using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     public sealed partial class TeamDashBoard : UserControl
     {

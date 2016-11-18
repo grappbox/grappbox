@@ -1,7 +1,7 @@
-﻿using GrappBox.CustomControls;
-using GrappBox.Helpers;
-using GrappBox.Model;
-using GrappBox.ViewModel;
+﻿using Grappbox.CustomControls;
+using Grappbox.Helpers;
+using Grappbox.Model;
+using Grappbox.ViewModel;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -10,7 +10,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
-namespace GrappBox.View
+namespace Grappbox.View
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.

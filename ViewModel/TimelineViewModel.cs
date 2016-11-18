@@ -1,6 +1,6 @@
-﻿using GrappBox.Helpers;
-using GrappBox.HttpRequest;
-using GrappBox.Model;
+﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
+using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -14,7 +14,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.Web.Http;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     internal class TimelineViewModel : ViewModelBase
     {

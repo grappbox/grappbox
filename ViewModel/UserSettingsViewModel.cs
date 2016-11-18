@@ -1,5 +1,5 @@
-﻿using GrappBox.HttpRequest;
-using GrappBox.Model;
+﻿using Grappbox.HttpRequest;
+using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Web.Http;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     internal class UserSettingsViewModel : ViewModelBase
     {

@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     /// <summary>
     /// Data to represent an item in the nav menu.

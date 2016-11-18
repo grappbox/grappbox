@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Pour plus d'informations sur le modèle d'élément Boîte de dialogue de contenu, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     public sealed partial class LoaderDialog : ContentDialog
     {

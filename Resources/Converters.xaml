@@ -1,7 +1,7 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:viewModel="using:GrappBox.ViewModel">
+    xmlns:viewModel="using:Grappbox.ViewModel">
     <viewModel:TappedPositionConverter x:Key="TappedPositionConverter" />
     <viewModel:ManipStartedPositionConverter x:Key="ManipStartedPositionConverter" />
     <viewModel:ManipDeltaPositionConverter x:Key="ManipDeltaPositionConverter" />

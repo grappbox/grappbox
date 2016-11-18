@@ -3,7 +3,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     /// <summary>
     /// This ListView is tailored to a Chat experience where the focus is on the last item in the list

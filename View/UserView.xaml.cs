@@ -1,5 +1,5 @@
-﻿using GrappBox.Helpers;
-using GrappBox.ViewModel;
+﻿using Grappbox.Helpers;
+using Grappbox.ViewModel;
 using System;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Activation;
@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
-namespace GrappBox.View
+namespace Grappbox.View
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.

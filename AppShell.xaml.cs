@@ -1,6 +1,6 @@
-﻿using GrappBox.CustomControls;
-using GrappBox.Helpers;
-using GrappBox.View;
+﻿using Grappbox.CustomControls;
+using Grappbox.Helpers;
+using Grappbox.View;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace GrappBox
+namespace Grappbox
 {
     /// <summary>
     /// The "chrome" layer of the app that provides top-level navigation with
@@ -29,7 +29,7 @@ namespace GrappBox
     public sealed partial class AppShell : Page
     {
         private static AppShell instance;
-        private bool isPaddingAdded = false;
+        private bool _isPaddingAdded = false;
 
         // Declare the top level nav items
         private ObservableCollection<NavMenuItem> partialNavList = new ObservableCollection<NavMenuItem>(
@@ -200,11 +200,11 @@ namespace GrappBox
         /// <param name="args"></param>
         private void TitleBar_IsVisibleChanged(Windows.ApplicationModel.Core.CoreApplicationViewTitleBar sender, object args)
         {
-            if (!this.isPaddingAdded && sender.IsVisible)
+            if (!this._isPaddingAdded && sender.IsVisible)
             {
                 //add extra padding between window title bar and app content
                 double extraPadding = (Double)App.Current.Resources["DesktopWindowTopPadding"];
-                this.isPaddingAdded = true;
+                this._isPaddingAdded = true;
 
                 Thickness margin = NavMenuList.Margin;
                 NavMenuList.Margin = new Thickness(margin.Left, margin.Top + extraPadding, margin.Right, margin.Bottom);
@@ -284,33 +284,31 @@ namespace GrappBox
                 TogglePaneButton.Visibility = Visibility.Visible;
                 this.CheckTogglePaneButtonSizeChanged();
             }
-            if (e.NavigationMode == NavigationMode.Back)
+            if (e.NavigationMode != NavigationMode.Back) return;
+            var item = (from p in this.NavList where p.DestPage == e.SourcePageType select p).FirstOrDefault();
+            if (item == null && this.AppFrame.BackStackDepth > 0)
             {
-                var item = (from p in this.NavList where p.DestPage == e.SourcePageType select p).FirstOrDefault();
-                if (item == null && this.AppFrame.BackStackDepth > 0)
+                // In cases where a page drills into sub-pages then we'll highlight the most recent
+                // navigation menu item that appears in the BackStack
+                foreach (var entry in this.AppFrame.BackStack.Reverse())
                 {
-                    // In cases where a page drills into sub-pages then we'll highlight the most recent
-                    // navigation menu item that appears in the BackStack
-                    foreach (var entry in this.AppFrame.BackStack.Reverse())
-                    {
-                        item = (from p in this.NavList where p.DestPage == entry.SourcePageType select p).SingleOrDefault();
-                        if (item != null)
-                            break;
-                    }
+                    item = (from p in this.NavList where p.DestPage == entry.SourcePageType select p).SingleOrDefault();
+                    if (item != null)
+                        break;
                 }
-
-                foreach (var i in NavList)
-                {
-                    i.IsSelected = false;
-                }
-                if (item != null)
-                {
-                    item.IsSelected = true;
-                }
-
-                var container = (ListViewItem)NavMenuList.ContainerFromItem(item);
-                NavMenuList.SetSelectedItem(container);
             }
+
+            foreach (var i in NavList)
+            {
+                i.IsSelected = false;
+            }
+            if (item != null)
+            {
+                item.IsSelected = true;
+            }
+
+            var container = (ListViewItem)NavMenuList.ContainerFromItem(item);
+            NavMenuList.SetSelectedItem(container);
         }
 
         #endregion Navigation

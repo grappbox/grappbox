@@ -1,4 +1,6 @@
-﻿using GrappBox.ViewModel;
+﻿using Grappbox.CustomControls;
+using Grappbox.Helpers;
+using Grappbox.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace GrappBox.View
+namespace Grappbox.View
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
@@ -32,20 +34,28 @@ namespace GrappBox.View
             this.DataContext = ViewModel;
         }
 
-        protected async override void OnNavigatedTo(NavigationEventArgs e)
+        protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-            ProgressRing.Visibility = Visibility.Visible;
-            await ViewModel.GetDay(DateTime.Today);
-            ProgressRing.Visibility = Visibility.Collapsed;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            dialog.ShowAsync();
+            ViewModel.IsBusy = true;
+            await ViewModel.PickDay(DateTime.Today);
+            dialog.Hide();
+            ViewModel.IsBusy = false;
         }
 
         private async void CalendarView_SelectedDatesChanged(Windows.UI.Xaml.Controls.CalendarView sender, CalendarViewSelectedDatesChangedEventArgs args)
         {
+            if (this.ViewModel.IsBusy)
+                return;
+            ViewModel.IsBusy = true;
             DateTimeOffset selectedDate = args.AddedDates[0];
-            ProgressRing.Visibility = Visibility.Visible;
-            await this.ViewModel.GetDay(selectedDate.Date);
-            ProgressRing.Visibility = Visibility.Collapsed;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            dialog.ShowAsync();
+            await this.ViewModel.PickDay(selectedDate.Date);
+            dialog.Hide();
+            ViewModel.IsBusy = false;
         }
     }
 }

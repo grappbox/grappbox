@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.System;
@@ -13,7 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     /// <summary>
     /// A specialized ListView to represent the items in the navigation menu.
@@ -86,6 +87,8 @@ namespace GrappBox.CustomControls
             for (int i = 0; i < this.Items.Count; i++)
             {
                 var lvi = (ListViewItem)this.ContainerFromIndex(i);
+                if (lvi == null)
+                    continue;
                 if (i != index)
                 {
                     lvi.IsSelected = false;

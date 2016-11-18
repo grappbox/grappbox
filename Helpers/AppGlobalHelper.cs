@@ -1,4 +1,4 @@
-﻿using GrappBox.HttpRequest;
+﻿using Grappbox.HttpRequest;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GrappBox.Helpers
+namespace Grappbox.Helpers
 {
     public class AppGlobalHelper
     {

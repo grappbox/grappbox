@@ -1,6 +1,6 @@
-﻿using GrappBox.Helpers;
-using GrappBox.HttpRequest;
-using GrappBox.Model;
+﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
+using Grappbox.Model;
 
 using System;
 using System.Collections.ObjectModel;
@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources.Core;
 using Windows.Web.Http;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     internal class DashBoardViewModel : ViewModelBase
     {

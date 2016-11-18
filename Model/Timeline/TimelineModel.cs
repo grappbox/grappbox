@@ -1,10 +1,10 @@
-﻿using GrappBox.Helpers;
+﻿using Grappbox.Helpers;
 using Newtonsoft.Json;
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 
-namespace GrappBox.Model
+namespace Grappbox.Model
 {
     public class TimelineModel
     {

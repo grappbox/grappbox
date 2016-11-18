@@ -2,7 +2,7 @@
 using System;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace GrappBox.Model
+namespace Grappbox.Model
 {
     class UserSettingsModel
     {

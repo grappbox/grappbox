@@ -1,6 +1,6 @@
-﻿using GrappBox.Helpers;
+﻿using Grappbox.Helpers;
 
-using GrappBox.Helpers;
+using Grappbox.Helpers;
 
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 using Windows.Web.Http;
 using Windows.Web.Http.Headers;
 
-namespace GrappBox.HttpRequest
+namespace Grappbox.HttpRequest
 {
     //This class is a singleton
     internal class HttpRequestManager

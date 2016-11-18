@@ -1,6 +1,6 @@
-﻿using GrappBox.CustomControls;
-using GrappBox.Helpers;
-using GrappBox.HttpRequest;
+﻿using Grappbox.CustomControls;
+using Grappbox.Helpers;
+using Grappbox.HttpRequest;
 
 using System;
 using Windows.UI;
@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Navigation;
 
 // Pour en savoir plus sur le modèle d'élément Page vierge, consultez la page http://go.microsoft.com/fwlink/?LinkId=391641
 
-namespace GrappBox.View
+namespace Grappbox.View
 {
     /// <summary>
     /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.

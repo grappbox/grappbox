@@ -1,4 +1,4 @@
-﻿using GrappBox.Helpers;
+﻿using Grappbox.Helpers;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -9,7 +9,7 @@ using Windows.Data.Xml.Dom;
 using Windows.Networking.PushNotifications;
 using Windows.UI.Notifications;
 
-namespace GrappBox.HttpRequest
+namespace Grappbox.HttpRequest
 {
     internal class NotificationManager
     {

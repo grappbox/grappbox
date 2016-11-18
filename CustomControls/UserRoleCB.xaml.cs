@@ -1,11 +1,11 @@
-﻿using GrappBox.Model;
-using GrappBox.ViewModel;
+﻿using Grappbox.Model;
+using Grappbox.ViewModel;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
 // The User Control item template is documented at http://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace GrappBox.CustomControls
+namespace Grappbox.CustomControls
 {
     public sealed partial class UserRoleCB : UserControl
     {

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI;
 using Windows.UI.Xaml.Media;
 
-namespace GrappBox
+namespace Grappbox
 {
     internal static class Constants
     {
@@ -33,7 +33,8 @@ namespace GrappBox
         public const string DashboardGenericCall = "dashboard/projects";
         public const string DashboardTeamOccupationCall = "dashboard/occupation";
         public const string DashboardMeetingsCall = "dashboard/meetings";
-        public const string CalendarCall = "planning/day";
+        public const string CalendarDayCall = "planning/day";
+        public const string CalendarMonthCall = "planning/month";
 
         #endregion Api calls string
     }

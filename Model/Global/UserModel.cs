@@ -1,8 +1,8 @@
-﻿using GrappBox.ViewModel;
+﻿using Grappbox.ViewModel;
 using Newtonsoft.Json;
 using System.Collections.ObjectModel;
 
-namespace GrappBox.Model
+namespace Grappbox.Model
 {
     public class UserModel
     {

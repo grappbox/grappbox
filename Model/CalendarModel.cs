@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GrappBox.Model
+namespace Grappbox.Model
 {
     public class CalendarModel
     {

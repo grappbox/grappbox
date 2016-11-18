@@ -1,8 +1,8 @@
-﻿using GrappBox.ViewModel;
+﻿using Grappbox.ViewModel;
 using Newtonsoft.Json;
 using Windows.UI.Xaml.Media.Imaging;
 
-namespace GrappBox.Model
+namespace Grappbox.Model
 {
     class ProjectSettingsModel : ViewModelBase
     {

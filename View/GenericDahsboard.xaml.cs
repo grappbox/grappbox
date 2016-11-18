@@ -1,7 +1,7 @@
-﻿using GrappBox.CustomControls;
-using GrappBox.Helpers;
-using GrappBox.Model;
-using GrappBox.ViewModel;
+﻿using Grappbox.CustomControls;
+using Grappbox.Helpers;
+using Grappbox.Model;
+using Grappbox.ViewModel;
 using System;
 using System.Diagnostics;
 using Windows.UI.Core;
@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace GrappBox.View
+namespace Grappbox.View
 {
     public sealed partial class GenericDahsboard : Page
     {

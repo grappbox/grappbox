@@ -1,4 +1,4 @@
-﻿using GrappBox.Model;
+﻿using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,15 +10,18 @@ using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.Web.Http;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     public class CalendarViewModel : ViewModelBase
     {
+        public bool IsBusy;
+
+
         public Visibility ListEmptyVisibility
         {
             get
             {
-                if (Events == null || Events.Count == 0)
+                if (FilteredEvents == null || FilteredEvents.Count == 0)
                     return Visibility.Visible;
                 return Visibility.Collapsed;
             }
@@ -32,48 +35,55 @@ namespace GrappBox.ViewModel
             set { _currentDate = value; }
         }
 
-        private ObservableCollection<Event> _events;
+        private ObservableCollection<Event> events;
 
-        public ObservableCollection<Event> Events
+        private ObservableCollection<Event> _filteredEvents;
+
+        public ObservableCollection<Event> FilteredEvents
         {
-            get { return _events; }
+            get
+            {
+                return _filteredEvents;
+            }
             set
             {
-                _events = value;
-                NotifyPropertyChanged("Events");
+                _filteredEvents = value;
+                NotifyPropertyChanged("FilteredEvents");
             }
         }
 
         public CalendarViewModel()
         {
             _currentDate = DateTime.Today;
-            _events = null;
+            _filteredEvents = null;
+            IsBusy = false;
         }
 
-        public async Task GetDay(DateTime date)
+        public async Task GetMonthApi(DateTime date)
         {
-            if (Events != null)
-                Events.Clear();
+            events?.Clear();
             HttpRequest.HttpRequestManager httpclient = HttpRequest.HttpRequestManager.Instance;
-            object[] objects = new object[1]
-                {
-                    date.ToString("yyyy-MM-dd")
-        };
-
-            HttpResponseMessage response = await httpclient.Get(objects, Constants.CalendarCall);
+            object[] objects = new object[1] { date.ToString("yyyy-MM-01") };
+            var response = await httpclient.Get(objects, Constants.CalendarMonthCall);
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    Events = HttpRequest.HttpRequestManager.DeserializeArrayJson<CalendarModel>(json).Events;
+                    events = HttpRequest.HttpRequestManager.DeserializeArrayJson<CalendarModel>(json).Events;
                 }
                 catch (Exception) { }
             }
-            else
-            {
-                MessageDialog dialog = new MessageDialog("Can't get day events", "Error");
-            }
+        }
+
+        public async Task PickDay(DateTime date)
+        {
+            if (CurrentDate.Date.Month != date.Month || events == null)
+                await GetMonthApi(date);
+            CurrentDate = date;
+            FilteredEvents?.Clear();
+            FilteredEvents = new ObservableCollection<Event>(events.Where(
+                d => CurrentDate.Date >= DateTime.Parse(d.BeginDate).Date && CurrentDate.Date <= DateTime.Parse(d.EndDate).Date));
             NotifyPropertyChanged("ListEmptyVisibility");
         }
     }

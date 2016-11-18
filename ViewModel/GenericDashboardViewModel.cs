@@ -1,5 +1,5 @@
-﻿using GrappBox.HttpRequest;
-using GrappBox.Model;
+﻿using Grappbox.HttpRequest;
+using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using Windows.UI.Popups;
 using Windows.Web.Http;
 
-namespace GrappBox.ViewModel
+namespace Grappbox.ViewModel
 {
     internal class GenericDashboardViewModel : ViewModelBase
     {
