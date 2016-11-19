@@ -106,6 +106,7 @@ svg {
   transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+i.rounded { padding: 10px; color: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
 ul, ol { padding: 0; list-style: none; }
 hr { position: relative; width: 70px; height: 4px; margin: 0 auto; margin-bottom: 30px; text-align: center; border: 0; }
 label { font-weight: 400; display: inline; margin: 0; }
@@ -152,12 +153,19 @@ a:hover { text-decoration: none; color: #4bf; }
 .blue-border { border-color: #4bf!important; }
 .default-border { border-color: #fc575e!important; }
 
+.red-hover:focus,
 .red-hover:hover { color: #fc575e!important; }
+.yellow-hover:focus,
 .yellow-hover:hover { color: #f1c40f!important; }
+.green-hover:focus,
 .green-hover:hover { color: #27ae60!important; }
+.orange-hover:focus,
 .orange-hover:hover { color: #ff9f55!important; }
+.purple-hover:focus,
 .purple-hover:hover { color: #9e58dc!important; }
+.blue-hover:focus,
 .blue-hover:hover { color: #4bf!important; }
+.default-hover:focus,
 .default-hover:hover { color: #fc575e!important; }
 
 .red-background-hover:hover { background: #fc575e!important; }
@@ -268,6 +276,24 @@ a:hover { text-decoration: none; color: #4bf; }
 
 
 
+/* =============================================== */
+/* ==================== BOXES ==================== */
+/* =============================================== */
+
+.box { background: #fff; padding: 10px; margin: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02); }
+.box-row { margin: 0 -5px; }
+.box-error { text-align: center; }
+.box-header { padding: 10px; margin: 10px 0 0 0; font-size: 16px; font-weight: 400; }
+.box p { padding: 10px; margin: 0; }
+.box p span { opacity: 0.6; }
+
+.box i { vertical-align: middle; margin-right: 5px; font-size: 20px; color: #757575; }
+.box-header i { vertical-align: middle; margin-right: 10px; font-size: 20px; }
+.box .status-icon { position: absolute; top: 32%; right: 4% }
+.box .status-icon i { font-size: 28px; }
+
+
+
 /* ================================================ */
 /* ==================== MODALS ==================== */
 /* ================================================ */
@@ -288,77 +314,17 @@ a:hover { text-decoration: none; color: #4bf; }
 
 
 
-/* ====================================================== */
-/* ==================== BUTTONS/FORMS ==================== */
-/* ====================================================== */
-
-.btn.btn-fab.btn-danger,
-.btn.btn-raised.btn-danger,
-.btn-group-raised .btn.btn-danger,
-.btn-group-raised .input-group-btn .btn.btn-danger,
-.input-group-btn .btn.btn-raised.btn-danger,
-.input-group-btn .btn.btn-fab.btn-danger { background-color: #fc575e; }
-
-.btn-fixed { position: fixed!important; z-index: 998; right: 46px; bottom: 46px; }
-
-.form-group { font-weight: 400; }
-.form-group.no-margin { margin: 0!important; }
-.form-group label { color: #999; }
-.form-group input[type=file] { position: initial; opacity: initial; }
-.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
-
-.form-group.is-focused:not(.has-error) label,
-.form-group.is-focused:not(.has-error) label.control-label { color: #44BBFF; }
-.form-group.is-focused .form-control {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#44BBFF), to(#44BBFF)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));
-  background-image: -webkit-linear-gradient(#44BBFF, #44BBFF), -webkit-linear-gradient(#D2D2D2, #D2D2D2);
-  background-image: -o-linear-gradient(#44BBFF, #44BBFF), -o-linear-gradient(#D2D2D2, #D2D2D2);
-  background-image: linear-gradient(#44BBFF, #44BBFF), linear-gradient(#D2D2D2, #D2D2D2);
-}
-
-.form-control[disabled],
-.form-group .form-control[disabled],
-fieldset[disabled] .form-control,
-fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px; }
-
-.label-floating label.disabled { top: -35px!important; }
-.hint { text-align: left!important; font-size: 12px; color: #999; }
-.hint.error { color: #fc575e; margin-bottom: -17px; }
-
-
-
 /* ================================================= */
 /* ==================== LOADING ==================== */
 /* ================================================= */
 
 .main-spinner { margin: 80px auto 40px auto; }
 .main-spinner .circular { width: 72px; height: 72px; }
+
 .spinner { margin: 30px auto 30px auto; }
 .spinner .circular { width: 56px; height: 56px; }
-
-.spinner .circular {
-  display: block;
-  margin: 0 auto;
-  -webkit-transform-origin: center center;
-  -moz-transform-origin: center center;
-  -o-transform-origin: center center;
-  -ms-transform-origin: center center;
-  transform-origin: center center;
-  -webkit-animation: rotate 2s linear infinite;
-  -moz-animation: rotate 2s linear infinite;
-  -o-animation: rotate 2s linear infinite;
-  -ms-animation: rotate 2s linear infinite;
-  animation: rotate 2s linear infinite;
-}
-
-.spinner .circular .path {
-  -webkit-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
-  -moz-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
-  -o-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
-  -ms-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
-  animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite;
-  stroke-dasharray: 1, 200; stroke-dashoffset: 0; stroke-linecap: round;
-}
+.spinner .circular { display: block; margin: 0 auto; -webkit-transform-origin: center center; -moz-transform-origin: center center; -o-transform-origin: center center; -ms-transform-origin: center center; transform-origin: center center; -webkit-animation: rotate 2s linear infinite; -moz-animation: rotate 2s linear infinite; -o-animation: rotate 2s linear infinite; -ms-animation: rotate 2s linear infinite; animation: rotate 2s linear infinite; }
+.spinner .circular .path { -webkit-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -moz-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -o-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -ms-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; stroke-dasharray: 1, 200; stroke-dashoffset: 0; stroke-linecap: round; }
 
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 @-webkit-keyframes color { 100%, 0% { stroke: #fc575e; } }
@@ -402,24 +368,97 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 
 
 
+/* ====================================================== */
+/* ==================== BUTTONS/FORMS =================== */
+/* ====================================================== */
+
+.btn.btn-fab.btn-danger,
+.btn.btn-raised.btn-danger,
+.btn-group-raised .btn.btn-danger,
+.btn-group-raised .input-group-btn .btn.btn-danger,
+.input-group-btn .btn.btn-raised.btn-danger,
+.input-group-btn .btn.btn-fab.btn-danger { background-color: #fc575e; }
+
+.btn-fixed { position: fixed!important; z-index: 998; right: 46px; bottom: 46px; }
+
+.form-group { font-weight: 400; }
+.form-group.no-margin { margin: 0!important; }
+.form-group label { color: #999; }
+.form-group input[type=file] { position: initial; opacity: initial; }
+.form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
+
+.form-group.is-focused:not(.has-error) label,
+.form-group.is-focused:not(.has-error) label.control-label { color: #44BBFF; }
+.form-group.is-focused .form-control {
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#44BBFF), to(#44BBFF)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));
+  background-image: -webkit-linear-gradient(#44BBFF, #44BBFF), -webkit-linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: -o-linear-gradient(#44BBFF, #44BBFF), -o-linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: linear-gradient(#44BBFF, #44BBFF), linear-gradient(#D2D2D2, #D2D2D2);
+}
+
+.form-control[disabled],
+.form-group .form-control[disabled],
+fieldset[disabled] .form-control,
+fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px; }
+
+.label-floating label.disabled { top: -35px!important; }
+.hint { text-align: left!important; font-size: 12px; color: #999; }
+.hint.error { color: #fc575e; margin-bottom: -17px; }
+
+
+
+/* ========================================================== */
+/* ==================== DASHBOARD (LIST) ==================== */
+/* ========================================================== */
+
+.dashboard-list .page-header { margin: -40px -100px 40px -100px; padding: 40px; border: 0; }
+.dashboard-list .page-header .title { margin-top: 10px; color: #fff; }
+.dashboard-list .page-header img { max-width: 300px; }
+
+@media (max-width: 768px) {
+  .dashboard-list .page-header .title { text-align: center; margin-top: 10px; }
+}
+
+.dashboard-list .btn-raised { background: #fff; }
+.dashboard-list .btn-raised:focus,
+.dashboard-list .btn-raised:hover { background: #f0f0f0!important; }
+
+.dashboard-list h1 img { margin-right: 20px; width: 60px; height: auto; }
+.dashboard-list { margin: 10px 10px 30px 10px; }
+
+.dashboard-list .box:hover { box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); cursor: pointer; background: #fafafa; }
+.dashboard-list .box:hover .title { color: #212121; }
+.dashboard-list .box { text-align: left; margin: 4px; }
+.dashboard-list .box img { border-radius: 50%; float: left; margin: 10px 0 10px 10px; }
+.dashboard-list .box .title { font-weight: 500!important; padding: 0 0 10px 0!important; color: #757575; margin: 0 -10px 0 0; }
+.dashboard-list .box .preview { float: left; margin: 10px 20px 0 20px; }
+.dashboard-list .box .preview p { padding: 0; }
+.dashboard-list .box .btn { float: right; margin: 15px 5px 10px 5px; }
+.dashboard-list .box .btn:focus,
+.dashboard-list .box .btn:hover { color: #fff!important; }
+
+
+
+/* ==================================================== */
+/* ==================== STATISTICS ==================== */
+/* ==================================================== */
+
+.statistics .box .ltr,
+.statistics .box svg,
+.statistics .box svg rect { width: 100%!important; height: auto!important; }
+
+
+
+
+
+
+/* ============================================================ */
+/* ==================== IN CONSTRUCTION ======================= */
+/* ============================================================ */
+
 /* =============================================== */
-/* ==================== BOXES ==================== */
+/* ==================== WELLS ==================== */
 /* =============================================== */
-
-.box { background: #fff; padding: 10px; margin: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02); }
-.box-row { margin: 0 -5px; }
-.box-error { text-align: center; }
-
-.box-header { padding: 10px; margin: 10px 0 0 0; font-size: 16px; font-weight: 400; }
-.box p { padding: 10px; margin: 0; }
-.box p span { opacity: 0.6; }
-
-.box i { vertical-align: middle; margin-right: 5px; font-size: 20px; color: #757575; }
-.box i.rounded { padding: 10px; color: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
-.box-header i { vertical-align: middle; margin-right: 10px; font-size: 20px; }
-
-.box .status-icon { position: absolute; top: 32%; right: 4% }
-.box .status-icon i { font-size: 28px; }
 
 .panel,
 .well { box-shadow: none!important; }
@@ -464,49 +503,6 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .well .btn.btn-danger { color: #fc575e!important; }
 .well .btn.btn-danger:hover { color: #fafafa!important; background: #fc575e!important; text-decoration: none; }
 
-
-
-/* ==================================================== */
-/* ==================== STATISTICS ==================== */
-/* ==================================================== */
-
-.statistics .box .ltr,
-.statistics .box svg,
-.statistics .box svg rect { width: 100%!important; height: auto!important; }
-
-
-
-/* ========================================================== */
-/* ==================== DASHBOARD (LIST) ==================== */
-/* ========================================================== */
-
-.dashboard-list .page-header { margin: -40px -100px 40px -100px; padding: 40px; border: 0; }
-.dashboard-list .page-header .title { margin-top: 20px; color: #fff; }
-.dashboard-list .page-header img { max-width: 300px; }
-
-@media (max-width: 768px) {
-  .dashboard-list .page-header .title { text-align: center; }
-}
-
-.dashboard-list .btn-raised { background: #fff; }
-.dashboard-list .btn-raised:focus,
-.dashboard-list .btn-raised:hover { background: #f0f0f0!important; }
-
-.dashboard-list h1 img { margin-right: 20px; width: 60px; height: auto; }
-.dashboard-list { margin: 10px 10px 30px 10px; }
-
-.dashboard-list .box:hover { box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); cursor: pointer; }
-.dashboard-list .box { text-align: left; }
-.dashboard-list .box img { border-radius: 50%; float: left; margin: 10px 0 10px 10px; }
-.dashboard-list .box .title { font-weight: 500!important; padding: 0 0 10px 0!important; color: #757575; margin: 0 -10px 0 0; }
-.dashboard-list .box .preview { float: left; margin: 10px 20px 0 20px; }
-.dashboard-list .box .preview p { padding: 0; }
-.dashboard-list .box .btn { float: right; margin: 15px 5px 10px 5px; }
-.dashboard-list .box .btn:focus,
-.dashboard-list .box .btn:hover { color: #fff!important; }
-
-
-
 /* ========================================================== */
 /* ==================== SECTION: PROJECT ==================== */
 /* ========================================================== */
@@ -515,8 +511,6 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 #project-edition table th { font-weight: 500; }
 #project-edition table th, #project-edition table td { text-align: center; vertical-align: middle; }
 #project-edition h4 { font-weight: 400; margin: 30px 0 15px 0; }
-
-
 
 /* ============================================================= */
 /* ==================== SECTION: BUGTRACKER ==================== */
@@ -538,8 +532,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
 
 #bugtracker-comment .comment-avatar { border-radius: 50%; width: 42px; height: 42px; overflow: hidden; float: left; }
 #bugtracker-comment .comment-username { height: 42px; float: left; padding-left: 10px; }
-
-
 
 /* =========================================================== */
 /* ==================== SECTION: TIMELINE ==================== */
@@ -581,8 +573,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
   .each-message > .dot { left: -18px; }
 }
 
-
-
 /* ============================================================= */
 /* ==================== SECTION: WHITEBOARD ==================== */
 /* ============================================================= */
@@ -614,8 +604,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
 #whiteboard-content .data-actions:checked + span { color: #212121; }
 #whiteboard-content .data-actions:checked + span { background: #e0e0e0; }
 
-
-
 /* ======================================================== */
 /* ==================== SECTION: TASKS ==================== */
 /* ======================================================== */
@@ -635,8 +623,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
   border-radius: 100%;
   background: rgba(0, 0, 0, .25);
 }
-
-
 
 /* =========================================================== */
 /* ==================== SECTION: CALENDAR ==================== */
@@ -675,15 +661,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
   #calendar .action ul li { display: inline; }
 }
 
-
-
-
-
-
-/* ============================================================ */
-/* ==================== IN CONSTRUCTION ======================= */
-/* ============================================================ */
-
 /* ======================================================== */
 /* ==================== SECTION: CLOUD ==================== */
 /* ======================================================== */
@@ -716,7 +693,6 @@ tags-input .tags .tag-item { border: 1px solid #bdbdbd; border-radius: 0; backgr
 #cloud-content .each-object-data .object-name { overflow: hidden!important; text-overflow: ellipsis; }
 #cloud-content .each-object-data .object-type { margin: 0 -10px 0 10px; }
 
-
 /* =========================================================== */
 /* ============== GENERAL FOR ALL TAGS-INPUT ================= */
 /* =========================================================== */
@@ -744,7 +720,6 @@ tags-input .tags .focused { border: 0;
     border-radius: 0;
   }
 
-
 /* =========================================================== */
 /* ====================== SECTION: TASK ====================== */
 /* =========================================================== */
@@ -754,7 +729,6 @@ tags-input .tags .focused { border: 0;
 #task-visual .task-section { margin-top: 15px; margin-bottom: 15px; }
 
 .btn.btn-fab.btn-fab-discreet { background-color: inherit; webkit-box-shadow: none; box-shadow: none; }
-
 
 /* =========================================================== */
 /* ====================== GENERAL CHIPS ====================== */
@@ -772,7 +746,6 @@ tags-input .tags .focused { border: 0;
 .md-chip-img img { -webkit-transform: translate(-50%); margin-left: 21px; height: 42px; }
 .md-chip-text { display: inline-block; font-weight: 400; font-size: 16px; height: 42px; float: left; padding: 12px 18px 12px 10px; color: rgba(255, 255, 255, .87); }
 
-
 /* =========================================================== */
 /* =================== GENERAL TAGS/LABELS =================== */
 /* =========================================================== */
@@ -780,7 +753,6 @@ tags-input .tags .focused { border: 0;
 /*---- tag visual ----*/
 .label.tag { display: inline-block; font-size: 16px; height: 42px; margin: 5px 5px 5px 5px; padding: 12px 10px 12px 10px; border-radius: 5px; box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12); }
 .label.tag:hover { box-shadow: 0 5px 11px 0 rgba(0, 0, 0, 0.18), 0 4px 15px 0 rgba(0, 0, 0, 0.15); }
-
 
 /* =========================================================== */
 /* ===================== SECTION: GANTT ====================== */

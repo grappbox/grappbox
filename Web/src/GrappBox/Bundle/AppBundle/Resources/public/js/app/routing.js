@@ -17,7 +17,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "DashboardListController",
 		templateUrl : "../resources/partials/dashboard-list.html",
 		caseInsensitiveMatch : true,
-    homepage: true,
 		resolve: { projectSelection: ["accessFactory", function(accessFactory) { return accessFactory.projectSelected(); }]}
 	})
 	// Project dashboard
@@ -26,14 +25,12 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "DashboardController",
 		templateUrl : "../resources/partials/dashboard.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
 	// Login
   .when("/login", {
     title: "Loading...",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { redirection: ["accessFactory", function(accessFactory) { return accessFactory.login(); }]}
 	})
 	// Logout
@@ -49,7 +46,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "BugtrackerListController",
 		templateUrl : "../resources/partials/bugtracker-list.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
   .when("/bugtracker/:project_id/:id", {
@@ -77,7 +73,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "CloudController",
     templateUrl : "../resources/partials/cloud.html",
     caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Gantt pages
@@ -86,7 +81,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "GanttController",
 		templateUrl : "../resources/partials/gantt.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
   // Notifications pages
@@ -109,7 +103,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "ProjectSettingsController",
     templateUrl : "../resources/partials/project-settings.html",
     caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectSettingsAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectSettingsAvailable(); }]}
   })
   // Project statistics
@@ -118,7 +111,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "StatisticsController",
     templateUrl : "../resources/partials/statistics.html",
     caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Task pages	
@@ -127,7 +119,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "TaskListController",
 		templateUrl : "../resources/partials/task-list.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
   .when("/tasks/:project_id/:id", {
@@ -147,7 +138,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "TimelineController",
 		templateUrl : "../resources/partials/timeline.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
 	// Whiteboard pages
@@ -156,7 +146,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "WhiteboardListController",
 		templateUrl : "../resources/partials/whiteboard-list.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
   .when("/whiteboard/:project_id/:id", {
@@ -164,7 +153,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "WhiteboardController",
 		templateUrl : "../resources/partials/whiteboard.html",
 		caseInsensitiveMatch : true,
-    homepage: false,
     resolve: { whiteboardAvailability: ["accessFactory", function(accessFactory) { return accessFactory.whiteboardAvailable(); }]}
 	})
 	// Error page (default behavior)

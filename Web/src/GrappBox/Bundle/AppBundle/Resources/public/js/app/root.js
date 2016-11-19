@@ -17,7 +17,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
   // ROOTSCOPE variables
   $rootScope.api = { version: "", url: "" };
   $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
-  $rootScope.page = { load: false, title: "", homepage: true };
+  $rootScope.page = { load: false, title: "" };
   $rootScope.project = { set: false, id: "", name: "", logout: "" };
   $rootScope.sidebar = { open: true, toggle: "" };
 
