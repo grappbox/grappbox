@@ -72,7 +72,8 @@ public class GrappboxContract {
 
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_TYPE = "type";
-        public static final String COLUMN_LOCAL_TASK = "task_id";
+        public static final String COLUMN_LOCAL_TASK_TO = "task_id_to";
+        public static final String COLUMN_LOCAL_TASK_FROM = "task_id_from";
 
         public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_DEPENDENCIES).build();
     }
@@ -94,6 +95,7 @@ public class GrappboxContract {
     public static final class TaskTagEntry implements BaseColumns {
         public static final String TABLE_NAME = "task_tags";
 
+        public static final String COLUMN_PROJECT_ID = "project_id";
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_NAME = "name";
         public static final String COLUMN_COLOR = "color";

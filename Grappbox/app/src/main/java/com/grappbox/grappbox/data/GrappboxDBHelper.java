@@ -234,8 +234,10 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TaskDependenciesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TaskDependenciesEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 TaskDependenciesEntry.COLUMN_TYPE + " TEXT NOT NULL, " +
-                TaskDependenciesEntry.COLUMN_LOCAL_TASK + " INTEGER NOT NULL, " +
-                "FOREIGN KEY (" + TaskDependenciesEntry.COLUMN_LOCAL_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "), " +
+                TaskDependenciesEntry.COLUMN_LOCAL_TASK_TO + " INTEGER NOT NULL, " +
+                TaskDependenciesEntry.COLUMN_LOCAL_TASK_FROM + " INTEGER NOT NULL, " +
+                "FOREIGN KEY (" + TaskDependenciesEntry.COLUMN_LOCAL_TASK_TO + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "), " +
+                "FOREIGN KEY (" + TaskDependenciesEntry.COLUMN_LOCAL_TASK_FROM + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "), " +
                 "UNIQUE (" + TaskDependenciesEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_TASK_ASSIGNATION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskAssignationEntry.TABLE_NAME + " (" +
@@ -249,8 +251,10 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_TASK_TAG_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskTagEntry.TABLE_NAME + " (" +
                 TaskTagEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TaskTagEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TaskTagEntry.COLUMN_PROJECT_ID + " INTEGER NOT NULL, " +
                 TaskTagEntry.COLUMN_NAME + " TEXT NOT NULL, " +
                 TaskTagEntry.COLUMN_COLOR + " TEXT NOT NULL, " +
+                "FOREIGN KEY (" + TaskTagEntry.COLUMN_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
                 "UNIQUE (" + TaskTagEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_TASK_TAG_ASSIGNATION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskTagAssignationEntry.TABLE_NAME + " ( " +
