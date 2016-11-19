@@ -11,9 +11,14 @@ import QtQuick.Controls.Styles 1.3 as Styles
 Item {
     property var mouseCursor
 
-    property var purcentWidth: [0.33, 0.25, 0.25, 0.17]
 
     function finishedLoad() {
+        ganttModel.loadTaskTag()
+        ganttModel.loadTasks()
+    }
+
+    GanttModel {
+        id: ganttModel
 
     }
 
@@ -53,10 +58,15 @@ Item {
             TasksView {
                 id: tabColumn
                 visible: mainView.state == "TasksView"
-                //bugModel: bugModel
+                ganttModel: ganttModel
 
                 onCreate: {
-                    mainView.state = "CommentView"
+                    mainView.state = "AddView"
+                }
+
+                onView: {
+                    taskColumn.loadTask(task)
+                    mainView.state = "TaskView"
                 }
             }
 
@@ -76,11 +86,15 @@ Item {
 
                 TaskInfoView {
                     id: taskColumn
-                    visible: mainView.state == "CommentView"
-                    //bugModel: bugModel
+                    visible: mainView.state == "TaskView"
+                    ganttModel: ganttModel
 
                     onBack: {
-                        mainView.state = "BugView"
+                        mainView.state = "TasksView"
+                    }
+
+                    onEdit: {
+                        console.log("EDIT !");
                     }
                 }
             }

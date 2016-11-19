@@ -96,7 +96,6 @@ int GanttModel::idByTaskNameArray(int index) const
 
 void GanttModel::addTag(QString name)
 {
-    qDebug() << "Add tag " << name;
     BEGIN_REQUEST;
     {
         EPURE_WARNING_INDEX
@@ -140,30 +139,19 @@ void GanttModel::OnLoadTaskDone(int id, QByteArray data)
     for (QJsonValueRef ref : obj["array"].toArray())
     {
         QJsonObject task = ref.toObject();
-        TaskData *data = new TaskData();
-        data->setId(task["id"].toInt());
-        data->setTitle(task["title"].toString());
-        data->setDescription(task["description"].toString());
-        data->setColor(task["color"].toString());
-        data->setIsMilestone(task["is_milestone"].toBool());
-        data->setDueDate(JSON_TO_DATETIME(task["due_date"].toObject()["date"].toString()));
-        data->setStartDate(JSON_TO_DATETIME(task["started_date"].toObject()["date"].toString()));
-        data->setFinishDate(JSON_TO_DATETIME(task["created_date"].toObject()["date"].toString()));
-        data->setCreateDate(JSON_TO_DATETIME(task["finished_date"].toObject()["date"].toString()));
-        QList<UserData*> userData;
-        QList<int> ressourceData;
-        for (QJsonValueRef refUser : task["users_assigned"].toArray())
+        TaskData *currentTask = nullptr;
+        for (TaskData *var : _Tasks)
         {
-            QJsonObject user = refUser.toObject();
-            UserData *dataUser = new UserData();
-            dataUser->setFirstName(user["firstname"].toString());
-            dataUser->setLastName(user["lastname"].toString());
-            dataUser->setId(user["id"].toInt());
-            userData.push_back(dataUser);
-            ressourceData.push_back(user["percent"].toInt());
+            if (var && var->id() == task["id"].toInt())
+            {
+                currentTask = var;
+                break;
+            }
         }
-// TO FINISH !
-        _Tasks.push_back(data);
+        if (currentTask)
+            currentTask->modifyDataByJson(task);
+        else
+            _Tasks.push_back(new TaskData(task));
     }
     emit taskNameChanged();
     emit tasksChanged();
@@ -199,6 +187,7 @@ void GanttModel::OnLoadTaskTagDone(int id, QByteArray data)
             if (tmpTag->id() == taskData["id"].toInt())
             {
                 tmpTag->setName(taskData["name"].toString());
+                tmpTag->setColor(taskData["color"].toString());
                 data = tmpTag;
                 break;
             }
@@ -206,6 +195,7 @@ void GanttModel::OnLoadTaskTagDone(int id, QByteArray data)
         if (data == nullptr)
         {
             data = new TaskTagData(taskData["id"].toInt(), taskData["name"].toString());
+            data->setColor(taskData["color"].toString());
             _TaskTags.push_back(data);
         }
     }

@@ -43,10 +43,11 @@ DependenciesData::DependenciesData()
     _IdTask = -1;
 }
 
-DependenciesData::DependenciesData(DependenciesType type, int id) : QObject(nullptr)
+DependenciesData::DependenciesData(DependenciesType type, int idTask, int idDep) : QObject(nullptr)
 {
     _Type = type;
-    _IdTask = id;
+    _IdTask = idTask;
+    m_id = idDep;
 }
 
 DependenciesData::DependenciesType DependenciesData::type() const
@@ -63,5 +64,5 @@ TaskData::TaskData()
 {
     m_startDate = QDateTime::currentDateTime();
     m_dueDate = QDateTime::currentDateTime().addDays(1);
-    m_color = "#c0392b";
+    m_creator = nullptr;
 }

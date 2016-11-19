@@ -15,6 +15,10 @@ Column {
     anchors.fill: parent
     anchors.margins: Units. dp(16)
 
+    property GanttModel ganttModel
+    property var purcentWidth: [0.10, 0.25, 0.20, 0.20, 0.25]
+
+    signal view(var task)
     signal create()
 
     Item {
@@ -74,6 +78,7 @@ Column {
 
         Repeater {
             model: [
+                ["content/flag", "Type"],
                 ["action/label_outline", "Title"],
                 ["action/loyalty", "Tags"],
                 ["social/person", "Assigned users"],
@@ -112,8 +117,8 @@ Column {
         anchors.right: parent.right
     }
 
-/*    Repeater {
-        model: openTicketRadio.checked ? bugModel.openTickets : closedTicketRadio.checked ? bugModel.closedTickets : bugModel.yoursTickets
+    Repeater {
+        model: ganttModel.tasks
         delegate: ListItem.BaseListItem {
             height: Math.max(Units. dp(24), rowItem.implicitHeight + Units. dp(16))
 
@@ -132,7 +137,7 @@ Column {
                     anchors.margins: Units. dp(8)
                     width: parent.width * purcentWidth[0]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.title
+                    text: modelData.isMilestone ? "Milestone" : modelData.taskChild.Length > 0 ? "Container" : "Task"
                     style: "body1"
                     wrapMode: Text.Wrap
                 }
@@ -141,7 +146,16 @@ Column {
                     anchors.margins: Units. dp(8)
                     width: parent.width * purcentWidth[1]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: ""
+                    text: modelData.title
+                    style: "body1"
+                    wrapMode: Text.Wrap
+                }
+
+                Label {
+                    anchors.margins: Units. dp(8)
+                    width: parent.width * purcentWidth[2]
+                    anchors.verticalCenter: parent.verticalCenter
+                    text: modelData.tag
                     style: "body1"
                     wrapMode: Text.Wrap
 
@@ -153,7 +167,7 @@ Column {
                                 var realname = ""
                                 for (var itemName in bugModel.tags)
                                 {
-                                    if (modelData.tags[item] === bugModel.tags[itemName].id)
+                                    if (modelData.tagAssigned[item] === ganttModel.tags[itemName].id)
                                     {
                                         realname = bugModel.tags[itemName].name
                                         break
@@ -176,9 +190,9 @@ Column {
 
                 Label {
                     anchors.margins: Units. dp(8)
-                    width: parent.width * purcentWidth[2]
+                    width: parent.width * purcentWidth[3]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: ""
+                    text: modelData.user
                     style: "body1"
                     wrapMode: Text.Wrap
                     Component.onCompleted: {
@@ -189,7 +203,7 @@ Column {
                                 var realname = ""
                                 for (var itemName in SDataManager.project.users)
                                 {
-                                    if (modelData.users[item] === SDataManager.project.users[itemName].id)
+                                    if (modelData.usersRessources[item] === SDataManager.project.users[itemName].id)
                                     {
                                         realname = SDataManager.project.users[itemName].firstName + " " + SDataManager.project.users[itemName].lastName
                                         break
@@ -212,14 +226,14 @@ Column {
 
                 Label {
                     anchors.margins: Units. dp(8)
-                    width: parent.width * purcentWidth[3]
+                    width: parent.width * purcentWidth[4]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: Qt.formatDateTime(modelData.createDate, "yyyy-MM-dd hh:mm");
+                    text: Qt.formatDate(modelData.dueDate, "yyyy-MM-dd hh:mm:ss")
                     style: "body1"
                     wrapMode: Text.Wrap
 
                     Component.onCompleted: {
-                        console.log(modelData.createDate)
+                        console.log(modelData.dueDate)
                     }
                 }
             }
@@ -233,11 +247,9 @@ Column {
             }
 
             onClicked: {
-                ticketColumn.ticket = modelData
-                bugModel.loadCommentTicket(modelData.id)
-                mainView.state = "CommentView"
+                view(modelData)
             }
         }
-    }*/
+    }
 }
 

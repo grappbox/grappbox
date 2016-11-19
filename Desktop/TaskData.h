@@ -6,6 +6,9 @@
 #include <QQmlListProperty>
 #include <QList>
 #include <QDebug>
+#include <QJsonObject>
+#include <QJsonArray>
+#include "API/SDataManager.h"
 #include "UserData.h"
 
 // Class that define a tag for a task
@@ -15,6 +18,7 @@ class TaskTagData : public QObject
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(QString name READ name WRITE setName NOTIFY nameChanged)
+    Q_PROPERTY(QString color READ color WRITE setColor NOTIFY colorChanged)
 
 public:
     TaskTagData();
@@ -28,15 +32,32 @@ public:
     void setId(int id);
     void setName(QString name);
 
+    QString color() const
+    {
+        return m_color;
+    }
+
 signals:
     void idChanged();
     void nameChanged();
 
+    void colorChanged(QString color);
+
 public slots:
+
+void setColor(QString color)
+{
+    if (m_color == color)
+        return;
+
+    m_color = color;
+    emit colorChanged(color);
+}
 
 private:
     int _Id;
     QString _Name;
+    QString m_color;
 };
 
 // Class that define a dependencies for a task
@@ -44,6 +65,7 @@ class DependenciesData : public QObject
 {
     Q_OBJECT
 
+    Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(DependenciesType type READ type WRITE setType NOTIFY typeChanged)
     Q_PROPERTY(int linkedTask READ linkedTask WRITE setLinkedTask NOTIFY linkedTaskChanged)
     Q_ENUMS(DependenciesType)
@@ -60,15 +82,22 @@ public:
 
 public:
     DependenciesData();
-    DependenciesData(DependenciesType type, int id);
+    DependenciesData(DependenciesType type, int idTask, int idDep);
 
     // Getter
     DependenciesType type() const;
     int linkedTask() const;
 
+    int id() const
+    {
+        return m_id;
+    }
+
 signals:
     void typeChanged();
     void linkedTaskChanged();
+
+    void idChanged(int id);
 
 public slots:
 
@@ -90,9 +119,19 @@ public slots:
         emit linkedTaskChanged();
     }
 
+    void setId(int id)
+    {
+        if (m_id == id)
+            return;
+
+        m_id = id;
+        emit idChanged(id);
+    }
+
 private:
     DependenciesType _Type;
     int _IdTask;
+    int m_id;
 };
 
 class TaskRessources : public QObject
@@ -158,6 +197,7 @@ class TaskData : public QObject
 
     Q_PROPERTY(int id READ id WRITE setId NOTIFY idChanged)
     Q_PROPERTY(bool isMilestone READ isMilestone WRITE setIsMilestone NOTIFY isMilestoneChanged)
+    Q_PROPERTY(QVariantList taskChild READ taskChild WRITE setTaskChild NOTIFY taskChildChanged)
     Q_PROPERTY(QDateTime dueDate READ dueDate WRITE setDueDate NOTIFY dueDateChanged)
     Q_PROPERTY(QDateTime startDate READ startDate WRITE setStartDate NOTIFY startDateChanged)
     Q_PROPERTY(QDateTime finishDate READ finishDate WRITE setFinishDate NOTIFY finishDateChanged)
@@ -168,10 +208,74 @@ class TaskData : public QObject
     Q_PROPERTY(QVariantList dependenciesAssigned WRITE setDependenceiesAssigned READ dependenciesAssigned NOTIFY dependenciesAssignedChanged)
     Q_PROPERTY(QVariantList usersRessources READ usersRessources WRITE setUserRessources NOTIFY userRessourcesChanged)
     Q_PROPERTY(float progression READ progression WRITE setProgression WRITE setProgression NOTIFY progressionChanged)
-    Q_PROPERTY(QString color READ color WRITE setColor NOTIFY colorChanged)
+    Q_PROPERTY(UserData *creator READ creator WRITE setCreator NOTIFY creatorChanged)
 
 public:
     TaskData();
+    TaskData(QJsonObject obj)
+    {
+        m_creator = nullptr;
+        modifyDataByJson(obj);
+    }
+
+    void modifyDataByJson(QJsonObject task)
+    {
+        setId(task["id"].toInt());
+        setTitle(task["title"].toString());
+        setDescription(task["description"].toString());
+        setIsMilestone(task["is_milestone"].toBool());
+        setDueDate(JSON_TO_DATETIME(task["due_date"].toString()));
+        setStartDate(JSON_TO_DATETIME(task["started_at"].toString()));
+        setFinishDate(JSON_TO_DATETIME(task["created_at"].toString()));
+        setCreateDate(JSON_TO_DATETIME(task["finished_at"].toString()));
+        setProgression(task["advance"].toInt());
+        if (!m_creator)
+            m_creator = new UserData();
+        m_creator->setId(task["creator"].toObject()["id"].toInt());
+        m_creator->setFirstName(task["creator"].toObject()["firstname"].toString());
+        m_creator->setLastName(task["creator"].toObject()["lastname"].toString());
+        QVariantList user;
+        QVariantList dependencies;
+        QVariantList tags;
+        QVariantList tasks;
+        for (QJsonValueRef ref : task["users"].toArray())
+        {
+            QJsonObject obj = ref.toObject();
+            UserData *newUser = new UserData();
+            newUser->setId(obj["id"].toInt());
+            newUser->setFirstName(obj["firstname"].toString());
+            newUser->setLastName(obj["lastname"].toString());
+            newUser->setOccupation(obj["percent"].toInt());
+            user.push_back(qVariantFromValue(user));
+        }
+        for (QJsonValueRef ref : task["tags"].toArray())
+        {
+            tags.push_back(ref.toObject()["id"].toInt());
+        }
+        for (QJsonValueRef ref : task["dependencies"].toArray())
+        {
+            QJsonObject obj = ref.toObject();
+            DependenciesData::DependenciesType type;
+            QString name = obj["name"].toString();
+            if (name == "fs")
+                type = DependenciesData::FINISH_TO_START;
+            if (name == "sf")
+                type = DependenciesData::START_TO_FINISH;
+            if (name == "ff")
+                type = DependenciesData::FINISH_TO_FINISH;
+            if (name == "ss")
+                type = DependenciesData::START_TO_START;
+            dependencies.push_back(qVariantFromValue(new DependenciesData(type, obj["task"].toObject()["id"].toInt(), obj["id"].toInt())));
+        }
+        for (QJsonValueRef ref : task["tasks"].toArray())
+        {
+            tasks.push_back(ref.toObject()["id"].toInt());
+        }
+        setUserAssigned(user);
+        setDependenceiesAssigned(dependencies);
+        setTagAssigned(tags);
+        setTaskChild(tasks);
+    }
 
     Q_INVOKABLE void replaceUser(UserData *user, UserData *newUser)
     {
@@ -325,11 +429,6 @@ public:
         return m_progression;
     }
 
-    QString color() const
-    {
-        return m_color;
-    }
-
     QVariantList usersRessources() const
     {
         QVariantList list;
@@ -457,15 +556,6 @@ public:
         emit progressionChanged(progression);
     }
 
-    void setColor(QString color)
-    {
-        if (m_color == color)
-            return;
-
-        m_color = color;
-        emit colorChanged(color);
-    }
-
     void setUserRessources(QVariantList usersRessources)
     {
         m_usersRessources.clear();
@@ -476,6 +566,16 @@ public:
                 m_usersRessources.push_back(obj);
         }
         //emit userRessourcesChanged(usersRessources());
+    }
+
+    QVariantList taskChild() const
+    {
+        return m_taskChild;
+    }
+
+    UserData * creator() const
+    {
+        return m_creator;
     }
 
 signals:
@@ -505,12 +605,32 @@ signals:
 
     void progressionChanged(float progression);
 
-    void colorChanged(QString color);
-
     void userRessourcesChanged(QVariantList usersRessources);
+
+    void taskChildChanged(QVariantList taskChild);
+
+    void creatorChanged(UserData * creator);
 
 public slots:
 
+
+void setTaskChild(QVariantList taskChild)
+{
+    if (m_taskChild == taskChild)
+        return;
+
+    m_taskChild = taskChild;
+    emit taskChildChanged(taskChild);
+}
+
+void setCreator(UserData * creator)
+{
+    if (m_creator == creator)
+        return;
+
+    m_creator = creator;
+    emit creatorChanged(creator);
+}
 
 private:
 
@@ -526,9 +646,9 @@ private:
     QList<TaskTagData*> m_tagAssigned;
     QList<DependenciesData*> m_dependenciesAssigned;
     float m_progression;
-
-    QString m_color;
     QList<TaskRessources*> m_usersRessources;
+    QVariantList m_taskChild;
+    UserData * m_creator;
 };
 
 #endif // TASKDATA_H

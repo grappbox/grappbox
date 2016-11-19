@@ -32,9 +32,9 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_CREATOR_PROJECT] = "";
 	_GetMap[GR_LIST_MEMBER_PROJECT] = "dashboard/getteamoccupation";
 	_GetMap[GR_LIST_MEETING] = "dashboard/getnextmeetings";
-    _GetMap[GR_LIST_TASK] = "tasks/getprojecttasks";
+    _GetMap[GR_LIST_TASK] = "tasks/project";
     _GetMap[GR_LIST_TIMELINE] = "timelines";
-    _GetMap[GR_LIST_TASK_TAG] = "tasks/getprojecttags";
+    _GetMap[GR_LIST_TASK_TAG] = "tasks/tags/project";
 	_GetMap[GR_TASK] = "";
     _GetMap[GR_TIMELINE] = "timeline/messages";
     _GetMap[GR_COMMENT_TIMELINE] = "timeline/message/comments";

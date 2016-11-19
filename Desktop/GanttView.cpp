@@ -346,7 +346,7 @@ void GanttView::SetDependance(QPointF mousePos)
     if (associatedData != nullptr && associatedData != _SelectedTaskData)
     {
         QVariantList dd = _SelectedTaskData->dependenciesAssigned();
-        dd.push_back(qVariantFromValue(new DependenciesData(DependenciesData::FINISH_TO_START, associatedData->id())));
+       // dd.push_back(qVariantFromValue(new DependenciesData(DependenciesData::FINISH_TO_START, associatedData->id())));
         _SelectedTaskData->setDependenceiesAssigned(dd);
     }
 }

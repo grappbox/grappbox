@@ -11,11 +11,30 @@ import QtQuick.Controls.Styles 1.3 as Styles
 Column {
     id: infoView
 
-    property bool onEdit: false
-
+    property GanttModel ganttModel
     anchors.fill: parent
     anchors.margins: Units.dp(16)
+    property TaskData currentTask
 
+    function loadTask(task)
+    {
+        currentTask = task;
+        titleTicket.text = (currentTask.isMilestone ? "(Milestone) " : "") + currentTask.title;
+        messageTicket.text = currentTask.description;
+        if (!currentTask.isMilestone)
+            dates.text = "From " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm") + " to " + Qt.formatDateTime(currentTask.dueDate, "yyyy-MM-dd hh:mm");
+        else
+            dates.text = "The " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm");
+        taskProgression.value = currentTask.progression;
+        repeaterTag.model = currentTask.tagAssigned;
+        repeaterUserAssigned.model = currentTask.usersRessources;
+        repeaterDependencies.model = currentTask.dependenciesAssigned;
+        repeaterTasks.model = currentTask.taskChild;
+        createdBy.text = "Created by " + currentTask.creator.firstName + " " + currentTask.creator.lastName + " the " + Qt.formatDateTime(currentTask.createDate, "yyyy-MM-dd hh:mm:ss");
+        console.log(repeaterTasks.model)
+    }
+
+    signal edit(var task)
     signal back()
 
     IconTextButton {
@@ -47,18 +66,6 @@ Column {
 
             text: "Title"
             style: "title"
-            visible: !infoView.onEdit
-        }
-
-        TextField {
-            id: editTitleTicket
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: Units.dp(16)
-
-            text: titleTicket.text
-            visible: infoView.onEdit
-            placeholderText: "Title"
         }
 
         Item {
@@ -74,22 +81,23 @@ Column {
 
             text: "Description"
             style: "body2"
-            visible: !infoView.onEdit
             wrapMode: Text.Wrap
         }
 
-        TextArea {
-            id: editMessageTicket
-            text: messageTicket.text
+        Item {
+            height: Units.dp(16)
+            width: parent.width
+        }
 
+        Label {
+            id: dates
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.leftMargin: Units.dp(16)
 
-            height: Units.dp(64)
-
-            visible: infoView.onEdit
-            placeHolderText: "Message"
+            text: "From XXXX to XXXX"
+            style: "body2"
+            wrapMode: Text.Wrap
         }
 
         Item {
@@ -152,7 +160,7 @@ Column {
             anchors.right: parent.right
             height: sectionHeaderTag.expanded ? Units.dp(48) : 0
 
-            visible: repeaterTag.model.length === 0
+            visible: repeaterTag.model.Length === 0
 
             Behavior on height {
                 NumberAnimation {
@@ -181,7 +189,7 @@ Column {
             anchors.leftMargin: Units.dp(16)
             height: sectionHeaderTag.expanded ? flowTag.implicitHeight + Units.dp(16) : 0
 
-            visible: repeaterTag.model.length > 0
+            visible: repeaterTag.model.Length > 0
 
             Behavior on height {
                 NumberAnimation {
@@ -199,12 +207,15 @@ Column {
 
                 Repeater {
                     id: repeaterTag
-                    model: ["Tag #1", "Tag #2", "Tag #3", "Tag #4"]
+                    model: []
                     delegate: Button {
                         text: modelData
                         visible: text !== ""
                         elevation: 1
                         textColor: "#FFF"
+                        backgroundColor: "#44BBFF"
+
+                        enabled: false
 
                         onClicked: {
                             /*for (var item in bugModel.tags)
@@ -220,37 +231,37 @@ Column {
                         }
 
                         Component.onCompleted: {
-                            /*text = Qt.binding(function() {
-                                for (var item in bugModel.tags)
+                            text = Qt.binding(function() {
+                                for (var item in ganttModel.taskTags)
                                 {
-                                    if (bugModel.tags[item].id === modelData)
+                                    if (ganttModel.taskTags[item].id === modelData)
                                     {
-                                        return bugModel.tags[item].name
+                                        return ganttModel.taskTags[item].name
                                     }
                                 }
                                 return ""
                             })
                             backgroundColor = Qt.binding(function() {
-                                for (var item in bugModel.tags)
+                                for (var item in ganttModel.taskTags)
                                 {
-                                    if (bugModel.tags[item].id === modelData)
+                                    if (ganttModel.taskTags[item].id === modelData)
                                     {
-                                        return bugModel.tags[item].color
+                                        return "#" + ganttModel.taskTags[item].color
                                     }
                                 }
-                                return ""
-                            })*/
+                                return "#44BBFF"
+                            })
                         }
                     }
                 }
 
-                IconButton {
+                /*IconButton {
                     Layout.alignment: Qt.AlignVCenter
                     iconName: "content/add_circle_outline"
                     onClicked: {
                         addTagDialog.show()
                     }
-                }
+                }*/
             }
         }
 
@@ -291,7 +302,8 @@ Column {
                 spacing: Units.dp(8)
 
                     Repeater {
-                        model: [{name: "Marc Wieser", percent: 30}, {name: "Leo Nadeau", percent: 120}, {name: "Frederic Tan", percent: 20}]
+                        id: repeaterUserAssigned
+                        model: []
                         delegate: ListItem.Subtitled {
 
                             action: CircleImageAsync {
@@ -327,11 +339,11 @@ Column {
                                 }
                             }
 
-                            text: modelData.name
+                            text: modelData.firstName + " " + modelData.lastName
                         }
                     }
 
-                    ListItem.Standard {
+                    /*ListItem.Standard {
                         action: Icon {
                             anchors.centerIn: parent
                             name: "content/add_circle_outline"
@@ -339,7 +351,7 @@ Column {
                         }
 
                         text: "Add a new user to the task"
-                    }
+                    }*/
             }
         }
 
@@ -376,23 +388,37 @@ Column {
                 id: columnDependencies
                 anchors.fill: parent
 
+                property var enumToTextType: ["Finish to start", " Start to start", "Finish to finish", "Start to finish"]
+
                 spacing: Units.dp(8)
 
                     Repeater {
-                        model: [{name: "Task #1", type: "Finish to start"}, {name: "Task #2", type: "Start to Finish"}]
+                        id: repeaterDependencies
+                        model: []
                         delegate: ListItem.Standard {
                             secondaryItem: Label {
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
 
-                                text: modelData.type
+                                text: enumToTextType[modelData.type]
                             }
 
-                            text: modelData.name
+                            Component.onCompleted: {
+                                text = Qt.binding(function () {
+                                    for (var i = 0; i < ganttModel.tasks; ++i)
+                                    {
+                                        if (ganttModel.tasks[i].id === modelData.linkedTask)
+                                        {
+                                            return ganttModel.tasks[i].name;
+                                        }
+                                    }
+                                    return "";
+                                })
+                            }
                         }
                     }
 
-                    ListItem.Standard {
+                    /*ListItem.Standard {
                         action: Icon {
                             anchors.centerIn: parent
                             name: "content/add_circle_outline"
@@ -400,7 +426,7 @@ Column {
                         }
 
                         text: "Add a new dependency to the task"
-                    }
+                    }*/
             }
         }
 
@@ -411,6 +437,7 @@ Column {
 
         CustomListStandart {
             id: headerTaskContain
+            visible: repeaterTasks.model.Length > 0
 
             expandedColor: "#44BBFF"
 
@@ -418,12 +445,13 @@ Column {
         }
 
         Item {
+            visible: repeaterTasks.model.Length > 0
             height: Units.dp(8)
             width: parent.width
         }
 
         View {
-
+            visible: repeaterTasks.model.Length > 0
             id: viewContain
             anchors.left: parent.left
             anchors.right: parent.right
@@ -442,20 +470,44 @@ Column {
                 spacing: Units.dp(8)
 
                     Repeater {
-                        model: [{name: "Task #3", type: "YYYY-MM-DD hh:mm:ss"}, {name: "Task #4", type: "YYYY-MM-DD hh:mm:ss"}]
+                        id: repeaterTasks
+                        model: []
                         delegate: ListItem.Standard {
                             secondaryItem: Label {
+                                id: labelDate
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
 
-                                text: modelData.type
+                                Component.onCompleted: {
+                                    text = Qt.binding(function () {
+                                        for (var i = 0; i < ganttModel.tasks; ++i)
+                                        {
+                                            if (ganttModel.tasks[i].id === modelData.linkedTask)
+                                            {
+                                                return Qt.formatDateTime(ganttModel.tasks[i].dueDate, "yyyy-MM-dd hh:mm");
+                                            }
+                                        }
+                                        return "";
+                                    })
+                                }
                             }
 
-                            text: modelData.name
+                            Component.onCompleted: {
+                                text = Qt.binding(function () {
+                                    for (var i = 0; i < ganttModel.tasks; ++i)
+                                    {
+                                        if (ganttModel.tasks[i].id === modelData.linkedTask)
+                                        {
+                                            return ganttModel.tasks[i].name;
+                                        }
+                                    }
+                                    return "";
+                                })
+                            }
                         }
                     }
 
-                    ListItem.Standard {
+                    /*ListItem.Standard {
                         action: Icon {
                             anchors.centerIn: parent
                             name: "content/add_circle_outline"
@@ -463,7 +515,7 @@ Column {
                         }
 
                         text: "Add a new child task"
-                    }
+                    }*/
             }
         }
 
@@ -489,6 +541,7 @@ Column {
             }
 
             Label {
+                id: createdBy
                 anchors.left: image.right
                 anchors.leftMargin: Units.dp(8)
                 anchors.verticalCenter: parent.verticalCenter
@@ -501,41 +554,21 @@ Column {
                 anchors.right: closeButton.left
                 anchors.rightMargin: Units.dp(8)
 
-                text: infoView.onEdit ? "Save" : "Edit"
+                text: "Edit"
 
                 onClicked: {
-                    if (infoView.onEdit)
-                    {
-                        infoView.onEdit = false
-                    }
-                    else
-                    {
-                        infoView.onEdit = true
-                    }
+                    edit(currentTask.id)
                 }
             }
 
             Button {
                 id: closeButton
                 anchors.right: parent.right
-                text: infoView.onEdit ? "Cancel" : "Delete"
+                text: "Delete"
                 textColor: Theme.primaryColor
 
                 onClicked: {
-                    if (infoView.onEdit)
-                    {
-                        infoView.onEdit = false
-                    }
-                    else if (ticket.isClosed)
-                    {
-                        bugModel.reopenTicket(ticket.id)
-                        back()
-                    }
-                    else
-                    {
-                        bugModel.closeTicket(ticket.id)
-                        back()
-                    }
+                    console.log("DELETE")
                 }
             }
 

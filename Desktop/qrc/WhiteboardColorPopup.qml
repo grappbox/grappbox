@@ -15,7 +15,7 @@ CustomDropdown {
     property int numberPerRow: 5
     property string color
     property string selectedColor: "#FF0000"
-    readonly property int numberOfRow: Math.ceil(repeater.model.length / 5)
+    readonly property int numberOfRow: Math.ceil(repeater.model.Length / 5)
 
     //anchor: Item.Bottom
     height: (buttonSize * numberOfRow) + buttonFlow.spacing * (numberOfRow - 1) + Units.dp(32)
