@@ -23,6 +23,8 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
       notificationFactory.error();
     $location.path("/");
     $rootScope.path.current = "/";
+    if ($rootScope.sidebar.open)
+      $rootScope.sidebar.toggle();
   };
 
 
@@ -115,8 +117,10 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
   // On route change success
   var _routeChangeSuccess = function(current) {
     $rootScope.page.load = false;
-    if (current.$$route)
+    $rootScope.page.homepage = current.$$route.homepage;
+    if (current.$$route) {
       $rootScope.page.title = current.$$route.title;
+    }
   };
 
 

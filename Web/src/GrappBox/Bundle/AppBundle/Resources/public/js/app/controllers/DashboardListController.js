@@ -12,7 +12,7 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.view = { load: true, valid: false };
+  $scope.view = { loaded: false, valid: false };
   $scope.method = { loadProject: "" };
   $scope.projects = {};
 
@@ -48,14 +48,14 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
       else
         $scope.projects = null;
       $scope.view.valid = true;
-      $scope.view.load = false;
+      $scope.view.loaded = true;
     },
     function onGetGlobalProgressFail(response) {
       if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "2.3.3")
         $rootScope.reject();
       $scope.data.projects = null;
       $scope.view.valid = false;
-      $scope.view.load = false;
+      $scope.view.loaded = true;
     }
   );
 

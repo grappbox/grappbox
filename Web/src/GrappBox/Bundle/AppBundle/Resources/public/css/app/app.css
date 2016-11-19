@@ -106,7 +106,6 @@ svg {
   transition: all 300ms cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-i.rounded { padding: 10px; color: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
 ul, ol { padding: 0; list-style: none; }
 hr { position: relative; width: 70px; height: 4px; margin: 0 auto; margin-bottom: 30px; text-align: center; border: 0; }
 label { font-weight: 400; display: inline; margin: 0; }
@@ -130,10 +129,6 @@ label { font-weight: 400; display: inline; margin: 0; }
 a { color: #212121; }
 a:focus,
 a:hover { text-decoration: none; color: #4bf; }
-
-a.raised { color: #4bf; }
-a.raised:focus,
-a.raised:hover { text-decoration: underline; color: #4bf; }
 
 ::-webkit-selection { color: #fafafa; background: #4bf; }
 ::-moz-selection { color: #fafafa; background: #4bf; }
@@ -187,13 +182,13 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
 /* ==================== NAVIGATION ==================== */
 /* ==================================================== */
 
-.navigation-master { position: fixed; z-index: 1010; top: 0; width: 100%; height: 60px; background: #fafafa; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
+.navigation-master { position: fixed; z-index: 1010; top: 0; width: 100%; height: 60px; background: #fafafa; }
 .navigation-master a { font-weight: 500; padding: 13px 0; }
 .navigation-master img { margin: 0 10px 0 0; }
 .navigation-master .navigation-right a { padding: 10px; margin: 8px 5px; border-radius: 50%; }
 .navigation-master .navigation-right a:hover { color: #fafafa!important; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
 
-.navigation-master .dropdown-menu { left: auto; right: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); background: #fafafa; top: 8px; z-index: 1010; border-radius: 0; margin: 0; padding: 0; }
+.navigation-master .dropdown-menu { left: auto; right: 0; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); background: #fafafa; top: 10px; z-index: 1010; border-radius: 0; margin: 0; padding: 0; }
 .navigation-master .dropdown-menu a { text-align: left; text-transform: none; padding: 15px 45px 15px 25px; margin: 1px; border-radius: 0; transition: none; }
 .navigation-master .dropdown-menu a:hover { background: #616161!important; color: #f0f0f0; }
 .navigation-master .dropdown-menu a i { margin: 0 30px 0 0; font-size: 20px; }
@@ -242,6 +237,8 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
   .sidebar .sidebar-header { background: #616161; }
   .sidebar .sidebar-header .profile { margin-left: 25px; }
   .sidebar .sidebar-content ul a i { margin: 0 30px 0 0; }
+
+  .navigation-master { box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
 }
 
 @media (min-width: 1601px) {
@@ -250,6 +247,7 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
   .sidebar .sidebar-content ul a i { margin: 0 20px 0 0; font-size: 20px; }
   .sidebar .toggle { display: none; }
 
+  .navigation-master { box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); }
   .navigation-master.open,
   .navigation.open,
   .page.open { width: calc(100% - 200px); margin-left: 200px; }
@@ -293,8 +291,6 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
 /* ====================================================== */
 /* ==================== BUTTONS/FORMS ==================== */
 /* ====================================================== */
-
-.btn.btn-raised { color: #fafafa!important; }
 
 .btn.btn-fab.btn-danger,
 .btn.btn-raised.btn-danger,
@@ -419,6 +415,7 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .box p span { opacity: 0.6; }
 
 .box i { vertical-align: middle; margin-right: 5px; font-size: 20px; color: #757575; }
+.box i.rounded { padding: 10px; color: #fff; border-radius: 50%; box-shadow: 0 1px 2px rgba(0,0,0,.15), 0 -1px 0 rgba(0,0,0,.02); }
 .box-header i { vertical-align: middle; margin-right: 10px; font-size: 20px; }
 
 .box .status-icon { position: absolute; top: 32%; right: 4% }
@@ -479,37 +476,34 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 
 
 
-/* ============================================================ */
-/* ==================== SECTION: DASHBOARD ==================== */
-/* ============================================================ */
+/* ========================================================== */
+/* ==================== DASHBOARD (LIST) ==================== */
+/* ========================================================== */
 
-.each-data { padding: 0 5px; }
-.each-data .well { padding: 25px 15px 0px 15px!important; }
-.each-data .well:hover { box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23)!important; cursor: pointer; }
+.dashboard-list .page-header { margin: -40px -100px 40px -100px; padding: 40px; border: 0; }
+.dashboard-list .page-header .title { margin-top: 20px; color: #fff; }
+.dashboard-list .page-header img { max-width: 300px; }
 
-@media (min-width: 992px) and (max-width: 1401px) {
-  .each-data { width: 33.33333333%; }
+@media (max-width: 768px) {
+  .dashboard-list .page-header .title { text-align: center; }
 }
 
-@media (min-width: 992px) and (max-width: 1199px) {
-  .each-data { width: 50%; }
-}
+.dashboard-list .btn-raised { background: #fff; }
+.dashboard-list .btn-raised:focus,
+.dashboard-list .btn-raised:hover { background: #f0f0f0!important; }
 
-.each-data .avatar { float: left; margin-right: 20px }
-.each-data ul { font-weight: 400; padding: 0; list-style: none; }
-.each-data ul li { padding: 3px 0; }
-.each-data ul li i { margin: 0 10px 0 0; vertical-align: middle!important; }
-.each-data ul img { border-radius: 50%; }
-.each-data ul .title { font-weight: 900; }
+.dashboard-list h1 img { margin-right: 20px; width: 60px; height: auto; }
+.dashboard-list { margin: 10px 10px 30px 10px; }
 
-@media (min-width: 1199px) {
-  #dashboard-list .each-data ul .avatar { float: left; margin: 5px 15px 0 0; }
-  #team-occupation .each-data ul .title { text-align: center; }
-  .each-data ul .title { margin: 0 0 5px 0; }
-}
-
-#team-occupation, #next-meetings { min-height: 300px; }
-#team-occupation .each-data ul .avatar { text-align: center; }
+.dashboard-list .box:hover { box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); cursor: pointer; }
+.dashboard-list .box { text-align: left; }
+.dashboard-list .box img { border-radius: 50%; float: left; margin: 10px 0 10px 10px; }
+.dashboard-list .box .title { font-weight: 500!important; padding: 0 0 10px 0!important; color: #757575; margin: 0 -10px 0 0; }
+.dashboard-list .box .preview { float: left; margin: 10px 20px 0 20px; }
+.dashboard-list .box .preview p { padding: 0; }
+.dashboard-list .box .btn { float: right; margin: 15px 5px 10px 5px; }
+.dashboard-list .box .btn:focus,
+.dashboard-list .box .btn:hover { color: #fff!important; }
 
 
 
