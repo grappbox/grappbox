@@ -115,8 +115,9 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
   // On route change success
   var _routeChangeSuccess = function(current) {
     $rootScope.page.load = false;
-    if (current.$$route)
+    if (current.$$route) {
       $rootScope.page.title = current.$$route.title;
+    }
   };
 
 

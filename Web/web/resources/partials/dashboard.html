@@ -2,7 +2,11 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- dashboard : information -->
+<!-- Project dashboard -->
+<div class="page-header construction">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
+  <div class="clearfix"></div>
+</div>
 
 <h1>Project overview</h1>
 
@@ -39,10 +43,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="well">
               <ul>
                 <li class="avatar" data-ng-if="!member.avatar">
-                  <img data-ng-src="../resources/img/default_logo.min.png" height="120" width="120">
+                  <img data-ng-src="../resources/img/app/default-avatar.min.png" height="120" width="120">
                 </li>
                 <li class="avatar text-center" data-ng-if="member.avatar">
-                  <img data-ng-src="data:image/png;base64,{[{ ::member.project_logo }]}" data-err-src="../resources/img/default_logo.min.png" height="120" width="120">
+                  <img data-ng-src="data:image/png;base64,{[{ ::member.project_logo }]}" data-err-src="../resources/img/app/default-avatar.min.png" height="120" width="120">
                 </li>
                 <li class="col-md-offset-1 ellipsis title">{[{ member.user.firstname }]} {[{ member.user.lastname }]}</li>
                 <li class="col-md-offset-1"><i class="material-icons">info</i>Status: {[{ member.occupation == 'free' ? 'available' : 'busy' }]}</li>

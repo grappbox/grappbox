@@ -2,55 +2,57 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- grappbox.view : dashboard information -->
-<h1 class="text-center">Welcome to GrappBox</h1>
+<!-- General dashboard -->
+<section class="dashboard-list">
+  <div class="page-header master {[{ path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/dashboard.min.png" width="300" height="auto" alt="Dashboard">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Welcome to GrappBox</h1>
+      <p>Choose your project to begin, or create a new one.</p>
+      <a href="settings/0" class="btn btn-raised {[{ path.colors[path.current] + '-color' }]}" title="Go to the creation process page">Create a new project</a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
 
-<section class="text-center no-margin">
-  <p>Choose a project to begin, or create one.</p>
-  <a href="settings/0" class="btn btn-raised btn-danger" title="Go to the creation process page">Create a new project</a>
-</section>
-
-<section>
-  <div class="row">
-    <div class="col-lg-12">
-      <!-- grappbox.view : (dashboard) user projects list -->
-      <div data-ng-if="view.load">
-        <div class="spinner section">
-          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-        </div>
-      </div>
-      <div data-ng-if="!view.load">
-        <div data-ng-if="view.valid && projects">
-          <div class="each-data col-md-3 no-padding" data-ng-repeat="project in projects">
-            <div class="well" data-ng-click="method.loadProject(project)">
-              <ul>
-                <li class="avatar" data-ng-if="!project.logo">
-                  <img data-ng-src="../resources/img/default_logo.min.png" height="120" width="120">
-                </li>
-                <li class="avatar" data-ng-if="project.logo">
-                  <img data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" data-err-src="../resources/img/default_logo.min.png" height="120" width="120">
-                </li>
-                <li class="ellipsis title">"{[{ project.name }]}"</li>
-                <li class=""><i class="material-icons">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</li>
-                <li class=""><i class="material-icons">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</li>
-                <li class=""><i class="material-icons">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</li>
-              </ul>
-              <a href="" title="Use this project" class="btn btn-default" data-ng-click="method.loadProject(project)">Open</a>
-              <div class="clearfix"></div>
+  <div data-ng-if="!view.loaded">
+    <div class="spinner section">
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+    </div>
+  </div>
+  <div data-ng-if="view.loaded">
+    <div data-ng-if="view.valid && projects">
+      <div class="box-row">
+        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 no-padding animate" data-ng-repeat="project in projects">
+          <div class="box" data-ng-click="method.loadProject(project)">
+            <img data-ng-if="!project.logo" src="../resources/img/app/default-logo.min.png" height="120" width="120" alt="{[{ project.name }] (logo)">
+            <img data-ng-if="project.logo" data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" height="120" width="120" alt="{[{ project.name }] (logo)">
+            <div class="preview">
+              <p class="ellipsis title">"{[{ project.name }]}"</p>
+              <p><i class="material-icons rounded {[{ path.colors['/bugtracker'] + '-color' }]}">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</p>
+              <p><i class="material-icons rounded {[{ path.colors['/timeline'] + '-color' }]}">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</p>
+              <p><i class="material-icons rounded {[{ path.colors['/tasks'] + '-color' }]}">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</p>
             </div>
+            <div class="clearfix"></div>
+            <a href="" title="Load this project" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]}" data-ng-click="method.loadProject(project)">Open</a>
+            <div class="clearfix"></div>
           </div>
         </div>
+
         <div data-ng-if="view.valid && !projects">
-          <div class="well text-center">
+          <div class="box-error">
             <p><i class="material-icons">border_clear</i><br>You don't have any project.<br>Create one now!</p>
           </div>
         </div>
         <div data-ng-if="!view.valid">
-          <div class="well text-center">
+          <div class="box-error">
             <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <div class="clearfix"></div>
+
 </section>

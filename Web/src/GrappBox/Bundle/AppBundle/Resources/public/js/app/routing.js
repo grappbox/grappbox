@@ -53,6 +53,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "BugtrackerController",
 		templateUrl : "../resources/partials/bugtracker.html",
 		caseInsensitiveMatch : true,
+    homepage: false,    
     resolve: {
       projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }],
       bugAvailability: ["accessFactory", function(accessFactory) { return accessFactory.bugAvailable(); }]
@@ -125,6 +126,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "TaskController",
 		templateUrl : "../resources/partials/task.html",
 		caseInsensitiveMatch : true,
+    homepage: false,    
     resolve: {
       projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }],
       taskAvailability: ["accessFactory", function(accessFactory) { return accessFactory.taskAvailable(); }]
