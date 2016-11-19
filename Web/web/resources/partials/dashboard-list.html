@@ -3,14 +3,13 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- General dashboard -->
-
 <section class="dashboard-list">
-  <div class="page-header {[{ path.colors[path.current] + '-background' }]}">
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 no-padding text-center">
-      <img src="../resources/img/dashboard.min.png" width="300" height="auto" alt="Dashboard">
+  <div class="page-header master {[{ path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/dashboard.min.png" width="300" height="auto" alt="Dashboard">
     </div>
-    <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 no-padding title">
-      <h1 class="">Welcome to GrappBox</h1>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Welcome to GrappBox</h1>
       <p>Choose your project to begin, or create a new one.</p>
       <a href="settings/0" class="btn btn-raised {[{ path.colors[path.current] + '-color' }]}" title="Go to the creation process page">Create a new project</a>
     </div>
@@ -25,9 +24,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div data-ng-if="view.loaded">
     <div data-ng-if="view.valid && projects">
       <div class="box-row">
-        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 no-padding" data-ng-repeat="project in projects">
+        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 no-padding animate" data-ng-repeat="project in projects">
           <div class="box" data-ng-click="method.loadProject(project)">
-            <img data-ng-if="!project.logo" src="../resources/img/default_logo.min.png" height="120" width="120" alt="{[{ project.name }] (logo)">
+            <img data-ng-if="!project.logo" src="../resources/img/app/default-logo.min.png" height="120" width="120" alt="{[{ project.name }] (logo)">
             <img data-ng-if="project.logo" data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" height="120" width="120" alt="{[{ project.name }] (logo)">
             <div class="preview">
               <p class="ellipsis title">"{[{ project.name }]}"</p>

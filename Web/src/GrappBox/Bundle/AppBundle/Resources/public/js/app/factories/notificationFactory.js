@@ -27,13 +27,13 @@ app.factory("notificationFactory", ['Notification', function(Notification) {
     // "Warning" routine
     // Operation failed, or succeed but with non-blocking errors
     warning: function(message) {
-      Notification.warning({ message: message + "<i class=\"material-icons\">warning</i>", delay: 2500 });
+      Notification.warning({ message: message + "<i class=\"material-icons\">warning</i>", delay: 2000 });
     },
 
     // "Error" routine
     // Operation critically failed    
     error: function() {
-      Notification.error({ message: "Someting is wrong with GrappBox. Please give us a minute, and try again.<i class=\"material-icons\">clear</i>", delay: "false" });
+      Notification.error({ message: "Someting is wrong with GrappBox. Please give us a minute, and try again.<i class=\"material-icons\">clear</i>", delay: 3000 });
     },
   };
 
