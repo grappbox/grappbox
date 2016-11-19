@@ -11,6 +11,7 @@ using Windows.UI;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 namespace Grappbox.View
@@ -30,8 +31,8 @@ namespace Grappbox.View
             this.DataContext = DashBoardViewModel.GetViewModel();
             this.NavigationCacheMode = NavigationCacheMode.Required;
 
-            team_cb.IsChecked = SettingsManager.getOption<bool>("team_cb");
-            meetings_cb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
+            TeamCb.IsChecked = SettingsManager.getOption<bool>("team_cb");
+            MeetingsCb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
             team = new PivotItem();
             meetings = new PivotItem();
         }
@@ -46,6 +47,7 @@ namespace Grappbox.View
             //Mobile customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
+                DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
                 var statusBar = StatusBar.GetForCurrentView();
                 if (statusBar != null)
                 {
@@ -54,57 +56,51 @@ namespace Grappbox.View
                     statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
                 }
             }
-            SettingsPopUp.Visibility = Visibility.Collapsed;
-            SettingsPopUp.IsOpen = true;
-            db_pivot.IsEnabled = true;
-            DisplayInformation.AutoRotationPreferences = DisplayOrientations.Portrait;
+            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            dialog.ShowAsync();
+            DbPivot.IsEnabled = true;
             this.dvm = DashBoardViewModel.GetViewModel();
-            LoadingBar.IsEnabled = true;
-            LoadingBar.Visibility = Visibility.Visible;
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
-            this.db_pivot.Items.Clear();
-            this.db_pivot.Items.Add(this.team);
-            this.db_pivot.Items.Add(this.meetings);
-            team_cb.IsChecked = true;
-            meetings_cb.IsChecked = true;
+            DbPivot?.Items?.Clear();
+            DbPivot?.Items?.Add(this.team);
+            DbPivot?.Items?.Add(this.meetings);
+            TeamCb.IsChecked = true;
+            MeetingsCb.IsChecked = true;
             await this.dvm.InitialiseAsync();
-            LoadingBar.IsEnabled = false;
-            LoadingBar.Visibility = Visibility.Collapsed;
+            dialog.Hide();
         }
 
         private async void team_cb_Checked(object sender, RoutedEventArgs e)
         {
-            SettingsManager.setOption("team_cb", team_cb.IsChecked);
-            if (team_cb.IsChecked == true)
+            SettingsManager.setOption("team_cb", TeamCb.IsChecked);
+            if (TeamCb.IsChecked == true)
             {
-                if (db_pivot.Items.Where(i => i.GetType() == typeof(TeamDashBoard)).FirstOrDefault() == null)
-                    db_pivot.Items.Add(team);
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                if (DbPivot?.Items?.FirstOrDefault(i => i is TeamDashBoard) == null)
+                    DbPivot?.Items?.Add(team);
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+                dialog.ShowAsync();
                 await this.dvm.InitialiseAsync();
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
             }
             else
-                db_pivot.Items.Remove(team);
+                DbPivot?.Items?.Remove(team);
         }
 
         private async void meetings_cb_Checked(object sender, RoutedEventArgs e)
         {
-            SettingsManager.setOption("meetings_cb", meetings_cb.IsChecked);
-            if (meetings_cb.IsChecked == true)
+            SettingsManager.setOption("meetings_cb", MeetingsCb.IsChecked);
+            if (MeetingsCb.IsChecked == true)
             {
-                if (db_pivot.Items.Where(i => i.GetType() == typeof(MeetingDashBoardPanel)).FirstOrDefault() == null)
-                    db_pivot.Items.Add(meetings);
-                LoadingBar.IsEnabled = true;
-                LoadingBar.Visibility = Visibility.Visible;
+                if (DbPivot?.Items?.FirstOrDefault(i => i is MeetingDashBoardPanel) == null)
+                    DbPivot?.Items?.Add(meetings);
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+                dialog.ShowAsync();
                 await this.dvm.InitialiseAsync();
-                LoadingBar.IsEnabled = false;
-                LoadingBar.Visibility = Visibility.Collapsed;
+                dialog.Hide();
             }
             else
-                db_pivot.Items.Remove(meetings);
+                DbPivot?.Items?.Remove(meetings);
         }
 
         private void initPivotItem(string header, out PivotItem pivotItem)
@@ -139,13 +135,13 @@ namespace Grappbox.View
         private void Settings_Click(object sender, RoutedEventArgs e)
         {
             SettingsPopUp.Visibility = Visibility.Visible;
-            db_pivot.IsEnabled = false;
+            DbPivot.IsEnabled = false;
         }
 
         private void CloseSettings_Click(object sender, RoutedEventArgs e)
         {
             SettingsPopUp.Visibility = Visibility.Collapsed;
-            db_pivot.IsEnabled = true;
+            DbPivot.IsEnabled = true;
         }
     }
 }

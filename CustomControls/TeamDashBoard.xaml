@@ -6,11 +6,14 @@
     xmlns:local="using:Grappbox.CustomControls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:customControl="using:Grappbox.CustomControls"
-    mc:Ignorable="d">
+    xmlns:viewModel="using:Grappbox.ViewModel"
+    xmlns:models="using:Grappbox.Model"
+    mc:Ignorable="d"
+    d:DataContext="{d:DesignInstance viewModel:DashBoardViewModel, IsDesignTimeCreatable=True}">
 
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
     Margin="0,2,0,0"
+    ShowsScrollingPlaceholders="True"
     HorizontalAlignment="Stretch"
     HorizontalContentAlignment="Stretch"
     ScrollViewer.HorizontalScrollMode="Disabled"
@@ -19,7 +22,7 @@
     ScrollViewer.VerticalScrollBarVisibility="Hidden"
     IsDoubleTapEnabled="False" IsRightTapEnabled="False">
         <ListView.ItemTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="models:Occupations">
                 <Grid Height="100">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="10" />
@@ -27,14 +30,18 @@
                         <ColumnDefinition Width="3*" />
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
-                    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{Binding OccupationColor}" />
-                    <Ellipse Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="80" Height="80">
+                    <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Bind OccupationColor}" />
+                    <!--<Ellipse Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="60" Height="60">
                         <Ellipse.Fill>
                             <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
                         </Ellipse.Fill>
-                    </Ellipse>
+                    </Ellipse>-->
 
-                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{Binding UserName }" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" HorizontalAlignment="Left" />
+                    <Border Grid.Column="1" Background="DarkGray" CornerRadius="45" Width="60" Height="60">
+                        <FontIcon Glyph="&#xE13D;" FontSize="30" FontWeight="Bold" Foreground="White" FontFamily="Segoe MDL2 Assets" />
+                    </Border>
+
+                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{x:Bind UserName}" x:Phase="1" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" HorizontalAlignment="Left" />
                     <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">
@@ -44,13 +51,13 @@
                             </Style>
                         </StackPanel.Resources>
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                            <TextBlock Name="taskBegun_tb" Text="{x:Bind Tasks_begun}" x:Phase="2" />
                             <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="{StaticResource BlueGrappboxBrush}" />
-                            <TextBlock Name="taskBegun_tb" Text="{Binding Tasks_begun, Converter={StaticResource IntegerToStringConverter}}"></TextBlock>
                         </StackPanel>
 
                         <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
-                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="Red" />
-                            <TextBlock Name="taskOngo_tb" Text="{Binding Tasks_Ongoing, Converter={StaticResource IntegerToStringConverter}}"></TextBlock>
+                            <TextBlock Name="taskOngo_tb" Text="{x:Bind Tasks_Ongoing}" x:Phase="2" />
+                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="{StaticResource RedGrappboxBrush}" />
                         </StackPanel>
                     </StackPanel>
                 </Grid>

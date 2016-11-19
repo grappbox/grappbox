@@ -3,6 +3,7 @@ using Grappbox.Helpers;
 using Grappbox.ViewModel;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -18,6 +19,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Grappbox.Model;
+using GrappBox.View;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -52,7 +55,7 @@ namespace Grappbox.View
             }
             base.OnNavigatedTo(e);
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
-            dialog.ShowAsync();
+            dialog.ShowAsync().GetResults();
             ViewModel.IsBusy = true;
             await ViewModel.PickDay(DateTime.Today);
             dialog.Hide();
@@ -63,13 +66,21 @@ namespace Grappbox.View
         {
             if (this.ViewModel.IsBusy)
                 return;
+            var dates = new List<DateTimeOffset>(args.AddedDates);
+            if (dates.Count < 1)
+                return;
             ViewModel.IsBusy = true;
-            DateTimeOffset selectedDate = args.AddedDates[0];
+            var selectedDate = dates[0];
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
-            dialog.ShowAsync();
+            dialog.ShowAsync().GetResults();
             await this.ViewModel.PickDay(selectedDate.Date);
             dialog.Hide();
             ViewModel.IsBusy = false;
+        }
+
+        private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarEventDetail), e.ClickedItem as Event);
         }
     }
 }

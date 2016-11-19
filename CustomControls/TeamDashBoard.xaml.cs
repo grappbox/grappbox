@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Grappbox.ViewModel;
 
 // Pour en savoir plus sur le modèle d'élément Contrôle utilisateur, consultez la page http://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,10 +22,11 @@ namespace Grappbox.CustomControls
 {
     public sealed partial class TeamDashBoard : UserControl
     {
-
+        private DashBoardViewModel dbvm;
         public TeamDashBoard()
         {
             this.InitializeComponent();
+            dbvm = DataContext as DashBoardViewModel;
         }
     }
 }

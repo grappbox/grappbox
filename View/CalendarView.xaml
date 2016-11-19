@@ -6,6 +6,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:models="using:Grappbox.Model"
+    xmlns:viewModels="using:Grappbox.ViewModel"
     xmlns:controls="using:Grappbox.CustomControls"
     mc:Ignorable="d">
     <Page.Resources>
@@ -24,12 +25,12 @@
                     </Grid.Resources>
                     <Border Grid.Column="0" Background="{StaticResource BlueGrappboxBrush}" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock x:Name="beginDate" Text="{x:Bind ExtractTime(BeginDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
-                        <TextBlock x:Name="endDate" Text="{x:Bind ExtractTime(EndDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
+                        <TextBlock x:Name="beginDate" Text="{x:Bind models:Event.ExtractTime(BeginDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
+                        <TextBlock x:Name="endDate" Text="{x:Bind models:Event.ExtractTime(EndDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
                     </StackPanel>
-                    <RelativePanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                        <TextBlock x:Name="title" Text="{x:Bind Title}" FontSize="16" FontWeight="SemiBold" RelativePanel.AlignHorizontalCenterWithPanel="True" />
-                        <TextBlock x:Name="description" Text="{x:Bind Description}" FontSize="16" Foreground="DarkGray" Margin="2,0,0,0" RelativePanel.Below="title" RelativePanel.AlignLeftWith="title" />
+                    <RelativePanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" >
+                        <TextBlock x:Name="title" Text="{x:Bind Title}" FontSize="16" FontWeight="SemiBold" RelativePanel.AlignLeftWithPanel="True" />
+                        <TextBlock x:Name="description" Text="{x:Bind Description}" FontSize="16" Foreground="DimGray" Margin="2,0,0,0" RelativePanel.Below="title" RelativePanel.AlignLeftWith="title" />
                     </RelativePanel>
                 </Grid>
             </Border>
@@ -53,7 +54,7 @@
                 </Grid.RowDefinitions>
                 <CalendarView Grid.Row="0" HorizontalAlignment="Stretch" SelectedDatesChanged="CalendarView_SelectedDatesChanged" />
                 <TextBlock Grid.Row="1" Visibility="{Binding ListEmptyVisibility}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15">No events this day</TextBlock>
-                <ListView Grid.Row="1" ItemTemplate="{StaticResource EventItemTemplate}" ItemsSource="{Binding FilteredEvents}">
+                <ListView Grid.Row="1" ItemTemplate="{StaticResource EventItemTemplate}" ItemsSource="{Binding FilteredEvents}" IsItemClickEnabled="True" ItemClick="ListViewBase_OnItemClick">
                     <ListView.ItemContainerStyle>
                         <Style TargetType="ListViewItem">
                             <Setter Property="Margin" Value="0" />

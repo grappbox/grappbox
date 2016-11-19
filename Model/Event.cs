@@ -42,11 +42,13 @@ namespace Grappbox.Model
         [JsonProperty("users")]
         public List<UserModel> Users { get; set; }
 
+        public bool IsSelected { get; set; } = false;
+
         #endregion PublicFields
 
         #region BindingMethods
 
-        public string ExtractTime(string datetime)
+        public static string ExtractTime(string datetime)
         {
             DateTime time;
             try
@@ -59,6 +61,21 @@ namespace Grappbox.Model
                 return datetime;
             }
             return time.ToString("hh:mm");
+        }
+
+        public static string ExtractDate(string datetime)
+        {
+            DateTime date;
+            try
+            {
+                date = Convert.ToDateTime(datetime);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return datetime;
+            }
+            return date.ToString("dd/MM/yyyy");
         }
 
         #endregion BindingMethods
