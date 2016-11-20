@@ -42,7 +42,7 @@ class Tag
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-        public function objectToArray()
+    public function objectToArray()
     {
       return array(
         "id" => $this->id,
@@ -156,7 +156,7 @@ class Tag
     /**
      * Get color
      *
-     * @return string 
+     * @return string
      */
     public function getColor()
     {

@@ -143,16 +143,6 @@ class WhiteboardObject
     }
 
     /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set whiteboard
      *
      * @param \SQLBundle\Entity\Whiteboard $whiteboard

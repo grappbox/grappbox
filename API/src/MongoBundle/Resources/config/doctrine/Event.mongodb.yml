@@ -14,9 +14,6 @@ MongoBundle\Document\Event:
         description:
             type: string
             nullable: TRUE
-        icon:
-            type: text
-            nullalbe: TRUE
         beginDate:
             type: date
             name: begin_date
@@ -30,18 +27,11 @@ MongoBundle\Document\Event:
             type: date
             name: edited_at
             nullable: TRUE
-        deletedAt:
-            type: date
-            name: deleted_at
-            nullable: TRUE
     referenceOne:
         projects:
           targetDocument: Project
           inversedBy: events
           nullable: TRUE
-        eventtypes:
-          targetDocument: EventType
-          inversedBy: events
         creator_user:
           targetDocument: User
           inveredBy: event_creator

@@ -15,14 +15,14 @@ class CustomerAccess
     protected $id;
 
     /**
-     * @var string $name
-     */
-    protected $name;
-
-    /**
      * @var string $hash
      */
     protected $hash;
+
+    /**
+     * @var string $name
+     */
+    protected $name;
 
     /**
      * @var date $createdAt

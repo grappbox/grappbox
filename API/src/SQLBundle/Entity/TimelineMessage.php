@@ -260,7 +260,7 @@ class TimelineMessage
      * Set creator
      *
      * @param \SQLBundle\Entity\User $creator
-     * @return Bug
+     * @return self
      */
     public function setCreator(\SQLBundle\Entity\User $creator = null)
     {

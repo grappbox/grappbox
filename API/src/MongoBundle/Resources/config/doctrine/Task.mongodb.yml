@@ -14,10 +14,6 @@ MongoBundle\Document\Task:
         description:
             type: string
             nullable: TRUE
-        color:
-          type: string
-          length: 255
-          nullable: TRUE
         dueDate:
             type: date
             name: due_date

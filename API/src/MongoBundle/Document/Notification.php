@@ -44,6 +44,17 @@ class Notification
      */
     protected $user;
 
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            "type" => $this->type,
+            "targetId" => $this->targetId,
+            "message" => $this->message,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'isRead' => $this->isRead
+        );
+    }
 
     /**
      * Get id
@@ -122,6 +133,28 @@ class Notification
     }
 
     /**
+     * Set user
+     *
+     * @param MongoBundle\Document\User $user
+     * @return self
+     */
+    public function setUser( $user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return MongoBundle\Document\User $user
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
      * Set createdAt
      *
      * @param date $createdAt
@@ -165,41 +198,4 @@ class Notification
         return $this->isRead;
     }
 
-    /**
-     * Set user
-     *
-     * @param MongoBundle\Document\User $user
-     * @return self
-     */
-    public function setUser( $user)
-    {
-        $this->user = $user;
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return MongoBundle\Document\User $user
-     */
-    public function getUser()
-    {
-        return $this->user;
-    }
-
-    public function objectToArray()
-    {
-      // $projectId = null;
-      // if ($this->projects)
-      //   $projectId = $this->projects->getId();
-        return array(
-            'id' => $this->id,
-            // TODO user ??
-            "type" => $this->type,
-            "targetId" => $this->targetId,
-            "message" => $this->message,
-            'createdAt' => $this->createdAt,
-            'isRead' => $this->isRead
-        );
-    }
 }

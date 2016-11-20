@@ -7,30 +7,20 @@ MongoBundle\Document\Bug:
             type: id
             id: true
             strategy: AUTO
-        parentId:
-            type: int
-            name: parent_id
-            nullable: TRUE
         title:
             type: string
             length: 255
         description:
             type: string
             nullable: TRUE
-        stateId:
-            type: int
-            name: state_id
-            nullable: TRUE
+        state:
+            type: boolean
         createdAt:
             type: date
             name: created_at
         editedAt:
             type: date
             name: edited_at
-            nullable: TRUE
-        deletedAt:
-            type: date
-            name: deleted_at
             nullable: TRUE
         clientOrigin:
             type: boolean
@@ -41,12 +31,15 @@ MongoBundle\Document\Bug:
           inversedBy: bugs
         creator:
           targetDocument: User
-          inverserdBy: bug_creator
+          inversedBy: bug_creator
     referenceMany:
         users:
           targetDocument: User
           inversedBy: bugs
-        tags:
-          targetDocument: Tag
+        bugtracker_tags:
+          targetDocument: BugtrackerTag
+          inversedBy: bugs
+        comments:
+          targetDocument: BugComment
           inversedBy: bugs
     lifecycleCallbacks: {  }

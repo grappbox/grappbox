@@ -55,7 +55,6 @@ class TaskRepository extends DocumentRepository
 	public function findUserAllTasksV2($id, $code, $part, $function)
 	{
 		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
-
 		$tasks = $qb->getQuery()->execute();
 
 		$resp = new JsonResponse();
@@ -154,7 +153,6 @@ class TaskRepository extends DocumentRepository
 	public function findUserCurrentAndNextTasksV2($id, $code, $part, $function)
 	{
 		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
-
 		$tasks = $qb->getQuery()->execute();
 
 		$resp = new JsonResponse();

@@ -41,13 +41,6 @@ accountAdministration_register:
 # -----------------------------------------------------------------------
 #                           BUGTRACKER CONTROLLER
 # -----------------------------------------------------------------------
-bugtracker_getTicket:
-  path:       bugtracker/ticket/{id}
-  defaults:   { _controller: SQLBundle:Bugtracker:getTicket, _format: json }
-  requirements:
-    id:     \d+
-  methods:  [GET]
-
 bugtracker_postTicket:
   path:       bugtracker/ticket
   defaults:   { _controller: SQLBundle:Bugtracker:postTicket, _format: json }

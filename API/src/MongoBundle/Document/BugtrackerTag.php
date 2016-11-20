@@ -3,11 +3,10 @@
 namespace MongoBundle\Document;
 
 
-
 /**
- * MongoBundle\Document\Tag
+ * BugtrackerTag
  */
-class Tag
+class BugtrackerTag
 {
     /**
      * @var $id
@@ -15,7 +14,7 @@ class Tag
     protected $id;
 
     /**
-     * @var string $name
+     * @var string
      */
     protected $name;
 
@@ -25,9 +24,9 @@ class Tag
     protected $project;
 
     /**
-     * @var MongoBundle\Document\Task
+     * @var MongoBundle\Document\Bug
      */
-    protected $tasks = array();
+    protected $bugs = array();
 
     /**
      * @var string
@@ -39,7 +38,7 @@ class Tag
      */
     public function __construct()
     {
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     public function objectToArray()
@@ -70,47 +69,18 @@ class Tag
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
     /**
      * Get name
      *
-     * @return string $name
+     * @return string
      */
     public function getName()
     {
         return $this->name;
-    }
-
-    /**
-     * Add task
-     *
-     * @param MongoBundle\Document\Task $task
-     */
-    public function addTask( $task)
-    {
-        $this->tasks[] = $task;
-    }
-
-    /**
-     * Remove task
-     *
-     * @param MongoBundle\Document\Task $task
-     */
-    public function removeTask( $task)
-    {
-        $this->tasks->removeElement($task);
-    }
-
-    /**
-     * Get tasks
-     *
-     * @return \Doctrine\Common\Collections\Collection $tasks
-     */
-    public function getTasks()
-    {
-        return $this->tasks;
     }
 
     /**
@@ -119,7 +89,7 @@ class Tag
      * @param MongoBundle\Document\Project $project
      * @return self
      */
-    public function setProject( $project)
+    public function setProject($project)
     {
         $this->project = $project;
         return $this;
@@ -128,11 +98,43 @@ class Tag
     /**
      * Get project
      *
-     * @return MongoBundle\Document\Project $project
+     * @return MongoBundle\Document\Project
      */
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Add bugs
+     *
+     * @param MongoBundle\Document\Bug $bugs
+     * @return self
+     */
+    public function addBug($bugs)
+    {
+        $this->bugs[] = $bugs;
+        return $this;
+    }
+
+    /**
+     * Remove bugs
+     *
+     * @param MongoBundle\Document\Bug $bugs
+     */
+    public function removeBug($bugs)
+    {
+        $this->bugs->removeElement($bugs);
+    }
+
+    /**
+     * Get bugs
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugs()
+    {
+        return $this->bugs;
     }
 
     /**
@@ -144,7 +146,6 @@ class Tag
     public function setColor($color)
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -157,5 +158,4 @@ class Tag
     {
         return $this->color;
     }
-
 }

@@ -1,8 +1,7 @@
 <?php
 
-namespace SQLBundle\Entity;
+namespace MongoBundle\Document;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * TimelineComment
@@ -10,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 class TimelineComment
 {
     /**
-     * @var integer
+     * @var $id
      */
     private $id;
 
@@ -20,27 +19,27 @@ class TimelineComment
     private $comment;
 
     /**
-     * @var DateTime
+     * @var date
      */
     private $createdAt;
 
     /**
-     * @var DateTime
+     * @var date
      */
     private $editedAt;
 
     /**
-     * @var DateTime
+     * @var date
      */
     private $deletedAt;
 
     /**
-     * @var \SQLBundle\Entity\TimelineMessage
+     * @var MongoBundle\Document\TimelineMessage
      */
     private $messages;
 
     /**
-     * @var \SQLBundle\Entity\User
+     * @var MongoBundle\Document\User
      */
     private $creator;
 
@@ -64,7 +63,7 @@ class TimelineComment
     /**
      * Get id
      *
-     * @return integer
+     * @return id $id
      */
     public function getId()
     {
@@ -75,12 +74,11 @@ class TimelineComment
      * Set comment
      *
      * @param string $comment
-     * @return date
+     * @return self
      */
     public function setComment($comment)
     {
         $this->comment = $comment;
-
         return $this;
     }
 
@@ -97,20 +95,19 @@ class TimelineComment
     /**
      * Set createdAt
      *
-     * @param DateTime $createdAt
-     * @return date
+     * @param date $createdAt
+     * @return self
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getCreatedAt()
     {
@@ -120,8 +117,8 @@ class TimelineComment
     /**
      * Set editedAt
      *
-     * @param DateTime $editedAt
-     * @return date
+     * @param date $editedAt
+     * @return self
      */
     public function setEditedAt($editedAt)
     {
@@ -133,7 +130,7 @@ class TimelineComment
     /**
      * Get editedAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getEditedAt()
     {
@@ -143,20 +140,19 @@ class TimelineComment
     /**
      * Set deletedAt
      *
-     * @param DateTime $deletedAt
-     * @return date
+     * @param date $deletedAt
+     * @return self
      */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
-
         return $this;
     }
 
     /**
      * Get deletedAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getDeletedAt()
     {
@@ -166,20 +162,19 @@ class TimelineComment
     /**
      * Set messages
      *
-     * @param \SQLBundle\Entity\Timeline $messages
-     * @return date
+     * @param MongoBundle\Document\Timeline $messages
+     * @return self
      */
-    public function setMessages(\SQLBundle\Entity\TimelineMessage $messages = null)
+    public function setMessages($messages)
     {
         $this->messages = $messages;
-
         return $this;
     }
 
     /**
      * Get messages
      *
-     * @return \SQLBundle\Entity\TimelineMessage
+     * @return MongoBundle\Document\TimelineMessage
      */
     public function getMessages()
     {
@@ -189,20 +184,19 @@ class TimelineComment
     /**
      * Set creator
      *
-     * @param \SQLBundle\Entity\User $creator
-     * @return TimelineComment
+     * @param MongoBundle\Document\User $creator
+     * @return self
      */
-    public function setCreator(\SQLBundle\Entity\User $creator = null)
+    public function setCreator($creator)
     {
         $this->creator = $creator;
-
         return $this;
     }
 
     /**
      * Get creator
      *
-     * @return \SQLBundle\Entity\User
+     * @return MongoBundle\Document\User
      */
     public function getCreator()
     {

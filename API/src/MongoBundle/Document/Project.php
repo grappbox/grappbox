@@ -75,11 +75,6 @@ class Project
     protected $safePassword;
 
     /**
-     * @var string $color
-     */
-    protected $color;
-
-    /**
      * @var MongoBundle\Document\Task
      */
     protected $tasks = array();
@@ -130,9 +125,19 @@ class Project
     protected $customers_access = array();
 
     /**
+     * @var string $color
+     */
+    protected $color;
+
+    /**
      * @var MongoBundle\Document\Color
      */
     protected $colors = array();
+
+    /**
+     * @var MongoBundle\Document\BugtrackerTag
+     */
+    protected $bugtracker_tags = array();
 
     /**
      * @var MongoBundle\Document\Tag
@@ -189,10 +194,11 @@ class Project
      */
     protected $statStorageSize;
 
-
+    /**
+     * Constructor
+     */
     public function __construct()
     {
-        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
         $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
         $this->timelines = new \Doctrine\Common\Collections\ArrayCollection();
@@ -200,8 +206,9 @@ class Project
         $this->whiteboards = new \Doctrine\Common\Collections\ArrayCollection();
         $this->roles = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantts = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->customers_access = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugtracker_tags = new \Doctrine\Common\Collections\ArrayCollection();
         $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statProjectAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statLateTasks = new \Doctrine\Common\Collections\ArrayCollection();
@@ -213,6 +220,36 @@ class Project
         $this->statUserWorkingCharge = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statUserTasksAdvancement = new \Doctrine\Common\Collections\ArrayCollection();
         $this->statStorageSize = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray($em, $user)
+    {
+        $color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $this, "user" => $user));
+        if ($color === null)
+            $color = $this->getColor();
+        else
+            $color = $color->getColor();
+        $creator = array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname());
+        return array(
+            "id" => $this->id,
+            "name" => $this->name,
+            "description" => $this->description,
+            "creator" => $creator,
+            "logo" => $this->logoDate ? $this->logoDate->format('Y-m-d H:i:s') : null,
+            "phone" => $this->phone,
+            "company" => $this->company,
+            "contact_mail" => $this->contactEmail,
+            "facebook" => $this->facebook,
+            "twitter" => $this->twitter,
+            "color" => $color,
+            "created_at" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            "deleted_at" => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
+        );
     }
 
     /**
@@ -289,6 +326,28 @@ class Project
     public function getLogo()
     {
         return $this->logo;
+    }
+
+    /**
+     * Set logoDate
+     *
+     * @param date $logoDate
+     * @return self
+     */
+    public function setLogoDate($logoDate)
+    {
+        $this->logoDate = $logoDate;
+        return $this;
+    }
+
+    /**
+     * Get logoDate
+     *
+     * @return date
+     */
+    public function getLogoDate()
+    {
+        return $this->logoDate;
     }
 
     /**
@@ -471,10 +530,12 @@ class Project
      * Add task
      *
      * @param MongoBundle\Document\Task $task
+     * @return self
      */
     public function addTask( $task)
     {
         $this->tasks[] = $task;
+        return $this;
     }
 
     /**
@@ -501,10 +562,12 @@ class Project
      * Add bug
      *
      * @param MongoBundle\Document\Bug $bug
+     * @return self
      */
     public function addBug( $bug)
     {
         $this->bugs[] = $bug;
+        return $this;
     }
 
     /**
@@ -531,10 +594,12 @@ class Project
      * Add timeline
      *
      * @param MongoBundle\Document\Timeline $timeline
+     * @return self
      */
     public function addTimeline( $timeline)
     {
         $this->timelines[] = $timeline;
+        return $this;
     }
 
     /**
@@ -561,10 +626,12 @@ class Project
      * Add event
      *
      * @param MongoBundle\Document\Event $event
+     * @return self
      */
     public function addEvent( $event)
     {
         $this->events[] = $event;
+        return $this;
     }
 
     /**
@@ -591,10 +658,12 @@ class Project
      * Add whiteboard
      *
      * @param MongoBundle\Document\Whiteboard $whiteboard
+     * @return self
      */
     public function addWhiteboard($whiteboard)
     {
         $this->whiteboards[] = $whiteboard;
+        return $this;
     }
 
     /**
@@ -621,10 +690,12 @@ class Project
      * Add role
      *
      * @param MongoBundle\Document\Role $role
+     * @return self
      */
     public function addRole( $role)
     {
         $this->roles[] = $role;
+        return $this;
     }
 
     /**
@@ -651,10 +722,12 @@ class Project
      * Add gantt
      *
      * @param MongoBundle\Document\Gantt $gantt
+     * @return self
      */
     public function addGantt( $gantt)
     {
         $this->gantts[] = $gantt;
+        return $this;
     }
 
     /**
@@ -703,10 +776,12 @@ class Project
      * Add user
      *
      * @param MongoBundle\Document\User $user
+     * @return self
      */
     public function addUser( $user)
     {
         $this->users[] = $user;
+        return $this;
     }
 
     /**
@@ -733,10 +808,12 @@ class Project
      * Add customersAccess
      *
      * @param MongoBundle\Document\CustomerAccess $customersAccess
+     * @return self
      */
     public function addCustomersAccess( $customersAccess)
     {
         $this->customers_access[] = $customersAccess;
+        return $this;
     }
 
     /**
@@ -763,10 +840,44 @@ class Project
      * Add tag
      *
      * @param MongoBundle\Document\Tag $tag
+     * @return self
+     */
+    public function addBugtrackerTag( $tag)
+    {
+        $this->bugtracker_tags[] = $tag;
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param MongoBundle\Document\Tag $tag
+     */
+    public function removeBugtrackerTag( $tag)
+    {
+        $this->bugtracker_tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection $tags
+     */
+    public function getBugtrackerTags()
+    {
+        return $this->bugtracker_tags;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param MongoBundle\Document\Tag $tag
+     * @return self
      */
     public function addTag( $tag)
     {
         $this->tags[] = $tag;
+        return $this;
     }
 
     /**
@@ -798,7 +909,6 @@ class Project
     public function setColor($color)
     {
         $this->color = $color;
-
         return $this;
     }
 
@@ -820,7 +930,6 @@ class Project
     public function addColor( $colors)
     {
         $this->colors[] = $colors;
-
         return $this;
     }
 
@@ -848,11 +957,11 @@ class Project
      * Add statProjectAdvancement
      *
      * @param MongoBundle\Document\StatProjectAdvancement $statProjectAdvancement
+     * @return self
      */
     public function addStatProjectAdvancement( $statProjectAdvancement)
     {
         $this->statProjectAdvancement[] = $statProjectAdvancement;
-
         return $this;
     }
 
@@ -880,11 +989,11 @@ class Project
      * Add statLateTasks
      *
      * @param MongoBundle\Document\StatLateTasks $statLateTasks
+     * @return self
      */
     public function addStatLateTasks( $statLateTasks)
     {
         $this->statLateTasks[] = $statLateTasks;
-
         return $this;
     }
 
@@ -912,11 +1021,11 @@ class Project
      * Add statBugsEvolution
      *
      * @param MongoBundle\Document\StatBugsEvolution $statBugsEvolution
+     * @return self
      */
     public function addStatBugsEvolution( $statBugsEvolution)
     {
         $this->statBugsEvolution[] = $statBugsEvolution;
-
         return $this;
     }
 
@@ -944,11 +1053,11 @@ class Project
      * Add statBugsTagsRepartition
      *
      * @param MongoBundle\Document\StatBugsTagsRepartition $statBugsTagsRepartition
+     * @return self
      */
     public function addStatBugsTagsRepartition( $statBugsTagsRepartition)
     {
         $this->statBugsTagsRepartition[] = $statBugsTagsRepartition;
-
         return $this;
     }
 
@@ -976,11 +1085,11 @@ class Project
      * Add statBugAssignationTracker
      *
      * @param MongoBundle\Document\tatBugAssignationTracker $statBugAssignationTracker
+     * @return self
      */
     public function addStatBugAssignationTracker( $statBugAssignationTracker)
     {
         $this->statBugAssignationTracker[] = $statBugAssignationTracker;
-
         return $this;
     }
 
@@ -1008,11 +1117,11 @@ class Project
      * Add statBugsUsersRepartition
      *
      * @param MongoBundle\Document\tatBugsUsersRepartition $statBugsUsersRepartition
+     * @return self
      */
     public function addStatBugsUsersRepartition( $statBugsUsersRepartition)
     {
         $this->statBugsUsersRepartition[] = $statBugsUsersRepartition;
-
         return $this;
     }
 
@@ -1040,11 +1149,11 @@ class Project
      * Add statTasksRepartition
      *
      * @param MongoBundle\Document\StatTasksRepartition $statTasksRepartition
+     * @return self
      */
     public function addStatTasksRepartition( $statTasksRepartition)
     {
         $this->statTasksRepartition[] = $statTasksRepartition;
-
         return $this;
     }
 
@@ -1072,11 +1181,11 @@ class Project
      * Add statUserWorkingCharge
      *
      * @param MongoBundle\Document\StatUserWorkingCharge $statUserWorkingCharge
+     * @return self
      */
     public function addStatUserWorkingCharge( $statUserWorkingCharge)
     {
         $this->statUserWorkingCharge[] = $statUserWorkingCharge;
-
         return $this;
     }
 
@@ -1104,11 +1213,11 @@ class Project
      * Add statUserTasksAdvancement
      *
      * @param MongoBundle\Document\StatUserTasksAdvancement $statUserTasksAdvancement
+     * @return self
      */
     public function addStatUserTasksAdvancement( $statUserTasksAdvancement)
     {
         $this->statUserTasksAdvancement[] = $statUserTasksAdvancement;
-
         return $this;
     }
 
@@ -1136,11 +1245,11 @@ class Project
      * Add statStorageSize
      *
      * @param MongoBundle\Document\StatStorageSize $statStorageSize
+     * @return self
      */
     public function addStatStorageSize( $statStorageSize)
     {
         $this->statStorageSize[] = $statStorageSize;
-
         return $this;
     }
 

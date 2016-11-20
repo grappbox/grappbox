@@ -35,9 +35,9 @@ class TimelineMessage
     protected $message;
 
     /**
-     * @var int $parentId
+     * @var MongoBundle\Document\Timeline
      */
-    protected $parentId;
+    protected $timelines;
 
     /**
      * @var date $createdAt
@@ -45,19 +45,9 @@ class TimelineMessage
     protected $createdAt;
 
     /**
-     * @var date $deletedAt
-     */
-    protected $deletedAt;
-
-    /**
      * @var date $editedAt
      */
     protected $editedAt;
-
-    /**
-     * @var MongoBundle\Document\Timeline
-     */
-    protected $timelines;
 
     /**
      * @var MongoBundle\Document\User
@@ -65,26 +55,35 @@ class TimelineMessage
     protected $creator;
 
     /**
+     * @var MongoBundle\Document\TimelineComment
+     */
+    protected $comments;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    /**
      * Get object content into array
      *
      * @return array
      */
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        //"userId" => $this->userId,
-        "creator"=> array("id" => $this->creator->getId(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastname()),
-        "timelineId" => $this->timelineId,
-        "title" => $this->title,
-        "message" => $this->message,
-        "parentId" => $this->parentId,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt
-      );
-    }
-
+     public function objectToArray()
+     {
+       return array(
+         "id" => $this->id,
+         "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+         "timelineId" => $this->timelineId,
+         "title" => $this->title,
+         "message" => $this->message,
+         "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+         "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null
+       );
+     }
 
     /**
      * Get id
@@ -185,28 +184,6 @@ class TimelineMessage
     }
 
     /**
-     * Set parentId
-     *
-     * @param int $parentId
-     * @return self
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-        return $this;
-    }
-
-    /**
-     * Get parentId
-     *
-     * @return int $parentId
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
-    }
-
-    /**
      * Set createdAt
      *
      * @param date $createdAt
@@ -226,28 +203,6 @@ class TimelineMessage
     public function getCreatedAt()
     {
         return $this->createdAt;
-    }
-
-    /**
-     * Set deletedAt
-     *
-     * @param date $deletedAt
-     * @return self
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return date $deletedAt
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
     }
 
     /**
@@ -298,22 +253,53 @@ class TimelineMessage
      * Set creator
      *
      * @param MongoBundle\Document\User $creator
-     * @return Bug
+     * @return self
      */
     public function setCreator( $creator)
     {
         $this->creator = $creator;
-
         return $this;
     }
 
     /**
      * Get creator
      *
-     * @return \MongoBundle\Document\User
+     * @return MongoBundle\Document\User
      */
     public function getCreator()
     {
         return $this->creator;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param MongoBundle\Document\TimelineComment $comment
+     * @return self
+     */
+    public function addComment($comment)
+    {
+        $this->comments[] = $comment;
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param MongoBundle\Document\TimelineComment $comment
+     */
+    public function removeComment($comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

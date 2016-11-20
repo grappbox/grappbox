@@ -64,11 +64,13 @@ class ProjectRepository extends EntityRepository
 				}
 				if ($busy == true)
 				{
-					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName),
+								"occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 				else
 				{
-					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName),
+							"occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 			}
 		}

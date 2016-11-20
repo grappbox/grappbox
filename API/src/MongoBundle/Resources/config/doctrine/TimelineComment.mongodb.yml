@@ -1,26 +1,26 @@
-MongoBundle\Document\WhiteboardObject:
+MongoBundle\Document\TimelineComment:
     type: document
     db: symfony_database
-    collection: whiteboard_objects
+    collection: comments
     fields:
         id:
             type: id
             id: true
             strategy: AUTO
-        whiteboardId:
-            type: int
-            column: whiteboard_id
-        object:
+        comment:
             type: string
         createdAt:
             type: date
             name: created_at
-        deletedAt:
+        editedAt:
             type: date
-            name: deleted_at
+            name: edited_at
             nullable: TRUE
     referenceOne:
-        whiteboard:
-          targetDocument: Whiteboard
-          inversedBy: objects
+        messages:
+          targetDocument: TimelineMessage
+          inversedBy: comment
+        creator:
+          targetDocument: User
+          inversedBy: timeline_comment_creator
     lifecycleCallbacks: {  }

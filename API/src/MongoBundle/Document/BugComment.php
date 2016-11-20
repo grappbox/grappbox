@@ -1,48 +1,47 @@
 <?php
 
-namespace SQLBundle\Entity;
+namespace MongoBundle\Document;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
- * TimelineComment
+ * BugComment
  */
-class TimelineComment
+class BugComment
 {
     /**
-     * @var integer
+     * @var $id
      */
-    private $id;
+    protected $id;
 
     /**
-     * @var string
+     * @var string $comment
      */
-    private $comment;
+    protected $comment;
 
     /**
-     * @var DateTime
+     * @var date $createdAt
      */
-    private $createdAt;
+    protected $createdAt;
 
     /**
-     * @var DateTime
+     * @var date $editedAt
      */
-    private $editedAt;
+    protected $editedAt;
 
     /**
-     * @var DateTime
+     * @var date $deletedAt
      */
-    private $deletedAt;
+    protected $deletedAt;
 
     /**
-     * @var \SQLBundle\Entity\TimelineMessage
+     * @var MongoBundle\Document\Bug $bugs
      */
-    private $messages;
+    protected $bugs;
 
     /**
-     * @var \SQLBundle\Entity\User
+     * @var MongoBundle\Document\User $creator
      */
-    private $creator;
+    protected $creator;
 
     /**
      * Get object content into array
@@ -51,20 +50,21 @@ class TimelineComment
      */
     public function objectToArray()
     {
-        return array(
-          "id" => $this->id,
-          "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastName()),
-          "parentId" => $this->messages->getId(),
-          "comment" => $this->comment,
-          "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
-          "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null
-        );
+      return array(
+        "id" => $this->id,
+        "creator" => array("id" => $this->creator->getID(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastName()),
+        "parentId" => $this->bugs->getId(),
+        "comment" => $this->comment,
+        "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+        "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+        "deletedAt" => $this->deletedAt
+      );
     }
 
     /**
      * Get id
      *
-     * @return integer
+     * @return id $id
      */
     public function getId()
     {
@@ -75,12 +75,11 @@ class TimelineComment
      * Set comment
      *
      * @param string $comment
-     * @return date
+     * @return self
      */
     public function setComment($comment)
     {
         $this->comment = $comment;
-
         return $this;
     }
 
@@ -97,20 +96,19 @@ class TimelineComment
     /**
      * Set createdAt
      *
-     * @param DateTime $createdAt
-     * @return date
+     * @param date $createdAt
+     * @return self
      */
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
-
         return $this;
     }
 
     /**
      * Get createdAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getCreatedAt()
     {
@@ -120,20 +118,19 @@ class TimelineComment
     /**
      * Set editedAt
      *
-     * @param DateTime $editedAt
-     * @return date
+     * @param date $editedAt
+     * @return self
      */
     public function setEditedAt($editedAt)
     {
         $this->editedAt = $editedAt;
-
         return $this;
     }
 
     /**
      * Get editedAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getEditedAt()
     {
@@ -143,20 +140,19 @@ class TimelineComment
     /**
      * Set deletedAt
      *
-     * @param DateTime $deletedAt
-     * @return date
+     * @param date $deletedAt
+     * @return self
      */
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
-
         return $this;
     }
 
     /**
      * Get deletedAt
      *
-     * @return DateTime
+     * @return date
      */
     public function getDeletedAt()
     {
@@ -164,45 +160,43 @@ class TimelineComment
     }
 
     /**
-     * Set messages
+     * Set bugs
      *
-     * @param \SQLBundle\Entity\Timeline $messages
-     * @return date
+     * @param MongoBundle\Document\Bug $bug
+     * @return self
      */
-    public function setMessages(\SQLBundle\Entity\TimelineMessage $messages = null)
+    public function setBugs($bug = null)
     {
-        $this->messages = $messages;
-
+        $this->bugs = $bug;
         return $this;
     }
 
     /**
-     * Get messages
+     * Get bugs
      *
-     * @return \SQLBundle\Entity\TimelineMessage
+     * @return MongoBundle\Document\Bug
      */
-    public function getMessages()
+    public function getBugs()
     {
-        return $this->messages;
+        return $this->bugs;
     }
 
     /**
      * Set creator
      *
-     * @param \SQLBundle\Entity\User $creator
-     * @return TimelineComment
+     * @param MongoBundle\Document\User $creator
+     * @return self
      */
-    public function setCreator(\SQLBundle\Entity\User $creator = null)
+    public function setCreator($creator)
     {
         $this->creator = $creator;
-
         return $this;
     }
 
     /**
      * Get creator
      *
-     * @return \SQLBundle\Entity\User
+     * @return MongoBundle\Document\User
      */
     public function getCreator()
     {

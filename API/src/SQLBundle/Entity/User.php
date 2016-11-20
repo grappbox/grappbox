@@ -11,50 +11,6 @@ use Symfony\Component\Security\Core\User\UserInterface;
  */
 class User implements UserInterface
 {
-    public function getUsername()
-    {
-        return $this->email;
-    }
-    public function getSalt()
-    {
-       return null;
-    }
-    public function getRoles()
-    {
-        return array('ROLE_USER');
-    }
-    public function eraseCredentials()
-    {
-    }
-
-    public function fullObjectToArray() {
-        return array(
-            'id' => $this->id,
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null,
-            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
-            'email' => $this->email,
-            'phone' => $this->phone,
-            'country' => $this->country,
-            'linkedin' => $this->linkedin,
-            'viadeo' => $this->viadeo,
-            'twitter' => $this->twitter,
-            'is_client' => $this->isClient
-        );
-    }
-
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'firstname' => $this->firstname,
-            'lastname' => $this->lastname,
-            'email' => $this->email,
-            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
-            'is_client' => $this->isClient
-        );
-    }
     /**
      * @var integer
      */
@@ -228,10 +184,56 @@ class User implements UserInterface
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+
+    public function getUsername()
+    {
+        return $this->email;
+    }
+    public function getSalt()
+    {
+       return null;
+    }
+    public function getRoles()
+    {
+        return array('ROLE_USER');
+    }
+    public function eraseCredentials()
+    {
+    }
+
+    public function fullObjectToArray() {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'country' => $this->country,
+            'linkedin' => $this->linkedin,
+            'viadeo' => $this->viadeo,
+            'twitter' => $this->twitter,
+            'is_client' => $this->isClient
+        );
+    }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'is_client' => $this->isClient
+        );
+    }
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -254,7 +256,7 @@ class User implements UserInterface
     /**
      * Get firstname
      *
-     * @return string 
+     * @return string
      */
     public function getFirstname()
     {
@@ -277,7 +279,7 @@ class User implements UserInterface
     /**
      * Get lastname
      *
-     * @return string 
+     * @return string
      */
     public function getLastname()
     {
@@ -300,7 +302,7 @@ class User implements UserInterface
     /**
      * Get birthday
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getBirthday()
     {
@@ -323,7 +325,7 @@ class User implements UserInterface
     /**
      * Get avatar
      *
-     * @return string 
+     * @return string
      */
     public function getAvatar()
     {
@@ -346,7 +348,7 @@ class User implements UserInterface
     /**
      * Get avatarDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getAvatarDate()
     {
@@ -392,7 +394,7 @@ class User implements UserInterface
     /**
      * Get email
      *
-     * @return string 
+     * @return string
      */
     public function getEmail()
     {
@@ -415,7 +417,7 @@ class User implements UserInterface
     /**
      * Get phone
      *
-     * @return string 
+     * @return string
      */
     public function getPhone()
     {
@@ -438,7 +440,7 @@ class User implements UserInterface
     /**
      * Get country
      *
-     * @return string 
+     * @return string
      */
     public function getCountry()
     {
@@ -461,7 +463,7 @@ class User implements UserInterface
     /**
      * Get linkedin
      *
-     * @return string 
+     * @return string
      */
     public function getLinkedin()
     {
@@ -484,7 +486,7 @@ class User implements UserInterface
     /**
      * Get viadeo
      *
-     * @return string 
+     * @return string
      */
     public function getViadeo()
     {
@@ -507,7 +509,7 @@ class User implements UserInterface
     /**
      * Get twitter
      *
-     * @return string 
+     * @return string
      */
     public function getTwitter()
     {
@@ -530,7 +532,7 @@ class User implements UserInterface
     /**
      * Get isClient
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsClient()
     {
@@ -563,7 +565,7 @@ class User implements UserInterface
     /**
      * Get bug_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getBugCreator()
     {
@@ -596,7 +598,7 @@ class User implements UserInterface
     /**
      * Get message_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getMessageCreator()
     {
@@ -629,7 +631,7 @@ class User implements UserInterface
     /**
      * Get event_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEventCreator()
     {
@@ -662,7 +664,7 @@ class User implements UserInterface
     /**
      * Get project_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjectCreator()
     {
@@ -695,7 +697,7 @@ class User implements UserInterface
     /**
      * Get whiteboard_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWhiteboardCreator()
     {
@@ -728,7 +730,7 @@ class User implements UserInterface
     /**
      * Get whiteboard_updator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWhiteboardUpdator()
     {
@@ -761,7 +763,7 @@ class User implements UserInterface
     /**
      * Get whiteboard_user
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getWhiteboardUser()
     {
@@ -794,7 +796,7 @@ class User implements UserInterface
     /**
      * Get gantt_updator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getGanttUpdator()
     {
@@ -827,7 +829,7 @@ class User implements UserInterface
     /**
      * Get notifications
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getNotifications()
     {
@@ -860,7 +862,7 @@ class User implements UserInterface
     /**
      * Get devices
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDevices()
     {
@@ -893,7 +895,7 @@ class User implements UserInterface
     /**
      * Get task_creator
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTaskCreator()
     {
@@ -926,7 +928,7 @@ class User implements UserInterface
     /**
      * Get colors
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getColors()
     {
@@ -959,7 +961,7 @@ class User implements UserInterface
     /**
      * Get ressources
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRessources()
     {
@@ -992,7 +994,7 @@ class User implements UserInterface
     /**
      * Get authentications
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getAuthentications()
     {
@@ -1025,7 +1027,7 @@ class User implements UserInterface
     /**
      * Get projects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getProjects()
     {
@@ -1058,7 +1060,7 @@ class User implements UserInterface
     /**
      * Get events
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getEvents()
     {

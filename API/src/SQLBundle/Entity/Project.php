@@ -876,7 +876,7 @@ class Project
      *
      * @param \SQLBundle\Entity\BugtrackerTag $tags
      */
-    public function removeBugtracckerTag(\SQLBundle\Entity\BugtrackerTag $tags)
+    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $tags)
     {
         $this->bugtracker_tags->removeElement($tags);
     }
@@ -1308,38 +1308,5 @@ class Project
     public function getStatStorageSize()
     {
         return $this->statStorageSize;
-    }
-
-    /**
-     * Add statLateTasks
-     *
-     * @param \SQLBundle\Entity\StatLateTasks $statLateTasks
-     * @return Project
-     */
-    public function addStatLateTask(\SQLBundle\Entity\StatLateTasks $statLateTasks)
-    {
-        $this->statLateTasks[] = $statLateTasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove statLateTasks
-     *
-     * @param \SQLBundle\Entity\StatLateTasks $statLateTasks
-     */
-    public function removeStatLateTask(\SQLBundle\Entity\StatLateTasks $statLateTasks)
-    {
-        $this->statLateTasks->removeElement($statLateTasks);
-    }
-
-    /**
-     * Remove bugtracker_tags
-     *
-     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
-     */
-    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
-    {
-        $this->bugtracker_tags->removeElement($bugtrackerTags);
     }
 }

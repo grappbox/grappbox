@@ -9,21 +9,6 @@ namespace MongoBundle\Document;
  */
 class Task
 {
-  public function objectToArray()
-  {
-    return array(
-      'id' => $this->id,
-      'creatorId' => $this->creatorId ,
-      'title' => $this->title ,
-      'description' => $this->description ,
-      'color' => $this->color,
-      'dueDate' => $this->dueDate ,
-      'startedAt' => $this->startedAt ,
-      'finishedAt' => $this->finishedAt ,
-      'projectId' => $this->projects->getId(),
-    );
-  }
-
     /**
      * @var $id
      */
@@ -38,11 +23,6 @@ class Task
      * @var string $description
      */
     protected $description;
-
-    /**
-     * @var string
-     */
-    private $color;
 
     /**
      * @var date $dueDate
@@ -105,11 +85,6 @@ class Task
     protected $tasks_container;
 
     /**
-     * @var MongoBundle\Document\Task
-     */
-    protected $container;
-
-    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
@@ -120,10 +95,18 @@ class Task
     protected $creator_user;
 
     /**
+     * @var MongoBundle\Document\Task
+     */
+    protected $container;
+
+    /**
      * @var MongoBundle\Document\Tag
      */
     protected $tags = array();
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
@@ -131,6 +114,47 @@ class Task
         $this->task_depended = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tasks_container = new \Doctrine\Common\Collections\ArrayCollection();
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function objectToArray($taskModified)
+    {
+        $tasks = array();
+        foreach ($this->tasks_container as $t) {
+            $tasks[] = array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null);
+        }
+        $users = array();
+        foreach ($this->ressources as $res) {
+            $u = $res->getUser();
+            $users[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname(), "percent" => $res->getResource());
+        }
+        $tags = array();
+        foreach ($this->tags as $t) {
+            $tags[] = $t->objectToArray();
+        }
+        $deps = array();
+        foreach ($this->dependence as $d) {
+            $t = $d->getDependenceTask();
+            $deps[] = array("id" => $d->getId(), "name" => $d->getName(), "task" => array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null));
+        }
+        return array(
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'project_id' => $this->projects->getId(),
+            'due_date' => $this->dueDate ? $this->dueDate->format('Y-m-d H:i:s') : null,
+            'started_at' => $this->startedAt ? $this->startedAt->format('Y-m-d H:i:s') : null,
+            'finished_at' => $this->finishedAt ? $this->finishedAt->format('Y-m-d H:i:s') : null,
+            'created_at' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'is_milestone' => $this->isMilestone,
+            'is_container' => $this->isContainer,
+            'tasks' => $tasks,
+            'advance' => $this->advance,
+            'creator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'users' => $users,
+            'tags' => $tags,
+            'dependencies' => $deps,
+            'tasks_modified' => $taskModified
+        );
     }
 
     /**
@@ -185,29 +209,6 @@ class Task
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set color
-     *
-     * @param string $color
-     * @return self
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-
-        return $this;
-    }
-
-    /**
-     * Get color
-     *
-     * @return string
-     */
-    public function getColor()
-    {
-        return $this->color;
     }
 
     /**
@@ -393,10 +394,12 @@ class Task
      * Add ressources
      *
      * @param MongoBundle\Document\Ressources $ressources
+     * @return self
      */
     public function addRessource($ressources)
     {
         $this->ressources[] = $ressources;
+        return $this;
     }
 
     /**
@@ -423,10 +426,12 @@ class Task
      * Add dependence
      *
      * @param MongoBundle\Document\Dependencies $dependence
+     * @return self
      */
     public function addDependence( $dependence)
     {
         $this->dependence[] = $dependence;
+        return $this;
     }
 
     /**
@@ -453,10 +458,12 @@ class Task
      * Add task_depended
      *
      * @param MongoBundle\Document\Dependencies $taskDepended
+     * @return self
      */
     public function addTaskDepended( $taskDepended)
     {
         $this->task_depended[] = $taskDepended;
+        return $this;
     }
 
     /**
@@ -483,10 +490,12 @@ class Task
      * Add tasks_container
      *
      * @param MongoBundle\Document\Task $tasksContainer
+     * @return self
      */
     public function addTasksContainer( $tasksContainer)
     {
         $this->tasks_container[] = $tasksContainer;
+        return $this;
     }
 
     /**
@@ -554,36 +563,6 @@ class Task
     }
 
     /**
-     * Add tag
-     *
-     * @param MongoBundle\Document\Tag $tag
-     */
-    public function addTag( $tag)
-    {
-        $this->tags[] = $tag;
-    }
-
-    /**
-     * Remove tag
-     *
-     * @param MongoBundle\Document\Tag $tag
-     */
-    public function removeTag( $tag)
-    {
-        $this->tags->removeElement($tag);
-    }
-
-    /**
-     * Get tags
-     *
-     * @return \Doctrine\Common\Collections\Collection $tags
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
-
-    /**
      * Set container
      *
      * @param MongoBundle\Document\Task $container
@@ -604,5 +583,37 @@ class Task
     public function getContainer()
     {
         return $this->container;
+    }
+
+    /**
+     * Add tag
+     *
+     * @param MongoBundle\Document\Tag $tag
+     * @return self
+     */
+    public function addTag( $tag)
+    {
+        $this->tags[] = $tag;
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param MongoBundle\Document\Tag $tag
+     */
+    public function removeTag( $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection $tags
+     */
+    public function getTags()
+    {
+        return $this->tags;
     }
 }

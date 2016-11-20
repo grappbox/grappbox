@@ -1,0 +1,20 @@
+MongoBundle\Document\Newsletter:
+    type: document
+    db: symfony_database
+    collection: newsletter
+    fields:
+        id:
+          type: id
+          id: true
+          strategy: AUTO
+        email:
+          type: string
+          length: 255
+          nullable: FALSE
+        firstname:
+            type: string
+            length: 255
+        lastname:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

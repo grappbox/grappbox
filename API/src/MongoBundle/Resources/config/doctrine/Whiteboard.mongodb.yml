@@ -7,15 +7,9 @@ MongoBundle\Document\Whiteboard:
             type: id
             id: true
             strategy: AUTO
-        userId:
-           type: int
-           name: user_id
         name:
             type: string
             length: 255
-        updatorId:
-            type: int
-            name: updator_id
         updatedAt:
             type: date
             name: updated_at
@@ -30,9 +24,19 @@ MongoBundle\Document\Whiteboard:
         projects:
           targetDocument: Project
           inversedBy: whiteboards
+        creator_user:
+          targetDocument: User
+          inversedBy: whiteboard_creator
+        updator_user:
+          targetDocument: User
+          inversedBy: whiteboard_updator
     referenceMany:
         objects:
           targetDocument: WhiteboardObject
-          mappedBy: whiteboard
+          targetDocument: whiteboard
+          cascade: [remove]
+        persons:
+          targetDocument: WhiteboardPerson
+          targetDocument: whiteboard
           cascade: [remove]
     lifecycleCallbacks: {  }

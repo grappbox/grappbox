@@ -10,12 +10,12 @@ MongoBundle\Document\Tag:
         name:
             type: string
             length: 255
+        color:
+            type: string
+            length: 255
     referenceMany:
         tasks:
           targetDocument: Task
-          mappedBy: tags
-        bugs:
-          targetDocument: Bug
           mappedBy: tags
     referenceOne:
         project:

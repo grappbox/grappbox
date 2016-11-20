@@ -19,17 +19,6 @@ class TimelineType
      */
     protected $name;
 
-
-
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "name" => $this->name
-      );
-    }
-
-
     /**
      * Get id
      *
@@ -60,5 +49,13 @@ class TimelineType
     public function getName()
     {
         return $this->name;
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name
+      );
     }
 }
