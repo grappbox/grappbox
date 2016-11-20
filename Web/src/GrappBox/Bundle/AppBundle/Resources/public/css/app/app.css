@@ -57,9 +57,6 @@
 /* ==================== GENERAL LAYOUT ==================== */
 /* ======================================================== */
 
-html,
-body { width: 100%!important; height: 100%!important; }
-
 body {
   font-family: "Roboto", "Helvetica", "Arial", sans-serif;
   font-weight: 400;
@@ -72,8 +69,10 @@ body {
   font-feature-settings: "liga"!important;
 }
 
+body.load { overflow: hidden; }
+
 h1 { font-weight: 700; }
-h1.big { font-size: 145px; }
+h1.large { font-size: 145px; }
 
 h2 { font-weight: 600; line-height: 20px; margin: 0; text-transform: uppercase; color: #212121; }
 h3, h4 { font-weight: 500; color: #757575; }
@@ -109,7 +108,7 @@ ul, ol { padding: 0; list-style: none; }
 hr { position: relative; width: 70px; height: 4px; margin: 0 auto; margin-bottom: 30px; text-align: center; border: 0; }
 label { font-weight: 400; display: inline; margin: 0; }
 
-.page { width: 100%; margin: 90px 0 60px 0; }
+.page { width: 100%; margin: 90px 0 60px 0; min-height: calc(100vh - 150px); }
 .page-header { margin: -30px -120px 20px -120px; padding: 30px 120px; border: 0; }
 .page-header .title { margin-top: 10px; color: #fff; }
 .page-header:not(.master) .title h1 { font-size: 28px; margin-top: 10px; }
@@ -121,7 +120,7 @@ label { font-weight: 400; display: inline; margin: 0; }
 .page-header .btn-raised:hover { background: #eee!important; }
 
 @media (max-width: 768px) {
-  .page { margin: 150px 0 60px 0; }
+  .page { margin: 150px 0 60px 0; min-height: calc(100vh - 210px); }
 }
 
 @media (max-width: 992px) {
@@ -130,11 +129,15 @@ label { font-weight: 400; display: inline; margin: 0; }
 }
 
 .ellipsis { display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
-.construction { background: repeating-linear-gradient(-45deg, #ff9f55, #ff9f55 10px, #ffb276 10px, #ffb276 20px); color: #fff; }
-.construction i { vertical-align: middle; margin-right: 10px; }
+.view.load { opacity: .25; }
 .no-margin { margin: 0!important; }
 .no-padding { padding: 0!important; }
 .no-shadow { box-shadow: none!important; }
+
+.construction { background: repeating-linear-gradient(-45deg, #ff9f55, #ff9f55 10px, #ffb276 10px, #ffb276 20px); color: #fff; }
+.construction.construction-center { margin: 35vh -120px 0 -120px; }
+.construction p { margin: 0; font-weight: 500!important; }
+.construction i { vertical-align: middle; margin-right: 10px; }
 
 
 
@@ -205,7 +208,7 @@ a:hover { text-decoration: none; color: #4bf; }
 /* ==================== NAVIGATION ==================== */
 /* ==================================================== */
 
-.navigation-master { position: fixed; z-index: 1010; top: 0; width: 100%; height: 60px; background: #fafafa; }
+.navigation-master { position: fixed; z-index: 10101; top: 0; width: 100%; height: 60px; background: #fafafa; }
 .navigation-master a { font-weight: 500; padding: 13px 0; }
 .navigation-master img { margin: 0 10px 0 0; }
 .navigation-master .navigation-right a { padding: 10px; margin: 8px 5px; border-radius: 50%; }
@@ -218,7 +221,7 @@ a:hover { text-decoration: none; color: #4bf; }
 .navigation-master .dropdown-toggle { padding: 10px; border-radius: 50%; margin: 8px 5px; }
 .navigation-master .dropdown-toggle:hover { color: #fafafa!important; }
 
-.navigation { position: fixed; z-index: 101; top: 60px; width: 100%; height: 60px; background: #fafafa; color: #eee; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); }
+.navigation { position: fixed; z-index: 1010; top: 60px; width: 100%; height: 60px; background: #fafafa; color: #eee; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.26); }
 
 .navigation-master a,
 .navigation-master p,
@@ -298,7 +301,7 @@ a:hover { text-decoration: none; color: #4bf; }
 .box { background: #fff; padding: 10px; margin: 5px; box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02); }
 .box-row { margin: 0 -5px; }
 .box-error { text-align: center; }
-.box-header { padding: 10px; margin: 0; font-size: 16px; font-weight: 400; }
+.box-header { padding: 10px; margin: 10px 0 0 0; font-size: 16px; font-weight: 400; color: #424242; }
 .box p { padding: 10px; margin: 0; }
 .box p span { opacity: 0.6; }
 
@@ -333,13 +336,14 @@ a:hover { text-decoration: none; color: #4bf; }
 /* ==================== LOADING ==================== */
 /* ================================================= */
 
-.main-spinner { margin: 80px auto 40px auto; }
-.main-spinner .circular { width: 72px; height: 72px; }
-
 .spinner { margin: 30px auto 30px auto; }
 .spinner .circular { width: 56px; height: 56px; }
 .spinner .circular { display: block; margin: 0 auto; -webkit-transform-origin: center center; -moz-transform-origin: center center; -o-transform-origin: center center; -ms-transform-origin: center center; transform-origin: center center; -webkit-animation: rotate 2s linear infinite; -moz-animation: rotate 2s linear infinite; -o-animation: rotate 2s linear infinite; -ms-animation: rotate 2s linear infinite; animation: rotate 2s linear infinite; }
 .spinner .circular .path { -webkit-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -moz-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -o-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; -ms-animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; animation: dash 1.3s ease-in-out infinite, color 6s ease-in-out infinite; stroke-dasharray: 1, 200; stroke-dashoffset: 0; stroke-linecap: round; }
+
+.spinner-main { position: absolute; left: 50%; transform: translate(-50%, -50%); z-index: 1010; margin: 230px auto; }
+.spinner-main .circular { width: 72px; height: 72px; }
+.spinner-overlay { background: #fff; opacity: .85; position: absolute; z-index: 101; width: calc(100vw + 120px); height: 100vh; margin: -30px 0 0 -120px; }
 
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 @-webkit-keyframes color { 100%, 0% { stroke: #fc575e; } }
@@ -448,6 +452,11 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 @media (min-width: 1200px) and (max-width: 1600px) {
   .dashboard-list .box img { float: none; display: block; margin: 10px auto; }  
 }
+
+@media (min-width: 1600px) and (max-width: 1800px) {
+  .page.open .dashboard-list .box img { float: none; display: block; margin: 10px auto; }
+}
+
 
 
 /* ================================================== */
