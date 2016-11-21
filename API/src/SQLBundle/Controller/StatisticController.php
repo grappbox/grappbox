@@ -599,13 +599,14 @@ class StatisticController extends RolesAndTokenVerificationController
 	//                    STATISTICS DATA - CUSTOM UPDATE
 	// -----------------------------------------------------------------------
 
-	public function updateStat($projectId, $statName)
+	public function updateStatAction($projectId, $statName)
 	{
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return "Error: Bad project Id";
+			return $this->setSuccess("1.16.1", "Stat", "customUpdate", "Complete Success", 'Error: Bad project Id');
+			// return "Error: Bad project Id";
 
 		switch ($statName) {
 			case 'UserTasksAdvancement':
@@ -631,7 +632,8 @@ class StatisticController extends RolesAndTokenVerificationController
 				break;
 		}
 
-		return "Success: Stat '".$statName."' updated.";
+		//return "Success: Stat '".$statName."' updated.";
+		return $this->setSuccess("1.16.1", "Stat", "customUpdate", "Complete Success", "success");
 	}
 
 	private function updateUserTasksAdvancement($project)
@@ -650,24 +652,23 @@ class StatisticController extends RolesAndTokenVerificationController
 				$task = $res->getTask();
 				if ($task->getProjects()->getId() == $project->getId())
 				{
-					if($task->getFinishedAt())
+					if($task->getAdvance() == 100)
 						$result['Done'] += 1;
-					elseif (!$task->getStartedAt() && $task->getDueDate() > $date)
+					else if ($task->getAdvance() == 0)
 						$result['ToDo'] += 1;
-					elseif ($task->getStartedAt() && !$task->getFinishedAt() && $task->getDueDate() > $date)
+					else if ($task->getAdvance() > 0 && $task->getAdvance() < 100)
 						$result['Doing'] += 1;
-					elseif (!$task->getFinishedAt() && $task->getDueDate() <= $date)
+					else if ($task->getAdvance() < 100 && $task->getDueDate() <= $date)
 						$result['Late'] += 1;
 				}
 			}
 
-			$userFullname = $user->getFirstname().' '.$user->getLastName();
-			$statUserTasksAdvancement = $em->getRepository('SQLBundle:StatUserTasksAdvancement')->findOneBy(array('project' => $project, 'user' => $userFullname));
-			if ($statUserTasksAdvancement === null)
+			$statUserTasksAdvancement = $em->getRepository('SQLBundle:StatUserTasksAdvancement')->findOneBy(array('project' => $project, 'user' => $user));
+			if (!$statUserTasksAdvancement instanceof StatUserTasksAdvancement)
 			{
 				$statUserTasksAdvancement = new StatUserTasksAdvancement();
 				$statUserTasksAdvancement->setProject($project);
-				$statUserTasksAdvancement->setUser($userFullname);
+				$statUserTasksAdvancement->setUser($user);
 			}
 			$statUserTasksAdvancement->setTasksToDo($result['ToDo']);
 			$statUserTasksAdvancement->setTasksDoing($result['Doing']);
@@ -696,13 +697,12 @@ class StatisticController extends RolesAndTokenVerificationController
 						$charge += $res->getResource();
 			}
 
-			$userFullname = $user->getFirstname().' '.$user->getLastName();
-			$statUserWorkingCharge = $em->getRepository('SQLBundle:StatUserWorkingCharge')->findOneBy(array('project' => $project, 'user' => $userFullname));
-			if ($statUserWorkingCharge === null)
+			$statUserWorkingCharge = $em->getRepository('SQLBundle:StatUserWorkingCharge')->findOneBy(array('project' => $project, 'user' => $user));
+			if (!$statUserWorkingCharge instanceof statUserWorkingCharge)
 			{
 				$statUserWorkingCharge = new StatUserWorkingCharge();
 				$statUserWorkingCharge->setProject($project);
-				$statUserWorkingCharge->setUser($userFullname);
+				$statUserWorkingCharge->setUser($user);
 			}
 			$statUserWorkingCharge->setCharge($charge);
 
@@ -746,13 +746,12 @@ class StatisticController extends RolesAndTokenVerificationController
 				$percentage = 0;
 			}
 
-			$userFullname = $user->getFirstname().' '.$user->getLastName();
-			$statTasksRepartition = $em->getRepository('SQLBundle:StatTasksRepartition')->findOneBy(array('project' => $project, 'user' => $userFullname));
-			if ($statTasksRepartition === null)
+			$statTasksRepartition = $em->getRepository('SQLBundle:StatTasksRepartition')->findOneBy(array('project' => $project, 'user' => $user));
+			if (!$statTasksRepartition instanceof StatTasksRepartition)
 			{
 				$statTasksRepartition = new StatTasksRepartition();
 				$statTasksRepartition->setProject($project);
-				$statTasksRepartition->setUser($userFullname);
+				$statTasksRepartition->setUser($user);
 				$statTasksRepartition->setRole($role[0]['name']);
 			}
 			$statTasksRepartition->setValue($number);
@@ -793,17 +792,17 @@ class StatisticController extends RolesAndTokenVerificationController
 				$percentage = 0;
 			}
 
-			$statBugsTagsRepartition = $em->getRepository('SQLBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project, "user" => $user->getFirstname().' '.$user->getLastName()));
-			if ($statBugsTagsRepartition instanceof StatBugsUsersRepartition)
+			$statBugsUsersRepartition = $em->getRepository('SQLBundle:StatBugsUsersRepartition')->findOneBy(array('project' => $project, "user" => $user));
+			if (!$statBugsUsersRepartition instanceof StatBugsUsersRepartition)
 			{
-				$statBugsTagsRepartition = new StatBugsUsersRepartition();
-				$statBugsTagsRepartition->setProject($project);
-				$statBugsTagsRepartition->setUser($user->getFirstname().' '.$user->getLastName());
+				$statBugsUsersRepartition = new StatBugsUsersRepartition();
+				$statBugsUsersRepartition->setProject($project);
+				$statBugsUsersRepartition->setUser($user);
 			}
-			$statBugsTagsRepartition->setValue($number);
-			$statBugsTagsRepartition->setPercentage($percentage);
+			$statBugsUsersRepartition->setValue($number);
+			$statBugsUsersRepartition->setPercentage($percentage);
 
-			$em->persist($statBugsTagsRepartition);
+			$em->persist($statBugsUsersRepartition);
 			$em->flush();
 		}
 	}
@@ -1013,7 +1012,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
 				$statLateTasks = new statLateTasks();
 				$statLateTasks->setProject($project);
-				$statLateTasks->setUser($user->getFirstname().' '.$user->getLastName());
+				$statLateTasks->setUser($user);
 				$statLateTasks->setRole($role[0]['name']);
 				$statLateTasks->setLateTasks($lateTasks);
 				$statLateTasks->setOntimeTasks($ontimeTasks);

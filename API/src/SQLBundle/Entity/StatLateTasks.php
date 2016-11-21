@@ -22,11 +22,6 @@ class StatLateTasks
     /**
      * @var string
      */
-    protected $user;
-
-    /**
-     * @var string
-     */
     protected $role;
 
     /**
@@ -44,10 +39,17 @@ class StatLateTasks
      */
     protected $project;
 
+    /**
+     * @var \SQLBundle\Entity\User
+     */
+    private $user;
+
     public function objectToArray()
     {
       return array(
-        "user" => $this->user,
+        "user" => array("id" => $this->getUser()->getId(),
+                        "firstname" => $this->getUser()->getFirstname(),
+                        "lastname" => $this->getUser()->getLastname()),
         "role" => $this->role,
         "date" => $this->date,
         "lateTasks" => $this->lateTasks,
@@ -86,29 +88,6 @@ class StatLateTasks
     public function getDate()
     {
         return $this->date;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return StatLateTasks
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -201,5 +180,28 @@ class StatLateTasks
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \SQLBundle\Entity\User $user
+     * @return StatLateTasks
+     */
+    public function setUser(\SQLBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \SQLBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

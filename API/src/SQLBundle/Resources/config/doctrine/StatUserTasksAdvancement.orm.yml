@@ -8,9 +8,6 @@ SQLBundle\Entity\StatUserTasksAdvancement:
             generator:
                 strategy: AUTO
     fields:
-        user:
-            type: string
-            length: 255
         tasksToDo:
             type: integer
         tasksDoing:
@@ -25,5 +22,10 @@ SQLBundle\Entity\StatUserTasksAdvancement:
           inversedBy: StatUserTasksAdvancement
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }
