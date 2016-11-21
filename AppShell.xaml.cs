@@ -60,7 +60,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.BugtrackerSymbol,
                     Label = "Bugtracker",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(BugtrackerView),
                     ForegroundColor = SystemInformation.GetStaticResource("PurpleGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
@@ -119,7 +119,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.BugtrackerSymbol,
                     Label = "Bugtracker",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(BugtrackerView),
                     ForegroundColor = SystemInformation.GetStaticResource("PurpleGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()

@@ -134,10 +134,12 @@
     </Compile>
     <Compile Include="Helpers\AppGlobalHelper.cs" />
     <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
+    <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
     <Compile Include="Model\CalendarModel.cs" />
     <Compile Include="Model\Calendar\Creator.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
+    <Compile Include="Model\Global\TagModel.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
     <Compile Include="Model\Global\LogoModel.cs" />
@@ -153,6 +155,7 @@
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
+    <Compile Include="ViewModel\BugtrackerViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
@@ -160,6 +163,12 @@
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="View\BugtrackerView.xaml.cs">
+      <DependentUpon>BugtrackerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\BugView.xaml.cs">
+      <DependentUpon>BugView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
@@ -294,6 +303,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Resources\Styles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BugtrackerView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\BugView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
