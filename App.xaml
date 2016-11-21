@@ -10,7 +10,6 @@
             <ResourceDictionary.MergedDictionaries>
                 <!-- Generic Styles -->
                 <ResourceDictionary Source="Resources/GrappboxColors.xaml" />
-                <ResourceDictionary Source="Resources/Converters.xaml" />
                 <ResourceDictionary Source="Resources/PivotStyles.xaml" />
                 <ResourceDictionary Source="Resources/ButtonStyles.xaml" />
                 <ResourceDictionary Source="Resources/ListviewStyles.xaml" />

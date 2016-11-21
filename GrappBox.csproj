@@ -168,6 +168,9 @@
     </Compile>
     <Compile Include="View\BugView.xaml.cs">
       <DependentUpon>BugView.xaml</DependentUpon>
+	</Compile>
+    <Compile Include="View\CalendarEventDetail.xaml.cs">
+      <DependentUpon>CalendarEventDetail.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
@@ -274,10 +277,6 @@
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
-    <Page Include="Resources\Converters.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Resources\CustomStyle.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -313,6 +312,10 @@
     <Page Include="View\BugView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+	</Page>
+    <Page Include="View\CalendarEventDetail.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\CalendarView.xaml">
       <SubType>Designer</SubType>
