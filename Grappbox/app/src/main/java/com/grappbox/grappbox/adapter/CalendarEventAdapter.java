@@ -1,13 +1,17 @@
 package com.grappbox.grappbox.adapter;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.calendar_fragment.EventDetailsActivity;
 import com.grappbox.grappbox.model.CalendarEventModel;
 
 import java.text.ParseException;
@@ -75,6 +79,14 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<RecyclerView.View
             holder.mTitle.setText(item._title);
             holder.mBegin.setText(format.format(mDateFormat.parse(item._beginDate)));
             holder.mEnd.setText(format.format(mDateFormat.parse(item._endDate)));
+            holder.mView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(mContext, EventDetailsActivity.class);
+                    intent.putExtra(EventDetailsActivity.EXTRA_CALENDAR_EVENT_MODEL, item);
+                    mContext.startActivity(intent);
+                }
+            });
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -99,12 +111,14 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private static class CalendarEventHolder extends RecyclerView.ViewHolder {
 
+        LinearLayout mView;
         TextView mBegin;
         TextView mEnd;
         TextView mTitle;
 
         public CalendarEventHolder(View itemView, ViewGroup root) {
             super(itemView);
+            mView = (LinearLayout) itemView.findViewById(R.id.event_view);
             mBegin = (TextView) itemView.findViewById(R.id.event_begin);
             mEnd = (TextView) itemView.findViewById(R.id.event_end);
             mTitle = (TextView) itemView.findViewById(R.id.title);

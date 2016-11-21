@@ -13,7 +13,6 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +22,8 @@ import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.CalendarListProjectAdapter;
 import com.grappbox.grappbox.adapter.CalendarParticipantAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
-import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.model.CalendarProjectModel;
 import com.grappbox.grappbox.model.UserModel;
-import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 

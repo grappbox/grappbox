@@ -10,6 +10,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.grappbox.grappbox.R;
+
 /**
  * Created by tan_f on 16/11/2016.
  */
@@ -19,7 +21,11 @@ public class EventDetailsFragment extends Fragment implements LoaderManager.Load
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        return super.onCreateView(inflater, container, savedInstanceState);
+        View v = inflater.inflate(R.layout.fragment_calendar_event_details, container, false);
+
+
+        return v;
+
     }
 
     @Override

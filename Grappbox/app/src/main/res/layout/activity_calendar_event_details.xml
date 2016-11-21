@@ -24,11 +24,11 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <fragment android:name="com.grappbox.grappbox.bugtracker_fragments.BugDetailsFragment"
+    <fragment android:name="com.grappbox.grappbox.calendar_fragment.EventDetailsFragment"
         android:id="@+id/fragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/bugtracker_details"
+        tools:layout="@layout/fragment_calendar_event_details"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

@@ -290,7 +290,7 @@ public class GrappboxJustInTimeService extends IntentService {
             } else if (ACTION_GET_EVENT.equals(action)) {
                 handleEventGet(intent.getLongExtra(EXTRA_EVENT_ID, -1));
             } else if (ACTION_DELETE_EVENT.equals(action)) {
-                handleEventDelete(intent.getLongExtra(EXTRA_EVENT_ID, -1));
+                handleEventDelete(intent.getLongExtra(EXTRA_EVENT_ID, -1), responseObserver);
             } else if (ACTION_SET_PARTICIPANT_EVENT.equals(action)) {
                 Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
                 handleEventSetParticipant(intent.getLongExtra(EXTRA_EVENT_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
@@ -2758,8 +2758,47 @@ public class GrappboxJustInTimeService extends IntentService {
 
     }
 
-    private void handleEventDelete(Long localEventId) {
+    private void handleEventDelete(Long localEventId, ResultReceiver responseObserver) {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor event = null;
 
+        try {
+            if (apiToken == null)
+                throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_TOKEN);
+            event = getContentResolver().query(EventEntry.CONTENT_URI, new String[]{EventEntry.TABLE_NAME + "." + EventEntry.COLUMN_GRAPPBOX_ID}, EventEntry.TABLE_NAME + "." + EventEntry._ID + "=?", new String[]{String.valueOf(localEventId)}, null);
+            if (event == null || !event.moveToFirst())
+                throw new IllegalArgumentException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/event/" + event.getString(0));
+            JSONObject json;
+
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty()) {
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            } else {
+                Log.v(LOG_TAG, "returnedJSON : " + returnedJson);
+                json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)) {
+                    if (responseObserver != null) {
+                        Bundle answer = new Bundle();
+                        answer.putString(BUNDLE_KEY_ERROR_MSG, Utils.Errors.getClientMessageFromErrorCode(this, json.getJSONObject("info").getString("return_code")));
+                        responseObserver.send(Activity.RESULT_CANCELED, answer);
+                    }
+                } else {
+                    getContentResolver().delete(EventEntry.CONTENT_URI, EventEntry._ID + "=?", new String[]{String.valueOf(localEventId)});
+                }
+            }
+        } catch (NetworkErrorException | IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (event != null)
+                event.close();
+        }
     }
 
     private void handleEventSetParticipant(Long localEventId, List<Long> toAdd, List<Long> toDelete, ResultReceiver responseObserver){

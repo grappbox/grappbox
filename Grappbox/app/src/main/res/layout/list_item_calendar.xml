@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:animateLayoutChanges="true"
-    android:id="@+id/card_view"
+    android:id="@+id/event_view"
     android:background="@drawable/detail_action_background"
     android:stateListAnimator="@animator/detail_action_selection"
     android:padding="2dp"

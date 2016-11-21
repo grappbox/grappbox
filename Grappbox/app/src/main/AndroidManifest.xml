@@ -129,7 +129,7 @@
         </activity>
 
         <activity android:name=".calendar_fragment.EventDetailsActivity"
-            android:label="@string/title_activity_new_event"
+            android:label="@string/title_activity_event_detail"
             android:parentActivityName=".ProjectActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

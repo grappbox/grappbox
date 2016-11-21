@@ -231,4 +231,5 @@
     <string name="event_begin_label">Event begin</string>
     <string name="event_end_label">Event end</string>
     <string name="event_error_date">Date event error</string>
+    <string name="title_activity_event_detail">Event details</string>
 </resources>
