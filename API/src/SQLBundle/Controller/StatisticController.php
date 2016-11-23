@@ -727,11 +727,11 @@ class StatisticController extends RolesAndTokenVerificationController
 		foreach ($stats as $key => $stat) {
 			$isPresent = false;
 			foreach ($users as $key2 => $user) {
-				if (user->getId() == $stat->getUser()->getId())
+				if ($user->getId() == $stat->getUser()->getId())
 					$isPresent = true;
 			}
 			if (!$isPresent) {
-				$em->remove($stat)
+				$em->remove($stat);
 				$em->flush();
 			}
 		}
@@ -837,11 +837,11 @@ class StatisticController extends RolesAndTokenVerificationController
 		foreach ($stats as $key => $stat) {
 			$isPresent = false;
 			foreach ($users as $key2 => $user) {
-				if (user->getId() == $stat->getUser()->getId())
+				if ($user->getId() == $stat->getUser()->getId())
 					$isPresent = true;
 			}
 			if (!$isPresent) {
-				$em->remove($stat)
+				$em->remove($stat);
 				$em->flush();
 			}
 		}
