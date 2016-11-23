@@ -599,14 +599,29 @@ class StatisticController extends RolesAndTokenVerificationController
 	//                    STATISTICS DATA - CUSTOM UPDATE
 	// -----------------------------------------------------------------------
 
-	public function updateStatAction($projectId, $statName)
+	public function manuallyUpdateStatAction() {
+			$em = $this->getDoctrine()->getManager();
+			$projects = $em->getRepository('SQLBundle:Project')->findBy(array('deletedAt' => NULL));
+
+			$result = array();
+			foreach ($projects as $key => $project) {
+				$result['UserTasksAdvancement'] = $this->updateUserTasksAdvancement($project);
+				$result['UserWorkingCharge'] = $this->updateUserWorkingCharge($project);
+				$result['TasksRepartition'] = $this->updateTasksRepartition($project);
+				$result['BugsUsersRepartition'] = $this->updateBugsUsersRepartition($project);
+				$result['BugAssignationTracker'] = $this->updateBugAssignationTracker($project);
+				$result['BugsTagsRepartition'] = $this->updateBugsTagsRepartition($project);
+			}
+			return $this->setSuccess("1.16.1", "Stat", "customUpdate", "Complete Success", $result);
+	}
+
+	public function updateStat($projectId, $statName)
 	{
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($projectId);
 
 		if ($project === null)
-			return $this->setSuccess("1.16.1", "Stat", "customUpdate", "Complete Success", 'Error: Bad project Id');
-			// return "Error: Bad project Id";
+			return "Error: Bad project Id";
 
 		switch ($statName) {
 			case 'UserTasksAdvancement':
@@ -632,8 +647,7 @@ class StatisticController extends RolesAndTokenVerificationController
 				break;
 		}
 
-		//return "Success: Stat '".$statName."' updated.";
-		return $this->setSuccess("1.16.1", "Stat", "customUpdate", "Complete Success", "success");
+		return "Success: Stat '".$statName."' updated.";
 	}
 
 	private function updateUserTasksAdvancement($project)

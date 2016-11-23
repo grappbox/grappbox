@@ -620,8 +620,8 @@ stat_dailyUpdate:
   methods: [GET]
 
 stat_customUpdate:
-  path:       statistics/update/custom/{projectId}/{statName}
-  defaults:   { _controller: SQLBundle:Statistic:updateStat }
+  path:       statistics/update/custom
+  defaults:   { _controller: SQLBundle:Statistic:manuallyUpdateStat }
   methods: [GET]
 
 
