@@ -25,6 +25,6 @@ SQLBundle\Entity\StatTasksRepartition:
         user:
           targetEntity: User
           joinColumn:
-            name: project_id
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

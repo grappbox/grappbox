@@ -679,6 +679,19 @@ class StatisticController extends RolesAndTokenVerificationController
 			$em->flush();
 		}
 
+		$stats = $em->getRepository('SQLBundle:StatUserTasksAdvancement')->findBy(array('project' => $project));
+		foreach ($stats as $key => $stat) {
+			$isPresent = false;
+			foreach ($users as $key2 => $user) {
+				if (user->getId() == $stat->getUser()->getId())
+					$isPresent = true;
+			}
+			if (!$isPresent) {
+				$em->remove($stat)
+				$em->flush();
+			}
+		}
+
 		return "Data updated";
 	}
 
@@ -709,6 +722,20 @@ class StatisticController extends RolesAndTokenVerificationController
 			$em->persist($statUserWorkingCharge);
 			$em->flush();
 		}
+
+		$stats = $em->getRepository('SQLBundle:StatUserWorkingCharge')->findBy(array('project' => $project));
+		foreach ($stats as $key => $stat) {
+			$isPresent = false;
+			foreach ($users as $key2 => $user) {
+				if (user->getId() == $stat->getUser()->getId())
+					$isPresent = true;
+			}
+			if (!$isPresent) {
+				$em->remove($stat)
+				$em->flush();
+			}
+		}
+
 		return "Data updated";
 	}
 
@@ -805,6 +832,21 @@ class StatisticController extends RolesAndTokenVerificationController
 			$em->persist($statBugsUsersRepartition);
 			$em->flush();
 		}
+
+		$stats = $em->getRepository('SQLBundle:StatBugsUsersRepartition')->findBy(array('project' => $project));
+		foreach ($stats as $key => $stat) {
+			$isPresent = false;
+			foreach ($users as $key2 => $user) {
+				if (user->getId() == $stat->getUser()->getId())
+					$isPresent = true;
+			}
+			if (!$isPresent) {
+				$em->remove($stat)
+				$em->flush();
+			}
+		}
+
+		return 'Data updated';
 	}
 
 	private function updateBugAssignationTracker($project)
