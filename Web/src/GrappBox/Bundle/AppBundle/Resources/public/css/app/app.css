@@ -69,8 +69,6 @@ body {
   font-feature-settings: "liga"!important;
 }
 
-body.load { overflow: hidden; }
-
 h1 { font-weight: 700; }
 h1.large { font-size: 145px; }
 
@@ -109,7 +107,7 @@ ul, ol { padding: 0; list-style: none; }
 hr { position: relative; width: 70px; height: 4px; margin: 0 auto; margin-bottom: 30px; text-align: center; border: 0; }
 label { font-weight: 400; display: inline; margin: 0; }
 
-.page { width: 100%; margin: 90px 0 60px 0; min-height: calc(100vh - 150px); }
+.page { width: 100%; padding: 90px 0 60px 0; min-height: calc(100vh - 150px); }
 .page-header { margin: -30px -120px 20px -120px; padding: 30px 120px; border: 0; }
 .page-header .title { margin-top: 10px; color: #fff; }
 .page-header:not(.master) .title h1 { font-size: 28px; margin-top: 10px; }
@@ -365,7 +363,6 @@ a:hover { text-decoration: none; color: #4bf; }
 
 .spinner-main { position: absolute; left: 50%; transform: translate(-50%, -50%); z-index: 10101; margin: 230px auto; }
 .spinner-main .circular { width: 72px; height: 72px; }
-.spinner-overlay { background: #fafafa; opacity: .75; position: absolute; z-index: 1010; width: calc(100vw + 120px); height: 100vh; height: 100vmax; margin: -30px 0 0 -120px; overflow: hidden; }
 
 @-webkit-keyframes rotate { 100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); } }
 @-webkit-keyframes color { 100%, 0% { stroke: #fc575e; } }
