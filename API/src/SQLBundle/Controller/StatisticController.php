@@ -687,7 +687,7 @@ class StatisticController extends RolesAndTokenVerificationController
 					$isPresent = true;
 			}
 			if (!$isPresent) {
-				$em->remove($stat)
+				$em->remove($stat);
 				$em->flush();
 			}
 		}
