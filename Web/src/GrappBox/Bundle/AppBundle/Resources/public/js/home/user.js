@@ -66,9 +66,42 @@ $(document).ready(function() {
 
       $("#form-message").addClass("show");
     }
-  }
+  };
+
+  // Routine definition
+  // Set alert message depending on cookies content
+  function getPreorderStatus() {
+    var status = Cookies.get("G_PREORDER");
+
+    $("#form-message").removeClass("show");
+    if (status != undefined) {
+      switch(window.atob(status)) {
+        case "_success":
+        $("#form-message p").html("You are successfully registered.<br>We'll get in touch soon, thanks a lot!");
+        break;
+
+        case "_already":
+        $("#form-message p").html("This email is already registered.<br>Be patient!");
+        break;
+
+        case "_critical":
+        $("#form-message p").html("Something is wrong with GrappBox.<br>Please give us a minute, and try again.");
+        break;
+
+        case "_denied":
+        $("#form-message p").text("You must login to GrappBox to continue.");
+        break;
+
+        default:
+        break;
+      }
+      Cookies.remove("G_PREORDER", { path: "/" });
+
+      $("#form-message").addClass("show");
+    }
+  };
 
   // Start point
   getUserStatus();
-
+  getPreorderStatus();
 });
