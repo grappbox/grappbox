@@ -53,7 +53,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "BugtrackerController",
 		templateUrl : "../resources/partials/bugtracker.html",
 		caseInsensitiveMatch : true,
-    homepage: false,    
     resolve: {
       projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }],
       bugAvailability: ["accessFactory", function(accessFactory) { return accessFactory.bugAvailable(); }]
@@ -88,14 +87,14 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     title: "Notifications",
     controller  : "NotificationController",
     templateUrl : "../resources/partials/notifications.html",
-    caseInsensitiveMatch : true,
+    caseInsensitiveMatch : true
   })
   // User pages  
   .when("/profile", {
     title: "Profile",
     controller  : "ProfileController",
     templateUrl : "../resources/partials/profile.html",
-    caseInsensitiveMatch : true,
+    caseInsensitiveMatch : true
   })
   // Project settings page
   .when("/settings/:project_id", {
@@ -126,7 +125,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "TaskController",
 		templateUrl : "../resources/partials/task.html",
 		caseInsensitiveMatch : true,
-    homepage: false,    
     resolve: {
       projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }],
       taskAvailability: ["accessFactory", function(accessFactory) { return accessFactory.taskAvailable(); }]

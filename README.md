@@ -6,7 +6,7 @@
 [![Build Status](https://travis-ci.com/grappbox/grappbox.svg?token=dspdMqgVdesbJX4HTxUY&branch=Web-prod)](https://travis-ci.com/grappbox/grappbox)
 
 Built with Symfony (3.1 minimum) and AngularJS (1.5.x minimum).<br>
-Requires PHP >= 5.6 (**PHP >= 7.0 recommanded**).
+Requires PHP >= 5.6 (**PHP >= 7.0 recommended**).
 
 #### Installation (prod)
 Use the following commands to deploy a **prod** version:

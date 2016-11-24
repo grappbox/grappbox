@@ -300,14 +300,17 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 
 
 
-/* ================================================== */
-/* ==================== REGISTER ==================== */
-/* ================================================== */
+/* ============================================================ */
+/* ==================== REGISTER/PRE-ORDER ==================== */
+/* ============================================================ */
 
 #register { width: 100%; min-height: 90%; margin: 0; padding-top: 2%; }
+#preorder { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
+#preorder .alert-preorder { background: #666; color: #fafafa; }
 
 @media (max-width: 640px) {
   #register .submit { text-align: center; }
+  #preorder .submit { text-align: center; }
 }
 
 
