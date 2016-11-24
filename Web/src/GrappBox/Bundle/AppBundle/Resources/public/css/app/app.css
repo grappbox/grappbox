@@ -118,7 +118,13 @@ label { font-weight: 400; display: inline; margin: 0; }
 .page-header .btn-raised:focus,
 .page-header .btn-raised:hover { background: #eee!important; }
 
+.construction { color: #fff; }
+.construction.construction-center { margin: 33vh -120px 0 -120px; }
+.construction p { margin: 0; font-weight: 500!important; }
+.construction i { vertical-align: middle; margin-right: 10px; }
+
 @media (max-width: 768px) {
+  .construction.construction-center { margin: 20vh -120px 0 -120px; }
   .page { margin: 150px 0 60px 0; min-height: calc(100vh - 210px); }
 }
 
@@ -132,11 +138,6 @@ label { font-weight: 400; display: inline; margin: 0; }
 .no-margin { margin: 0!important; }
 .no-padding { padding: 0!important; }
 .no-shadow { box-shadow: none!important; }
-
-.construction { background: repeating-linear-gradient(-45deg, #ff9f55, #ff9f55 10px, #ffb276 10px, #ffb276 20px); color: #fff; }
-.construction.construction-center { margin: 35vh -120px 0 -120px; }
-.construction p { margin: 0; font-weight: 500!important; }
-.construction i { vertical-align: middle; margin-right: 10px; }
 
 
 
@@ -206,6 +207,15 @@ a:hover { text-decoration: none; color: #4bf; }
 .purple-background { background: #9e58dc!important; }
 .blue-background { background: #4bf!important; }
 .default-background { background: #fc575e!important; }
+
+.gray-stripes { background: repeating-linear-gradient(-45deg, #757575, #757575 10px, rgba(117,117,117,0.70) 10px, rgba(117,117,117,0.70) 20px); }
+.red-stripes { background: repeating-linear-gradient(-45deg, #fc575e, #fc575e 10px, rgba(252,87,94,0.70) 10px, rgba(252,87,94,0.70) 20px); }
+.yellow-stripes { background: repeating-linear-gradient(-45deg, #f1c40f, #f1c40f 10px, rgba(241,196,15,0.70) 10px, rgba(241,196,15,0.70) 20px); }
+.green-stripes { background: repeating-linear-gradient(-45deg, #27ae60, #27ae60 10px, rgba(39,174,96,0.70) 10px, rgba(39,174,96,0.70) 20px); }
+.orange-stripes { background: repeating-linear-gradient(-45deg, #ff9f55, #ff9f55 10px, rgba(255,159,85,0.70) 10px, rgba(255,159,85,0.70) 20px); }
+.purple-stripes { background: repeating-linear-gradient(-45deg, #9e58dc, #9e58dc 10px, rgba(158,88,220,0.70) 10px, rgba(158,88,220,0.70) 20px); }
+.blue-stripes { background: repeating-linear-gradient(-45deg, #4bf, #4bf 10px, rgba(68,187,255,0.70) 10px, rgba(68,187,255,0.70) 20px); }
+.default-stripes { background: repeating-linear-gradient(-45deg, #fc575e, #fc575e 10px, rgba(252,87,94,0.70) 10px, rgba(252,87,94,0.70) 20px); }
 
 
 
