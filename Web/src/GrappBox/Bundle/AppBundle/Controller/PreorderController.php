@@ -126,7 +126,7 @@ class PreorderController extends Controller
         "email" => strtolower($form["email"]->getData())))));
     }
 
-    return $this->render("AppBundle:Home:preorder.html.twig", array("form" => $form->createView()));   
+    return $this->render("AppBundle:home:preorder.html.twig", array("form" => $form->createView()));   
   }
 
 }
