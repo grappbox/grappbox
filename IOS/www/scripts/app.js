@@ -6,7 +6,7 @@
 angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'GrappBox.api', 'GrappBox.directives', 'GrappBox.factories'])
 
 // on starting
-.run(function ($ionicPlatform, $rootScope, $ionicLoading, $http) {
+.run(function ($ionicPlatform, $rootScope, $ionicLoading, $http, $state, $stateParams) {
   $ionicPlatform.ready(function() {
     if(window.cordova && window.cordova.plugins.Keyboard) {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
@@ -22,6 +22,10 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
       StatusBar.styleDefault();
     }
   })
+
+  // For debugging purpose (with <pre> display state current state etc)
+  $rootScope.$state = $state;
+  $rootScope.$stateParams = $stateParams;
 
     $rootScope.API_VERSION = '0.3'; //actual API's version
     //$rootScope.API = 'https://api.grappbox.com/app_dev.php/V' + $rootScope.API_VERSION + '/'; //API full link for controllers
@@ -225,13 +229,14 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
                 templateUrl: "views/whiteboards.html",
                 controller: 'WhiteboardsCtrl'
             }
-        }
+        },
+        cache: false
     })
 
     // single whiteboard view
     .state('app.whiteboard', {
-        url: "/projects/:projectId/whiteboards/:whiteboardId",
-        views: {
+          url: "/projects/:projectId/whiteboards/:whiteboardId",
+          views: {
             'menuList': {
                 templateUrl: "views/whiteboard.html",
                 controller: 'WhiteboardCtrl'
@@ -365,7 +370,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
                 templateUrl: "views/timelines.html",
                 controller: 'TimelinesCtrl'
             }
-        }
+        },
+        cache: false
     })
 
     // create message view
@@ -390,7 +396,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
                 templateUrl: "views/cloud.html",
                 controller: 'CloudCtrl'
             }
-        }
+        },
+        cache: false
     })
 
     /*
@@ -405,7 +412,8 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
                 templateUrl: "views/calendar.html",
                 controller: 'CalendarCtrl'
             }
-        }
+        },
+        cache: false
     })
 
     // Event creation view

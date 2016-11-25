@@ -6,6 +6,11 @@
     <ion-nav-title>{{whiteboardName}}</ion-nav-title>
 
     <ion-scroll overflow-scroll="false" zooming="true" direction="xy" locking="false" scrollbar-x="false" scrollbar-y="false" style="width: 100%; height: 100%" class="has-header">
+      <!-- <pre>
+        $state = {{$state.current.name}}
+        $stateParams = {{$stateParams}}
+        $state full url = {{ $state.$current.url.source }}
+      </pre> -->
         <canvas id="canvasWhiteboard"></canvas>
     </ion-scroll>
 

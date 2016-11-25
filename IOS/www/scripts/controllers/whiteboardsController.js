@@ -11,7 +11,6 @@ angular.module('GrappBox.controllers')
         $rootScope.viewColor = $rootScope.GBNavColors.whiteboard;
     });
 
-    // UNCOMMENT AFTER REDO THE PROJECT SELECTION BEFORE DASHBOARD
     $scope.projectId = $stateParams.projectId;
 
     //Refresher

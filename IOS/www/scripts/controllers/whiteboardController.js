@@ -7,12 +7,14 @@ angular.module('GrappBox.controllers')
 // WHITEBOARD
 .controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
 
-    $scope.$on('$ionicView.beforeEnter', function () {
+    /*$scope.$on('$ionicView.beforeEnter', function () {
         $rootScope.viewColor = $rootScope.GBNavColors.whiteboard;
-    });
+        console.log("ENTERED");
+    });*/
 
     $scope.projectId = $stateParams.projectId;
     $scope.whiteboardName = $stateParams.whiteboardName;
+    console.log("WHITEBOARD NAME = " + $stateParams.whiteboardName);
     $scope.whiteboardId = $stateParams.whiteboardId;
     console.log("PROJECTID = " + $scope.projectId);
     console.log("WHITEBOARDID = " + $scope.whiteboardId);
@@ -82,14 +84,14 @@ angular.module('GrappBox.controllers')
     ]
 
     // Cancel interval when quitting view
-    $scope.$on("$ionicView.leave", function () {
+    $scope.$on("$destroy", function () {
       console.log("I LEFT !");
-        $interval.cancel(myInterval);
+        //$interval.cancel(myInterval);
     });
 
-    var myInterval = $interval(function () {
+    /*var myInterval = $interval(function () {
         $scope.OpenWhiteboard();
-    }, 3000);
+    }, 3000);*/
 
     // Button move
     $scope.moveOn = function (moveOn) {
