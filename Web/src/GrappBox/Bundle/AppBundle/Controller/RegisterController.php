@@ -154,7 +154,7 @@ class RegisterController extends Controller
         "device_name" => $browserData->parent))));
     }
 
-    return $this->render("AppBundle:Home:register.html.twig", array("form" => $form->createView()));   
+    return $this->render("AppBundle:home:register.html.twig", array("form" => $form->createView()));   
   }
 
 }

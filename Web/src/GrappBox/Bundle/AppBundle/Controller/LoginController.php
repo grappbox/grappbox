@@ -182,7 +182,7 @@ class LoginController extends Controller
         "flag" => "web",
         "device_name" => $browserData->parent))));        
 
-    return $this->render("AppBundle:Home:login.html.twig", array("form" => $form->createView()));   
+    return $this->render("AppBundle:home:login.html.twig", array("form" => $form->createView()));   
   }
 
 }

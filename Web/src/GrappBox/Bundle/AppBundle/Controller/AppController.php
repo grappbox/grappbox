@@ -43,7 +43,7 @@ class AppController extends Controller
     $cookieData = $request->cookies;
 
     if ($cookieData->has("G_TOKEN") && $cookieData->get("G_TOKEN"))
-      return $this->render("AppBundle:App:index.html.twig");
+      return $this->render("AppBundle:app:index.html.twig");
 
     $redirect = new RedirectResponse("/login");
 
