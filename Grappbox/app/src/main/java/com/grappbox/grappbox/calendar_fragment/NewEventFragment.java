@@ -99,6 +99,12 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onEventEdit(CalendarEventModel model) {
         mProjectSelected = model._projectId;
+        CalendarProjectModel project = mProjectAdapter.getProject(mProjectSelected);
+        if (project != null) {
+            mProjectName.setText(project._projectName);
+            getLoaderManager().restartLoader(LOAD_USERS, null, mFragment);
+        }
+        mParticipantAdapter.setDataSet(model._user);
     }
 
     @Override

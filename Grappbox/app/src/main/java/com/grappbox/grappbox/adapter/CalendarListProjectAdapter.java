@@ -9,6 +9,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.model.CalendarProjectModel;
 
 import java.util.ArrayList;
@@ -43,6 +44,14 @@ public class CalendarListProjectAdapter extends RecyclerView.Adapter<RecyclerVie
             mDataSet.addAll(items);
             notifyDataSetChanged();
         }
+    }
+
+    public CalendarProjectModel getProject(long localProjectId){
+        for (CalendarProjectModel project : mDataSet) {
+            if (project._localProjectId == localProjectId)
+                return project;
+        }
+        return null;
     }
 
     private RecyclerView.ViewHolder createCalendarProjectEntryHolder(ViewGroup parent) {

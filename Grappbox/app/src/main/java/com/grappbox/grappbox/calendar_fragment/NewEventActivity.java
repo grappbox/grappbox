@@ -110,6 +110,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
             mDescription.setText(mEvent._description);
             mEventBegin.setText(mEvent._beginDate);
             mEventEnd.setText(mEvent._endDate);
+            mCallback.onEventEdit(mEvent);
         }
     }
 

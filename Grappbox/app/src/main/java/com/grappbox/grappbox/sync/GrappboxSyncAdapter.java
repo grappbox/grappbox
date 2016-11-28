@@ -445,83 +445,10 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(syncTags);
     }
 
-    private void syncPlanningMonth(String apiToken, long uid){
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.DAY_OF_MONTH, 1);
-        String firstDayOfTheMonth = format.format(calendar.getTime());
-        HttpURLConnection connection = null;
-        String returnedJson;
-        Cursor listUser = null;
-        try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/planning/month/" + firstDayOfTheMonth);
-            Log.v(LOG_TAG, "url : " + url + ", apiToken : " + apiToken);
-            connection = (HttpURLConnection)url.openConnection();
-            connection.setRequestProperty("Authorization", apiToken);
-            connection.setRequestMethod("GET");
-            connection.connect();
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty())
-                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
-            Log.v(LOG_TAG, "returned JSON : " + returnedJson);
-            JSONObject json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json))
-                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
-            JSONArray arrayEvent = json.getJSONObject("data").getJSONObject("array").getJSONArray("events");
-            for (int i = 0; i < arrayEvent.length(); ++i) {
-                JSONObject currentEvent = arrayEvent.getJSONObject(i);
-                ContentValues event = new ContentValues();
-
-                event.put(GrappboxContract.EventEntry.COLUMN_GRAPPBOX_ID, currentEvent.getString("id"));
-                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
-                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
-                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_DESCRIPTION, currentEvent.getString("description"));
-                event.put(GrappboxContract.EventEntry.COLUMN_DATE_BEGIN_UTC, currentEvent.getString("beginDate"));
-                event.put(GrappboxContract.EventEntry.COLUMN_DATE_END_UTC, currentEvent.getString("endDate"));
-                String grappboxCID = currentEvent.getJSONObject("creator").getString("id");
-                Cursor creatorId = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
-                if (creatorId == null || !creatorId.moveToFirst()){
-                        throw new UnknownError();
-                }
-                event.put(GrappboxContract.EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
-                creatorId.close();
-                Uri res = getContext().getContentResolver().insert(GrappboxContract.EventEntry.CONTENT_URI, event);
-                if (res == null)
-                    throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
-                long id = Long.parseLong(res.getLastPathSegment());
-                JSONArray usersArray = currentEvent.getJSONArray("users");
-                String userID = "";
-                for (int j = 0; j < usersArray.length(); ++j){
-                    userID += userID.isEmpty() ? "(" + usersArray.getJSONObject(j).getString("id") : "," + usersArray.getJSONObject(j).getString("id");
-                }
-                if (!userID.isEmpty()) {
-                    userID += ")";
-                    Log.v(LOG_TAG, "usersId : " + userID);
-                    listUser = getContext().getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + " IN " + userID, null, null);
-                    if (listUser != null && listUser.moveToFirst()) {
-                        ContentValues[] eventUsers = new ContentValues[listUser.getCount()];
-                        int iUser = 0;
-                        do {
-                            ContentValues user = new ContentValues();
-                            user.put(GrappboxContract.EventParticipantEntry.COLUMN_LOCAL_EVENT_ID, id);
-                            user.put(GrappboxContract.EventParticipantEntry.COLUMN_LOCAL_USER_ID, listUser.getLong(0));
-                            Log.v(LOG_TAG, "listUser user : " + listUser.getLong(0) + ", event ID : " + id);
-                            eventUsers[iUser] = user;
-                            ++iUser;
-                        } while (listUser.moveToNext());
-                        getContext().getContentResolver().bulkInsert(GrappboxContract.EventParticipantEntry.CONTENT_URI, eventUsers);
-                    }
-                }
-
-            }
-        } catch (IOException | NetworkErrorException | JSONException | OperationApplicationException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null)
-                connection.disconnect();
-            if (listUser != null)
-                listUser.close();
-        }
+    private void syncPlanningMonth(String apiToken){
+        Intent launchEventSync = new Intent(getContext(), GrappboxJustInTimeService.class);
+        launchEventSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_EVENT);
+        getContext().startService(launchEventSync);
     }
 
     private void syncTimeline(String apiToken, long projectId) {
@@ -623,7 +550,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 syncNextMeeting(token, projectId);
                 syncBug(token, projectId, uid);
                 syncTimeline(token, projectId);
-                syncPlanningMonth(token, uid);
+                syncPlanningMonth(token);
             } while (projectsCursor.moveToNext());
 
         } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {

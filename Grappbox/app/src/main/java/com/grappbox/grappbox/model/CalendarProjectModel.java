@@ -35,6 +35,8 @@ public class CalendarProjectModel implements Parcelable {
         _projectName = source.readString();
     }
 
+    public long getLocalProjectId(){ return _localProjectId; }
+
     @Override
     public int describeContents() { return 0; }
 

@@ -60,6 +60,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -110,6 +111,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_EDIT_BUGTAG = "com.grappbox.grappbox.sync.ACTION_EDIT_BUGTAG";
     public static final String ACTION_REMOVE_BUGTAG = "com.grappbox.grappbox.sync.ACTION_REMOVE_BUGTAG";
     public static final String ACTION_SET_PARTICIPANT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT";
+    public static final String ACTION_SYNC_EVENT = "com.grappbox.grappbox.sync.ACTION_SYNC_EVENT";
     public static final String ACTION_CREATE_EVENT = "com.grappbox.grappbox.sync.ACTION_POST_EVENT";
     public static final String ACTION_EDIT_EVENT = "com.grappbox.grappbox.sync.ACTION_EDIT_EVENT";
     public static final String ACTION_GET_EVENT = "com.grappbox.grappbox.sync.ACTION_GET_EVENT";
@@ -281,6 +283,8 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleBugSetParticipant(intent.getLongExtra(EXTRA_BUG_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
             } else if (ACTION_GET_MONTH_PLANNING.equals(action)){
                 handleCalendarMonthSync(intent.getStringExtra(EXTRA_CALENDAR_FIRST_DAY));
+            } else if (ACTION_SYNC_EVENT.equals(action)) {
+                handleSyncEvent();
             } else if (ACTION_CREATE_EVENT.equals(action)) {
                 Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
                 handleEventCreate(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), responseObserver);
@@ -2805,5 +2809,85 @@ public class GrappboxJustInTimeService extends IntentService {
 
     private void handleEventSetParticipant(Long localEventId, List<Long> toAdd, List<Long> toDelete, ResultReceiver responseObserver){
 
+    }
+
+    private void handleSyncEvent() {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDayOfTheMonth = format.format(calendar.getTime());
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor listUser = null;
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/planning/month/" + firstDayOfTheMonth);
+            Log.v(LOG_TAG, "url : " + url + ", apiToken : " + apiToken);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty())
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            Log.v(LOG_TAG, "returned JSON : " + returnedJson);
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json))
+                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
+            JSONArray arrayEvent = json.getJSONObject("data").getJSONObject("array").getJSONArray("events");
+            for (int i = 0; i < arrayEvent.length(); ++i) {
+                JSONObject currentEvent = arrayEvent.getJSONObject(i);
+                ContentValues event = new ContentValues();
+
+                event.put(GrappboxContract.EventEntry.COLUMN_GRAPPBOX_ID, currentEvent.getString("id"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_TITLE, currentEvent.getString("title"));
+                event.put(GrappboxContract.EventEntry.COLUMN_EVENT_DESCRIPTION, currentEvent.getString("description"));
+                event.put(GrappboxContract.EventEntry.COLUMN_DATE_BEGIN_UTC, currentEvent.getString("beginDate"));
+                event.put(GrappboxContract.EventEntry.COLUMN_DATE_END_UTC, currentEvent.getString("endDate"));
+                String grappboxCID = currentEvent.getJSONObject("creator").getString("id");
+                Cursor creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                if (creatorId == null || !creatorId.moveToFirst()) {
+                    throw new UnknownError();
+                }
+                event.put(GrappboxContract.EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
+                creatorId.close();
+                Uri res = getContentResolver().insert(GrappboxContract.EventEntry.CONTENT_URI, event);
+                if (res == null)
+                    throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+                long id = Long.parseLong(res.getLastPathSegment());
+                JSONArray usersArray = currentEvent.getJSONArray("users");
+                String userID = "";
+                for (int j = 0; j < usersArray.length(); ++j) {
+                    userID += userID.isEmpty() ? "(" + usersArray.getJSONObject(j).getString("id") : "," + usersArray.getJSONObject(j).getString("id");
+                }
+                if (!userID.isEmpty()) {
+                    userID += ")";
+                    Log.v(LOG_TAG, "usersId : " + userID);
+                    listUser = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + " IN " + userID, null, null);
+                    if (listUser != null && listUser.moveToFirst()) {
+                        ContentValues[] eventUsers = new ContentValues[listUser.getCount()];
+                        int iUser = 0;
+                        do {
+                            ContentValues user = new ContentValues();
+                            user.put(GrappboxContract.EventParticipantEntry.COLUMN_LOCAL_EVENT_ID, id);
+                            user.put(GrappboxContract.EventParticipantEntry.COLUMN_LOCAL_USER_ID, listUser.getLong(0));
+                            Log.v(LOG_TAG, "listUser user : " + listUser.getLong(0) + ", event ID : " + id);
+                            eventUsers[iUser] = user;
+                            ++iUser;
+                        } while (listUser.moveToNext());
+                        getContentResolver().bulkInsert(GrappboxContract.EventParticipantEntry.CONTENT_URI, eventUsers);
+                    }
+                }
+
+            }
+        } catch (IOException | NetworkErrorException | JSONException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (listUser != null)
+                listUser.close();
+        }
     }
 }

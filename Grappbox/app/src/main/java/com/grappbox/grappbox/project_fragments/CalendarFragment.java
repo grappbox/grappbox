@@ -209,10 +209,13 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
                 String[] args = { String.valueOf(model._id) };
                 Cursor resultParticipant = getActivity().getContentResolver().query(GrappboxContract.EventParticipantEntry.CONTENT_URI, projectionParticipant, selectionParticipant, args, null);
                 List<UserModel> participant = new ArrayList<>();
+                Log.v(LOG_TAG, "event ID : " + model._id);
                 if (resultParticipant != null) {
                     if (resultParticipant.moveToFirst()) {
                         do {
-                            participant.add(new UserModel(resultParticipant));
+                            UserModel parti = new UserModel(resultParticipant);
+                            participant.add(parti);
+                            Log.v(LOG_TAG, "user : " + parti);
                         }while (resultParticipant.moveToNext());
                     }
                     resultParticipant.close();
