@@ -28,6 +28,7 @@ import android.widget.TimePicker;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.model.CalendarEventDateFormatModel;
+import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
@@ -41,6 +42,11 @@ import java.util.Calendar;
 public class NewEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener{
     private static final String LOG_TAG = NewEventActivity.class.getSimpleName();
 
+    public static final String ACTION_EDIT = "com.grappbox.grappbox.calendar_fragements.ACTION_EDIT";
+    public static final String ACTION_NEW = "com.grappbox.grappbox.calendar_fragements.ACTION_NEW";
+
+    public static final String EXTRA_MODEL = "com.grappbox.grappbox.calendar_fragments.EXTRA_MODEL";
+
     private EditText mTitle;
     private EditText mDescription;
     private TextView mEventBegin;
@@ -50,10 +56,14 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     private CalendarEventDateFormatModel mBeginDateFormat;
     private CalendarEventDateFormatModel mEndDateFormat;
 
-    OnEventSaveData mCallback;
+    private boolean mIsEditMode;
+    private CalendarEventModel mEvent = null;
 
-    public interface OnEventSaveData {
+    OnEventCallback mCallback;
+
+    public interface OnEventCallback {
         public void onEventSave(String title, String desc, String begin, String end);
+        public void onEventEdit(CalendarEventModel model);
     }
 
     @Override
@@ -93,24 +103,26 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
         });
         mEventBegin.setText(mBeginDateFormat.toString());
         mEventEnd.setText(mEndDateFormat.toString());
+        mIsEditMode = getIntent().getAction().equals(ACTION_EDIT);
+        if (mIsEditMode) {
+            mEvent = getIntent().getParcelableExtra(EXTRA_MODEL);
+            mTitle.setText(mEvent._title);
+            mDescription.setText(mEvent._description);
+            mEventBegin.setText(mEvent._beginDate);
+            mEventEnd.setText(mEvent._endDate);
+        }
     }
 
     @Override
     public void onAttachFragment(Fragment fragment) {
         super.onAttachFragment(fragment);
         try {
-            mCallback = (OnEventSaveData)fragment;
+            mCallback = (OnEventCallback)fragment;
         } catch (ClassCastException e) {
             throw new ClassCastException(fragment.toString()
                     + " must implement OnHeadlineSelectedListener");
         }
     }
-
-    /*public void registerActivityActionCallback(CalendarEventReceiver.Callback action) {
-        if (mReceiver == null)
-            mReceiver = new CalendarEventReceiver(this, new Handler());
-        mReceiver.registerCallback(action);
-    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -140,21 +152,25 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
     }
 
     private void actionSave(){
-        if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()){
-            AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
-            builder.setTitle("Calendar create event error");
-            builder.setMessage("Put title and description of the event");
-            builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    dialog.dismiss();
-                }
-            });
-            builder.show();
-            return;
+        if (mIsEditMode){
+
+        } else {
+            if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
+                builder.setTitle("Calendar create event error");
+                builder.setMessage("Put title and description of the event");
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+                return;
+            }
+            mCallback.onEventSave(mTitle.getText().toString(), mDescription.getText().toString(),
+                    mEventBegin.getText().toString(), mEventEnd.getText().toString());
         }
-        mCallback.onEventSave(mTitle.getText().toString(), mDescription.getText().toString(),
-                mEventBegin.getText().toString(), mEventEnd.getText().toString());
     }
 
     @Override

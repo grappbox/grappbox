@@ -6,7 +6,9 @@ import android.os.Parcelable;
 
 import com.grappbox.grappbox.data.GrappboxContract;
 
+import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * Created by tan_f on 26/10/2016.
@@ -21,6 +23,8 @@ public class CalendarEventModel implements Parcelable {
     public String      _description;
     public String      _beginDate;
     public String      _endDate;
+    public List<UserModel> _user;
+    public long          _userCount;
 
     public CalendarEventModel(Cursor cursor){
         _id = cursor.getLong(cursor.getColumnIndex(GrappboxContract.EventEntry._ID));
@@ -30,6 +34,7 @@ public class CalendarEventModel implements Parcelable {
         _description = cursor.getString(cursor.getColumnIndex(GrappboxContract.EventEntry.COLUMN_EVENT_DESCRIPTION));
         _beginDate = cursor.getString(cursor.getColumnIndex(GrappboxContract.EventEntry.COLUMN_DATE_BEGIN_UTC));
         _endDate = cursor.getString(cursor.getColumnIndex(GrappboxContract.EventEntry.COLUMN_DATE_END_UTC));
+        _userCount = 0;
     }
 
     public CalendarEventModel(Parcel source){
@@ -40,6 +45,17 @@ public class CalendarEventModel implements Parcelable {
         _description = source.readString();
         _beginDate = source.readString();
         _endDate = source.readString();
+        Parcelable[] arrParticipant = source.readParcelableArray(UserModel.class.getClassLoader());
+        _user = new ArrayList<>();
+        for (Parcelable part : arrParticipant){
+            _user.add((UserModel) part);
+        }
+        _userCount = source.readLong();
+    }
+
+    public void setParticipant(List<UserModel> participant) {
+        _user = participant;
+        _userCount = _user == null ? 0 : _user.size();
     }
 
     @Override
@@ -68,5 +84,7 @@ public class CalendarEventModel implements Parcelable {
         dest.writeString(_description);
         dest.writeString(_beginDate);
         dest.writeString(_endDate);
+        dest.writeParcelableArray(_user.toArray(new UserModel[_user.size()]), 0);
+        dest.writeLong(_userCount);
     }
 }

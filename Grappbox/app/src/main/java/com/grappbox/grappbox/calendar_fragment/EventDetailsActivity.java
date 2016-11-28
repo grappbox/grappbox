@@ -60,7 +60,10 @@ public class EventDetailsActivity extends AppCompatActivity {
 
     private void actionEdit()
     {
-
+        Intent intent = new Intent(this, NewEventActivity.class);
+        intent.setAction(NewEventActivity.ACTION_EDIT);
+        intent.putExtra(NewEventActivity.EXTRA_MODEL, mData);
+        this.startActivity(intent);
     }
 
     private void actionDelete()

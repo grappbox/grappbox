@@ -2791,6 +2791,8 @@ public class GrappboxJustInTimeService extends IntentService {
                     }
                 } else {
                     getContentResolver().delete(EventEntry.CONTENT_URI, EventEntry._ID + "=?", new String[]{String.valueOf(localEventId)});
+                    if (responseObserver != null)
+                        responseObserver.send(Activity.RESULT_OK, null);
                 }
             }
         } catch (NetworkErrorException | IOException | JSONException e) {

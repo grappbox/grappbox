@@ -22,6 +22,7 @@ import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.CalendarListProjectAdapter;
 import com.grappbox.grappbox.adapter.CalendarParticipantAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.model.CalendarProjectModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.singleton.Session;
@@ -34,7 +35,7 @@ import java.util.List;
  * Created by tan_f on 04/11/2016.
  */
 
-public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NewEventActivity.OnEventSaveData{
+public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NewEventActivity.OnEventCallback{
 
     private static final String LOG_TAG = NewEventFragment.class.getSimpleName();
 
@@ -93,6 +94,11 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         save.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, mProjectSelected);
         save.putExtra(GrappboxJustInTimeService.EXTRA_BUNDLE, apiPar);
         getActivity().startService(save);
+    }
+
+    @Override
+    public void onEventEdit(CalendarEventModel model) {
+        mProjectSelected = model._projectId;
     }
 
     @Override
