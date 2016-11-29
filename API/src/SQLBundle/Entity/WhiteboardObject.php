@@ -141,6 +141,16 @@ class WhiteboardObject
 
         return $this;
     }
+    
+    /**
+     * Get deletedAt
+     *
+     * @return \DateTime
+     */
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
 
     /**
      * Set whiteboard
