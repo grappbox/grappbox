@@ -1,5 +1,5 @@
 /*
- * Created by Marc Wieser on 16/11/2016
+ * Created by Marc Wieser the 16/11/2016
  * If you have any problem or question about this work
  * please contact the author at marc.wieser@gmail.com
  *
@@ -39,7 +39,7 @@ import java.net.URL;
 import static com.google.android.gms.internal.zzs.TAG;
 
 /**
- * Created by Marc Wieser on 21/10/2016.
+ * Created by Marc Wieser the 21/10/2016.
  * If you have any problem or question about this work
  * please contact the author at marc.wieser33@gmail.com
  *

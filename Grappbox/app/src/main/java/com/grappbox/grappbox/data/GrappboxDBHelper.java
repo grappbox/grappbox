@@ -9,7 +9,7 @@ import com.google.android.gms.tasks.Task;
 import com.grappbox.grappbox.data.GrappboxContract.*;
 
  /**
-  * Created by Marc Wieser on 29/08/2016.
+  * Created by Marc Wieser the 29/08/2016.
   * If you have any problem or question about this work
   * please contact the author at marc.wieser33@gmail.com
   *

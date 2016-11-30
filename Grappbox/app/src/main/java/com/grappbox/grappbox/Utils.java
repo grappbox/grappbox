@@ -44,7 +44,7 @@ import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_TIMELINE;
 import static com.grappbox.grappbox.ProjectActivity.FRAGMENT_TAG_WHITEBOARD;
 
 /**
- * Created by Marc Wieser on 31/08/2016.
+ * Created by Marc Wieser the 31/08/2016.
  * If you have any problem or question about this work
  * please contact the author at marc.wieser33@gmail.com
  *

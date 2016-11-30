@@ -48,7 +48,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 
 /**
- * Created by Marc Wieser on 30/08/2016.
+ * Created by Marc Wieser the 30/08/2016.
  * If you have any question or problem with this work
  * please contact the author at marc.wieser33@gmail.com
  *
