@@ -313,6 +313,13 @@ class ProjectController extends RolesAndTokenVerificationController
 			$content->logo->getData()->move($dir, $filename);
 			$project->setLogo($dir + $filename);
 			$project->setLogoDate(new \DateTime);
+
+			// $generator = $this->get('security.secure_random');
+			// $random = $generator->nextBytes(10);
+			// $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
+			// $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
+			// $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
+			// $user->setAvatar($fileDir.'/'.$fileName);
 		}
 
 		//Create admin role
@@ -822,27 +829,39 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
 		{
-			if (array_key_exists('logo', $content)) {
-				$dir = "/web/resources/projects/";
-				// $filename = basename($_FILES['userfile']['name']);
 
-				// move_uploaded_file($_FILES['userfile']['tmp_name'], $uploadfile);
+			$dir = "/var/www/static/project/";
 
-				//$file = $content->logo->getData();
+			$file = base64_decode($content->logo);
 
-				print_r($request);
-				print_r('--------------');
-				print_r($_FILES);
-				//$file->move($dir, $file->getClientOriginalName());
-				//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
+			$filename = $id;
 
-				//$content->logo->getData()->move($dir, $filename);
-				//$project->setLogo($dir + $filename);
-				//$project->setLogoDate(new \DateTime);
-			}
+			$file->move($dir, $filename);
+
+			print_r($request);
+			print_r('--------------');
+			print_r('https://static.grappbox.com/project/'+$filename);
+
+
+			//$file->move($dir, $file->getClientOriginalName());
+			//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
+
+			//$content->logo->getData()->move($dir, $filename);
+
+			//$project->setLogo($dir + $filename);
+			//$project->setLogoDate(new \DateTime);
+
 			//
 			// $project->setLogo($content->logo);
 			// $project->setLogoDate(new \Datetime("now"));
+
+
+			// $generator = $this->get('security.secure_random');
+			// $random = $generator->nextBytes(10);
+			// $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
+			// $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
+			// $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
+			// $user->setAvatar($fileDir.'/'.$fileName);
 
 
 			$mdata['mtitle'] = "logo project";
