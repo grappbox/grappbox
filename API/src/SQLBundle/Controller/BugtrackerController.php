@@ -4289,7 +4289,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$tagArray = $tag->objectToArray();
-		$tagArray['projectId'] = $tagArray->getProject()->getId();
+		$tagArray['projectId'] = $tag->getProject()->getId();
 
 		$mdata['mtitle'] = "new tag bug";
 		$mdata['mdesc'] = json_encode($tagArray);
