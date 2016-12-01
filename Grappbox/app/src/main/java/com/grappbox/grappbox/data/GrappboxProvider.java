@@ -9,6 +9,7 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 
@@ -361,6 +362,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.CloudEntry.TABLE_NAME;
             case EVENT:
                 return GrappboxContract.EventEntry.TABLE_NAME;
+            case EVENT_PARTICIPANT:
+                return GrappboxContract.EventParticipantEntry.TABLE_NAME;
             case TAG:
                 return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
             default:

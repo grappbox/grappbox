@@ -445,9 +445,10 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(syncTags);
     }
 
-    private void syncPlanningMonth(String apiToken){
+    private void syncPlanningMonth(String apiToken, int offsetMonth){
         Intent launchEventSync = new Intent(getContext(), GrappboxJustInTimeService.class);
         launchEventSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_EVENT);
+        launchEventSync.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_MONTH_OFFSET, offsetMonth);
         getContext().startService(launchEventSync);
     }
 
@@ -547,10 +548,12 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             do {
                 long projectId = projectsCursor.getLong(0);
 
-                syncNextMeeting(token, projectId);
+                /*syncNextMeeting(token, projectId);
                 syncBug(token, projectId, uid);
-                syncTimeline(token, projectId);
-                syncPlanningMonth(token);
+                syncTimeline(token, projectId);*/
+                syncPlanningMonth(token, -1);
+                syncPlanningMonth(token, 0);
+                syncPlanningMonth(token, 1);
             } while (projectsCursor.moveToNext());
 
         } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {
