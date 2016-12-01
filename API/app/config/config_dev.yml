@@ -41,8 +41,6 @@ monolog:
         #    type:   chromephp
         #    level:  info
 
-assetic:
-    use_controller: true
 # Doctrine Configuration
 doctrine:
     dbal:

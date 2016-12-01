@@ -1,0 +1,13 @@
+MongoBundle\Document\BugState:
+    type: document
+    db: symfony_database
+    collection: bug_states
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        name:
+            type: string
+            length: 255
+    lifecycleCallbacks: {  }

@@ -42,9 +42,7 @@ class RolesAndTokenVerificationController extends Controller
 		$now = new DateTime('now');
 		if ($auth->getToken() && $auth->getTokenValidity() && $auth->getTokenValidity() < $now)
 		{
-			$auth->setToken(null);
-
-			$em->persist($auth);
+			$em->remove($auth);
 			$em->flush();
 
 			return null;

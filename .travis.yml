@@ -1,14 +1,14 @@
 language: php
 php:
-  - 5.6
+  - 7.0
 sudo: required
 dist: trusty
 addons:
   apt:
     packages:
-    - mysql-server-5.6
-    - mysql-client-core-5.6
-    - mysql-client-5.6
+    - mysql-server-7.0
+    - mysql-client-core-7.0
+    - mysql-client-7.0
 services:
   - mysql
 before_script:
@@ -22,4 +22,4 @@ before_script:
   - php app/console doctrine:database:create --env=test
   - php app/console doctrine:schema:create --env=test
 script:
-  - bin/phpunit --debug -c app
+  - phpunit --debug -c app

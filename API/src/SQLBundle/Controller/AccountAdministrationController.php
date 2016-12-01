@@ -390,19 +390,18 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$now = new DateTime('now');
 		if ($auth->getToken() && $auth->getTokenValidity() > $now)
-			{
-				$auth->setTokenValidity($now->add(new DateInterval("P1D")));
+		{
+			$auth->setTokenValidity($now->add(new DateInterval("P1D")));
 
-				$em->persist($auth);
-				$em->flush();
+			$em->persist($auth);
+			$em->flush();
 
-				$userObj = $user->objectToArray();
-				$userObj['token'] = $auth->getToken();
-				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
-			}
+			$userObj = $user->objectToArray();
+			$userObj['token'] = $auth->getToken();
+			return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
+		}
 
-		$secureUtils = $this->get('security.secure_random');
-		$tmpToken = $secureUtils->nextBytes(25);
+		$tmpToken = random_bytes(25);
 		$token = md5($tmpToken);
 		$auth->setToken($token);
 		$auth->setTokenValidity($now->add(new DateInterval("P1D")));
@@ -825,8 +824,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 
 		$now = new DateTime('now');
 
-		$secureUtils = $this->get('security.secure_random');
-		$tmpToken = $secureUtils->nextBytes(25);
+		$tmpToken = random_bytes(25);
 		$token = md5($tmpToken);
 		$auth->setToken($token);
 		$auth->setTokenValidity($now->add(new DateInterval("P1D")));

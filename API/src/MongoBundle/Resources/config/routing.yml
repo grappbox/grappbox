@@ -89,7 +89,7 @@ mongo_bugtracker_getTickets:
   methods:  [GET]
 
 mongo_bugtracker_getClosedTickets:
-  path:         path:       bugtracker/tickets/closed/{id}
+  path:       bugtracker/tickets/closed/{id}
   defaults:   { _controller: MongoBundle:Bugtracker:getClosedTickets }
   requirements:
     id:     \d+

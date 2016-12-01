@@ -1588,8 +1588,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$customerAccess->setCreatedAt(new \DateTime);
 		$customerAccess->setName($content->name);
 
-		$secureUtils = $this->get('security.secure_random');
-		$tmpToken = $secureUtils->nextBytes(25);
+		$tmpToken = random_bytes(25);
 		$token = md5($tmpToken);
 
 		$customerAccess->setHash($token);
