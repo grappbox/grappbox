@@ -235,7 +235,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div>
                   <div class="md-chip"  ng-repeat="user in data.ticket.users">
                     <div class="md-chip-img">
-                      <img src="../resources/img/default_avatar.min.png" alt="avatar" />
+                      <img src="../resources/img/app/default-avatar.min.png" alt="avatar" />
                     </div>
                     <span class="md-chip-text">{[{user.firstname + " " + user.lastname}]}</span>
                   </div>
@@ -285,7 +285,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="panel-body" data-ng-if="!data.editMode[comment.id]">
             <div class="col-md-12">
               <div class="col-md-10">
-                <img class="comment-avatar" src="../resources/img/default_avatar.min.png" alt="avatar" />
+                <img class="comment-avatar" src="../resources/img/app/default-avatar.min.png" alt="avatar" />
                 <div class="comment-user">{[{comment.creator.firstname + " " + comment.creator.lastname + " at " + formatObjectDate(comment.createdAt) + (comment.editedAt ? " - edited at " + formatObjectDate(comment.editedAt) : "")}]}</div>
               </div>
               <div class="btn-group btn-group-xs" data-ng-if="(!data.ticket.deletedAt) && (comment.creator.id == userId)">
