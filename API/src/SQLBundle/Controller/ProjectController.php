@@ -830,39 +830,27 @@ class ProjectController extends RolesAndTokenVerificationController
 		if (array_key_exists('logo', $content))
 		{
 
-			$dir = "/var/www/static/project/";
+			// $dir = "/var/www/static/app/project/";
+			// print_r('https://static.grappbox.com/project/'+$filename);
+
+			// $filepath = $this->container->getParameter('kernel.root_dir')."/../web/resources/user/".$id;
+			$filepath = "/var/www/static/app/project/".$id;
 
 			$file = base64_decode($content->logo);
+			if ($file == false)
+				print_r('invalid data');
 
-			$filename = $id;
+			$image = imagecreatefromstring($file);
+			if ($image == false)
+				print_r('invalid data');
 
-			$file->move($dir, $filename);
+			if (imagejpeg($image, $filepath, 50))
+				print_r('invalid data');
 
-			print_r($request);
-			print_r('--------------');
-			print_r('https://static.grappbox.com/project/'+$filename);
+			$fileurl = 'https://static.grappbox.com/project/'.$id;
 
-
-			//$file->move($dir, $file->getClientOriginalName());
-			//$filename = "project-".$project->getId()."-".md5($this->get('security.secure_random')->nextBytes(10)).".".$content->logo->guessExtension();
-
-			//$content->logo->getData()->move($dir, $filename);
-
-			//$project->setLogo($dir + $filename);
-			//$project->setLogoDate(new \DateTime);
-
-			//
-			// $project->setLogo($content->logo);
-			// $project->setLogoDate(new \Datetime("now"));
-
-
-			// $generator = $this->get('security.secure_random');
-			// $random = $generator->nextBytes(10);
-			// $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
-			// $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
-			// $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
-			// $user->setAvatar($fileDir.'/'.$fileName);
-
+			$project->setLogo($fileurl);
+			$project->setLogoDate(new \DateTime);
 
 			$mdata['mtitle'] = "logo project";
 			$mdata['mdesc'] = json_encode($project->objectToArray($em, $user));
