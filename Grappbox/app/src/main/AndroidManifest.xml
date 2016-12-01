@@ -48,6 +48,9 @@
             android:name=".sync.GrappboxJustInTimeService"
             android:exported="false" />
         <service
+            android:name=".sync.GrappboxWhiteboardJIT"
+            android:exported="false" />
+        <service
             android:name=".sync.GrappboxAuthenticatorService"
             android:exported="false">
             <intent-filter>
@@ -138,6 +141,14 @@
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.settings.ProjectSettingsActivity" />
+        </activity>
+        <activity
+            android:name=".WhiteboardDrawingActivity"
+            android:label="@string/title_activity_whiteboard_drawing"
+            android:parentActivityName=".ProjectActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
     </application>
 

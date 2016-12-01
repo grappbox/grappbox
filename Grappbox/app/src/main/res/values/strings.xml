@@ -300,7 +300,6 @@
     </string-array>
 
 
-
     <string name="title_activity_role_edit">Edit role</string>
     <string name="project_settings">Project Settings</string>
     <string name="gantt">GANTT</string>
@@ -340,4 +339,5 @@
         <item>@string/read_only</item>
         <item>@string/read_write</item>
     </string-array>
+    <string name="title_activity_whiteboard_drawing">WhiteboardDrawingActivity</string>
 </resources>

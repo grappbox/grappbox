@@ -8,8 +8,13 @@ import android.graphics.Path;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.os.Build;
 import android.renderscript.Double2;
 import android.renderscript.Float2;
+import android.support.annotation.RequiresApi;
+import android.util.AttributeSet;
+import android.view.GestureDetector;
+import android.view.MotionEvent;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -75,16 +80,12 @@ public class Whiteboard extends View {
     private abstract class ObjectModel{
         public Tool drawingTool;
         public int strokeColor;
-        private Context mContext;
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          * @param type The tool the object have to use to draw itself
          */
-        public ObjectModel(Context context, Tool type) {
-            super();
-            mContext = context;
+        public ObjectModel(Tool type) {
             drawingTool = type;
         }
 
@@ -123,11 +124,10 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          * @param type The tool the object have to use to draw itself
          */
-        public ShapeModel(Context context, Tool type) {
-            super(context, type);
+        public ShapeModel(Tool type) {
+            super(type);
         }
 
         /**
@@ -170,10 +170,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public TextModel(Context context) {
-            super(context, Tool.E_TEXT);
+        public TextModel() {
+            super(Tool.E_TEXT);
         }
 
         /**
@@ -220,10 +219,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public HandwriteModel(Context context) {
-            super(context, Tool.E_HANDWRITE);
+        public HandwriteModel() {
+            super(Tool.E_HANDWRITE);
             points = new ArrayList<>();
         }
 
@@ -286,10 +284,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public EllipsisModel(Context context) {
-            super(context, Tool.E_ELLIPSIS);
+        public EllipsisModel() {
+            super(Tool.E_ELLIPSIS);
         }
 
         /**
@@ -329,10 +326,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public LineModel(Context context) {
-            super(context, Tool.E_LINE);
+        public LineModel() {
+            super(Tool.E_LINE);
         }
 
         /**
@@ -358,10 +354,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public RectangleModel(Context context) {
-            super(context, Tool.E_RECTANGLE);
+        public RectangleModel() {
+            super(Tool.E_RECTANGLE);
         }
 
         /**
@@ -391,10 +386,9 @@ public class Whiteboard extends View {
 
         /**
          * Constructor
-         * @param context The context object, you can get it from parent class
          */
-        public DiamondModel(Context context) {
-            super(context, Tool.E_DIAMOND);
+        public DiamondModel() {
+            super(Tool.E_DIAMOND);
         }
 
         /**
@@ -427,6 +421,7 @@ public class Whiteboard extends View {
     private List<ObjectModel> mObjects;
     private List<Callbacks> mCallbacks;
     private Paint mPainter, mTextPainter, mStrokePainter;
+    private GestureDetector mGestures;
 
     /**
      * Constructor
@@ -434,6 +429,26 @@ public class Whiteboard extends View {
      */
     public Whiteboard(Context context) {
         super(context);
+        setup(context);
+    }
+
+    public Whiteboard(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        setup(context);
+    }
+
+    public Whiteboard(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+        setup(context);
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public Whiteboard(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
+        setup(context);
+    }
+
+    private void setup(Context context){
         mCurrentTool = Tool.E_MOVE;
         mObjects = new ArrayList<>();
         mCallbacks = new ArrayList<>();
@@ -444,6 +459,7 @@ public class Whiteboard extends View {
         mStrokePainter.setStyle(Paint.Style.STROKE);
         mScreenPosition = new Float2(0, 0);
         mMaxPosition = new Float2(getWidth(), getHeight());
+        mGestures = new GestureDetector(context, new EventDetector());
     }
 
     /**
@@ -474,12 +490,94 @@ public class Whiteboard extends View {
         mCallbacks.remove(listener);
     }
 
+    public void clear(){
+        clear(true);
+    }
+
+    public void clear(boolean invalidateView){
+        mObjects.clear();
+        if (invalidateView)
+            postInvalidate();
+    }
+
+    /**
+     * Create automatically the good object model from the type key
+     * @param type This define the object's type we wan't to create
+     * @return A valid object model, with the tool automatically inferred thanks to the type
+     * @throws UnsupportedOperationException This function throw when an invalid object type is given as input
+     * @see ObjectModel
+     */
+    private ObjectModel createObjectModel(String type) throws UnsupportedOperationException{
+        ObjectModel object;
+
+        switch (type){
+            case "LINE":
+                object = new LineModel();
+                break;
+            case "HANDWRITE":
+                object = new HandwriteModel();
+                break;
+            case "ELLIPSE":
+                object = new EllipsisModel();
+                break;
+            case "RECTANGLE":
+                object = new RectangleModel();
+                break;
+            case "DIAMOND":
+                object = new DiamondModel();
+                break;
+            case "TEXT":
+                object = new TextModel();
+                break;
+            default:
+                throw new UnsupportedOperationException("Invalid type");
+        }
+        return object;
+    }
+
+    /**
+     * Add objects to the current whiteboard
+     * @param objects An array of JSON objects as described in the <a href="https://goo.gl/kFmext">following document</a>
+     * @throws JSONException
+     */
+    public void feed(JSONArray objects) throws JSONException{
+        for (int i = 0; i < objects.length(); ++i){
+            JSONObject current = objects.getJSONObject(i);
+            ObjectModel object = createObjectModel(current.getString("type"));
+            object.init(current);
+            mObjects.add(object);
+        }
+        postInvalidate();
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
         for (ObjectModel object : mObjects) {
             object.draw(canvas);
+        }
+    }
+
+    class EventDetector extends GestureDetector.SimpleOnGestureListener{
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            if (mCurrentTool != Tool.E_MOVE){
+                return true;
+            }
+            mScreenPosition.x += velocityX;
+            mScreenPosition.y += velocityY;
+            if (mScreenPosition.x > mMaxPosition.x)
+                mScreenPosition.x = mMaxPosition.x;
+            if (mScreenPosition.y > mMaxPosition.y)
+                mScreenPosition.y = mMaxPosition.y;
+            postInvalidate();
+            return true;
         }
     }
 }

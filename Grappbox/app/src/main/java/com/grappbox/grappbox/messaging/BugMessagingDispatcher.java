@@ -376,10 +376,10 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 int i;
                 for (i = 0; i < tags.length(); ++i){
                     current = tags.getJSONObject(i);
-                    tag = mContext.getContentResolver().query(GrappboxContract.BugtrackerTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugtrackerTagEntry._ID}, GrappboxContract.BugtrackerTagEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{current.getString("id")}, null);
+                    tag = mContext.getContentResolver().query(GrappboxContract.BugtrackerTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry._ID}, GrappboxContract.BugtrackerTagEntry.TABLE_NAME + "." + GrappboxContract.BugtrackerTagEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{current.getString("id")}, null);
                     if (tag == null || !tag.moveToFirst())
                         continue;
-                    assign = mContext.getContentResolver().query(GrappboxContract.BugTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugTagEntry._ID}, GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID+"=? AND "+ GrappboxContract.BugTagEntry.COLUMN_LOCAL_TAG_ID+"=?", new String[]{String.valueOf(bug.getLong(0)), String.valueOf(tag.getLong(0))}, null);
+                    assign = mContext.getContentResolver().query(GrappboxContract.BugTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry._ID}, GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID+"=? AND "+ GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry.COLUMN_LOCAL_TAG_ID+"=?", new String[]{String.valueOf(bug.getLong(0)), String.valueOf(tag.getLong(0))}, null);
                     if (assign == null || !assign.moveToFirst())
                         break;
                     assign.close();
