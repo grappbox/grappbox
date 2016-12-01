@@ -28,7 +28,6 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
-            CommentsListView.ContainerContentChanging += OnChatViewContainerContentChanging;
         }
 
         //Required for navigation

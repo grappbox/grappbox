@@ -126,6 +126,9 @@
     <Compile Include="CustomControls\TeamDashBoard.xaml.cs">
       <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\BugTagContentDialog.xaml.cs">
+      <DependentUpon>BugTagContentDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\TimelineContentDialog.xaml.cs">
       <DependentUpon>TimelineContentDialog.xaml</DependentUpon>
     </Compile>
@@ -168,7 +171,7 @@
     </Compile>
     <Compile Include="View\BugView.xaml.cs">
       <DependentUpon>BugView.xaml</DependentUpon>
-	</Compile>
+    </Compile>
     <Compile Include="View\CalendarEventDetail.xaml.cs">
       <DependentUpon>CalendarEventDetail.xaml</DependentUpon>
     </Compile>
@@ -259,6 +262,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CustomControls\BugTagContentDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomControls\TimelineContentDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -273,6 +280,11 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Resources\CalendarStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -305,6 +317,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\TextBoxStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="View\BugtrackerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -312,7 +329,7 @@
     <Page Include="View\BugView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-	</Page>
+    </Page>
     <Page Include="View\CalendarEventDetail.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

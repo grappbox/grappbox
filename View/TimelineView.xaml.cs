@@ -169,21 +169,21 @@ namespace Grappbox.View
 
         private async void Bug_Click(object sender, RoutedEventArgs e)
         {
-            //BugtrackerViewModel bvm = BugtrackerViewModel.GetViewModel();
-            //if (bvm != null)
-            //{
-            //    var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
-                //dialog.ShowAsync();
+            BugtrackerViewModel bvm = BugtrackerViewModel.GetViewModel();
+            if (bvm != null)
+            {
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
+                dialog.ShowAsync();
 
-            //    await bvm.getTagList();
-            //    await bvm.getUsers();
-            //    vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
-            //    bvm.Title = vm.MessageSelected.Title;
-            //    bvm.Description = vm.MessageSelected.Message;
+                await bvm.getTagList();
+                await bvm.getUsers();
+                vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
+                bvm.Title = vm.MessageSelected.Title;
+                bvm.Description = vm.MessageSelected.Message;
 
-            //    dialog.Hide();
-            //    await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView)));
-            //}
+                dialog.Hide();
+                await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView)));
+            }
         }
 
         private async void AddTeam_Click(object sender, RoutedEventArgs e)
@@ -199,5 +199,15 @@ namespace Grappbox.View
         }
 
         #endregion Click
+
+        private void TextBox_GotFocus(object sender, RoutedEventArgs e)
+        {
+            CB.Visibility = Visibility.Collapsed;
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            CB.Visibility = Visibility.Visible;
+        }
     }
 }

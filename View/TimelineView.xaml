@@ -37,25 +37,25 @@
         <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem>
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Team" Glyph="&#xE8F2;" />
+                    <customControl:TabHeader Label="Team" Glyph="&#xE8AF;" />
                 </PivotItem.Header>
                 <Grid>
                     <ListView x:Name="TeamListView" IncrementalLoadingThreshold="4" ItemsSource="{Binding TeamList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
-                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" />
+                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
-                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
-                                            <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
-                                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE150;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE92B;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
                                             <Button Content="&#xE868;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Bug_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
-                                            <Button Content="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                            <Button Content="&#xE8AF;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
                                         </StackPanel>
                                         <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
                                     </Grid>
@@ -68,25 +68,25 @@
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Customer" Glyph="&#xE716;" />
+                    <customControl:TabHeader Label="Customer" Glyph="&#xE8D3;" />
                 </PivotItem.Header>
                 <Grid>
                     <customControl:CustomListView x:Name="CustomerListView" IncrementalLoadingThreshold="1" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionMode="Single" SelectionChanged="TeamListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <StackPanel>
-                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
-                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" />
+                                    <TextBox PlaceholderText="Title" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" FontSize="25" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                                    <TextBox TextWrapping="Wrap" Background="{StaticResource Grey1GrappboxBrush}" BorderBrush="{StaticResource Grey1GrappboxBrush}" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Message, Mode=TwoWay}" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
                                     <Grid>
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="*"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
                                         <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,20,0,0">
-                                            <Button Content="&#xE792;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
-                                            <Button Content="&#xE74D;" FontFamily="Segoe MDL2 Assets"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE150;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="EditMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
+                                            <Button Content="&#xE92B;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"  FontSize="20" Click="DeleteMessage_Click" HorizontalAlignment="Center" Margin="10,0,0,0" IsEnabled="{Binding IdCheck}"/>
                                             <Button Content="&#xE868;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Bug_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
-                                            <Button Content="&#xE90A;" FontFamily="Segoe MDL2 Assets" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
+                                            <Button Content="&#xE8AF;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="Comments_Click" HorizontalAlignment="Center" Margin="10,0,0,0"/>
                                         </StackPanel>
                                         <TextBlock Text="{Binding TextDate}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" TextWrapping="Wrap" FontSize="13"/>
                                     </Grid>

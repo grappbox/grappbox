@@ -1,0 +1,700 @@
+﻿using Grappbox.Model;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using Windows.Web.Http;
+using Windows.UI.Popups;
+using Windows.UI.Xaml.Controls;
+using Grappbox.ViewModel;
+using Grappbox.HttpRequest;
+using Grappbox.Helpers;
+using System.Linq;
+
+namespace Grappbox.ViewModel
+{
+    class BugtrackerViewModel : ViewModelBase
+    {
+        static private BugtrackerViewModel instance = null;
+        private BugtrackerModel _model = new BugtrackerModel();
+        private ObservableCollection<BugtrackerModel> _openBugs;
+        private ObservableCollection<BugtrackerModel> _closeBugs;
+        private ObservableCollection<BugtrackerModel> _yoursBugs;
+        private ObservableCollection<BugtrackerModel> _commentList = new ObservableCollection<BugtrackerModel>();
+        private ObservableCollection<TagModel> _tagList;
+        private ObservableCollection<UserModel> _userList;
+        private List<int> _toAdd = new List<int>();
+        private List<int> _toRemove = new List<int>();
+        private BugtrackerModel _openSelect;
+        private BugtrackerModel _closeSelect;
+        private TagModel _tagSelect;
+
+        static public BugtrackerViewModel GetViewModel()
+        {
+            if (instance != null)
+                return instance;
+            else
+                return new BugtrackerViewModel();
+        }
+        public BugtrackerViewModel()
+        {
+            instance = this;
+        }
+
+        #region API
+        #region Get Api
+        public async System.Threading.Tasks.Task getOpenTickets()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { AppGlobalHelper.ProjectId };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/opened");
+            if (res.IsSuccessStatusCode)
+            {
+                _openBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _openBugs = new ObservableCollection<BugtrackerModel>(_openBugs.Reverse());
+                NotifyPropertyChanged("OpenList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task getClosedTickets()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { AppGlobalHelper.ProjectId };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/closed");
+            if (res.IsSuccessStatusCode)
+            {
+                _closeBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _closeBugs = new ObservableCollection<BugtrackerModel>(_closeBugs.Reverse());
+                NotifyPropertyChanged("CommentList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task getYoursTickets()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { AppGlobalHelper.ProjectId, AppGlobalHelper.CurrentUser.Id };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/user");
+            if (res.IsSuccessStatusCode)
+            {
+                _yoursBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _yoursBugs = new ObservableCollection<BugtrackerModel>(_yoursBugs.Reverse());
+                NotifyPropertyChanged("YoursList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public void getTicket(BugtrackerModel md)
+        {
+            _model = md;
+        }
+
+        public async System.Threading.Tasks.Task getTagList()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { AppGlobalHelper.ProjectId };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/project/tags");
+            if (res.IsSuccessStatusCode)
+            {
+                _tagList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TagModel>>(await res.Content.ReadAsStringAsync());
+                NotifyPropertyChanged("TagList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task getComments()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { _model.Id };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/comments");
+            if (res.IsSuccessStatusCode)
+            {
+                _commentList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                NotifyPropertyChanged("CommentList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task getUsers()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { AppGlobalHelper.ProjectId };
+            HttpResponseMessage res = await api.Get(token, "project/users");
+            if (res.IsSuccessStatusCode)
+            {
+                _userList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                NotifyPropertyChanged("UserList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+        public async System.Threading.Tasks.Task reopenTicket()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { _closeSelect.Id };
+            HttpResponseMessage res = await api.Get(token, "bugtracker/ticket/reopen");
+            if (res.IsSuccessStatusCode)
+            {
+                _openBugs.Insert(0, _closeSelect);
+                _closeBugs.Remove(_closeSelect);
+                _closeSelect = null;
+                NotifyPropertyChanged("CloseList");
+                NotifyPropertyChanged("OpenList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+        #endregion
+
+        #region Put Api
+        public async System.Threading.Tasks.Task editBug()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            List<int> items = new List<int>();
+            foreach (int item in _toAdd)
+            {
+                foreach (var user in _model.Users)
+                {
+                    if (item == user.Id)
+                        items.Add(item);
+                }
+            }
+            foreach (int item in items)
+            {
+                _toAdd.Remove(item);
+            }
+            items.Clear();
+            foreach (var item in _toRemove)
+            {
+                bool isIn = false;
+                foreach (var user in _model.Users)
+                {
+                    if (item == user.Id)
+                        isIn = true;
+                }
+                if (isIn == false)
+                    items.Add(item);
+            }
+            foreach (int item in items)
+            {
+                _toRemove.Remove(item);
+            }
+            items.Clear();
+
+            props.Add("clientOrigin", false);
+            props.Add("title", _model.Title);
+            props.Add("description", _model.Description);
+            props.Add("addUsers", _toAdd);
+            props.Add("removeUsers", _toRemove);
+            props.Add("addTags", new List<int>());
+            props.Add("removeTags", new List<int>());
+            HttpResponseMessage res = await api.Put(props, "bugtracker/ticket/" + _model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                await getOpenTickets();
+                await getClosedTickets();
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task editComment(BugtrackerModel comment)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("description", comment.Description);
+            HttpResponseMessage res = await api.Put(props, "bugtracker/comment/" + comment.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                BugtrackerModel _comment = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+
+                int range = _commentList.IndexOf(comment);
+                _commentList.Remove(comment);
+                _commentList.Insert(range, _comment);
+                NotifyPropertyChanged("CommentList");
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task<bool> editTag()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("name", _tagSelect.Name);
+            props.Add("color", _tagSelect.Color);
+            HttpResponseMessage res = await api.Put(props, "bugtracker/tag/" + _tagSelect.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                TagModel _comment = HttpRequestManager.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
+
+                int range = _tagList.IndexOf(_tagSelect);
+                _tagList.Remove(_tagSelect);
+                _tagList.Insert(range, _comment);
+                NotifyPropertyChanged("TagList");
+                _tagSelect = null;
+                return true;
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+            return false;
+        }
+
+        public async System.Threading.Tasks.Task assignTag(TagModel tag)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("tagId", tag.Id);
+            HttpResponseMessage res = await api.Put(props, "bugtracker/tag/assign/" + _model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                _model.Tags.Add(tag);
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task setParticipants()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            List<int> items = new List<int>();
+            foreach (int item in _toAdd)
+            {
+                foreach (var user in _model.Users)
+                {
+                    if (item == user.Id)
+                        items.Add(item);
+                }
+            }
+            foreach (int item in items)
+            {
+                _toAdd.Remove(item);
+            }
+            items.Clear();
+            foreach (var item in _toRemove)
+            {
+                bool isIn = false;
+                foreach (var user in _model.Users)
+                {
+                    if (item == user.Id)
+                        isIn = true;
+                }
+                if (isIn == false)
+                    items.Add(item);
+            }
+            foreach (int item in items)
+            {
+                _toRemove.Remove(item);
+            }
+            items.Clear();
+            props.Add("toAdd", _toAdd);
+            props.Add("toRemove", _toRemove);
+            HttpResponseMessage res = await api.Put(props, "bugtracker/users/" + _model.Id);
+            if (res.IsSuccessStatusCode)
+            {
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+        #endregion
+
+        #region Post API
+        public async System.Threading.Tasks.Task<bool> addBug()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            List<int> items = new List<int>();
+            foreach (int item in _toAdd)
+            {
+                foreach (var user in _userList)
+                {
+                    if (item == user.Id)
+                        items.Add(item);
+                }
+            }
+            foreach (int item in items)
+            {
+                _toAdd.Remove(item);
+            }
+            items.Clear();
+
+            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("title", _model.Title);
+            props.Add("description", _model.Description);
+            props.Add("clientOrigin", false);
+            props.Add("users", _toAdd);
+            props.Add("tags", new List<int>());
+            HttpResponseMessage res = await api.Post(props, "bugtracker/ticket");
+            if (res.IsSuccessStatusCode)
+            {
+                _model = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+                if (_openBugs != null)
+                    _openBugs.Insert(0, _model);
+                NotifyPropertyChanged("OpenList");
+                return true;
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+            return false;
+        }
+
+        public async System.Threading.Tasks.Task addComment(string description)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("comment", description);
+            props.Add("parentId", _model.Id);
+            HttpResponseMessage res = await api.Post(props, "bugtracker/comment");
+            if (res.IsSuccessStatusCode)
+            {
+                BugtrackerModel _comment = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+                _commentList.Add(_comment);
+                NotifyPropertyChanged("CommentList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+        }
+
+        public async System.Threading.Tasks.Task<bool> addTag(string name, string color)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            Dictionary<string, object> props = new Dictionary<string, object>();
+
+            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("name", name);
+            props.Add("color", color);
+            HttpResponseMessage res = await api.Post(props, "bugtracker/tag");
+            if (res.IsSuccessStatusCode)
+            {
+                TagModel _comment = HttpRequestManager.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
+                _comment.Name = name;
+                _tagList.Add(_comment);
+                NotifyPropertyChanged("TagList");
+                return true;
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            props.Clear();
+            return false;
+        }
+        #endregion
+
+        #region Delete Api
+        public async System.Threading.Tasks.Task closeTicket()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { _openSelect.Id };
+            HttpResponseMessage res = await api.Delete(token, "bugtracker/ticket/close");
+            if (res.IsSuccessStatusCode)
+            {
+                _closeBugs.Insert(0, _openSelect);
+                _openBugs.Remove(_openSelect);
+                _openSelect = null;
+                NotifyPropertyChanged("CloseList");
+                NotifyPropertyChanged("OpenList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task deleteComment(BugtrackerModel comment)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { comment.Id };
+            HttpResponseMessage res = await api.Delete(token, "bugtracker/comment");
+            if (res.IsSuccessStatusCode)
+            {
+                _commentList.Remove(comment);
+                NotifyPropertyChanged("CommentList");
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+
+        public async System.Threading.Tasks.Task<bool> deleteTag()
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { _tagSelect.Id };
+            HttpResponseMessage res = await api.Delete(token, "bugtracker/tag");
+            if (res.IsSuccessStatusCode)
+            {
+                _tagList.Remove(_tagSelect);
+                _tagSelect = null;
+                NotifyPropertyChanged("TagList");
+                return true;
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+            return false;
+        }
+
+        public async System.Threading.Tasks.Task removeAssignTag(TagModel tag)
+        {
+            HttpRequestManager api = HttpRequestManager.Instance;
+            object[] token = { _model.Id, tag.Id };
+            HttpResponseMessage res = await api.Delete(token, "bugtracker/tag/remove");
+            if (res.IsSuccessStatusCode)
+            {
+                _model.Tags.Remove(tag);
+
+                ContentDialog cd = new ContentDialog();
+                cd.Title = "Success";
+                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                var t = cd.ShowAsync();
+                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                t.Cancel();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
+        #endregion
+        #endregion API
+
+        #region Observable Collection
+        public ObservableCollection<BugtrackerModel> OpenList
+        {
+            get { return _openBugs; }
+        }
+
+        public ObservableCollection<BugtrackerModel> CloseList
+        {
+            get { return _closeBugs; }
+        }
+
+        public ObservableCollection<BugtrackerModel> YoursList
+        {
+            get { return _yoursBugs; }
+        }
+
+        public ObservableCollection<BugtrackerModel> CommentList
+        {
+            get { return _commentList; }
+        }
+
+        public ObservableCollection<TagModel> TagList
+        {
+            get { return _tagList; }
+        }
+
+        public ObservableCollection<UserModel> UserList
+        {
+            get { return _userList; }
+        }
+        #endregion
+
+        #region Select
+        public BugtrackerModel OpenSelect
+        {
+            get { return _openSelect; }
+            set { _openSelect = value; }
+        }
+
+        public BugtrackerModel CloseSelect
+        {
+            get { return _closeSelect; }
+            set { _closeSelect = value; }
+        }
+
+        public TagModel TagSelect
+        {
+            get { return _tagSelect; }
+            set { _tagSelect = value; }
+        }
+        #endregion
+
+        #region Model
+        public int Id
+        {
+            get { return _model.Id; }
+        }
+
+        public UserModel creator
+        {
+            get { return _model.Creator; }
+        }
+
+        public string Title
+        {
+            get { if (_model == null) return ""; string name = _model.Title; if (name != null) { return name; } else return ""; }
+            set
+            {
+                if (value != _model.Title)
+                {
+                    _model.Title = value;
+                    NotifyPropertyChanged("Title");
+                }
+            }
+        }
+
+        public string Description
+        {
+            get { if (_model == null) return ""; string name = _model.Description; if (name != null) { return name; } else return ""; }
+            set
+            {
+                if (value != _model.Description)
+                {
+                    _model.Description = value;
+                    NotifyPropertyChanged("Description");
+                }
+            }
+        }
+
+        public bool IdCheck
+        {
+            get
+            {
+                if (_model.Creator != null && _model.Creator.Id != AppGlobalHelper.CurrentUser.Id)
+                    return false;
+                return true;
+            }
+        }
+
+        public int ParentId
+        {
+            get { return _model.ParentId; }
+        }
+
+        public DateTime CreationDate
+        {
+            get { if (_model == null) return DateTime.Today; DateTime name = DateTime.Parse(_model.CreatedAt).ToLocalTime(); if (name != null) { return name; } else return DateTime.Today; }
+        }
+
+        public DateTime EditionDate
+        {
+            get { if (_model == null) return DateTime.Today; DateTime name = DateTime.Parse(_model.EditedAt).ToLocalTime(); if (name != null) { return name; } else return DateTime.Today; }
+        }
+
+        public List<TagModel> Tags
+        {
+            get { return _model.Tags; }
+        }
+
+        public List<UserModel> Users
+        {
+            get { return _model.Users; }
+        }
+        #endregion
+
+        public List<int> ToAdd
+        {
+            get { return _toAdd; }
+            set { _toAdd = value; }
+        }
+        public List<int> ToRemove
+        {
+            get { return _toRemove; }
+            set { _toRemove = value; }
+        }
+
+        public void newModel()
+        {
+            _model = new BugtrackerModel();
+        }
+    }
+}

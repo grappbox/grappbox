@@ -21,5 +21,13 @@ namespace Grappbox.Model
                 return ProjectSettingsViewModel.GetViewModel().RoleList;
             }
         }
+
+        public string FullName
+        {
+            get
+            {
+                return string.Format("{0} {1}", Firstname, Lastname);
+            }
+        }
     }
 }

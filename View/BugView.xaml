@@ -1,0 +1,139 @@
+﻿<Page
+    x:Class="Grappbox.View.BugView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:customControl="using:Grappbox.CustomControls">
+
+    <Page.Resources>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource PurpleListview}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource PurpleButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource PurpleTexBox}">
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <customControl:PageHeader Background="{StaticResource PurpleGrappboxBrush}">
+            <customControl:PageHeader.HeaderContent>
+                <TextBlock Name="title" Text="Issue" Style="{StaticResource PageTitleTextBlockStyle}" />
+            </customControl:PageHeader.HeaderContent>
+        </customControl:PageHeader>
+        <Pivot Name="Pivot" Style="{StaticResource PurplePivot}" Grid.Row="1" VerticalAlignment="Stretch" SelectionChanged="Pivot_SelectionChanged">
+            <PivotItem>
+                <PivotItem.Header>
+                    <customControl:TabHeader Label="Bug" Glyph="&#xE868;" />
+                </PivotItem.Header>
+                <StackPanel Margin="10">
+                    <TextBox x:Name="Title" Header="Title" PlaceholderText="Title" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
+                    <TextBox x:Name="Description" Header="Description" TextWrapping="Wrap" Height="90" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" IsEnabled="{Binding IdCheck}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <TextBlock Text="Assign users" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" Margin="0,15"/>
+                    <ListView x:Name="UserListView" SelectionMode="None" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <CheckBox x:Name="userCheckBox" Content="{Binding FullName}" Style="{StaticResource PurpleCheckBoxWhiteBackground}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Checked="userCheckBox_Checked" Loaded="userCheckBox_Loaded" Unchecked="userCheckBox_Unchecked"/>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                    </ListView>
+                </StackPanel>
+            </PivotItem>
+            <PivotItem Name="Comments">
+                <PivotItem.Header>
+                    <customControl:TabHeader Label="Comments" Glyph="&#xE8AF;" />
+                </PivotItem.Header>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="0.08*"/>
+                    </Grid.RowDefinitions>
+                    <customControl:CustomListView x:Name="CommentsListView" ContainerContentChanging="OnChatViewContainerContentChanging" IncrementalLoadingThreshold="2" ItemsSource="{Binding CommentList}" VerticalAlignment="Stretch" SelectionMode="None" HorizontalAlignment="Stretch" >
+                        <ListView.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <ItemsStackPanel ItemsUpdatingScrollMode="KeepLastItemInView" VerticalAlignment="Bottom"/>
+                            </ItemsPanelTemplate>
+                        </ListView.ItemsPanel>
+                        <ListView.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Ellipse x:Name="UserAvatar" Margin="5" Width="50" Height="50" Visibility="{Binding Visible}">
+                                        <Ellipse.Fill>
+                                            <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
+                                        </Ellipse.Fill>
+                                    </Ellipse>
+                                    <StackPanel Grid.Column="1">
+                                        <TextBox TextWrapping="Wrap" BorderThickness=".5" Margin="0" AcceptsReturn="True" PlaceholderText="Message" Text="{Binding Comment, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" IsEnabled="{Binding IdCheck}"/>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="8*"/>
+                                                <ColumnDefinition Width="2*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,5,0,0">
+                                                <Button Content="&#xE150;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Click="EditComment_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
+                                                <Button Content="&#xE92B;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"  FontSize="20" Click="DeleteComment_Click" HorizontalAlignment="Center" Margin="5,0,0,0" Visibility="{Binding IdCheck}"/>
+                                            </StackPanel>
+                                            <TextBlock Text="{Binding Infos}" Padding="5" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextWrapping="Wrap" FontSize="13"/>
+                                        </Grid>
+                                    </StackPanel>
+                                </Grid>
+                            </DataTemplate>
+                        </ListView.ItemTemplate>
+                        <ListView.ItemContainerStyle>
+                            <Style TargetType="ListViewItem">
+                                <Setter Property="Padding" Value="5"/>
+                                <Setter Property="Margin" Value="0,0,0,10"/>
+                                <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                            </Style>
+                        </ListView.ItemContainerStyle>
+                    </customControl:CustomListView>
+                    <Border Grid.Row="1" Margin="0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" BorderThickness="0,0.5"/>
+                    <Grid Grid.Row="2">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="1*"/>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <TextBox Grid.Row="1" x:Name="CommentDescription" AcceptsReturn="True" TextWrapping="Wrap"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" PlaceholderText="Type a message and press Send" Background="White" Margin="0"/>
+                        <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Click="PostComment_Click" Margin="0">
+                            <SymbolIcon Symbol="Send" Foreground="White" />
+                        </Button>
+                    </Grid>
+                </Grid>
+            </PivotItem>
+            <PivotItem Name="Tags">
+                <PivotItem.Header>
+                    <customControl:TabHeader Label="Tags" Glyph="&#xE54E;" />
+                </PivotItem.Header>
+                <ListView x:Name="TagListView" Margin="0,5,0,0" ItemsSource="{Binding TagList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" SelectionChanged="tagListView_SelectionChanged">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid Background="{Binding ColorTag}" Margin="0,5" Padding="10" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <CheckBox x:Name="checkBox" Content="{Binding Name}" Style="{StaticResource PurpleCheckBoxColoredBackground}" HorizontalAlignment="Left" VerticalAlignment="Center" FontFamily="Segoe WP" FontSize="15" Loaded="checkBox_Loaded" Click="checkBox_Click"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </PivotItem>
+        </Pivot>
+        <CommandBar Grid.Row="3" x:Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Name="SaveBug" Label="Save Bug" Click="SaveBug_Click" Icon="Save"/>
+            <AppBarButton Name="AddTag" Label="Add Tag" Click="AddTag_Click" Icon="Add" Visibility="Collapsed"/>
+        </CommandBar>
+    </Grid>
+</Page>

@@ -53,9 +53,9 @@ namespace Grappbox.Model
             get
             {
                 if (EditedAt != null)
-                    return "By " + Creator.Firstname + " " + Creator.Lastname + " at " + DateTime.Parse(EditedAt).ToLocalTime().ToString();
+                    return string.Format("By {0} {1} at {2}", Creator.Firstname, Creator.Lastname, DateTime.Parse(EditedAt).ToLocalTime().ToString());
                 else
-                    return "By " + Creator.Firstname + " " + Creator.Lastname + " at " + DateTime.Parse(CreatedAt).ToLocalTime().ToString();
+                    return string.Format("By {0} {1} at {2}", Creator.Firstname, Creator.Lastname, DateTime.Parse(CreatedAt).ToLocalTime().ToString());
             }
         }
     }

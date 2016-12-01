@@ -1,0 +1,27 @@
+﻿<ContentDialog
+    x:Class="Grappbox.CustomControls.BugTagContentDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="dialog"
+    BorderBrush="{StaticResource PurpleGrappboxBrush}"
+    Title="Bug Tag">
+
+    <StackPanel Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBox Name="TagName" Header="Name" Text="{Binding Name}" Style="{StaticResource PurpleTexBox}" BorderBrush="{StaticResource PurpleGrappboxBrush}" PlaceholderText="Name" Margin="15" BorderThickness="1"/>
+        <TextBox Name="TagColor" Header="Color in hexadecimal" Text="{Binding Color}" Style="{StaticResource PurpleTexBox}" BorderBrush="{StaticResource PurpleGrappboxBrush}" PlaceholderText="Color" Margin="15" BorderThickness="1"/>
+        <Grid HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Name="Trash" Style="{StaticResource PurpleButton}" Content="&#xE92B;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="0" Click="DeleteBugTag_Click" HorizontalAlignment="Center" Margin="10"/>
+            <Button Style="{StaticResource PurpleButton}" Content="&#xE5CD;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="1" Click="CancelBugTag_Click" HorizontalAlignment="Center" Margin="10"/>
+            <Button Style="{StaticResource PurpleButton}" Content="&#xE5CA;" FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Grid.Column="2" Click="PostBugTag_Click" HorizontalAlignment="Center" Margin="10"/>
+        </Grid>
+    </StackPanel>
+</ContentDialog>

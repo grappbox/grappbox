@@ -42,7 +42,7 @@
         <Pivot Grid.Row="1" Name="PivotPS" Style="{StaticResource RedPivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem Margin="0" VerticalAlignment="Stretch">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Settings" Glyph="&#xE115;" />
+                    <customControl:TabHeader Label="Settings" Glyph="&#xE8B8;" />
                 </PivotItem.Header>
                 <ScrollViewer>
                     <StackPanel Margin="15">
@@ -51,9 +51,6 @@
                                 <Setter Property="Margin" Value="0,20,0,0" />
                                 <Setter Property="FontSize" Value="15" />
                             </Style>
-                            <!--<Style TargetType="PasswordBox">
-                                <Setter Property="BorderBrush" Value="{StaticResource Grey3GrappboxBrush}"/>
-                            </Style>-->
                         </StackPanel.Resources>
                         <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
                         <TextBox Name="ProjectName" Header="Name" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
@@ -84,7 +81,7 @@
             </PivotItem>
             <PivotItem Name="User">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Users" Glyph="&#xE125;" />
+                    <customControl:TabHeader Label="Users" Glyph="&#xE7EF;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
                     <ListView x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
@@ -106,7 +103,7 @@
             </PivotItem>
             <PivotItem Name="CustomerAccess">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Customer access" Glyph="&#xE136;" />
+                    <customControl:TabHeader Label="Customer access" Glyph="&#xE241;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
                     <ListView x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
@@ -135,7 +132,7 @@
             </PivotItem>
             <PivotItem Name="Roles">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Roles" Glyph="&#xE192;" />
+                    <customControl:TabHeader Label="Roles" Glyph="&#xE897;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
                     <ListView x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">

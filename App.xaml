@@ -15,6 +15,8 @@
                 <ResourceDictionary Source="Resources/ListviewStyles.xaml" />
                 <ResourceDictionary Source="Resources/CustomStyle.xaml" />
                 <ResourceDictionary Source="Resources/Styles.xaml" />
+                <ResourceDictionary Source="Resources/TextBoxStyles.xaml" />
+                <ResourceDictionary Source="Resources/CheckBoxStyle.xaml" />
                 <!-- View Styles-->
                 <ResourceDictionary Source="Resources/DashboardStyle.xaml" />
                 <ResourceDictionary Source="Resources/CalendarStyle.xaml" />
