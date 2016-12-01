@@ -51,8 +51,13 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
 
     private List<UserModel> mExistingParticipants;
 
+    private List<UserModel> mParticipantList = new ArrayList<>();
+    private ArrayList<Long> mToAdd = new ArrayList<>();
+    private ArrayList<Long> mToDelete = new ArrayList<>();
+
     private NewEventFragment mFragment = this;
     private long mProjectSelected = -1;
+    private long mEventId = -1;
 
     public NewEventFragment() {
     }
@@ -98,10 +103,46 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onEventEdit(CalendarEventModel model) {
+    public void onEditMode(CalendarEventModel model) {
         mProjectSelected = model._projectId;
-
+        mEventId = model._id;
         mParticipantAdapter.setDataSet(model._user);
+        mParticipantList = model._user;
+    }
+
+    @Override
+    public void onEventEdit(String title, String desc, String begin, String end) {
+        ArrayList<Long> idGrappboxList = new ArrayList<>();
+        ArrayList<Long> idGrappboxInitList = new ArrayList<>();
+        for (UserModel model : mParticipantAdapter.getDataSet()) {
+            idGrappboxList.add(model._id);
+        }
+        for (UserModel model : mParticipantList) {
+            idGrappboxInitList.add(model._id);
+        }
+        for (Long initId : idGrappboxInitList) {
+            if (!idGrappboxList.contains(initId)) {
+                mToDelete.add(initId);
+            }
+        }
+        for (Long listId : idGrappboxList) {
+            if (!idGrappboxInitList.contains(listId)) {
+                mToAdd.add(listId);
+            }
+        }
+        Intent edit = new Intent(getActivity(), GrappboxJustInTimeService.class);
+        Bundle apiPar = new Bundle();
+        apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_ADD_PARTICIPANT, mToAdd);
+        apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_DEL_PARTICIPANT, mToDelete);
+        edit.setAction(GrappboxJustInTimeService.ACTION_EDIT_EVENT);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_EVENT_ID, mEventId);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, title);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, desc);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_BEGIN, begin);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_END, end);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, mProjectSelected);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_BUNDLE, apiPar);
+        getActivity().startService(edit);
     }
 
     @Override
@@ -156,10 +197,13 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
                 project.add(new CalendarProjectModel(data));
             } while (data.moveToNext());
             mProjectAdapter.setItem(project);
-            CalendarProjectModel projectModel = mProjectAdapter.getProject(mProjectSelected);
-            if (projectModel != null) {
-                mProjectName.setText(projectModel._projectName);
-                getLoaderManager().restartLoader(LOAD_USERS, null, mFragment);
+            if (mProjectSelected != -1) {
+                CalendarProjectModel projectModel = mProjectAdapter.getProject(mProjectSelected);
+                if (projectModel != null) {
+                    mProjectName.setText(projectModel._projectName);
+                    getLoaderManager().restartLoader(LOAD_USERS, null, mFragment);
+
+                }
             }
         } else if (loader.getId() == LOAD_USERS) {
             if (mExistingParticipants == null)

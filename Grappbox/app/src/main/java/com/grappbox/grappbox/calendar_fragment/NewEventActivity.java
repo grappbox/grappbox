@@ -63,7 +63,8 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     public interface OnEventCallback {
         public void onEventSave(String title, String desc, String begin, String end);
-        public void onEventEdit(CalendarEventModel model);
+        public void onEditMode(CalendarEventModel model);
+        public void onEventEdit(String title, String desc, String begin, String end);
     }
 
     @Override
@@ -110,7 +111,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
             mDescription.setText(mEvent._description);
             mEventBegin.setText(mEvent._beginDate);
             mEventEnd.setText(mEvent._endDate);
-            mCallback.onEventEdit(mEvent);
+            mCallback.onEditMode(mEvent);
         }
     }
 
@@ -154,7 +155,21 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     private void actionSave(){
         if (mIsEditMode){
-
+            if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
+                builder.setTitle("Calendar create event error");
+                builder.setMessage("Put title and description of the event");
+                builder.setPositiveButton(R.string.positive_response, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.show();
+                return;
+            }
+            mCallback.onEventEdit(mTitle.getText().toString(), mDescription.getText().toString(),
+                    mEventBegin.getText().toString(), mEventEnd.getText().toString());
         } else {
             if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
