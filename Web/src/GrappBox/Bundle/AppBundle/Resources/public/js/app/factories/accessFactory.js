@@ -36,7 +36,7 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
       return deferred.promise;
     }
 
-    $http.get($rootScope.api.url + "bugtracker/ticket/" + $route.current.params.id, { headers: { "Authorization": $rootScope.user.token }})
+    $http.get($rootScope.api.url + "/bugtracker/ticket/" + $route.current.params.id, { headers: { "Authorization": $rootScope.user.token }})
     .then(function getTicketSuccess(response) {
       deferred.resolve();
     },
@@ -136,7 +136,7 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
   // APP project selection check
   var _projectSelected = function() {
     var deferred = $q.defer();
-    
+
     if (!$rootScope.project.set)
       deferred.resolve();
     else
