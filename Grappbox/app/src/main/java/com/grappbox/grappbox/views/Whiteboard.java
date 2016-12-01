@@ -3,7 +3,13 @@ package com.grappbox.grappbox.views;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
+import android.graphics.Typeface;
 import android.renderscript.Double2;
+import android.renderscript.Float2;
 import android.view.View;
 
 import org.json.JSONArray;
@@ -111,8 +117,8 @@ public class Whiteboard extends View {
      */
     private abstract class ShapeModel extends ObjectModel{
         public int backgroundColor;
-        public Double2 positionStart;
-        public Double2 positionEnd;
+        public Float2 positionStart;
+        public Float2 positionEnd;
         public int lineWeight;
 
         /**
@@ -122,6 +128,15 @@ public class Whiteboard extends View {
          */
         public ShapeModel(Context context, Tool type) {
             super(context, type);
+        }
+
+        /**
+         * Calculate the real position on screen based on virtual canvas camera position
+         * @return A float rectangle which describe the real position on screen. It can be negative or exceed screen size
+         */
+        public RectF getPosition(){
+            return new RectF(mScreenPosition.x - positionStart.x, mScreenPosition.y - positionStart.y,
+                            mScreenPosition.x - positionEnd.x,mScreenPosition.y - positionEnd.y);
         }
 
         /**
@@ -136,8 +151,8 @@ public class Whiteboard extends View {
 
             super.init(object);
             backgroundColor = Color.parseColor(object.getString("background"));
-            positionStart = new Double2(startObject.getDouble("x"), startObject.getDouble("y"));
-            positionEnd = new Double2(endObject.getDouble("x"), endObject.getDouble("y"));
+            positionStart = new Float2((float)startObject.getDouble("x"), (float)startObject.getDouble("y"));
+            positionEnd = new Float2((float)endObject.getDouble("x"), (float)endObject.getDouble("y"));
             lineWeight = object.getInt("lineWeight");
         }
     }
@@ -147,8 +162,7 @@ public class Whiteboard extends View {
      * @see ObjectModel
      */
     private class TextModel extends ObjectModel{
-        public Double2 positionStart;
-        public Double2 positionEnd;
+        public Float2 positionStart;
         public String text;
         public int size;
         public boolean isItalic;
@@ -170,11 +184,9 @@ public class Whiteboard extends View {
         @Override
         public void init(JSONObject object) throws JSONException {
             JSONObject startObject = object.getJSONObject("positionStart");
-            JSONObject endObject = object.getJSONObject("positionEnd");
 
             super.init(object);
-            positionStart = new Double2(startObject.getDouble("x"), startObject.getDouble("y"));
-            positionEnd = new Double2(endObject.getDouble("x"), endObject.getDouble("y"));
+            positionStart = new Float2((float)startObject.getDouble("x"), (float)startObject.getDouble("y"));
             text = object.getString("text");
             size = object.getInt("size");
             isItalic = object.getBoolean("isItalic");
@@ -187,17 +199,24 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-
+            mTextPainter.setColor(strokeColor);
+            mTextPainter.setTextSize(size);
+            if (isItalic){
+                mTextPainter.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
+            }
+            mTextPainter.setFakeBoldText(isBold);
+            canvas.drawText(text, positionStart.x, positionStart.y, mTextPainter);
         }
     }
 
     /**
      * Describe a complete path from handwriting object into the whiteboard
+     * Handwriting is a multiple mini segment drawing, described in Android Framework with Path object
      * @see ObjectModel
      */
     private class HandwriteModel extends ObjectModel{
         public int lineWeight;
-        public List<Double2> points;
+        public List<Float2> points;
 
         /**
          * Constructor
@@ -222,8 +241,17 @@ public class Whiteboard extends View {
             points.clear();
             for (int i = 0; i < pointsObject.length(); ++i){
                 JSONObject pointObject = pointsObject.getJSONObject(i);
-                points.add(new Double2(pointObject.getDouble("x"), pointObject.getDouble("y")));
+                points.add(new Float2((float)pointObject.getDouble("x"), (float)pointObject.getDouble("y")));
             }
+        }
+
+        /**
+         * Calculate the real position on screen based on virtual canvas camera position
+         * @param point The point to process
+         * @return A float pair which describe the real point position on screen. It can be negative or exceed screen size
+         */
+        public Float2 getPosition(Float2 point){
+            return new Float2(mScreenPosition.x - point.x, mScreenPosition.y - point.y);
         }
 
         /**
@@ -232,7 +260,20 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-
+            if (lineWeight > 0){
+                mStrokePainter.setColor(strokeColor);
+                mStrokePainter.setStrokeWidth(lineWeight);
+                Path handwrite = new Path();
+                for (Float2 point : points) {
+                    Float2 position = getPosition(point);
+                    if (point.equals(points.get(0))){
+                        handwrite.moveTo(position.x, position.y);
+                    } else {
+                        handwrite.lineTo(position.x, position.y);
+                    }
+                }
+                canvas.drawPath(handwrite, mStrokePainter);
+            }
         }
     }
 
@@ -270,7 +311,13 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-
+            mPainter.setColor(backgroundColor);
+            canvas.drawOval(getPosition(), mPainter);
+            if (lineWeight > 0){
+                mStrokePainter.setStrokeWidth(lineWeight);
+                mStrokePainter.setColor(strokeColor);
+                canvas.drawOval(getPosition(), mStrokePainter);
+            }
         }
     }
 
@@ -294,7 +341,12 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-
+            RectF position = getPosition();
+            if (lineWeight > 0){
+                mStrokePainter.setColor(strokeColor);
+                mStrokePainter.setStrokeWidth(lineWeight);
+                canvas.drawLine(position.left, position.top, position.right, position.bottom, mStrokePainter);
+            }
         }
     }
 
@@ -319,6 +371,15 @@ public class Whiteboard extends View {
         @Override
         public void draw(Canvas canvas) {
 
+            mPainter.setColor(backgroundColor);
+            canvas.drawRect(getPosition(), mPainter);
+
+            if (lineWeight > 0){
+                mStrokePainter.setColor(strokeColor);
+                mStrokePainter.setStrokeWidth(lineWeight);
+                canvas.drawRect(getPosition(), mStrokePainter);
+            }
+
         }
     }
 
@@ -342,13 +403,30 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
+            Path shape = new Path();
+            RectF position = getPosition();
 
+
+            mPainter.setColor(backgroundColor);
+            shape.moveTo(position.left + ((position.right - position.left) / 2), position.top);
+            shape.lineTo(position.left, position.top + ((position.bottom - position.top) / 2));
+            shape.lineTo(position.left + ((position.right - position.left) / 2), position.bottom);
+            shape.lineTo(position.right, position.top + ((position.bottom - position.top) / 2));
+            canvas.drawPath(shape, mPainter);
+            if (lineWeight > 0){
+                mStrokePainter.setColor(strokeColor);
+                mStrokePainter.setStrokeWidth(lineWeight);
+                canvas.drawPath(shape, mStrokePainter);
+            }
         }
     }
 
     private Tool mCurrentTool;
+    private Float2 mScreenPosition;
+    private Float2 mMaxPosition;
     private List<ObjectModel> mObjects;
     private List<Callbacks> mCallbacks;
+    private Paint mPainter, mTextPainter, mStrokePainter;
 
     /**
      * Constructor
@@ -359,6 +437,13 @@ public class Whiteboard extends View {
         mCurrentTool = Tool.E_MOVE;
         mObjects = new ArrayList<>();
         mCallbacks = new ArrayList<>();
+        mPainter = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mPainter.setStyle(Paint.Style.FILL);
+        mTextPainter = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mStrokePainter = new Paint(Paint.ANTI_ALIAS_FLAG);
+        mStrokePainter.setStyle(Paint.Style.STROKE);
+        mScreenPosition = new Float2(0, 0);
+        mMaxPosition = new Float2(getWidth(), getHeight());
     }
 
     /**
