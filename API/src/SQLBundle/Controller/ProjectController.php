@@ -307,19 +307,25 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->persist($project);
 		$project->addUser($user);
 		if (array_key_exists('logo', $content)) {
-			$dir="/web/resources/projects/";
-			$filename = 'project-'+$project->getId()+"-"+md5($this->get('security.secure_random')->nextBytes(10));
+			$filepath = "/var/www/static/app/project/".$id;
 
-			$content->logo->getData()->move($dir, $filename);
-			$project->setLogo($dir + $filename);
+			$file = base64_decode($content->logo);
+			if ($file == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			$image = imagecreatefromstring($file);
+			if ($image == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			if (!imagejpeg($image, $filepath, 80))
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			imagedestroy($image);
+
+			$fileurl = 'https://static.grappbox.com/app/project/'.$id;
+
+			$project->setLogo($fileurl);
 			$project->setLogoDate(new \DateTime);
-
-			// $generator = $this->get('security.secure_random');
-			// $random = $generator->nextBytes(10);
-			// $fileDir = $this->container->getParameter('kernel.root_dir').'/../web/uploads/avatars';
-			// $fileName= md5($random).'.'.$request->files->get('avatar')->guessExtension();
-			// $avatar = $request->files->get('avatar')->move($fileDir, $fileName);
-			// $user->setAvatar($fileDir.'/'.$fileName);
 		}
 
 		//Create admin role
@@ -829,30 +835,22 @@ class ProjectController extends RolesAndTokenVerificationController
 			$project->setDescription($content->description);
 		if (array_key_exists('logo', $content))
 		{
-
-			// $dir = "/var/www/static/app/project/";
-			// print_r('https://static.grappbox.com/project/'+$filename);
-
-			// $filepath = $this->container->getParameter('kernel.root_dir')."/../web/resources/user/".$id;
 			$filepath = "/var/www/static/app/project/".$id;
 
 			$file = base64_decode($content->logo);
 			if ($file == false)
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
-				// print_r('invalid data');
 
 			$image = imagecreatefromstring($file);
 			if ($image == false)
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
-				// print_r('invalid data');
 
-			if (!imagejpeg($image, $filepath, 50))
+			if (!imagejpeg($image, $filepath, 80))
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
-				// print_r('invalid data');
 
 			imagedestroy($image);
 
-			$fileurl = 'https://static.grappbox.com/project/'.$id;
+			$fileurl = 'https://static.grappbox.com/app/project/'.$id;
 
 			$project->setLogo($fileurl);
 			$project->setLogoDate(new \DateTime);

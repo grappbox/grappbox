@@ -553,8 +553,25 @@ class UserController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists('avatar', $content))
 		{
-			$user->setAvatar($content->avatar);
-			$user->setAvatarDate(new \DateTime('now'));
+      $filepath = "/var/www/static/app/user/".$id;
+
+			$file = base64_decode($content->avatar);
+			if ($file == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			$image = imagecreatefromstring($file);
+			if ($image == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			if (!imagejpeg($image, $filepath, 80))
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			imagedestroy($image);
+
+			$fileurl = 'https://static.grappbox.com/app/user/'.$id;
+
+			$user->setAvatar($fileurl);
+			$user->setAvatarDate(new \DateTime);
 
 			//notifs
 			$mdata['mtitle'] = "avatar user";
