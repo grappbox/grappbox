@@ -111,8 +111,6 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 usersDeletionSelection += ", ";
             }
             usersDeletionSelection += String.valueOf(user.getLong(0));
-            user.close();
-
             Cursor assignationExist = mContext.getContentResolver().query(GrappboxContract.BugAssignationEntry.CONTENT_URI, new String[]{GrappboxContract.BugAssignationEntry._ID}, GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{String.valueOf(bugId), String.valueOf(user.getLong(0))}, null);
             if (assignationExist == null || !assignationExist.moveToFirst()){
                 ContentValues values = new ContentValues();
@@ -122,6 +120,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
             } else{
                 assignationExist.close();
             }
+            user.close();
         }
         if (!usersDeletionSelection.isEmpty())
             usersDeletionSelection += ") AND ";
