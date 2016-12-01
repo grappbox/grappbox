@@ -2821,21 +2821,20 @@ public class GrappboxJustInTimeService extends IntentService {
         String firstDayOfTheMonth = format.format(calendar.getTime());
         HttpURLConnection connection = null;
         String returnedJson;
-        Cursor listUser = null;
         try {
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/planning/month/" + firstDayOfTheMonth);
-            Log.v(LOG_TAG, "url : " + url + ", apiToken : " + apiToken);
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
             connection.connect();
+            Log.v(LOG_TAG, "url : " + url.toString() + ", apiToken : " + apiToken);
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
-            Log.v(LOG_TAG, "returned JSON : " + returnedJson);
             JSONObject json = new JSONObject(returnedJson);
             if (Utils.Errors.checkAPIError(json))
                 throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
+            Log.v(LOG_TAG, "getPlanningMonth : " + json.toString());
             JSONObject array = json.getJSONObject("data").getJSONObject("array");
             if (!array.has("events"))
                 return ;
@@ -2857,6 +2856,14 @@ public class GrappboxJustInTimeService extends IntentService {
                 }
                 event.put(GrappboxContract.EventEntry.COLUMN_LOCAL_CREATOR_ID, creatorId.getLong(0));
                 creatorId.close();
+                if (!currentEvent.getString("projectId").equals("null")) {
+                    Cursor projectID = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentEvent.getString("projectId")}, null);
+                    if (projectID == null || !projectID.moveToFirst()) {
+                        throw new UnknownError();
+                    }
+                    event.put(EventEntry.COLUMN_LOCAL_PROJECT_ID, projectID.getLong(0));
+                    projectID.close();
+                }
                 Uri res = getContentResolver().insert(GrappboxContract.EventEntry.CONTENT_URI, event);
                 if (res == null)
                     throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
@@ -2899,8 +2906,6 @@ public class GrappboxJustInTimeService extends IntentService {
         } finally {
             if (connection != null)
                 connection.disconnect();
-            if (listUser != null)
-                listUser.close();
         }
     }
 }

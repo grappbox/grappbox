@@ -13,6 +13,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,11 +100,7 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     @Override
     public void onEventEdit(CalendarEventModel model) {
         mProjectSelected = model._projectId;
-        CalendarProjectModel project = mProjectAdapter.getProject(mProjectSelected);
-        if (project != null) {
-            mProjectName.setText(project._projectName);
-            getLoaderManager().restartLoader(LOAD_USERS, null, mFragment);
-        }
+
         mParticipantAdapter.setDataSet(model._user);
     }
 
@@ -159,6 +156,11 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
                 project.add(new CalendarProjectModel(data));
             } while (data.moveToNext());
             mProjectAdapter.setItem(project);
+            CalendarProjectModel projectModel = mProjectAdapter.getProject(mProjectSelected);
+            if (projectModel != null) {
+                mProjectName.setText(projectModel._projectName);
+                getLoaderManager().restartLoader(LOAD_USERS, null, mFragment);
+            }
         } else if (loader.getId() == LOAD_USERS) {
             if (mExistingParticipants == null)
                 mExistingParticipants = new ArrayList<>();
