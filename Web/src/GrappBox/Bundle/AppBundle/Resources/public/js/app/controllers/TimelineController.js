@@ -6,14 +6,14 @@
 
 // Controller definition
 // APP timeline
-app.controller("TimelineController", ["$http", "$location", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "timelineIssueFactory", "$uibModal",
-    function($http, $location, notificationFactory, $q, $rootScope, $route, $scope, timelineIssueFactory, $uibModal) {
+app.controller("TimelineController", ["accessFactory", "$http", "$location", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "timelineIssueFactory", "$uibModal",
+    function(accessFactory, $http, $location, notificationFactory, $q, $rootScope, $route, $scope, timelineIssueFactory, $uibModal) {
 
 	/* ==================== INITIALIZATION ==================== */
 
 	// Scope variables initialization
-	$scope.view = { onLoad: true, valid: false, authorized: false };
-  $scope.modal = { onLoad: true, valid: false, authorized: false };
+	$scope.view = { loaded: false, valid: false, authorized: false };
+  $scope.modal = { loaded: false, valid: false, authorized: false };
 	$scope.method = { switchTab: "", formatObjectDate: "" };
 
   $scope.timeline = { project_id: $route.current.params.project_id, team: {}, customer: {} };
@@ -30,14 +30,14 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
   // Routine definition (local)
   // Reset timeline list
   var _resetTimelineList = function() {
-    $scope.timeline.team = { id: "", typeId: "", active: true, onLoad: true, valid: false, messages: null };
-    $scope.timeline.customer = { id: "", typeId: "", active: false, onLoad: true, valid: false, messages: null };
+    $scope.timeline.team = { id: "", typeId: "", active: true, loaded: false, valid: false, messages: null };
+    $scope.timeline.customer = { id: "", typeId: "", active: false, loaded: false, valid: false, messages: null };
   };
 
   // Routine definition (local)
   // Reset modal content
   var _resetModalContent = function() {
-    $scope.modal = { onLoad: true, valid: false, authorized: false };
+    $scope.modal = { loaded: false, valid: false, authorized: false };
     $scope.active.message = { title: "", message: "" };
     $scope.active.comment = "";
     $scope.new.message = { title: "", message: "" };
@@ -57,9 +57,9 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
   					case "1.11.1":
   					angular.forEach((response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null), function(value, key) {
   						if (value.typeId == "2")
-  							$scope.timeline.team = { id: value.id, typeId: value.typeId, active: true, onLoad: true, valid: false, messages: null };
+  							$scope.timeline.team = { id: value.id, typeId: value.typeId, active: true, loaded: false, valid: false, messages: null };
   						else
-  							$scope.timeline.customer = { id: value.id, typeId: value.typeId, active: false, onLoad: true, valid: false, messages: null };
+  							$scope.timeline.customer = { id: value.id, typeId: value.typeId, active: false, loaded: false, valid: false, messages: null };
   					});
             $scope.view.authorized = true;
   					deferred.resolve();
@@ -68,16 +68,16 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
             // ISSUE #175 WORKAROUND
   					case "1.11.3":
             _resetTimelineList();
-            $scope.timeline.team.onLoad = false;
-            $scope.timeline.customer.onLoad = false;
+            $scope.timeline.team.loaded = true;
+            $scope.timeline.customer.loaded = true;
             $scope.view.authorized = false;
   					deferred.reject();
   					break;
 
   					default:
             _resetTimelineList();
-            $scope.timeline.team.onLoad = false;
-            $scope.timeline.customer.onLoad = false;
+            $scope.timeline.team.loaded = true;
+            $scope.timeline.customer.loaded = true;
   					deferred.reject();
   					break;
   				}
@@ -114,28 +114,28 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
   					case "1.11.1":
   					timeline.messages = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
   					timeline.valid = true;
-  					timeline.onLoad = false;
+  					timeline.loaded = true;
             $scope.view.authorized = true;
   					break;
 
   					case "1.11.3":
   					timeline.messages = null;
   					timeline.valid = true;
-  					timeline.onLoad = false;
+  					timeline.loaded = true;
             $scope.view.authorized = true;
 						break;
 
   					default:
 						timeline.messages = null;
 	  				timeline.valid = false;
-  					timeline.onLoad = false;
+  					timeline.loaded = true;
   					break;
   				}
   			}
   			else {
 					timeline.messages = null;
   				timeline.valid = false;
-					timeline.onLoad = false;
+					timeline.loaded = true;
   			}
   		},
   		function onGetTimelineMessagesFail(response) {
@@ -148,21 +148,21 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
             case "11.4.9":
             timeline.messages = null;
             timeline.valid = false;
-            timeline.onLoad = false;
+            timeline.loaded = true;
             $scope.view.authorized = false;
             break;
 
             default:
             timeline.messages = null;
             timeline.valid = false;
-            timeline.onLoad = false;
+            timeline.loaded = true;
             break;
           }
         }
         else {
           timeline.messages = null;
           timeline.valid = false;
-          timeline.onLoad = false;
+          timeline.loaded = true;
         }
   		}
 		);
@@ -189,6 +189,7 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
 
   /* ==================== EXECUTION ==================== */
 
+  accessFactory.projectAvailable();
   _resetTimelineList();
   
   var timelineList_promise = _getTimelineList();
@@ -197,11 +198,11 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
       $scope.timeline.team.messages = _getTimelineMessages($scope.timeline.team);
       $scope.timeline.customer.messages = _getTimelineMessages($scope.timeline.customer);
 			$scope.view.valid = true;
-			$scope.view.onLoad = false;
+			$scope.view.loaded = true;
   	},
   	function onPromiseGetFail() {
 			$scope.view.valid = false;
-			$scope.view.onLoad = false;
+			$scope.view.loaded = true;
   	}
   );
 
@@ -220,21 +221,21 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
             case "1.11.1":
             $scope.comments = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
             $scope.modal.valid = true;
-            $scope.modal.onLoad = false;
+            $scope.modal.loaded = true;
             $scope.modal.authorized = true;
             break;
 
             case "1.11.3":
             $scope.comments = null;
             $scope.modal.valid = true;
-            $scope.modal.onLoad = false;
+            $scope.modal.loaded = true;
             $scope.modal.authorized = true;
             break;
 
             default:
             $scope.comments = null;
             $scope.modal.valid = false;
-            $scope.modal.onLoad = false;
+            $scope.modal.loaded = true;
             $scope.modal.authorized = true;
             break;
           }
@@ -242,7 +243,7 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
         else {
           $scope.comments = null;
           $scope.modal.valid = false;
-          $scope.modal.onLoad = false;
+          $scope.modal.loaded = true;
           $scope.modal.authorized = true;
         }
       },
@@ -256,14 +257,14 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
             case "11.6.9":
             $scope.comments = null;
             $scope.modal.valid = false;
-            $scope.modal.onLoad = false;
+            $scope.modal.loaded = true;
             $scope.modal.authorized = false;
             break;
 
             default:
             $scope.comments = null;
             $scope.modal.valid = false;
-            $scope.modal.onLoad = false;
+            $scope.modal.loaded = true;
             $scope.modal.authorized = true;
             break;
           }
@@ -271,7 +272,7 @@ app.controller("TimelineController", ["$http", "$location", "notificationFactory
         else {
           $scope.comments = null;
           $scope.modal.valid = false;
-          $scope.modal.onLoad = false;
+          $scope.modal.loaded = true;
           $scope.modal.authorized = true;
         }
       }

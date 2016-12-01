@@ -135,9 +135,8 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		title: "Timeline",
     controller  : "TimelineController",
 		templateUrl : "../resources/partials/timeline.html",
-		caseInsensitiveMatch : true,
-    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
-	})
+		caseInsensitiveMatch : true
+  })
 	// Whiteboard pages
   .when("/whiteboard/:project_id", {
 		title: "Whiteboard",
