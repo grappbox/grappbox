@@ -846,9 +846,11 @@ class ProjectController extends RolesAndTokenVerificationController
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
 				// print_r('invalid data');
 
-			if (imagejpeg($image, $filepath, 50))
+			if (!imagejpeg($image, $filepath, 50))
 				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
 				// print_r('invalid data');
+
+			imagedestroy($image);
 
 			$fileurl = 'https://static.grappbox.com/project/'.$id;
 
