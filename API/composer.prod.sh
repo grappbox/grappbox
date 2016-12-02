@@ -9,7 +9,7 @@ sudo rm -rf app/logs/prod.log &&
 sudo rm -rf app/logs/dev.log &&
 sudo find vendor/* \! -name 'league' -and \! -name 'sabre' -delete &&
 sudo php composer.phar install --no-dev --optimize-autoloader &&
-sudo php app/console cache:clear --env=prod --no-debug &&
+sudo php bin/console cache:clear --env=prod --no-debug &&
 sudo git checkout vendor/ &&
 sudo chown www-data.www-data * -R &&
 sudo chown www-data.www-data .* -R &&
