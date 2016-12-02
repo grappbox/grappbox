@@ -65,6 +65,9 @@ $RECYCLE.BIN/
 !var/sessions/.gitkeep
 !var/SymfonyRequirements.php
 
+/vendor/*
 !/vendor/.gitkeep
 !/vendor/sabre/
 !/vendor/league/
+
+/web/bundles

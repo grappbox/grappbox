@@ -369,7 +369,7 @@ class Client extends HTTP\Client {
     function request($method, $url = '', $body = null, array $headers = []) {
 
         $url = $this->getAbsoluteUrl($url);
-
+	if ($method == "PUT"){           $headers["OC-Chunked"] = 1;         }
         $response = $this->send(new HTTP\Request($method, $url, $headers, $body));
         return [
             'body'       => $response->getBodyAsString(),
