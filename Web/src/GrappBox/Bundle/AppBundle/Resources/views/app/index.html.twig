@@ -109,7 +109,7 @@
     '@AppBundle/Resources/public/js/app/factories/notificationFactory.js'
     '@AppBundle/Resources/public/js/app/factories/rootFactory.js'
     '@AppBundle/Resources/public/js/app/factories/statisticFactory.js'
-    '@AppBundle/Resources/public/js/app/factories/timelineIssueFactory.js'
+    '@AppBundle/Resources/public/js/app/factories/talkFactory.js'
     '@AppBundle/Resources/public/js/app/factories/whiteboardObjectFactory.js'
     '@AppBundle/Resources/public/js/app/factories/whiteboardRenderFactory.js'
     '@AppBundle/Resources/public/js/app/controllers/BugtrackerController.js'
@@ -124,9 +124,10 @@
     '@AppBundle/Resources/public/js/app/controllers/ProfileController.js'
     '@AppBundle/Resources/public/js/app/controllers/ProjectSettingsController.js'
     '@AppBundle/Resources/public/js/app/controllers/StatisticsController.js'
+    '@AppBundle/Resources/public/js/app/controllers/TalkController.js'
+    '@AppBundle/Resources/public/js/app/controllers/TalkListController.js'
     '@AppBundle/Resources/public/js/app/controllers/TaskController.js'
     '@AppBundle/Resources/public/js/app/controllers/TaskListController.js'
-    '@AppBundle/Resources/public/js/app/controllers/TimelineController.js'
     '@AppBundle/Resources/public/js/app/controllers/WhiteboardController.js'
     '@AppBundle/Resources/public/js/app/controllers/WhiteboardListController.js'
     filter='?uglifyjs2' output='resources/js/app.min.js' %}
@@ -228,8 +229,8 @@
                 <i class="material-icons">{[{ path.icons['/cloud'] }]}</i>Cloud</a>
             </li>
             <li data-ng-if="project.set">
-              <a data-ng-href="{[{ 'timeline/' + project.id }]}" title="Go to your projects timelines" class="btn {[{ path.routes['/timeline'] ? 'active' : '' }]}">
-                <i class="material-icons">{[{ path.icons['/timeline'] }]}</i>Timeline</a>
+              <a data-ng-href="{[{ 'talk/' + project.id }]}" title="Go to your projects talks" class="btn {[{ path.routes['/talk'] ? 'active' : '' }]}">
+                <i class="material-icons">{[{ path.icons['/talk'] }]}</i>Talks</a>
             </li>
             <li data-ng-if="project.set">
               <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ path.routes['/bugtracker'] ? 'active' : '' }]}">

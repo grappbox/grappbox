@@ -75,13 +75,13 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Gantt pages
-    .when("/gantt/:project_id", {
-		title: "Gantt",
+  .when("/gantt/:project_id", {
+    title: "Gantt",
     controller  : "GanttController",
-		templateUrl : "../resources/partials/gantt.html",
-		caseInsensitiveMatch : true,
+    templateUrl : "../resources/partials/gantt.html",
+    caseInsensitiveMatch : true,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
-	})
+  })
   // Notifications pages
   .when("/notifications", {
     title: "Notifications",
@@ -130,12 +130,18 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
       taskAvailability: ["accessFactory", function(accessFactory) { return accessFactory.taskAvailable(); }]
     }
   })
-	// Timeline pages
-  .when("/timeline/:project_id", {
-		title: "Timeline",
-    controller  : "TimelineController",
-		templateUrl : "../resources/partials/timeline.html",
+	// Talk pages
+  .when("/talk/:project_id", {
+		title: "Talks",
+    controller  : "TalkListController",
+		templateUrl : "../resources/partials/talk-list.html",
 		caseInsensitiveMatch : true
+  })
+  .when("/talk/:project_id/:message_id", {
+    title: "Talks",
+    controller  : "TalkController",
+    templateUrl : "../resources/partials/talk.html",
+    caseInsensitiveMatch : true
   })
 	// Whiteboard pages
   .when("/whiteboard/:project_id", {

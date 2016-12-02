@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP bugtracker
-app.controller("BugtrackerController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "timelineIssueFactory",
-    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, timelineIssueFactory) {
+app.controller("BugtrackerController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "talkFactory",
+    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, talkFactory) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -52,11 +52,11 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
       });
   }
   else {
-    if (timelineIssueFactory.isMessageLoaded())
+    if (talkFactory.isMessageLoaded())
     {
-      var data = timelineIssueFactory.getMessageData();
+      var data = talkFactory.getMessageData();
       $scope.data.ticket = {"title": data.title, "description": data.message };
-      timelineIssueFactory.clear();
+      talkFactory.clear();
     }
     else {
       $scope.data.ticket = null;
