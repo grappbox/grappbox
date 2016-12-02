@@ -17,7 +17,7 @@ class AccountAdministrationControllerTest extends WebTestCase
         	array(),
         	array(),
         	array('CONTENT_TYPE' => 'application/json'),
-        	'{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
+        	'{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo.swag@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
         // Assert a specific 200 status code
@@ -30,7 +30,7 @@ class AccountAdministrationControllerTest extends WebTestCase
 		$data = $data['data'];
 		$this->assertEquals("john", $data['firstname']);
 		$this->assertEquals("doe", $data['lastname']);
-		$this->assertEquals("yolo@toto.com", $data['email']);
+		$this->assertEquals("yolo.swag@toto.com", $data['email']);
 
         $crawler = $client->request(
             'POST',
@@ -38,7 +38,7 @@ class AccountAdministrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
+            '{ "data": { "firstname": "john", "lastname": "doe", "password": "toto", "email": "yolo.swag@toto.com", "is_client": false, "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
         // Assert a specific 400 status code
@@ -58,7 +58,7 @@ class AccountAdministrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{ "data": { "password": "toto", "login": "yolo@toto.com", "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
+            '{ "data": { "password": "toto", "login": "yolo.swag@toto.com", "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
         // Assert a specific 200 status code
@@ -71,7 +71,7 @@ class AccountAdministrationControllerTest extends WebTestCase
         $data = $data['data'];
         $this->assertEquals("john", $data['firstname']);
         $this->assertEquals("doe", $data['lastname']);
-        $this->assertEquals("yolo@toto.com", $data['email']);
+        $this->assertEquals("yolo.swag@toto.com", $data['email']);
         $_ENV['TOKEN'] = $data['token'];
     }
 
@@ -99,14 +99,15 @@ class AccountAdministrationControllerTest extends WebTestCase
             array(),
             array(),
             array('CONTENT_TYPE' => 'application/json'),
-            '{ "data": { "password": "toto", "login": "yolo@toto.com", "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
+            '{ "data": { "password": "toto", "login": "yolo.swag@toto.com", "mac": "XXXX", "flag": "web", "device_name": "yolo" } }'
         );
 
         $data = json_decode($client->getResponse()->getContent(), true);
         $data = $data['data'];
         $this->assertEquals("john", $data['firstname']);
         $this->assertEquals("doe", $data['lastname']);
-        $this->assertEquals("yolo@toto.com", $data['email']);
+        $this->assertEquals("yolo.swag@toto.com", $data['email']);
         $_ENV["TOKEN"] = $data['token'];
+        $_ENV["USER_ID"] = $data['id'];
     }
 }

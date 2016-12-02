@@ -307,7 +307,7 @@ class ProjectController extends RolesAndTokenVerificationController
 		$em->persist($project);
 		$project->addUser($user);
 		if (array_key_exists('logo', $content)) {
-			$filepath = "/var/www/static/app/project/".$id;
+			$filepath = "/var/www/static/app/project/".$project->getId();
 
 			$file = base64_decode($content->logo);
 			if ($file == false)
@@ -322,7 +322,7 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			imagedestroy($image);
 
-			$fileurl = 'https://static.grappbox.com/app/project/'.$id;
+			$fileurl = 'https://static.grappbox.com/app/project/'.$project->getId();
 
 			$project->setLogo($fileurl);
 			$project->setLogoDate(new \DateTime);

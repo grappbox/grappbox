@@ -6,9 +6,9 @@ dist: trusty
 addons:
   apt:
     packages:
-    - mysql-server-7.0
-    - mysql-client-core-7.0
-    - mysql-client-7.0
+    - mysql-server
+    - mysql-client-core
+    - mysql-client
 services:
   - mysql
 before_script:
