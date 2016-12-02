@@ -77,14 +77,9 @@ class User implements UserInterface
     protected $twitter;
 
     /**
-     * @var string $token
+     * @var bool
      */
-    protected $token;
-
-    /**
-     * @var date $tokenValidity
-     */
-    protected $tokenValidity;
+    private $isClient;
 
     /**
      * @var MongoBundle\Document\Bug
@@ -107,24 +102,54 @@ class User implements UserInterface
     protected $project_creator = array();
 
     /**
-     * @var MongoBundle\Document\Gantt
+     * @var MongoBundle\Document\Whiteboard
      */
-    protected $gantt_creator = array();
+    private $whiteboard_creator = array();
+
+    /**
+     * @var MongoBundle\Document\Whiteboard
+     */
+    private $whiteboard_updator = array();
+
+    /**
+     * @var MongoBundle\Document\Whiteboard
+     */
+    private $whiteboard_user = array();
 
     /**
      * @var MongoBundle\Document\Gantt
      */
-    protected $gantt_updator = array();
-
-    /**
-     * @var MongoBundle\Document\Task
-     */
-    protected $task_creator;
+    private $gantt_updator = array();
 
     /**
      * @var MongoBundle\Document\Notification
      */
     protected $notifications = array();
+
+    /**
+     * @var MongoBundle\Document\Devices
+     */
+    protected $devices = array();
+
+    /**
+     * @var MongoBundle\Document\Task
+     */
+    protected $task_creator  = array();
+
+    /**
+     * @var MongoBundle\Document\Color
+     */
+    protected $colors = array();
+
+    /**
+     * @var MongoBundle\Document\Ressources
+     */
+    protected $ressources = array();
+
+    /**
+     * @var MongoBundle\Document\Authentication
+     */
+    private $authentications = array();
 
     /**
      * @var MongoBundle\Document\Project
@@ -137,36 +162,26 @@ class User implements UserInterface
     protected $events = array();
 
     /**
-     * @var MongoBundle\Document\Ressources
-     */
-    protected $ressources = array();
-
-    /**
-     * @var MongoBundle\Document\Color
-     */
-    protected $colors;
-
-    /**
-     * @var MongoBundle\Document\Devices
-     */
-    protected $devices;
-
-    /**
      * Constructor
-    */
+     */
     public function __construct()
     {
-      $this->bug_creator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->message_creator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->gantt_updator = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->events = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
-      $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bug_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->message_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_updator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_user = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->gantt_updator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->devices = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->authentications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->events = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -186,18 +201,34 @@ class User implements UserInterface
     {
     }
 
-    public function objectToArray()
-    {
-      return array(
-          'id' => $this->id,
-          'firstname' => $this->firstname,
-          'lastname' => $this->lastname,
-          'email' => $this->email,
-          'token' => $this->token,
-          'avatar' => $this->avatarDate
-      );
+    public function fullObjectToArray() {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'country' => $this->country,
+            'linkedin' => $this->linkedin,
+            'viadeo' => $this->viadeo,
+            'twitter' => $this->twitter,
+            'is_client' => $this->isClient
+        );
     }
 
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'is_client' => $this->isClient
+        );
+    }
 
     /**
      * Get id
@@ -486,45 +517,105 @@ class User implements UserInterface
     }
 
     /**
-     * Get token
+     * Set isClient
      *
-     * @return string $token
-     */
-    public function getToken()
-    {
-        return $this->token;
-    }
-
-    /**
-     * Set tokenValidity
-     *
-     * @param date $tokenValidity
+     * @param bool $isClient
      * @return self
      */
-    public function setTokenValidity($tokenValidity)
+    public function setIsClient($isClient)
     {
-        $this->tokenValidity = $tokenValidity;
+        $this->isClient = $isClient;
+
         return $this;
     }
 
     /**
-     * Get tokenValidity
+     * Get isClient
      *
-     * @return date $tokenValidity
+     * @return bool
      */
-    public function getTokenValidity()
+    public function getIsClient()
     {
-        return $this->tokenValidity;
+        return $this->isClient;
+    }
+
+    /**
+     * Add bug_creator
+     *
+     * @param MongoBundle\Document\Bug $bugCreator
+     * @return self
+     */
+    public function addBugCreator( $bugCreator)
+    {
+        $this->bug_creator[] = $bugCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove bug_creator
+     *
+     * @param MongoBundle\Document\Bug $bugCreator
+     */
+    public function removeBugCreator( $bugCreator)
+    {
+        $this->bug_creator->removeElement($bugCreator);
+    }
+
+    /**
+     * Get bug_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugCreator()
+    {
+        return $this->bug_creator;
+    }
+
+    /**
+     * Add message_creator
+     *
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
+     * @return self
+     */
+    public function addMessageCreator( $messageCreator)
+    {
+        $this->message_creator[] = $messageCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove message_creator
+     *
+     * @param MongoBundle\Document\TimelineMessage $messageCreator
+     */
+    public function removeMessageCreator( $messageCreator)
+    {
+        $this->message_creator->removeElement($messageCreator);
+    }
+
+    /**
+     * Get message_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessageCreator()
+    {
+        return $this->message_creator;
     }
 
     /**
      * Add event_creator
      *
      * @param MongoBundle\Document\Event $eventCreator
+     * @return self
      */
     public function addEventCreator( $eventCreator)
     {
         $this->event_creator[] = $eventCreator;
+
+        return $this;
     }
 
     /**
@@ -548,73 +639,16 @@ class User implements UserInterface
     }
 
     /**
-     * Add bug_creator
-     *
-     * @param MongoBundle\Document\Bug $bugCreator
-     */
-    public function addBugCreator( $bugCreator)
-    {
-        $this->bug_creator[] = $bugCreator;
-    }
-
-    /**
-     * Remove bug_creator
-     *
-     * @param MongoBundle\Document\Bug $bugCreator
-     */
-    public function removeBugCreator( $bugCreator)
-    {
-        $this->bug_creator->removeElement($bugCreator);
-    }
-
-    /**
-     * Get bug_creator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBugCreator()
-    {
-        return $this->bug_creator;
-    }
-
-
-    /**
-     * Add message_creator
-     *
-     * @param MongoBundle\Document\TimelineMessage $messageCreator
-     */
-    public function addMessageCreator( $messageCreator)
-    {
-        $this->message_creator[] = $messageCreator;
-    }
-
-    /**
-     * Remove message_creator
-     * @param MongoBundle\Document\TimelineMessage $messageCreator
-     */
-    public function removeMessageCreator( $messageCreator)
-    {
-        $this->message_creator->removeElement($messageCreator);
-    }
-
-    /**
-     * Get message_creator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getMessageCreator()
-    {
-        return $this->message_creator;
-    }
-
-    /**
      * Add project_creator
      *
      * @param MongoBundle\Document\Project $projectCreator
+     * @return self
      */
     public function addProjectCreator( $projectCreator)
     {
         $this->project_creator[] = $projectCreator;
+
+        return $this;
     }
 
     /**
@@ -638,49 +672,121 @@ class User implements UserInterface
     }
 
     /**
-     * Add gantt_creator
+     * Add whiteboard_creator
      *
-     * @param MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Whiteboard $whiteboardCreator
+     * @return User
      */
-    public function addGanttCreator( $ganttCreator)
+    public function addWhiteboardCreator($whiteboardCreator)
     {
-        $this->gantt_creator[] = $ganttCreator;
+        $this->whiteboard_creator[] = $whiteboardCreator;
+
+        return $this;
     }
 
     /**
-     * Remove gantt_creator
+     * Remove whiteboard_creator
      *
-     * @param MongoBundle\Document\Gantt $ganttCreator
+     * @param MongoBundle\Document\Whiteboard $whiteboardCreator
      */
-    public function removeGanttCreator( $ganttCreator)
+    public function removeWhiteboardCreator($whiteboardCreator)
     {
-        $this->gantt_creator->removeElement($ganttCreator);
+        $this->whiteboard_creator->removeElement($whiteboardCreator);
     }
 
     /**
-     * Get gantt_creator
+     * Get whiteboard_creator
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGanttCreator()
+    public function getWhiteboardCreator()
     {
-        return $this->gantt_creator;
+        return $this->whiteboard_creator;
+    }
+
+    /**
+     * Add whiteboard_updator
+     *
+     * @param MongoBundle\Document\Whiteboard $whiteboardUpdator
+     * @return User
+     */
+    public function addWhiteboardUpdator($whiteboardUpdator)
+    {
+        $this->whiteboard_updator[] = $whiteboardUpdator;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_updator
+     *
+     * @param MongoBundle\Document\Whiteboard $whiteboardUpdator
+     */
+    public function removeWhiteboardUpdator($whiteboardUpdator)
+    {
+        $this->whiteboard_updator->removeElement($whiteboardUpdator);
+    }
+
+    /**
+     * Get whiteboard_updator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWhiteboardUpdator()
+    {
+        return $this->whiteboard_updator;
+    }
+
+    /**
+     * Add whiteboard_user
+     *
+     * @param MongoBundle\Document\WhiteboardPerson $whiteboardUser
+     * @return User
+     */
+    public function addWhiteboardUser($whiteboardUser)
+    {
+        $this->whiteboard_user[] = $whiteboardUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_user
+     *
+     * @param MongoBundle\Document\WhiteboardPerson $whiteboardUser
+     */
+    public function removeWhiteboardUser($whiteboardUser)
+    {
+        $this->whiteboard_user->removeElement($whiteboardUser);
+    }
+
+    /**
+     * Get whiteboard_user
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWhiteboardUser()
+    {
+        return $this->whiteboard_user;
     }
 
     /**
      * Add gantt_updator
      *
-     * @param MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttCreator
+     * @return self
      */
     public function addGanttUpdator( $ganttUpdator)
     {
         $this->gantt_updator[] = $ganttUpdator;
+
+        return $this;
     }
 
     /**
      * Remove gantt_updator
      *
-     * @param MongoBundle\Document\Gantt $ganttUpdator
+     * @param MongoBundle\Document\Gantt $ganttCreator
      */
     public function removeGanttUpdator( $ganttUpdator)
     {
@@ -701,10 +807,13 @@ class User implements UserInterface
      * Add notifications
      *
      * @param MongoBundle\Document\Notification $notifications
+     * @return self
      */
     public function addNotification( $notifications)
     {
         $this->notifications[] = $notifications;
+
+        return $this;
     }
 
     /**
@@ -728,73 +837,16 @@ class User implements UserInterface
     }
 
     /**
-     * Add project
-     *
-     * @param MongoBundle\Document\Project $project
-     */
-    public function addProject( $project)
-    {
-        $this->projects[] = $project;
-    }
-
-    /**
-     * Remove project
-     *
-     * @param MongoBundle\Document\Project $project
-     */
-    public function removeProject( $project)
-    {
-        $this->projects->removeElement($project);
-    }
-
-    /**
-     * Get projects
-     *
-     * @return \Doctrine\Common\Collections\Collection $projects
-     */
-    public function getProjects()
-    {
-        return $this->projects;
-    }
-
-    /**
-     * Add event
-     *
-     * @param MongoBundle\Document\Event $event
-     */
-    public function addEvent( $event)
-    {
-        $this->events[] = $event;
-    }
-
-    /**
-     * Remove event
-     *
-     * @param MongoBundle\Document\Event $event
-     */
-    public function removeEvent( $event)
-    {
-        $this->events->removeElement($event);
-    }
-
-    /**
-     * Get events
-     *
-     * @return \Doctrine\Common\Collections\Collection $events
-     */
-    public function getEvents()
-    {
-        return $this->events;
-    }
-
-    /**
      * Add devices
      *
      * @param MongoBundle\Document\Devices $devices
+     * @return self
      */
     public function addDevice( $devices)
     {
         $this->devices[] = $devices;
+
+        return $this;
     }
 
     /**
@@ -818,13 +870,49 @@ class User implements UserInterface
     }
 
     /**
+     * Add task_creator
+     *
+     * @param MongoBundle\Document\Task $taskCreator
+     * @return User
+     */
+    public function addTaskCreator($taskCreator)
+    {
+        $this->task_creator[] = $taskCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove task_creator
+     *
+     * @param MongoBundle\Document\Task $taskCreator
+     */
+    public function removeTaskCreator($taskCreator)
+    {
+        $this->task_creator->removeElement($taskCreator);
+    }
+
+    /**
+     * Get task_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTaskCreator()
+    {
+        return $this->task_creator;
+    }
+
+    /**
      * Add colors
      *
      * @param MongoBundle\Document\Color $colors
+     * @return self
      */
     public function addColor( $colors)
     {
         $this->colors[] = $colors;
+
+        return $this;
     }
 
     /**
@@ -851,10 +939,13 @@ class User implements UserInterface
      * Add ressources
      *
      * @param MongoBundle\Document\Ressources $ressources
+     * @return self
      */
     public function addRessource( $ressources)
     {
         $this->ressources[] = $ressources;
+
+        return $this;
     }
 
     /**
@@ -875,5 +966,104 @@ class User implements UserInterface
     public function getRessources()
     {
         return $this->ressources;
+    }
+
+    /**
+     * Add authentications
+     *
+     * @param MongoBundle\Document\Authentication $authentications
+     * @return User
+     */
+    public function addAuthentication($authentications)
+    {
+        $this->authentications[] = $authentications;
+
+        return $this;
+    }
+
+    /**
+     * Remove authentications
+     *
+     * @param MongoBundle\Document\Authentication $authentications
+     */
+    public function removeAuthentication($authentications)
+    {
+        $this->authentications->removeElement($authentications);
+    }
+
+    /**
+     * Get authentications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthentications()
+    {
+        return $this->authentications;
+    }
+
+    /**
+     * Add project
+     *
+     * @param MongoBundle\Document\Project $project
+     * @return self
+     */
+    public function addProject( $project)
+    {
+        $this->projects[] = $project;
+
+        return $this;
+    }
+
+    /**
+     * Remove project
+     *
+     * @param MongoBundle\Document\Project $project
+     */
+    public function removeProject( $project)
+    {
+        $this->projects->removeElement($project);
+    }
+
+    /**
+     * Get projects
+     *
+     * @return \Doctrine\Common\Collections\Collection $projects
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Add event
+     *
+     * @param MongoBundle\Document\Event $event
+     * @return self
+     */
+    public function addEvent( $event)
+    {
+        $this->events[] = $event;
+
+        return $this;
+    }
+
+    /**
+     * Remove event
+     *
+     * @param MongoBundle\Document\Event $event
+     */
+    public function removeEvent( $event)
+    {
+        $this->events->removeElement($event);
+    }
+
+    /**
+     * Get events
+     *
+     * @return \Doctrine\Common\Collections\Collection $events
+     */
+    public function getEvents()
+    {
+        return $this->events;
     }
 }

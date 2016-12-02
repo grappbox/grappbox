@@ -17,11 +17,6 @@ class StatTasksRepartition
     /**
      * @var string
      */
-    private $user;
-
-    /**
-     * @var string
-     */
     private $role;
 
     /**
@@ -39,10 +34,17 @@ class StatTasksRepartition
      */
     private $project;
 
+    /**
+     * @var \SQLBundle\Entity\User
+     */
+    private $user;
+
     public function objectToArray()
     {
       return array(
-        "user" => $this->user,
+        "user" => array("id" => $this->getUser()->getId(),
+                        "firstname" => $this->getUser()->getFirstname(),
+                        "lastname" => $this->getUser()->getLastname()),
         //"role" => $this->role,
         "value" => $this->value,
         "percentage" => $this->percentage
@@ -57,29 +59,6 @@ class StatTasksRepartition
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return StatTasksRepartition
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -157,7 +136,7 @@ class StatTasksRepartition
      * @param \SQLBundle\Entity\Project $project
      * @return Project
      */
-    public function setProject(\SQLBundle\Entity\Project $project = null)
+    public function setProject(\SQLBundle\Entity\Project $project)
     {
         $this->project = $project;
 
@@ -173,4 +152,28 @@ class StatTasksRepartition
     {
         return $this->project;
     }
+
+    /**
+     * Set user
+     *
+     * @param \SQLBundle\Entity\User $user
+     * @return StatTasksRepartition
+     */
+    public function setUser(\SQLBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \SQLBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
 }

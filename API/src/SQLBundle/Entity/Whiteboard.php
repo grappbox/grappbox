@@ -9,20 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Whiteboard
 {
-    public function objectToArray()
-    {
-        return array(
-            'id' => $this->id,
-            'projectId' => $this->getProjects()->getId(),
-            'user' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
-            'name' => $this->name,
-            'updator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
-            'updatedAt' => $this->updatedAt,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
-        );
-    }
-
     /**
      * @var integer
      */
@@ -54,6 +40,11 @@ class Whiteboard
     private $objects;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $persons;
+
+    /**
      * @var \SQLBundle\Entity\Project
      */
     private $projects;
@@ -74,12 +65,27 @@ class Whiteboard
     public function __construct()
     {
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function objectToArray()
+    {
+        return array(
+            'id' => $this->id,
+            'projectId' => $this->getProjects()->getId(),
+            'user' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'name' => $this->name,
+            'updator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'updatedAt' => $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'deletedAt' => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
+        );
     }
 
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -102,7 +108,7 @@ class Whiteboard
     /**
      * Get name
      *
-     * @return string 
+     * @return string
      */
     public function getName()
     {
@@ -125,7 +131,7 @@ class Whiteboard
     /**
      * Get updatedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getUpdatedAt()
     {
@@ -148,7 +154,7 @@ class Whiteboard
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -171,7 +177,7 @@ class Whiteboard
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -204,11 +210,44 @@ class Whiteboard
     /**
      * Get objects
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * Add persons
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $persons
+     * @return Whiteboard
+     */
+    public function addPerson(\SQLBundle\Entity\WhiteboardPerson $persons)
+    {
+        $this->persons[] = $persons;
+
+        return $this;
+    }
+
+    /**
+     * Remove persons
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $persons
+     */
+    public function removePerson(\SQLBundle\Entity\WhiteboardPerson $persons)
+    {
+        $this->persons->removeElement($persons);
+    }
+
+    /**
+     * Get persons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersons()
+    {
+        return $this->persons;
     }
 
     /**
@@ -227,7 +266,7 @@ class Whiteboard
     /**
      * Get projects
      *
-     * @return \SQLBundle\Entity\Project 
+     * @return \SQLBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -250,7 +289,7 @@ class Whiteboard
     /**
      * Get creator_user
      *
-     * @return \SQLBundle\Entity\User 
+     * @return \SQLBundle\Entity\User
      */
     public function getCreatorUser()
     {
@@ -273,7 +312,7 @@ class Whiteboard
     /**
      * Get updator_user
      *
-     * @return \SQLBundle\Entity\User 
+     * @return \SQLBundle\Entity\User
      */
     public function getUpdatorUser()
     {

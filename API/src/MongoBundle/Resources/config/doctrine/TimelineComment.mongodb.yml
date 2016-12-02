@@ -1,0 +1,26 @@
+MongoBundle\Document\TimelineComment:
+    type: document
+    db: symfony_database
+    collection: comments
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+        comment:
+            type: string
+        createdAt:
+            type: date
+            name: created_at
+        editedAt:
+            type: date
+            name: edited_at
+            nullable: TRUE
+    referenceOne:
+        messages:
+          targetDocument: TimelineMessage
+          inversedBy: comment
+        creator:
+          targetDocument: User
+          inversedBy: timeline_comment_creator
+    lifecycleCallbacks: {  }

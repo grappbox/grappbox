@@ -10,9 +10,6 @@ SQLBundle\Entity\StatLateTasks:
     fields:
         date:
             type: datetime
-        user:
-            type: string
-            length: 255
         role:
             type: string
             length: 255
@@ -26,5 +23,10 @@ SQLBundle\Entity\StatLateTasks:
           inversedBy: StatLateTasks
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

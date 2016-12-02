@@ -8,9 +8,6 @@ SQLBundle\Entity\StatUserWorkingCharge:
             generator:
                 strategy: AUTO
     fields:
-        user:
-            type: string
-            length: 255
         charge:
             type: integer
     manyToOne:
@@ -19,5 +16,10 @@ SQLBundle\Entity\StatUserWorkingCharge:
           inversedBy: StatUserWorkingCharge
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

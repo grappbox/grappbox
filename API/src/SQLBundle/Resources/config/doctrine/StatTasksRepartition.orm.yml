@@ -8,9 +8,6 @@ SQLBundle\Entity\StatTasksRepartition:
             generator:
                 strategy: AUTO
     fields:
-        user:
-            type: string
-            length: 255
         role:
             type: string
             length: 255
@@ -24,5 +21,10 @@ SQLBundle\Entity\StatTasksRepartition:
           inversedBy: StatTasksRepartition
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

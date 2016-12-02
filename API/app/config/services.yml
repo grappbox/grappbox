@@ -12,6 +12,10 @@ services:
     class: SQLBundle\Controller\StatisticController
     calls:
             - [setContainer, ["@service_container"]]
+  service_notifs:
+    class: SQLBundle\Controller\NotificationController
+    calls:
+            - [setContainer, ["@service_container"]]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

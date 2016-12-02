@@ -15,11 +15,6 @@ class Bug
     protected $id;
 
     /**
-     * @var int $parentId
-     */
-    protected $parentId;
-
-    /**
      * @var string $title
      */
     protected $title;
@@ -30,9 +25,9 @@ class Bug
     protected $description;
 
     /**
-     * @var int $stateId
+     * @var int $state
      */
-    protected $stateId;
+    protected $state;
 
     /**
      * @var date $createdAt
@@ -43,11 +38,6 @@ class Bug
      * @var date $editedAt
      */
     protected $editedAt;
-
-    /**
-     * @var date $deletedAt
-     */
-    protected $deletedAt;
 
     /**
      * @var boolean $clientOrigin
@@ -70,14 +60,20 @@ class Bug
     protected $users = array();
 
     /**
-     * @var MongoBundle\Document\Tag
+     * @var MongoBundle\Document\BugtrackerTag
      */
-    protected $tags = array();
+    protected $bugtracker_tags = array();
+
+    /**
+     * @var MongoBundle\Document\BugComment
+     */
+    protected $comments = array();
 
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugtracker_tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comment = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -87,20 +83,34 @@ class Bug
      */
     public function objectToArray()
     {
+      $tags = array();
+      $i = 0;
+      foreach ($this->bugtracker_tags as $key => $value) {
+          $tags[$i] = $value->objectToArray();
+          $i++;
+      }
+      $participants = array();
+      foreach ($this->users as $key => $value) {
+       $participants[] = array(
+           "id" => $value->getId(),
+           "firstname" => $value->getFirstname(),
+           "lastname" => $value->getLastname()
+       );
+      }
       return array(
-        "id" => $this->id,
-        "creator" => array("id" => $this->creator->getID(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastName()),
-        "projectId" => $this->projects->getId(),
-        "title" => $this->title,
-        "description" => $this->description,
-        "parentId" => $this->parentId,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt,
-        "clientOrigin" => $this->clientOrigin
+          "id" => $this->id,
+          "creator" => array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+          "projectId" => $this->projects->getId(),
+          "title" => $this->title,
+          "description" => $this->description,
+          "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+          "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+          "clientOrigin" => $this->clientOrigin,
+          "state" => $this->state,
+          'tags' => $tags,
+          'users' => $participants
       );
     }
-
 
     /**
      * Get id
@@ -110,28 +120,6 @@ class Bug
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set parentId
-     *
-     * @param int $parentId
-     * @return self
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-        return $this;
-    }
-
-    /**
-     * Get parentId
-     *
-     * @return int $parentId
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
     }
 
     /**
@@ -179,25 +167,25 @@ class Bug
     }
 
     /**
-     * Set stateId
+     * Set state
      *
-     * @param int $stateId
+     * @param int $state
      * @return self
      */
-    public function setStateId($stateId)
+    public function setState($state)
     {
-        $this->stateId = $stateId;
+        $this->state = $state;
         return $this;
     }
 
     /**
-     * Get stateId
+     * Get state
      *
-     * @return int $stateId
+     * @return int $state
      */
-    public function getStateId()
+    public function getState()
     {
-        return $this->stateId;
+        return $this->state;
     }
 
     /**
@@ -242,28 +230,6 @@ class Bug
     public function getEditedAt()
     {
         return $this->editedAt;
-    }
-
-    /**
-     * Set deletedAt
-     *
-     * @param date $deletedAt
-     * @return self
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return date $deletedAt
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
     }
 
     /**
@@ -336,10 +302,12 @@ class Bug
      * Add user
      *
      * @param MongoBundle\Document\User $user
+     * @return self
      */
-    public function addUser( $user)
+    public function addUser($user)
     {
         $this->users[] = $user;
+        return $this;
     }
 
     /**
@@ -366,10 +334,12 @@ class Bug
      * Add tag
      *
      * @param MongoBundle\Document\Tag $tag
+     * @return self
      */
     public function addTag( $tag)
     {
         $this->tags[] = $tag;
+        return $this;
     }
 
     /**
@@ -391,4 +361,69 @@ class Bug
     {
         return $this->tags;
     }
+
+    /**
+     * Add bugtracker_tags
+     *
+     * @param MongoBundle\Document\BugtrackerTag $bugtrackerTags
+     * @return self
+     */
+    public function addBugtrackerTag( $bugtrackerTags)
+    {
+        $this->bugtracker_tags[] = $bugtrackerTags;
+        return $this;
+    }
+
+    /**
+     * Remove bugtracker_tags
+     *
+     * @param MongoBundle\Document\BugtrackerTag $bugtrackerTags
+     */
+    public function removeBugtrackerTag( $bugtrackerTags)
+    {
+        $this->bugtracker_tags->removeElement($bugtrackerTags);
+    }
+
+    /**
+     * Get bugtracker_tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugtrackerTags()
+    {
+        return $this->bugtracker_tags;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param MongoBundle\Document\BugComment $comment
+     * @return self
+     */
+    public function addComment( $comment)
+    {
+        $this->comments[] = $comment;
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param MongoBundle\Document\BugComment $comment
+     */
+    public function removeComment( $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
+    }
+
 }

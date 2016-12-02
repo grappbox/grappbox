@@ -8,9 +8,6 @@ SQLBundle\Entity\StatBugsUsersRepartition:
             generator:
                 strategy: AUTO
     fields:
-        user:
-            type: string
-            length: 255
         value:
             type: integer
         percentage:
@@ -21,5 +18,10 @@ SQLBundle\Entity\StatBugsUsersRepartition:
           inversedBy: StatBugsUsersRepartition
           joinColumn:
             name: project_id
+            referencedColumnName: id
+        user:
+          targetEntity: User
+          joinColumn:
+            name: user_id
             referencedColumnName: id
     lifecycleCallbacks: {  }

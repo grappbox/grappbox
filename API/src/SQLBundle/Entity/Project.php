@@ -223,6 +223,36 @@ class Project
     }
 
     /**
+     * Get object content into array
+     *
+     * @return array
+     */
+    public function objectToArray($em, $user)
+    {
+        $color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $this, "user" => $user));
+        if ($color === null)
+            $color = $this->getColor();
+        else
+            $color = $color->getColor();
+        $creator = array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname());
+        return array(
+            "id" => $this->id,
+            "name" => $this->name,
+            "description" => $this->description,
+            "creator" => $creator,
+            "logo" => $this->logoDate ? $this->logoDate->format('Y-m-d H:i:s') : null,
+            "phone" => $this->phone,
+            "company" => $this->company,
+            "contact_mail" => $this->contactEmail,
+            "facebook" => $this->facebook,
+            "twitter" => $this->twitter,
+            "color" => $color,
+            "created_at" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            "deleted_at" => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
+        );
+    }
+
+    /**
      * Get id
      *
      * @return integer
@@ -846,7 +876,7 @@ class Project
      *
      * @param \SQLBundle\Entity\BugtrackerTag $tags
      */
-    public function removeBugtracckerTag(\SQLBundle\Entity\BugtrackerTag $tags)
+    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $tags)
     {
         $this->bugtracker_tags->removeElement($tags);
     }
@@ -1278,28 +1308,5 @@ class Project
     public function getStatStorageSize()
     {
         return $this->statStorageSize;
-    }
-
-    /**
-     * Add statLateTasks
-     *
-     * @param \SQLBundle\Entity\StatLateTasks $statLateTasks
-     * @return Project
-     */
-    public function addStatLateTask(\SQLBundle\Entity\StatLateTasks $statLateTasks)
-    {
-        $this->statLateTasks[] = $statLateTasks;
-
-        return $this;
-    }
-
-    /**
-     * Remove statLateTasks
-     *
-     * @param \SQLBundle\Entity\StatLateTasks $statLateTasks
-     */
-    public function removeStatLateTask(\SQLBundle\Entity\StatLateTasks $statLateTasks)
-    {
-        $this->statLateTasks->removeElement($statLateTasks);
     }
 }

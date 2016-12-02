@@ -1,0 +1,33 @@
+SQLBundle\Entity\TimelineComment:
+    type: entity
+    table: timeline_comments
+    id:
+        id:
+            type: integer
+            id: true
+            generator:
+                strategy: AUTO
+    fields:
+        comment:
+            type: text
+        createdAt:
+            type: datetime
+            column: created_at
+        editedAt:
+            type: datetime
+            column: edited_at
+            nullable: TRUE
+    manyToOne:
+        messages:
+          targetEntity: TimelineMessage
+          inversedBy: comment
+          joinColumn:
+            name: message_id
+            referencedColumnName: id
+        creator:
+          targetEntity: User
+          inverserdBy: timeline_comment_creator
+          joinColumn:
+            name: creator_id
+            referencedColumnName: id
+    lifecycleCallbacks: {  }

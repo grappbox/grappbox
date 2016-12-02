@@ -15,17 +15,9 @@ MongoBundle\Document\TimelineMessage:
             length: 255
         message:
             type: string
-        parentId:
-            type: int
-            name: parent_id
-            nullable: TRUE
         createdAt:
             type: date
             name: created_at
-        deletedAt:
-            type: date
-            name: deleted_at
-            nullable: TRUE
         editedAt:
             type: date
             name: edited_at
@@ -37,4 +29,8 @@ MongoBundle\Document\TimelineMessage:
         creator:
           targetDocument: User
           inversedBy: message_creator
+    referenceMany:
+        comments:
+          targetDocument: TimelineComment
+          inversedBy: messages
     lifecycleCallbacks: {  }

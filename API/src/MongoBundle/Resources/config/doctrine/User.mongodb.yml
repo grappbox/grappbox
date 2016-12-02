@@ -2,7 +2,6 @@ MongoBundle\Document\User:
     type: document
     db: symfony_database
     collection: users
-    repositoryClass: MongoBundle\Document\UserRepository
     fields:
         id:
             type: id
@@ -50,54 +49,59 @@ MongoBundle\Document\User:
             type: string
             length: 255
             nullable: TRUE
-        token:
-          type: string
-          length: 255
-          nullable: TRUE
-        tokenValidity:
-          type: date
-          nullable: TRUE
+        isClient:
+          type: boolean
+          name: is_client
     referenceMany:
         projects:
           targetDocument: Project
-          mappedBy: users
+          inversedBy: users
         events:
           targetDocument: Event
-          mappedBy: users
+          inversedBy: users
         bug_creator:
           targetDocument: Bug
-          mappedBy: creator
+          inversedBy: creator
         message_creator:
           targetDocument: TimelineMessage
-          mappedBy: creator
+          inversedBy: creator
         event_creator:
           targetDocument: Event
-          mappedBy: creator_user
+          inversedBy: creator_user
         project_creator:
           targetDocument: Project
-          mappedBy: creator_user
-        gantt_creator:
-          targetDocument: Gantt
-          mappedBy: creator_user
+          inversedBy: creator_user
+        whiteboard_creator:
+          targetDocument: Whiteboard
+          inversedBy: creator_user
+        whiteboard_updator:
+          targetDocument: Whiteboard
+          inversedBy: updator_user
+        whiteboard_user:
+          targetDocument: WhiteboardPerson
+          inversedBy: user
         gantt_updator:
           targetDocument: Gantt
-          mappedBy: updator_id
+          inversedBy: updator_id
         notifications:
           targetDocument: Notification
-          mappedBy: user
+          inversedBy: user
           cascade: [remove]
         devices:
           targetDocument: Devices
-          mappedBy: user
+          inversedBy: user
           cascade: [remove]
         task_creator:
           targetDocument: Task
-          mappedBy: creator_user
+          inversedBy: creator_user
         colors:
           targetDocument: Color
-          mappedBy: user
+          inversedBy: user
           cascade: [remove]
         ressources:
           targetDocument: Ressources
-          mappedBy: user
+          inversedBy: user
+        authentications:
+          targetDocument: Authentication
+          inversedBy: user
     lifecycleCallbacks: {  }

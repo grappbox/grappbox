@@ -1,0 +1,24 @@
+MongoBundle\Document\BugtrackerTag:
+    type: document
+    db: symfony_database
+    collection: bugtracker_tags
+    fields:
+        id:
+          type: id
+          id: true
+          strategy: AUTO
+        name:
+          type: string
+          length: 255
+        color:
+          type: string
+          length: 255
+    referenceMany:
+        bugs:
+          targetDocument: Bug
+          inversedBy: bugtracker_tags
+    referenceOne:
+        project:
+          targetDocument: Project
+          inversedBy: bugtracker_tags
+    lifecycleCallbacks: {  }

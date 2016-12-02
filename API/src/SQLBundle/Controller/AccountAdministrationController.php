@@ -12,6 +12,8 @@ use Symfony\Component\Security\Core\Util\SecureRandom;
 use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\Project;
 use SQLBundle\Entity\User;
+use SQLBundle\Entity\Authentication;
+use SQLBundle\Entity\Newsletter;
 use DateTime;
 use DateInterval;
 
@@ -26,24 +28,102 @@ use DateInterval;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class AccountAdministrationController extends RolesAndTokenVerificationController
 {
+ 	/**
+ 	* @api {post} /0.3/account/preorder Preorder newsletter
+ 	* @apiName preorder
+ 	* @apiGroup AccountAdministration
+	* @apiDescription Set a mail adress for the newsletter
+ 	* @apiVersion 0.3.0
+ 	*
+ 	* @apiParam {string} email Email to add to the list of newsletter
+ 	* @apiParam {string} firstname Firstname of the person to add to the list of newsletter
+ 	* @apiParam {string} lastname Lastname of the person to add to the list of newsletter
+ 	*
+	* @apiParamExample {json} Request-Example:
+	*   {
+	*		"data": {
+	*   		"email": "john.doe@gmail.com",
+	*			"firstname": "John",
+	*			"lastname": "Doe"
+	*		}
+	*   }
+	*
+ 	*
+ 	* @apiSuccessExample {json} Success-Response:
+ 	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - preorder - Complete Success"
+	*			},
+ 	*			"data": {
+	*			}
+ 	* 	}
+	* @apiErrorExample Already in DB
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.7",
+	*			"return_message": "AccountAdministration - preorder - Already in Database"
+	*		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.6",
+	*			"return_message": "AccountAdministration - preorder - Missing Parameter"
+	*		}
+	* 	}
+ 	*
+ 	*/
+ 	public function preorderAction(Request $request)
+	{
+		$content = $request->getContent();
+		$content = json_decode($content);
+		$content = $content->data;
+		$em = $this->getDoctrine()->getManager();
+
+		if (!array_key_exists("email", $content) || !array_key_exists("firstname", $content) || !array_key_exists("lastname", $content))
+				return $this->setBadRequest("14.1.6", "AccountAdministration", "preorder", "Missing Parameter");
+
+		if ($em->getRepository('SQLBundle:Newsletter')->findOneBy(array('email' => $content->email)))
+			return $this->setBadRequest("14.1.7", "AccountAdministration", "preorder", "Already in Database");
+
+		$mail = new Newsletter();
+		$mail->setEmail($content->email);
+		$mail->setFirstname($content->firstname);
+		$mail->setLastname($content->lastname);
+
+		$em->persist($mail);
+		$em->flush();
+
+		return $this->setSuccess("1.14.1", "AccountAdministration", "preorder", "Complete Success", null);
+	}
+
 	/**
-	* @-api {get} V0.3/accountadministration/login/:token Client login
+	* @-api {get} /0.3/account/login Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {token} client token access
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccess {int} id whiteboard id
 	* @apiSuccess {string} firstname user's firstname
 	* @apiSuccess {string} lastname user's lastname
 	* @apiSuccess {string} email user's email
 	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
+	* @apiSuccess {String} avatar user's avatar last modification date
 	* @apiSuccess {Boolean} is_client if the user is a client
 	*
 	* @apiSuccessExample {json} Success-Response:
@@ -51,30 +131,30 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
-  *			},
+  	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*				"avatar": "1945-06-18 06:00:00",
 	*				"is_client": false
 	*			}
  	* 	}
 	*
-	* @apiErrorExample Bad Id
+	* @apiErrorExample Bad Token
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "14.4.3",
-	*			"return_message": "AccountAdministration - clientlogin - Bad id"
+	*			"return_message": "AccountAdministration - clientlogin - Bad Token"
 	*		}
 	* 	}
 	*
 	*/
 	/**
-	* @-api {get} V0.2/accountadministration/login/:token Client login
+	* @-api {get} /V0.2/accountadministration/login/:token Client login
 	* @apiName clientlogin
 	* @apiGroup AccountAdministration
 	* @apiDescription log user with client token
@@ -94,7 +174,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -115,17 +195,18 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
-	public function clientLoginAction(Request $request, $token)
+	public function clientLoginAction(Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
-		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('token' => $token));
+		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('token' => $request->headers->get('Authorization')));
 		if (!$user || $user->getTokenValidity())
 			return $this->setBadTokenError("14.4.3", "AccountAdministration", "clientLogin");
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "clientLogin", "Complete Success", $user->objectToArray());
 	}
+
  	/**
- 	* @api {post} V0.3/accountadministration/login Login
+ 	* @api {post} /0.3/account/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -133,12 +214,18 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	*
  	* @apiParam {string} login login (user's email)
  	* @apiParam {string} password password
+	* @apiParam {string} mac MAC address of the device (equals null if flag = 'web')
+	* @apiParam {string} flag device flag (web, and, ios, wph, desk)
+	* @apiParam {string} device_name name of the device
  	*
 	* @apiParamExample {json} Request-Example:
 	*   {
 	*		"data": {
 	*   		"login": "john.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
+	*   		"password": "ThisisAPassword",
+	*   		"mac": "XXXXXXXXXXXXXX",
+	*   		"flag": "and",
+	*   		"device_name": "John Doe's phone"
 	*		}
 	*   }
 	*
@@ -146,24 +233,24 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} firstname user's firstname
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {date} avatar user's avatar last modif date
+	* @apiSuccess {string} avatar user's avatar last modif date
 	* @apiSuccess {Boolean} is_client if the user is a client
+	* @apiSuccess {string} token user's authentication token
  	*
  	* @apiSuccessExample {json} Success-Response:
  	* 	{
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - login - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
 	*				"lastname": "Doe",
 	*				"email": "john.doe@gmail.com",
+	*				"avatar": "1945-06-18 06:00:00",
+	*				"is_client": false,
 	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*				"is_client": false
 	*			}
  	* 	}
  	*
@@ -173,7 +260,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: password
 	* 	HTTP/1.1 400 Bad Request
@@ -181,12 +268,28 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
-  *		}
+	*		}
+	* 	}
+  * @apiErrorExample Bad Parameter: password
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.4",
+	*			"return_message": "AccountAdministration - login - Bad Parameter: flag or device_name"
+	*		}
+	* 	}
+	* @apiErrorExample Missing Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.1.6",
+	*			"return_message": "AccountAdministration - login - Missing Parameter"
+	*		}
 	* 	}
  	*
  	*/
  	/**
- 	* @api {post} V0.2/accountadministration/login Login
+ 	* @api {post} /V0.2/accountadministration/login Login
  	* @apiName login
  	* @apiGroup AccountAdministration
 	* @apiDescription Log user from his login and password
@@ -215,7 +318,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - login - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "John",
@@ -232,7 +335,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Bad Parameter: password
 	* 	HTTP/1.1 400 Bad Request
@@ -240,7 +343,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.4",
 	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
-  *		}
+	*		}
 	* 	}
  	*
  	*/
@@ -250,6 +353,14 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = json_decode($content);
 		$content = $content->data;
 
+    if (!array_key_exists('login', $content) || !array_key_exists('password', $content)
+				|| !array_key_exists('flag', $content) || !array_key_exists('mac', $content)
+				|| !array_key_exists('device_name', $content))
+			return $this->setBadRequest("14.1.6", "AccountAdministration", "register", "Missing Parameter");
+
+    if ($content->flag == "" || $content->device_name == "")
+      return $this->setBadRequest("14.1.4", "AccountAdministration", "register", "Bad Parameter: flag or device_name");
+
 		$em = $this->getDoctrine()->getManager();
 		$user = $em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->login));
 		if (!$user)
@@ -258,29 +369,51 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		if (!($this->container->get('security.password_encoder')->isPasswordValid($user, $content->password)))
 			return $this->setBadRequest("14.1.4", "AccountAdministration", "login", "Bad Parameter: password");
 
-		$now = new DateTime('now');
-		if ($user->getToken() && $user->getTokenValidity() > $now)
-			{
-				$user->setTokenValidity($now->add(new DateInterval("P1D")));
-
-				$em->persist($user);
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('user' => $user->getId(), 'deviceFlag' => $content->flag, 'macAddr' => $content->mac));
+		if ($auth instanceof Authentication && $content->flag != "web")
+		{
+			if ($content->device_name != $auth->getDeviceName()) {
+				$auth->setDeviceName($content->device_name);
+				$em->persist($auth);
 				$em->flush();
-
-				return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
 			}
+		}
+		else {
+			$auth = new Authentication();
+			$auth->setuser($user);
+			$auth->setMacAddr($content->mac);
+			$auth->setDeviceFlag($content->flag);
+			$auth->setDeviceName($content->device_name);
+			$em->persist($auth);
+			$em->flush();
+		}
 
-		$secureUtils = $this->get('security.secure_random');
-		$tmpToken = $secureUtils->nextBytes(25);
+		$now = new DateTime('now');
+		if ($auth->getToken() && $auth->getTokenValidity() > $now)
+		{
+			$auth->setTokenValidity($now->add(new DateInterval("P1D")));
+
+			$em->persist($auth);
+			$em->flush();
+
+			$userObj = $user->objectToArray();
+			$userObj['token'] = $auth->getToken();
+			return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
+		}
+
+		$tmpToken = random_bytes(25);
 		$token = md5($tmpToken);
-		$user->setToken($token);
-		$user->setTokenValidity($now->add(new DateInterval("P1D")));
+		$auth->setToken($token);
+		$auth->setTokenValidity($now->add(new DateInterval("P1D")));
 
-		$em->persist($user);
+		$em->persist($auth);
 		$em->flush();
 
 		$this->checkProjectsDeletedTime($user);
 
-		return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $user->objectToArray());
+		$userObj = $user->objectToArray();
+		$userObj['token'] = $auth->getToken();
+		return $this->setSuccess("1.14.1", "AccountAdministration", "login", "Complete Success", $userObj);
 	}
 
 	private function checkProjectsDeletedTime($user)
@@ -345,53 +478,93 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	}
 
 	/**
- * @api {get} V0.2/accountadministration/logout/:token Logout
- * @apiName logout
- * @apiGroup AccountAdministration
- * @apiDescription unvalid user's token
- * @apiVersion 0.2.0
- *
- * @apiParam {string} token user's authentication token
- *
- * @apiSuccess {string} message	success message
- *
- * @apiSuccessExample {json} Success-Response:
- * 	{
- *			"info": {
- *				"return_code": "1.14.1",
- *				"return_message": "AccountAdministration - login - Complete Success"
- *			},
- *			"data": {
- *				"message": "Successfully logout"
- *			}
- * 	}
- *
- * @apiErrorExample Bad Id
- * 	HTTP/1.1 400 Bad Request
- * 	{
- *		"info": {
- *			"return_code": "14.2.3",
- *			"return_message": "AccountAdministration - logout - Bad id"
- *		}
- * 	}
- *
- */
- 	public function logoutAction(Request $request, $token)
+	* @api {get} /0.3/account/logout Logout
+	* @apiName logout
+	* @apiGroup AccountAdministration
+	* @apiDescription Log out user
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiSuccess {string} message	success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - login - Complete Success"
+	*			},
+	*			"data": {
+	*				"message": "Successfully logout"
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Token
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.2.3",
+	*			"return_message": "AccountAdministration - logout - Bad Token"
+	*		}
+	* 	}
+	*
+	*/
+	/**
+	* @api {get} /V0.2/accountadministration/logout/:token Logout
+	* @apiName logout
+	* @apiGroup AccountAdministration
+	* @apiDescription unvalid user's token
+	* @apiVersion 0.2.0
+	*
+	* @apiParam {string} token user's authentication token
+	*
+	* @apiSuccess {string} message	success message
+	*
+	* @apiSuccessExample {json} Success-Response:
+	* 	{
+	*			"info": {
+	*				"return_code": "1.14.1",
+	*				"return_message": "AccountAdministration - login - Complete Success"
+	*			},
+	*			"data": {
+	*				"message": "Successfully logout"
+	*			}
+	* 	}
+	*
+	* @apiErrorExample Bad Id
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.2.3",
+	*			"return_message": "AccountAdministration - logout - Bad id"
+	*		}
+	* 	}
+	*
+	*/
+ 	public function logoutAction(Request $request)
  	{
+ 		$token = $request->headers->get('Authorization');
 		$user = $this->checkToken($token);
 		if (!$user)
 			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
 
-		$user->setToken(null);
-
 		$em = $this->getDoctrine()->getManager();
-		$em->persist($user);
+		$auth = $em->getRepository('SQLBundle:Authentication')->findOneBy(array('user' => $user, 'token' => $token));
+		if (!($auth instanceof Authentication))
+			return ($this->setBadTokenError("14.2.3", "AccountAdministration", "logout"));
+
+		$em->remove($auth);
 		$em->flush();
 
 		return $this->setSuccess("1.14.1", "AccountAdministration", "logout", "Complete Success", array("message" => "Successfully Logout"));
  	}
+
 	/**
-	* @api {post} V0.3/accountadministration/register Register
+	* @api {post} /0.3/account/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
@@ -402,13 +575,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* @apiParam {email} email user's email
 	* @apiParam {string} lastname user's lastname
 	* @apiParam {Date} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
 	* @apiParam {boolean} is_client If the user is a client
+	* @apiParam {string} mac MAC address of the device (equals null if flag = 'web')
+	* @apiParam {string} flag device flag (web, and, ios, wph, desk)
+	* @apiParam {string} device_name name of the device
 	*
 	* @apiParamExample {json} Request-Example Minimum:
 	*   {
@@ -417,7 +587,10 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false
+	*			"is_client": false,
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Partial:
@@ -427,10 +600,13 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false,
+	*   		"is_client": false,
 	*   		"avatar": "100100111010011110100100.......",
 	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia"
+	*   		"country": "New Caledonia",
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	* @apiParamExample {json} Request-Example Full:
@@ -440,14 +616,17 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*   		"lastname": "Doe",
 	*   		"email": "janne.doe@gmail.com",
 	*   		"password": "ThisisAPassword",
-	*			"is_client": false,
+	*   		"is_client": false,
 	*   		"birthday": "1980-12-04",
 	*   		"avatar": "100100111010011110100100.......",
 	*   		"phone": "010-1658-9520",
 	*   		"country": "New Caledonia",
 	*   		"linkedin": "linkedin.com/janne.doe"
 	*   		"viadeo": "viadeo.com/janne.doe",
-	*   		"twitter": "twitter.com/janne.doe"
+	*   		"twitter": "twitter.com/janne.doe",
+	*			"mac": "XXXXXXXXXXXXXXXXXXXXXX",
+	*			"flag": "desk",
+	*			"device_name": "John's Desktop"
 	*   	}
 	*   }
 	*
@@ -455,9 +634,9 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
  	* @apiSuccess {string} firstname user's firstname
  	* @apiSuccess {string} lastname user's lastname
  	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
+	* @apiSuccess {string} avatar user's avatar last modification date
 	* @apiSuccess {Boolean} is_client if the user is a client
+	* @apiSuccess {string} token user's authentication token
 	*
 	* @apiSuccessExample {json} Success-Response:
 	* 	HTTP/1.1 201 Created
@@ -465,15 +644,15 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - register - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "Janne",
 	*				"lastname": "Doe",
 	*				"email": "janne.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*				"is_client": false
+	*				"avatar": "1945-06-18 06:00:00",
+	*				"is_client": false,
+	*				"token": "fkE35dcDneOjF...."
 	*			}
 	* 	}
 	*
@@ -483,20 +662,28 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.6",
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
-  *		}
+	*		}
 	* 	}
+  * @apiErrorExample Bad Parameter
+  * 	HTTP/1.1 400 Bad Request
+  * 	{
+  *		"info": {
+  *			"return_code": "14.3.4",
+  *			"return_message": "AccountAdministration - register - Bad Parameter"
+    *		}
+  * 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
 	*			"return_code": "14.3.7",
 	*			"return_message": "AccountAdministration - register - Already in Database"
-  *		}
+	*		}
 	* 	}
 	*
 	*/
 	/**
-	* @api {post} V0.2/accountadministration/register Register
+	* @api {post} /V0.2/accountadministration/register Register
 	* @apiName register
 	* @apiGroup AccountAdministration
 	* @apiDescription Register a new user and log him
@@ -565,7 +752,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"info": {
 	*				"return_code": "1.14.1",
 	*				"return_message": "AccountAdministration - register - Complete Success"
-  *			},
+	*			},
  	*			"data": {
 	*				"id": 12,
 	*				"firstname": "Janne",
@@ -582,7 +769,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.6",
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
-  *		}
+	*		}
 	* 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request
@@ -590,7 +777,7 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.3.7",
 	*			"return_message": "AccountAdministration - register - Already in Database"
-  *		}
+	*		}
 	* 	}
 	*
 	*/
@@ -601,12 +788,17 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$content = $content->data;
 
 		if (!array_key_exists('firstname', $content) || !array_key_exists('lastname', $content)
-				|| !array_key_exists('password', $content) || !array_key_exists('email', $content) || !array_key_exists('is_client', $content))
+				|| !array_key_exists('password', $content) || !array_key_exists('email', $content)
+				|| !array_key_exists('is_client', $content) || !array_key_exists('mac', $content)
+				|| !array_key_exists('flag', $content) || !array_key_exists('device_name', $content))
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Missing Parameter");
+
+    if ($content->flag == "" || $content->device_name == "")
+      return $this->setBadRequest("14.3.6", "AccountAdministration", "register", "Bad Parameter");
 
 		$em = $this->getDoctrine()->getManager();
 		if ($em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email)))
-			return $this->setBadRequest("14.3.7", "AccountAdministration", "register", "Already in Database");
+			return $this->setBadRequest("14.3.4", "AccountAdministration", "register", "Already in Database");
 
 		$user = new User();
 		$user->setFirstname($content->firstname);
@@ -618,35 +810,30 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$encoded = $encoder->encodePassword($user, $content->password);
 		$user->setPassword($encoded);
 
-		if (array_key_exists('avatar', $content))
-		{
-			$user->setAvatar($content->avatar);
-			$user->setAvatarDate(date_create(new DateTime('now')));
-		}
 		if (array_key_exists('birthday', $content))
 			$user->setBirthday(date_create($content->birthday));
-		if (array_key_exists('phone', $content))
-			$user->setPhone($content->phone);
-		if (array_key_exists('country', $content))
-			$user->setCountry($content->country);
-		if (array_key_exists('linkedin', $content))
-			$user->setLinkedin($content->linkedin);
-		if (array_key_exists('viadeo', $content))
-			$user->setViadeo($content->viadeo);
-		if (array_key_exists('twitter', $content))
-			$user->setTwitter($content->twitter);
-
-		$now = new DateTime('now');
-
-		$secureUtils = $this->get('security.secure_random');
-		$tmpToken = $secureUtils->nextBytes(25);
-		$token = md5($tmpToken);
-		$user->setToken($token);
-		$user->setTokenValidity($now->add(new DateInterval("P1D")));
 
 		$em->persist($user);
 		$em->flush();
 
-		return $this->setCreated("1.14.1", "AccountAdministration", "register", "Complete Success", $user->objectToArray());
+		$auth = new Authentication();
+		$auth->setUser($user);
+		$auth->setMacAddr($content->mac);
+		$auth->setDeviceFlag($content->flag);
+		$auth->setDeviceName($content->device_name);
+
+		$now = new DateTime('now');
+
+		$tmpToken = random_bytes(25);
+		$token = md5($tmpToken);
+		$auth->setToken($token);
+		$auth->setTokenValidity($now->add(new DateInterval("P1D")));
+
+		$em->persist($auth);
+		$em->flush();
+
+		$userObj = $user->objectToArray();
+		$userObj['token'] = $auth->getToken();
+		return $this->setCreated("1.14.1", "AccountAdministration", "register", "Complete Success", $userObj);
 	}
 }

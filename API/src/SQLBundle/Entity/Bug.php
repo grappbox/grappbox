@@ -15,11 +15,6 @@ class Bug
     private $id;
 
     /**
-     * @var integer
-     */
-    private $parentId;
-
-    /**
      * @var string
      */
     private $title;
@@ -30,9 +25,9 @@ class Bug
     private $description;
 
     /**
-     * @var integer
+     * @var boolean
      */
-    private $stateId;
+    private $state;
 
     /**
      * @var \DateTime
@@ -43,11 +38,6 @@ class Bug
      * @var \DateTime
      */
     private $editedAt;
-
-    /**
-     * @var \DateTime
-     */
-    private $deletedAt;
 
     /**
      * @var \Boolean
@@ -75,12 +65,19 @@ class Bug
     private $bugtracker_tags;
 
     /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $comments;
+
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->users = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->bugtracker_tags = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->comments = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -90,18 +87,33 @@ class Bug
      */
     public function objectToArray()
     {
-      return array(
-        "id" => $this->id,
-        "creator" => array("id" => $this->creator->getID(), "fullname" => $this->creator->getFirstname()." ".$this->creator->getLastName()),
-        "projectId" => $this->projects->getId(),
-        "title" => $this->title,
-        "description" => $this->description,
-        "parentId" => $this->parentId,
-        "createdAt" => $this->createdAt,
-        "editedAt" => $this->editedAt,
-        "deletedAt" => $this->deletedAt,
-        "clientOrigin" => $this->clientOrigin
-      );
+        $tags = array();
+        $i = 0;
+        foreach ($this->bugtracker_tags as $key => $value) {
+            $tags[$i] = $value->objectToArray();
+            $i++;
+        }
+        $participants = array();
+        foreach ($this->users as $key => $value) {
+         $participants[] = array(
+             "id" => $value->getId(),
+             "firstname" => $value->getFirstname(),
+             "lastname" => $value->getLastname()
+         );
+        }
+        return array(
+            "id" => $this->id,
+            "creator" => array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
+            "projectId" => $this->projects->getId(),
+            "title" => $this->title,
+            "description" => $this->description,
+            "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            "editedAt" => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+            "clientOrigin" => $this->clientOrigin,
+            "state" => $this->state,
+            'tags' => $tags,
+            'users' => $participants
+        );
     }
 
     /**
@@ -112,29 +124,6 @@ class Bug
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set parentId
-     *
-     * @param integer $parentId
-     * @return Bug
-     */
-    public function setParentId($parentId)
-    {
-        $this->parentId = $parentId;
-
-        return $this;
-    }
-
-    /**
-     * Get parentId
-     *
-     * @return integer
-     */
-    public function getParentId()
-    {
-        return $this->parentId;
     }
 
     /**
@@ -184,26 +173,26 @@ class Bug
     }
 
     /**
-     * Set stateId
+     * Set state
      *
-     * @param integer $stateId
+     * @param boolean $state
      * @return Bug
      */
-    public function setStateId($stateId)
+    public function setState($state)
     {
-        $this->stateId = $stateId;
+        $this->state = $state;
 
         return $this;
     }
 
     /**
-     * Get stateId
+     * Get state
      *
-     * @return integer
+     * @return boolean
      */
-    public function getStateId()
+    public function getState()
     {
-        return $this->stateId;
+        return $this->state;
     }
 
     /**
@@ -251,30 +240,7 @@ class Bug
     {
         return $this->editedAt;
     }
-
-    /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Bug
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
+    
     /**
      * Set clientOrigin
      *
@@ -408,5 +374,71 @@ class Bug
     public function getTags()
     {
         return $this->bugtracker_tags;
+    }
+
+    /**
+     * Add bugtracker_tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
+     * @return Bug
+     */
+    public function addBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
+    {
+        $this->bugtracker_tags[] = $bugtrackerTags;
+
+        return $this;
+    }
+
+    /**
+     * Remove bugtracker_tags
+     *
+     * @param \SQLBundle\Entity\BugtrackerTag $bugtrackerTags
+     */
+    public function removeBugtrackerTag(\SQLBundle\Entity\BugtrackerTag $bugtrackerTags)
+    {
+        $this->bugtracker_tags->removeElement($bugtrackerTags);
+    }
+
+    /**
+     * Get bugtracker_tags
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugtrackerTags()
+    {
+        return $this->bugtracker_tags;
+    }
+
+    /**
+     * Add comments
+     *
+     * @param \SQLBundle\Entity\BugComment $comment
+     * @return Bug
+     */
+    public function addComment(\SQLBundle\Entity\BugComment $comment)
+    {
+        $this->comments[] = $comment;
+
+        return $this;
+    }
+
+    /**
+     * Remove comments
+     *
+     * @param \SQLBundle\Entity\BugComment $comment
+     */
+    public function removeComment(\SQLBundle\Entity\BugComment $comment)
+    {
+        $this->comments->removeElement($comment);
+    }
+
+    /**
+     * Get comments
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getComments()
+    {
+        return $this->comments;
     }
 }

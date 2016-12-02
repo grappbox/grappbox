@@ -1,0 +1,34 @@
+MongoBundle\Document\Authentication:
+    type: document
+    db: symfony_database
+    collection: authentication
+    fields:
+        id:
+          type: id
+          id: true
+          strategy: AUTO
+        token:
+          type: string
+          length: 255
+          nullable: TRUE
+        tokenValidity:
+          type: date
+          nullable: TRUE
+        macAddr:
+          type: string
+          length: 255
+          nullable: TRUE
+          name: mac_addr
+        deviceFlag:
+          type: string
+          length: 255
+          name: device_flag
+        deviceName:
+          type: string
+          length: 255
+          name: device_name
+    referenceOne:
+        user:
+          targetDocument: User
+          inversedBy: authentications
+    lifecycleCallbacks: {  }

@@ -29,16 +29,71 @@ use DateTime;
  */
 class NotificationController extends RolesAndTokenVerificationController
 {
-	// (Android)API access key from Google API's Console.
-	private static $API_ACCESS_KEY = 'AIzaSyDG3fYAj1uW7VB-wejaMJyJXiO5JagAsYI'; //TODO to change
+	// (Firebase)API access key from Firebase API's Console.
+	private static $API_ACCESS_KEY = 'AIzaSyBjB-NKhL-jek8z_H0KYlspRQQOw_A_iUQ';
 
-	// (iOS) Private key's passphrase.
-	private static $passphrase = 'joashp'; // TODO to change
+	// (WP) The name of our push channel.
+	private $client = "ms-app://s-1-15-2-548773498-628784324-102833060-3543534270-3541984288-2302026642-2926546277";
+	private $secret = "30gJ7fwcLxozA8WoQtXEhuP";
 
-	// (Windows Phone 8) The name of our push channel.
-	private static $channelName = "joashp"; // TODO to change
+	public function notifs($users, $mdata, $wdata, $em) {
+		$this->pushNotification($users, $mdata, $wdata, $em);
+	}
 
-
+	/**
+	* @api {post} /0.3/notification/device Register user device
+	* @apiName registerDevice
+	* @apiGroup Notification
+	* @apiDescription Register user mobile device for mobile notification send process
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {String} device_type device_type: "iOS" | "WP" | "Android"
+	* @apiParam {String} device_token device token : uri, token or reg_id
+	* @apiParam {String} device_name device name
+	*
+	* @apiParamExample {json} Request-Example:
+	*	{
+	*		"data": {
+	*			"device_type": "iOS",
+	*			"device_token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
+	*			"device_name": "John Doe's iPhone"
+	*		}
+	*	}
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.15.3",
+	*			"return_message": "Notification - registerDevice - Complete Success"
+	*		},
+	*		"data": {}
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "15.1.3",
+	*			"return_message": "Notification - registerDevice - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Missing Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "15.1.6",
+	*			"return_message": "Notification - registerDevice - Missing Parameter"
+	*		}
+	*	}
+	*
+	*/
 	/**
 	* @api {post} /V0.2/notification/registerdevice Register user device
 	* @apiName registerDevice
@@ -95,7 +150,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.1.3", "Notification", "registerDevice"));
 		if (!array_key_exists("device_token", $content) || !array_key_exists("device_type", $content) || !array_key_exists("device_name", $content))
@@ -124,59 +179,73 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /V0.2/notification/unregisterdevice/:token/:id Unregister user device
-	* @apiName unregisterDevice
+	* @api {get} /0.3/notification/devices Get user registered devices
+	* @apiName getuserDevices
 	* @apiGroup Notification
-	* @apiDescription Unregister user mobile device to mobile notification send process
-	* @apiVersion 0.2.0
+	* @apiDescription Get user registered devices informations
+	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} id device id in DB
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
 	* @apiSuccessExample Success-Response
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
+	*			"return_code": "1.15.1",
+	*			"return_message": "Notification - getuserdevices - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 3,
+	*					"user": {
+	*						"id": 13,
+	*						"firstname": "John",
+	*						"lastname": "Doe"
+	*					},
+	*					"name": "John Doe's iPhone",
+	*					"token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
+	*					"type": "iOS"
+	*				},
+	*				{
+	*					"id": 4,
+	*					"user": {
+	*					  "id": 13,
+	*					  "firstname": "John",
+	*					  "lastname": "Doe"
+	*					},
+	*					"name": "John Doe's Android Phone",
+	*					"token": "aZ5fds4zeMPC8ff8z9DFT8yh8f9F8g9yuy9",
+	*					"type": "Android"
+	*				}
+	*			]
+	*		}
+	*	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
 	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - unregisterDevice - Complete Success"
+	*			"return_message": "Notification - getUserDevices - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
-	*			"return_code": "15.2.3",
-	*			"return_message": "Notification - unregisterDevice - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: id
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.2.4",
-	*			"return_message": "Notification - unregisterDevice - Bad Parameter: id"
+	*			"return_code": "15.3.3",
+	*			"return_message": "Notification - getuserdevices - Bad Token"
 	*		}
 	*	}
 	*/
-	public function unregisterDeviceAction(Request $request, $token, $id)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("15.2.3", "Notification", "unregisterDevice"));
-
-		$em = $this->getDoctrine()->getManager();
-		$device = $em->getRepository("SQLBundle:Devices")->find($id);
-		if (!($device instanceof Devices))
-			return $this->setBadRequest("15.2.4", "Notification", "unregisterDevice", "Bad Parameter: id");
-
-		$em->remove($device);
-		$em->flush();
-		$response["info"]["return_code"] = "1.15.1";
-		$response["info"]["return_message"] = "Notification - unregisterDevice - Complete Success";
-		return new JsonResponse($response);
-	}
-
 	/**
 	* @api {get} /V0.2/notification/getuserdevices/:token Get user registered devices
 	* @apiName getuserDevices
@@ -242,9 +311,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserDevicesAction(Request $request, $token)
+	public function getUserDevicesAction(Request $request)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
 
@@ -261,6 +330,73 @@ class NotificationController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.15.1", "Notification", "unregisterDevice", "Complete Success", array("array" => $array));
 	}
 
+	/**
+	* @api {get} /0.3/notification/:read/:offset/:limit Get user notifications
+	* @apiName getNotifications
+	* @apiGroup Notification
+	* @apiDescription Get user notifications
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {String} read "true" || "false" to get read or unread notifications
+	* @apiParam {int} offset offset from where to get notifications (start to 0)
+	* @apiParam {int} limit number max of notifications to get
+	*
+	*
+	* @apiSuccessExample Success-Response
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.15.1",
+	*			"return_message": "Notification - getNotifications - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 3,
+	*					"type": "Bugtracker",
+	*					"targetId": 1,
+	*					"message": "You have been assigned to ticket Ticket de Test",
+	*					"createdAt": "2016-01-12 14:09:46",
+	*					"isRead": false
+	*				},
+	*				{
+	*					"id": 4,
+	*					"type": "Bugtracker",
+	*					"targetId": 1,
+	*					"message": "The ticket Ticket de Test has been closed",
+	*					"createdAt": "2016-01-12 14:12:46",
+	*					"isRead": false
+	*				}
+	*			]
+	*		}
+	*	}
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.15.3",
+	*			"return_message": "Notification - getNotifications - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "15.4.3",
+	*			"return_message": "Notification - getNotifications - Bad Token"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/notification/getnotifications/:token/:read/:offset/:limit Get user notifications
 	* @apiName getNotifications
@@ -331,9 +467,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getNotificationsAction(Request $request, $token, $read, $offset, $limit)
+	public function getNotificationsAction(Request $request, $read, $offset, $limit)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.4.3", "Notification", "getNotifications"));
 
@@ -357,9 +493,9 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 
-	public function setNotificationToReadAction(Request $request, $token, $id)
+	public function setNotificationToReadAction(Request $request, $id)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("15.5.3", "Notification", "setNotificationToRead"));
 
@@ -373,21 +509,6 @@ class NotificationController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
-	}
-
-
-	public function pushTestAction()
-	{
-		$mdata['mtitle'] = "Timeline - New message";
-		$mdata['mdesc'] = "There is a new message on the timeline";
-
-		$wdata['type'] = "Project";
-		$wdata['targetId'] = 2;
-		$wdata['message'] = "You have been added on the project Grappbox";
-
-		$em = $this->getDoctrine()->getManager();
-
-		return new JsonResponse($this->pushNotificationAction([1, 2], $mdata, $wdata, $em));
 	}
 
 	/*
@@ -410,35 +531,34 @@ class NotificationController extends RolesAndTokenVerificationController
 	*/
 	public function pushNotification($usersIds, $mdata, $wdata, $em)
 	{
-
+		$firebase_tokens = array();
+		$this->get_access_token();
 		foreach ($usersIds as $userId) {
 			$user = $em->getRepository("SQLBundle:User")->find($userId);
 
 			if ($user != null)
 			{
 				//notificaton for devices
-				// $devices = $em->getRepository("SQLBundle:Devices")->findByuser($user);
+				$devices = $em->getRepository("SQLBundle:Devices")->findByuser($user);
 
-				// foreach ($devices as $device) {
-				// 	$type = $device->getType();
-				// 	$token = $device->getToken();
+				foreach ($devices as $device) {
+					$type = $device->getType();
+					$token = $device->getToken();
 
-				// 	switch ($type) {
-				// 		case 'android':
-				// 			$this->android($mdata, $token)
-				// 			break;
-				// 		case 'ios':
-				// 			$this->iOS($mdata, $token)
-				// 			break,
-				// 		case 'wp':
-				// 			$this->WP($mdata, $token)
-				// 			break;
-				// 		default:
-				// 			break;
-				// 	}
-				// }
+					switch ($type) {
+						case 'WP':
+							if ($this->WP($mdata, $token) == false) {
+								$em->remove($device);
+								$em->flush();
+							}
+							break;
+						default:
+							$firebase_tokens[] = $token;
+							break;
+					}
+				}
 
-				//notification for web and desktop
+				//notification for web without firebase and desktop
 				$notification = new Notification();
 				$notification->setUser($user);
 				$notification->setType($wdata['type']);
@@ -452,65 +572,105 @@ class NotificationController extends RolesAndTokenVerificationController
 			}
 		}
 
+		if (count($firebase_tokens) > 0) {
+			$ret = json_decode($this->firebase($mdata, $firebase_tokens));
+			foreach ($ret->results as $key => $res) {
+				if (array_key_exists('error', $res)) {
+					$devices = $em->getRepository("SQLBundle:Devices")->findBytoken($firebase_tokens[$key]);
+					foreach ($devices as $key => $value) {
+						$em->remove($value);
+						$em->flush();
+					}
+				}
+			}
+		}
+
 		return true;
 	}
 
 	// Sends Push notification for Android users
-	public function android($data, $reg_id)
+	public function firebase($data, $reg_ids)
 	{
-		$url = 'https://android.googleapis.com/gcm/send';
+		$url = 'https://fcm.googleapis.com/fcm/send';
 		$message = array(
 			'title' => $data['mtitle'],
-			'message' => $data['mdesc'],
-			'subtitle' => '',
-			'tickerText' => '',
-			'msgcnt' => 1,
-			'vibrate' => 1
+			'body' => $data['mdesc']
 		);
 
 		$headers = array(
-			'Authorization: key=' .self::$API_ACCESS_KEY,
+			'Authorization: key='.self::$API_ACCESS_KEY,
 			'Content-Type: application/json'
 		);
 
 		$fields = array(
-			'registration_ids' => array($reg_id),
-			'data' => $message,
+			'registration_ids' => $reg_ids,
+			'data' => $message
 		);
 
 		return $this->useCurl($url, $headers, json_encode($fields));
 	}
 
-	// Sends Push's toast notification for Windows Phone 8 users
+	// Sends notification for Windows Phone 10 users
 	public function WP($data, $uri)
 	{
-		$delay = 2;
-		$msg =  "<?xml version=\"1.0\" encoding=\"utf-8\"?>" .
-				"<wp:Notification xmlns:wp=\"WPNotification\">" .
-					"<wp:Toast>" .
-						"<wp:Text1>".htmlspecialchars($data['mtitle'])."</wp:Text1>" .
-						"<wp:Text2>".htmlspecialchars($data['mdesc'])."</wp:Text2>" .
-					"</wp:Toast>" .
-				"</wp:Notification>";
+		$msg =  array(
+			'title' => $data['mtitle'],
+			'body' => $data['mdesc']
+		);
+		$msg = json_encode($msg);
 
-		$sendedheaders =  array(
-			'Content-Type: text/xml',
-			'Accept: application/*',
-			'X-WindowsPhone-Target: toast',
-			"X-NotificationClass: $delay"
+		$headers = array(
+			'Content-Type: application/octet-stream',
+			"X-WNS-Type: wns/raw",
+			"Content-Length: ".strlen($msg),
+			"Authorization: Bearer $this->access_token"
 		);
 
-		$response = $this->useCurl($uri, $sendedheaders, $msg);
+        $ch = curl_init($uri);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_HEADER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $msg);
+        curl_setopt($ch, CURLOPT_VERBOSE, 1);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);
 
-		$result = array();
-		foreach(explode("\n", $response) as $line) {
-			$tab = explode(":", $line, 2);
-			if (count($tab) == 2)
-				$result[$tab[0]] = trim($tab[1]);
+        list($headers, $response) = explode("\r\n\r\n", $output, 2);
+        $headers = explode("\n", $headers);
+		foreach($headers as $header) {
+		    if (strpos($header, 'X-WNS-NOTIFICATIONSTATUS:') !== false) {
+		        $status = explode(": ", $header);
+		        if (strpos($status[1], 'received') !== false)
+		        	return true;
+		        return false;
+		    }
 		}
-
-		return $result;
+		return false;
 	}
+
+	private function get_access_token(){
+        $str = "grant_type=client_credentials&client_id=$this->client&client_secret=$this->secret&scope=notify.windows.com";
+        $url = "https://login.live.com/accesstoken.srf";
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "$str");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        $output = curl_exec($ch);
+        curl_close($ch);                       
+        $output = json_decode($output);
+        if(isset($output->error)){
+            return false;
+        }
+        $this->auth = $output->token_type;
+        $this->access_token = $output->access_token;
+        return true;
+    }
 
 	// Sends Push notification for iOS users
 	public function iOS($data, $devicetoken)
@@ -558,7 +718,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	// Curl
-	private function useCurl(&$model, $url, $headers, $fields = null)
+	private function useCurl($url, $headers, $fields = null)
 	{
 		// Open connection
 		$ch = curl_init();
@@ -568,22 +728,18 @@ class NotificationController extends RolesAndTokenVerificationController
 			curl_setopt($ch, CURLOPT_POST, true);
 			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
 			// Disabling SSL Certificate support temporarly
 			curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 			if ($fields) {
 				curl_setopt($ch, CURLOPT_POSTFIELDS, $fields);
 			}
-
 			// Execute post
 			$result = curl_exec($ch);
 			if ($result === FALSE) {
 				die('Curl failed: ' . curl_error($ch));
 			}
-
 			// Close connection
 			curl_close($ch);
-
 			return $result;
 		}
 	}

@@ -25,12 +25,6 @@ class Event
     protected $description;
 
     /**
-     * @var string $icon
-     */
-    protected $icon;
-
-
-    /**
      * @var date $beginDate
      */
     protected $beginDate;
@@ -51,19 +45,9 @@ class Event
     protected $editedAt;
 
     /**
-     * @var date $deletedAt
-     */
-    protected $deletedAt;
-
-    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
-
-    /**
-     * @var MongoBundle\Document\EventType
-     */
-    protected $eventtypes;
 
     /**
      * @var MongoBundle\Document\User
@@ -82,29 +66,30 @@ class Event
 
     public function objectToArray()
     {
-      $projectId = null;
-      if ($this->projects)
-        $projectId = $this->projects->getId();
-        return array(
-            'id' => $this->id,
-            'projectId' => $projectId,
-            'creator' => array(
-                'id' => $this->creator_user->getId(),
-                'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
-            ),
-            'type' => array(
-              'id' => $this->eventtypes->getId(),
-              'name' => $this->eventtypes->getName()
-            ),
-            'title' => $this->title,
-            'description' => $this->description,
-            'icon' => $this->icon,
-            'beginDate' => $this->beginDate,
-            'endDate' => $this->endDate,
-            'createdAt' => $this->createdAt,
-            'editedAt' => $this->editedAt,
-            'deletedAt' => $this->deletedAt
-        );
+      $participants = array();
+      foreach ($this->users as $key => $value) {
+          $participants[] = array(
+              "id" => $value->getId(),
+              "firstname" => $value->getFirstname(),
+              "lastname" => $value->getLastname()
+          );
+      }
+      return array(
+          'id' => $this->id,
+          'projectId' => $this->projects ? $this->projects->getId() : null,
+          'creator' => array(
+              'id' => $this->creator_user->getId(),
+              'firstname' => $this->creator_user->getFirstName(),
+              'lastname' => $this->creator_user->getLastName()
+          ),
+          'title' => $this->title,
+          'description' => $this->description,
+          'beginDate' => $this->beginDate ? $this->beginDate->format('Y-m-d H:i:s') : null,
+          'endDate' => $this->endDate ? $this->endDate->format('Y-m-d H:i:s') : null,
+          'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+          'editedAt' => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+          'users' =>$participants
+      );
     }
 
     /**
@@ -250,28 +235,6 @@ class Event
     }
 
     /**
-     * Set deletedAt
-     *
-     * @param date $deletedAt
-     * @return self
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return date $deletedAt
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set projects
      *
      * @param MongoBundle\Document\Project $projects
@@ -291,28 +254,6 @@ class Event
     public function getProjects()
     {
         return $this->projects;
-    }
-
-    /**
-     * Set eventtypes
-     *
-     * @param MongoBundle\Document\EventType $eventtypes
-     * @return self
-     */
-    public function setEventtypes( $eventtypes)
-    {
-        $this->eventtypes = $eventtypes;
-        return $this;
-    }
-
-    /**
-     * Get eventtypes
-     *
-     * @return MongoBundle\Document\EventType $eventtypes
-     */
-    public function getEventtypes()
-    {
-        return $this->eventtypes;
     }
 
     /**
@@ -341,10 +282,12 @@ class Event
      * Add user
      *
      * @param MongoBundle\Document\User $user
+     * @return self
      */
     public function addUser( $user)
     {
         $this->users[] = $user;
+        return $this;
     }
 
     /**
@@ -365,28 +308,5 @@ class Event
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * Set icon
-     *
-     * @param string $icon
-     * @return self
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Get icon
-     *
-     * @return string
-     */
-    public function getIcon()
-    {
-        return $this->icon;
     }
 }

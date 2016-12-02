@@ -1,0 +1,30 @@
+MongoBundle\Document\BugComment:
+    type: document
+    db: symfony_database
+    collection: comments
+    fields:
+        id:
+          type: id
+          id: true
+          strategy: AUTO
+        comment:
+          type: string
+        createdAt:
+          type: date
+          name: created_at
+        editedAt:
+          type: date
+          name: edited_at
+          nullable: TRUE
+        deletedAt:
+          type: date
+          name: deleted_at
+          nullable: TRUE
+    referenceOne:
+        bugs:
+          targetDocument: Bug
+          inversedBy: comments
+        creator:
+          targetDocument: User
+          inversedBy: bug_comment_creator
+    lifecycleCallbacks: {  }

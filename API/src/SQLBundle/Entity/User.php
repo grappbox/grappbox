@@ -77,14 +77,9 @@ class User implements UserInterface
     private $twitter;
 
     /**
-     * @var string
+     * @var boolean
      */
-    private $token;
-
-    /**
-     * @var \DateTime
-     */
-    private $tokenValidity;
+    private $isClient;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -109,7 +104,17 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $gantt_creator;
+    private $whiteboard_creator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboard_updator;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $whiteboard_user;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -119,12 +124,32 @@ class User implements UserInterface
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    private $notifications;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $devices;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $task_creator;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
-    private $notifications;
+    private $colors;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ressources;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $authentications;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -137,21 +162,6 @@ class User implements UserInterface
     private $events;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $ressources;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $colors;
-    
-    /**
-     * @var boolean
-     */
-    private $isClient;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -160,12 +170,18 @@ class User implements UserInterface
         $this->message_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->event_creator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->project_creator = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->gantt_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_updator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->whiteboard_user = new \Doctrine\Common\Collections\ArrayCollection();
         $this->gantt_updator = new \Doctrine\Common\Collections\ArrayCollection();
         $this->notifications = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->devices = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->task_creator = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->colors = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->ressources = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->authentications = new \Doctrine\Common\Collections\ArrayCollection();
         $this->projects = new \Doctrine\Common\Collections\ArrayCollection();
         $this->events = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
 
@@ -185,17 +201,33 @@ class User implements UserInterface
     {
     }
 
+    public function fullObjectToArray() {
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'birthday' => $this->birthday ? $this->birthday->format('Y-m-d') : null,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'email' => $this->email,
+            'phone' => $this->phone,
+            'country' => $this->country,
+            'linkedin' => $this->linkedin,
+            'viadeo' => $this->viadeo,
+            'twitter' => $this->twitter,
+            'is_client' => $this->isClient
+        );
+    }
+
     public function objectToArray()
     {
-      return array(
-          'id' => $this->id,
-          'firstname' => $this->firstname,
-          'lastname' => $this->lastname,
-          'email' => $this->email,
-          'token' => $this->token,
-          'avatar' => $this->avatarDate,
-          'is_client' => $this->isClient
-      );
+        return array(
+            'id' => $this->id,
+            'firstname' => $this->firstname,
+            'lastname' => $this->lastname,
+            'email' => $this->email,
+            'avatar' => $this->avatarDate ? $this->avatarDate->format('Y-m-d H:i:s') : null,
+            'is_client' => $this->isClient
+        );
     }
 
     /**
@@ -303,7 +335,7 @@ class User implements UserInterface
     /**
      * Set avatarDate
      *
-     * @param \DateTime $avatardate
+     * @param \DateTime $avatarDate
      * @return User
      */
     public function setAvatarDate($avatarDate)
@@ -485,49 +517,92 @@ class User implements UserInterface
     }
 
     /**
-     * Set token
+     * Set isClient
      *
-     * @param string $token
+     * @param boolean $isClient
      * @return User
      */
-    public function setToken($token)
+    public function setIsClient($isClient)
     {
-        $this->token = $token;
+        $this->isClient = $isClient;
 
         return $this;
     }
 
     /**
-     * Get token
+     * Get isClient
      *
-     * @return string
+     * @return boolean
      */
-    public function getToken()
+    public function getIsClient()
     {
-        return $this->token;
+        return $this->isClient;
     }
 
     /**
-     * Set tokenValidity
+     * Add bug_creator
      *
-     * @param \DateTime $tokenValidity
+     * @param \SQLBundle\Entity\Bug $bugCreator
      * @return User
      */
-    public function setTokenValidity($tokenValidity)
+    public function addBugCreator(\SQLBundle\Entity\Bug $bugCreator)
     {
-        $this->tokenValidity = $tokenValidity;
+        $this->bug_creator[] = $bugCreator;
 
         return $this;
     }
 
     /**
-     * Get tokenValidity
+     * Remove bug_creator
      *
-     * @return \DateTime
+     * @param \SQLBundle\Entity\Bug $bugCreator
      */
-    public function getTokenValidity()
+    public function removeBugCreator(\SQLBundle\Entity\Bug $bugCreator)
     {
-        return $this->tokenValidity;
+        $this->bug_creator->removeElement($bugCreator);
+    }
+
+    /**
+     * Get bug_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getBugCreator()
+    {
+        return $this->bug_creator;
+    }
+
+    /**
+     * Add message_creator
+     *
+     * @param \SQLBundle\Entity\TimelineMessage $messageCreator
+     * @return User
+     */
+    public function addMessageCreator(\SQLBundle\Entity\TimelineMessage $messageCreator)
+    {
+        $this->message_creator[] = $messageCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove message_creator
+     *
+     * @param \SQLBundle\Entity\TimelineMessage $messageCreator
+     */
+    public function removeMessageCreator(\SQLBundle\Entity\TimelineMessage $messageCreator)
+    {
+        $this->message_creator->removeElement($messageCreator);
+    }
+
+    /**
+     * Get message_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getMessageCreator()
+    {
+        return $this->message_creator;
     }
 
     /**
@@ -564,72 +639,6 @@ class User implements UserInterface
     }
 
     /**
-     * Add bug_creator
-     *
-     * @param \SQLBundle\Entity\Bug $bugCreator
-     * @return User
-     */
-    public function addBugCreator(\SQLBundle\Entity\Bug $bugCreator)
-    {
-        $this->bug_creator[] = $bugCreator;
-
-        return $this;
-    }
-
-    /**
-     * Remove bug_creator
-     *
-     * @param \SQLBundle\Entity\Bug $bugCreator
-     */
-    public function removeBugCreator(\SQLBundle\Entity\Bug $bugCreator)
-    {
-        $this->bug_creator->removeElement($bugCreator);
-    }
-
-    /**
-     * Get bug_creator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getBugCreator()
-    {
-        return $this->bug_creator;
-    }
-
-
-    /**
-     * Add message_creator
-     *
-     * @param \SQLBundle\Entity\TimelineMessage $messageCreator
-     * @return User
-     */
-    public function addMessageCreator(\SQLBundle\Entity\TimelineMessage $messageCreator)
-    {
-        $this->message_creator[] = $messageCreator;
-
-        return $this;
-    }
-
-    /**
-     * Remove message_creator
-     * @param \SQLBundle\Entity\TimelineMessage $messageCreator
-     */
-    public function removeMessageCreator(\SQLBundle\Entity\TimelineMessage $messageCreator)
-    {
-        $this->message_creator->removeElement($messageCreator);
-    }
-
-    /**
-     * Get message_creator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getMessageCreator()
-    {
-        return $this->message_creator;
-    }
-
-    /**
      * Add project_creator
      *
      * @param \SQLBundle\Entity\Project $projectCreator
@@ -663,36 +672,102 @@ class User implements UserInterface
     }
 
     /**
-     * Add gantt_creator
+     * Add whiteboard_creator
      *
-     * @param \SQLBundle\Entity\Gantt $ganttCreator
+     * @param \SQLBundle\Entity\Whiteboard $whiteboardCreator
      * @return User
      */
-    public function addGanttCreator(\SQLBundle\Entity\Gantt $ganttCreator)
+    public function addWhiteboardCreator(\SQLBundle\Entity\Whiteboard $whiteboardCreator)
     {
-        $this->gantt_creator[] = $ganttCreator;
+        $this->whiteboard_creator[] = $whiteboardCreator;
 
         return $this;
     }
 
     /**
-     * Remove gantt_creator
+     * Remove whiteboard_creator
      *
-     * @param \SQLBundle\Entity\Gantt $ganttCreator
+     * @param \SQLBundle\Entity\Whiteboard $whiteboardCreator
      */
-    public function removeGanttCreator(\SQLBundle\Entity\Gantt $ganttCreator)
+    public function removeWhiteboardCreator(\SQLBundle\Entity\Whiteboard $whiteboardCreator)
     {
-        $this->gantt_creator->removeElement($ganttCreator);
+        $this->whiteboard_creator->removeElement($whiteboardCreator);
     }
 
     /**
-     * Get gantt_creator
+     * Get whiteboard_creator
      *
      * @return \Doctrine\Common\Collections\Collection
      */
-    public function getGanttCreator()
+    public function getWhiteboardCreator()
     {
-        return $this->gantt_creator;
+        return $this->whiteboard_creator;
+    }
+
+    /**
+     * Add whiteboard_updator
+     *
+     * @param \SQLBundle\Entity\Whiteboard $whiteboardUpdator
+     * @return User
+     */
+    public function addWhiteboardUpdator(\SQLBundle\Entity\Whiteboard $whiteboardUpdator)
+    {
+        $this->whiteboard_updator[] = $whiteboardUpdator;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_updator
+     *
+     * @param \SQLBundle\Entity\Whiteboard $whiteboardUpdator
+     */
+    public function removeWhiteboardUpdator(\SQLBundle\Entity\Whiteboard $whiteboardUpdator)
+    {
+        $this->whiteboard_updator->removeElement($whiteboardUpdator);
+    }
+
+    /**
+     * Get whiteboard_updator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWhiteboardUpdator()
+    {
+        return $this->whiteboard_updator;
+    }
+
+    /**
+     * Add whiteboard_user
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $whiteboardUser
+     * @return User
+     */
+    public function addWhiteboardUser(\SQLBundle\Entity\WhiteboardPerson $whiteboardUser)
+    {
+        $this->whiteboard_user[] = $whiteboardUser;
+
+        return $this;
+    }
+
+    /**
+     * Remove whiteboard_user
+     *
+     * @param \SQLBundle\Entity\WhiteboardPerson $whiteboardUser
+     */
+    public function removeWhiteboardUser(\SQLBundle\Entity\WhiteboardPerson $whiteboardUser)
+    {
+        $this->whiteboard_user->removeElement($whiteboardUser);
+    }
+
+    /**
+     * Get whiteboard_user
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getWhiteboardUser()
+    {
+        return $this->whiteboard_user;
     }
 
     /**
@@ -762,6 +837,171 @@ class User implements UserInterface
     }
 
     /**
+     * Add devices
+     *
+     * @param \SQLBundle\Entity\Devices $devices
+     * @return User
+     */
+    public function addDevice(\SQLBundle\Entity\Devices $devices)
+    {
+        $this->devices[] = $devices;
+
+        return $this;
+    }
+
+    /**
+     * Remove devices
+     *
+     * @param \SQLBundle\Entity\Devices $devices
+     */
+    public function removeDevice(\SQLBundle\Entity\Devices $devices)
+    {
+        $this->devices->removeElement($devices);
+    }
+
+    /**
+     * Get devices
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getDevices()
+    {
+        return $this->devices;
+    }
+
+    /**
+     * Add task_creator
+     *
+     * @param \SQLBundle\Entity\Task $taskCreator
+     * @return User
+     */
+    public function addTaskCreator(\SQLBundle\Entity\Task $taskCreator)
+    {
+        $this->task_creator[] = $taskCreator;
+
+        return $this;
+    }
+
+    /**
+     * Remove task_creator
+     *
+     * @param \SQLBundle\Entity\Task $taskCreator
+     */
+    public function removeTaskCreator(\SQLBundle\Entity\Task $taskCreator)
+    {
+        $this->task_creator->removeElement($taskCreator);
+    }
+
+    /**
+     * Get task_creator
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getTaskCreator()
+    {
+        return $this->task_creator;
+    }
+
+    /**
+     * Add colors
+     *
+     * @param \SQLBundle\Entity\Color $colors
+     * @return User
+     */
+    public function addColor(\SQLBundle\Entity\Color $colors)
+    {
+        $this->colors[] = $colors;
+
+        return $this;
+    }
+
+    /**
+     * Remove colors
+     *
+     * @param \SQLBundle\Entity\Color $colors
+     */
+    public function removeColor(\SQLBundle\Entity\Color $colors)
+    {
+        $this->colors->removeElement($colors);
+    }
+
+    /**
+     * Get colors
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getColors()
+    {
+        return $this->colors;
+    }
+
+    /**
+     * Add ressources
+     *
+     * @param \SQLBundle\Entity\Ressources $ressources
+     * @return User
+     */
+    public function addRessource(\SQLBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources[] = $ressources;
+
+        return $this;
+    }
+
+    /**
+     * Remove ressources
+     *
+     * @param \SQLBundle\Entity\Ressources $ressources
+     */
+    public function removeRessource(\SQLBundle\Entity\Ressources $ressources)
+    {
+        $this->ressources->removeElement($ressources);
+    }
+
+    /**
+     * Get ressources
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getRessources()
+    {
+        return $this->ressources;
+    }
+
+    /**
+     * Add authentications
+     *
+     * @param \SQLBundle\Entity\Authentication $authentications
+     * @return User
+     */
+    public function addAuthentication(\SQLBundle\Entity\Authentication $authentications)
+    {
+        $this->authentications[] = $authentications;
+
+        return $this;
+    }
+
+    /**
+     * Remove authentications
+     *
+     * @param \SQLBundle\Entity\Authentication $authentications
+     */
+    public function removeAuthentication(\SQLBundle\Entity\Authentication $authentications)
+    {
+        $this->authentications->removeElement($authentications);
+    }
+
+    /**
+     * Get authentications
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getAuthentications()
+    {
+        return $this->authentications;
+    }
+
+    /**
      * Add projects
      *
      * @param \SQLBundle\Entity\Project $projects
@@ -825,248 +1065,5 @@ class User implements UserInterface
     public function getEvents()
     {
         return $this->events;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $devices;
-
-
-    /**
-     * Add devices
-     *
-     * @param \SQLBundle\Entity\Devices $devices
-     * @return User
-     */
-    public function addDevice(\SQLBundle\Entity\Devices $devices)
-    {
-        $this->devices[] = $devices;
-
-        return $this;
-    }
-
-    /**
-     * Remove devices
-     *
-     * @param \SQLBundle\Entity\Devices $devices
-     */
-    public function removeDevice(\SQLBundle\Entity\Devices $devices)
-    {
-        $this->devices->removeElement($devices);
-    }
-
-    /**
-     * Get devices
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getDevices()
-    {
-        return $this->devices;
-    }
-
-
-    /**
-     * Add task_creator
-     *
-     * @param \SQLBundle\Entity\Task $taskCreator
-     * @return User
-     */
-    public function addTaskCreator(\SQLBundle\Entity\Task $taskCreator)
-    {
-        $this->task_creator[] = $taskCreator;
-
-        return $this;
-    }
-
-    /**
-     * Remove task_creator
-     *
-     * @param \SQLBundle\Entity\Task $taskCreator
-     */
-    public function removeTaskCreator(\SQLBundle\Entity\Task $taskCreator)
-    {
-        $this->task_creator->removeElement($taskCreator);
-    }
-
-    /**
-     * Get task_creator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getTaskCreator()
-    {
-        return $this->task_creator;
-    }
-
-/*-----------------------------------------------------------------------------------------------*/
-    /**
-     * Add colors
-     *
-     * @param \SQLBundle\Entity\Color $colors
-     * @return User
-     */
-    public function addColor(\SQLBundle\Entity\Color $colors)
-    {
-        $this->colors[] = $colors;
-
-        return $this;
-    }
-
-    /**
-     * Remove colors
-     *
-     * @param \SQLBundle\Entity\Color $colors
-     */
-    public function removeColor(\SQLBundle\Entity\Color $colors)
-    {
-        $this->colors->removeElement($colors);
-    }
-
-    /**
-     * Get colors
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getColors()
-    {
-        return $this->colors;
-    }
-
-
-    /**
-     * Add ressources
-     *
-     * @param \SQLBundle\Entity\Ressources $ressources
-     * @return User
-     */
-    public function addRessource(\SQLBundle\Entity\Ressources $ressources)
-    {
-        $this->ressources[] = $ressources;
-
-        return $this;
-    }
-
-    /**
-     * Remove ressources
-     *
-     * @param \SQLBundle\Entity\Ressources $ressources
-     */
-    public function removeRessource(\SQLBundle\Entity\Ressources $ressources)
-    {
-        $this->ressources->removeElement($ressources);
-    }
-
-    /**
-     * Get ressources
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getRessources()
-    {
-        return $this->ressources;
-    }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $whiteboard_creator;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $whiteboard_updator;
-
-
-    /**
-     * Add whiteboard_creator
-     *
-     * @param \SQLBundle\Entity\Whiteboard $whiteboardCreator
-     * @return User
-     */
-    public function addWhiteboardCreator(\SQLBundle\Entity\Whiteboard $whiteboardCreator)
-    {
-        $this->whiteboard_creator[] = $whiteboardCreator;
-
-        return $this;
-    }
-
-    /**
-     * Remove whiteboard_creator
-     *
-     * @param \SQLBundle\Entity\Whiteboard $whiteboardCreator
-     */
-    public function removeWhiteboardCreator(\SQLBundle\Entity\Whiteboard $whiteboardCreator)
-    {
-        $this->whiteboard_creator->removeElement($whiteboardCreator);
-    }
-
-    /**
-     * Get whiteboard_creator
-     *
-<<<<<<< HEAD
-     * @return \Doctrine\Common\Collections\Collection 
-=======
-     * @return \Doctrine\Common\Collections\Collection
->>>>>>> API-Work
-     */
-    public function getWhiteboardCreator()
-    {
-        return $this->whiteboard_creator;
-    }
-
-    /**
-     * Add whiteboard_updator
-     *
-     * @param \SQLBundle\Entity\Gantt $whiteboardUpdator
-     * @return User
-     */
-    public function addWhiteboardUpdator(\SQLBundle\Entity\Gantt $whiteboardUpdator)
-    {
-        $this->whiteboard_updator[] = $whiteboardUpdator;
-
-        return $this;
-    }
-
-    /**
-     * Remove whiteboard_updator
-     *
-     * @param \SQLBundle\Entity\Gantt $whiteboardUpdator
-     */
-    public function removeWhiteboardUpdator(\SQLBundle\Entity\Gantt $whiteboardUpdator)
-    {
-        $this->whiteboard_updator->removeElement($whiteboardUpdator);
-    }
-
-    /**
-     * Get whiteboard_updator
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getWhiteboardUpdator()
-    {
-        return $this->whiteboard_updator;
-    }
-
-    /**
-     * Set isClient
-     *
-     * @param boolean $isClient
-     * @return User
-     */
-    public function setIsClient($isClient)
-    {
-        $this->isClient = $isClient;
-
-        return $this;
-    }
-
-    /**
-     * Get isClient
-     *
-     * @return boolean 
-     */
-    public function getIsClient()
-    {
-        return $this->isClient;
     }
 }

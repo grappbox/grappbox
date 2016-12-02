@@ -45,4 +45,8 @@ SQLBundle\Entity\Whiteboard:
           targetEntity: WhiteboardObject
           mappedBy: whiteboard
           cascade: [remove]
+        persons:
+          targetEntity: WhiteboardPerson
+          mappedBy: whiteboard
+          cascade: [remove]
     lifecycleCallbacks: {  }

@@ -30,11 +30,25 @@ class Tag
     private $tasks;
 
     /**
+     * @var string
+     */
+    private $color;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+        "color" => $this->color
+      );
     }
 
     /**
@@ -126,12 +140,26 @@ class Tag
         return $this->project;
     }
 
-    public function objectToArray()
+    /**
+     * Set color
+     *
+     * @param string $color
+     * @return Tag
+     */
+    public function setColor($color)
     {
-      return array(
-        "id" => $this->id,
-        "name" => $this->name,
-        "projectId" => $this->project->getId()
-      );
+        $this->color = $color;
+
+        return $this;
+    }
+
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
+    {
+        return $this->color;
     }
 }

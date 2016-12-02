@@ -1,0 +1,17 @@
+MongoBundle\Document\WhiteboardPerson:
+    type: document
+    db: symfony_database
+    collection: persons
+    fields:
+        id:
+            type: id
+            id: true
+            strategy: AUTO
+    referenceOne:
+        whiteboard:
+          targetDocument: Whiteboard
+          inversedBy: persons
+        user:
+          targetDocument: User
+          inversedBy: persons
+    lifecycleCallbacks: {  }

@@ -30,36 +30,22 @@ class Timeline
     protected $name;
 
     /**
+     * @var MongoBundle\Document\TimelineMessage
+     */
+    protected $timelineMessages = array();
+
+    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
 
     /**
-     * @var MongoBundle\Document\TimelineMessage
+     * Constructor
      */
-    protected $timelineMessages = array();
-
     public function __construct()
     {
         $this->timelineMessages = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
-
-    /**
-     * Get object content into array
-     *
-     * @return array
-     */
-    public function objectToArray()
-    {
-      return array(
-        "id" => $this->id,
-        "typeId" => $this->typeId,
-        "projectId" => $this->projectId,
-        "name" => $this->name
-      );
-    }
-
 
     /**
      * Get id
@@ -137,6 +123,39 @@ class Timeline
         return $this->name;
     }
 
+
+    /**
+     * Add timelineMessage
+     *
+     * @param MongoBundle\Document\TimelineMessage $timelineMessage
+     * @return self
+     */
+    public function addTimelineMessage($timelineMessage)
+    {
+        $this->timelineMessages[] = $timelineMessage;
+        return $this;
+    }
+
+    /**
+     * Remove timelineMessage
+     *
+     * @param MongoBundle\Document\TimelineMessage $timelineMessage
+     */
+    public function removeTimelineMessage($timelineMessage)
+    {
+        $this->timelineMessages->removeElement($timelineMessage);
+    }
+
+    /**
+     * Get timelineMessages
+     *
+     * @return \Doctrine\Common\Collections\Collection $timelineMessages
+     */
+    public function getTimelineMessages()
+    {
+        return $this->timelineMessages;
+    }
+
     /**
      * Set projects
      *
@@ -159,33 +178,19 @@ class Timeline
         return $this->projects;
     }
 
-    /**
-     * Add timelineMessage
-     *
-     * @param MongoBundle\Document\TimelineMessage $timelineMessage
-     */
-    public function addTimelineMessage($timelineMessage)
-    {
-        $this->timelineMessages[] = $timelineMessage;
-    }
 
     /**
-     * Remove timelineMessage
+     * Get object content into array
      *
-     * @param MongoBundle\Document\TimelineMessage $timelineMessage
+     * @return array
      */
-    public function removeTimelineMessage($timelineMessage)
+    public function objectToArray()
     {
-        $this->timelineMessages->removeElement($timelineMessage);
-    }
-
-    /**
-     * Get timelineMessages
-     *
-     * @return \Doctrine\Common\Collections\Collection $timelineMessages
-     */
-    public function getTimelineMessages()
-    {
-        return $this->timelineMessages;
+      return array(
+        "id" => $this->id,
+        "typeId" => $this->typeId,
+        "projectId" => $this->projectId,
+        "name" => $this->name
+      );
     }
 }

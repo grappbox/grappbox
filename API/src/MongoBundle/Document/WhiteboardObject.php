@@ -15,6 +15,11 @@ class WhiteboardObject
     protected $id;
 
     /**
+     * @var int
+     */
+    private $whiteboardId;
+
+    /**
      * @var string $object
      */
     protected $object;
@@ -34,18 +39,16 @@ class WhiteboardObject
      */
     protected $whiteboard;
 
-
     public function objectToArray()
     {
         return array(
             'id' => $this->id,
-            'whiteboardId' => $this->whiteboard->getId(),
+            'whiteboardId' => $this->whiteboardId,
             'object' => json_decode($this->object),
             'createdAt' => $this->createdAt,
             'deletedAt' => $this->deletedAt
         );
     }
-
 
     /**
      * Get id
@@ -55,6 +58,29 @@ class WhiteboardObject
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * Set whiteboardId
+     *
+     * @param int $whiteboardId
+     * @return self
+     */
+    public function setWhiteboardId($whiteboardId)
+    {
+        $this->whiteboardId = $whiteboardId;
+
+        return $this;
+    }
+
+    /**
+     * Get whiteboardId
+     *
+     * @return integer
+     */
+    public function getWhiteboardId()
+    {
+        return $this->whiteboardId;
     }
 
     /**
@@ -117,10 +143,13 @@ class WhiteboardObject
      * Get deletedAt
      *
      * @return date $deletedAt
+     * @return self
      */
     public function getDeletedAt()
     {
         return $this->deletedAt;
+
+        return $this;
     }
 
     /**

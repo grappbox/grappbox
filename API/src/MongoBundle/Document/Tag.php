@@ -30,14 +30,25 @@ class Tag
     protected $tasks = array();
 
     /**
-     * @var MongoBundle\Document\Bug
+     * @var string
      */
-    protected $bugs = array();
+    protected $color;
 
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->tasks = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->bugs = new \Doctrine\Common\Collections\ArrayCollection();
+    }
+
+    public function objectToArray()
+    {
+      return array(
+        "id" => $this->id,
+        "name" => $this->name,
+        "color" => $this->color
+      );
     }
 
     /**
@@ -73,28 +84,6 @@ class Tag
     }
 
     /**
-     * Set project
-     *
-     * @param MongoBundle\Document\Project $project
-     * @return self
-     */
-    public function setProject( $project)
-    {
-        $this->project = $project;
-        return $this;
-    }
-
-    /**
-     * Get project
-     *
-     * @return MongoBundle\Document\Project $project
-     */
-    public function getProject()
-    {
-        return $this->project;
-    }
-
-    /**
      * Add task
      *
      * @param MongoBundle\Document\Task $task
@@ -125,41 +114,48 @@ class Tag
     }
 
     /**
-     * Add bug
+     * Set project
      *
-     * @param MongoBundle\Document\Bug $bug
+     * @param MongoBundle\Document\Project $project
+     * @return self
      */
-    public function addBug( $bug)
+    public function setProject( $project)
     {
-        $this->bugs[] = $bug;
+        $this->project = $project;
+        return $this;
     }
 
     /**
-     * Remove bug
+     * Get project
      *
-     * @param MongoBundle\Document\Bug $bug
+     * @return MongoBundle\Document\Project $project
      */
-    public function removeBug( $bug)
+    public function getProject()
     {
-        $this->bugs->removeElement($bug);
+        return $this->project;
     }
 
     /**
-     * Get bugs
+     * Set color
      *
-     * @return \Doctrine\Common\Collections\Collection $bugs
+     * @param string $color
+     * @return self
      */
-    public function getBugs()
+    public function setColor($color)
     {
-        return $this->bugs;
+        $this->color = $color;
+
+        return $this;
     }
 
-    public function objectToArray()
+    /**
+     * Get color
+     *
+     * @return string
+     */
+    public function getColor()
     {
-      return array(
-        "id" => $this->id,
-        "name" => $this->name,
-        "projectId" => $this->project->getId()
-      );
+        return $this->color;
     }
+
 }

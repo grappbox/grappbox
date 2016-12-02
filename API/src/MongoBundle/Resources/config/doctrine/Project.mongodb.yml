@@ -93,6 +93,10 @@ MongoBundle\Document\Project:
           targetDocument: CustomerAccess
           mappedBy: projects
           cascade: [remove]
+        bugtracker_tags:
+          targetDocument: BugtrackerTag
+          mappedBy: project
+          cascade: [remove]
         tags:
           targetDocument: Tag
           mappedBy: project

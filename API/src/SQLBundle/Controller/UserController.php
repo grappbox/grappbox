@@ -22,6 +22,8 @@ use SQLBundle\Controller\User;
  *  @IgnoreAnnotation("apiParam")
  *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class UserController extends RolesAndTokenVerificationController
 {
@@ -38,12 +40,12 @@ class UserController extends RolesAndTokenVerificationController
     return new JsonResponse("Success: Password encoded for user ".$user->getFirstname()." ".$user->getLastname());
   }
 
-	public function basicInformationsAction(Request $request, $token)
+	public function basicInformationsAction(Request $request)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.1.3", "User", "basicinformations"));
 
@@ -57,18 +59,24 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.3/user/basicinformations/:token Request the basic informations of the connected user
+	* @api {get} /0.3/user Request the basic informations of the connected user
 	* @apiName getBasicInformations
 	* @apiGroup Users
 	* @apiDescription Request the basic informations of the connected user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
+	*
+	* @apiSuccess {int} id Id of the person
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {date} avatar Avatar last modif date
+	* @apiSuccess {string} avatar Avatar last modif date
 	* @apiSuccess {String} email Email of the person
 	* @apiSuccess {String} phone Phone number of the person
 	* @apiSuccess {String} country Country the person in living in
@@ -85,10 +93,11 @@ class UserController extends RolesAndTokenVerificationController
 	*			"return_message": "User - getbasicinformations - Complete Success"
 	*		},
 	*		"data": {
+	*			"id": 2,
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18",
-	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"avatar": "1945-06-18 06:00:00",
 	*			"email": "john.doe@gmail.com"
 	*			"phone": "+33984231475",
 	*			"country": "France",
@@ -99,12 +108,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.1.3",
-	*			"return_message": "User - getbasicinformations - Bad ID"
+	*			"return_message": "User - getbasicinformations - Bad Token"
 	*		}
 	*	}
 	*/
@@ -160,34 +169,25 @@ class UserController extends RolesAndTokenVerificationController
 	*/
 	private function getBasicInformations($user)
 	{
-		$firstName = $user->getFirstname();
-		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday();
-		if ($birthday != null)
-			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatarDate();
-		$email = $user->getEmail();
-		$phone = $user->getPhone();
-		$country = $user->getCountry();
-		$linkedin = $user->getLinkedin();
-		$viadeo = $user->getViadeo();
-		$twitter = $user->getTwitter();
-		$isClient = $user->getIsClient();
-
-		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter, "is_client" => $isClient));
+		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", $user->fullObjectToArray());
 	}
 
 	/**
-	* @api {get} /V0.3/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
+	* @api {get} /0.3/user/:userId Request the basic informations for a user
 	* @apiName getUserBasicInformations
 	* @apiGroup Users
 	* @apiDescription Request the basic informations for the given user
 	* @apiVersion 0.3.0
 	*
-	* @apiParam {String} token token of the person connected
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
 	* @apiParam {Number} userId id of the user you want some informations
 	*
+	* @apiSuccess {int} id Id of the person
 	* @apiSuccess {String} firstname First name of the person
 	* @apiSuccess {String} lastname Last name of the person
 	* @apiSuccess {Date} birthday Birthday of the person
@@ -208,10 +208,11 @@ class UserController extends RolesAndTokenVerificationController
 	*			"return_message": "User - getuserbasicinformations - Complete Success"
 	*		},
 	*		"data": {
+	*			"id": 2,
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18"
-	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
+	*			"avatar": "1945-06-18 06:00:00",
 	*			"email": "john.doe@gmail.com"
 	*			"phone": "+33984231475",
 	*			"country": "France",
@@ -222,12 +223,12 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.2.3",
-	*			"return_message": "User - getuserbasicinformations - Bad ID"
+	*			"return_message": "User - getuserbasicinformations - Bad Token"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: userId
@@ -298,9 +299,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserBasicInformationsAction(Request $request, $token, $userId)
+	public function getUserBasicInformationsAction(Request $request, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.2.3", "User", "getuserbasicinformations"));
 
@@ -308,24 +309,138 @@ class UserController extends RolesAndTokenVerificationController
 		if ($userInfos === null)
 			return $this->setBadRequest("7.2.4", "User", "getuserbasicinformations", "Bad Parameter: userId");
 
-		$firstName = $userInfos->getFirstname();
-		$lastName = $userInfos->getLastname();
-		$birthday = $user->getBirthday();
-		if ($birthday!= null)
-			$birthday = $birthday->format('Y-m-d');
-		$avatar = $userInfos->getAvatarDate();
-		$email = $userInfos->getEmail();
-		$phone = $userInfos->getPhone();
-		$country = $userInfos->getCountry();
-		$linkedin = $userInfos->getLinkedin();
-		$viadeo = $userInfos->getViadeo();
-		$twitter = $userInfos->getTwitter();
-		$isClient = $user->getIsClient();
-
-		return $this->setSuccess("1.7.1", "User", "getuserbasicinformations", "Complete Success", array("firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter, "is_client" => $isClient));
+		return $this->setSuccess("1.7.1", "User", "getuserbasicinformations", "Complete Success", $userInfos->fullObjectToArray());
 	}
 
+	/**
+	* @api {put} /0.3/user Update the basic informations of the user connected
+	* @apiName putBasicInformations
+	* @apiGroup Users
+	* @apiDescription Update the basic informations of the user connected
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {String} [firstname] First name of the person
+	* @apiParam {String} [lastname] Last name of the person
+	* @apiParam {Date} [birthday] Birthday of the person
+	* @apiParam {Text} [avatar] Avatar of the person
+	* @apiParam {String} [oldPassword] Old password of the person. oldPassword and password must be set if you want to change password
+	* @apiParam {String} [password] New password of the person. oldPassword and password must be set if you want to change password
+	* @apiParam {String} [phone] Phone number of the person
+	* @apiParam {String} [country] Country the person in living in
+	* @apiParam {String} [linkedin] Linkedin of the person
+	* @apiParam {String} [viadeo] Viadeo of the person
+	* @apiParam {String} [twitter] Twitter of the person
+	*
+	* @apiParamExample {json} Request-Full-Example:
+	*	{
+	*		"data": {
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18",
+	*			"avatar": "10001111001100110010101010",
+	*			"oldPassword": "toto",
+	*			"password": "azertyuiop",
+	*			"phone": +33984231475,
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	*	}
+	*
+	* @apiParamExample {json} Request-Minimum-Example:
+	*	{
+	*		"data": {}
+	*	}
+	*
+	* @apiParamExample {json} Request-Partial-Example:
+	*	{
+	*		"data": {
+	*			"birthday": "1945-06-18",
+	*			"password": "azertyuiop",
+	*			"phone": +33984231475,
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	*	}
+	*
+	* @apiSuccess {int} id Id of the person
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
+	* @apiSuccess {Date} birthday Birthday of the person
+	* @apiSuccess {string} avatar Avatar last date of modif
+	* @apiSuccess {String} email Email of the person
+	* @apiSuccess {String} phone Phone number of the person
+	* @apiSuccess {String} country Country the person in living in
+	* @apiSuccess {String} linkedin Linkedin of the person
+	* @apiSuccess {String} viadeo Viadeo of the person
+	* @apiSuccess {String} twitter Twitter of the person
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - putuserbasicinformations - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 1
+	*			"firstname": "John",
+	*			"lastname": "Doe",
+	*			"birthday": "1945-06-18"
+	*			"avatar": "1945-06-18 06:00:00",
+	*			"email": "john.doe@gmail.com"
+	*			"phone": "+33984231475",
+	*			"country": "France",
+	*			"linkedin": "linkedin.com/john.doe",
+	*			"viadeo": "viadeo.com/john.doe",
+	*			"twitter": "twitter.com/john.doe"
+	*		}
+	* 	}
+	* @apiSuccessExample {json} Notifications Avatar
+	*	{
+	*		"data": {
+	*			"title": "avatar user",
+	*			"body": {
+	*				"id": 1
+	*				"firstname": "John",
+	*				"lastname": "Doe",
+	*				"birthday": "1945-06-18"
+	*				"avatar": "1945-06-18 06:00:00",
+	*				"email": "john.doe@gmail.com"
+	*				"phone": "+33984231475",
+	*				"country": "France",
+	*				"linkedin": "linkedin.com/john.doe",
+	*				"viadeo": "viadeo.com/john.doe",
+	*				"twitter": "twitter.com/john.doe"
+	*			}
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.3",
+	*			"return_message": "User - putbasicinformations - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: oldPassword
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.4",
+	*			"return_message": "User - putbasicinformations - Bad Parameter: oldPassword"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {put} /V0.2/user/basicinformations/:token Update the basic informations of the user connected
 	* @apiName putBasicInformations
@@ -401,7 +516,6 @@ class UserController extends RolesAndTokenVerificationController
 	*			"return_message": "User - putuserbasicinformations - Complete Success"
 	*		},
 	*		"data": {
-	*			"id": 1
 	*			"firstname": "John",
 	*			"lastname": "Doe",
 	*			"birthday": "1945-06-18"
@@ -439,19 +553,41 @@ class UserController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists('avatar', $content))
 		{
-			$user->setAvatar($content->avatar);
-			$user->setAvatarDate(new \DateTime('now'));
-		}
+      		$filepath = "/var/www/static/app/user/".$user->getId();
 
-		if (array_key_exists('email', $content) && $user->getEmail() != $content->email)
-		{
-			if ($em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email)))
-				return $this->setBadRequest("Email already in DB");
-			else if ($content->email != "")
-				return $this->setBadRequest("Email invalid");
-			else
-				$user->setEmail($content->email);
+			$file = base64_decode($content->avatar);
+			if ($file == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
 
+			$image = imagecreatefromstring($file);
+			if ($image == false)
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			if (!imagejpeg($image, $filepath, 80))
+				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+
+			imagedestroy($image);
+
+			$fileurl = 'https://static.grappbox.com/app/user/'.$user->getId();
+
+			$user->setAvatar($fileurl);
+			$user->setAvatarDate(new \DateTime);
+
+			//notifs
+			$mdata['mtitle'] = "avatar user";
+			$mdata['mdesc'] = json_encode($user->objectToArray());
+			$wdata['type'] = "avatar user";
+			$wdata['targetId'] = $user->getId();
+			$wdata['message'] = json_encode($user->objectToArray());
+			$userNotif = array();
+			foreach ($user->getProjects() as $key => $value) {
+				foreach ($value->getUsers() as $key => $user) {
+					if (!in_array($user->getId(), $userNotif))
+						$userNotif[] = $user->getId();
+				}
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		if (array_key_exists('phone', $content))
 			$user->setPhone($content->phone);
@@ -465,35 +601,86 @@ class UserController extends RolesAndTokenVerificationController
 			$user->setTwitter($content->twitter);
 		if (array_key_exists('password', $content) && array_key_exists('oldPassword', $content))
 		{
-			if ($this->container->get('security.password_encoder')->isPasswordValid($user, $content->oldPassword))
-			{
-				//print("op = password\n");
-				$encoder = $this->container->get('security.password_encoder');
-				$encoded = $encoder->encodePassword($user, $content->password);
-				$user->setPassword($encoded);
-			}
+			$encoder = $this->container->get('security.password_encoder');
+			if (!($encoder->isPasswordValid($user, $content->oldPassword)))
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: oldPassword");
+			$encoded = $encoder->encodePassword($user, $content->password);
+			$user->setPassword($encoded);
 		}
 
 		$em->flush();
 
-		$id = $user->getId();
-		$firstName = $user->getFirstname();
-		$lastName = $user->getLastname();
-		$birthday = $user->getBirthday();
-		if ($birthday!= null)
-			$birthday = $birthday->format('Y-m-d');
-		$avatar = $user->getAvatarDate();
-		$email = $user->getEmail();
-		$phone = $user->getPhone();
-		$country = $user->getCountry();
-		$linkedin = $user->getLinkedin();
-		$viadeo = $user->getViadeo();
-		$twitter = $user->getTwitter();
-
-		return $this->setSuccess("1.7.1", "User", "putbasicinformations", "Complete Success", array("id" => $id, "firstname" => $firstName, "lastname" => $lastName, "birthday" => $birthday,
-			"avatar" => $avatar, "email" => $email, "phone" => $phone, "country" => $country, "linkedin" => $linkedin, "viadeo" => $viadeo, "twitter" => $twitter));
+		return $this->setSuccess("1.7.1", "User", "putbasicinformations", "Complete Success", $user->fullObjectToArray());
 	}
 
+	/**
+	* @api {get} /0.3/user/id/:firstName/:lastName Request the user Id with the first and last name
+	* @apiName getIdByName
+	* @apiGroup Users
+	* @apiDescription Request the user Id with the first name and the last name
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {String} firstName first name of the user
+	* @apiParam {String} lastName last name of the user
+	*
+	* @apiSuccess {Object[]} array Array of persons
+	* @apiSuccess {Number} array.id Id of the person
+	* @apiSuccess {String} array.firstname First name of the person
+	* @apiSuccess {String} array.lastname Last name of the person
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getidbyname - Complete Success"
+	*		},
+	*		"data": {
+	*			"array": [
+	*				{
+	*					"id": 2,
+	*					"firstname": "John",
+	*					"lastname": "Doe"
+	*				}
+	*			]
+	*		}
+	* 	}
+	*
+	* @apiSuccessExample Success-No Data
+	*	HTTP/1.1 201 Partial Content
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.3",
+	*			"return_message": "User - getidbyname - No Data Success"
+	*		},
+	*		"data": {
+	*			"array": []
+	*		}
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.4.3",
+	*			"return_message": "User - getidbyname - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameters
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.4.4",
+	*			"return_message": "User - getidbyname - Bad Parameters"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
 	* @apiName getIdByName
@@ -557,9 +744,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getIdByNameAction(Request $request, $token, $firstname, $lastname)
+	public function getIdByNameAction(Request $request, $firstname, $lastname)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.4.3", "User", "getidbyname"));
 
@@ -584,6 +771,56 @@ class UserController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.7.1", "User", "getidbyname", "Complete Success", array("array" => $arr));
 	}
 
+	/**
+	* @api {get} /0.3/user/id/:email Request the user Id with the email
+	* @apiName getIdByEmail
+	* @apiGroup Users
+	* @apiDescription Request the user Id with the email
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {String} email email of the user
+	*
+	* @apiSuccess {Number} id id of the person
+	* @apiSuccess {String} firstname First name of the person
+	* @apiSuccess {String} lastname Last name of the person
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getidbyemail - Complete Success"
+	*		},
+	*		"data": {
+	*			"id": 2,
+	*			"firstname": "John",
+	*			"lastname": "Doe"
+	*		}
+	* 	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.5.3",
+	*			"return_message": "User - getidbyemail - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: email
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.5.4",
+	*			"return_message": "User - getidbyemail - Bad Parameter: email"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/user/getidbyemail/:token/:email Request the user Id with the email
 	* @apiName getIdByEmail
@@ -629,9 +866,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getIdByEmailAction(Request $request, $token, $email)
+	public function getIdByEmailAction(Request $request, $email)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.5.3", "User", "getidbyemail"));
 
@@ -648,324 +885,51 @@ class UserController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /V0.2/user/getnextmeetings/:token Request the next meetings of the connected user
-	* @apiName getNextMeetings
+	* @api {get} /0.3/user/avatar/:userId Get user avatar
+	* @apiName getUserAvatar
 	* @apiGroup Users
-	* @apiDescription Request the next meetings of the connected user
-	* @apiVersion 0.2.0
+	* @apiDescription Get the avatar of the given user
+	* @apiVersion 0.3.0
 	*
-	* @apiParam {string} token user's authentication token
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
 	*
-	* @apiSuccess {Object[]} array array of events
-	* @apiSuccess {Object[]} projects Project informations
-	* @apiSuccess {String} array.projects.name Name of the project
-	* @apiSuccess {Text} array.projects.logo Logo of the project
-	* @apiSuccess {String} array.type Type of meeting
-	* @apiSuccess {String} array.title Title of the meeting
-	* @apiSuccess {String} array.description Description of the event
-	* @apiSuccess {Datetime} array.begin_date Date of the begining of the meeting
-	* @apiSuccess {Datetime} array.end_date Date of meeting's ending
+	* @apiParam {Number} userId Id of the user
+	*
+	* @apiSuccess {Text} avatar avatar of the user
 	*
 	* @apiSuccessExample Success-Response:
 	*	HTTP/1.1 200 OK
 	*	{
 	*		"info": {
 	*			"return_code": "1.7.1",
-	*			"return_message": "User - getnextmeetings - Complete Success"
+	*			"return_message": "User - getUserAvatar - Complete Success"
 	*		},
 	*		"data": {
-	*			"array": [
-	*				{
-	*					"projects": {
-	*						"name": "Grappbox",
-	*						"logo": "DATA"
-	*					},
-	*					"type": "Client",
-	*					"title": "Cahier Des Charges",
-	*					"description": "Mise à jour du CDC avec le client",
-	*					"begin_date": {"date": "1945-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"end_date": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				},
-	*				{
-	*					"projects": {
-	*						"name": "",
-	*						"logo": ""
-	*					},
-	*					"type": "Personnel",
-	*					"title": "Dentiste",
-	*					"description": "Rdv avec le dentiste pour changer ma couronne",
-	*					"begin_date": {"date": "1946-06-18 09:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"end_date": {"date": "1946-06-18 11:00:00", "timezone_type": 3, "timezone": "Europe\/Paris" },
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.3",
-	*			"return_message": "User - getnextmeetings - No Data Success"
+	*			"avatar": "10100011000011001"
 	*		},
-	*		"data": {
-	*			"array": []
-	*		}
 	*	}
 	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.6.3",
-	*			"return_message": "User - getnextmeetings - Bad ID"
-	*		}
-	*	}
-	*/
-	public function getNextMeetingsAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("7.6.3", "User", "getnextmeetings"));
-
-		return $this->getDoctrine()->getManager()->getRepository('SQLBundle:Event')->findNextMeetingsV2($user->getId(), "7", "User", "getnextmeetings");
-	}
-
-	/**
-	* @api {get} /V0.2/user/getprojects/:token Request the user connected projects
-	* @apiName getProjects
-	* @apiGroup Users
-	* @apiDescription Request all the user's connected projects
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} array Array of projects
-	* @apiSuccess {Number} array.id Id of the project
-	* @apiSuccess {String} array.name Name of the project
-	* @apiSuccess {String} array.description Description of the project
-	* @apiSuccess {Object[]} array.creator Informations about the creator
-	* @apiSuccess {Number} array.creator.id Id of the creator
-	* @apiSuccess {String} array.creator.firstname Firstname of the creator
-	* @apiSuccess {String} array.creator.lastname Lastname of the creator
-	* @apiSuccess {String} array.phone Phone of the project
-	* @apiSuccess {String} array.company Company of the project
-	* @apiSuccess {date} array.logo Logo last modif date of the project
-	* @apiSuccess {String} array.contact_mail Mail for the project
-	* @apiSuccess {String} array.facebook Facebook of the project
-	* @apiSuccess {String} array.twitter Twitter of the project
-	* @apiSuccess {Datetime} array.deleted_at Date of deletion of the project
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getprojects - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 2,
-	*					"name": "Grappbox",
-	*					"description": "Grappbox est une application de gestion de projet.",
-	*					"creator": { "id": 2, "firstname": "John", "lastname": "Snow" },
-	*					"phone": "+339 46 12 45 78",
-	*					"company": "Ubisoft",
-	*					"logo": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"contact_mail": "contact@grappbox.com",
-	*					"facebook": "www.facebook.com/GrappBox",
-	*					"twitter": "twitter.com/GrappBox",
-	*					"deleted_at": null
-	*				}
-	*			]
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.3",
-	*			"return_message": "User - getprojects - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.7.3",
-	*			"return_message": "User - getprojects - Bad ID"
-	*		}
-	*	}
-	*/
-	public function getProjectsAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("7.7.3", "User", "getprojects"));
-
-		return $this->getDoctrine()->getManager()->getRepository('SQLBundle:Project')->findUserProjectsV2($user->getId(), "7", "User", "getprojects");
-	}
-
-	/**
-	* @api {get} /V0.2/user/getalltasks/:token Request the user connected tasks
-	* @apiName getAllTasks
-	* @apiGroup Users
-	* @apiDescription Request the user connected tasks
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} array Array of tasks
-	* @apiSuccess {Number} array.id Id of the task
-	* @apiSuccess {String} array.title Title of the task
-	* @apiSuccess {String} array.description Description of the task
-	* @apiSuccess {Object[]} array.project Project Informations
-	* @apiSuccess {Number} array.project.id Project id link to the task
-	* @apiSuccess {String} array.project.name Project's name
-	* @apiSuccess {Datetime} array.due_date Due date for the task
-	* @apiSuccess {Datetime} array.started_at Begining of the task
-	* @apiSuccess {Datetime} array.finished_at Task finished date
-	* @apiSuccess {Datetime} array.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getalltasks - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 2,
-	*					"title": "Whiteboard API",
-	*					"description": "Implémentation de la partie whiteboard de l'API",
-	*					"project": {
-	*						"id": 3,
-	*						"name": "Grappbox"
-	*					},
-	*					"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				}
-	*			]
-	*		}
-	* 	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.3",
-	*			"return_message": "User - getalltasks - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.8.3",
-	*			"return_message": "User - getalltasks - Bad ID"
-	*		}
-	*	}
-	*/
-	public function getAllTasksAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("7.8.3", "User", "getalltasks"));
-
-		return $this->getDoctrine()->getManager()->getRepository('SQLBundle:Task')->findUserAllTasksV2($user->getId(), "7", "User", "getalltasks");
-	}
-
-	/**
-	* @api {get} /V0.2/user/getcurrentandnexttasks/:token Request the user connected current and next tasks
-	* @apiName getCurrentAndNextTasks
-	* @apiGroup Users
-	* @apiDescription Request the user connected current and next tasks
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {Object[]} array Array of tasks
-	* @apiSuccess {Number} array.id Id of the task
-	* @apiSuccess {String} array.title Title of the task
-	* @apiSuccess {String} array.description Description of the task
-	* @apiSuccess {Object[]} array.project Project informations
-	* @apiSuccess {Number} array.project.id Project id link to the task
-	* @apiSuccess {String} array.project.name Project's name
-	* @apiSuccess {Datetime} array.due_date Due date for the task
-	* @apiSuccess {Datetime} array.started_at Begining of the task
-	* @apiSuccess {Datetime} array.finished_at Task finished date
-	* @apiSuccess {Datetime} array.created_at Date of creation of the task
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getcurrentandnexttasks - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 2,
-	*					"title": "Whiteboard API",
-	*					"description": "Implémentation de la partie whiteboard de l'API",
-	*					"project": {
-	*						"id": 3,
-	*						"name": "Grappbox"
-	*					},
-	*					"due_date": {"date": "1947-06-18 08:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"started_at": {"date": "1945-06-18 18:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"finished_at": {"date": "1946-12-24 16:28:78", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*					"created_at": {"date": "1945-06-18 15:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*				}
-	*			]
-	*		}
-	* 	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.3",
-	*			"return_message": "User - getcurrentandnexttasks - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
+	* @apiErrorExample Bad Token
 	*	HTTP/1.1 401 Unauthorized
 	*	{
 	*		"info": {
 	*			"return_code": "7.9.3",
-	*			"return_message": "User - getcurrentandnexttasks - Bad ID"
+	*			"return_message": "User - getUserAvatar - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: userId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.4",
+	*			"return_message": "User - getUserAvatar - Bad Parameter: userId"
 	*		}
 	*	}
 	*/
-	public function getCurrentAndNextTasksAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("7.9.3", "User", "getcurrentandnexttasks"));
-
-		return $this->getDoctrine()->getManager()->getRepository('SQLBundle:Task')->findUserCurrentAndNextTasksV2($user->getId(), "7", "User", "getcurrentandnexttasks");
-	}
-
 	/**
 	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar
 	* @apiName getUserAvatar
@@ -1007,9 +971,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getUserAvatarAction(Request $request, $token, $userId)
+	public function getUserAvatarAction(Request $request, $userId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.9.3", "User", "getUserAvatar"));
 
@@ -1022,6 +986,55 @@ class UserController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.7.1", "User", "getUserAvatar", "Complete Success", array("avatar" => $requestedUser->getAvatar()));
 	}
 
+	/**
+	* @api {get} /0.3/user/project/avatars/:projectId Get all project user avatar
+	* @apiName getAllProjectUserAvatar
+	* @apiGroup Users
+	* @apiDescription Get the avatar of all the users of the given project
+	* @apiVersion 0.3.0
+	*
+	* @apiHeader {string} Authorization user's authentication token
+	* @apiHeaderExample Request-Example:
+	*	{
+	*		"Authorization": "6e281d062afee65fb9338d38b25828b3"
+	*	}
+	*
+	* @apiParam {Number} projectId Id of the user
+	*
+	* @apiSuccess {Object[]} array users list
+	* @apiSuccess {int} array.userId user id
+	* @apiSuccess {text} array.avatar user avatar
+	*
+	* @apiSuccessExample Success-Response:
+	*	HTTP/1.1 200 OK
+	*	{
+	*		"info": {
+	*			"return_code": "1.7.1",
+	*			"return_message": "User - getAllProjectUserAvatar - Complete Success"
+	*		},
+	*		"data": {
+	*			"userId": 13,
+	*			"avatar": "10100011000011001"
+	*		},
+	*	}
+	*
+	* @apiErrorExample Bad Token
+	*	HTTP/1.1 401 Unauthorized
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.3",
+	*			"return_message": "User - getAllProjectUserAvatar - Bad Token"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: projectId
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.9.4",
+	*			"return_message": "User - getAllProjectUserAvatar - Bad Parameter: projectId"
+	*		}
+	*	}
+	*/
 	/**
 	* @api {get} /V0.2/user/getallprojectuseravatar/:token/:projectId Get all project user avatar
 	* @apiName getAllProjectUserAvatar
@@ -1066,9 +1079,9 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	public function getAllProjectUserAvatarAction(Request $request, $token, $projectId)
+	public function getAllProjectUserAvatarAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("7.10.3", "User", "getAllProjectUserAvatar"));
 
@@ -1078,9 +1091,9 @@ class UserController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("7.10.4", "User", "getAllProjectUserAvatar", "Bad Parameter: projectId");
 
-			foreach ($project->getUsers() as $key => $user) {
-				$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
-			}
+		foreach ($project->getUsers() as $key => $user) {
+			$data[] = array("userId" => $user->getId(), "avatar" => $user->getAvatar());
+		}
 
 		return $this->setSuccess("1.7.1", "User", "getAllProjectUserAvatar", "Complete Success", array("array" => $data));
 	}

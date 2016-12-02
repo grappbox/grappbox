@@ -23,11 +23,6 @@ class Event
      * @var string
      */
     private $description;
-    
-    /**
-     * @var string
-     */
-    private $icon;
 
     /**
      * @var \DateTime
@@ -50,19 +45,9 @@ class Event
     private $editedAt;
 
     /**
-     * @var \DateTime
-     */
-    private $deletedAt;
-
-    /**
      * @var \SQLBundle\Entity\Project
      */
     private $projects;
-
-    /**
-     * @var \SQLBundle\Entity\EventType
-     */
-    private $eventtypes;
 
     /**
      * @var \SQLBundle\Entity\User
@@ -84,28 +69,29 @@ class Event
 
     public function objectToArray()
     {
-      $projectId = null;
-      if ($this->projects)
-        $projectId = $this->projects->getId();
+        $participants = array();
+        foreach ($this->users as $key => $value) {
+            $participants[] = array(
+                "id" => $value->getId(),
+                "firstname" => $value->getFirstname(),
+                "lastname" => $value->getLastname()
+            );
+        }
         return array(
             'id' => $this->id,
-            'projectId' => $projectId,
+            'projectId' => $this->projects ? $this->projects->getId() : null,
             'creator' => array(
                 'id' => $this->creator_user->getId(),
-                'fullname' => $this->creator_user->getFirstName()." ".$this->creator_user->getLastName()
-            ),
-            'type' => array(
-                'id' => $this->eventtypes->getId(),
-                'name' => $this->eventtypes->getName()
+                'firstname' => $this->creator_user->getFirstName(),
+                'lastname' => $this->creator_user->getLastName()
             ),
             'title' => $this->title,
             'description' => $this->description,
-            'icon' => $this->icon,
-            'beginDate' => $this->beginDate,
-            'endDate' => $this->endDate,
-            'createdAt' => $this->createdAt,
-            'editedAt' => $this->editedAt,
-            'deletedAt' => $this->deletedAt
+            'beginDate' => $this->beginDate ? $this->beginDate->format('Y-m-d H:i:s') : null,
+            'endDate' => $this->endDate ? $this->endDate->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'editedAt' => $this->editedAt ? $this->editedAt->format('Y-m-d H:i:s') : null,
+            'users' =>$participants
         );
     }
 
@@ -258,29 +244,6 @@ class Event
     }
 
     /**
-     * Set deletedAt
-     *
-     * @param \DateTime $deletedAt
-     * @return Event
-     */
-    public function setDeletedAt($deletedAt)
-    {
-        $this->deletedAt = $deletedAt;
-
-        return $this;
-    }
-
-    /**
-     * Get deletedAt
-     *
-     * @return \DateTime
-     */
-    public function getDeletedAt()
-    {
-        return $this->deletedAt;
-    }
-
-    /**
      * Set projects
      *
      * @param \SQLBundle\Entity\Project $projects
@@ -301,29 +264,6 @@ class Event
     public function getProjects()
     {
         return $this->projects;
-    }
-
-    /**
-     * Set eventtypes
-     *
-     * @param \SQLBundle\Entity\EventType $eventtypes
-     * @return Event
-     */
-    public function setEventtypes(\SQLBundle\Entity\EventType $eventtypes = null)
-    {
-        $this->eventtypes = $eventtypes;
-
-        return $this;
-    }
-
-    /**
-     * Get eventtypes
-     *
-     * @return \SQLBundle\Entity\EventType
-     */
-    public function getEventtypes()
-    {
-        return $this->eventtypes;
     }
 
     /**
@@ -380,28 +320,5 @@ class Event
     public function getUsers()
     {
         return $this->users;
-    }
-
-    /**
-     * Set icon
-     *
-     * @param string $icon
-     * @return Event
-     */
-    public function setIcon($icon)
-    {
-        $this->icon = $icon;
-
-        return $this;
-    }
-
-    /**
-     * Get icon
-     *
-     * @return string 
-     */
-    public function getIcon()
-    {
-        return $this->icon;
     }
 }

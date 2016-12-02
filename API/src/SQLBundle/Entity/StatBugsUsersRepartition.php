@@ -15,11 +15,6 @@ class StatBugsUsersRepartition
     private $id;
 
     /**
-     * @var string
-     */
-    private $user;
-
-    /**
      * @var integer
      */
     private $value;
@@ -34,10 +29,17 @@ class StatBugsUsersRepartition
      */
     private $project;
 
+    /**
+     * @var \SQLBundle\Entity\User
+     */
+    private $user;
+
     public function objectToArray()
     {
       return array(
-        "user" => $this->user,
+        "user" => array("id" => $this->getUser()->getId(),
+                        "firstname" => $this->getUser()->getFirstname(),
+                        "lastname" => $this->getUser()->getLastname()),
         "value" => $this->value,
         "percentage" => $this->percentage
       );
@@ -51,29 +53,6 @@ class StatBugsUsersRepartition
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return StatBugsUsersRepartition
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -143,5 +122,28 @@ class StatBugsUsersRepartition
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set user
+     *
+     * @param \SQLBundle\Entity\User $user
+     * @return StatBugsUsersRepartition
+     */
+    public function setUser(\SQLBundle\Entity\User $user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return \SQLBundle\Entity\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

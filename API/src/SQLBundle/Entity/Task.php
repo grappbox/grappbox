@@ -9,21 +9,6 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class Task
 {
-    public function objectToArray()
-    {
-      return array(
-        'id' => $this->id,
-        'creator' => $this->creator_user->getId() ,
-        'title' => $this->title ,
-        'description' => $this->description ,
-        'color' => $this->color ,
-        'dueDate' => $this->dueDate ,
-        'startedAt' => $this->startedAt ,
-        'finishedAt' => $this->finishedAt ,
-        'projectId' => $this->projects->getId()
-      );
-    }
-
     /**
      * @var integer
      */
@@ -38,11 +23,6 @@ class Task
      * @var string
      */
     private $description;
-
-    /**
-     * @var string
-     */
-    private $color;
 
     /**
      * @var \DateTime
@@ -103,11 +83,6 @@ class Task
      * @var \Doctrine\Common\Collections\Collection
      */
     private $tasks_container;
-    
-    /**
-     * @var \SQLBundle\Entity\Task
-     */
-    private $container;
 
     /**
      * @var \SQLBundle\Entity\Project
@@ -118,6 +93,11 @@ class Task
      * @var \SQLBundle\Entity\User
      */
     private $creator_user;
+
+    /**
+     * @var \SQLBundle\Entity\Task
+     */
+    private $container;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -136,10 +116,51 @@ class Task
         $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
+    public function objectToArray($taskModified)
+    {
+        $tasks = array();
+        foreach ($this->tasks_container as $t) {
+            $tasks[] = array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null);
+        }
+        $users = array();
+        foreach ($this->ressources as $res) {
+            $u = $res->getUser();
+            $users[] = array("id" => $u->getId(), "firstname" => $u->getFirstname(), "lastname" => $u->getLastname(), "percent" => $res->getResource());
+        }
+        $tags = array();
+        foreach ($this->tags as $t) {
+            $tags[] = $t->objectToArray();
+        }
+        $deps = array();
+        foreach ($this->dependence as $d) {
+            $t = $d->getDependenceTask();
+            $deps[] = array("id" => $d->getId(), "name" => $d->getName(), "task" => array("id" => $t->getId(), "title" => $t->getTitle(), "started_at" => $t->getStartedAt() ? $t->getStartedAt()->format('Y-m-d H:i:s') : null, "due_date" => $t->getDueDate() ? $t->getDueDate()->format('Y-m-d H:i:s') : null));
+        }
+        return array(
+            'id' => $this->id,
+            'title' => $this->title,
+            'description' => $this->description,
+            'project_id' => $this->projects->getId(),
+            'due_date' => $this->dueDate ? $this->dueDate->format('Y-m-d H:i:s') : null,
+            'started_at' => $this->startedAt ? $this->startedAt->format('Y-m-d H:i:s') : null,
+            'finished_at' => $this->finishedAt ? $this->finishedAt->format('Y-m-d H:i:s') : null,
+            'created_at' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'is_milestone' => $this->isMilestone,
+            'is_container' => $this->isContainer,
+            'tasks' => $tasks,
+            'advance' => $this->advance,
+            'creator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'users' => $users,
+            'tags' => $tags,
+            'dependencies' => $deps,
+            'tasks_modified' => $taskModified
+        );
+    }
+
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -162,7 +183,7 @@ class Task
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -185,34 +206,11 @@ class Task
     /**
      * Get description
      *
-     * @return string 
+     * @return string
      */
     public function getDescription()
     {
         return $this->description;
-    }
-
-    /**
-     * Set color
-     *
-     * @param string $color
-     * @return Task
-     */
-    public function setColor($color)
-    {
-        $this->color = $color;
-
-        return $this;
-    }
-
-    /**
-     * Get color
-     *
-     * @return string 
-     */
-    public function getColor()
-    {
-        return $this->color;
     }
 
     /**
@@ -231,7 +229,7 @@ class Task
     /**
      * Get dueDate
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDueDate()
     {
@@ -254,7 +252,7 @@ class Task
     /**
      * Get startedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getStartedAt()
     {
@@ -277,7 +275,7 @@ class Task
     /**
      * Get finishedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getFinishedAt()
     {
@@ -300,7 +298,7 @@ class Task
     /**
      * Get createdAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getCreatedAt()
     {
@@ -323,7 +321,7 @@ class Task
     /**
      * Get deletedAt
      *
-     * @return \DateTime 
+     * @return \DateTime
      */
     public function getDeletedAt()
     {
@@ -346,7 +344,7 @@ class Task
     /**
      * Get isMilestone
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsMilestone()
     {
@@ -369,7 +367,7 @@ class Task
     /**
      * Get isContainer
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsContainer()
     {
@@ -392,7 +390,7 @@ class Task
     /**
      * Get advance
      *
-     * @return integer 
+     * @return integer
      */
     public function getAdvance()
     {
@@ -425,7 +423,7 @@ class Task
     /**
      * Get ressources
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getRessources()
     {
@@ -458,7 +456,7 @@ class Task
     /**
      * Get dependence
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getDependence()
     {
@@ -491,7 +489,7 @@ class Task
     /**
      * Get task_depended
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTaskDepended()
     {
@@ -524,7 +522,7 @@ class Task
     /**
      * Get tasks_container
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTasksContainer()
     {
@@ -547,7 +545,7 @@ class Task
     /**
      * Get projects
      *
-     * @return \SQLBundle\Entity\Project 
+     * @return \SQLBundle\Entity\Project
      */
     public function getProjects()
     {
@@ -570,11 +568,34 @@ class Task
     /**
      * Get creator_user
      *
-     * @return \SQLBundle\Entity\User 
+     * @return \SQLBundle\Entity\User
      */
     public function getCreatorUser()
     {
         return $this->creator_user;
+    }
+
+    /**
+     * Set container
+     *
+     * @param \SQLBundle\Entity\Task $container
+     * @return Task
+     */
+    public function setContainer(\SQLBundle\Entity\Task $container = null)
+    {
+        $this->container = $container;
+
+        return $this;
+    }
+
+    /**
+     * Get container
+     *
+     * @return \SQLBundle\Entity\Task
+     */
+    public function getContainer()
+    {
+        return $this->container;
     }
 
     /**
@@ -603,34 +624,10 @@ class Task
     /**
      * Get tags
      *
-     * @return \Doctrine\Common\Collections\Collection 
+     * @return \Doctrine\Common\Collections\Collection
      */
     public function getTags()
     {
         return $this->tags;
-    }
-
-
-    /**
-     * Set container
-     *
-     * @param \SQLBundle\Entity\Task $container
-     * @return Task
-     */
-    public function setContainer(\SQLBundle\Entity\Task $container = null)
-    {
-        $this->container = $container;
-
-        return $this;
-    }
-
-    /**
-     * Get container
-     *
-     * @return \SQLBundle\Entity\Task 
-     */
-    public function getContainer()
-    {
-        return $this->container;
     }
 }

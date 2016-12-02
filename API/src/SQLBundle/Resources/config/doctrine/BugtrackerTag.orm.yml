@@ -11,6 +11,9 @@ SQLBundle\Entity\BugtrackerTag:
         name:
             type: string
             length: 255
+        color:
+            type: string
+            length: 255
     manyToMany:
         bugs:
           targetEntity: Bug

@@ -13,68 +13,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  */
 class ProjectRepository extends DocumentRepository
 {
-	public function findTeamOccupation($id)
-	{
-		$qb = $this->createQueryBuilder()->field('creator_user')->equals($id);
-
-		$projects = $qb->getQuery()->execute();
-
-		$arr = array();
-		$i = 0;
-		$defaultDate = date_create("0000-00-00 00:00:00");
-
-		if ($projects === null)
-		{
-			throw new NotFoundHttpException("No projects for the id ".$id);
-		}
-
-		if (count($projects) == 0)
-		{
-			return (Object)$arr;
-		}
-
-		foreach ($projects as $project)
-		{
-			$projectName = $project->getName();
-			$projectUsers = $project->getUsers();
-			$projectId = $project->getId();
-			foreach ($projectUsers as $user) {
-				$id = $user->getId();
-				$firstName = $user->getFirstname();
-				$lastName = $user->getLastname();
-				$tasks = $user->getTasks();
-				$nbOfOngoingTasks = 0;
-				$nbOfTasksBegun = 0;
-				$busy = false;
-
-				foreach ($tasks as $task) {
-					if ($task->getProjects()->getId() == $projectId)
-					{
-						if ($task->getFinishedAt() == $defaultDate)
-						{
-							$busy = true;
-							$nbOfOngoingTasks++;
-						}
-						if ($task->getStartedAt() != $defaultDate)
-							$nbOfTasksBegun++;
-					}
-				}
-				if ($busy == true)
-				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
-				}
-				else
-				{
-					$arr["Person ".$i] = array("project_name" => $projectName, "user_id" => $id, "first_name" => $firstName, "last_name" => $lastName, "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
-				}
-				$i++;
-			}
-		}
-
-		return $arr;
-	}
-
-	public function findTeamOccupationV2($projectId)
+	public function findTeamOccupation($projectId)
 	{
 		$qb = $this->createQueryBuilder()->field('id')->equals($projectId);
 
@@ -124,11 +63,13 @@ class ProjectRepository extends DocumentRepository
 				}
 				if ($busy == true)
 				{
-					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName),
+										"occupation" => "busy", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 				else
 				{
-					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName), "occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
+					$arr[] = array("user" => array("id" => $id, "firstname" => $firstName, "lastname" => $lastName),
+								"occupation" => "free", "number_of_tasks_begun" => $nbOfTasksBegun, "number_of_ongoing_tasks" => $nbOfOngoingTasks);
 				}
 			}
 		}
@@ -142,79 +83,6 @@ class ProjectRepository extends DocumentRepository
 	}
 
 	public function findProjectGlobalProgress($id)
-	{
-		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
-
-		$projects = $qb->getQuery()->execute();
-
-		$arr = array();
-		$i = 0;
-		$defaultDate = date_create("0000-00-00 00:00:00");
-
-		if ($projects === null)
-		{
-			throw new NotFoundHttpException("No projects for the id ".$id);
-		}
-		if (count($projects) == 0)
-		{
-			return (Object)$arr;
-		}
-
-
-		foreach ($projects as $project) {
-			$projectId = $project->getId();
-			$projectName = $project->getName();
-			$projectDescription = $project->getDescription();
-			$phone = $project->getPhone();
-			$company = $project->getCompany();
-			$projectLogo = $project->getLogo();
-			$contactMail = $project->getContactEmail();
-			$facebook = $project->getFacebook();
-			$twitter = $project->getTwitter();
-			$tasks = $project->getTasks();
-			$bugs = $project->getBugs();
-			$timelines = $project->getTimelines();
-			$nbTasks = 0;
-			$nbFinishedTasks = 0;
-			$nbOngoingTasks = 0;
-			$nbBugs = 0;
-			$nbMessages = 0;
-
-			foreach ($tasks as $task) {
-				$nbTasks++;
-				if ($task->getFinishedAt() != $defaultDate)
-				{
-					$nbFinishedTasks++;
-				}
-				else
-				{
-					$nbOngoingTasks++;
-				}
-			}
-
-			foreach ($bugs as $bug) {
-				if ($bug->getDeletedAt() == $defaultDate)
-				{
-					$nbBugs++;
-				}
-			}
-
-			foreach ($timelines as $timeline) {
-				$messages = $timeline->getTimelineMessages();
-				foreach ($messages as $message) {
-					$nbMessages++;
-				}
-			}
-
-			$arr["Project ".$i] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_phone" => $phone, "project_company" => $company , "project_logo" => $projectLogo, "contact_mail" => $contactMail,
-				"facebook" => $facebook, "twitter" => $twitter, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
-			$i++;
-		}
-
-		return $arr;
-	}
-
-	public function findProjectGlobalProgressV2($id)
 	{
 		$qb = $this->createQueryBuilder()->field('users.id')->equals($id);
 
@@ -244,11 +112,18 @@ class ProjectRepository extends DocumentRepository
 			$projectDescription = $project->getDescription();
 			$phone = $project->getPhone();
 			$company = $project->getCompany();
-			$projectLogo = $project->getLogo();
+			$projectLogo = $project->getLogoDate();
+			if ($projectLogo != null)
+				$projectLogo = $projectLogo->format('Y-m-d H:i:s');
 			$contactMail = $project->getContactEmail();
 			$facebook = $project->getFacebook();
 			$twitter = $project->getTwitter();
+			$createdAt = $project->getCreatedAt();
+			if ($createdAt != null)
+				$createdAt = $createdAt->format('Y-m-d H:i:s');
 			$deletedAt = $project->getDeletedAt();
+			if ($deletedAt != null)
+				$deletedAt = $deletedAt->format('Y-m-d H:i:s');
 			$tasks = $project->getTasks();
 			$bugs = $project->getBugs();
 			$timelines = $project->getTimelines();
@@ -271,21 +146,22 @@ class ProjectRepository extends DocumentRepository
 			}
 
 			foreach ($bugs as $bug) {
-				if ($bug->getDeletedAt() == $defaultDate || $bug->getDeletedAt() == null)
+				if ($bug->getState() == true)
 				{
 					$nbBugs++;
 				}
 			}
 
 			foreach ($timelines as $timeline) {
-				$messages = $timeline->getTimelineMessages();
-				foreach ($messages as $message) {
+				foreach ($timeline->getTimelineMessages() as $message) {
 					$nbMessages++;
 				}
 			}
 
-			$arr[] = array("project_id" => $projectId, "project_name" => $projectName, "project_description" => $projectDescription, "project_phone" => $phone, "project_company" => $company , "project_logo" => $projectLogo, "contact_mail" => $contactMail,
-				"facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt, "number_finished_tasks" => $nbFinishedTasks, "number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
+			$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription , "logo" => $projectLogo, "phone" => $phone, "company" => $company, "contact_mail" => $contactMail,
+				"facebook" => $facebook, "twitter" => $twitter, "color" => $project->getColor(), "created_at" => $createdAt, "deleted_at" => $deletedAt, "number_finished_tasks" => $nbFinishedTasks,
+				"number_ongoing_tasks" => $nbOngoingTasks, "number_tasks" => $nbTasks, "number_bugs" => $nbBugs, "number_messages" => $nbMessages);
+
 			$i++;
 		}
 
@@ -297,76 +173,9 @@ class ProjectRepository extends DocumentRepository
 		return $resp;
 	}
 
-	public function findUserProjects($id)
-	{
-		$qb = $this->createQueryBuilder();
-
-		$projects = $qb->getQuery()->execute();
-
-		if ($projects === null)
-		{
-			throw new NotFoundHttpException("No projects for the user with id ".$id);
-		}
-
-		$arr = array();
-		$i = 1;
-
-		foreach ($projects as $project) {
-			$creatorId = $project->getCreatorUser()->getId();
-
-			if ($creatorId == $id)
-			{
-				$projectId = $project->getId();
-				$projectName = $project->getName();
-				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogo();
-				$projectPhone = $project->getPhone();
-				$projectCompany = $project->getCompany();
-				$contactMail = $project->getContactEmail();
-				$facebook = $project->getFacebook();
-				$twitter = $project->getTwitter();
-				$arr["Project ".$i] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
-					"facebook" => $facebook, "twitter" => $twitter);
-				$i++;
-			}
-			else
-			{
-				$projectUsers = $project->getUsers();
-
-				foreach ($projectUsers as $projectUser) {
-					$userId = $projectUser->getId();
-
-					if ($userId == $id)
-					{
-						$projectId = $project->getId();
-						$projectName = $project->getName();
-						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogo();
-						$projectPhone = $project->getPhone();
-						$projectCompany = $project->getCompany();
-						$contactMail = $project->getContactEmail();
-						$facebook = $project->getFacebook();
-						$twitter = $project->getTwitter();
-						$arr["Project ".$i] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "logo" => $projectLogo, "phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail,
-							"facebook" => $facebook, "twitter" => $twitter);
-						$i++;
-					}
-				}
-			}
-		}
-
-		if (count($arr) == 0 || count($projects))
-		{
-			return (Object)$arr;
-		}
-
-		return $arr;
-	}
-
 	public function findUserProjectsV2($id, $code, $part, $function)
 	{
 		$qb = $this->createQueryBuilder();
-
 		$projects = $qb->getQuery()->execute();
 
 		$resp = new JsonResponse();
@@ -390,21 +199,7 @@ class ProjectRepository extends DocumentRepository
 
 			if ($creatorId == $id)
 			{
-				$projectId = $project->getId();
-				$projectName = $project->getName();
-				$projectDescription = $project->getDescription();
-				$projectLogo = $project->getLogo();
-				$projectPhone = $project->getPhone();
-				$projectCompany = $project->getCompany();
-				$contactMail = $project->getContactEmail();
-				$facebook = $project->getFacebook();
-				$twitter = $project->getTwitter();
-				$deletedAt = $project->getDeletedAt();
-				$creator = $project->getCreatorUser();
-				$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
-
-				$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
-					"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
+				$arr[] = $project->objectToArray();
 			}
 			else
 			{
@@ -415,21 +210,7 @@ class ProjectRepository extends DocumentRepository
 
 					if ($userId == $id)
 					{
-						$projectId = $project->getId();
-						$projectName = $project->getName();
-						$projectDescription = $project->getDescription();
-						$projectLogo = $project->getLogo();
-						$projectPhone = $project->getPhone();
-						$projectCompany = $project->getCompany();
-						$contactMail = $project->getContactEmail();
-						$facebook = $project->getFacebook();
-						$twitter = $project->getTwitter();
-						$deletedAt = $project->getDeletedAt();
-						$creator = $project->getCreatorUser();
-						$creatorArr = array("id" => $creator->getId(), "firstname" => $creator->getFirstname(), "lastname" => $creator->getLastname());
-
-						$arr[] = array("id" => $projectId, "name" => $projectName, "description" => $projectDescription, "creator" => $creatorArr, "logo" => $projectLogo,
-							"phone" => $projectPhone, "company" => $projectCompany , "contact_mail" => $contactMail, "facebook" => $facebook, "twitter" => $twitter, "deleted_at" => $deletedAt);
+						$arr[] = $project->objectToArray();
 					}
 				}
 			}

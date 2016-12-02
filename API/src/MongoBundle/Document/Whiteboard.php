@@ -15,19 +15,9 @@ class Whiteboard
     protected $id;
 
     /**
-     * @var int $userId
-     */
-    protected $userId;
-
-    /**
      * @var string $name
      */
     protected $name;
-
-    /**
-     * @var int $updatorId
-     */
-    protected $updatorId;
 
     /**
      * @var date $updatedAt
@@ -45,35 +35,53 @@ class Whiteboard
     protected $deletedAt;
 
     /**
+     * @var MongoBundle\Document\WhiteboardObject
+     */
+    protected $objects = array();
+
+    /**
+     * @var MongoBundle\Document\WhiteboardPerson
+     */
+    private $persons = array();
+
+    /**
      * @var MongoBundle\Document\Project
      */
     protected $projects;
 
     /**
-     * @var MongoBundle\Document\WhiteboardObject
+     * @var MongoBundle\Document\User
      */
-    protected $objects = array();
+    private $creator_user;
 
+    /**
+     * @var MongoBundle\Document\User
+     */
+    private $updator_user;
+
+    /**
+     * Constructor
+     */
     public function __construct()
     {
         $this->objects = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->persons = new \Doctrine\Common\Collections\ArrayCollection();
     }
-
 
     public function objectToArray()
     {
         return array(
             'id' => $this->id,
             'projectId' => $this->getProjects()->getId(),
-            'userId' => $this->userId,
+            'user' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
             'name' => $this->name,
-            'updatorId' => $this->updatorId,
-            'updatedAt' => $this->updatedAt,
-            'createdAt' => $this->createdAt,
-            'deletedAt' => $this->deletedAt
+            'updator' => array("id" => $this->creator_user->getId(), "firstname" => $this->creator_user->getFirstname(), "lastname" => $this->creator_user->getLastname()),
+            'updatedAt' => $this->updatedAt ? $this->updatedAt->format('Y-m-d H:i:s') : null,
+            'createdAt' => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
+            'deletedAt' => $this->deletedAt ? $this->deletedAt->format('Y-m-d H:i:s') : null
         );
     }
-    
+
     /**
      * Get id
      *
@@ -85,28 +93,6 @@ class Whiteboard
     }
 
     /**
-     * Set userId
-     *
-     * @param int $userId
-     * @return self
-     */
-    public function setUserId($userId)
-    {
-        $this->userId = $userId;
-        return $this;
-    }
-
-    /**
-     * Get userId
-     *
-     * @return int $userId
-     */
-    public function getUserId()
-    {
-        return $this->userId;
-    }
-
-    /**
      * Set name
      *
      * @param string $name
@@ -115,6 +101,7 @@ class Whiteboard
     public function setName($name)
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -129,28 +116,6 @@ class Whiteboard
     }
 
     /**
-     * Set updatorId
-     *
-     * @param int $updatorId
-     * @return self
-     */
-    public function setUpdatorId($updatorId)
-    {
-        $this->updatorId = $updatorId;
-        return $this;
-    }
-
-    /**
-     * Get updatorId
-     *
-     * @return int $updatorId
-     */
-    public function getUpdatorId()
-    {
-        return $this->updatorId;
-    }
-
-    /**
      * Set updatedAt
      *
      * @param date $updatedAt
@@ -159,6 +124,7 @@ class Whiteboard
     public function setUpdatedAt($updatedAt)
     {
         $this->updatedAt = $updatedAt;
+
         return $this;
     }
 
@@ -181,6 +147,7 @@ class Whiteboard
     public function setCreatedAt($createdAt)
     {
         $this->createdAt = $createdAt;
+
         return $this;
     }
 
@@ -203,6 +170,7 @@ class Whiteboard
     public function setDeletedAt($deletedAt)
     {
         $this->deletedAt = $deletedAt;
+
         return $this;
     }
 
@@ -217,35 +185,16 @@ class Whiteboard
     }
 
     /**
-     * Set projects
-     *
-     * @param MongoBundle\Document\Project $projects
-     * @return self
-     */
-    public function setProjects( $projects)
-    {
-        $this->projects = $projects;
-        return $this;
-    }
-
-    /**
-     * Get projects
-     *
-     * @return MongoBundle\Document\Project $projects
-     */
-    public function getProjects()
-    {
-        return $this->projects;
-    }
-
-    /**
      * Add object
      *
      * @param MongoBundle\Document\WhiteboardObject $object
+     * @return self
      */
     public function addObject( $object)
     {
         $this->objects[] = $object;
+
+        return $this;
     }
 
     /**
@@ -266,5 +215,107 @@ class Whiteboard
     public function getObjects()
     {
         return $this->objects;
+    }
+
+    /**
+     * Add persons
+     *
+     * @param MongoBundle\Document\WhiteboardPerson $persons
+     * @return Whiteboard
+     */
+    public function addPerson($persons)
+    {
+        $this->persons[] = $persons;
+
+        return $this;
+    }
+
+    /**
+     * Remove persons
+     *
+     * @param MongoBundle\Document\WhiteboardPerson $persons
+     */
+    public function removePerson($persons)
+    {
+        $this->persons->removeElement($persons);
+    }
+
+    /**
+     * Get persons
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPersons()
+    {
+        return $this->persons;
+    }
+
+    /**
+     * Set projects
+     *
+     * @param MongoBundle\Document\Project $projects
+     * @return self
+     */
+    public function setProjects( $projects)
+    {
+        $this->projects = $projects;
+
+        return $this;
+    }
+
+    /**
+     * Get projects
+     *
+     * @return MongoBundle\Document\Project $projects
+     */
+    public function getProjects()
+    {
+        return $this->projects;
+    }
+
+    /**
+     * Set creator_user
+     *
+     * @param MongoBundle\Document\User $creatorUser
+     * @return Whiteboard
+     */
+    public function setCreatorUser($creatorUser)
+    {
+        $this->creator_user = $creatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get creator_user
+     *
+     * @return MongoBundle\Document\User
+     */
+    public function getCreatorUser()
+    {
+        return $this->creator_user;
+    }
+
+    /**
+     * Set updator_user
+     *
+     * @param MongoBundle\Document\User $updatorUser
+     * @return Whiteboard
+     */
+    public function setUpdatorUser($updatorUser)
+    {
+        $this->updator_user = $updatorUser;
+
+        return $this;
+    }
+
+    /**
+     * Get updator_user
+     *
+     * @return MongoBundle\Document\User
+     */
+    public function getUpdatorUser()
+    {
+        return $this->updator_user;
     }
 }

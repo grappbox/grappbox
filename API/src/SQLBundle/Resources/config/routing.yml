@@ -1,34 +1,37 @@
 # -----------------------------------------------------------------------
 #                     FOR BETA ONLY
 # -----------------------------------------------------------------------
-v2_user_passwordEncrypt:
-    path:       user/passwordencrypt/{id}
-    defaults:   { _controller:SQLBundle:User:passwordEncrypt, _format: json }
-    methods:    [GET]
+user_passwordEncrypt:
+  path:       user/passwordencrypt/{id}
+  defaults:   { _controller:SQLBundle:User:passwordEncrypt, _format: json }
+  methods:    [GET]
 
+accountAdministration_preorder:
+  path:       account/preorder
+  defaults:   { _controller: SQLBundle:AccountAdministration:preorder, _format: json }
+  methods:    [POST]
 
 # -----------------------------------------------------------------------
 #                     ACCOUNT ADMINISTRATION CONTROLLER
 # -----------------------------------------------------------------------
-v2_accountAdministration_login:
-    path:       accountadministration/login
-    defaults:   { _controller: SQLBundle:AccountAdministration:login, _format: json }
-    methods:    [POST]
+accountAdministration_login:
+  path:       account/login
+  defaults:   { _controller: SQLBundle:AccountAdministration:login, _format: json }
+  methods:    [POST]
 
-v2_accountAdministration_logout:
-    path:       accountadministration/logout/{token}
-    defaults:   { _controller:SQLBundle:AccountAdministration:logout, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods:    [GET]
+accountAdministration_logout:
+  path:       account/logout
+  defaults:   { _controller:SQLBundle:AccountAdministration:logout, _format: json }
+  requirements:
+  methods:    [GET]
 
-v2_accountAdministration_register:
-    path:       accountadministration/register
-    defaults:   { _controller: SQLBundle:AccountAdministration:register, _format: json }
-    methods:    [POST]
+accountAdministration_register:
+  path:       account/register
+  defaults:   { _controller: SQLBundle:AccountAdministration:register, _format: json }
+  methods:    [POST]
 
-# v2_accountAdministration_clientLogin:
-#     path:       accountadministration/login/{token}
+# accountAdministration_clientLogin:
+#     path:       accountadministration/login
 #     defaults:   { _controller: SQLBundle:AccountAdministration:clientLogin, _format: json }
 #     methods:    [GET]
 
@@ -38,230 +41,242 @@ v2_accountAdministration_register:
 # -----------------------------------------------------------------------
 #                           BUGTRACKER CONTROLLER
 # -----------------------------------------------------------------------
-v2_bugtracker_getTicket:
-    path:       /bugtracker/getticket/{token}/{id}
-    defaults:   { _controller: SQLBundle:Bugtracker:getTicket, _format: json }
-    requirements:
-        id:     \d+
-        token:  "[a-zA-Z0-9]+"
-    methods:  [GET]
+bugtracker_postTicket:
+  path:       bugtracker/ticket
+  defaults:   { _controller: SQLBundle:Bugtracker:postTicket, _format: json }
+  methods:  [POST]
 
-v2_bugtracker_postTicket:
-    path:       /bugtracker/postticket
-    defaults:   { _controller: SQLBundle:Bugtracker:postTicket, _format: json }
+bugtracker_editTicket:
+  path:       bugtracker/ticket/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:editTicket, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [PUT]
+
+bugtracker_closeTicket:
+  path:       bugtracker/ticket/close/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:closeTicket, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [DELETE]
+
+bugtracker_reopenTicket:
+  path:       bugtracker/ticket/reopen/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:reopenTicket, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [GET]
+
+bugtracker_deleteTicket:
+  path:       bugtracker/ticket/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:deleteTicket, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [DELETE]
+
+bugtracker_getTicket:
+  path:       bugtracker/ticket/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:getTicket, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [GET]
+
+bugtracker_getTickets:
+  path:       bugtracker/tickets/opened/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:getTickets, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [GET]
+
+bugtracker_getClosedTickets:
+  path:       bugtracker/tickets/closed/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:getClosedTickets, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [GET]
+
+bugtracker_getLastTickets:
+  path:       bugtracker/tickets/opened/{id}/{offset}/{limit}
+  defaults:   { _controller: SQLBundle:Bugtracker:getLastTickets, _format: json }
+  requirements:
+    id:     \d+
+    offset: \d+
+    limit:  \d+
+  methods:  [GET]
+
+bugtracker_getLastClosedTickets:
+  path:       bugtracker/tickets/closed/{id}/{offset}/{limit}
+  defaults:   { _controller: SQLBundle:Bugtracker:getLastClosedTickets, _format: json }
+  requirements:
+    id:     \d+
+    offset: \d+
+    limit:  \d+
+  methods:  [GET]
+
+bugtracker_getTicketsByUser:
+  path:       bugtracker/tickets/user/{id}/{userId}
+  defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByUser, _format: json }
+  requirements:
+    id:     \d+
+    userId: \d+
+  methods:  [GET]
+
+bugtracker_setParticipants:
+  path:       bugtracker/users/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:setParticipants, _format: json }
+  requirements:
+    id:     \d+
+  methods: [PUT]
+
+bugtracker_getComments:
+  path:       bugtracker/comments/{ticketId}
+  defaults:   { _controller: SQLBundle:Bugtracker:getComments, _format: json }
+  requirements:
+    ticketId:   \d+
+  methods:  [GET]
+
+bugtracker_postComment:
+    path:     bugtracker/comment
+    defaults: { _controller: SQLBundle:Bugtracker:postComment, _format: json }
     methods:  [POST]
 
-v2_bugtracker_editTicket:
-    path:       /bugtracker/editticket
-    defaults:   { _controller: SQLBundle:Bugtracker:editTicket, _format: json }
-    methods:  [PUT]
+bugtracker_editComment:
+  path:       bugtracker/comment/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:editComment, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [PUT]
 
-v2_bugtracker_getComments:
-    path:       /bugtracker/getcomments/{token}/{id}/{ticketId}
-    defaults:   { _controller: SQLBundle:Bugtracker:getComments, _format: json }
-    requirements:
-        token:    "[a-zA-Z0-9]+"
-        id:       \d+
-        ticketId: \d+
-    methods:  [GET]
+bugtracker_deleteComment:
+  path:       bugtracker/comment/{id}
+  defaults:   { _controller: SQLBundle:Bugtracker:deleteComment, _format: json }
+  requirements:
+    id:     \d+
+  methods:  [DELETE]
 
-v2_bugtracker_postComment:
-    path:       /bugtracker/postcomment
-    defaults:   { _controller: SQLBundle:Bugtracker:postComment, _format: json }
-    methods:  [POST]
+bugtracker_tagCreation:
+  path:       bugtracker/tag
+  defaults:   { _controller: 'SQLBundle:Bugtracker:tagCreation', _format: json }
+  methods: [POST]
 
-v2_bugtracker_editComment:
-    path:       /bugtracker/editcomment
-    defaults:   { _controller: SQLBundle:Bugtracker:editComment, _format: json }
-    methods:  [PUT]
+bugtracker_tagUpdate:
+  path:       bugtracker/tag/{id}
+  defaults:   { _controller: 'SQLBundle:Bugtracker:tagUpdate', _format: json }
+  requirements:
+    id:  \d+
+  methods: [PUT]
 
-v2_bugtracker_setParticipants:
-    path:       /bugtracker/setparticipants
-    defaults:   { _controller: SQLBundle:Bugtracker:setParticipants, _format: json }
-    methods: [PUT]
+bugtracker_getTagInfos:
+  path:       bugtracker/tag/{id}
+  defaults:   { _controller: 'SQLBundle:Bugtracker:getTagInfos', _format: json }
+  requirements:
+    id:  \d+
+  methods: [GET]
 
-v2_bugtracker_closeTicket:
-    path:       /bugtracker/closeticket/{token}/{id}
-    defaults:   { _controller: SQLBundle:Bugtracker:closeTicket, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods:  [DELETE]
+bugtracker_deleteTag:
+  path:       bugtracker/tag/{id}
+  defaults:   { _controller: 'SQLBundle:Bugtracker:deleteTag', _format: json }
+  requirements:
+    id:  \d+
+  methods: [DELETE]
 
-v2_bugtracker_getTickets:
-    path:       /bugtracker/gettickets/{token}/{id}
-    defaults:   { _controller: SQLBundle:Bugtracker:getTickets, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods:  [GET]
+bugtracker_assignTag:
+  path:       bugtracker/tag/assign/{bugId}
+  defaults:   { _controller: SQLBundle:Bugtracker:assignTag, _format: json }
+  requirements:
+    bugId:  \d+
+  methods: [PUT]
 
-v2_bugtracker_getLastTickets:
-    path:       /bugtracker/getlasttickets/{token}/{id}/{offset}/{limit}
-    defaults:   { _controller: SQLBundle:Bugtracker:getLastTickets, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-        offset: \d+
-        limit:  \d+
-    methods:  [GET]
+bugtracker_removeTag:
+  path:       bugtracker/tag/remove/{bugId}/{tagId}
+  defaults:   { _controller: 'SQLBundle:Bugtracker:removeTag', _format: json }
+  requirements:
+    bugId:  \d+
+    tagId:  \d+
+  methods: [DELETE]
 
-v2_bugtracker_getLastClosedTickets:
-    path:       /bugtracker/getlastclosedtickets/{token}/{id}/{offset}/{limit}
-    defaults:   { _controller: SQLBundle:Bugtracker:getLastClosedTickets, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-        offset: \d+
-        limit:  \d+
-    methods:  [GET]
+bugtracker_getProjectTags:
+  path:       bugtracker/project/tags/{projectId}
+  defaults:   { _controller: 'SQLBundle:Bugtracker:getProjectTags', _format: json }
+  requirements:
+    projectId:  \d+
+  methods: [GET]
 
-v2_bugtracker_getTicketsByUser:
-    path:       /bugtracker/getticketsbyuser/{token}/{id}/{userId}
-    defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByUser, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-        userId: \d+
-    methods:  [GET]
+# --------------------------------------------------------------------------------------------------
+# TODO remove the two following request if no-one uses them, update creaotr/user fullname if they do
+# --------------------------------------------------------------------------------------------------
 
-v2_bugtracker_getTicketsByState:
-    path:       /bugtracker/getticketsbystate/{token}/{id}/{state}/{offset}/{limit}
-    defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByState, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-        state:  \d+
-        offset: \d+
-        limit:  \d+
-    methods:  [GET]
+bugtracker_getTicketsByState:
+  path:       bugtracker/getticketsbystate/{id}/{state}/{offset}/{limit}
+  defaults:   { _controller: SQLBundle:Bugtracker:getTicketsByState, _format: json }
+  requirements:
+    id:     \d+
+    state:  \d+
+    offset: \d+
+    limit:  \d+
+  methods:  [GET]
 
-v2_bugtracker_getStates:
-    path:       /bugtracker/getstates/{token}
-    defaults:   { _controller: SQLBundle:Bugtracker:getStates, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods:  [GET]
+bugtracker_getStates:
+  path:       bugtracker/getstates
+  defaults:   { _controller: SQLBundle:Bugtracker:getStates, _format: json }
+  requirements:
+  methods:  [GET]
 
-v2_bugtracker_tagCreation:
-    path:       /bugtracker/tagcreation
-    defaults:   { _controller: 'SQLBundle:Bugtracker:tagCreation', _format: json }
-    methods: [POST]
-
-v2_bugtracker_tagUpdate:
-    path:       /bugtracker/tagupdate
-    defaults:   { _controller: 'SQLBundle:Bugtracker:tagUpdate', _format: json }
-    methods: [PUT]
-
-v2_bugtracker_getTagInfos:
-    path:       /bugtracker/taginformations/{token}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Bugtracker:getTagInfos', _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        tagId:  \d+
-    methods: [GET]
-
-v2_bugtracker_deleteTag:
-    path:       /bugtracker/deletetag/{token}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Bugtracker:deleteTag', _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        tagId:  \d+
-    methods: [DELETE]
-
-v2_bugtracker_assignTag:
-    path:       /bugtracker/assigntag
-    defaults: { _controller: SQLBundle:Bugtracker:assignTag, _format: json }
-    methods: [PUT]
-
-v2_bugtracker_removeTag:
-    path:       /bugtracker/removetag/{token}/{bugId}/{tagId}
-    defaults:   { _controller: 'SQLBundle:Bugtracker:removeTag', _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        bugId:  \d+
-        tagId:  \d+
-    methods: [DELETE]
-
-v2_bugtracker_getProjectTags:
-    path:       /bugtracker/getprojecttags/{token}/{projectId}
-    defaults:   { _controller: 'SQLBundle:Bugtracker:getProjectTags', _format: json }
-    requirements:
-        token:      "[a-zA-Z0-9]+"
-        projectId:  \d+
-    methods: [GET]
-
-v2_bugtracker_getClosedTickets:
-    path:       /bugtracker/getclosedtickets/{token}/{id}
-    defaults:   { _controller: SQLBundle:Bugtracker:getClosedTickets, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods:  [GET]
-
-v2_bugtracker_reopenTicket:
-    path:       /bugtracker/reopenticket/{token}/{id}
-    defaults:   { _controller: SQLBundle:Bugtracker:reopenTicket, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods:  [PUT]
 
 
 # -----------------------------------------------------------------------
 #                           CLOUD CONTROLLER
 # -----------------------------------------------------------------------
-v2_cloud_streamOpenAction:
-  path:     cloud/stream/{token}/{idProject}/{safePassword}
+cloud_streamOpenAction:
+  path:     cloud/stream/{idProject}/{safePassword}
   defaults:   { _controller: SQLBundle:Cloud:openStream, safePassword: null, _format: json }
   methods: [POST]
 
-v2_cloud_streamCloseAction:
-  path:     cloud/stream/{token}/{projectId}/{streamId}
+cloud_streamCloseAction:
+  path:     cloud/stream/{projectId}/{streamId}
   defaults: { _controller: SQLBundle:Cloud:closeStream, _format: json }
   methods: [DELETE]
 
-v2_cloud_sendFile:
+cloud_sendFile:
   path:     cloud/file
   defaults:   { _controller: SQLBundle:Cloud:sendFile , _format: json }
   methods: [PUT]
 
-v2_cloud_getList:
-    path:       cloud/list/{token}/{idProject}/{path}/{password}
-    defaults:   { _controller: SQLBundle:Cloud:getList,  password: null, _format: json }
-    methods: [GET]
+cloud_getList:
+  path:       cloud/list/{idProject}/{path}/{password}
+  defaults:   { _controller: SQLBundle:Cloud:getList,  password: null, _format: json }
+  methods: [GET]
 
-v2_cloud_getFile:
-    path:       cloud/file/{cloudPath}/{token}/{idProject}/{passwordSafe}
-    defaults:   { _controller: SQLBundle:Cloud:getFile, passwordSafe: null }
-    methods: [GET]
+cloud_getFile:
+  path:       cloud/file/{cloudPath}/{idProject}/{passwordSafe}
+  defaults:   { _controller: SQLBundle:Cloud:getFile, passwordSafe: null }
+  methods: [GET]
 
-v2_cloud_getFile_secured:
-    path:       cloud/filesecured/{cloudPath}/{token}/{idProject}/{password}/{passwordSafe}
-    defaults:   { _controller: SQLBundle:Cloud:getFileSecured, passwordSafe: null }
-    methods: [GET]
+cloud_getFile_secured:
+  path:       cloud/filesecured/{cloudPath}/{idProject}/{password}/{passwordSafe}
+  defaults:   { _controller: SQLBundle:Cloud:getFileSecured, passwordSafe: null }
+  methods: [GET]
 
-v2_cloud_setSafePass:
-    path:       cloud/safepass
-    defaults:   { _controller: SQLBundle:Cloud:setSafePass }
-    methods: [PUT]
+cloud_setSafePass:
+  path:       cloud/safepass
+  defaults:   { _controller: SQLBundle:Cloud:setSafePass }
+  methods: [PUT]
 
-v2_cloud_delete:
-    path:       cloud/file/{token}/{projectId}/{path}/{password}
-    defaults:   { _controller: SQLBundle:Cloud:del, password: null, _format: json }
-    methods: [DELETE]
+cloud_delete:
+  path:       cloud/file/{projectId}/{path}/{password}
+  defaults:   { _controller: SQLBundle:Cloud:del, password: null, _format: json }
+  methods: [DELETE]
 
-v2_cloud_createDir:
-    path:       cloud/createdir
-    defaults:   { _controller: SQLBundle:Cloud:createDir, _format: json }
-    methods: [POST]
+cloud_createDir:
+  path:       cloud/createdir
+  defaults:   { _controller: SQLBundle:Cloud:createDir, _format: json }
+  methods: [POST]
 
-v2_cloud_delete_secured:
-    path:       cloud/filesecured/{token}/{projectId}/{path}/{password}/{safe_password}
-    defaults:   { _controller: SQLBundle:Cloud:delSecured, safe_password: null, _format: json }
-    methods: [DELETE]
+cloud_delete_secured:
+  path:       cloud/filesecured/{projectId}/{path}/{password}/{safe_password}
+  defaults:   { _controller: SQLBundle:Cloud:delSecured, safe_password: null, _format: json }
+  methods: [DELETE]
 
-# v2_cloud_createCloud: #TODO : Delete this route, it's a test route
 #     path:       cloud/createcloud/{projectId}
 #     defaults:   { _controller: SQLBundle:Cloud:createCloud }
 #     methods: [GET]
@@ -272,301 +287,119 @@ v2_cloud_delete_secured:
 # -----------------------------------------------------------------------
 #                           DASHBOARD CONTROLLER
 # -----------------------------------------------------------------------
-v2_dashboard_getTeamOccupation:
-    path:       dashboard/getteamoccupation/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getTeamOccupation, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
+dashboard_getTeamOccupation:
+  path:       dashboard/occupation/{id}
+  defaults:   { _controller: SQLBundle:Dashboard:getTeamOccupation, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_dashboard_getNextMeetings:
-    path:       dashboard/getnextmeetings/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getNextMeetings, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
+dashboard_getNextMeetings:
+  path:       dashboard/meetings/{id}
+  defaults:   { _controller: SQLBundle:Dashboard:getNextMeetings, _format: json }
+  requirements:
+    id:     \d+
+  methods: [GET]
 
-v2_dashboard_getProjectsGlobalProgress:
-    path:       dashboard/getprojectsglobalprogress/{token}
+dashboard_getProjectsGlobalProgress:
+    path:       dashboard/projects
     defaults:   { _controller: SQLBundle:Dashboard:getProjectsGlobalProgress, _format: json }
     requirements:
-        token:  "[a-zA-Z0-9]+"
     methods: [GET]
-
-v2_dashboard_getProjectCreator:
-    path:       dashboard/getprojectcreator/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectCreator, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getProjectBasicInformations:
-    path:       dashboard/getprojectbasicinformations/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getProjectTasks:
-    path:       dashboard/getprojecttasks/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectTasks, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [GET]
-
-v2_dashboard_getUserBasicInformations:
-    path:       dashboard/getuserbasicinformations/{token}
-    defaults:   { _controller: SQLBundle:Dashboard:getUserBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getProjectPersons:
-    path:       dashboard/getprojectpersons/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectPersons, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
-
-v2_dashboard_getMeetingBasicInformations:
-    path:       dashboard/getmeetingbasicinformations/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getMeetingBasicInformations, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id: \d+
-    methods: [GET]
-
-v2_dashboard_getProjectList:
-    path:       dashboard/getprojectlist/{token}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectList, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getProjectTasksStatus:
-    path:       dashboard/getprojecttasksstatus/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getProjectTasksStatus, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getNumberTimelineMessages:
-    path:       dashboard/getnumbertimelinemessages/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getNumberTimelineMessages, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-v2_dashboard_getNumberBugs:
-    path:       dashboard/getnumberbugs/{token}/{id}
-    defaults:   { _controller: SQLBundle:Dashboard:getNumberBugs, _format: json }
-    requirements:
-        id: \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
-
-
-
 
 
 # -----------------------------------------------------------------------
 #                           EVENT CONTROLLER
 # -----------------------------------------------------------------------
-v2_event_getTypes:
-    path:       /event/gettypes/{token}
-    defaults:   { _controller: SQLBundle:Event:getTypes, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
 
-v2_event_getEvent:
-    path:       /event/getevent/{token}/{id}
-    defaults:   { _controller: SQLBundle:Event:getEvent, _format: json }
-    requirements:
-        id:     \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
+event_postEvent:
+  path:       event
+  defaults:   { _controller: SQLBundle:Event:postEvent, _format: json }
+  methods: [POST]
 
-v2_event_setParticipants:
-    path:       /event/setparticipants
-    defaults:   { _controller: SQLBundle:Event:setParticipants, _format: json }
-    methods: [PUT]
+event_editEvent:
+  path:       event/{id}
+  defaults:   { _controller: SQLBundle:Event:editEvent, _format: json }
+  requirements:
+    id:     \d+
+  methods: [PUT]
 
-v2_event_postEvent:
-    path:       /event/postevent
-    defaults:   { _controller: SQLBundle:Event:postEvent, _format: json }
-    methods: [POST]
+event_delEvent:
+  path:       event/{id}
+  defaults:   { _controller: SQLBundle:Event:delEvent, _format: json }
+  requirements:
+    id:     \d+
+  methods: [DELETE]
 
-v2_event_editEvent:
-    path:       /event/editevent
-    defaults:   { _controller: SQLBundle:Event:editEvent, _format: json }
-    methods: [PUT]
+event_getEvent:
+  path:       event/{id}
+  defaults:   { _controller: SQLBundle:Event:getEvent, _format: json }
+  requirements:
+    id:     \d+
+  methods: [GET]
 
-v2_event_delEvent:
-    path:       /event/delevent/{token}/{id}
-    defaults:   { _controller: SQLBundle:Event:delEvent, _format: json }
-    requirements:
-        id:     \d+
-        token:  "[a-zA-Z0-9]+"
-    methods: [DELETE]
-
-# meeting_addAlert:
-#     path:       /Meeting/addAlert/{id}
-#     defaults:   { _controller: SQLBundle:Meeting:addAlert }
-#     requirements:
-#         id: \d+
-
-
-
-
-# -----------------------------------------------------------------------
-#                           GANTT CONTROLLER
-# -----------------------------------------------------------------------
-# v2_gantt_addTask:
-#     path:       /Gantt/addTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:addTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_assignTask:
-#     path:       /Gantt/assignTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:assignTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_editTask:
-#     path:       /Gantt/editTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:editTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_delTask:
-#     path:       /Gantt/delTask/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:delTask }
-#     requirements:
-#         id: \d+
-#
-# v2_gantt_setTaskProperties:
-#     path:       /Gantt/setTaskProperties/{id}
-#     defaults:   { _controller: SQLBundle:Gantt:setTaskProperties }
-#     requirements:
-#         id: \d+
-
-
+event_setParticipants:
+  path:       event/users/{id}
+  defaults:   { _controller: SQLBundle:Event:setParticipants, _format: json }
+  requirements:
+    id:     \d+
+  methods: [PUT]
 
 
 # -----------------------------------------------------------------------
 #                        NOTIFICATION CONTROLLER
 # -----------------------------------------------------------------------
-v2_notification_registerDevice:
-    path:       /notification/registerdevice
-    defaults:   { _controller: SQLBundle:Notification:registerDevice, _format: json }
-    methods: [POST]
+notification_registerDevice:
+  path:       notification/device
+  defaults:   { _controller: SQLBundle:Notification:registerDevice, _format: json }
+  methods: [POST]
 
-v2_notification_unregisterDevice:
-    path:       /notification/unregisterdevice/{token}/{id}
-    defaults:   { _controller: SQLBundle:Notification:unregisterDevice, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [DELETE]
+notification_getUserDevices:
+  path:       /notification/devices
+  defaults:   { _controller: SQLBundle:Notification:getUserDevices, _format: json }
+  requirements:
+  methods: [GET]
 
-v2_notification_getUserDevices:
-    path:       /notification/getuserdevices/{token}
-    defaults:   { _controller: SQLBundle:Notification:getUserDevices, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-    methods: [GET]
+notification_getNotifications:
+  path:		    /notification/{read}/{offset}/{limit}
+  defaults:   { _controller: SQLBundle:Notification:getNotifications, _format: json }
+  requirements:
+    read:   "[a-zA-Z0-9]+"
+    offset: \d+
+    limit:  \d+
+  methods: [GET]
 
-v2_notification_getNotifications:
-    path:		    /notification/getnotifications/{token}/{read}/{offset}/{limit}
-    defaults:   { _controller: SQLBundle:Notification:getNotifications, _format: json }
-    requirements:
-        token:	"[a-zA-Z0-9]+"
-        read:   "[a-zA-Z0-9]+"
-        offset: \d+
-        limit:  \d+
-    methods: [GET]
-
-v2_notification_setNotificationToRead:
-    path:       /notification/setnotificationtoread/{token}/{id}
-    defaults:   { _controller: SQLBundle:Notification:setNotificationToRead, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        id:     \d+
-    methods: [PUT]
+notification_setNotificationToRead:
+  path:       /notification/setnotificationtoread/{id}
+  defaults:   { _controller: SQLBundle:Notification:setNotificationToRead, _format: json }
+  requirements:
+    id:     \d+
+  methods: [PUT]
 
 
 # -----------------------------------------------------------------------
 #                           PLANNING CONTROLLER
 # -----------------------------------------------------------------------
-v2_planning_getDayPlanning:
-    path:       /planning/getday/{token}/{date}
-    defaults:   { _controller: SQLBundle:Planning:getDayPlanning, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        date:   \d+-\d+-\d+
-    methods: [GET]
+planning_getDayPlanning:
+  path:       /planning/day/{date}
+  defaults:   { _controller: SQLBundle:Planning:getDayPlanning, _format: json }
+  requirements:
+    date:   \d+-\d+-\d+
+  methods: [GET]
 
-v2_planning_getWeekPlanning:
-    path:       /planning/getweek/{token}/{date}
-    defaults:   { _controller: SQLBundle:Planning:getWeekPlanning, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        date:   \d+-\d+-\d+
-    methods: [GET]
+planning_getWeekPlanning:
+  path:       /planning/week/{date}
+  defaults:   { _controller: SQLBundle:Planning:getWeekPlanning, _format: json }
+  requirements:
+    date:   \d+-\d+-\d+
+  methods: [GET]
 
-v2_planning_getMonthPlanning:
-    path:       /planning/getmonth/{token}/{date}
-    defaults:   { _controller: SQLBundle:Planning:getMonthPlanning, _format: json }
-    requirements:
-        token:  "[a-zA-Z0-9]+"
-        date:   \d+-\d+-\d+
-    methods: [GET]
-
-
-
-
-# -----------------------------------------------------------------------
-#                       PERSONAL SETTINGS CONTROLLER
-# -----------------------------------------------------------------------
-# personnalSettings_editPhoto:
-#     path:       /PersonnalSettings/editPhoto/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPhoto }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_editPersonalInfos:
-#     path:       /PersonnalSettings/editPersonalInfos/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPersonalInfos }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_changePassword:
-#     path:       /PersonnalSettings/changePassword/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:changePassword }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_editPreferences:
-#     path:       /PersonnalSettings/editPreferences/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:editPreferences }
-#     requirements:
-#         id: \d+
-#
-# personnalSettings_getRole:
-#     path:       /PersonnalSettings/getRole/{id}
-#     defaults:   { _controller: SQLBundle:PersonnalSettings:getRole }
-#     requirements:
-#         id: \d+
+planning_getMonthPlanning:
+  path:       /planning/month/{date}
+  defaults:   { _controller: SQLBundle:Planning:getMonthPlanning, _format: json }
+  requirements:
+    date:   \d+-\d+-\d+
+  methods: [GET]
 
 
 
@@ -574,173 +407,187 @@ v2_planning_getMonthPlanning:
 # -----------------------------------------------------------------------
 #                           PROJECT CONTROLLER
 # -----------------------------------------------------------------------
-v2_project_projectCreation:
-    path:       projects/projectcreation
-    defaults:   { _controller: SQLBundle:Project:projectCreation, _format: json }
-    methods: [POST]
+project_projectCreation:
+  path:       project
+  defaults:   { _controller: SQLBundle:Project:projectCreation, _format: json }
+  methods: [POST]
 
-v2_project_updateInformations:
-    path:       projects/updateinformations
-    defaults:   { _controller: SQLBundle:Project:updateInformations, _format: json }
-    methods: [PUT]
+project_updateInformations:
+  path:       project/{id}
+  defaults:   { _controller: SQLBundle:Project:updateInformations, _format: json }
+  requirements:
+    id:   \d+
+  methods: [PUT]
 
-v2_project_getInformations:
-    path:       projects/getinformations/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Project:getInformations, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+project_getInformations:
+  path:       project/{id}
+  defaults:   { _controller: SQLBundle:Project:getInformations, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_project_delProject:
-    path:       projects/delproject/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Project:delProject, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [DELETE]
+project_delProject:
+  path:       project/{id}
+  defaults:   { _controller: SQLBundle:Project:delProject, _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
 
-v2_project_retrieveProject:
-    path:       projects/retrieveproject/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Project:retrieveProject, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+project_retrieveProject:
+  path:       project/retrieve/{projectId}
+  defaults:   { _controller: SQLBundle:Project:retrieveProject, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_project_generateCustomerAccess:
-    path:       projects/generatecustomeraccess
-    defaults:   { _controller: SQLBundle:Project:generateCustomerAccess, _format: json }
-    methods: [POST]
+project_generateCustomerAccess:
+  path:       project/customeraccess
+  defaults:   { _controller: SQLBundle:Project:generateCustomerAccess, _format: json }
+  methods: [POST]
 
-v2_project_getCustomerAccessById:
-    path:       projects/getcustomeraccessbyid/{token}/{id}
-    defaults:   { _controller: SQLBundle:Project:getCustomerAccessById, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+project_getCustomerAccessByProject:
+  path:       project/customeraccesses/{projectId}
+  defaults:   { _controller: SQLBundle:Project:getCustomerAccessByProject, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_project_getCustomerAccessByProject:
-    path:       projects/getcustomeraccessbyproject/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Project:getCustomerAccessByProject, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+project_delCustomerAccess:
+  path:       project/customeraccess/{projectId}/{customerAccessId}
+  defaults:   { _controller: SQLBundle:Project:delCustomerAccess, _format: json }
+  requirements:
+    projectId: \d+
+    customerAccessId: \d+
+  methods: [DELETE]
 
-v2_project_delCustomerAccess:
-    path:       projects/delcustomeraccess/{token}/{projectId}/{customerAccessId}
-    defaults:   { _controller: SQLBundle:Project:delCustomerAccess, _format: json }
-    requirements:
-        projectId: \d+
-        customerAccessId: \d+
-    methods: [DELETE]
+project_addUserToProject:
+  path:       project/user
+  defaults:   { _controller: SQLBundle:Project:addUserToProject, _format: json }
+  methods: [POST]
 
-v2_project_addUserToProject:
-    path:       projects/addusertoproject
-    defaults:   { _controller: SQLBundle:Project:addUserToProject, _format: json }
-    methods: [POST]
+project_removeUserConnected:
+  path:       project/userconnected/{projectId}
+  defaults:   { _controller: SQLBundle:Project:removeUserConnected, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [DELETE]
 
-v2_project_removeUserToProject:
-    path:       projects/removeusertoproject/{token}/{projectId}/{userId}
-    defaults:   { _controller: SQLBundle:Project:removeUserToProject, _format: json }
-    requirements:
-        projectId: \d+
-        userId: \d+
-    methods: [DELETE]
+project_removeUserToProject:
+  path:       project/user/{projectId}/{userId}
+  defaults:   { _controller: SQLBundle:Project:removeUserToProject, _format: json }
+  requirements:
+    projectId: \d+
+    userId: \d+
+  methods: [DELETE]
 
-v2_project_getUserToProject:
-    path:       projects/getusertoproject/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Project:getUserToProject, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+project_getUserToProject:
+  path:       project/users/{id}
+  defaults:   { _controller: SQLBundle:Project:getUserToProject, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_project_changeProjectColor:
-    path:       projects/changeprojectcolor
-    defaults:   { _controller: 'SQLBundle:Project:changeProjectColor', _format: json }
-    methods: [PUT]
+project_changeProjectColor:
+  path:       project/color/{id}
+  defaults:   { _controller: 'SQLBundle:Project:changeProjectColor', _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_project_resetProjectColor:
-    path:       projects/resetprojectcolor/{token}/{projectId}
-    defaults:   { _controller: 'SQLBundle:Project:resetProjectColor', _format: json }
-    methods: [DELETE]
+project_resetProjectColor:
+  path:       project/color/{id}
+  defaults:   { _controller: 'SQLBundle:Project:resetProjectColor', _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
 
-v2_project_getProjectLogo:
-    path:       projects/getprojectlogo/{token}/{projectId}
-    defaults:   { _controller: 'SQLBundle:Project:getProjectLogo', _format: json }
-    methods: [GET]
+project_getProjectLogo:
+  path:       project/logo/{id}
+  defaults:   { _controller: 'SQLBundle:Project:getProjectLogo', _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
 
 
 # -----------------------------------------------------------------------
 #                           ROLE CONTROLLER
 # -----------------------------------------------------------------------
-v2_role_addProjectRoles:
-    path:       roles/addprojectroles
-    defaults:   { _controller: SQLBundle:Role:addProjectRoles, _format: json }
-    methods: [POST]
+role_addProjectRoles:
+  path:       role
+  defaults:   { _controller: SQLBundle:Role:addProjectRoles, _format: json }
+  methods: [POST]
 
-v2_role_delProjectRoles:
-    path:       roles/delprojectroles/{token}/{id}
-    defaults:   { _controller: SQLBundle:Role:delProjectRoles, _format: json }
-    requirements:
-        id: \d+
-    methods: [DELETE]
+role_delProjectRoles:
+  path:       role/{id}
+  defaults:   { _controller: SQLBundle:Role:delProjectRoles, _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
 
-v2_role_putProjectRoles:
-    path:       roles/putprojectroles
-    defaults:   { _controller: SQLBundle:Role:updateProjectRoles, _format: json }
-    methods: [PUT]
+role_putProjectRoles:
+  path:       role/{id}
+  defaults:   { _controller: SQLBundle:Role:updateProjectRoles, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_role_getProjectRoles:
-    path:       roles/getprojectroles/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Role:getProjectRoles, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+role_getProjectRoles:
+  path:       roles/{projectId}
+  defaults:   { _controller: SQLBundle:Role:getProjectRoles, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_role_assignPersonToRole:
-    path:       roles/assignpersontorole
-    defaults:   { _controller: SQLBundle:Role:assignPersonToRole, _format: json }
-    methods: [POST]
+role_assignPersonToRole:
+  path:       role/user
+  defaults:   { _controller: SQLBundle:Role:assignPersonToRole, _format: json }
+  methods: [POST]
 
-v2_role_updatePersonRole:
-    path:       roles/putpersonrole
-    defaults:   { _controller: SQLBundle:Role:updatePersonRole, _format: json }
-    methods: [PUT]
+role_updatePersonRole:
+  path:       role/user/{userId}
+  defaults:   { _controller: SQLBundle:Role:updatePersonRole, _format: json }
+  requirements:
+    userId: \d+
+  methods: [PUT]
 
-v2_role_getUserRoles:
-    path:       roles/getuserroles/{token}
-    defaults:   { _controller: SQLBundle:Role:getUserRoles, _format: json }
-    methods: [GET]
+role_getUserRoles:
+  path:       roles/user
+  defaults:   { _controller: SQLBundle:Role:getUserRoles, _format: json }
+  requirements:
+  methods: [GET]
 
-v2_role_delPersonRole:
-    path:       roles/delpersonrole/{token}/{projectId}/{userId}/{roleId}
-    defaults:   { _controller: SQLBundle:Role:delPersonRole, _format: json }
-    requirements:
-        projectId: \d+
-        userId: \d+
-        roleId: \d+
-    methods: [DELETE]
+role_delPersonRole:
+  path:       role/user/{projectId}/{userId}/{roleId}
+  defaults:   { _controller: SQLBundle:Role:delPersonRole, _format: json }
+  requirements:
+    projectId: \d+
+    userId: \d+
+    roleId: \d+
+  methods: [DELETE]
 
-v2_role_getRoleByProjectAndUser:
-    path:       roles/getrolebyprojectanduser/{token}/{projectId}/{userId}
-    defaults:   { _controller: SQLBundle:Role:getRoleByProjectAndUser, userId: 0, _format: json }
-    requirements:
-        projectId: \d+
-        userId: \d+
-    methods: [GET]
+role_getRoleByProjectAndUser:
+  path:       roles/project/user/{projectId}/{userId}
+  defaults:   { _controller: SQLBundle:Role:getRoleByProjectAndUser, userId: 0, _format: json }
+  requirements:
+    projectId: \d+
+    userId: \d+
+  methods: [GET]
 
-v2_role_getUsersForRole:
-    path:       roles/getusersforrole/{token}/{roleId}
-    defaults:   { _controller: SQLBundle:Role:getUsersForRole, _format: json }
-    requirements:
-        roleId: \d+
-    methods: [GET]
+role_getUsersForRole:
+  path:       role/users/{roleId}
+  defaults:   { _controller: SQLBundle:Role:getUsersForRole, _format: json }
+  requirements:
+    roleId: \d+
+  methods: [GET]
 
-v2_role_getUserRoleForPart:
-    path:       roles/getuserroleforpart/{token}/{userId}/{projectId}/{part}
-    defaults:   { _controller: SQLBundle:Role:getUserRoleForPart, _format: json }
-    requirements:
-        userId:     \d+
-        projectId:  \d+
+role_getUserRoleForPart:
+  path:       role/user/part/{userId}/{projectId}/{part}
+  defaults:   { _controller: SQLBundle:Role:getUserRoleForPart, _format: json }
+  requirements:
+    userId:     \d+
+    projectId:  \d+
+  methods: [GET]
 
 
 
@@ -748,331 +595,291 @@ v2_role_getUserRoleForPart:
 #                          STATISTIC CONTROLLER
 # -----------------------------------------------------------------------
 
-v2_stat_getAllStat:
-    path:       statistics/getall/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Statistic:getAllStat, _format: json }
-    methods: [GET]
-    requirements:
-        projectId: \d+
+stat_getAllStat:
+  path:       statistics/{projectId}
+  defaults:   { _controller: SQLBundle:Statistic:getAllStat, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_stat_getStat:
-    path:       statistics/getstat/{token}/{projectId}/{statName}
-    defaults:   { _controller: SQLBundle:Statistic:getStat, _format: json }
-    methods: [GET]
-    requirements:
-        projectId: \d+
+stat_getStat:
+  path:       statistic/{projectId}/{statName}
+  defaults:   { _controller: SQLBundle:Statistic:getStat, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_stat_weeklyUpdate:
-    path:       statistics/update/weekly
-    defaults:   { _controller: SQLBundle:Statistic:weeklyUpdate }
-    methods: [GET]
+stat_weeklyUpdate:
+  path:       statistics/update/weekly
+  defaults:   { _controller: SQLBundle:Statistic:weeklyUpdate }
+  methods: [GET]
 
-v2_stat_dailyUpdate:
-    path:       statistics/update/daily
-    defaults:   { _controller: SQLBundle:Statistic:dailyUpdate }
-    methods: [GET]
+stat_dailyUpdate:
+  path:       statistics/update/daily
+  defaults:   { _controller: SQLBundle:Statistic:dailyUpdate }
+  methods: [GET]
 
+stat_customUpdate:
+  path:       statistics/update/custom
+  defaults:   { _controller: SQLBundle:Statistic:manuallyUpdateStat }
+  methods: [GET]
 
 
 # -----------------------------------------------------------------------
 #                           TASK CONTROLLER
 # -----------------------------------------------------------------------
 
-v2_task_taskCreation:
-    path:       tasks/taskcreation
-    defaults:   { _controller: SQLBundle:Task:createTask, _format: json }
-    methods: [POST]
+task_taskCreation:
+  path:       task
+  defaults:   { _controller: SQLBundle:Task:createTask, _format: json }
+  methods: [POST]
 
-v2_task_taskUpdate:
-    path:       tasks/taskupdate
-    defaults:   { _controller: SQLBundle:Task:updateTask, _format: json }
-    methods: [PUT]
+task_taskUpdate:
+  path:       task/{id}
+  defaults:   { _controller: SQLBundle:Task:updateTask, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_task_getTaskInfos:
-    path:       tasks/taskinformations/{token}/{taskId}
-    defaults:   { _controller: SQLBundle:Task:getTaskInfos, _format: json }
-    requirements:
-        taskId: \d+
-    methods: [GET]
+task_getTaskInfos:
+  path:       task/{taskId}
+  defaults:   { _controller: SQLBundle:Task:getTaskInfos, _format: json }
+  requirements:
+    taskId: \d+
+  methods: [GET]
 
-v2_task_archiveTask:
-    path:       tasks/archivetask
-    defaults:   { _controller: SQLBundle:Task:archiveTask, _format: json }
-    methods: [PUT]
+task_archiveTask:
+  path:       task/archive/{id}
+  defaults:   { _controller: SQLBundle:Task:archiveTask, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_task_taskDelete:
-    path:       tasks/taskdelete/{token}/{taskId}
-    defaults:   { _controller: SQLBundle:Task:deleteTask, _format: json }
-    requirements:
-        taskId: \d+
-    methods: [DELETE]
+task_taskDelete:
+  path:       task/{taskId}
+  defaults:   { _controller: SQLBundle:Task:deleteTask, _format: json }
+  requirements:
+    taskId: \d+
+  methods: [DELETE]
 
-v2_task_assignUserToTask:
-    path:       tasks/assignusertotask
-    defaults: { _controller: SQLBundle:Task:assignUserToTask, _format: json }
-    methods: [PUT]
+task_tagCreation:
+  path:       tasks/tag
+  defaults:   { _controller: SQLBundle:Task:tagCreation, _format: json }
+  methods: [POST]
 
-v2_task_removeUserToTask:
-    path:       tasks/removeusertotask/{token}/{taskId}/{userId}
-    defaults:   { _controller: SQLBundle:Task:removeUserToTask, _format: json }
-    requirements:
-        taskId: \d+
-        userId: \d+
-    methods: [DELETE]
+task_tagUpdate:
+  path:       tasks/tag/{id}
+  defaults:   { _controller: SQLBundle:Task:tagUpdate, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_task_tagCreation:
-    path:       tasks/tagcreation
-    defaults:   { _controller: SQLBundle:Task:tagCreation, _format: json }
-    methods: [POST]
+task_getTagInfos:
+  path:       tasks/tag/{tagId}
+  defaults:   { _controller: SQLBundle:Task:getTagInfos, _format: json }
+  requirements:
+    tagId: \d+
+  methods: [GET]
 
-v2_task_tagUpdate:
-    path:       tasks/tagupdate
-    defaults:   { _controller: SQLBundle:Task:tagUpdate, _format: json }
-    methods: [PUT]
+task_deleteTag:
+  path:       tasks/tag/{tagId}
+  defaults:   { _controller: SQLBundle:Task:deleteTag, _format: json }
+  requirements:
+    tagId: \d+
+  methods: [DELETE]
 
-v2_task_getTagInfos:
-    path:       tasks/taginformations/{token}/{tagId}
-    defaults:   { _controller: SQLBundle:Task:getTagInfos, _format: json }
-    requirements:
-        tagId: \d+
-    methods: [GET]
+task_getProjectTasks:
+  path:       tasks/project/{projectId}
+  defaults:   { _controller: SQLBundle:Task:getProjectTasks, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_task_deleteTag:
-    path:       tasks/deletetag/{token}/{tagId}
-    defaults:   { _controller: SQLBundle:Task:deleteTag, _format: json }
-    requirements:
-        tagId: \d+
-    methods: [DELETE]
-
-v2_task_assignTagToTask:
-    path:       tasks/assigntagtotask
-    defaults: { _controller: SQLBundle:Task:assignTagToTask, _format: json }
-    methods: [PUT]
-
-v2_task_removeTagToTask:
-    path:       tasks/removetagtotask/{token}/{taskId}/{tagId}
-    defaults:   { _controller: SQLBundle:Task:removeTagToTask, _format: json }
-    requirements:
-        taskId: \d+
-        tagId: \d+
-    methods: [DELETE]
-
-v2_task_getProjectTasks:
-    path:       tasks/getprojecttasks/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Task:getProjectTasks, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
-
-v2_task_getProjectTags:
-    path:       tasks/getprojecttags/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:Task:getProjectTags, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+task_getProjectTags:
+  path:       tasks/tags/project/{projectId}
+  defaults:   { _controller: SQLBundle:Task:getProjectTags, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
 
 
 # -----------------------------------------------------------------------
 #                           TIMELINE CONTROLLER
 # -----------------------------------------------------------------------
-v2_timeline_getTimelines:
-    path:       /timeline/gettimelines/{token}/{id}
-    defaults:   { _controller: SQLBundle:Timeline:getTimelines, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+timeline_getTimelines:
+  path:       timelines/{id}
+  defaults:   { _controller: SQLBundle:Timeline:getTimelines, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_timeline_postMessage:
-    path:       /timeline/postmessage/{id}
-    defaults:   { _controller: SQLBundle:Timeline:postMessage, _format: json }
-    requirements:
-        id: \d+
-    methods: [POST]
+timeline_postMessage:
+  path:       timeline/message/{id}
+  defaults:   { _controller: SQLBundle:Timeline:postMessage, _format: json }
+  requirements:
+    id: \d+
+  methods: [POST]
 
-v2_timeline_editMessage:
-    path:       /timeline/editmessage/{id}
-    defaults:   { _controller: SQLBundle:Timeline:editMessage, _format: json }
-    requirements:
-        id: \d+
-    methods: [PUT]
+timeline_editMessage:
+  path:       timeline/message/{id}/{messageId}
+  defaults:   { _controller: SQLBundle:Timeline:editMessage, _format: json }
+  requirements:
+    id: \d+
+    messageId: \d+
+  methods: [PUT]
 
-v2_timeline_getMessages:
-    path:       /timeline/getmessages/{token}/{id}
-    defaults:   { _controller: SQLBundle:Timeline:getMessages, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+timeline_archiveMessage:
+  path:       timeline/message/{id}/{messageId}
+  defaults:   { _controller: SQLBundle:Timeline:archiveMessage, _format: json }
+  requirements:
+    id: \d+
+    messageId: \d+
+  methods: [DELETE]
 
-v2_timeline_getLastMessages:
-    path:       /timeline/getlastmessages/{token}/{id}/{offset}/{limit}
-    defaults:   { _controller: SQLBundle:Timeline:getLastMessages, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+timeline_getMessages:
+  path:       timeline/messages/{id}
+  defaults:   { _controller: SQLBundle:Timeline:getMessages, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_timeline_getComments:
-    path:       /timeline/getcomments/{token}/{id}/{messageId}
-    defaults:   { _controller: SQLBundle:Timeline:getComments, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+timeline_getLastMessages:
+  path:       timeline/messages/{id}/{offset}/{limit}
+  defaults:   { _controller: SQLBundle:Timeline:getLastMessages, _format: json }
+  requirements:
+    id: \d+
+    offset: \d+
+    limit: \d+
+  methods: [GET]
 
-v2_timeline_archiveMessage:
-    path:       /timeline/archivemessage/{token}/{id}/{messageId}
-    defaults:   { _controller: SQLBundle:Timeline:archiveMessage, _format: json }
-    requirements:
-        id: \d+
-    methods: [DELETE]
+timeline_getComments:
+  path:       timeline/message/comments/{id}/{messageId}
+  defaults:   { _controller: SQLBundle:Timeline:getComments, _format: json }
+  requirements:
+    id: \d+
+    messageId: \d+
+  methods: [GET]
 
+timeline_postComment:
+  path:       timeline/comment/{id}
+  defaults:   { _controller: SQLBundle:Timeline:postComment, _format: json }
+  requirements:
+    id: \d+
+  methods: [POST]
 
+timeline_editComment:
+  path:       timeline/comment/{id}
+  defaults:   { _controller: SQLBundle:Timeline:editComment, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-
+timeline_deleteComment:
+  path:       timeline/comment/{id}
+  defaults:   { _controller: SQLBundle:Timeline:deleteComment, _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
 
 # -----------------------------------------------------------------------
 #                           USER CONTROLLER
 # -----------------------------------------------------------------------
-v2_user_basicInformations:
-    path:       user/basicinformations/{token}
-    defaults:   { _controller: SQLBundle:User:basicInformations, _format: json }
-    methods: [GET, PUT]
+user_basicInformations:
+  path:       user
+  defaults:   { _controller: SQLBundle:User:basicInformations, _format: json }
+  requirements:
+  methods: [GET, PUT]
 
-v2_user_getUserBasicInformations:
-    path:       user/getuserbasicinformations/{token}/{userId}
-    defaults:   { _controller: SQLBundle:User:getUserBasicInformations, _format: json }
-    requirements:
-        userId: \d+
-    methods: [GET]
+user_getUserBasicInformations:
+  path:       user/{userId}
+  defaults:   { _controller: SQLBundle:User:getUserBasicInformations, _format: json }
+  requirements:
+    userId: \d+
+  methods: [GET]
 
-v2_user_getIdByName:
-    path:       user/getidbyname/{token}/{firstname}/{lastname}
-    defaults:   { _controller: SQLBundle:User:getIdByName, _format: json }
-    methods: [GET]
+user_getIdByName:
+  path:       user/id/{firstname}/{lastname}
+  defaults:   { _controller: SQLBundle:User:getIdByName, _format: json }
+  requirements:
+    userId: \d+
+  methods: [GET]
 
-v2_user_getIdByEmail:
-    path:       user/getidbyemail/{token}/{email}
-    defaults:   { _controller: SQLBundle:User:getIdByEmail, _format: json }
-    methods: [GET]
+user_getIdByEmail:
+  path:       user/id/{email}
+  defaults:   { _controller: SQLBundle:User:getIdByEmail, _format: json }
+  requirements:
+  methods: [GET]
 
-v2_user_getNextMeetings:
-    path:       user/getnextmeetings/{token}
-    defaults:   { _controller: SQLBundle:User:getNextMeetings, _format: json }
-    methods: [GET]
+user_getUserAvatar:
+  path:       user/avatar/{userId}
+  defaults:   { _controller: SQLBundle:User:getUserAvatar, _format: json }
+  requirements:
+    userId: \d+
+  methods: [GET]
 
-v2_user_getProjects:
-    path:       user/getprojects/{token}
-    defaults:   { _controller: SQLBundle:User:getProjects, _format: json }
-    methods: [GET]
-
-v2_user_getAllTasks:
-    path:       user/getalltasks/{token}
-    defaults:   { _controller: SQLBundle:User:getAllTasks, _format: json }
-    methods: [GET]
-
-v2_user_getCurrentAndNextTasks:
-    path:       user/getcurrentandnexttasks/{token}
-    defaults:   { _controller: SQLBundle:User:getCurrentAndNextTasks, _format: json }
-    methods: [GET]
-
-v2_user_getUserAvatar:
-    path:       user/getuseravatar/{token}/{userId}
-    defaults:   { _controller: SQLBundle:User:getUserAvatar, _format: json }
-    methods: [GET]
-
-v2_user_getAllProjectUserAvatar:
-    path:       user/getallprojectuseravatar/{token}/{projectId}
-    defaults:   { _controller: SQLBundle:User:getAllProjectUserAvatar, _format: json }
-    methods: [GET]
-
-
-
-# -----------------------------------------------------------------------
-#                      VISUALISING PROJECT CONTROLLER
-# -----------------------------------------------------------------------
-# visualisingProject_addAction:
-#     path:       /VisualisingProject/addAction/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:addAction }
-#     requirements:
-#         id: \d+
-#
-# visualisingProject_addActor:
-#     path:       /VisualisingProject/addActor/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:addActor }
-#     requirements:
-#         id: \d+
-#
-# visualisingProject_addLink:
-#     path:       /VisualisingProject/addLink/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:addLink }
-#     requirements:
-#         id: \d+
-#
-# visualisingProject_newDiagram:
-#     path:       /VisualisingProject/newDiagram/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:newDiagram }
-#     requirements:
-#         id: \d+
-#
-# visualisingProject_openDiagram:
-#     path:       /VisualisingProject/openDiagram/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:openDiagram }
-#     requirements:
-#         id: \d+
-#
-# visualisingProject_invitePerson:
-#     path:       /VisualisingProject/invitePerson/{id}
-#     defaults:   { _controller: SQLBundle:VisualisingProject:invitePerson }
-#     requirements:
-#         id: \d+
-
-
+user_getAllProjectUserAvatar:
+  path:       user/project/avatars/{projectId}
+  defaults:   { _controller: SQLBundle:User:getAllProjectUserAvatar, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
 
 
 # -----------------------------------------------------------------------
 #                           WHITEBOARD CONTROLLER
 # -----------------------------------------------------------------------
-v2_whiteboard_list:
-    path:		whiteboard/list/{token}/{projectId}
-    defaults:	{ _controller: SQLBundle:Whiteboard:listWhiteboard, _format: json }
-    requirements:
-        projectId: \d+
-    methods: [GET]
+whiteboard_list:
+  path:		whiteboards/{projectId}
+  defaults:	{ _controller: SQLBundle:Whiteboard:listWhiteboard, _format: json }
+  requirements:
+    projectId: \d+
+  methods: [GET]
 
-v2_whiteboard_new:
-    path:		whiteboard/new
-    defaults:	{ _controller: SQLBundle:Whiteboard:newWhiteboard, _format: json }
-    methods: [POST]
+whiteboard_new:
+  path:		whiteboard
+  defaults:	{ _controller: SQLBundle:Whiteboard:newWhiteboard, _format: json }
+  methods: [POST]
 
-v2_whiteboard_open:
-    path:		whiteboard/open/{token}/{id}
-    defaults:	{ _controller: SQLBundle:Whiteboard:openWhiteboard, _format: json }
-    requirements:
-        id: \d+
-    methods: [GET]
+whiteboard_open:
+  path:		whiteboard/{id}
+  defaults:	{ _controller: SQLBundle:Whiteboard:openWhiteboard, _format: json }
+  requirements:
+    id: \d+
+  methods: [GET]
 
-v2_whiteboard_pushDraw:
-    path:		whiteboard/pushdraw/{id}
-    defaults:	{ _controller: SQLBundle:Whiteboard:pushDraw, _format: json }
-    requirements:
-        id: \d+
-    methods: [PUT]
+whiteboard_close:
+  path:   whiteboard/{id}
+  defaults: { _controller: SQLBundle:Whiteboard:closeWhiteboard, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_whiteboard_pullDraw:
-    path:		whiteboard/pulldraw/{id}
-    defaults:	{ _controller: SQLBundle:Whiteboard:pullDraw, _format: json }
-    requirements:
-        id: \d+
-    methods: [POST]
+whiteboard_pushDraw:
+  path:		whiteboard/draw/{id}
+  defaults:	{ _controller: SQLBundle:Whiteboard:pushDraw, _format: json }
+  requirements:
+    id: \d+
+  methods: [PUT]
 
-v2_whiteboard_delete:
-    path:		whiteboard/delete/{token}/{id}
-    defaults:	{ _controller: SQLBundle:Whiteboard:delWhiteboard, _format: json }
-    requirements:
-        id: \d+
-    methods: [DELETE]
+whiteboard_pullDraw:
+  path:		whiteboard/draw/{id}
+  defaults:	{ _controller: SQLBundle:Whiteboard:pullDraw, _format: json }
+  requirements:
+    id: \d+
+  methods: [POST]
 
-v2_whiteboard_deleteObject:
-    path:		whiteboard/deleteobject
-    defaults:	{ _controller: SQLBundle:Whiteboard:deleteObject, _format: json }
-    methods: [PUT]
+whiteboard_delete:
+  path:		whiteboard/{id}
+  defaults:	{ _controller: SQLBundle:Whiteboard:delWhiteboard, _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
+
+whiteboard_deleteObject:
+  path:		whiteboard/object/{id}
+  defaults:	{ _controller: SQLBundle:Whiteboard:deleteObject, _format: json }
+  requirements:
+    id: \d+
+  methods: [DELETE]
