@@ -63,12 +63,22 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemViewType(int position) {
-        return super.getItemViewType(position);
+        return position;
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position, List<Object> payloads) {
         super.onBindViewHolder(holder, position, payloads);
+    }
+
+    private void bindDate()
+    {
+
+    }
+
+    private void bindParticipant()
+    {
+
     }
 
     @Override
@@ -78,9 +88,11 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
                 break;
 
             case TYPE_DATE:
+                bindDate();
                 break;
 
             case TYPE_PARTICIPANT:
+                bindParticipant();
                 break;
 
             default:
@@ -90,7 +102,7 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 0;
+        return 3;
     }
 
     private static class DateHolder extends RecyclerView.ViewHolder {

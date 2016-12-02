@@ -1,6 +1,7 @@
 package com.grappbox.grappbox.adapter;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -30,11 +31,11 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private SimpleDateFormat format = new SimpleDateFormat("hh:mm");
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private Activity mContext;
+    private Context mContext;
     private LayoutInflater inflater;
     private List<CalendarEventModel> mDataSet;
 
-    public CalendarEventAdapter(Activity context) {
+    public CalendarEventAdapter(Context context) {
         super();
         mContext = context;
         mDataSet = new ArrayList<>();

@@ -16,7 +16,63 @@
         android:id="@+id/description"
         />
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_begin_label"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/bg_bottom_border"/>
+
+    <TextView
+        android:id="@+id/event_begin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyyy-MM-dd hh-mm-ss"
+        android:padding="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/event_end_label"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/bg_bottom_border"/>
+
+    <TextView
+        android:id="@+id/event_end"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="yyyy-MM-dd hh-mm-ss"
+        android:padding="10dp" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/title_project"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/bg_bottom_border"/>
+
+    <TextView
+        android:id="@+id/event_project_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="no project"
+        android:padding="10dp"
+        android:clickable="true"
+        android:focusable="true"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/participants_word"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/bg_bottom_border"/>
+
     <android.support.v7.widget.RecyclerView
+        android:padding="10dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/scrollable_content"/>
