@@ -62,4 +62,3 @@ $RECYCLE.BIN/
 !/vendor/.gitkeep
 !/vendor/sabre/
 !/vendor/league/
-/bin/
