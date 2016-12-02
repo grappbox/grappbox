@@ -3,12 +3,6 @@ php:
   - 7.0
 sudo: required
 dist: trusty
-addons:
-  apt:
-    packages:
-    - mysql-server
-    - mysql-client-core
-    - mysql-client
 services:
   - mysql
 before_script:
@@ -18,8 +12,8 @@ before_script:
   - cp app/config/parameters.yml.travis app/config/parameters.yml
   - php composer.phar self-update
   - php composer.phar install
-  - php app/console doctrine:generate:entities SQLBundle
-  - php app/console doctrine:database:create --env=test
-  - php app/console doctrine:schema:create --env=test
+  - php bin/console doctrine:generate:entities SQLBundle
+  - php bin/console doctrine:database:create --env=test
+  - php bin/console doctrine:schema:create --env=test
 script:
-  - phpunit --debug -c app
+  - phpunit --debug
