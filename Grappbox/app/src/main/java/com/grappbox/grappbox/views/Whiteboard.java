@@ -12,7 +12,9 @@ import android.os.Build;
 import android.renderscript.Double2;
 import android.renderscript.Float2;
 import android.support.annotation.RequiresApi;
+import android.support.compat.BuildConfig;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
@@ -40,6 +42,7 @@ import java.util.List;
  * @see Tool
  */
 public class Whiteboard extends View {
+    private static final String LOG_TAG = Whiteboard.class.getSimpleName();
 
     public interface Callbacks{
         void onNewObject(JSONObject object);
@@ -95,7 +98,8 @@ public class Whiteboard extends View {
          * @throws JSONException
          */
         public void init(JSONObject object) throws JSONException{
-            strokeColor = Color.parseColor(object.getString("color"));
+            String color = object.isNull("color") ? "" : object.getString("color");
+            strokeColor = object.isNull("color") ? -1 : Color.parseColor((color.startsWith("#") ? "" : "#") + color);
         }
 
         /**
@@ -150,10 +154,11 @@ public class Whiteboard extends View {
             JSONObject endObject = object.getJSONObject("positionEnd");
 
             super.init(object);
-            backgroundColor = Color.parseColor(object.getString("background"));
+            String bgColor = object.isNull("background") ? "" : object.getString("background");
+            backgroundColor = object.isNull("background") ? -1 : Color.parseColor((bgColor.startsWith("#") ? ""  : "#") + bgColor);
             positionStart = new Float2((float)startObject.getDouble("x"), (float)startObject.getDouble("y"));
             positionEnd = new Float2((float)endObject.getDouble("x"), (float)endObject.getDouble("y"));
-            lineWeight = object.getInt("lineWeight");
+            lineWeight = object.has("lineWeight") && !object.isNull("lineWeight") ? object.getInt("lineWeight") :  0;
         }
     }
 
@@ -198,6 +203,8 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
+            if (strokeColor == -1)
+                return;
             mTextPainter.setColor(strokeColor);
             mTextPainter.setTextSize(size);
             if (isItalic){
@@ -235,7 +242,7 @@ public class Whiteboard extends View {
             JSONArray pointsObject = object.getJSONArray("points");
 
             super.init(object);
-            lineWeight = object.getInt("lineWeight");
+            lineWeight = object.has("lineWeight") && !object.isNull("lineWeight") ? object.getInt("lineWeight") : 0;
             points.clear();
             for (int i = 0; i < pointsObject.length(); ++i){
                 JSONObject pointObject = pointsObject.getJSONObject(i);
@@ -258,7 +265,7 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-            if (lineWeight > 0){
+            if (lineWeight > 0 && strokeColor != -1){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 Path handwrite = new Path();
@@ -308,9 +315,11 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-            mPainter.setColor(backgroundColor);
-            canvas.drawOval(getPosition(), mPainter);
-            if (lineWeight > 0){
+            if (backgroundColor != -1){
+                mPainter.setColor(backgroundColor);
+                canvas.drawOval(getPosition(), mPainter);
+            }
+            if (lineWeight > 0 && strokeColor != -1){
                 mStrokePainter.setStrokeWidth(lineWeight);
                 mStrokePainter.setColor(strokeColor);
                 canvas.drawOval(getPosition(), mStrokePainter);
@@ -338,7 +347,7 @@ public class Whiteboard extends View {
         @Override
         public void draw(Canvas canvas) {
             RectF position = getPosition();
-            if (lineWeight > 0){
+            if (lineWeight > 0 && strokeColor != -1){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 canvas.drawLine(position.left, position.top, position.right, position.bottom, mStrokePainter);
@@ -365,11 +374,11 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-
-            mPainter.setColor(backgroundColor);
-            canvas.drawRect(getPosition(), mPainter);
-
-            if (lineWeight > 0){
+            if (backgroundColor != -1){
+                mPainter.setColor(backgroundColor);
+                canvas.drawRect(getPosition(), mPainter);
+            }
+            if (lineWeight > 0 && strokeColor != -1){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 canvas.drawRect(getPosition(), mStrokePainter);
@@ -400,13 +409,14 @@ public class Whiteboard extends View {
             Path shape = new Path();
             RectF position = getPosition();
 
-
-            mPainter.setColor(backgroundColor);
             shape.moveTo(position.left + ((position.right - position.left) / 2), position.top);
             shape.lineTo(position.left, position.top + ((position.bottom - position.top) / 2));
             shape.lineTo(position.left + ((position.right - position.left) / 2), position.bottom);
             shape.lineTo(position.right, position.top + ((position.bottom - position.top) / 2));
-            canvas.drawPath(shape, mPainter);
+            if (backgroundColor != -1){
+                mPainter.setColor(backgroundColor);
+                canvas.drawPath(shape, mPainter);
+            }
             if (lineWeight > 0){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
@@ -541,6 +551,9 @@ public class Whiteboard extends View {
      * @throws JSONException
      */
     public void feed(JSONArray objects) throws JSONException{
+        if (objects == null)
+            return;
+        Log.e(LOG_TAG, objects.toString());
         for (int i = 0; i < objects.length(); ++i){
             JSONObject current = objects.getJSONObject(i);
             ObjectModel object = createObjectModel(current.getString("type"));

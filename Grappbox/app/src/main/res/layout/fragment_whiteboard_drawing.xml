@@ -11,5 +11,6 @@
     tools:context="com.grappbox.grappbox.WhiteboardDrawingActivityFragment">
     <com.grappbox.grappbox.views.Whiteboard
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:id="@+id/whiteboard"/>
 </RelativeLayout>

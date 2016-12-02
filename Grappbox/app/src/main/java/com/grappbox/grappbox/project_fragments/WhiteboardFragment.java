@@ -8,10 +8,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
+import com.grappbox.grappbox.WhiteboardDrawingActivity;
 import com.grappbox.grappbox.adapter.WhiteboardListAdapter;
 import com.grappbox.grappbox.model.WhiteboardModel;
 import com.grappbox.grappbox.receiver.WhiteboardListReceiver;
@@ -43,6 +45,17 @@ public class WhiteboardFragment extends Fragment implements WhiteboardListReceiv
         mReceiver = new WhiteboardListReceiver(this);
         mAdapter = new WhiteboardListAdapter(getActivity(), new ArrayList<WhiteboardModel>());
         mWhiteboardList.setAdapter(mAdapter);
+        mWhiteboardList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                WhiteboardModel whiteboard = mAdapter.getItem(position);
+                if (whiteboard == null)
+                    return;
+                Intent launchWhiteboard = new Intent(getActivity(), WhiteboardDrawingActivity.class);
+                launchWhiteboard.putExtra(WhiteboardDrawingActivity.EXTRA_WHITEBOARD_ID, whiteboard.grappboxId);
+                getActivity().startActivity(launchWhiteboard);
+            }
+        });
         Intent load = new Intent(getActivity(), GrappboxWhiteboardJIT.class);
         load.setAction(GrappboxWhiteboardJIT.ACTION_GET_LIST);
         load.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
