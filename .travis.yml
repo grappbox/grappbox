@@ -6,7 +6,6 @@ dist: trusty
 services:
   - mysql
 before_script:
-  - echo "extension = mongo.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - echo "extension = mongodb.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
   - cd API
   - cp app/config/parameters.yml.travis app/config/parameters.yml
