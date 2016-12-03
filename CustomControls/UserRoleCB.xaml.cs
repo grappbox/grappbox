@@ -30,7 +30,7 @@ namespace Grappbox.CustomControls
             var value = (sender as ComboBox).SelectedValue;
             if (value != null)
             {
-                ProjectRoleModel role = await vm.getUserRole((this.DataContext as UserModel).Id);
+                ProjectRoleModel role = await vm.getUserRole((this.DataContext as UsersModel).Id);
                 int newRole = (int)value;
                 if (role.RoleId != newRole)
                 {

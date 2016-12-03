@@ -28,6 +28,7 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         //Required for navigation

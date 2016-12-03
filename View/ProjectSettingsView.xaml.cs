@@ -41,6 +41,7 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         #region NavigationHelper
@@ -290,7 +291,7 @@ namespace Grappbox.View
 
         private void userListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.UserSelected = (sender as ListView).SelectedItem as UserModel;
+            vm.UserSelected = (sender as ListView).SelectedItem as UsersModel;
         }
 
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)

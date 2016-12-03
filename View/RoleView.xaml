@@ -20,7 +20,7 @@
     </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="65" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="User settings" />

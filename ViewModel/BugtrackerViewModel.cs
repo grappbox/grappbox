@@ -100,7 +100,7 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getTagList()
         {
-            object[] token = { SessionHelper.GetSession().UserId };
+            object[] token = { SessionHelper.GetSession().ProjectId };
             HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/project/tags");
             if (res.IsSuccessStatusCode)
             {

@@ -161,6 +161,7 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
+    <Compile Include="Model\ProjectSettings\UsersModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
