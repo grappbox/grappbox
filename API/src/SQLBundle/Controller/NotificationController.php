@@ -14,6 +14,7 @@ use SQLBundle\Controller\RolesAndTokenVerificationController;
 use SQLBundle\Entity\Notification;
 use SQLBundle\Entity\Devices;
 use DateTime;
+use Thread;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -29,15 +30,27 @@ use DateTime;
  */
 class NotificationController extends RolesAndTokenVerificationController
 {
-	// (Firebase)API access key from Firebase API's Console.
-	private static $API_ACCESS_KEY = 'AIzaSyBjB-NKhL-jek8z_H0KYlspRQQOw_A_iUQ';
-
-	// (WP) The name of our push channel.
-	private $client = "ms-app://s-1-15-2-548773498-628784324-102833060-3543534270-3541984288-2302026642-2926546277";
-	private $secret = "30gJ7fwcLxozA8WoQtXEhuP";
-
+	/*
+	** send push notification(mobile) and create a notification(desktop/web) in the db
+	** $userIds Array of user id that should be notified
+	**
+	** $mdata is an array for mobile notification containing:
+	** mtitle: the title of the notification
+	** mdesc: the description of the notification
+	** exemple: $mdata['mtitle'] = "Timeline - New message"
+	**			$mdata['mdesc'] = "There is a new message on the timeline"
+	**
+	** $wdata is an array for web and desktop notification containing:
+	** type: Part of the application that changed
+	** targetId: Id of the part (which timeline, which bug, which project, ...) that has been modified
+	** $message: message for the user
+	** exemple: $wdata['type']: "Project"
+	**			$wdata['targetId']: 3
+	**			$wdata['message']: "You've been added on the project X" (with X being the name of the project)
+	*/
 	public function notifs($users, $mdata, $wdata, $em) {
-		$this->pushNotification($users, $mdata, $wdata, $em);
+		$sendNotifs = new SendNotifsClass($users, $mdata, $wdata, $em);
+		$sendNotifs->start();
 	}
 
 	/**
@@ -510,36 +523,36 @@ class NotificationController extends RolesAndTokenVerificationController
 
 		return ($this->setSuccess("1.15.1", "Notification", "setNotificationRead", "Complete Success", $notification->objectToArray()));
 	}
+}
 
-	/*
-	** send push notification(mobile) and create a notification(desktop/web) in the db
-	** $userIds Array of user id that should be notified
-	**
-	** $mdata is an array for mobile notification containing:
-	** mtitle: the title of the notification
-	** mdesc: the description of the notification
-	** exemple: $mdata['mtitle'] = "Timeline - New message"
-	**			$mdata['mdesc'] = "There is a new message on the timeline"
-	**
-	** $wdata is an array for web and desktop notification containing:
-	** type: Part of the application that changed
-	** targetId: Id of the part (which timeline, which bug, which project, ...) that has been modified
-	** $message: message for the user
-	** exemple: $wdata['type']: "Project"
-	**			$wdata['targetId']: 3
-	**			$wdata['message']: "You've been added on the project X" (with X being the name of the project)
-	*/
-	public function pushNotification($usersIds, $mdata, $wdata, $em)
-	{
-		$firebase_tokens = array();
+class SendNotifsClass extends Thread
+{
+	// (Firebase)API access key from Firebase API's Console.
+	private static $API_ACCESS_KEY = 'AIzaSyBjB-NKhL-jek8z_H0KYlspRQQOw_A_iUQ';
+
+	// (WP) The name of our push channel.
+	private $client = "ms-app://s-1-15-2-548773498-628784324-102833060-3543534270-3541984288-2302026642-2926546277";
+	private $secret = "30gJ7fwcLxozA8WoQtXEhuP";
+ 
+    public function __construct($usersIds, $mdata, $wdata, $em)
+    {
+        $this->usersIds = $usersIds;
+        $this->mdata = $mdata;
+        $this->wdata = $wdata;
+        $this->em = $em;
+    }
+ 
+    public function run()
+    {
+        $firebase_tokens = array();
 		$this->get_access_token();
-		foreach ($usersIds as $userId) {
-			$user = $em->getRepository("SQLBundle:User")->find($userId);
+		foreach ($this->usersIds as $userId) {
+			$user = $this->em->getRepository("SQLBundle:User")->find($userId);
 
 			if ($user != null)
 			{
 				//notificaton for devices
-				$devices = $em->getRepository("SQLBundle:Devices")->findByuser($user);
+				$devices = $this->em->getRepository("SQLBundle:Devices")->findByuser($user);
 
 				foreach ($devices as $device) {
 					$type = $device->getType();
@@ -547,9 +560,9 @@ class NotificationController extends RolesAndTokenVerificationController
 
 					switch ($type) {
 						case 'WP':
-							if ($this->WP($mdata, $token) == false) {
-								$em->remove($device);
-								$em->flush();
+							if ($this->WP($token) == false) {
+								$this->em->remove($device);
+								$this->em->flush();
 							}
 							break;
 						default:
@@ -561,9 +574,9 @@ class NotificationController extends RolesAndTokenVerificationController
 				//notification for web without firebase and desktop
 				$notification = new Notification();
 				$notification->setUser($user);
-				$notification->setType($wdata['type']);
-				$notification->setTargetId($wdata['targetId']);
-				$notification->setMessage($wdata['message']);
+				$notification->setType($this->wdata['type']);
+				$notification->setTargetId($this->wdata['targetId']);
+				$notification->setMessage($this->wdata['message']);
 				$notification->setIsRead(false);
 				$notification->setCreatedAt(new \Datetime);
 
@@ -573,28 +586,29 @@ class NotificationController extends RolesAndTokenVerificationController
 		}
 
 		if (count($firebase_tokens) > 0) {
-			$ret = json_decode($this->firebase($mdata, $firebase_tokens));
+			$ret = json_decode($this->firebase($firebase_tokens));
 			foreach ($ret->results as $key => $res) {
 				if (array_key_exists('error', $res)) {
-					$devices = $em->getRepository("SQLBundle:Devices")->findBytoken($firebase_tokens[$key]);
+					$devices = $this->em->getRepository("SQLBundle:Devices")->findBytoken($firebase_tokens[$key]);
 					foreach ($devices as $key => $value) {
-						$em->remove($value);
-						$em->flush();
+						$this->em->remove($value);
+						$this->em->flush();
 					}
 				}
 			}
 		}
 
 		return true;
-	}
+    }
+
 
 	// Sends Push notification for Android users
-	public function firebase($data, $reg_ids)
+	public function firebase($reg_ids)
 	{
 		$url = 'https://fcm.googleapis.com/fcm/send';
 		$message = array(
-			'title' => $data['mtitle'],
-			'body' => $data['mdesc']
+			'title' => $this->mdata['mtitle'],
+			'body' => $this->mdata['mdesc']
 		);
 
 		$headers = array(
@@ -611,11 +625,11 @@ class NotificationController extends RolesAndTokenVerificationController
 	}
 
 	// Sends notification for Windows Phone 10 users
-	public function WP($data, $uri)
+	public function WP($uri)
 	{
 		$msg =  array(
-			'title' => $data['mtitle'],
-			'body' => $data['mdesc']
+			'title' => $this->mdata['mtitle'],
+			'body' => $this->mdata['mdesc']
 		);
 		$msg = json_encode($msg);
 
@@ -671,51 +685,6 @@ class NotificationController extends RolesAndTokenVerificationController
         $this->access_token = $output->access_token;
         return true;
     }
-
-	// Sends Push notification for iOS users
-	public function iOS($data, $devicetoken)
-	{
-		$deviceToken = $devicetoken;
-
-		$ctx = stream_context_create();
-		// ck.pem is your certificate file
-		stream_context_set_option($ctx, 'ssl', 'local_cert', 'ck.pem');
-		stream_context_set_option($ctx, 'ssl', 'passphrase', self::$passphrase);
-
-		// Open a connection to the APNS server
-		$fp = stream_socket_client(
-			'ssl://gateway.sandbox.push.apple.com:2195', $err,
-			$errstr, 60, STREAM_CLIENT_CONNECT|STREAM_CLIENT_PERSISTENT, $ctx);
-
-		if (!$fp)
-			exit("Failed to connect: $err $errstr" . PHP_EOL);
-
-		// Create the payload body
-		$body['aps'] = array(
-			'alert' => array(
-				'title' => $data['mtitle'],
-				'body' => $data['mdesc'],
-			 ),
-			'sound' => 'default'
-		);
-
-		// Encode the payload as JSON
-		$payload = json_encode($body);
-
-		// Build the binary notification
-		$msg = chr(0) . pack('n', 32) . pack('H*', $deviceToken) . pack('n', strlen($payload)) . $payload;
-
-		// Send it to the server
-		$result = fwrite($fp, $msg, strlen($msg));
-
-		// Close the connection to the server
-		fclose($fp);
-
-		if (!$result)
-			return 'Message not delivered' . PHP_EOL;
-		else
-			return 'Message successfully delivered' . PHP_EOL;
-	}
 
 	// Curl
 	private function useCurl($url, $headers, $fields = null)
