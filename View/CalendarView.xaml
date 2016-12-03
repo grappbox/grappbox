@@ -10,7 +10,7 @@
     xmlns:controls="using:Grappbox.CustomControls"
     mc:Ignorable="d">
     <Page.Resources>
-        <DataTemplate x:Key="EventItemTemplate" x:DataType="models:Event">
+        <DataTemplate x:Key="EventItemTemplate" x:DataType="viewModels:EventViewModel">
             <Border Margin="0,2">
                 <Grid>
                     <Grid.ColumnDefinitions>
@@ -25,8 +25,8 @@
                     </Grid.Resources>
                     <Border Grid.Column="0" Background="{StaticResource BlueGrappboxBrush}" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <TextBlock x:Name="beginDate" Text="{x:Bind models:Event.ExtractTime(BeginDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
-                        <TextBlock x:Name="endDate" Text="{x:Bind models:Event.ExtractTime(EndDate)}" Foreground="{StaticResource BlueGrappboxBrush}" />
+                        <TextBlock x:Name="beginDate" Text="{x:Bind BeginTime}" Foreground="{StaticResource BlueGrappboxBrush}" />
+                        <TextBlock x:Name="endDate" Text="{x:Bind EndTime}" Foreground="{StaticResource BlueGrappboxBrush}" />
                     </StackPanel>
                     <RelativePanel Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" >
                         <TextBlock x:Name="title" Text="{x:Bind Title}" FontSize="16" FontWeight="SemiBold" RelativePanel.AlignLeftWithPanel="True" />
@@ -40,19 +40,16 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <controls:PageHeader Background="{StaticResource BlueGrappboxBrush}">
-            <controls:PageHeader.HeaderContent>
-                <TextBlock Text="Calendar" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </controls:PageHeader.HeaderContent>
-        </controls:PageHeader>
+        <controls:PageHeader Grid.Row="0" Background="{StaticResource BlueGrappboxBrush}" HeaderContent="Calendar" />
         <ScrollViewer Grid.Row="1">
             <Grid>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-                <CalendarView Grid.Row="0" HorizontalAlignment="Stretch" SelectedDatesChanged="CalendarView_SelectedDatesChanged" />
+                <CalendarView Grid.Row="0" x:Name="Calendar" HorizontalAlignment="Stretch" SelectedDatesChanged="CalendarView_SelectedDatesChanged" />
                 <TextBlock Grid.Row="1" Visibility="{Binding ListEmptyVisibility}" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="15">No events this day</TextBlock>
                 <ListView Grid.Row="1" ItemTemplate="{StaticResource EventItemTemplate}" ItemsSource="{Binding FilteredEvents}" IsItemClickEnabled="True" ItemClick="ListViewBase_OnItemClick">
                     <ListView.ItemContainerStyle>
@@ -64,5 +61,13 @@
                 </ListView>
             </Grid>
         </ScrollViewer>
+        <Button Grid.Row="2"
+                HorizontalAlignment="Stretch"
+                Foreground="White"
+                Background="{StaticResource BlueGrappboxBrush}" Click="Button_Click">
+            <Button.Content>
+                <TextBlock Text="Add" FontSize="24" />
+            </Button.Content>
+        </Button>
     </Grid>
 </Page>

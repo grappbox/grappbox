@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Grappbox.Model
 {
-    class TimelineListModel
+    public class TimelineListModel
     {
         [JsonProperty("id")]
         public int Id { get; set; }

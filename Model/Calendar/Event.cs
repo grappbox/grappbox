@@ -10,8 +10,6 @@ namespace Grappbox.Model
 {
     public class Event
     {
-        #region PublicFields
-
         [JsonProperty("id")]
         public int Id { get; set; }
 
@@ -41,43 +39,5 @@ namespace Grappbox.Model
 
         [JsonProperty("users")]
         public List<UserModel> Users { get; set; }
-
-        public bool IsSelected { get; set; } = false;
-
-        #endregion PublicFields
-
-        #region BindingMethods
-
-        public static string ExtractTime(string datetime)
-        {
-            DateTime time;
-            try
-            {
-                time = Convert.ToDateTime(datetime);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return datetime;
-            }
-            return time.ToString("hh:mm");
-        }
-
-        public static string ExtractDate(string datetime)
-        {
-            DateTime date;
-            try
-            {
-                date = Convert.ToDateTime(datetime);
-            }
-            catch (Exception ex)
-            {
-                Debug.WriteLine(ex.Message);
-                return datetime;
-            }
-            return date.ToString("dd/MM/yyyy");
-        }
-
-        #endregion BindingMethods
     }
 }

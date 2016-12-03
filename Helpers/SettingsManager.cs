@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Grappbox.Helpers
 {
-    internal class SettingsManager
+    public class SettingsManager
     {
         public static bool OptionExist(string optName)
         {

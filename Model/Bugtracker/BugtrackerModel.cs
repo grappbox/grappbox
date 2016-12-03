@@ -59,11 +59,11 @@ namespace Grappbox.Model
         }
         public Visibility Visible
         {
-            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return Visibility.Visible; return Visibility.Collapsed; }
+            get { if (Creator.Id != SessionHelper.GetSession().UserId) return Visibility.Visible; return Visibility.Collapsed; }
         }
         public bool IdCheck
         {
-            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return false; return true; }
+            get { if (Creator.Id != SessionHelper.GetSession().UserId) return false; return true; }
         }
     }
 }

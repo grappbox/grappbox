@@ -23,11 +23,7 @@
             <RowDefinition Height="65" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="User settings" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="User settings" />
         <ScrollViewer Grid.Row="1" Padding="15">
             <StackPanel>
                 <TextBox x:Name="RoleName" Header="Name" PlaceholderText="Name" Text="{Binding RoleName, Mode=TwoWay}" />

@@ -23,11 +23,7 @@
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource PurpleGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="Issue" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <customControl:PageHeader Background="{StaticResource PurpleGrappboxBrush}" HeaderContent="Issue" />
         <Pivot Name="Pivot" Style="{StaticResource PurplePivot}" Grid.Row="1" VerticalAlignment="Stretch" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem>
                 <PivotItem.Header>

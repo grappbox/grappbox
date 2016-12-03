@@ -34,11 +34,7 @@
             <RowDefinition Height="65" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="Project settings" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="Project settings" />
         <Pivot Grid.Row="1" Name="PivotPS" Style="{StaticResource RedPivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem Margin="0" VerticalAlignment="Stretch">
                 <PivotItem.Header>

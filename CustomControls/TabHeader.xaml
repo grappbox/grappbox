@@ -12,7 +12,6 @@
         <FontIcon
                             HorizontalAlignment="Center"
                             Margin="0"
-                            FontFamily="/Assets/MaterialIcons-Regular.otf#Material Icons"
                             Glyph="{Binding Glyph}"
                             FontSize="16" />
         <TextBlock

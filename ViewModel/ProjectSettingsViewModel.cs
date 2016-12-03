@@ -14,7 +14,7 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
-    internal class ProjectSettingsViewModel : ViewModelBase
+    public class ProjectSettingsViewModel : ViewModelBase
     {
         static private ProjectSettingsViewModel instance = null;
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
@@ -45,12 +45,11 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("name", name);
-            HttpResponseMessage res = await api.Post(props, "project/customeraccess");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
@@ -58,7 +57,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -66,12 +65,11 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task regenerateCustomerAccess()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("name", _customerSelected.Name);
-            HttpResponseMessage res = await api.Post(props, "project/customeraccess");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "project/customeraccess");
             if (res.IsSuccessStatusCode)
             {
                 _customerAccessModel.Clear();
@@ -79,7 +77,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -87,17 +85,16 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "project/customeraccesses");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "project/customeraccesses");
             if (res.IsSuccessStatusCode)
             {
-                _customerAccessModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
+                _customerAccessModel = SerializationHelper.DeserializeArrayJson<ObservableCollection<CustomerAccessModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("CustomerList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -106,10 +103,9 @@ namespace Grappbox.ViewModel
         {
             if (_customerSelected != null)
             {
-                HttpRequestManager api = HttpRequestManager.Instance;
 
-                object[] token = { AppGlobalHelper.ProjectId, _customerSelected.Id };
-                HttpResponseMessage res = await api.Delete(token, "project/customeraccess");
+                object[] token = { SessionHelper.GetSession().ProjectId, _customerSelected.Id };
+                HttpResponseMessage res = await HttpRequestManager.Delete(token, "project/customeraccess");
                 if (res.IsSuccessStatusCode)
                 {
                     _customerAccessModel.Remove(_customerSelected);
@@ -118,7 +114,7 @@ namespace Grappbox.ViewModel
                 }
                 else
                 {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                    MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
             }
@@ -147,10 +143,9 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> addRole()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("name", _role.Name);
             props.Add("teamTimeline", _role.TeamTimeline);
             props.Add("customerTimeline", _role.CustomerTimeline);
@@ -161,7 +156,7 @@ namespace Grappbox.ViewModel
             props.Add("task", _role.Task);
             props.Add("projectSettings", _role.ProjectSettings);
             props.Add("cloud", _role.Cloud);
-            HttpResponseMessage res = await api.Post(props, "role");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "role");
             if (res.IsSuccessStatusCode)
             {
                 await getRoles();
@@ -169,7 +164,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return false;
             }
@@ -179,7 +174,6 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> updateRole()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("name", _role.Name);
@@ -192,14 +186,14 @@ namespace Grappbox.ViewModel
             props.Add("task", _role.Task);
             props.Add("projectSettings", _role.ProjectSettings);
             props.Add("cloud", _role.Cloud);
-            HttpResponseMessage res = await api.Put(props, "role/" + _role.RoleId);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "role/" + _role.RoleId);
             if (res.IsSuccessStatusCode)
             {
                 await getRoles();
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -208,7 +202,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return false;
             }
@@ -225,19 +219,18 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> assignUserRole(int userId, int roleId)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("roleId", roleId);
             props.Add("userId", userId);
-            HttpResponseMessage res = await api.Post(props, "role/user");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "role/user");
             if (res.IsSuccessStatusCode)
             {
                 return true;
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return false;
             }
@@ -245,17 +238,16 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> removeUserRole(int userId, int roleId)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
 
-            object[] token = { AppGlobalHelper.ProjectId, userId, roleId };
-            HttpResponseMessage res = await api.Delete(token, "role/user");
+            object[] token = { SessionHelper.GetSession().ProjectId, userId, roleId };
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "role/user");
             if (res.IsSuccessStatusCode)
             {
                 return true;
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return false;
             }
@@ -282,17 +274,16 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getRoles()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "roles");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "roles");
             if (res.IsSuccessStatusCode)
             {
-                _projectRoleModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
+                _projectRoleModel = SerializationHelper.DeserializeArrayJson<ObservableCollection<ProjectRoleModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("RoleList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -301,10 +292,9 @@ namespace Grappbox.ViewModel
         {
             if (_roleSelected != null)
             {
-                HttpRequestManager api = HttpRequestManager.Instance;
 
                 object[] token = { _roleSelected.RoleId };
-                HttpResponseMessage res = await api.Delete(token, "role");
+                HttpResponseMessage res = await HttpRequestManager.Delete(token, "role");
                 if (res.IsSuccessStatusCode)
                 {
                     _projectRoleModel.Remove(_roleSelected);
@@ -313,7 +303,7 @@ namespace Grappbox.ViewModel
                 }
                 else
                 {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                    MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
             }
@@ -480,7 +470,6 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task updateProjectSettings(string oldPassword = null, string newPassword = null)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             if (_projectSettingsModel.Name != null && _projectSettingsModel.Name != "")
@@ -510,12 +499,12 @@ namespace Grappbox.ViewModel
                 props.Add("facebook", _projectSettingsModel.Facebook);
             if (_projectSettingsModel.Twitter != null && _projectSettingsModel.Twitter != "")
                 props.Add("twitter", _projectSettingsModel.Twitter);
-            HttpResponseMessage res = await api.Put(props, "project/" + AppGlobalHelper.ProjectId);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "project/" + SessionHelper.GetSession().ProjectId);
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -524,7 +513,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -532,7 +521,6 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task createProject(string password)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             SettingsManager.setOption("ProjectIdChoosen", 0);
@@ -577,15 +565,15 @@ namespace Grappbox.ViewModel
                 await msgbox.ShowAsync();
                 return;
             }
-            HttpResponseMessage res = await api.Post(props, "project");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = SerializationHelper.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 SettingsManager.setOption("ProjectIdChoosen", _projectSettingsModel.Id);
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -593,31 +581,29 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getProjectSettings()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "project");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "project");
             if (res.IsSuccessStatusCode)
             {
-                _projectSettingsModel = HttpRequestManager.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
+                _projectSettingsModel = SerializationHelper.DeserializeJson<ProjectSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyProjectSettings();
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task deleteProject()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Delete(token, "project");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "project");
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -626,21 +612,20 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task retrieveProject()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "project/retrieve");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "project/retrieve");
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -649,7 +634,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -828,21 +813,20 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task addProjectUser(string email)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("id", AppGlobalHelper.ProjectId);
+            props.Add("id", SessionHelper.GetSession().ProjectId);
             props.Add("email", email);
-            HttpResponseMessage res = await api.Post(props, "project/user");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
             {
-                UserModel newUser = HttpRequestManager.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
+                UserModel newUser = SerializationHelper.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -850,34 +834,32 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getProjectUsers()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "project/users");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _projectUserModel = HttpRequestManager.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                _projectUserModel = SerializationHelper.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task<ProjectRoleModel> getUserRole(int id)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId, id };
-            HttpResponseMessage res = await api.Get(token, "roles/project/user");
+            object[] token = { SessionHelper.GetSession().ProjectId, id };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "roles/project/user");
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
-                return HttpRequestManager.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
+                return SerializationHelper.DeserializeJson<ProjectRoleModel>(await res.Content.ReadAsStringAsync());
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
                 return null;
             }
@@ -887,10 +869,8 @@ namespace Grappbox.ViewModel
         {
             if (_userSelected != null)
             {
-                HttpRequestManager api = HttpRequestManager.Instance;
-
-                object[] token = { AppGlobalHelper.ProjectId, _userSelected.Id };
-                HttpResponseMessage res = await api.Delete(token, "project/user");
+                object[] token = { SessionHelper.GetSession().ProjectId, _userSelected.Id };
+                HttpResponseMessage res = await HttpRequestManager.Delete(token, "project/user");
                 if (res.IsSuccessStatusCode)
                 {
                     _projectUserModel.Remove(_userSelected);
@@ -899,7 +879,7 @@ namespace Grappbox.ViewModel
                 }
                 else
                 {
-                    MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                    MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                     await msgbox.ShowAsync();
                 }
             }

@@ -1,4 +1,6 @@
-﻿using Grappbox.Model;
+﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
+using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -35,11 +37,11 @@ namespace Grappbox.ViewModel
             set { _currentDate = value; }
         }
 
-        private ObservableCollection<Event> events;
+        private ObservableCollection<EventViewModel> events;
 
-        private ObservableCollection<Event> _filteredEvents;
+        private ObservableCollection<EventViewModel> _filteredEvents;
 
-        public ObservableCollection<Event> FilteredEvents
+        public ObservableCollection<EventViewModel> FilteredEvents
         {
             get
             {
@@ -62,17 +64,22 @@ namespace Grappbox.ViewModel
         public async Task GetMonthApi(DateTime date)
         {
             events?.Clear();
-            HttpRequest.HttpRequestManager httpclient = HttpRequest.HttpRequestManager.Instance;
+
             object[] objects = new object[1] { date.ToString("yyyy-MM-01") };
-            var response = await httpclient.Get(objects, Constants.CalendarMonthCall);
+            var response = await HttpRequestManager.Get(objects, Constants.CalendarMonthCall);
             if (response.IsSuccessStatusCode)
             {
                 string json = await response.Content.ReadAsStringAsync();
                 try
                 {
-                    events = HttpRequest.HttpRequestManager.DeserializeArrayJson<CalendarModel>(json).Events;
+                    var calendarModel = SerializationHelper.DeserializeArrayJson<CalendarModel>(json);
+                    if (calendarModel != null && calendarModel is CalendarModel)
+                        events = calendarModel.Events ?? new ObservableCollection<EventViewModel>();
                 }
-                catch (Exception) { }
+                catch (Exception)
+                {
+                    events = new ObservableCollection<EventViewModel>();
+                }
             }
         }
 
@@ -82,7 +89,7 @@ namespace Grappbox.ViewModel
                 await GetMonthApi(date);
             CurrentDate = date;
             FilteredEvents?.Clear();
-            FilteredEvents = new ObservableCollection<Event>(events.Where(
+            FilteredEvents = new ObservableCollection<EventViewModel>(events.Where(
                 d => CurrentDate.Date >= DateTime.Parse(d.BeginDate).Date && CurrentDate.Date <= DateTime.Parse(d.EndDate).Date));
             NotifyPropertyChanged("ListEmptyVisibility");
         }

@@ -1,4 +1,5 @@
-﻿using Grappbox.HttpRequest;
+﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
 using Grappbox.Model;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
-    internal class UserSettingsViewModel : ViewModelBase
+    public class UserSettingsViewModel : ViewModelBase
     {
         static private UserSettingsViewModel instance = null;
         private UserSettingsModel model = new UserSettingsModel();
@@ -37,7 +38,6 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task updateAPI(string password = null, string oldPassword = null)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             if (model.Firstname != null && model.Firstname != "")
@@ -63,15 +63,15 @@ namespace Grappbox.ViewModel
                 props.Add("viadeo", model.Viadeo);
             if (model.Twitter != null && model.Twitter != "")
                 props.Add("twitter", model.Twitter);
-            HttpResponseMessage res = await api.Put(props, "user");
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "user");
             if (res.IsSuccessStatusCode)
             {
-                model = HttpRequestManager.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
+                model = SerializationHelper.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
                 notifyAll();
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -80,7 +80,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -88,18 +88,17 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getAPI()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            HttpResponseMessage res = await api.Get(null, "user");
+            HttpResponseMessage res = await HttpRequestManager.Get(null, "user");
             Debug.WriteLine(await res.Content.ReadAsStringAsync());
             if (res.IsSuccessStatusCode)
             {
-                model = HttpRequestManager.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
+                model = SerializationHelper.DeserializeJson<UserSettingsModel>(await res.Content.ReadAsStringAsync());
                 Debug.WriteLine(model.Birthday);
                 notifyAll();
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }

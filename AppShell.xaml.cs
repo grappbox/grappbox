@@ -1,6 +1,7 @@
 ﻿using Grappbox.CustomControls;
 using Grappbox.Helpers;
 using Grappbox.View;
+using Grappbox.ViewModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -28,6 +29,7 @@ namespace Grappbox
     /// </summary>
     public sealed partial class AppShell : Page
     {
+        private SessionHelper session = null;
         private static AppShell instance;
         private bool _isPaddingAdded = false;
 
@@ -183,10 +185,10 @@ namespace Grappbox
         {
             get
             {
-                if (Helpers.AppGlobalHelper.ProjectName == null || Helpers.AppGlobalHelper.ProjectName == string.Empty)
-                    return partialNavList;
-                else
+                if (session != null && session.IsProjectSelected == true)
                     return completeNavList;
+                else
+                    return partialNavList;
             }
         }
 
@@ -342,6 +344,7 @@ namespace Grappbox
         /// <param name="e"></param>
         private void TogglePaneButton_Unchecked(object sender, RoutedEventArgs e)
         {
+            this.TogglePaneButton.Foreground = new SolidColorBrush(Colors.White);
             this.CheckTogglePaneButtonSizeChanged();
         }
 
@@ -354,6 +357,7 @@ namespace Grappbox
         private void TogglePaneButton_Checked(object sender, RoutedEventArgs e)
         {
             CheckUserIdentity();
+            this.TogglePaneButton.Foreground = new SolidColorBrush(Colors.Black);
             this.CheckTogglePaneButtonSizeChanged();
         }
 
@@ -407,10 +411,11 @@ namespace Grappbox
         }
 
         private void CheckUserIdentity()
-        {
-            if (Helpers.AppGlobalHelper.CurrentUser != null)
+        {if (session == null)
+                return;
+            if (session.IsUserConnected == true)
             {
-                UserNameTextBlock.Text = Helpers.AppGlobalHelper.CurrentUserFullName;
+                UserNameTextBlock.Text = session.UserName;
             }
             Debug.WriteLine("UserName= " + UserNameTextBlock.Text);
         }

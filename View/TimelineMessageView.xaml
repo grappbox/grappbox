@@ -23,11 +23,7 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="TimelineMessage" Text="{Binding Title, Mode=OneTime}" TextTrimming="CharacterEllipsis" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}" HeaderContent="{Binding Title, Mode=OneTime}" />
         <StackPanel Grid.Row="1">
             <TextBox IsEnabled="False" Margin="0,0,0,5" AcceptsReturn="True" BorderThickness="0" TextWrapping="Wrap" Height="100" PlaceholderText="Message" Text="{Binding Message, Mode=OneTime}" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
         </StackPanel>

@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Grappbox
 {
+    using Grappbox.Helpers;
     using Grappbox.View;
     using System.Diagnostics;
     using Windows.ApplicationModel.Resources.Core;

@@ -18,7 +18,7 @@
                       Height="60"
                       RelativePanel.AlignHorizontalCenterWithPanel="True"
                       RelativePanel.AlignVerticalCenterWithPanel="True"
-                      IsActive="True"/>
+                      IsActive="True" />
         <TextBlock x:Name="loadingText"
                    Margin="0,25,0,0"
                    RelativePanel.Below="progressRing"

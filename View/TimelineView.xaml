@@ -29,11 +29,7 @@
             <RowDefinition Height="65" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="Timeline" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}" HeaderContent="Timeline" />
         <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem>
                 <PivotItem.Header>

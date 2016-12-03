@@ -6,20 +6,16 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:customControl="using:Grappbox.CustomControls"
+    xmlns:controls="using:Grappbox.CustomControls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="65" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="Dashboard" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Dashboard" />
         <ScrollViewer Grid.Row="1">
             <StackPanel
                 ScrollViewer.HorizontalScrollMode="Disabled"
@@ -37,7 +33,7 @@
                     HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
                     <ListView.ItemTemplate>
                         <DataTemplate>
-                            <customControl:GenericDashboardItem />
+                            <controls:GenericDashboardItem />
                         </DataTemplate>
                     </ListView.ItemTemplate>
                 </ListView>

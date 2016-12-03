@@ -26,7 +26,6 @@ namespace Grappbox.View
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             dialog.ShowAsync();
             await vmdl.getProjectList();
-            await vmdl.getProjectsLogo();
             dialog.Hide();
         }
 
@@ -34,8 +33,7 @@ namespace Grappbox.View
         {
             ListView lv = sender as ListView;
             ProjectListModel plm = lv.SelectedItem as ProjectListModel;
-            AppGlobalHelper.ProjectId = plm.Id;
-            AppGlobalHelper.ProjectName = plm.Name;
+            SessionHelper.CreateSessionHelper(plm);
             Debug.WriteLine("ProjectId= {0}", plm.Id);
             Frame.Navigate(typeof(View.DashBoardView));
         }

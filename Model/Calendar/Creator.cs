@@ -17,5 +17,37 @@ namespace Grappbox.Model
 
         [JsonProperty("lastname")]
         public string LastName { get; set; }
+
+        public string FullName
+        {
+            get
+            {
+                return FirstName + " " + LastName;
+            }
+        }
+
+        public string FirstNameLabel
+        {
+            get
+            {
+                return "FirstName: " + FirstName;
+            }
+        }
+
+        public string LastNameLabel
+        {
+            get
+            {
+                return "LastName: " + LastName;
+            }
+        }
+
+        public string FullNameLabel
+        {
+            get
+            {
+                return "Name: " + FullName;
+            }
+        }
     }
 }

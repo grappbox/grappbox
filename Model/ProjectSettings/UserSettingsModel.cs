@@ -59,16 +59,16 @@ namespace Grappbox.Model
         //    LogoModel logoMod = null;
         //    ApiCommunication api = ApiCommunication.Instance;
         //    object[] token = { User.GetUser().Token, User.GetUser().Id };
-        //    HttpResponseMessage res = await api.Get(token, "user/getuseravatar");
+        //    HttpResponseMessage res = await HttpRequestManager.Get(token, "user/getuseravatar");
         //    if (res.IsSuccessStatusCode)
         //    {
-        //        logoMod = HttpRequestManager.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+        //        logoMod = SerializationHelper.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
         //        Avatar = BytesToImage.String64ToImage(logoMod.Avatar);
         //        await BytesToImage.StoreImage(logoMod.Avatar, logoImgFmt);
         //    }
         //    else
         //    {
-        //        Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+        //        Debug.WriteLine(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
         //    }
         //}
 

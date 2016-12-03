@@ -7,8 +7,8 @@
     <ProjectGuid>{26E340DF-35C7-46E7-AB7F-0A7248486CA3}</ProjectGuid>
     <OutputType>AppContainerExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>GrappBox</RootNamespace>
-    <AssemblyName>GrappBox</AssemblyName>
+    <RootNamespace>Grappbox</RootNamespace>
+    <AssemblyName>Grappbox</AssemblyName>
     <DefaultLanguage>en-US</DefaultLanguage>
     <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
     <TargetPlatformVersion>10.0.14393.0</TargetPlatformVersion>
@@ -104,7 +104,10 @@
     <Compile Include="AppShell.xaml.cs">
       <DependentUpon>AppShell.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Constants.cs" />
+    <Compile Include="Constants\Api_urls.cs" />
+    <Compile Include="Constants\Colors.cs" />
+    <Compile Include="Constants\Symbol.cs" />
+    <Compile Include="CustomControls\BindableCalendarDatePicker.cs" />
     <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
@@ -123,11 +126,11 @@
     <Compile Include="CustomControls\TabHeader.xaml.cs">
       <DependentUpon>TabHeader.xaml</DependentUpon>
     </Compile>
-    <Compile Include="CustomControls\TeamDashBoard.xaml.cs">
-      <DependentUpon>TeamDashBoard.xaml</DependentUpon>
-    </Compile>
     <Compile Include="CustomControls\BugTagContentDialog.xaml.cs">
       <DependentUpon>BugTagContentDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\TeamDashBoard.xaml.cs">
+      <DependentUpon>TeamDashBoard.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\TimelineContentDialog.xaml.cs">
       <DependentUpon>TimelineContentDialog.xaml</DependentUpon>
@@ -135,12 +138,14 @@
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Helpers\AppGlobalHelper.cs" />
-    <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
+    <Compile Include="Helpers\FormatTimeHelper.cs" />
+    <Compile Include="Helpers\NotificationManager.cs" />
+    <Compile Include="Helpers\SerializationHelper.cs" />
+    <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
     <Compile Include="Model\CalendarModel.cs" />
     <Compile Include="Model\Calendar\Creator.cs" />
-    <Compile Include="Model\Event.cs" />
+    <Compile Include="Model\Calendar\Event.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\TagModel.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
@@ -148,6 +153,7 @@
     <Compile Include="Model\Global\LogoModel.cs" />
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\MeetingDashBoard.cs" />
+    <Compile Include="Model\ModelMapper.cs" />
     <Compile Include="Model\Occupations.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
@@ -159,10 +165,12 @@
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
+    <Compile Include="ViewModel\EventViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
+    <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
@@ -171,6 +179,9 @@
     </Compile>
     <Compile Include="View\BugView.xaml.cs">
       <DependentUpon>BugView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CalendarEventAdd.xaml.cs">
+      <DependentUpon>CalendarEventAdd.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CalendarEventDetail.xaml.cs">
       <DependentUpon>CalendarEventDetail.xaml</DependentUpon>
@@ -203,9 +214,9 @@
       <DependentUpon>UserView.xaml</DependentUpon>
     </Compile>
     <None Include="Model\Global\DateTimeFormator.cs" />
-    <Compile Include="Helpers\HttpRequest\HttpRequestManager.cs" />
+    <Compile Include="Helpers\HttpRequestManager.cs" />
     <Compile Include="Helpers\SettingsManager.cs" />
-    <Compile Include="Helpers\HttpRequest\User.cs" />
+    <Compile Include="ViewModel\UserViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -262,6 +273,16 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Resources\CheckBoxStyle.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
+    <Page Include="Resources\TextBoxStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
     <Page Include="CustomControls\BugTagContentDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -280,11 +301,6 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Page>
     <Page Include="Resources\CalendarStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
-    <Page Include="Resources\CheckBoxStyle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
@@ -317,16 +333,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Resources\TextBoxStyles.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Page>
     <Page Include="View\BugtrackerView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\BugView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\CalendarEventAdd.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

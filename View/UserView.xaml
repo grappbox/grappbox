@@ -5,7 +5,7 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    xmlns:customControl="using:Grappbox.CustomControls"
+    xmlns:controls="using:Grappbox.CustomControls"
     xmlns:valueconverter="using:Grappbox.ViewModel"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -19,15 +19,11 @@
     </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="65" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="*" />
             <RowDefinition Height="10"/>
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}">
-            <customControl:PageHeader.HeaderContent>
-                <TextBlock Name="title" Text="User settings" Style="{StaticResource PageTitleTextBlockStyle}" />
-            </customControl:PageHeader.HeaderContent>
-        </customControl:PageHeader>
+        <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="User Settings" />
         <ScrollViewer HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Padding="15" Grid.Row="1">
             <StackPanel>
                 <StackPanel.Resources>

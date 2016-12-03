@@ -44,54 +44,51 @@ namespace Grappbox.ViewModel
         #region Get Api
         public async System.Threading.Tasks.Task getOpenTickets()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/opened");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/tickets/opened");
             if (res.IsSuccessStatusCode)
             {
-                _openBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _openBugs = SerializationHelper.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
                 _openBugs = new ObservableCollection<BugtrackerModel>(_openBugs.Reverse());
                 NotifyPropertyChanged("OpenList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task getClosedTickets()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/closed");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/tickets/closed");
             if (res.IsSuccessStatusCode)
             {
-                _closeBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _closeBugs = SerializationHelper.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
                 _closeBugs = new ObservableCollection<BugtrackerModel>(_closeBugs.Reverse());
                 NotifyPropertyChanged("CommentList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task getYoursTickets()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId, AppGlobalHelper.CurrentUser.Id };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/tickets/user");
+            object[] token = { SessionHelper.GetSession().ProjectId, SessionHelper.GetSession().UserId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/tickets/user");
             if (res.IsSuccessStatusCode)
             {
-                _yoursBugs = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _yoursBugs = SerializationHelper.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
                 _yoursBugs = new ObservableCollection<BugtrackerModel>(_yoursBugs.Reverse());
                 NotifyPropertyChanged("YoursList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -103,59 +100,55 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task getTagList()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/project/tags");
+            object[] token = { SessionHelper.GetSession().UserId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/project/tags");
             if (res.IsSuccessStatusCode)
             {
-                _tagList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<TagModel>>(await res.Content.ReadAsStringAsync());
+                _tagList = SerializationHelper.DeserializeArrayJson<ObservableCollection<TagModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("TagList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task getComments()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { _model.Id };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/comments");
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/comments");
             if (res.IsSuccessStatusCode)
             {
-                _commentList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
+                _commentList = SerializationHelper.DeserializeArrayJson<ObservableCollection<BugtrackerModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("CommentList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task getUsers()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, "project/users");
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _userList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                _userList = SerializationHelper.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
         public async System.Threading.Tasks.Task reopenTicket()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { _closeSelect.Id };
-            HttpResponseMessage res = await api.Get(token, "bugtracker/ticket/reopen");
+            HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/ticket/reopen");
             if (res.IsSuccessStatusCode)
             {
                 _openBugs.Insert(0, _closeSelect);
@@ -166,7 +159,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -175,7 +168,6 @@ namespace Grappbox.ViewModel
         #region Put Api
         public async System.Threading.Tasks.Task editBug()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             List<int> items = new List<int>();
@@ -216,7 +208,7 @@ namespace Grappbox.ViewModel
             props.Add("removeUsers", _toRemove);
             props.Add("addTags", new List<int>());
             props.Add("removeTags", new List<int>());
-            HttpResponseMessage res = await api.Put(props, "bugtracker/ticket/" + _model.Id);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/ticket/" + _model.Id);
             if (res.IsSuccessStatusCode)
             {
                 await getOpenTickets();
@@ -224,7 +216,7 @@ namespace Grappbox.ViewModel
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -233,7 +225,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -241,14 +233,13 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task editComment(BugtrackerModel comment)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("description", comment.Description);
-            HttpResponseMessage res = await api.Put(props, "bugtracker/comment/" + comment.Id);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/comment/" + comment.Id);
             if (res.IsSuccessStatusCode)
             {
-                BugtrackerModel _comment = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+                BugtrackerModel _comment = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
 
                 int range = _commentList.IndexOf(comment);
                 _commentList.Remove(comment);
@@ -257,7 +248,7 @@ namespace Grappbox.ViewModel
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -266,7 +257,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -274,15 +265,14 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> editTag()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("name", _tagSelect.Name);
             props.Add("color", _tagSelect.Color);
-            HttpResponseMessage res = await api.Put(props, "bugtracker/tag/" + _tagSelect.Id);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/tag/" + _tagSelect.Id);
             if (res.IsSuccessStatusCode)
             {
-                TagModel _comment = HttpRequestManager.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
+                TagModel _comment = SerializationHelper.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
 
                 int range = _tagList.IndexOf(_tagSelect);
                 _tagList.Remove(_tagSelect);
@@ -293,7 +283,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -302,18 +292,17 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task assignTag(TagModel tag)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("tagId", tag.Id);
-            HttpResponseMessage res = await api.Put(props, "bugtracker/tag/assign/" + _model.Id);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/tag/assign/" + _model.Id);
             if (res.IsSuccessStatusCode)
             {
                 _model.Tags.Add(tag);
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -321,7 +310,6 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task setParticipants()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             List<int> items = new List<int>();
@@ -356,12 +344,12 @@ namespace Grappbox.ViewModel
             items.Clear();
             props.Add("toAdd", _toAdd);
             props.Add("toRemove", _toRemove);
-            HttpResponseMessage res = await api.Put(props, "bugtracker/users/" + _model.Id);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/users/" + _model.Id);
             if (res.IsSuccessStatusCode)
             {
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -370,7 +358,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -380,7 +368,6 @@ namespace Grappbox.ViewModel
         #region Post API
         public async System.Threading.Tasks.Task<bool> addBug()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             List<int> items = new List<int>();
@@ -398,16 +385,16 @@ namespace Grappbox.ViewModel
             }
             items.Clear();
 
-            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("title", _model.Title);
             props.Add("description", _model.Description);
             props.Add("clientOrigin", false);
             props.Add("users", _toAdd);
             props.Add("tags", new List<int>());
-            HttpResponseMessage res = await api.Post(props, "bugtracker/ticket");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/ticket");
             if (res.IsSuccessStatusCode)
             {
-                _model = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+                _model = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
                 if (_openBugs != null)
                     _openBugs.Insert(0, _model);
                 NotifyPropertyChanged("OpenList");
@@ -415,7 +402,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -424,21 +411,20 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task addComment(string description)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
             props.Add("comment", description);
             props.Add("parentId", _model.Id);
-            HttpResponseMessage res = await api.Post(props, "bugtracker/comment");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/comment");
             if (res.IsSuccessStatusCode)
             {
-                BugtrackerModel _comment = HttpRequestManager.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
+                BugtrackerModel _comment = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
                 _commentList.Add(_comment);
                 NotifyPropertyChanged("CommentList");
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -446,16 +432,15 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task<bool> addTag(string name, string color)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("projectId", AppGlobalHelper.ProjectId);
+            props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("name", name);
             props.Add("color", color);
-            HttpResponseMessage res = await api.Post(props, "bugtracker/tag");
+            HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/tag");
             if (res.IsSuccessStatusCode)
             {
-                TagModel _comment = HttpRequestManager.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
+                TagModel _comment = SerializationHelper.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
                 _comment.Name = name;
                 _tagList.Add(_comment);
                 NotifyPropertyChanged("TagList");
@@ -463,7 +448,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             props.Clear();
@@ -474,9 +459,8 @@ namespace Grappbox.ViewModel
         #region Delete Api
         public async System.Threading.Tasks.Task closeTicket()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { _openSelect.Id };
-            HttpResponseMessage res = await api.Delete(token, "bugtracker/ticket/close");
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/ticket/close");
             if (res.IsSuccessStatusCode)
             {
                 _closeBugs.Insert(0, _openSelect);
@@ -487,16 +471,15 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task deleteComment(BugtrackerModel comment)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { comment.Id };
-            HttpResponseMessage res = await api.Delete(token, "bugtracker/comment");
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/comment");
             if (res.IsSuccessStatusCode)
             {
                 _commentList.Remove(comment);
@@ -504,16 +487,15 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
 
         public async System.Threading.Tasks.Task<bool> deleteTag()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { _tagSelect.Id };
-            HttpResponseMessage res = await api.Delete(token, "bugtracker/tag");
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/tag");
             if (res.IsSuccessStatusCode)
             {
                 _tagList.Remove(_tagSelect);
@@ -523,7 +505,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
             return false;
@@ -531,16 +513,15 @@ namespace Grappbox.ViewModel
 
         public async System.Threading.Tasks.Task removeAssignTag(TagModel tag)
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
             object[] token = { _model.Id, tag.Id };
-            HttpResponseMessage res = await api.Delete(token, "bugtracker/tag/remove");
+            HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/tag/remove");
             if (res.IsSuccessStatusCode)
             {
                 _model.Tags.Remove(tag);
 
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
-                cd.Content = api.GetErrorMessage(await res.Content.ReadAsStringAsync());
+                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
                 cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
                 cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
                 var t = cd.ShowAsync();
@@ -549,7 +530,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
         }
@@ -649,7 +630,7 @@ namespace Grappbox.ViewModel
         {
             get
             {
-                if (_model.Creator != null && _model.Creator.Id != AppGlobalHelper.CurrentUser.Id)
+                if (_model.Creator != null && _model.Creator.Id != SessionHelper.GetSession().UserId)
                     return false;
                 return true;
             }

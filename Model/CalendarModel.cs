@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using Grappbox.ViewModel;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
@@ -12,6 +13,6 @@ namespace Grappbox.Model
     public class CalendarModel
     {
         [JsonProperty("events")]
-        public ObservableCollection<Event> Events { get; set; }
+        public ObservableCollection<EventViewModel> Events { get; set; }
     }
 }

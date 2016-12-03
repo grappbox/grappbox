@@ -52,8 +52,7 @@ namespace Grappbox.View
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             dialog.ShowAsync();
-            HttpRequestManager api = HttpRequestManager.Instance;
-            bool result = await api.Login(loginBlock.Text, pwdBlock.Password);
+            bool result = await HttpRequestManager.Login(loginBlock.Text, pwdBlock.Password);
             if (result == true)
             {
                 dialog.Hide();

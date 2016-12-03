@@ -1,4 +1,5 @@
 ﻿using Grappbox.Helpers;
+using Grappbox.ViewModel;
 using Newtonsoft.Json;
 using System;
 using Windows.UI.Xaml;
@@ -41,11 +42,11 @@ namespace Grappbox.Model
 
         public bool IdCheck
         {
-            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return false; return true; }
+            get { if (Creator.Id != SessionHelper.GetSession().UserId) return false; return true; }
         }
         public Visibility Visible
         {
-            get { if (Creator.Id != AppGlobalHelper.CurrentUser.Id) return Visibility.Visible;  return Visibility.Collapsed; }
+            get { if (Creator.Id != SessionHelper.GetSession().UserId) return Visibility.Visible;  return Visibility.Collapsed; }
         }
 
         public string TextDate
@@ -53,9 +54,9 @@ namespace Grappbox.Model
             get
             {
                 if (EditedAt != null)
-                    return string.Format("By {0} {1} at {2}", Creator.Firstname, Creator.Lastname, DateTime.Parse(EditedAt).ToLocalTime().ToString());
+                    return "By " + Creator.Firstname + " " + Creator.Lastname + " at " + DateTime.Parse(EditedAt).ToLocalTime().ToString();
                 else
-                    return string.Format("By {0} {1} at {2}", Creator.Firstname, Creator.Lastname, DateTime.Parse(CreatedAt).ToLocalTime().ToString());
+                    return "By " + Creator.Firstname + " " + Creator.Lastname + " at " + DateTime.Parse(CreatedAt).ToLocalTime().ToString();
             }
         }
     }

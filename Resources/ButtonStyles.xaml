@@ -6,25 +6,25 @@
         <Setter Property="Foreground" Value="{StaticResource White1Grappbox}" />
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
-    
+
     <Style x:Key="OrangeButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource OrangeGrappbox}" />
         <Setter Property="Foreground" Value="{StaticResource White1Grappbox}" />
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
-    
+
     <Style x:Key="PurpleButton" TargetType="Button">
         <Setter Property="Background" Value="{StaticResource PurpleGrappbox}" />
         <Setter Property="Foreground" Value="{StaticResource White1Grappbox}" />
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
-    
+
     <Style x:Key="LeftMenuButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource Black1Grappbox}" />
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
-    
+
     <Style x:Key="MenuButtonStyle" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="BorderBrush" Value="Transparent" />
@@ -78,7 +78,7 @@
             </Setter.Value>
         </Setter>
     </Style>
-    
+
     <Style x:Key="SplitViewPaneButtonStyle" TargetType="Button">
         <Setter Property="Padding" Value="0,8.5,0,0" />
         <Setter Property="Background" Value="Transparent" />

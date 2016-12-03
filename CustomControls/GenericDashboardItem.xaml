@@ -15,9 +15,18 @@
             <TextBlock RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignHorizontalCenterWithPanel="True" Margin="5,0,5,0"  x:Name="projectTitle" Text="{Binding Name}" TextWrapping="Wrap" MaxWidth="200" Style="{StaticResource GenericDashboardProjectTitleStyle}" />
             <RelativePanel RelativePanel.AlignRightWithPanel="True" RelativePanel.AlignVerticalCenterWithPanel="True" >
                 <TextBlock RelativePanel.LeftOf="bugsIcon" RelativePanel.AlignVerticalCenterWith="bugsIcon" x:Name="bugsText" Text="{Binding Bugs}" />
-                <FontIcon RelativePanel.AlignRightWithPanel="True" x:Name="bugsIcon" FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE868;" Foreground="{StaticResource PurpleGrappboxBrush}" />
+                <FontIcon RelativePanel.AlignRightWithPanel="True"
+                          x:Name="bugsIcon"
+                          Glyph="&#xE868;"
+                          FontFamily="{StaticResource MaterialIconFontFamily}"
+                          Foreground="{StaticResource PurpleGrappboxBrush}"/>
                 <TextBlock RelativePanel.LeftOf="msgIcon" RelativePanel.AlignVerticalCenterWith="msgIcon" x:Name="msgText" Text="{Binding OngoingTasks}" />
-                <FontIcon RelativePanel.Below="bugsIcon" RelativePanel.AlignRightWithPanel="True" x:Name="msgIcon" FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE03B;" Foreground="{StaticResource BlueGrappboxBrush}"/>
+                <FontIcon RelativePanel.Below="bugsIcon"
+                          RelativePanel.AlignRightWithPanel="True"
+                          x:Name="msgIcon"
+                          Glyph="&#xE03B;"
+                          Foreground="{StaticResource BlueGrappboxBrush}"
+                          FontFamily="{StaticResource MaterialIconFontFamily}"/>
             </RelativePanel>
         </RelativePanel>
     </Border>

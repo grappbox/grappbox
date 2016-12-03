@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Grappbox.Model
 {
-    class CustomerAccessModel
+    public class CustomerAccessModel
     {
         [JsonProperty("name")]
         public string Name { get; set; }

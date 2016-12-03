@@ -25,11 +25,11 @@
                            VerticalAlignment="Center"
                            HorizontalAlignment="Left" />
                 <FontIcon x:Name="Glyph"
+                          FontFamily="{StaticResource MaterialIconFontFamily}"
                           FontSize="16"
                           VerticalAlignment="Center"
                           Glyph="{x:Bind Symbol}"
                           HorizontalAlignment="Center"
-                          FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons"
                           Foreground="{x:Bind SelectedColorBrush, Mode=TwoWay}" />
                 <TextBlock x:Name="Text"
                            Grid.Column="1"

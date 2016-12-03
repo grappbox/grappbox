@@ -20,7 +20,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Grappbox.Model;
-using GrappBox.View;
+using Grappbox.View;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -80,7 +80,12 @@ namespace Grappbox.View
 
         private void ListViewBase_OnItemClick(object sender, ItemClickEventArgs e)
         {
-            this.Frame.Navigate(typeof(CalendarEventDetail), e.ClickedItem as Event);
+            this.Frame.Navigate(typeof(CalendarEventDetail), e.ClickedItem as EventViewModel);
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            this.Frame.Navigate(typeof(CalendarEventAdd), Calendar.SelectedDates.Count > 0 ? Calendar.SelectedDates[0] : DateTimeOffset.Now );
         }
     }
 }

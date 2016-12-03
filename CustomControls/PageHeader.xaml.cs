@@ -25,14 +25,14 @@ namespace Grappbox.CustomControls
             this.InitializeComponent();
         }
 
-        public UIElement HeaderContent
+        public string HeaderContent
         {
-            get { return (UIElement)GetValue(HeaderContentProperty); }
+            get { return (string)GetValue(HeaderContentProperty); }
             set { SetValue(HeaderContentProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for HeaderContent.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty HeaderContentProperty =
-            DependencyProperty.Register("HeaderContent", typeof(UIElement), typeof(PageHeader), new PropertyMetadata(DependencyProperty.UnsetValue));
+            DependencyProperty.Register("HeaderContent", typeof(string), typeof(PageHeader), new PropertyMetadata(DependencyProperty.UnsetValue));
     }
 }

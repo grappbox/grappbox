@@ -55,8 +55,8 @@ namespace Grappbox.Model
         //#endregion
         //public async System.Threading.Tasks.Task LogoUpdate()
         //{
-        //    logoDateFmt = "LogoDate_" + AppGlobalHelper.ProjectId;
-        //    logoImgFmt = "LogoImg_" + AppGlobalHelper.ProjectId;
+        //    logoDateFmt = "LogoDate_" + SessionHelper.GetSession().ProjectId;
+        //    logoImgFmt = "LogoImg_" + SessionHelper.GetSession().ProjectId;
         //    if (LogoDate == null)
         //        return;
         //    DateTime update;
@@ -76,17 +76,17 @@ namespace Grappbox.Model
         //{
         //    LogoModel logoMod = null;
         //    ApiCommunication api = ApiCommunication.Instance;
-        //    object[] token = { User.GetUser().Token, AppGlobalHelper.ProjectId };
-        //    HttpResponseMessage res = await api.Get(token, "projects/getprojectlogo");
+        //    object[] token = { User.GetUser().Token, SessionHelper.GetSession().ProjectId };
+        //    HttpResponseMessage res = await HttpRequestManager.Get(token, "projects/getprojectlogo");
         //    if (res.IsSuccessStatusCode)
         //    {
-        //        logoMod = HttpRequestManager.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
+        //        logoMod = SerializationHelper.DeserializeJson<LogoModel>(await res.Content.ReadAsStringAsync());
         //        Logo = BytesToImage.String64ToImage(logoMod.Logo);
         //        await BytesToImage.StoreImage(logoMod.Logo, logoImgFmt);
         //    }
         //    else
         //    {
-        //        Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+        //        Debug.WriteLine(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
         //    }
         //}
 

@@ -11,7 +11,7 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
-    internal class DashBoardViewModel : ViewModelBase
+    public class DashBoardViewModel : ViewModelBase
     {
         static private DashBoardViewModel instance = null;
 
@@ -37,25 +37,23 @@ namespace Grappbox.ViewModel
 
         public async Task getTeam()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, Constants.DashboardTeamOccupationCall);
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, Constants.DashboardTeamOccupationCall);
             if (res.IsSuccessStatusCode)
             {
-                OccupationList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
+                OccupationList = SerializationHelper.DeserializeArrayJson<ObservableCollection<Occupations>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("OccupationList");
             }
             else
             {
-                Debug.WriteLine(api.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                Debug.WriteLine(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
             }
         }
 
         public async Task<bool> getNextMeetings()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            object[] token = { AppGlobalHelper.ProjectId };
-            HttpResponseMessage res = await api.Get(token, Constants.DashboardMeetingsCall);
+            object[] token = { SessionHelper.GetSession().ProjectId };
+            HttpResponseMessage res = await HttpRequestManager.Get(token, Constants.DashboardMeetingsCall);
             if (res == null)
                 return false;
             string json = await res.Content.ReadAsStringAsync();
@@ -64,7 +62,7 @@ namespace Grappbox.ViewModel
                 ObservableCollection<MeetingDashBoard> tmp;
                 try
                 {
-                    tmp = HttpRequestManager.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
+                    tmp = SerializationHelper.DeserializeArrayJson<ObservableCollection<MeetingDashBoard>>(json);
                 }
                 catch (ArgumentException aEx)
                 {
@@ -80,7 +78,7 @@ namespace Grappbox.ViewModel
             }
             else
             {
-                Debug.WriteLine(api.GetErrorMessage(json));
+                Debug.WriteLine(HttpRequestManager.GetErrorMessage(json));
                 return false;
             }
             return true;

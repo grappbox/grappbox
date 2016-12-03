@@ -38,7 +38,11 @@
                     </Ellipse>-->
 
                     <Border Grid.Column="1" Background="DarkGray" CornerRadius="45" Width="60" Height="60">
-                        <FontIcon Glyph="&#xE13D;" FontSize="30" FontWeight="Bold" Foreground="White" FontFamily="Segoe MDL2 Assets" />
+                        <FontIcon Glyph="&#xE13D;"
+                                  FontSize="30"
+                                  FontWeight="Bold"
+                                  Foreground="White"
+                                  FontFamily="{StaticResource MaterialIconFontFamily}"/>
                     </Border>
 
                     <TextBlock  Grid.Column="2" Name="name_tb" Text="{x:Bind UserName}" x:Phase="1" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" HorizontalAlignment="Left" />
@@ -52,12 +56,16 @@
                         </StackPanel.Resources>
                         <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
                             <TextBlock Name="taskBegun_tb" Text="{x:Bind Tasks_begun}" x:Phase="2" />
-                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="{StaticResource BlueGrappboxBrush}" />
+                            <FontIcon Glyph="&#xE85D;"
+                                      Foreground="{StaticResource BlueGrappboxBrush}"
+                                      FontFamily="{StaticResource MaterialIconFontFamily}"/>
                         </StackPanel>
 
                         <StackPanel Margin="0,10,0,10" Orientation="Horizontal">
                             <TextBlock Name="taskOngo_tb" Text="{x:Bind Tasks_Ongoing}" x:Phase="2" />
-                            <FontIcon FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons" Glyph="&#xE85D;" Foreground="{StaticResource RedGrappboxBrush}" />
+                            <FontIcon Glyph="&#xE85D;"
+                                      Foreground="{StaticResource RedGrappboxBrush}"
+                                      FontFamily="{StaticResource MaterialIconFontFamily}"/>
                         </StackPanel>
                     </StackPanel>
                 </Grid>

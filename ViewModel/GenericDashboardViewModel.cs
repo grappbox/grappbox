@@ -1,4 +1,5 @@
-﻿using Grappbox.HttpRequest;
+﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
 using Grappbox.Model;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
-    internal class GenericDashboardViewModel : ViewModelBase
+    public class GenericDashboardViewModel : ViewModelBase
     {
         private ObservableCollection<ProjectListModel> _projectList;
 
@@ -24,8 +25,7 @@ namespace Grappbox.ViewModel
 
         public async Task<bool> getProjectList()
         {
-            HttpRequestManager api = HttpRequestManager.Instance;
-            HttpResponseMessage res = await api.Get(null, Constants.DashboardGenericCall);
+            HttpResponseMessage res = await HttpRequestManager.Get(null, Constants.DashboardGenericCall);
             if (res == null)
                 return false;
             string response = await res.Content.ReadAsStringAsync();
@@ -33,24 +33,15 @@ namespace Grappbox.ViewModel
             Debug.WriteLine("response= " + response);
             if (res.IsSuccessStatusCode)
             {
-                ProjectList = HttpRequestManager.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(response);
+                ProjectList = SerializationHelper.DeserializeArrayJson<ObservableCollection<ProjectListModel>>(response);
             }
             else
             {
-                MessageDialog msgbox = new MessageDialog(api.GetErrorMessage(response));
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(response));
                 await msgbox.ShowAsync();
                 return false;
             }
             return true;
-        }
-
-        public async System.Threading.Tasks.Task getProjectsLogo()
-        {
-            foreach (ProjectListModel plm in ProjectList)
-            {
-                await plm.LogoUpdate();
-                await plm.SetLogo();
-            }
         }
     }
 }
