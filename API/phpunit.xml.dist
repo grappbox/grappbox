@@ -16,6 +16,8 @@
         <testsuite name="Project Test Suite">
             <directory>tests/SQLBundle/Controller/AccountAdministrationControllerTest.php</directory>
             <directory>tests/SQLBundle/Controller/ProjectControllerTest.php</directory>
+            <directory>tests/SQLBundle/Controller/WhiteboardControllerTest.php</directory>
+            <directory>tests/SQLBundle/Controller/TimelineControllerTest.php</directory>
         </testsuite>
     </testsuites>
 
