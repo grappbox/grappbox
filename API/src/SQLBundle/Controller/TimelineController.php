@@ -133,104 +133,6 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		}
 	* 	}
 	*/
-	/**
-	* @api {post} /V0.2/timeline/postmessage/:id Post a new message or comment
-	* @apiName postMessage
-	* @apiGroup Timeline
-	* @apiDescription Post a new message or a comment for the given timeline
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {int} id Id of the timeline
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} title Title of the message
-	* @apiParam {String} message Message to post on the timeline
-	* @apiParam {int} [commentedId] (required only for comments) Id of the message you want to comment
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	* 	{
-	*		"data": {
-	*			"token": "13135",
-	*			"title": "Project delayed",
-	*			"message": "Hi, i think we should delay the delivery date of the project, what do you think about it?"
-	*		}
-	* 	}
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	* 	{
-	*		"data": {
-	*			"token": "13135",
-	*			"title": "RE: Project delayed",
-	*			"message": "Like you said previously, I agree that the delivery date should be later, because of the customer wishes we have a lot more to do and the same deadline.",
-	*			"commentedId": 1
-	*		}
-	* 	}
-	*
-	* @apiSuccess {int} id Message id
-	* @apiSuccess {Object} creator author
-	* @apiSuccess {int} creator.id author id
-	* @apiSuccess {string} creator.fullname author name
-	* @apiSuccess {int} timelineId Id of the timeline
-	* @apiSuccess {String} title Message title
-	* @apiSuccess {String} message Message content
-	* @apiSuccess {int} parentId Id of the parent message
-	* @apiSuccess {DateTime} createdAt Message creation date
-	* @apiSuccess {DateTime} editedAt Message last modification date
-	*
-	* @apiSuccessExample {json} Message-Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.11.1",
-	*			"return_message": "Timeline - postmessage - Complete Success"
-  	*		},
-	*		"data": {
-	*			"id": "154",
-	*			"creator": {"id": 25, "fullname": "John Doe"},
-	*			"timelineId": 14,
-	*			"title": "hello",
-	*			"message": "What about a meeting tomorrow morning ?",
-	*			"parentId": null,
-	*			"createdAt": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null
-	*		}
-	* 	}
-	*
-	* @apiSuccessExample {json} Comment-Success-Response:
-	*	HTTP/1.1 201 Created
-	*	{
-	*		"info": {
-	*			"return_code": "1.11.1",
-	*			"return_message": "Timeline - postmessage - Complete Success"
-  	*		},
-	*		"data": {
-	*			"id": "169",
-	*			"creator": {"id": 25, "fullname": "John Doe"},
-	*			"timelineId": 14,
-	*			"title": "RE: hello",
-	*			"message": "Why not, i'am completly free tomorrow",
-	*			"parentId": 154,
-	*			"createdAt": {"date": "1945-06-18 10:53:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"editedAt": null
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	* 	HTTP/1.1 401 Unauthorized
-	* 	{
-	*		"info": {
-	*			"return_code": "11.2.3",
-	*			"return_message": "Timeline - postmessage - Bad ID"
-  	*		}
-	* 	}
-	* @apiErrorExample Insufficient Rights
-	* 	HTTP/1.1 403 Forbidden
-	* 	{
-	*		"info": {
-	*			"return_code": "11.2.9",
-	*			"return_message": "Timeline - postmessage - Insufficient Rights"
-  	*		}
-	* 	}
-	*/
 	public function postMessageAction(Request $request, $id)
 	{
 		$content = $request->getContent();
@@ -1589,7 +1491,6 @@ class TimelineController extends RolesAndTokenVerificationController
 	* @apiSuccess {int} creator.id author id
 	* @apiSuccess {string} creator.firstname author firstname
 	* @apiSuccess {string} creator.lastname author lastname
-	* @apiSuccess {int} parentId Id of the parent message
 	* @apiSuccess {String} comment Comment content
 	* @apiSuccess {string} createdAt Comment creation date
 	* @apiSuccess {string} editedAt Comment last modification date
@@ -1604,7 +1505,6 @@ class TimelineController extends RolesAndTokenVerificationController
 	*		"data": {
 	*			"id": "154",
 	*			"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
-	*			"parentId": 10,
 	*			"comment": "What about a meeting tomorrow morning ?",
 	*			"createdAt": "1945-06-18 06:00:00",
 	*			"editedAt": null
@@ -1618,7 +1518,6 @@ class TimelineController extends RolesAndTokenVerificationController
 	*				"id": "154",
 	*				"projectId": 1,
 	*				"creator": {"id": 25, "firstname": "John", "lastname": "Doe"},
-	*				"parentId": 10,
 	*				"comment": "What about a meeting tomorrow morning ?",
 	*				"createdAt": "1945-06-18 06:00:00",
 	*				"editedAt": null

@@ -90,50 +90,6 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/statistics/getall/:token/:projectId Get all statistics
-	* @apiName getAllStat
-	* @apiGroup Stat
-	* @apiDescription Get all statistics of a project.
-	* See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about the return content related to each statistic
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {int} projectId id of the related project
-	*
-	* @apiSuccess {Object[]/Integer} statName stat data asked
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.16.1",
-	*			"return_message": "Stat - getAll - Complete Success"
-	*		},
-	*		"data": {
-	*		  "projectTimeLimits": {...},
-	*		  "clientBugTracker": 12,
-	*		  ...
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "16.1.3",
-	*			"return_message": "Stat - getAll - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "16.1.4",
-	*			"return_message": "Stat - getAll - Bad Parameter: projectId"
-	*		}
-	*	}
-	*/
 	public function getAllStatAction(Request $request, $projectId)
 	{
 		$em = $this->getDoctrine()->getManager();
@@ -271,68 +227,6 @@ class StatisticController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "16.2.3",
 	*			"return_message": "Stat - getStat - Bad Token"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "16.2.4",
-	*			"return_message": "Stat - getStat - Bad Parameter: projectId"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: statName
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "16.2.4",
-	*			"return_message": "Stat - getStat - Bad Parameter: statName"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.2/statistics/getStat/:token/:projectId/:statName Get a stat info
-	* @apiName getStat
-	* @apiGroup Stat
-	* @apiDescription Get a particaular statistics info.
-	* See ["API - Statistic Content Description"](https://docs.google.com/document/d/1BqN96XF1GJmVVYN-NALbyzE8d_UVp3LHhli15B1OBJU/edit) for more details about statName and return content related to each statistic
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {int} projectId id of the related project
-	* @apiParam {string} statName name of the statistic
-	*
-	* @apiSuccess {Object[]/Integer} statName stat data asked
-	*
-	* @apiSuccessExample Success-Object-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.16.1",
-	*			"return_message": "Stat - getStat - Complete Success"
-	*		},
-	*		"data": {
-	*		 "projectTimeLimits": {...}
-	*		}
-	*	}
-	* @apiSuccessExample Success-Integer-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.16.1",
-	*			"return_message": "Stat - getStat - Complete Success"
-	*		},
-	*		"data": {
-	*		 "clientBugTracker": 12
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "16.2.3",
-	*			"return_message": "Stat - getStat - Bad ID"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId

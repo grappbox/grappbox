@@ -117,56 +117,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/user/basicinformations/:token Request the basic informations of the connected user
-	* @apiName getBasicInformations
-	* @apiGroup Users
-	* @apiDescription Request the basic informations of the connected user
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token token of the person connected
-	*
-	* @apiSuccess {String} firstname First name of the person
-	* @apiSuccess {String} lastname Last name of the person
-	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {date} avatar Avatar last modif date
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {String} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getbasicinformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"birthday": "1945-06-18",
-	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"email": "john.doe@gmail.com"
-	*			"phone": "+33984231475",
-	*			"country": "France",
-	*			"linkedin": "linkedin.com/john.doe",
-	*			"viadeo": "viadeo.com/john.doe",
-	*			"twitter": "twitter.com/john.doe"
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.1.3",
-	*			"return_message": "User - getbasicinformations - Bad ID"
-	*		}
-	*	}
-	*/
 	private function getBasicInformations($user)
 	{
 		return $this->setSuccess("1.7.1", "User", "getbasicinformations", "Complete Success", $user->fullObjectToArray());
@@ -229,65 +179,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "7.2.3",
 	*			"return_message": "User - getuserbasicinformations - Bad Token"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "7.2.4",
-	*			"return_message": "User - getuserbasicinformations - Bad Parameter: userId"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.2/user/getuserbasicinformations/:token/:userId Request the basic informations for a user
-	* @apiName getUserBasicInformations
-	* @apiGroup Users
-	* @apiDescription Request the basic informations for the given user
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token token of the person connected
-	* @apiParam {Number} userId id of the user you want some informations
-	*
-	* @apiSuccess {String} firstname First name of the person
-	* @apiSuccess {String} lastname Last name of the person
-	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {date} avatar Avatr last date of modif
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {String} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getuserbasicinformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"birthday": "1945-06-18"
-	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"email": "john.doe@gmail.com"
-	*			"phone": "+33984231475",
-	*			"country": "France",
-	*			"linkedin": "linkedin.com/john.doe",
-	*			"viadeo": "viadeo.com/john.doe",
-	*			"twitter": "twitter.com/john.doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.2.3",
-	*			"return_message": "User - getuserbasicinformations - Bad ID"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: userId
@@ -441,103 +332,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {put} /V0.2/user/basicinformations/:token Update the basic informations of the user connected
-	* @apiName putBasicInformations
-	* @apiGroup Users
-	* @apiDescription Update the basic informations of the user connected
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {String} [firstname] First name of the person
-	* @apiParam {String} [lastname] Last name of the person
-	* @apiParam {Date} [birthday] Birthday of the person
-	* @apiParam {Text} [avatar] Avatar of the person
-	* @apiParam {String} [email] Email of the person
-	* @apiParam {String} [oldPassword] Old password of the person. oldPassword and password must be set if you want to change password
-	* @apiParam {String} [password] New password of the person. oldPassword and password must be set if you want to change password
-	* @apiParam {String} [phone] Phone number of the person
-	* @apiParam {String} [country] Country the person in living in
-	* @apiParam {String} [linkedin] Linkedin of the person
-	* @apiParam {String} [viadeo] Viadeo of the person
-	* @apiParam {String} [twitter] Twitter of the person
-	*
-	* @apiParamExample {json} Request-Full-Example:
-	*	{
-	*		"data": {
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"birthday": "1945-06-18",
-	*			"avatar": "10001111001100110010101010",
-	*			"email": "john.doe@gmail.com",
-	*			"oldPassword": "toto",
-	*			"password": "azertyuiop",
-	*			"phone": +33984231475,
-	*			"country": "France",
-	*			"linkedin": "linkedin.com/john.doe",
-	*			"viadeo": "viadeo.com/john.doe",
-	*			"twitter": "twitter.com/john.doe"
-	*		}
-	*	}
-	*
-	* @apiParamExample {json} Request-Minimum-Example:
-	*	{
-	*		"data": {}
-	*	}
-	*
-	* @apiParamExample {json} Request-Partial-Example:
-	*	{
-	*		"data": {
-	*			"birthday": "1945-06-18",
-	*			"password": "azertyuiop",
-	*			"phone": +33984231475,
-	*			"country": "France",
-	*			"linkedin": "linkedin.com/john.doe",
-	*			"twitter": "twitter.com/john.doe"
-	*		}
-	*	}
-	*
-	* @apiSuccess {String} firstname First name of the person
-	* @apiSuccess {String} lastname Last name of the person
-	* @apiSuccess {Date} birthday Birthday of the person
-	* @apiSuccess {date} avatar Avatar last date of modif
-	* @apiSuccess {String} email Email of the person
-	* @apiSuccess {String} phone Phone number of the person
-	* @apiSuccess {String} country Country the person in living in
-	* @apiSuccess {String} linkedin Linkedin of the person
-	* @apiSuccess {String} viadeo Viadeo of the person
-	* @apiSuccess {String} twitter Twitter of the person
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - putuserbasicinformations - Complete Success"
-	*		},
-	*		"data": {
-	*			"firstname": "John",
-	*			"lastname": "Doe",
-	*			"birthday": "1945-06-18"
-	*			"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"},
-	*			"email": "john.doe@gmail.com"
-	*			"phone": "+33984231475",
-	*			"country": "France",
-	*			"linkedin": "linkedin.com/john.doe",
-	*			"viadeo": "viadeo.com/john.doe",
-	*			"twitter": "twitter.com/john.doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.1.3",
-	*			"return_message": "User - putbasicinformations - Bad ID"
-	*		}
-	*	}
-	*/
 	private function putBasicInformations($content, $user, $em)
 	{
 		$content = $content->data;
@@ -681,69 +475,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/user/getidbyname/:token/:firstName/:lastName Request the user Id with the first and last name
-	* @apiName getIdByName
-	* @apiGroup Users
-	* @apiDescription Request the user Id with the first name and the last name
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} firstName first name of the user
-	* @apiParam {String} lastName last name of the user
-	*
-	* @apiSuccess {Object[]} array Array of persons
-	* @apiSuccess {Number} array.id Id of the person
-	* @apiSuccess {String} array.firstname First name of the person
-	* @apiSuccess {String} array.lastname Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getidbyname - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 2,
-	*					"firstname": "John",
-	*					"lastname": "Doe"
-	*				}
-	*			]
-	*		}
-	* 	}
-	*
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.3",
-	*			"return_message": "User - getidbyname - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.4.3",
-	*			"return_message": "User - getidbyname - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "7.4.4",
-	*			"return_message": "User - getidbyname - Bad Parameters"
-	*		}
-	*	}
-	*/
 	public function getIdByNameAction(Request $request, $firstname, $lastname)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -821,51 +552,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/user/getidbyemail/:token/:email Request the user Id with the email
-	* @apiName getIdByEmail
-	* @apiGroup Users
-	* @apiDescription Request the user Id with the email
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	* @apiParam {String} email email of the user
-	*
-	* @apiSuccess {Number} id id of the person
-	* @apiSuccess {String} firstname First name of the person
-	* @apiSuccess {String} lastname Last name of the person
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getidbyemail - Complete Success"
-	*		},
-	*		"data": {
-	*			"id": 2,
-	*			"firstname": "John",
-	*			"lastname": "Doe"
-	*		}
-	* 	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.5.3",
-	*			"return_message": "User - getidbyemail - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: email
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "7.5.4",
-	*			"return_message": "User - getidbyemail - Bad Parameter: email"
-	*		}
-	*	}
-	*/
 	public function getIdByEmailAction(Request $request, $email)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -930,47 +616,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/user/getuseravatar/:token/:userId Get user avatar
-	* @apiName getUserAvatar
-	* @apiGroup Users
-	* @apiDescription Get the avatar of the given user
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} userId Id of the user
-	*
-	* @apiSuccess {Text} avatar avatar of the user
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getUserAvatar - Complete Success"
-	*		},
-	*		"data": {
-	*			"avatar": "10100011000011001"
-	*		},
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.9.3",
-	*			"return_message": "User - getUserAvatar - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: userId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "7.9.4",
-	*			"return_message": "User - getUserAvatar - Bad Parameter: userId"
-	*		}
-	*	}
-	*/
 	public function getUserAvatarAction(Request $request, $userId)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -1024,50 +669,6 @@ class UserController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "7.9.3",
 	*			"return_message": "User - getAllProjectUserAvatar - Bad Token"
-	*		}
-	*	}
-	* @apiErrorExample Bad Parameter: projectId
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "7.9.4",
-	*			"return_message": "User - getAllProjectUserAvatar - Bad Parameter: projectId"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.2/user/getallprojectuseravatar/:token/:projectId Get all project user avatar
-	* @apiName getAllProjectUserAvatar
-	* @apiGroup Users
-	* @apiDescription Get the avatar of all the users of the given project
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token Token of the person connected
-	* @apiParam {Number} projectId Id of the user
-	*
-	* @apiSuccess {Object[]} array users list
-	* @apiSuccess {int} array.userId user id
-	* @apiSuccess {text} array.avatar user avatar
-	*
-	* @apiSuccessExample Success-Response:
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.7.1",
-	*			"return_message": "User - getAllProjectUserAvatar - Complete Success"
-	*		},
-	*		"data": {
-	*			"userId": 13,
-	*			"avatar": "10100011000011001"
-	*		},
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "7.9.3",
-	*			"return_message": "User - getAllProjectUserAvatar - Bad ID"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: projectId

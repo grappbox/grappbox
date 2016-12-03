@@ -153,48 +153,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
-	/**
-	* @-api {get} /V0.2/accountadministration/login/:token Client login
-	* @apiName clientlogin
-	* @apiGroup AccountAdministration
-	* @apiDescription log user with client token
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {token} client token access
-	*
-	* @apiSuccess {int} id whiteboard id
-	* @apiSuccess {string} firstname user's firstname
-	* @apiSuccess {string} lastname user's lastname
-	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
- 	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - clientlogin - Complete Success"
-	*			},
- 	*			"data": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*			}
- 	* 	}
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.4.3",
-	*			"return_message": "AccountAdministration - clientlogin - Bad id"
-	*		}
-	* 	}
-	*
-	*/
 	public function clientLoginAction(Request $request)
 	{
 		$em = $this->getDoctrine()->getManager();
@@ -284,65 +242,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*		"info": {
 	*			"return_code": "14.1.6",
 	*			"return_message": "AccountAdministration - login - Missing Parameter"
-	*		}
-	* 	}
- 	*
- 	*/
- 	/**
- 	* @api {post} /V0.2/accountadministration/login Login
- 	* @apiName login
- 	* @apiGroup AccountAdministration
-	* @apiDescription Log user from his login and password
- 	* @apiVersion 0.2.0
- 	*
- 	* @apiParam {string} login login (user's email)
- 	* @apiParam {string} password password
- 	*
-	* @apiParamExample {json} Request-Example:
-	*   {
-	*		"data": {
-	*   		"login": "john.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*		}
-	*   }
-	*
- 	* @apiSuccess {int} id user's id
- 	* @apiSuccess {string} firstname user's firstname
- 	* @apiSuccess {string} lastname user's lastname
- 	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {date} avatar user's avatar last modif date
- 	*
- 	* @apiSuccessExample {json} Success-Response:
- 	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - login - Complete Success"
-	*			},
- 	*			"data": {
-	*				"id": 12,
-	*				"firstname": "John",
-	*				"lastname": "Doe",
-	*				"email": "john.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*			}
- 	* 	}
- 	*
-	* @apiErrorExample Bad Parameter: login
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.1.4",
-	*			"return_message": "AccountAdministration - login - Bad Parameter: login"
-	*		}
-	* 	}
-	* @apiErrorExample Bad Parameter: password
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.1.4",
-	*			"return_message": "AccountAdministration - login - Bad Parameter: password"
 	*		}
 	* 	}
  	*
@@ -513,38 +412,6 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	}
 	*
 	*/
-	/**
-	* @api {get} /V0.2/accountadministration/logout/:token Logout
-	* @apiName logout
-	* @apiGroup AccountAdministration
-	* @apiDescription unvalid user's token
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} token user's authentication token
-	*
-	* @apiSuccess {string} message	success message
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - login - Complete Success"
-	*			},
-	*			"data": {
-	*				"message": "Successfully logout"
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Bad Id
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.2.3",
-	*			"return_message": "AccountAdministration - logout - Bad id"
-	*		}
-	* 	}
-	*
-	*/
  	public function logoutAction(Request $request)
  	{
  		$token = $request->headers->get('Authorization');
@@ -664,112 +531,13 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"return_message": "AccountAdministration - register - Missing Parameter"
 	*		}
 	* 	}
-  * @apiErrorExample Bad Parameter
-  * 	HTTP/1.1 400 Bad Request
-  * 	{
-  *		"info": {
-  *			"return_code": "14.3.4",
-  *			"return_message": "AccountAdministration - register - Bad Parameter"
+	* @apiErrorExample Bad Parameter
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.3.4",
+	*			"return_message": "AccountAdministration - register - Bad Parameter"
     *		}
-  * 	}
-	* @apiErrorExample Already in DB
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.3.7",
-	*			"return_message": "AccountAdministration - register - Already in Database"
-	*		}
-	* 	}
-	*
-	*/
-	/**
-	* @api {post} /V0.2/accountadministration/register Register
-	* @apiName register
-	* @apiGroup AccountAdministration
-	* @apiDescription Register a new user and log him
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {string} firstname user's firstname
-	* @apiParam {string} password user's password
-	* @apiParam {email} email user's email
-	* @apiParam {string} lastname user's lastname
-	* @apiParam {Date} [birthday] user's birthday
-	* @apiParam {file} [avatar] user's avatar
-	* @apiParam {string} [phone] user's phone
-	* @apiParam {string} [country] user's country
-	* @apiParam {url} [linkedin] user's linkedin
-	* @apiParam {url} [viadeo] user's viadeo
-	* @apiParam {url} [twitter] user's twitter
-	*
-	* @apiParamExample {json} Request-Example Minimum:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*   	}
-	*   }
-	* @apiParamExample {json} Request-Example Partial:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*   		"avatar": "100100111010011110100100.......",
-	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia"
-	*   	}
-	*   }
-	* @apiParamExample {json} Request-Example Full:
-	*   {
-	*   	"data": {
-	*   		"firstname": "Janne",
-	*   		"lastname": "Doe",
-	*   		"email": "janne.doe@gmail.com",
-	*   		"password": "ThisisAPassword"
-	*   		"birthday": "1980-12-04",
-	*   		"avatar": "100100111010011110100100.......",
-	*   		"phone": "010-1658-9520",
-	*   		"country": "New Caledonia",
-	*   		"linkedin": "linkedin.com/janne.doe"
-	*   		"viadeo": "viadeo.com/janne.doe",
-	*   		"twitter": "twitter.com/janne.doe"
-	*   	}
-	*   }
-	*
-	* @apiSuccess {int} id user's id
- 	* @apiSuccess {string} firstname user's firstname
- 	* @apiSuccess {string} lastname user's lastname
- 	* @apiSuccess {string} email user's email
-	* @apiSuccess {string} token user's authentication token
-	* @apiSuccess {Date} avatar user's avatar last modification date
-	*
-	* @apiSuccessExample {json} Success-Response:
-	* 	HTTP/1.1 201 Created
-	* 	{
-	*			"info": {
-	*				"return_code": "1.14.1",
-	*				"return_message": "AccountAdministration - register - Complete Success"
-	*			},
- 	*			"data": {
-	*				"id": 12,
-	*				"firstname": "Janne",
-	*				"lastname": "Doe",
-	*				"email": "janne.doe@gmail.com",
-	*				"token": "fkE35dcDneOjF....",
-	*				"avatar": {"date": "1945-06-18 06:00:00", "timezone_type": 3, "timezone": "Europe\/Paris"}
-	*			}
-	* 	}
-	*
-	* @apiErrorExample Missing Parameter
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.3.6",
-	*			"return_message": "AccountAdministration - register - Missing Parameter"
-	*		}
 	* 	}
 	* @apiErrorExample Already in DB
 	* 	HTTP/1.1 400 Bad Request

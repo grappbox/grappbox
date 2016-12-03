@@ -94,56 +94,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	*	}
 	*
 	*/
-	/**
-	* @api {post} /V0.2/notification/registerdevice Register user device
-	* @apiName registerDevice
-	* @apiGroup Notification
-	* @apiDescription Register user mobile device for mobile notification send process
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} device_type device_type: "iOS" | "WP" | "Android"
-	* @apiParam {String} device_token device token : uri, token or reg_id
-	* @apiParam {String} device_name device name
-	*
-	* @apiParamExample {json} Request-Example:
-	*	{
-	*		"data": {
-	*			"token": "aeqf231ced651qcd",
-	*			"device_type": "iOS",
-	*			"device_token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
-	*			"device_name": "John Doe's iPhone"
-	*		}
-	*	}
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - registerDevice - Complete Success"
-	*		},
-	*		"data": {}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.1.3",
-	*			"return_message": "Notification - registerDevice - Bad ID"
-	*		}
-	*	}
-	* @apiErrorExample Missing Parameters
-	*	HTTP/1.1 400 Bad Request
-	*	{
-	*		"info": {
-	*			"return_code": "15.1.6",
-	*			"return_message": "Notification - registerDevice - Missing Parameter"
-	*		}
-	*	}
-	*
-	*/
 	public function registerDeviceAction(Request $request)
 	{
 		$content = $request->getContent();
@@ -246,71 +196,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		}
 	*	}
 	*/
-	/**
-	* @api {get} /V0.2/notification/getuserdevices/:token Get user registered devices
-	* @apiName getuserDevices
-	* @apiGroup Notification
-	* @apiDescription Get user registered devices informations
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	*
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.1",
-	*			"return_message": "Notification - getuserdevices - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 3,
-	*					"user": {
-	*						"id": 13,
-	*						"firstname": "John",
-	*						"lastname": "Doe"
-	*					},
-	*					"name": "John Doe's iPhone",
-	*					"token": "az5fds4zerv*8aze8ff8z9z8yh8f9d8g9yuy9ee214rtaze",
-	*					"type": "iOS"
-	*				},
-	*				{
-	*					"id": 4,
-	*					"user": {
-	*					  "id": 13,
-	*					  "firstname": "John",
-	*					  "lastname": "Doe"
-	*					},
-	*					"name": "John Doe's Android Phone",
-	*					"token": "aZ5fds4zeMPC8ff8z9DFT8yh8f9F8g9yuy9",
-	*					"type": "Android"
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - getUserDevices - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.3.3",
-	*			"return_message": "Notification - getuserdevices - Bad ID"
-	*		}
-	*	}
-	*/
 	public function getUserDevicesAction(Request $request)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -394,76 +279,6 @@ class NotificationController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "15.4.3",
 	*			"return_message": "Notification - getNotifications - Bad Token"
-	*		}
-	*	}
-	*/
-	/**
-	* @api {get} /V0.2/notification/getnotifications/:token/:read/:offset/:limit Get user notifications
-	* @apiName getNotifications
-	* @apiGroup Notification
-	* @apiDescription Get user notifications
-	* @apiVersion 0.2.0
-	*
-	* @apiParam {String} token user authentication token
-	* @apiParam {String} read "true" || "false" to get read or unread notifications
-	* @apiParam {int} offset offset from where to get notifications (start to 0)
-	* @apiParam {int} limit number max of notifications to get
-	*
-	*
-	* @apiSuccessExample Success-Response
-	*	HTTP/1.1 200 OK
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.1",
-	*			"return_message": "Notification - getNotifications - Complete Success"
-	*		},
-	*		"data": {
-	*			"array": [
-	*				{
-	*					"id": 3,
-	*					"type": "Bugtracker",
-	*					"targetId": 1,
-	*					"message": "You have been assigned to ticket Ticket de Test",
-	*					"createdAt": {
-	*						"date": "2016-01-12 14:09:46",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe/Paris"
-	*					},
-	*					"isRead": false
-	*				},
-	*				{
-	*					"id": 4,
-	*					"type": "Bugtracker",
-	*					"targetId": 1,
-	*					"message": "The ticket Ticket de Test has been closed",
-	*					"createdAt": {
-	*						"date": "2016-01-12 14:12:46",
-	*						"timezone_type": 3,
-	*						"timezone": "Europe/Paris"
-	*					},
-	*					"isRead": false
-	*				}
-	*			]
-	*		}
-	*	}
-	* @apiSuccessExample Success-No Data
-	*	HTTP/1.1 201 Partial Content
-	*	{
-	*		"info": {
-	*			"return_code": "1.15.3",
-	*			"return_message": "Notification - getNotifications - No Data Success"
-	*		},
-	*		"data": {
-	*			"array": []
-	*		}
-	*	}
-	*
-	* @apiErrorExample Bad Authentication Token
-	*	HTTP/1.1 401 Unauthorized
-	*	{
-	*		"info": {
-	*			"return_code": "15.4.3",
-	*			"return_message": "Notification - getNotifications - Bad ID"
 	*		}
 	*	}
 	*/
