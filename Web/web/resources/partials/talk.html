@@ -71,13 +71,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="talks.data.creator.id != user.id">
                   <p class="info"><strong>{[{ ::talks.data.title }]}</strong></p>
                   <p class="body">{[{ ::talks.data.message }]}</p>
+                  <div class="submit">
+                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
+                  </div>
                 </div>
                 <div data-ng-if="talks.data.creator.id == user.id">
                   <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
                   <p class="body">{[{ talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Edit this talk" data-ng-click="talks.edit(talks.data)">Edit</a>
-                    <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)">Delete</a>
+                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
+                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="talks.edit(talks.data)">Edit</a>
+                    <a href="" class="btn red-color red-background-hover" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)">Delete</a>
                   </div>
                 </div>
               </div>

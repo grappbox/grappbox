@@ -15,7 +15,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   $scope.route = { project_id: $route.current.params.project_id, talklist_id: $route.current.params.talklist_id, talk_id: $route.current.params.talk_id };
   $scope.creation = ($scope.route.talk_id == "new" ? true : false);
 
-  $scope.talks = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", found: false };
+  $scope.talks = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", convert: "", found: false };
   $scope.comments = { loaded: false, valid: false, authorized: false, data: "", add: "" , edit: "", delete: "" };
   $scope.new = { loaded: false, valid: false, authorized: false, title: "", body: "", comment: "", disabled: false, error: { title: false, body: false } };
 
@@ -487,6 +487,17 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
         function talkCommentDeletionCancelled() {}
       }
     );
+  };
+
+
+
+  /* ==================== CONVERT TALK ==================== */
+
+  // "Convert to issue" button handler
+  $scope.talks.convert = function(talk_data) {
+    talkFactory.clear();
+    talkFactory.setMessage(talk_data);
+    $location.path("/bugtracker/" + $scope.route.project_id + "/0");
   };
 
 
