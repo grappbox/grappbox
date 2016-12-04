@@ -17,7 +17,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
 
   $scope.talks = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", found: false };
   $scope.comments = { loaded: false, valid: false, authorized: false, data: "", add: "" , edit: "", delete: "" };
-  $scope.new = { loaded: false, valid: false, authorized: false, title: "", body: "", disabled: false };
+  $scope.new = { loaded: false, valid: false, authorized: false, title: "", body: "", comment: "", disabled: false, error: { title: false, body: false } };
 
 
 
@@ -26,7 +26,6 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   // Routine definition (local)
   // Get talk content
   var _getTalk = function() {
-    $scope.talks.found = false;
     $http.get($rootScope.api.url + "/timeline/messages/" + $scope.route.talklist_id, { headers: { "Authorization": $rootScope.user.token }}).then(
       function talkReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -239,10 +238,10 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   // Routine definition (scope)
   // Add new talk comment
   $scope.comments.add = function() {
-    if (!$scope.new.disabled && $scope.new.body) {
+    if (!$scope.new.disabled && $scope.new.comment) {
       $scope.new.disabled = true;
       $http.post($rootScope.api.url + "/timeline/comment/" + $scope.route.talklist_id,
-        { data: { token: $rootScope.user.token, comment: $scope.new.body, commentedId: $scope.route.talk_id }},
+        { data: { token: $rootScope.user.token, comment: $scope.new.comment, commentedId: $scope.route.talk_id }},
         { headers: { "Authorization": $rootScope.user.token }}).then(
         function talkCommentPosted(response) {
           if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -250,7 +249,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               case "1.11.1":
               _getTalkComments();
               $scope.new.disabled = false;
-              $scope.new.body = "";
+              $scope.new.comment = "";
               break;
 
               default:
@@ -301,6 +300,107 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
         }
       );
     }
+  };
+
+
+
+  /* ==================== EDIT TALK/TALK COMMENT ==================== */
+
+  // "Edit talk" button handler
+  $scope.talks.edit = function(talk_data) {
+    $scope.new.title = talk_data.title;
+    $scope.new.body = talk_data.message;
+
+    var talkEdition = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", scope: $scope, templateUrl: "talkEdition.html", controller: "TalkEditionController" });
+
+    talkEdition.result.then(
+      function talkEditionConfirmed(data) {
+        $http.put($rootScope.api.url + "/timeline/message/" + $scope.route.talklist_id + "/" + $scope.route.talk_id,
+          { data: { title: $scope.new.title, message: $scope.new.body }},
+          { headers: { "Authorization": $rootScope.user.token }}).then(
+          function talkEdited() {
+            _getTalk();
+            notificationFactory.success("Talk edited.");
+            $scope.new.title = "";
+            $scope.new.body = "";
+          },
+          function talkNotEdited(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
+              switch(response.data.info.return_code) {
+                case "11.3.3":
+                $rootScope.reject();
+                break;
+
+                case "11.3.4":
+                $location.path("talk/" + $scope.route.project_id);
+                notificationFactory.warning("This talk doesn't exist.");
+                break;
+
+                case "11.3.9":
+                notificationFactory.warning("You don't have permission to edit this talk.");
+                break;
+
+                default:
+                $location.path("talk/" + $scope.route.project_id);
+                notificationFactory.error();
+                break;
+              }
+            }
+          }
+        ),
+        function talkEditionCancelled() {
+          $scope.new.title = "";
+          $scope.new.body = "";
+        }
+      }
+    );
+  };
+
+  // "Edit talk comment" button handler
+  $scope.comments.edit = function(comment_data) {
+    $scope.new.body = comment_data.comment;
+
+    var talkCommentEdition = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", scope: $scope, templateUrl: "talkCommentEdition.html", controller: "TalkCommentEditionController" });
+
+    talkCommentEdition.result.then(
+      function talkCommentEditionConfirmed(data) {
+        $http.put($rootScope.api.url + "/timeline/comment/" + $scope.route.talklist_id,
+          { data: { commentId: comment_data.id, comment: $scope.new.body }},
+          { headers: { "Authorization": $rootScope.user.token }}).then(
+          function talkCommentEdited() {
+            _getTalkComments();
+            notificationFactory.success("Comment edited.");
+            $scope.new.body = "";
+          },
+          function talkCommentNotEdited(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
+              switch(response.data.info.return_code) {
+                case "11.9.3":
+                $rootScope.reject();
+                break;
+
+                case "11.9.4":
+                $location.path("talk/" + $scope.route.project_id + "/" + $scope.route.talklist_id + "/" + $scope.route.talk_id);
+                notificationFactory.warning("This comment doesn't exist.");
+                break;
+
+                case "11.9.9":
+                notificationFactory.warning("You don't have permission to edit this comment.");
+                break;
+
+                default:
+                $location.path("talk/" + $scope.route.project_id);
+                notificationFactory.error();
+                break;
+              }
+            }
+          }
+        ),
+        function talkCommentEditionCancelled() {
+          $scope.new.body = "";
+        }
+      }
+    );
   };
 
 
@@ -399,6 +499,39 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     _getTalkComments();
   }
 
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* Confirmation prompt for talk edition.
+*
+*/
+app.controller("TalkEditionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.talkEditionConfirmed = function() {
+    $scope.new.error.title = ($scope.new.title && $scope.new.title.length ? false : true);
+    $scope.new.error.body = ($scope.new.body && $scope.new.body.length ? false : true);
+    if (!$scope.new.error.title && !$scope.new.error.body)
+      $uibModalInstance.close();
+  };
+  $scope.talkEditionCancelled = function() { $uibModalInstance.dismiss(); };
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* Confirmation prompt for talk comment edition.
+*
+*/
+app.controller("TalkCommentEditionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.talkCommentEditionConfirmed = function() {
+    $scope.new.error.body = ($scope.new.body && $scope.new.body.length ? false : true);
+    if (!$scope.new.error.body)
+      $uibModalInstance.close();
+  };
+  $scope.talkCommentEditionCancelled = function() { $uibModalInstance.dismiss(); };
 }]);
 
 

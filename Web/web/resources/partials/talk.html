@@ -76,7 +76,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
                   <p class="body">{[{ talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Edit this talk" >Edit</a>
+                    <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Edit this talk" data-ng-click="talks.edit(talks.data)">Edit</a>
                     <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)">Delete</a>
                   </div>
                 </div>
@@ -126,7 +126,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <p class="body">{[{ comment.comment }]}</p>
                   </div>
                   <div class="user-actions col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding">
-                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk">Edit</a>
+                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="comments.edit(comment)">Edit</a>
                     <a href="" class="btn gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)">Delete</a>
                   </div>
                   <div class="clearfix"></div>
@@ -162,7 +162,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <fieldset>
                 <div class="form-group label-floating col-lg-10 col-md-10 col-sm-12 col-xs-12 no-padding">
                   <label for="new_comment" class="control-label">Comment</label>
-                  <input id="new_comment" type="text" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required>
+                  <input id="new_comment" type="text" class="form-control" data-ng-model="new.comment" data-ng-disabled="new.disabled" required>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 no-padding user-add">
                   <button class="btn blue-color blue-background-hover {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()">Add</button>
@@ -176,6 +176,57 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </div>
 </section>
+
+
+
+<!-- Talk edition -->
+<script type="text/ng-template" id="talkEdition.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkEditionCancelled()">×</button>
+    <h4 class="modal-title">Talk edition</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ error.title ? 'has-error' : '' }]}">
+          <label for="title" class="control-label">Title</label>
+          <input id="title" type="text" class="form-control" data-ng-model="new.title" data-ng-disabled="new.disabled" required>
+        </div>
+        <div class="form-group label-floating {[{ error.body ? 'has-error' : '' }]}">
+          <label for="body" class="control-label">Body</label>
+          <textarea id="body" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required></textarea>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkEditionCancelled()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="talkEditionConfirmed()">Update</button>
+  </div>
+</script>
+
+
+<!-- Talk comment edition -->
+<script type="text/ng-template" id="talkCommentEdition.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkCommentEditionCancelled()">×</button>
+    <h4 class="modal-title">Talk comment edition</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ error.body ? 'has-error' : '' }]}">
+          <label for="body" class="control-label">Body</label>
+          <textarea id="body" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required></textarea>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkCommentEditionCancelled()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="talkCommentEditionConfirmed()">Update</button>
+  </div>
+</script>
 
 
 
