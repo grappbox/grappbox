@@ -125,10 +125,14 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		$userRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:User");
-		$user = $userRepository->findOneByToken($token);
-		return (is_null($user) ? -1 : $user->getId());
+		// $userRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:User");
+		// $user = $userRepository->findOneByToken($token);
+		// return (is_null($user) ? -1 : $user->getId());
+		$authRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Authentication");
+		$user = $authRepository->findOneByToken($token);
+		return (is_null($user) ? -1 : $user->getUser()->getId());
 	}
+
 
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
@@ -152,15 +156,15 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {post} /mongo/cloud/stream/:token/:project_id/[:safe_password] Open a new stream in order to upload file
-	* @apiVersion 0.2.0
+	* @-api {post} /0.3/cloud/stream/:project_id/[:safe_password] Open a new stream in order to upload file
+	* @apiVersion 0.3.0
 	* @apiDescription This method is here to create an upload process between API and Cloud.
 	* @apiGroup Cloud
 	* @apiName Stream opening
 	*
 	*/
-	public function openStreamAction($token, $idProject, $safePassword, Request $request){
+	public function openStreamAction($idProject, $safePassword, Request $request){
+		$token = $request->headers->get('Authorization');
 		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$json = json_decode($request->getContent(), true);
 		$receivedData = $json["data"];
@@ -214,20 +218,19 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {delete} /mongo/cloud/stream/:token/:projectId/:streamId Close a stream in order to complete an upload
-	* @apiVersion 0.2.0
+	* @api {delete} /0.3/cloud/stream/:projectId/:streamId Close a stream in order to complete an upload
+	* @apiVersion 0.3.0
 	* @apiDescription This method is here to finalize an upload and make the file downloadable.
 	* @apiGroup Cloud
 	* @apiName Stream closing
 	*
 	*/
-	private function closeStreamAction($token, $projectId, $streamId, Request $request){
+	private function closeStreamAction($projectId, $streamId, Request $request){
 		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$cloudTransferRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudTransfer");
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$stream = $cloudTransferRepository->find($streamId);
-		$user_id = $this->getUserId($token);
+		$user_id = $this->getUserId($request->headers->get('Authorization'));
 		if ($user_id < 0 || $user_id != $stream->getCreatorId())
 		{
 			$response["info"]["return_code"] = "3.2.9";
@@ -264,9 +267,8 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {put} /mongo/cloud/file send a file chunk.
-	* @apiVersion 0.2.0
+	* @-api {put} /0.3/cloud/file send a file chunk.
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to upload a file in the given project cloud. You have to open a stream before.
 	* @apiGroup Cloud
 	* @apiName Send file
@@ -275,7 +277,7 @@ class CloudController extends Controller
 	public function sendFileAction(Request $request){
 		$cloudTransferRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudTransfer");
 		$json = json_decode($request->getContent(), true);
-		$token = $json["data"]["token"];
+		$token = $request->headers->get('Authorization');
 		$receivedData = $json["data"];
 		$user_id = $this->getUserId($token);
 		$stream = $cloudTransferRepository->find($receivedData["stream_id"]);
@@ -298,16 +300,16 @@ class CloudController extends Controller
 
 
 	/**
-	*
-	* @api {get} /mongo/cloud/list/:token/:idProject/:path/[:passwordSafe] Cloud LS
-	* @apiVersion 0.2.0
+	* @-api {get} /0.3/cloud/list/:idProject/:path[/:passwordSafe] Cloud LS
+	* @apiVersion 0.3.0
 	* @apiDescription Get the list of a given directory.
 	* @apiGroup Cloud
 	* @apiName List directory
 	*
 	*/
-	public function getListAction($token, $idProject, $path, $password, Request $request)
+	public function getListAction($idProject, $path, $password, Request $request)
 	{
+		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe){
@@ -360,15 +362,15 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {get} /mongo/cloud/file/:cloudPath/:token/:idProject/[:passwordSafe] Download a file
-	* @apiVersion 0.2.0
+	* @-api {get} /0.3/cloud/file/:cloudPath/:idProject/[:passwordSafe] Download a file
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
 	* @apiName Download file
 	*
 	*/
-	public function getFileAction($cloudPath, $token, $idProject, $passwordSafe, Request $request){
+	public function getFileAction($cloudPath, $idProject, $passwordSafe, Request $request){
+		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$cloudPath = str_replace(",", "/", $cloudPath);
 		$cloudPath = str_replace(" ", "|", $cloudPath);
@@ -413,15 +415,15 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {get} /mongo/cloud/filesecured/:cloudPath/:token/:idProject/[:password]/[:passwordSafe] Download a secured file
-	* @apiVersion 0.2.0
+	* @-api {get} /0.3/cloud/filesecured/:cloudPath/:idProject/[:password]/[:passwordSafe] Download a secured file
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to start a download.
 	* @apiGroup Cloud
 	* @apiName Download secured file
 	*
 	*/
-	public function getFileSecuredAction($cloudPath, $token, $idProject, $password, $passwordSafe = null, Request $request){
+	public function getFileSecuredAction($cloudPath, $idProject, $password, $passwordSafe = null, Request $request){
+		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$passwordFileEncrypted = $this->grappSha1($password);
 		$cloudPathArray = explode(',', $cloudPath);
@@ -430,6 +432,9 @@ class CloudController extends Controller
 		$cloudBasePath = implode('/', $cloudPathArray);
 		if ($cloudBasePath == "")
 			$cloudBasePath = "/";
+		if (substr($cloudBasePath, -1) == "/")
+			$cloudBasePath = substr($cloudBasePath, 0, -1);
+		$cloudBasePath = preg_replace("/\/\//", "/", $cloudBasePath);
 		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
 
 		$isSafe = preg_match("/Safe/", $cloudPath);
@@ -461,13 +466,14 @@ class CloudController extends Controller
 				$response["info"]["return_message"] = "Cloud - getFileSecuredAction - Target file not found";
 				return new JsonResponse($response, 206);
 			}
-		return $this->redirect("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+		header("Location: http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+                $answer["location"] = ("http://cloud.grappbox.com/index.php/s/".(string)($searchResult->data->element->token)."/download");
+		return new JsonResponse($answer, 200);
 	}
 
 	/**
-	*
-	* @api {put} /mongo/cloud/safepass Set the safe password
-	* @apiVersion 0.2.0
+	* @api {put} /0.3/cloud/safepass Set the safe password
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to change the safe password for a given project.
 	* @apiGroup Cloud
 	* @apiName Set Safe Password
@@ -477,7 +483,7 @@ class CloudController extends Controller
 	{
 		$dbManager = $this->get('doctrine_mongodb')->getManager();
 		$json = json_decode($request->getContent(), true);
-		$token = $json["data"]["token"];
+		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
 		$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
@@ -505,16 +511,16 @@ class CloudController extends Controller
 	}
 
 	/**
-	*
-	* @api {delete} /mongo/cloud/file/:token/:project_id/:path/:password Delete a file or a directory
-	* @apiVersion 0.2.0
+	* @-api {delete} /0.3/cloud/file/:project_id/:path/:password Delete a file or directory
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
 	* @apiName Delete
 	*
 	*/
-	public function delAction($token, $projectId, $path, $password, Request $request)
+	public function delAction($projectId, $path, $password, Request $request)
 	{
+		$token = $request->headers->get('Authorization');
 		$path = str_replace(',', '/', $path);
 		$userId = $this->getUserId($token);
 		$apath = explode('/', $path);
@@ -566,15 +572,16 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {delete} /mongo/cloud/filesecured/:token/:project_id/:path/:password/:safe_password Delete a secured file or directory
-	* @apiVersion 0.2.0
+	* @-api {delete} /0.3/cloud/filesecured/:project_id/:path/:password/:safe_password Delete a secured file or directory
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to delete something in the cloud
 	* @apiGroup Cloud
 	* @apiName Delete secured
 	*
 	*/
-	public function delSecuredAction($token, $projectId, $path, $password, $safe_password, Request $request)
+	public function delSecuredAction($projectId, $path, $password, $safe_password, Request $request)
 	{
+		$token = $request->headers->get('Authorization');
 		$path = str_replace(',', '/', $path);
 		$path = str_replace(' ', '|', $path);
 		$userId = $this->getUserId($token);
@@ -590,8 +597,10 @@ class CloudController extends Controller
 		}
 
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
-
-		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$apath = preg_replace("/\/\//", "/", $apath);
+		if (substr($apath, -1) == "/")
+			$apath = substr($apath, 0, -1);
+		$file = $this->getDoctrine()->getRepository("SQLBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
@@ -618,7 +627,7 @@ class CloudController extends Controller
 		$this->get('doctrine_mongodb')->getManager()->remove($file);
 		$this->get('doctrine_mongodb')->getManager()->flush();
 
-		//$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+		$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
@@ -627,8 +636,8 @@ class CloudController extends Controller
 
 	/**
 	*
-	* @api {post} /mongo/cloud/createdir create a directory
-	* @apiVersion 0.2.0
+	* @-api {post} /0.3/cloud/createdir create a directory
+	* @apiVersion 0.3.0
 	* @apiDescription This method is there to create a directory in the cloud
 	* @apiGroup Cloud
 	* @apiName Create Directory
@@ -639,7 +648,7 @@ class CloudController extends Controller
 		$json = json_decode($request->getContent(), true);
 		if (!isset($json["data"]["password"]) && isset($json["data"]["passwordSafe"]))
 			$json["data"]["password"] = $json["data"]["passwordSafe"];
-		$token = $json["data"]["token"];
+		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$idProject = $json["data"]["project_id"];
 		$json["data"]["path"] = str_replace(" ", "|", urldecode($json["data"]["path"]));
@@ -672,7 +681,7 @@ class CloudController extends Controller
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
 
-		//$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";

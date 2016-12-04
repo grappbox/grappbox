@@ -15,11 +15,6 @@ class StatUserTasksAdvancement
     protected $id;
 
     /**
-     * @var string
-     */
-    protected $user;
-
-    /**
      * @var int
      */
     protected $tasksToDo;
@@ -44,10 +39,17 @@ class StatUserTasksAdvancement
      */
     protected $project;
 
+    /**
+     * @var MongoBundle\Document\User
+     */
+    protected $user;
+
     public function objectToArray()
     {
         return array(
-          "user" => $this->user,
+          "user" => array("id" => $this->getUser()->getId(),
+                          "firstname" => $this->getUser()->getFirstname(),
+                          "lastname" => $this->getUser()->getLastname()),
           "tasksToDo" => $this->tasksToDo,
           "tasksDoing" => $this->tasksDoing,
           "tasksDone" => $this->tasksDone,
@@ -63,29 +65,6 @@ class StatUserTasksAdvancement
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return self
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -184,9 +163,9 @@ class StatUserTasksAdvancement
      * Set project
      *
      * @param MongoBundle\Document\Project $project
-     * @return Project
+     * @return self
      */
-    public function setProject( $project = null)
+    public function setProject( $project)
     {
         $this->project = $project;
 
@@ -201,5 +180,28 @@ class StatUserTasksAdvancement
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set user
+     *
+     * @param MongoBundle\Document\User $user
+     * @return self
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return MongoBundle\Document\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

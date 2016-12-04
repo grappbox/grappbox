@@ -15,11 +15,6 @@ class StatUserWorkingCharge
     protected $id;
 
     /**
-     * @var string
-     */
-    protected $user;
-
-    /**
      * @var int
      */
     protected $charge;
@@ -29,10 +24,17 @@ class StatUserWorkingCharge
      */
     protected $project;
 
+    /**
+     * @var MongoBundle\Document\User
+     */
+    protected $user;
+
     public function objectToArray()
     {
       return array(
-        "user" => $this->user,
+        "user" => array("id" => $this->getUser()->getId(),
+                        "firstname" => $this->getUser()->getFirstname(),
+                        "lastname" => $this->getUser()->getLastname()),
         "charge" => $this->charge
       );
     }
@@ -45,29 +47,6 @@ class StatUserWorkingCharge
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return self
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -97,9 +76,9 @@ class StatUserWorkingCharge
      * Set project
      *
      * @param MongoBundle\Document\Project $project
-     * @return Project
+     * @return self
      */
-    public function setProject( $project = null)
+    public function setProject( $project)
     {
         $this->project = $project;
 
@@ -115,4 +94,28 @@ class StatUserWorkingCharge
     {
         return $this->project;
     }
+
+    /**
+     * Set user
+     *
+     * @param MongoBundle\Document\User $user
+     * @return self
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return MongoBundle\Document\User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
 }

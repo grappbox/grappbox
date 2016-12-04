@@ -17,11 +17,6 @@ class StatTasksRepartition
     /**
      * @var string
      */
-    protected $user;
-
-    /**
-     * @var string
-     */
     protected $role;
 
     /**
@@ -39,10 +34,17 @@ class StatTasksRepartition
      */
     protected $project;
 
+    /**
+     * @var MongoBundle\Document\User
+     */
+    protected $user;
+
     public function objectToArray()
     {
       return array(
-        "user" => $this->user,
+        "user" => array("id" => $this->getUser()->getId(),
+                        "firstname" => $this->getUser()->getFirstname(),
+                        "lastname" => $this->getUser()->getLastname()),
         //"role" => $this->role,
         "value" => $this->value,
         "percentage" => $this->percentage
@@ -57,29 +59,6 @@ class StatTasksRepartition
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set user
-     *
-     * @param string $user
-     * @return self
-     */
-    public function setUser($user)
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get user
-     *
-     * @return string
-     */
-    public function getUser()
-    {
-        return $this->user;
     }
 
     /**
@@ -155,9 +134,9 @@ class StatTasksRepartition
      * Set project
      *
      * @param MongoBundle\Document\Project $project
-     * @return Project
+     * @return self
      */
-    public function setProject( $project = null)
+    public function setProject( $project)
     {
         $this->project = $project;
 
@@ -172,5 +151,28 @@ class StatTasksRepartition
     public function getProject()
     {
         return $this->project;
+    }
+
+    /**
+     * Set user
+     *
+     * @param MongoBundle\Document\User $user
+     * @return self
+     */
+    public function setUser($user)
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get user
+     *
+     * @return MongoBundle\Document\User
+     */
+    public function getUser()
+    {
+        return $this->user;
     }
 }

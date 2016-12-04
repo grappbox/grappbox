@@ -10,9 +10,10 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 use MongoBundle\Document\Task;
 use MongoBundle\Document\Tag;
-use MongoBundle\Entity\Dependencies;
-use MongoBundle\Entity\Ressources;
-use MongoBundle\Entity\Contains;
+use MongoBundle\Document\Dependencies;
+use MongoBundle\Document\Ressources;
+use MongoBundle\Document\Contains;
+use Datetime;
 
 /**
  *  @IgnoreAnnotation("apiName")
@@ -64,11 +65,11 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {post} /mongo/tasks/taskcreation Create a task
+	* @-api {post} /0.3/task Create a task
 	* @apiName taskCreation
 	* @apiGroup Task
 	* @apiDescription Create a task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
 	public function createTaskAction(Request $request)
@@ -77,21 +78,22 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('token', $content) || !array_key_exists('title', $content)
-			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('is_milestone', $content) || !array_key_exists('is_container', $content)))
+		if ($content === null || (!array_key_exists('projectId', $content) || !array_key_exists('title', $content)
+			|| !array_key_exists('description', $content) || !array_key_exists('due_date', $content) || !array_key_exists('started_at', $content)
+			|| !array_key_exists('is_milestone', $content) || !array_key_exists('is_container', $content)))
 			return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.1.3", "Task", "taskcreation"));
-
-		if ($this->checkRoles($user, $content->projectId, "task") < 2)
-			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: projectId");
+
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
+			return ($this->setNoRightsError("12.1.9", "Task", "taskcreation"));
 
 		$task = new Task();
 		$task->setTitle($content->title);
@@ -99,39 +101,20 @@ class TaskController extends RolesAndTokenVerificationController
 		$task->setProjects($project);
 		$task->setCreatedAt(new \Datetime);
 		$task->setCreatorUser($user);
+		$task->setDueDate(new \Datetime($content->due_date));
+		$task->setStartedAt(new \Datetime($content->started_at));
 
-		if (array_key_exists('color', $content))
-			$task->setColor($content->color);
+		if ((!$content->is_container) && $task->getStartedAt() >= $task->getDueDate())
+			return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
 
-		if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
-			$dueDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-		else
-			$dueDate = new \Datetime($content->due_date->date);
-		$task->setDueDate($dueDate);
-
-
-		if (array_key_exists('started_at', $content))
-		{
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
-				$startedAt = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-			else
-				$startedAt = new \Datetime($content->started_at->date);
-			$task->setStartedAt($startedAt);
-		}
-		else
-		{
-			$task->setStartedAt(date_create("0000-00-00 00:00:00"));
+		//finished at
+		if (array_key_exists('finished_at', $content)) {
+			$task->setFinishedAt(new \Datetime($content->finished_at));
+			if ($task->getStartedAt() >= $task->getFinishedAt())
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: finished_at can't be prior to started_at");
 		}
 
-		if (array_key_exists('finished_at', $content))
-		{
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
-				$finishedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
-			else
-				$finishedAt = new \Datetime($content->finished_at->date);
-			$task->setFinishedAt($finishedAt);
-		}
-
+		//advance
 		if (array_key_exists('advance', $content))
 		{
 			if($content->advance > 100)
@@ -145,6 +128,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em->persist($task);
 
+		//dependencies
 		if (array_key_exists('dependencies', $content))
 		{
 			$dependencies = $content->dependencies;
@@ -159,11 +143,11 @@ class TaskController extends RolesAndTokenVerificationController
 						$cnt++;
 				}
 				if ($cnt > 1)
-					return $this->setBadRequest("12.2.4", "Task", "taskcreation", "Bad Parameter: dependencies");
+					return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: dependencies");
 			}
 			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('MongoBundle:Task')->find($dep->id);
-				if ($dependence != null)
+				if ($dependence != null && $dependence->getProjects() === $task->getProjects())
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
@@ -173,10 +157,10 @@ class TaskController extends RolesAndTokenVerificationController
 					$task->addDependence($newDep);
 				}
 			}
-			$this->checkDependencies($task);
+			$task = $this->checkDependencies($task);
 		}
 
-
+		//milestone
 		$task->setIsMilestone($content->is_milestone);
 		if ($content->is_milestone == true)
 		{
@@ -188,7 +172,7 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 
-
+		//container
 		$arrTasks = array();
 		$task->setIsContainer($content->is_container);
 		if ($content->is_container == true)
@@ -198,7 +182,7 @@ class TaskController extends RolesAndTokenVerificationController
 			{
 				foreach ($content->tasksAdd as $ta) {
 					$taskAdd = $em->getRepository("MongoBundle:Task")->find($ta);
-					if ($taskAdd instanceof Task)
+					if ($taskAdd instanceof Task && $taskAdd->getIsMilestone() === false && $taskAdd->getProjects() === $task->getProjects())
 					{
 						$isInArray = false;
 						foreach ($task->getTasksContainer() as $t) {
@@ -259,73 +243,169 @@ class TaskController extends RolesAndTokenVerificationController
 					$task->setDueDate($t->getDueDate());
 				$task->setFinishedAt(null);
 			}
+
+			if (array_key_exists('color', $content))
+				$task->setColor($content->color);
+
+			if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
+				$dueDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
+			else
+				$dueDate = new \Datetime($content->due_date->date);
+			$task->setDueDate($dueDate);
+
 			if (count($task->getTasksContainer()) > 0)
 				$task->setAdvance($tasksAdvance / count($task->getTasksContainer()));
-			}
-
-			$em->flush();
-			$id = $task->getId();
-			$title = $task->getTitle();
-			$description = $task->getDescription();
-			$color = $task->getColor();
-			$dueDate = $task->getDueDate();
-			$startedAt = $task->getStartedAt();
-			$finishedAt = $task->getFinishedAt();
-			$createdAt = $task->getCreatedAt();
-			$deletedAt = $task->getDeletedAt();
-			$advance = $task->getAdvance();
-			$creator = $task->getCreatorUser();
-			$dependencies = $task->getDependence();
-
-			$creator_id = $creator->getId();
-			$creator_firstname = $creator->getFirstname();
-			$creator_lastname = $creator->getLastname();
-			$creatorInfos = array("id" => $creator_id, "firstname" => $creator_firstname, "lastname" => $creator_lastname);
-
-			$userArray = array();
-			$tagArray = array();
-			$depArray = array();
-			if ($dependencies != null)
-			{
-				foreach ($dependencies as $d) {
-					$dname = $d->getName();
-					$did = $d->getDependenceTask()->getId();
-					$dtitle = $d->getDependenceTask()->getTitle();
-
-					$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-				}
-			}
-
-			return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "color" => $color,
-				"due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt,
-				"created_at" => $createdAt, "deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
 		}
 
+		$em->flush();
+
+		//usersAdd
+		if (array_key_exists('usersAdd', $content))
+		{
+			if ($task->getIsMilestone() == true)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: You can't add someone on a milestone");
+
+			foreach ($content->usersAdd as $userAdd) {
+				if (!array_key_exists('percent', $userAdd) || !array_key_exists('id', $userAdd))
+					return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter in usersAdd");
+
+				$userToAdd = $em->getRepository('MongoBundle:User')->find($userAdd->id);
+				if ($userToAdd !== null) {
+					$users = $task->getRessources();
+					$isInDB = false;
+					foreach ($users as $res) {
+						$us = $res->getUser();
+						if ($us === $userToAdd)
+							$isInDB = true;
+					}
+
+					if ($isInDB == false) {
+						$resource = new Ressources();
+						$resource->setResource($userAdd->percent);
+						$resource->setTask($task);
+						$resource->setUser($userToAdd);
+
+						$em->persist($resource);
+						$task->addRessource($resource);
+					}
+				}
+			}
+		}
+
+		//usersRemove
+		if (array_key_exists('usersRemove', $content))
+		{
+			foreach ($content->usersRemove as $userId) {
+				$userToRemove = $em->getRepository('MongoBundle:User')->find($userId);
+
+				if ($userToRemove !== null) {
+
+					$resources = $task->getRessources();
+					$isAssign = false;
+					$resToRemove;
+					foreach ($resources as $res) {
+						if ($res->getUser() === $userToRemove)
+						{
+							$isAssign = true;
+							$resToRemove = $res;
+						}
+					}
+
+					if ($isAssign !== false) {
+						$task->removeRessource($resToRemove);
+						$em->remove($resToRemove);
+					}
+				}
+			}
+		}
+
+		//add tag to task
+		if (array_key_exists('tagsAdd', $content)) {
+			foreach ($content->tagsAdd as $tag) {
+				$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($tag);
+				if ($tagToAdd !== null) {
+					$tags = $task->getTags();
+					$isInDB = false;
+					foreach ($tags as $tag) {
+						if ($tag === $tagToAdd)
+							$isInDB = true;
+					}
+					if ($isInDB == false)
+						$task->addTag($tagToAdd);
+				}
+			}
+		}
+
+		//remove tag to task
+		if (array_key_exists('tagsRemove', $content)) {
+			foreach ($content->tagsRemove as $tagRemove) {
+				$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagRemove);
+				$tags = $task->getTags();
+				$isAssign = false;
+				foreach ($tags as $tag) {
+					if ($tag === $tagToRemove)
+						$isAssign = true;
+				}
+				if ($isAssign == true)
+					$task->removeTag($tagToRemove);
+			}
+		}
+
+		$em->flush();
+
+
+		//notifs
+		$mdata['mtitle'] = "new task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "new task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
+
+		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", $task->objectToArray(array()));
+	}
+
 	/**
-	* @api {put} /mongo/tasks/taskupdate Update a task
+	* @-api {put} /0.3/task/:id Update a task
 	* @apiName taskUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function updateTaskAction(Request $request)
+	public function updateTaskAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
+		if ($content === null)
 			return $this->setBadRequest("12.2.6", "Task", "taskupdate", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.2.3", "Task", "taskupdate"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($id);
 
-		if ($task === null)
+		if ($task === null || $task->getDeletedAt() != null)
 			return $this->setBadRequest("12.2.4", "Task", "taskupdate", "Bad Parameter: taskId");
 
 		$projectId = $task->getProjects()->getId();
@@ -335,104 +415,137 @@ class TaskController extends RolesAndTokenVerificationController
 		$taskDep = $task->getTaskDepended();
 		$taskModified = array();
 
+		//title
 		if (array_key_exists('title', $content))
 			$task->setTitle($content->title);
+
+		//description
 		if (array_key_exists('description', $content))
 			$task->setDescription($content->description);
-		if (array_key_exists('color', $content))
-			$task->setColor($content->color);
+
+		$task = $this->checkDependencies($task);
+
+		//due_date
 		if (array_key_exists('due_date', $content))
 		{
 			$dueDate = $task->getDueDate();
-			$newDate;
-			$diff;
-			if (array_key_exists('timezone', $content->due_date) && $content->due_date->timezone != "")
-			{
-				$newDate = new \Datetime($content->due_date->date, new \DatetimeZone($content->due_date->timezone));
-				if ($dueDate != null)
-					$diff = date_diff($dueDate, $newDate);
-				$dueDate = $newDate;
-			}
-			else
-			{
-				$newDate = new \Datetime($content->due_date->date);
-				if ($dueDate != null)
-					$diff = date_diff($dueDate, $newDate);
-				$dueDate = $newDate;
-			}
+			$newDate = new \Datetime($content->due_date);
+			if ((!$task->getIsContainer()) && $task->getStartedAt() >= $newDate)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: due_date can't be prior to started_at");
+
+			if ($dueDate != null)
+				$diff = date_diff($dueDate, $newDate);
 
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "fs")
 				{
 					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setStartedAt($date);
+					$td->getTask()->setDueDate($end);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 				else if ($td->getName() == "ff")
 				{
-					$date = $td->getTask()->getDueDate();
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getId(), "title" => $td->getTitle(), "started_at" => $td->getStartedAt(), "due_date" => $td->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
 				}
 			}
-			$task->setDueDate($dueDate);
+			$task->setDueDate($newDate);
 		}
+
+		//started at
 		if (array_key_exists('started_at', $content))
 		{
 			$startedAt = $task->getStartedAt();
-			$newDate;
-			$diff;
-			if (array_key_exists('timezone', $content->started_at) && $content->started_at->timezone != "")
-			{
-				$newDate = new \Datetime($content->started_at->date, new \DatetimeZone($content->started_at->timezone));
-				if ($startedAt != null)
-					$diff = date_diff($startedAt, $newDate);
-				$startedAt = $newDate;
-			}
-			else
-			{
-				$newDate = new \Datetime($content->started_at->date);
-				if ($startedAt != null)
-					$diff = date_diff($startedAt, $newDate);
-				$startedAt = $newDate;
-			}
+			$newDate = new \Datetime($content->started_at);
+			if ((!$task->getIsContainer()) && $newDate >= $task->getDueDate())
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: started_at can't be after due_date");
+
+			if ($startedAt != null)
+				$diff = date_diff($startedAt, $newDate);
 
 			foreach ($taskDep as $td) {
 				if ($td->getName() == "ss")
 				{
 					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setStartedAt(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
 				}
 				else if ($td->getName() == "sf")
 				{
-					$date = $td->getTask()->getDueDate();
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
 					date_add($date, $diff);
-					$td->getTask()->setDueDate(new \Datetime($date->format('Y-m-d H:i:s')));
-					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt(), "due_date" => $td->getTask()->getDueDate());
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
 				}
 			}
 			$task->setStartedAt($newDate);
 		}
+
+		//finished at
 		if (array_key_exists('finished_at', $content))
 		{
-			if (array_key_exists('timezone', $content->finished_at) && $content->finished_at->timezone != "")
-				$deletedAt = new \Datetime($content->finished_at->date, new \DatetimeZone($content->finished_at->timezone));
-			else
-				$deletedAt = new \Datetime($content->finished_at->date);
-			$task->setFinishedAt($deletedAt);
+			$dueDate = $task->getDueDate();
+			$newDate = new \Datetime($content->finished_at);
+			if ($task->getStartedAt() >= $newDate)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: finished_at can't be prior to started_at");
+
+			if ($dueDate != null)
+				$diff = date_diff($dueDate, $newDate);
+
+			foreach ($taskDep as $td) {
+				if ($td->getName() == "fs")
+				{
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
+					date_add($date, $diff);
+					date_add($end, $diff);
+					$td->getTask()->setStartedAt($date);
+					$td->getTask()->setDueDate($end);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
+				}
+				else if ($td->getName() == "ff")
+				{
+					$date = $td->getTask()->getStartedAt();
+					$end = $td->getTask()->getDueDate();
+					date_add($date, $diff);
+					date_add($end, $diff);
+					$td->getTask()->setDueDate($end);
+					$td->getTask()->setStartedAt($date);
+					$taskModified[] = array("id" => $td->getTask()->getId(), "title" => $td->getTask()->getTitle(), "started_at" => $td->getTask()->getStartedAt()->format('Y-m-d H:i:s'), "due_date" => $td->getTask()->getDueDate()->format('Y-m-d H:i:s'));
+				}
+			}
+
+			$task->setFinishedAt($newDate);
+			$task->setDueDate($newDate);
 		}
+
+		//advance
 		if (array_key_exists('advance', $content))
 		{
 			if($content->advance > 100)
 				$content->advance = 100;
 			else if ($content->advance < 0)
 				$content->advance = 0;
-			$content->setAdvance($content->advance);
+			$task->setAdvance($content->advance);
 		}
+
+		//dependencies
 		if (array_key_exists('dependencies', $content))
 		{
 			$dependencies = $content->dependencies;
@@ -451,7 +564,7 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 			foreach ($dependencies as $dep) {
 				$dependence = $em->getRepository('MongoBundle:Task')->find($dep->id);
-				if ($dependence != null)
+				if ($dependence != null && $dependence->getProjects() === $task->getProjects())
 				{
 					$newDep = new Dependencies();
 					$newDep->setName($dep->name);
@@ -464,6 +577,20 @@ class TaskController extends RolesAndTokenVerificationController
 			$this->checkDependencies($task);
 		}
 
+		//dependencies update
+		if (array_key_exists('dependenciesUpdate', $content)) {
+			foreach ($content->dependenciesUpdate as $up) {
+				$dependencies = $task->getDependence();
+				foreach ($dependencies as $dep) {
+					if ($dep->getName() == $up->oldName && $dep->getDependenceTask()->getId() == $up->id) {
+						$dep->setName($up->newName);
+					}
+				}
+			}
+			$task = $this->checkDependencies($task);
+		}
+
+		//remove dependencies
 		if (array_key_exists('dependenciesRemove', $content))
 		{
 			foreach ($content->dependenciesRemove as $depId) {
@@ -477,12 +604,14 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 
+		//milestone
 		if ($task->getIsMilestone() == true)
 		{
 			$task->setStartedAt(null);
 			$task->setFinishedAt(null);
 		}
 
+		//container
 		$arrTasks = array();
 		if (array_key_exists('is_container', $content))
 		{
@@ -495,7 +624,7 @@ class TaskController extends RolesAndTokenVerificationController
 			{
 				foreach ($content->tasksAdd as $ta) {
 					$taskAdd = $em->getRepository("MongoBundle:Task")->find($ta);
-					if ($taskAdd instanceof Task)
+					if ($taskAdd instanceof Task && $taskAdd->getIsMilestone() === false && $taskAdd->getProjects() === $task->getProjects())
 					{
 						$isInArray = false;
 						foreach ($task->getTasksContainer() as $t) {
@@ -562,89 +691,160 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		$id = $task->getId();
-		$title = $task->getTitle();
-		$description = $task->getDescription();
-		$color = $task->getColor();
-		$dueDate = $task->getDueDate();
-		$startedAt = $task->getStartedAt();
-		$finishedAt = $task->getFinishedAt();
-		$createdAt = $task->getCreatedAt();
-		$deletedAt = $task->getDeletedAt();
-		$advance = $task->getAdvance();
-		$creator = $task->getCreatorUser();
-		$users = $task->getUsers();
-		$tags = $task->getTags();
-		$dependencies = $task->getDependence();
+		//usersAdd
+		if (array_key_exists('usersAdd', $content))
+		{
+			if ($task->getIsMilestone() == true)
+				return $this->setBadRequest("12.1.4", "Task", "taskcreation", "Bad Parameter: You can't add someone on a milestone");
 
-		$creator_id = $creator->getId();
-		$creator_firstname = $creator->getFirstname();
-		$creator_lastname = $creator->getLastname();
-		$creatorInfos = array("id" => $creator_id, "firstname" => $creator_firstname, "lastname" => $creator_lastname);
+			foreach ($content->usersAdd as $userAdd) {
+				if (!array_key_exists('percent', $userAdd) || !array_key_exists('id', $userAdd))
+					return $this->setBadRequest("12.1.6", "Task", "taskcreation", "Missing Parameter in usersAdd");
+
+				$userToAdd = $em->getRepository('MongoBundle:User')->find($userAdd->id);
+				if ($userToAdd !== null) {
+					$users = $task->getRessources();
+					$isInDB = false;
+					foreach ($users as $res) {
+						$us = $res->getUser();
+						if ($us === $userToAdd)
+							$isInDB = true;
+					}
+
+					if ($isInDB == false) {
+						$resource = new Ressources();
+						$resource->setResource($userAdd->percent);
+						$resource->setTask($task);
+						$resource->setUser($userToAdd);
+
+						$em->persist($resource);
+						$task->addRessource($resource);
+					}
+				}
+			}
+		}
+
+		//user update
+		if (array_key_exists('usersUpdate', $content)) {
+			foreach ($content->usersUpdate as $usUp) {
+				$users = $task->getRessources();
+				foreach ($users as $us) {
+					if ($us->getUser()->getId() == $usUp->id) {
+						$us->setResource($usUp->percent);
+					}
+				}
+			}
+		}
+
+		//usersRemove
+		if (array_key_exists('usersRemove', $content))
+		{
+			foreach ($content->usersRemove as $userId) {
+				$userToRemove = $em->getRepository('MongoBundle:User')->find($userId);
+
+				if ($userToRemove !== null) {
+
+					$resources = $task->getRessources();
+					$isAssign = false;
+					$resToRemove;
+					foreach ($resources as $res) {
+						if ($res->getUser() === $userToRemove)
+						{
+							$isAssign = true;
+							$resToRemove = $res;
+						}
+					}
+
+					if ($isAssign !== false) {
+						$task->removeRessource($resToRemove);
+						$em->remove($resToRemove);
+					}
+				}
+			}
+		}
+
+		//add tag to task
+		if (array_key_exists('tagsAdd', $content)) {
+			foreach ($content->tagsAdd as $tag) {
+				$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($tag);
+				if ($tagToAdd !== null) {
+					$tags = $task->getTags();
+					$isInDB = false;
+					foreach ($tags as $tag) {
+						if ($tag === $tagToAdd)
+							$isInDB = true;
+					}
+					if ($isInDB == false)
+						$task->addTag($tagToAdd);
+				}
+			}
+		}
+
+		//remove tag to task
+		if (array_key_exists('tagsRemove', $content)) {
+			foreach ($content->tagsRemove as $tagRemove) {
+				$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagRemove);
+				$tags = $task->getTags();
+				$isAssign = false;
+				foreach ($tags as $tag) {
+					if ($tag === $tagToRemove)
+						$isAssign = true;
+				}
+				if ($isAssign == true)
+					$task->removeTag($tagToRemove);
+			}
+		}
+
+		$em->flush();
+
+		$creator_id = $task->getCreatorUser()->getId();
 		$userNotif[] = $creator_id;
 
 		$userArray = array();
 
-		foreach ($users as $res) {
-			$percent = $res->getResource();
-			$u = $res->getUser();
-			$uid = $u->getId();
-			$firstname = $u->getFirstname();
-			$lastname = $u->getLastname();
-
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
+		foreach ($task->getRessources() as $res) {
+			$uid = $res->getUser()->getId();
 			if ($uid != $creator_id)
 				$userNotif[] = $uid;
-		}
-
-		$tagArray = array();
-		foreach ($tags as $t) {
-			$tid = $t->getId();
-			$name = $t->getName();
-
-			$tagArray[] = array("id" => $tid, "name" => $name);
-		}
-
-		$depArray = array();
-		foreach ($dependencies as $d) {
-			$dname = $d->getName();
-			$did = $d->getDependenceTask()->getId();
-			$dtitle = $d->getDependenceTask()->getTitle();
-
-			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
 		}
 
 		// Notifications
 		if (count($userNotif) != 0)
 		{
-			$class = new NotificationController();
-
-			$mdata['mtitle'] = "Task - Update";
-			$mdata['mdesc'] = "The task ".$task->getTitle()." has been updated";
-
-			$wdata['type'] = "Task";
+			$mdata['mtitle'] = "update task";
+			$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
+			$wdata['type'] = "update task";
 			$wdata['targetId'] = $task->getId();
-			$wdata['message'] = "The task ".$task->getTitle()." has been updated";
-
-			$class->pushNotification($userNotif, $mdata, $wdata, $em);
+			$wdata['message'] = json_encode($task->objectToArray($taskModified));
+			$userNotif = array();
+			if ($task->getProjects() != null) {
+				foreach ($task->getProjects()->getUsers() as $key => $value) {
+					$userNotif[] = $value->getId();
+				}
+			}
+			else {
+				foreach ($task->getRessources() as $key => $value) {
+					$userNotif[] = $value->getUser()->getId();
+				}
+			}
+			if (count($userNotif) > 0)
+				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
-		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", array("id" => $id, "title" => $title, "description" => $description, "color" => $color, "due_date" => $dueDate,
-			"is_milestone" => $task->getIsMilestone(),"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt,"created_at" => $createdAt,
-			"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray, "tasks_modified" => $taskModified));
+		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
 	}
 
 	/**
-	* @api {get} /mongo/tasks/taskinformations/:token/:taskId Get a task informations
+	* @-api {get} /0.3/task/:taskId Get a task informations
 	* @apiName taskInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function getTaskInfosAction(Request $request, $token, $taskId)
+	public function getTaskInfosAction(Request $request, $taskId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.3.3", "Task", "taskinformations"));
 
@@ -657,90 +857,25 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.3.9", "Task", "taskinformations"));
 
-		$arrTasks = array();
-		foreach ($task->getTasksContainer() as $t) {
-			$arrTasks[] = array("id" => $t->getId(), "title" => $t->getTitle());
-		}
-
-		$id = $task->getId();
-		$title = $task->getTitle();
-		$description = $task->getDescription();
-		$color = $task->getColor();
-		$dueDate = $task->getDueDate();
-		$startedAt = $task->getStartedAt();
-		$finishedAt = $task->getFinishedAt();
-		$createdAt = $task->getCreatedAt();
-		$deletedAt = $task->getDeletedAt();
-		$advance = $task->getAdvance();
-		$creator = $task->getCreatorUser();
-		$users = $task->getRessources();
-		$tags = $task->getTags();
-		$dependencies = $task->getDependence();
-
-		$creator_id = $creator->getId();
-		$creator_firstname = $creator->getFirstname();
-		$creator_lastname = $creator->getLastname();
-		$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
-
-		$userArray = array();
-		foreach ($users as $res) {
-			$percent = $res->getResource();
-			$u = $res->getUser();
-			$uid = $u->getId();
-			$firstname = $u->getFirstname();
-			$lastname = $u->getLastname();
-
-			$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
-			if ($uid != $creator_id)
-				$userNotif[] = $uid;
-		}
-
-		$tagArray = array();
-		foreach ($tags as $t) {
-			$tid = $t->getId();
-			$name = $t->getName();
-
-			$tagArray[] = array("id" => $tid, "name" => $name);
-		}
-
-		$depArray = array();
-		foreach ($dependencies as $d) {
-			$dname = $d->getName();
-			$did = $d->getDependence()->getId();
-			$dtitle = $d->getDependence()->getTitle();
-
-			$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-		}
-
-		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success",
-			array("id" => $id, "title" => $title, "description" => $description, "color" => $color, "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
-				"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt,
-				"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray));
+		return $this->setSuccess("1.12.1", "Task", "taskinformations", "Complete Success", $task->objectToArray(array()));
 	}
 
 	/**
-	* @api {put} /mongo/tasks/archivetask Archive a task
+	* @-api {put} /0.3/task/archive/:id Archive a task
 	* @apiName archiveTask
 	* @apiGroup Task
 	* @apiDescription Archive the given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function archiveTaskAction(Request $request)
+	public function archiveTaskAction(Request $request, $id)
 	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if ($content === null || (!array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
-			return $this->setBadRequest("12.4.6", "Task", "archivetask", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.4.3", "Task", "archivetask"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
+		$task = $em->getRepository('MongoBundle:Task')->find($id);
 		if ($task === null)
 			return $this->setBadRequest("12.4.4", "Task", "archivetask", "Bad Parameter: taskId");
 
@@ -749,27 +884,46 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.4.9", "Task", "archivetask"));
 
 		$task->setDeletedAt(new \Datetime);
-
 		$em->flush();
 
-		// $this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		// $this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		// $this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		//notifs
+		$mdata['mtitle'] = "archive task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "archive task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "archivetask", "Complete Success", array("id" => $task->getId()));
 	}
 
 	/**
-	* @api {delete} /mongo/tasks/taskdelete/:token/:taskId Delete a task
+	* @-api {delete} /0.3/task/:taskId Delete a task
 	* @apiName taskDelete
 	* @apiGroup Task
 	* @apiDescription Delete definitely the given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function deleteTaskAction(Request $request, $token, $taskId)
+	public function deleteTaskAction(Request $request, $taskId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.5.3", "Task", "taskdelete"));
 
@@ -782,13 +936,32 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $projectId, "task") < 2)
 			return ($this->setNoRightsError("12.5.9", "Task", "taskdelete"));
 
-		$em->remove($task);
+		//notifs
+		$mdata['mtitle'] = "delete task";
+		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		$wdata['type'] = "delete task";
+		$wdata['targetId'] = $task->getId();
+		$wdata['message'] = json_encode($task->objectToArray(array()));
+		$userNotif = array();
+		if ($task->getProjects() != null) {
+			foreach ($task->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+		}
+		else {
+			foreach ($task->getRessources() as $key => $value) {
+				$userNotif[] = $value->getUser()->getId();
+			}
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
+		$em->remove($task);
 		$em->flush();
 
-		// $this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		// $this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		// $this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - taskdelete - Complete Success";
@@ -796,154 +969,11 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /mongo/tasks/assignusertotask Assign a user to a task
-	* @apiName assignUserToTask
-	* @apiGroup Task
-	* @apiDescription Assign a given user to the task wanted
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function assignUserToTaskAction(Request $request)
-	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if ($content === null || (!array_key_exists('percent', $content) || !array_key_exists('userId', $content) || !array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
-			return $this->setBadRequest("12.6.6", "Task", "assignusertotask", "Missing Parameter");;
-
-		$user = $this->checkToken($content->token);
-		if (!$user)
-			return ($this->setBadTokenError("12.6.3", "Task", "assignusertotask"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
-		if ($task === null)
-			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: taskId");
-
-		if ($task->getIsMilestone() == true)
-			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: You can't add someone on a milestone");
-
-		$projectId = $task->getProjects()->getId();
-		if ($this->checkRoles($user, $projectId, "task") < 2)
-			return ($this->setNoRightsError("12.6.9", "Task", "assignusertotask"));
-
-		$userToAdd = $em->getRepository('MongoBundle:User')->find($content->userId);
-		if ($userToAdd === null)
-			return $this->setBadRequest("12.6.4", "Task", "assignusertotask", "Bad Parameter: userId");
-
-		$users = $task->getRessources();
-		foreach ($users as $res) {
-			$user = $res->getUser();
-			if ($user === $userToAdd)
-				return $this->setBadRequest("12.6.7", "Task", "assignusertotask", "Already In Database");
-		}
-
-		$resource = new Ressources();
-		$resource->setResource($content->percent);
-		$resource->setTask($task);
-		$resource->setUser($userToAdd);
-
-		$em->persist($resource);
-		$em->flush();
-
-		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Task - Add";
-		$mdata['mdesc'] = "You have been added on the task ".$task->getTitle();
-
-		$wdata['type'] = "Task";
-		$wdata['targetId'] = $task->getId();
-		$wdata['message'] = "You have been added on the task ".$task->getTitle();
-
-		$userNotif[] = $userToAdd->getId();
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
-
-		// $this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		// $this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		// $this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
-
-		return $this->setSuccess("1.12.1", "Task", "assignusertotask", "Complete Success",
-			array("id" => $task->getId(), "user" => array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "percent" => $resource->getResource())));
-	}
-
-	/**
-	* @api {delete} /mongo/tasks/removeusertotask/:token/:taskId/:userId Remove a user to a task
-	* @apiName removeUserToTask
-	* @apiGroup Task
-	* @apiDescription Remove a given user to the task wanted
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function removeUserToTaskAction(Request $request, $token, $taskId, $userId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("12.7.3", "Task", "removeusertotask"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
-
-		if ($task === null)
-			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: taskId");
-
-		$projectId = $task->getProjects()->getId();
-		if ($this->checkRoles($user, $projectId, "task") < 2)
-			return ($this->setNoRightsError("12.7.9", "Task", "removeusertotask"));
-
-		$userToRemove = $em->getRepository('MongoBundle:User')->find($userId);
-
-		if ($userToRemove === null)
-			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: userId");
-
-		$resources = $task->getRessources();
-		$isAssign = false;
-		$resToRemove;
-		foreach ($resources as $res) {
-			if ($res->getUser() === $userToRemove)
-			{
-				$isAssign = true;
-				$resToRemove = $res;
-			}
-		}
-
-		if ($isAssign === false)
-			return $this->setBadRequest("12.7.4", "Task", "removeusertotask", "Bad Parameter: userId");
-
-		$task->removeUser($userToRemove);
-		$em->flush();
-
-		// Notifications
-		$class = new NotificationController();
-
-		$mdata['mtitle'] = "Task - Remove";
-		$mdata['mdesc'] = "You have been removed from the task ".$task->getTitle();
-
-		$wdata['type'] = "Task";
-		$wdata['targetId'] = $task->getId();
-		$wdata['message'] = "You have been removed from the task ".$task->getTitle();
-
-		$userNotif[] = $userToRemove->getId();
-
-		$class->pushNotification($userNotif, $mdata, $wdata, $em);
-
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
-
-		$response["info"]["return_code"] = "1.12.1";
-		$response["info"]["return_message"] = "Task - removeusertotask - Complete Success";
-		return new JsonResponse($response);
-	}
-
-	/**
-	* @api {post} /mongo/tasks/tagcreation Create a tag
+	* @-api {post} /0.3/tasks/tag Create a tag
 	* @apiName tagCreation
 	* @apiGroup Task
 	* @apiDescription Create a tag
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
 	public function tagCreationAction(Request $request)
@@ -952,56 +982,73 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('projectId', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.8.6", "Task", "tagcreation", "Missing Parameter");
 
 		$user = $this->checkToken($content->token);
 		if (!$user)
 			return ($this->setBadTokenError("12.8.3", "Task", "tagcreation"));
 
-		if ($this->checkRoles($user, $content->projectId, "task") < 2)
-			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
-
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.8.4", "Task", "tagcreation", "Bad Parameter: projectId");
 
+		if ($this->checkRoles($user, $content->projectId, "task") < 2)
+			return ($this->setNoRightsError("12.8.9", "Task", "tagcreation"));
+
 		$tag = new Tag();
 		$tag->setName($content->name);
 		$tag->setProject($project);
+		$tag->setColor($content->color);
 
 		$em->persist($tag);
 		$em->flush();
 
-		// $this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
 
-		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", array("id" => $tag->getId()));
+		//notifs
+		$mdata['mtitle'] = "new tag task";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "new tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
+		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+
+		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {put} /mongo/tasks/tagupdate Update a tag
+	* @-api {put} /0.3/tasks/tag/:id Update a tag
 	* @apiName tagUpdate
 	* @apiGroup Task
 	* @apiDescription Update a given task
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function tagUpdateAction(Request $request)
+	public function tagUpdateAction(Request $request, $id)
 	{
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('token', $content) || !array_key_exists('tagId', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.9.6", "Task", "tagupdate", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.9.3", "Task", "tagupdate"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$tag = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
+		$tag = $em->getRepository('MongoBundle:Tag')->find($id);
 		if ($tag === null)
 			return $this->setBadRequest("12.9.4", "Task", "tagupdate", "Bad Parameter: tagId");
 
@@ -1010,24 +1057,41 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.9.9", "Task", "tagupdate"));
 
 		$tag->setName($content->name);
+		$tag->setColor($content->color);
 		$em->flush();
+
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
+		//notifs
+		$mdata['mtitle'] = "update tag task";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "update tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
-		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", array("id" => $tag->getId(), "name" => $tag->getName()));
+		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", $tag->objectToArray());
 	}
 
 	/**
-	* @api {get} /mongo/tasks/taginformations/:token/:tagId Get a tag informations
+	* @-api {get} /0.3/tasks/tag/:tagId Get a tag informations
 	* @apiName tagInformations
 	* @apiGroup Task
 	* @apiDescription Get the informations of the given tag
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function getTagInfosAction(Request $request, $token, $tagId)
+	public function getTagInfosAction(Request $request, $tagId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.10.3", "Task", "taginformations"));
 
@@ -1044,16 +1108,16 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {delete} /mongo/tasks/deletetag/:token/:tagId Delete a tag
+	* @-api {delete} /0.3/tasks/tag/:tagId Delete a tag
 	* @apiName deleteTag
 	* @apiGroup Task
 	* @apiDescription Delete the given tag
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function deleteTagAction(Request $request, $token, $tagId)
+	public function deleteTagAction(Request $request, $tagId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.11.3", "Task", "deletetag"));
 
@@ -1065,10 +1129,26 @@ class TaskController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $tag->getProject()->getId(), "task") < 2)
 			return ($this->setNoRightsError("12.11.9", "Task", "deletetag"));
 
+		$tagArray = $tag->objectToArray();
+		$tagArray['projectId'] = $tag->getProject()->getId();
+
+		//notifs
+		$mdata['mtitle'] = "delete tag task";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "delete tag task";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+
 		$em->remove($tag);
 		$em->flush();
 
-		// $this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
+		$this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - deletetag - Complete Success";
@@ -1076,117 +1156,27 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {put} /mongo/tasks/assigntagtotask Assign a tag to a task
-	* @apiName assignTagToTask
-	* @apiGroup Task
-	* @apiDescription Assign a given tag to the task wanted
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function assignTagToTaskAction(Request $request)
-	{
-		$content = $request->getContent();
-		$content = json_decode($content);
-		$content = $content->data;
-
-		if ($content === null || (!array_key_exists('tagId', $content) || !array_key_exists('token', $content) || !array_key_exists('taskId', $content)))
-			return $this->setBadRequest("12.12.6", "Task", "assigntagtotask", "Missing Parameter");
-
-		$user = $this->checkToken($content->token);
-		if (!$user)
-			return ($this->setBadTokenError("12.12.3", "Task", "assigntagtotask"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($content->taskId);
-		if ($task === null)
-			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: taskId");
-
-		$projectId = $task->getProjects()->getId();
-		if ($this->checkRoles($user, $projectId, "task") < 2)
-			return ($this->setNoRightsError("12.12.9", "Task", "assigntagtotask"));
-
-		$tagToAdd = $em->getRepository('MongoBundle:Tag')->find($content->tagId);
-		if ($tagToAdd === null)
-			return $this->setBadRequest("12.12.4", "Task", "assigntagtotask", "Bad Parameter: tagId");
-
-		$tags = $task->getTags();
-		foreach ($tags as $tag) {
-			if ($tag === $tagToAdd)
-				return $this->setBadRequest("12.12.7", "Task", "assigntagtotask", "Already In Database");
-		}
-
-		$task->addTag($tagToAdd);
-
-		$em->flush();
-		return $this->setSuccess("1.12.1", "Task", "assigntagtotask", "Complete Success",
-			array("id" => $task->getId(), "tag" => array("id" => $tagToAdd->getId(), "name" => $tagToAdd->getName())));
-	}
-
-	/**
-	* @api {delete} /mongo/tasks/removetagtotask/:token/:taskId/:tagId Remove a tag to a task
-	* @apiName removeTagToTask
-	* @apiGroup Task
-	* @apiDescription Remove the given tag from the task wanted
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function removeTagToTaskAction(Request $request, $token, $taskId, $tagId)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("12.13.3", "Task", "removetagtotask"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$task = $em->getRepository('MongoBundle:Task')->find($taskId);
-		if ($task === null)
-			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: taskId");
-
-		$projectId = $task->getProjects()->getId();
-		if ($this->checkRoles($user, $projectId, "task") < 2)
-			return ($this->setNoRightsError("12.13.9", "Task", "removetagtotask"));
-
-		$tagToRemove = $em->getRepository('MongoBundle:Tag')->find($tagId);
-		if ($tagToRemove === null)
-			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: tagId");
-
-		$tags = $task->getTags();
-		$isAssign = false;
-		foreach ($tags as $tag) {
-			if ($tag === $tagToRemove)
-			{
-				$isAssign = true;
-			}
-		}
-
-		if ($isAssign === false)
-			return $this->setBadRequest("12.13.4", "Task", "removetagtotask", "Bad Parameter: tagId");
-
-		$task->removeTag($tagToRemove);
-		$em->flush();
-
-		$response["info"]["return_code"] = "1.12.1";
-		$response["info"]["return_message"] = "Task - removetagtotask - Complete Success";
-		return new JsonResponse($response);
-	}
-
-	/**
-	* @api {get} /mongo/tasks/getprojecttasks/:token/:projectId Get all the tasks for a project
+	* @-api {get} /0.3/tasks/project/:projectId Get all the tasks for a project
 	* @apiName getProjectTasks
 	* @apiGroup Task
 	* @apiDescription Get all the tasks for a given project
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function getProjectTasksAction(Request $request, $token, $projectId)
+	public function getProjectTasksAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
+
+		$em = $this->getDoctrine()->getManager();
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		if ($project === null)
+			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");
 
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.14.9", "Task", "getprojecttasks"));
 
-		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Task');
 		$qb = $repository->createQueryBuilder()->field('projects.id')->equals($projectId)->getQuery();
 		$tasks = $qb->execute();
@@ -1197,75 +1187,8 @@ class TaskController extends RolesAndTokenVerificationController
 			return $this->setNoDataSuccess("1.12.3", "Task", "getprojecttasks");
 
 		$arr = array();
-
 		foreach ($tasks as $task) {
-			$id = $task->getId();
-			$title = $task->getTitle();
-			$description = $task->getDescription();
-			$color = $task->getColor();
-			$dueDate = $task->getDueDate();
-			$startedAt = $task->getStartedAt();
-			$finishedAt = $task->getFinishedAt();
-			$createdAt = $task->getCreatedAt();
-			$deletedAt = $task->getDeletedAt();
-			$advance = $task->getAdvance();
-			$creator = $task->getCreatorUser();
-			$users = $task->getRessources();
-			$tags = $task->getTags();
-			$dependencies = $task->getDependence();
-
-			$creator_id = $creator->getId();
-			$creator_firstname = $creator->getFirstname();
-			$creator_lastname = $creator->getLastname();
-			$creatorInfos = array("id" => $creator_id, "first_name" => $creator_firstname, "last_name" => $creator_lastname);
-
-			$arrTasks = array();
-			foreach ($task->getTasksContainer() as $t) {
-				$arrTasks[] = array("id" => $t->getId(), "title" => $t->getTitle());
-			}
-
-			$userArray = array();
-			if ($users != null)
-			{
-				foreach ($users as $res) {
-					$percent = $res->getResource();
-					$u = $res->getUser();
-					$uid = $u->getId();
-					$firstname = $u->getFirstname();
-					$lastname = $u->getLastname();
-
-					$userArray[] = array("id" => $uid, "firstname" => $firstname, "lastname" => $lastname, "percent" => $percent);
-					if ($uid != $creator_id)
-						$userNotif[] = $uid;
-				}
-			}
-
-			$tagArray = array();
-			if ($tags != null)
-			{
-				foreach ($tags as $t) {
-					$tid = $t->getId();
-					$name = $t->getName();
-
-					$tagArray[] = array("id" => $tid, "name" => $name);
-				}
-			}
-
-			$depArray = array();
-			if ($dependencies != null)
-			{
-				foreach ($dependencies as $d) {
-					$dname = $d->getName();
-					$did = $d->getDependenceTask()->getId();
-					$dtitle = $d->getDependenceTask()->getTitle();
-
-					$depArray[] = array("name" => $dname, "id" => $did, "title" => $dtitle);
-				}
-			}
-
-			$arr[] = array("id" => $id, "title" => $title, "description" => $description, "color" => $color,  "due_date" => $dueDate, "is_milestone" => $task->getIsMilestone(),
-				"is_container" => $task->getIsContainer(), "tasks" => $arrTasks, "started_at" => $startedAt, "finished_at" => $finishedAt, "created_at" => $createdAt,
-				"deleted_at" => $deletedAt, "advance" => $advance, "creator" => $creatorInfos, "users_assigned" => $userArray, "tags" => $tagArray, "dependencies" => $depArray);
+			$arr[] = $task->objectToArray(array());
 		}
 
 		if (count($arr) == 0)
@@ -1275,23 +1198,27 @@ class TaskController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @api {get} /mongo/tasks/getprojecttags/:token/:projectId Get all the tags for a project
+	* @-api {get} /0.3/tasks/tags/project/:projectId Get all the tags for a project
 	* @apiName getProjectTags
 	* @apiGroup Task
 	* @apiDescription Get all the tags for a given project
-	* @apiVersion 0.2.0
+	* @apiVersion 0.3.0
 	*
 	*/
-	public function getProjectTagsAction(Request $request, $token, $projectId)
+	public function getProjectTagsAction(Request $request, $projectId)
 	{
-		$user = $this->checkToken($token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.15.3", "Task", "getprojecttags"));
+
+		$em = $this->get('doctrine_mongodb')->getManager();
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		if ($project === null)
+			return $this->setBadRequest("12.15.4", "Task", "getprojecttags", "Bad Parameter: projectId");
 
 		if ($this->checkRoles($user, $projectId, "task") < 1)
 			return ($this->setNoRightsError("12.15.9", "Task", "getprojecttags"));
 
-		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Tag');
 		$qb = $repository->createQueryBuilder()->field('project.id')->equals($projectId)->getQuery();
 		$tags = $qb->execute();
@@ -1303,10 +1230,7 @@ class TaskController extends RolesAndTokenVerificationController
 
 		$arr = array();
 		foreach ($tags as $t) {
-			$id = $t->getId();
-			$name = $t->getName();
-
-			$arr[] = array("id" => $id, "name" => $name);
+			$arr[] = $t->objectToArray();
 		}
 
 		if (count($arr) == 0)

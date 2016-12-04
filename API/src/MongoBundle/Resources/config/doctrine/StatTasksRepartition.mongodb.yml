@@ -7,9 +7,6 @@ MongoBundle\Document\StatTasksRepartition:
             type: id
             id: true
             strategy: AUTO
-        user:
-            type: string
-            length: 255
         role:
             type: string
             length: 255
@@ -21,4 +18,6 @@ MongoBundle\Document\StatTasksRepartition:
         project:
           targetDocument: Project
           inversedBy: statTasksRepartition
+        user:
+          targetDocument: User
     lifecycleCallbacks: {  }

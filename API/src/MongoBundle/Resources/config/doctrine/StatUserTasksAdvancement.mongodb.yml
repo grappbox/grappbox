@@ -7,9 +7,6 @@ MongoBundle\Document\StatUserTasksAdvancement:
             type: id
             id: true
             strategy: AUTO
-        user:
-            type: string
-            length: 255
         tasksToDo:
             type: int
         tasksDoing:
@@ -22,4 +19,6 @@ MongoBundle\Document\StatUserTasksAdvancement:
         project:
           targetDocument: Project
           inversedBy: statUserTasksAdvancement
+        user:
+          targetDocument: User
     lifecycleCallbacks: {  }
