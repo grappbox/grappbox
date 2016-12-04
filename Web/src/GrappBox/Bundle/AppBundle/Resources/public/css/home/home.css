@@ -42,11 +42,11 @@ ul,
 ol { list-style: none; padding: 0; }
 hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0 auto; margin-bottom: 30px; border: 0; }
 
-::-webkit-selection { color: #fafafa; background: #44BBFF; }
-::-moz-selection { color: #fafafa; background: #44BBFF; }
-::-o-selection { color: #fafafa; background: #44BBFF; }
-::-ms-selection { color: #fafafa; background: #44BBFF; }
-::selection { color: #fafafa; background: #44BBFF; }
+::-webkit-selection { color: #fff; background: #44BBFF; }
+::-moz-selection { color: #fff; background: #44BBFF; }
+::-o-selection { color: #fff; background: #44BBFF; }
+::-ms-selection { color: #fff; background: #44BBFF; }
+::selection { color: #fff; background: #44BBFF; }
 
 .gray-color { color: #757575!important; }
 .red-color { color: #fc575e!important; }
@@ -55,15 +55,17 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .orange-color { color: #ff9f55!important; }
 .purple-color { color: #9e58dc!important; }
 .blue-color { color: #4bf!important; }
+.white-color { color: #fff!important; }
 .default-color { color: #fc575e!important; }
 
-.gray-color { color: #757575!important; }
+.gray-border { border-color: #757575!important; }
 .red-border { border-color: #fc575e!important; }
 .yellow-border { border-color: #f1c40f!important; }
 .green-border { border-color: #27ae60!important; }
 .orange-border { border-color: #ff9f55!important; }
 .purple-border { border-color: #9e58dc!important; }
 .blue-border { border-color: #4bf!important; }
+.white-border { border-color: #fff!important; }
 .default-border { border-color: #fc575e!important; }
 
 .gray-hover:focus,
@@ -80,6 +82,8 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .purple-hover:hover { color: #9e58dc!important; }
 .blue-hover:focus,
 .blue-hover:hover { color: #4bf!important; }
+.white-hover:focus,
+.white-hover:hover { color: #fff!important; }
 .default-hover:focus,
 .default-hover:hover { color: #fc575e!important; }
 
@@ -90,6 +94,7 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .orange-background-hover:hover { background: #ff9f55!important; }
 .purple-background-hover:hover { background: #9e58dc!important; }
 .blue-background-hover:hover { background: #4bf!important; }
+.white-background-hover:hover { background: #fff!important; }
 .default-background-hover:hover { background: #fc575e!important; }
 
 .gray-background { background: #757575!important; }
@@ -99,7 +104,18 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 .orange-background { background: #ff9f55!important; }
 .purple-background { background: #9e58dc!important; }
 .blue-background { background: #4bf!important; }
+.white-background { background: #fff!important; }
 .default-background { background: #fc575e!important; }
+
+.gray-stripes { background: repeating-linear-gradient(-45deg, #757575, #757575 10px, rgba(117,117,117,0.70) 10px, rgba(117,117,117,0.70) 20px); }
+.red-stripes { background: repeating-linear-gradient(-45deg, #fc575e, #fc575e 10px, rgba(252,87,94,0.70) 10px, rgba(252,87,94,0.70) 20px); }
+.yellow-stripes { background: repeating-linear-gradient(-45deg, #f1c40f, #f1c40f 10px, rgba(241,196,15,0.70) 10px, rgba(241,196,15,0.70) 20px); }
+.green-stripes { background: repeating-linear-gradient(-45deg, #27ae60, #27ae60 10px, rgba(39,174,96,0.70) 10px, rgba(39,174,96,0.70) 20px); }
+.orange-stripes { background: repeating-linear-gradient(-45deg, #ff9f55, #ff9f55 10px, rgba(255,159,85,0.70) 10px, rgba(255,159,85,0.70) 20px); }
+.purple-stripes { background: repeating-linear-gradient(-45deg, #9e58dc, #9e58dc 10px, rgba(158,88,220,0.70) 10px, rgba(158,88,220,0.70) 20px); }
+.blue-stripes { background: repeating-linear-gradient(-45deg, #4bf, #4bf 10px, rgba(68,187,255,0.70) 10px, rgba(68,187,255,0.70) 20px); }
+.white-stripes { background: repeating-linear-gradient(-45deg, #fff, #fff 10px, rgba(255,255,255,0.70) 10px, rgba(255,255,255,0.70) 20px); color: #212121; }
+.default-stripes { background: repeating-linear-gradient(-45deg, #fc575e, #fc575e 10px, rgba(252,87,94,0.70) 10px, rgba(252,87,94,0.70) 20px); }
 
 .pop { cursor: pointer; -webkit-transform: translateZ(0); -moz-transform: translateZ(0); -o-transform: translateZ(0); -ms-transform: translateZ(0); transform: translateZ(0); -webkit-transition-duration: 0.3s; -moz-transition-duration: 0.3s; -o-transition-duration: 0.3s; -ms-transition-duration: 0.3s; transition-duration: 0.3s; -webkit-transition-property: transform; -moz-transition-property: transform; -o-transition-property: transform; -ms-transition-property: transform; transition-property: transform; }
 .pop:hover,
