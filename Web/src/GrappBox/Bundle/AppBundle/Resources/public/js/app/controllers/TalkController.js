@@ -14,7 +14,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   // Scope variables initialization
   $scope.route = { project_id: $route.current.params.project_id, talklist_id: $route.current.params.talklist_id, talk_id: $route.current.params.talk_id };
   $scope.talk = { loaded: false, valid: false, authorized: false, data: "", found: false };
-  $scope.comments = { loaded: false, valid: false, authorized: false, data: "" };
+  $scope.comments = { loaded: false, valid: false, authorized: false, data: "", add: "", new: "", disabled: false };
 
 
 
@@ -169,6 +169,74 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     );
   };
 
+
+
+  /* ==================== SCOPE ROUTINES ==================== */
+
+  $scope.comments.add = function() {
+    if (!$scope.comments.disabled && $scope.comments.new) {
+      $scope.comments.disabled = true;
+      $http.post($rootScope.api.url + "/timeline/comment/" + $scope.route.talklist_id,
+        { data: { token: $rootScope.user.token, comment: $scope.comments.new, commentedId: $scope.route.talk_id } },
+        { headers: { "Authorization": $rootScope.user.token }}).then(
+        function talkCommentsPosted(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+              case "1.11.1":
+              _getTalkComments();
+              $scope.comments.disabled = false;
+              $scope.comments.new = "";
+              break;
+
+              default:
+              $scope.comments.data = null;
+              $scope.comments.valid = false;
+              $scope.comments.authorized = true;
+              $scope.comments.loaded = true;
+              break;
+            }
+          }
+          else {
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
+          }
+        },
+        function talkCommentsNotPosted(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code) {
+            switch(response.data.info.return_code) {
+              case "11.8.3":
+              $rootScope.reject();
+              break;
+
+              case "11.8.4":
+              $location.path("talk/" + $scope.route.project_id);
+              notificationFactory.warning("This talk doesn't exist.");
+              break;
+
+              case "11.8.9":
+              notificationFactory.warning("You don't have permission to post on this talk.");
+              break;
+
+              default:
+              $scope.comments.data = null;
+              $scope.comments.valid = false;
+              $scope.comments.authorized = true;
+              $scope.comments.loaded = true;
+              break;
+            }
+          }
+          else {
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
+          }
+        }
+      );
+    }
+  };
 
 
   /* ==================== EXECUTION ==================== */

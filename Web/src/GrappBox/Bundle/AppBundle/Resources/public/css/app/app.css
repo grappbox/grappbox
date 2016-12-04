@@ -196,14 +196,23 @@ a:hover { text-decoration: none; color: #4bf; }
 .default-hover:focus,
 .default-hover:hover { color: #fc575e!important; }
 
+.gray-background-hover:focus,
 .gray-background-hover:hover { background: #757575!important; }
+.red-background-hover:focus,
 .red-background-hover:hover { background: #fc575e!important; }
+.yellow-background-hover:focus,
 .yellow-background-hover:hover { background: #f1c40f!important; }
+.green-background-hover:focus,
 .green-background-hover:hover { background: #27ae60!important; }
+.orange-background-hover:focus,
 .orange-background-hover:hover { background: #ff9f55!important; }
+.purple-background-hover:focus,
 .purple-background-hover:hover { background: #9e58dc!important; }
+.blue-background-hover:focus,
 .blue-background-hover:hover { background: #4bf!important; }
+.white-background-hover:focus,
 .white-background-hover:hover { background: #fff!important; }
+.default-background-hover:focus,
 .default-background-hover:hover { background: #fc575e!important; }
 
 .gray-background { background: #757575!important; }
@@ -565,11 +574,18 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .talk .talk-message .box .body,
 .talk .each-comment .box .body { padding: 0 0 10px 15px; }
 
+.talk .talk-message { margin-top: 10px; }
+.talk .talk-message .submit { padding: 0 10px!important; }
 .talk .each-comment { border-left: 5px solid; margin-left: 2px; width: calc(100% - 4px); }
 .talk .each-comment .box { padding: 0; margin: 0; }
 .talk .each-comment .box .info { padding: 10px 0 2px 15px; }
 .talk .each-comment .box .info span { font-size: 12px; }
 .talk .each-comment .box .body { padding: 0 0 10px 15px; }
+
+.talk .comment-add .box { padding: 0 15px 10px 15px; }
+.talk .comment-add .box form .form-group { margin-top: 20px; width: 92%; float: left; }
+.talk .comment-add .box form .form-group input { margin: 0; }
+.talk .comment-add .box .btn { margin: 20px 0 0 15px; }
 
 
 

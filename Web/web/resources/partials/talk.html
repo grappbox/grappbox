@@ -5,18 +5,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <!-- Talk -->
 <section class="talk">
   <div class="page-header {[{ ::path.colors[path.current] + '-background' }]} small">
-    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
-      <div data-ng-if="!talk.loaded">
-        <h1>Loading...</h1>
-        <p>Loading...</p>
-      </div>
-      <div data-ng-if="talk.loaded">
-        <h1 class="ellipsis">"{[{ ::talk.data.title }]}"</h1>
-        <p>By {[{ ::talk.data.creator.firstname }]} {[{ ::talk.data.creator.lastname }]}, {[{ ::talk.data.createdAt }]}</p>    
-      </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/talk.svg" width="300" height="auto" alt="Talks">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
-      <a href="" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the discussion process page">Delete this topic</a>
+      <h1>Talk</h1>
+      <p>This is your talk main view.<br>You can add, edit and delete comments, and convert this topic to a GrappBox issue.</p>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -43,6 +37,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="clearfix"></div>
               <p class="info"><strong>{[{ ::talk.data.title }]}</strong></p>
               <p class="body">{[{ ::talk.data.message }]}</p>
+              <div class="submit">
+                <a href="" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" title="Delete this talk and all its comments" data-ng-if="talk.data.creator.id == user.id">Delete this talk</a>
+              </div>
             </div>
           </div>
         </div>
@@ -77,7 +74,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div data-ng-if="comments.valid && comments.authorized">
       <div data-ng-if="comments.data">
         <div class="box-row">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment orange-border" data-ng-repeat="comment in comments.data">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ comment.creator.id == user.id ? 'orange-border' : 'gray-border' }]}" data-ng-repeat="comment in comments.data">
             <div class="box">
               <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
               <p class="body">{[{ ::comment.comment }]}</p>
@@ -105,6 +102,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div class="box-row">
         <div class="box error text-center">
           <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add comment -->
+  <div class="comment-add" data-ng-if="comments.loaded">
+    <div class="box-row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment blue-border">
+        <div class="box">
+          <form>
+            <fieldset>
+              <div class="form-group label-floating">
+                <label for="new_comment" class="control-label">Comment</label>
+                <input id="new_comment" type="text" class="form-control" data-ng-model="comments.new" data-ng-disabled="comments.disabled" required>
+              </div>
+              <button class="btn blue-color blue-background-hover {[{ comments.disabled ? 'disabled' : '' }]}" data-ng-click="comments.add()">Add</button>
+            </fieldset>
+          </form>
         </div>
       </div>
     </div>
