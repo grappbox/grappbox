@@ -1,0 +1,267 @@
+<!-- This file is subject to the terms and conditions defined in file 'LICENSE.txt',
+which is part of the GRAPPBOX source code package.
+COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
+
+<!-- Talk -->
+<section class="talk">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]} small">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/talk.svg" width="300" height="auto" alt="Talks">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <div data-ng-if="creation">
+        <h1>Talk creation</h1>
+        <p>Enter a title and a message to create your new talk.<br>If you change your mind, you can always edit them later.</p>
+      </div>
+      <div data-ng-if="!creation">
+        <h1>Talk</h1>
+        <p>This is your talk main view.<br>You can add, edit and delete comments, and convert this topic to a GrappBox issue.</p>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div data-ng-if="creation">
+    <!-- Talk creation -->
+    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-12 col-xs-12 no-padding">
+      <h4 class="box-header"><i class="material-icons rounded {[{ path.colors[path.current] + '-background' }]}">forum</i>New talk</h4>
+      <div class="box">
+        <form>
+          <fieldset>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group label-floating">
+                <label for="title" class="control-label">Title</label>
+                <input id="title" type="text" class="form-control" data-ng-model="new.title" data-ng-disabled="new.disabled" required>
+              </div>
+              <div class="form-group label-floating">
+                <label for="body" class="control-label">Body</label>
+                <textarea id="body" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required></textarea>
+              </div>
+            </div>
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+              <button type="submit" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]} {[{ new.disabled ? 'disabled' : '' }]}" title="Create a new talk" data-ng-click="talks.add()">Create</button>
+            </div>
+          </fieldset>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div data-ng-if="!creation">
+    <!-- Talk message -->
+    <div data-ng-if="!talks.loaded">
+      <div class="spinner section">
+        <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+      </div>
+    </div>
+    <div data-ng-if="talks.loaded">
+      <div data-ng-if="talks.valid && talks.authorized">
+        <div data-ng-if="talks.data">
+          <div class="box-row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding talk-message">
+              <div class="box">
+                <div class="avatar">
+                  <img src="../resources/img/app/default-avatar.min.png" alt="{[{ ::talks.data.creator.firstname }]}-{[{ ::talks.data.creator.lastname }]}-avatar" width="48px" height="48px">
+                </div>
+                <ul>
+                  <li>{[{ ::talks.data.creator.firstname }]} {[{ ::talks.data.creator.lastname }]}</li>
+                  <li><span>{[{ ::talks.data.createdAt }]}</span></li>
+                </ul>
+                <div class="clearfix"></div>
+                <div data-ng-if="talks.data.creator.id != user.id">
+                  <p class="info"><strong>{[{ ::talks.data.title }]}</strong></p>
+                  <p class="body">{[{ ::talks.data.message }]}</p>
+                  <div class="submit">
+                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
+                  </div>
+                </div>
+                <div data-ng-if="talks.data.creator.id == user.id">
+                  <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
+                  <p class="body">{[{ talks.data.message }]}</p>
+                  <div class="submit">
+                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
+                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="talks.edit(talks.data)">Edit</a>
+                    <a href="" class="btn red-color red-background-hover" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)">Delete</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div data-ng-if="!talks.data" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box-row">
+            <div class="box error text-center">
+              <p><i class="material-icons">speaker_notes_off</i>This talk is empty.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-ng-if="!talks.valid && !talks.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box-row">
+          <div class="box error text-center">
+            <p><i class="material-icons">block</i>You don't have sufficient rights to see this talk.</p>
+          </div>
+        </div>
+      </div>
+      <div data-ng-if="!talks.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <div class="box-row">
+          <div class="box error text-center">
+            <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Comments -->
+    <div data-ng-if="comments.loaded">
+      <div data-ng-if="comments.valid && comments.authorized">
+        <div data-ng-if="comments.data">
+          <div class="box-row">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ comment.creator.id == user.id ? 'orange-border' : 'gray-border' }]}" data-ng-repeat="comment in comments.data">
+              <div class="box">
+                <div data-ng-if="comment.creator.id != user.id">
+                  <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
+                  <p class="body">{[{ ::comment.comment }]}</p>
+                </div>
+                <div data-ng-if="comment.creator.id == user.id">
+                  <div class="user-comment col-lg-9 col-md-8 col-sm-12 col-xs-12 no-padding">
+                    <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
+                    <p class="body">{[{ comment.comment }]}</p>
+                  </div>
+                  <div class="user-actions col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding">
+                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="comments.edit(comment)">Edit</a>
+                    <a href="" class="btn gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)">Delete</a>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div data-ng-if="!comments.valid && !comments.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <div class="box-row">
+          <div class="box error text-center">
+            <p><i class="material-icons">block</i>You don't have sufficient rights to see this talk's comments.</p>
+          </div>
+        </div>
+      </div>
+      <div data-ng-if="!comments.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <div class="box-row">
+          <div class="box error text-center">
+            <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Add comment input -->
+    <div class="comment-add" data-ng-if="comments.loaded && comments.valid && comments.authorized">
+      <div class="box-row">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment blue-border">
+          <div class="box">
+            <form>
+              <fieldset>
+                <div class="form-group label-floating col-lg-10 col-md-10 col-sm-12 col-xs-12 no-padding">
+                  <label for="new_comment" class="control-label">Comment</label>
+                  <input id="new_comment" type="text" class="form-control" data-ng-model="new.comment" data-ng-disabled="new.disabled" required>
+                </div>
+                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 no-padding user-add">
+                  <button class="btn blue-color blue-background-hover {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()">Add</button>
+                </div>
+                <div class="clearfix">
+              </fieldset>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+<!-- Talk edition -->
+<script type="text/ng-template" id="talkEdition.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkEditionCancelled()">×</button>
+    <h4 class="modal-title">Talk edition</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ error.title ? 'has-error' : '' }]}">
+          <label for="title" class="control-label">Title</label>
+          <input id="title" type="text" class="form-control" data-ng-model="new.title" data-ng-disabled="new.disabled" required>
+        </div>
+        <div class="form-group label-floating {[{ error.body ? 'has-error' : '' }]}">
+          <label for="body" class="control-label">Body</label>
+          <textarea id="body" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required></textarea>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkEditionCancelled()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="talkEditionConfirmed()">Update</button>
+  </div>
+</script>
+
+
+<!-- Talk comment edition -->
+<script type="text/ng-template" id="talkCommentEdition.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkCommentEditionCancelled()">×</button>
+    <h4 class="modal-title">Talk comment edition</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ error.body ? 'has-error' : '' }]}">
+          <label for="body" class="control-label">Body</label>
+          <textarea id="body" class="form-control" data-ng-model="new.body" data-ng-disabled="new.disabled" required></textarea>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkCommentEditionCancelled()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="talkCommentEditionConfirmed()">Update</button>
+  </div>
+</script>
+
+
+
+<!-- Talk deletion -->
+<script type="text/ng-template" id="talkDeletion.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkDeletionCancelled()">×</button>
+    <h4 class="modal-title">Talk deletion</h4>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this talk?<br>All comments will be also deleted.</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkDeletionCancelled()">Cancel</button>
+    <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="talkDeletionConfirmed()">Delete</button>
+  </div>
+</script>
+
+
+
+<!-- Talk comment deletion -->
+<script type="text/ng-template" id="talkCommentDeletion.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="talkCommentDeletionCancelled()">×</button>
+    <h4 class="modal-title">Talk comment deletion</h4>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this comment?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="talkCommentDeletionCancelled()">Cancel</button>
+    <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="talkCommentDeletionConfirmed()">Delete</button>
+  </div>
+</script>

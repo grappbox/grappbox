@@ -34,7 +34,7 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
       total: "",
       repartition: { chart: "", empty: true, message : "" }
     },
-    timeline: { count: { team: "", customer: "" } },
+    talk: { count: { team: "", customer: "" } },
     user: { advancement: "", charge: "" }
   };
   $scope.error = {
@@ -127,8 +127,8 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
         }
 
         // Timelines messages (values)
-        $scope.statistics.timeline.count.team = response.data.data.timelinesMessageNumber.team;
-        $scope.statistics.timeline.count.customer = response.data.data.timelinesMessageNumber.customer;
+        $scope.statistics.talk.count.team = response.data.data.timelinesMessageNumber.team;
+        $scope.statistics.talk.count.customer = response.data.data.timelinesMessageNumber.customer;
 
         $scope.view.loaded = true;
         $scope.view.valid = true;
