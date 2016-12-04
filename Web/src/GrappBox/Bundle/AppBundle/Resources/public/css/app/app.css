@@ -80,6 +80,7 @@ h4 { font-size: 18px; }
 b,
 strong { font-weight: 900; }
 p { font-size: 14px!important; font-weight: 400!important; }
+textarea { resize: vertical!important; }
 
 .box,
 .container,
@@ -365,12 +366,15 @@ a:hover { text-decoration: none; color: #4bf; }
 /* ==================== MODALS ==================== */
 /* ================================================ */
 
+.modal,
+.modal-dialog { z-index: 1010102!important; }
+
 .modal-open { overflow: hidden; }
 .modal-content { border-radius: 0; }
 .modal-content .modal-body + .modal-footer { padding: 20px; }
 .modal-content .modal-footer button { padding: 8px 30px; }
 .modal-title { font-weight: 400; }
-.modal-backdrop { background: #000; }
+.modal-backdrop { background: #212121; z-index: 1010101!important; }
 .modal-backdrop.in { opacity: .6; filter: alpha(opacity=60); }
 .modal .error { margin: 45px 0 30px 0; }
 
@@ -572,7 +576,7 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .talk .talk-message .box .info { padding: 10px 0 2px 15px; }
 
 .talk .talk-message .box .body,
-.talk .each-comment .box .body { padding: 0 0 10px 15px; }
+.talk .each-comment .box .body { padding: 0 15px 10px 15px; }
 
 .talk .talk-message { margin-top: 10px; }
 .talk .talk-message .submit { padding: 0 10px!important; }
@@ -582,10 +586,29 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .talk .each-comment .box .info span { font-size: 12px; }
 .talk .each-comment .box .body { padding: 0 0 10px 15px; }
 
+@media (max-width: 768px) {
+  .talk .user-actions,
+  .talk .user-add { text-align: center; }
+
+  .talk .user-add { margin: 10px 15px; }
+}
+
+@media (min-width: 768px) {
+  .talk .user-actions,
+  .talk .user-add { text-align: right; }
+
+  .talk .user-actions { margin-top: 5px; padding-right: 20px!important; }
+}
+
+@media (max-width: 992px) {
+  .talk .comment-add .box .btn { margin: 15px 10px 10px 0; }
+}
+
+@media (min-width: 992px) {
+  .talk .comment-add .box .btn { margin: 30px 15px 0 0; }
+}
+
 .talk .comment-add .box { padding: 0 15px 10px 15px; }
-.talk .comment-add .box form .form-group { margin-top: 20px; width: 92%; float: left; }
-.talk .comment-add .box form .form-group input { margin: 0; }
-.talk .comment-add .box .btn { margin: 20px 0 0 15px; }
 
 
 
