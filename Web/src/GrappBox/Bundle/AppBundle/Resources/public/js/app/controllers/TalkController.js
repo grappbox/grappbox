@@ -15,8 +15,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   $scope.route = { project_id: $route.current.params.project_id, talklist_id: $route.current.params.talklist_id, talk_id: $route.current.params.talk_id };
   $scope.creation = ($scope.route.talk_id == "new" ? true : false);
 
-  $scope.talk = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", found: false };
-  $scope.comment = { loaded: false, valid: false, authorized: false, data: "", add: "" , edit: "", delete: "" };
+  $scope.talks = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", found: false };
+  $scope.comments = { loaded: false, valid: false, authorized: false, data: "", add: "" , edit: "", delete: "" };
   $scope.new = { loaded: false, valid: false, authorized: false, title: "", body: "", disabled: false };
 
 
@@ -26,7 +26,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   // Routine definition (local)
   // Get talk content
   var _getTalk = function() {
-    $scope.talk.found = false;
+    $scope.talks.found = false;
     $http.get($rootScope.api.url + "/timeline/messages/" + $scope.route.talklist_id, { headers: { "Authorization": $rootScope.user.token }}).then(
       function talkReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -34,17 +34,17 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             case "1.11.1":
             for (var i = 0; i < response.data.data.array.length; ++i) {
               if (response.data.data.array[i].id == $scope.route.talk_id) {
-                $scope.talk.data = response.data.data.array[i];
-                $scope.talk.found = true;
+                $scope.talks.data = response.data.data.array[i];
+                $scope.talks.found = true;
               }
             }
-            if (!$scope.talk.found) {
+            if (!$scope.talks.found) {
               $location.path("talk/" + $scope.route.project_id);
               notificationFactory.warning("This talk doesn't exist.");
             }
-            $scope.talk.valid = true;
-            $scope.talk.authorized = true;
-            $scope.talk.loaded = true;
+            $scope.talks.valid = true;
+            $scope.talks.authorized = true;
+            $scope.talks.loaded = true;
             break;
 
             case "1.11.3":
@@ -53,18 +53,18 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
 
             default:
-            $scope.talk.data = null;
-            $scope.talk.valid = false;
-            $scope.talk.authorized = true;
-            $scope.talk.loaded = true;
+            $scope.talks.data = null;
+            $scope.talks.valid = false;
+            $scope.talks.authorized = true;
+            $scope.talks.loaded = true;
             break;
           }
         }
         else {
-          $scope.talk = null;
-          $scope.talk.valid = false;
-          $scope.talk.authorized = true;
-          $scope.talk.loaded = true;
+          $scope.talks = null;
+          $scope.talks.valid = false;
+          $scope.talks.authorized = true;
+          $scope.talks.loaded = true;
         }
       },
       function talkNotReceived(response) {
@@ -75,25 +75,25 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
 
             case "11.4.9":
-            $scope.talk.data = null;
-            $scope.talk.valid = false;
-            $scope.talk.authorized = false;
-            $scope.talk.loaded = true;
+            $scope.talks.data = null;
+            $scope.talks.valid = false;
+            $scope.talks.authorized = false;
+            $scope.talks.loaded = true;
             break;
 
             default:
-            $scope.talk.data = null;
-            $scope.talk.valid = false;
-            $scope.talk.authorized = true;
-            $scope.talk.loaded = true;
+            $scope.talks.data = null;
+            $scope.talks.valid = false;
+            $scope.talks.authorized = true;
+            $scope.talks.loaded = true;
             break;
           }
         }
         else {
-          $scope.talk.data = null;
-          $scope.talk.valid = false;
-          $scope.talk.authorized = true;
-          $scope.talk.loaded = true;
+          $scope.talks.data = null;
+          $scope.talks.valid = false;
+          $scope.talks.authorized = true;
+          $scope.talks.loaded = true;
         }
       }
     );
@@ -107,32 +107,32 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
         if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "1.11.1":
-            $scope.comment.data = (response.data && response.data.data && response.data.data.array ? response.data.data.array : null);
-            $scope.comment.valid = true;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = (response.data && response.data.data && response.data.data.array ? response.data.data.array : null);
+            $scope.comments.valid = true;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
             break;
 
             case "1.11.3":
-            $scope.comment.data = null;
-            $scope.comment.valid = true;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = true;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
             break;
 
             default:
-            $scope.comment.data = null;
-            $scope.comment.valid = false;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
             break;
           }
         }
         else {
-          $scope.comment.data = null;
-          $scope.comment.valid = false;
-          $scope.comment.authorized = true;
-          $scope.comment.loaded = true;
+          $scope.comments.data = null;
+          $scope.comments.valid = false;
+          $scope.comments.authorized = true;
+          $scope.comments.loaded = true;
         }
       },
       function talkCommentsNotReceived(response) {
@@ -148,25 +148,25 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
 
             case "11.6.9":
-            $scope.comment.data = null;
-            $scope.comment.valid = false;
-            $scope.comment.authorized = false;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = false;
+            $scope.comments.loaded = true;
             break;
 
             default:
-            $scope.comment.data = null;
-            $scope.comment.valid = false;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
             break;
           }
         }
         else {
-          $scope.comment.data = null;
-          $scope.comment.valid = false;
-          $scope.comment.authorized = true;
-          $scope.comment.loaded = true;
+          $scope.comments.data = null;
+          $scope.comments.valid = false;
+          $scope.comments.authorized = true;
+          $scope.comments.loaded = true;
         }
       }
     );
@@ -178,7 +178,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
 
   // Routine definition (scope)
   // Add new talk
-  $scope.talk.add = function() {
+  $scope.talks.add = function() {
     if (!$scope.new.disabled && $scope.new.title && $scope.new.body) {
       $scope.new.disabled = true;
       $http.post($rootScope.api.url + "/timeline/message/" + $scope.route.talklist_id,
@@ -238,8 +238,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
 
   // Routine definition (scope)
   // Add new talk comment
-  $scope.comment.add = function() {
-    if (!$scope.comment.disabled && $scope.new.body) {
+  $scope.comments.add = function() {
+    if (!$scope.new.disabled && $scope.new.body) {
       $scope.new.disabled = true;
       $http.post($rootScope.api.url + "/timeline/comment/" + $scope.route.talklist_id,
         { data: { token: $rootScope.user.token, comment: $scope.new.body, commentedId: $scope.route.talk_id }},
@@ -254,18 +254,18 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
 
               default:
-              $scope.comment.data = null;
-              $scope.comment.valid = false;
-              $scope.comment.authorized = true;
-              $scope.comment.loaded = true;
+              $scope.comments.data = null;
+              $scope.comments.valid = false;
+              $scope.comments.authorized = true;
+              $scope.comments.loaded = true;
               break;
             }
           }
           else {
-            $scope.comment.data = null;
-            $scope.comment.valid = false;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
           }
         },
         function talkCommentNotPosted(response) {
@@ -285,18 +285,18 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
 
               default:
-              $scope.comment.data = null;
-              $scope.comment.valid = false;
-              $scope.comment.authorized = true;
-              $scope.comment.loaded = true;
+              $scope.comments.data = null;
+              $scope.comments.valid = false;
+              $scope.comments.authorized = true;
+              $scope.comments.loaded = true;
               break;
             }
           }
           else {
-            $scope.comment.data = null;
-            $scope.comment.valid = false;
-            $scope.comment.authorized = true;
-            $scope.comment.loaded = true;
+            $scope.comments.data = null;
+            $scope.comments.valid = false;
+            $scope.comments.authorized = true;
+            $scope.comments.loaded = true;
           }
         }
       );
@@ -308,14 +308,14 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   /* ==================== DELETE TALK/TALK COMMENT ==================== */
 
   // "Delete talk" button handler
-  $scope.talk.delete = function(talk_id) {
+  $scope.talks.delete = function(talk_id) {
     var talkDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "talkDeletion.html", controller: "TalkDeletionController" });
 
     talkDeletion.result.then(
       function talkDeletionConfirmed(data) {
         $http.delete($rootScope.api.url + "/timeline/message/" + $scope.route.talklist_id + "/" + talk_id,
           { headers: { "Authorization": $rootScope.user.token }}).then(
-          function talkDeleted(response) {
+          function talkDeleted() {
             $location.path("talk/" + $scope.route.project_id);
             notificationFactory.success("Talk deleted.");
           },
@@ -348,9 +348,50 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     );
   };
 
+  // "Delete talk comment" button handler
+  $scope.comments.delete = function(comment_id) {
+    var talkCommentDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "talkCommentDeletion.html", controller: "TalkCommentDeletionController" });
+
+    talkCommentDeletion.result.then(
+      function talkCommentDeletionConfirmed(data) {
+        $http.delete($rootScope.api.url + "/timeline/comment/" + comment_id,
+          { headers: { "Authorization": $rootScope.user.token }}).then(
+          function talkCommentDeleted() {
+            _getTalkComments();
+            notificationFactory.success("Comment deleted.");
+          },
+          function talkCommentNotDeleted(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
+              switch(response.data.info.return_code) {
+                case "11.10.3":
+                $rootScope.reject();
+                break;
+
+                case "11.10.4":
+                _getTalkComments();
+                notificationFactory.warning("This comment doesn't exist.");
+                break;
+
+                case "11.10.9":
+                notificationFactory.warning("You don't have permission to delete this comment.");
+                break;
+
+                default:
+                $location.path("talk/" + $scope.route.project_id);
+                notificationFactory.error();
+                break;
+              }
+            }
+          }
+        ),
+        function talkCommentDeletionCancelled() {}
+      }
+    );
+  };
 
 
-/* ==================== EXECUTION ==================== */
+
+  /* ==================== EXECUTION ==================== */
 
   accessFactory.projectAvailable();
   if ($scope.route.talk_id != "new") {
