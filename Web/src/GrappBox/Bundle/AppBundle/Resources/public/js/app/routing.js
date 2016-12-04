@@ -137,7 +137,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		templateUrl : "../resources/partials/talk-list.html",
 		caseInsensitiveMatch : true
   })
-  .when("/talk/:project_id/:message_id", {
+  .when("/talk/:project_id/:talklist_id/:talk_id", {
     title: "Talks",
     controller  : "TalkController",
     templateUrl : "../resources/partials/talk.html",

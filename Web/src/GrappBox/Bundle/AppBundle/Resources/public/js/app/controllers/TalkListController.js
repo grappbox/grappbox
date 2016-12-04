@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP talk list
-app.controller("TalkListController", ["accessFactory", "$http", "$location", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "talkFactory", "$uibModal",
-    function(accessFactory, $http, $location, notificationFactory, $q, $rootScope, $route, $scope, talkFactory, $uibModal) {
+app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScope", "$route", "$scope",
+    function(accessFactory, $http, $q, $rootScope, $route, $scope) {
 
 	/* ==================== INITIALIZATION ==================== */
 
@@ -15,6 +15,9 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
 	$scope.view = { loaded: false, valid: false, authorized: false };
 	$scope.method = { formatObjectDate: "" };
   $scope.talk = { project_id: $route.current.params.project_id, team: {}, customer: {} };
+
+  $scope.talk.team = { id: "", loaded: false, valid: false, messages: null };
+  $scope.talk.customer = { id: "", loaded: false, valid: false, messages: null };
 
 
 
@@ -33,7 +36,7 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
   	var deferred = $q.defer();
 
   	$http.get($rootScope.api.url + "/timelines/" + $scope.talk.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
-  		function onGetTalkListSucces(response) {
+  		function talkListReceived(response) {
   			if (response && response.data && response.data.info && response.data.info.return_code) {
   				switch(response.data.info.return_code) {
   					case "1.11.1":
@@ -70,11 +73,11 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
   			}
   			return deferred.promise;
   		},
-  		function onGetTalkListFail(response) {
+  		function talkListNotReceived(response) {
   			if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "11.1.3")
   				$rootScope.reject();
-				$scope.talk.team = null;
-				$scope.talk.customer = null;
+				$scope.talk.team.messages = null;
+				$scope.talk.customer.messages = null;
   			deferred.reject();
 
 				return deferred.promise;
@@ -85,12 +88,12 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
 
   // Routine definition (local)
   // Get selected talk messages
-  var _getTalkMessages = function(talk) {
+  var _getTalks = function(talk) {
     talk.valid = false;
     talk.onLoad = true;
 
   	$http.get($rootScope.api.url + "/timeline/messages/" + talk.id, { headers: { "Authorization": $rootScope.user.token }}).then(
-  		function onGetTalkMessagesSuccess(response) {
+  		function talksReceived(response) {
   			if (response && response.data && response.data.info && response.data.info.return_code) {
   				switch(response.data.info.return_code) {
   					case "1.11.1":
@@ -120,7 +123,7 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
 					talk.loaded = true;
   			}
   		},
-  		function onGetTalkMessagesFail(response) {
+  		function talksNotReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "11.4.3":
@@ -152,16 +155,6 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
 
 
 
-  /* ==================== SCOPE ROUTINES ==================== */
-
-  // Routine definition (scope)
-  // Format object date
-  $scope.method.formatObjectDate = function(dateToFormat) {
-  	return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
-  };
-
-
-
   /* ==================== EXECUTION ==================== */
 
   accessFactory.projectAvailable();
@@ -170,8 +163,8 @@ app.controller("TalkListController", ["accessFactory", "$http", "$location", "no
   var talkList_promise = _getTalkList();
   talkList_promise.then(
   	function onPromiseGetSuccess() {
-      $scope.talk.team.messages = _getTalkMessages($scope.talk.team);
-      $scope.talk.customer.messages = _getTalkMessages($scope.talk.customer);
+      $scope.talk.team.messages = _getTalks($scope.talk.team);
+      $scope.talk.customer.messages = _getTalks($scope.talk.customer);
 			$scope.view.valid = true;
 			$scope.view.loaded = true;
   	},
