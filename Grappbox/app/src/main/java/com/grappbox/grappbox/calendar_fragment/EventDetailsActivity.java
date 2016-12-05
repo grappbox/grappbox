@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -17,6 +18,7 @@ import android.view.MenuItem;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.model.CalendarEventModel;
+import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 /**
@@ -28,6 +30,7 @@ public class EventDetailsActivity extends AppCompatActivity {
     private static final String LOG_TAG = EventDetailsActivity.class.getSimpleName();
     public static final String EXTRA_CALENDAR_EVENT_MODEL = "com.grappbox.grappbox.calendar_fragments.EXTRA_CALENDAR_EVENT_MODEL";
     private CalendarEventModel mData;
+    private CalendarEventReceiver mReceiver;
     private Activity mContext = this;
 
     @Override
@@ -44,6 +47,13 @@ public class EventDetailsActivity extends AppCompatActivity {
         }
         mData = getIntent().getParcelableExtra(EXTRA_CALENDAR_EVENT_MODEL);
         getSupportActionBar().setTitle(mData._title);
+    }
+
+    public void registerActivityActionCallback(CalendarEventReceiver.Callback action)
+    {
+        if (mReceiver == null)
+            mReceiver = new CalendarEventReceiver(this, new Handler());
+        mReceiver.registerCallback(action);
     }
 
     @Override
@@ -76,6 +86,7 @@ public class EventDetailsActivity extends AppCompatActivity {
             public void onClick(DialogInterface dialog, int which) {
                 Intent delete = new Intent(mContext, GrappboxJustInTimeService.class);
                 delete.setAction(GrappboxJustInTimeService.ACTION_DELETE_EVENT);
+                delete.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mReceiver);
                 delete.putExtra(GrappboxJustInTimeService.EXTRA_EVENT_ID, mData._id);
                 startService(delete);
             }

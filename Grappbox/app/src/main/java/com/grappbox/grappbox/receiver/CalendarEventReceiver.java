@@ -19,10 +19,11 @@ import java.util.List;
 
 public class CalendarEventReceiver extends ResultReceiver {
 
+    public static final String EXTRA_CALENDAR_EVENT_MODEL = "calendar_event_model";
+
     private CalendarEventModel mModel;
     private List<Callback> callbacks;
     private Activity mContext;
-    public static final String EXTRA_CALENDAR_EVENT_MODEL = "calendar_event_model";
 
     public interface Callback{
         void onDataReceived(CalendarEventModel model);
@@ -42,7 +43,8 @@ public class CalendarEventReceiver extends ResultReceiver {
             Snackbar.make(mContext.findViewById(R.id.fragment_container), error, Snackbar.LENGTH_INDEFINITE);
             return;
         }
-        mModel = resultData.getParcelable(EXTRA_CALENDAR_EVENT_MODEL);
+        if (resultData != null)
+            mModel = resultData.getParcelable(EXTRA_CALENDAR_EVENT_MODEL);
         for (Callback callback : callbacks){
             callback.onDataReceived(mModel);
         }

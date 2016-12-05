@@ -19,12 +19,13 @@ import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.CalendarDetailAdapter;
 import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.CalendarEventModel;
+import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 
 /**
  * Created by tan_f on 16/11/2016.
  */
 
-public class EventDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class EventDetailsFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, CalendarEventReceiver.Callback {
 
     private static final String LOG_TAG = EventDetailsFragment.class.getSimpleName();
 
@@ -60,8 +61,17 @@ public class EventDetailsFragment extends Fragment implements LoaderManager.Load
         mAdapter.setEventModel(mModel);
         mRecycler.setAdapter(mAdapter);
         mRecycler.setLayoutManager(new LinearLayoutManager(getActivity()));
+        if (getActivity() instanceof EventDetailsActivity) {
+            ((EventDetailsActivity)getActivity()).registerActivityActionCallback(this);
+        }
+
         return v;
 
+    }
+
+    @Override
+    public void onDataReceived(CalendarEventModel model) {
+        getActivity().finish();
     }
 
     @Override

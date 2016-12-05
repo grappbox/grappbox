@@ -58,13 +58,14 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
 
     private boolean mIsEditMode;
     private CalendarEventModel mEvent = null;
+    private CalendarEventReceiver receiver;
 
     OnEventCallback mCallback;
 
     public interface OnEventCallback {
-        public void onEventSave(String title, String desc, String begin, String end);
+        public void onEventSave(String title, String desc, String begin, String end, CalendarEventReceiver receiver);
         public void onEditMode(CalendarEventModel model);
-        public void onEventEdit(String title, String desc, String begin, String end);
+        public void onEventEdit(String title, String desc, String begin, String end, CalendarEventReceiver receiver);
     }
 
     @Override
@@ -126,6 +127,13 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
         }
     }
 
+    public void registerActivityActionCallback(CalendarEventReceiver.Callback action)
+    {
+        if (receiver == null)
+            receiver = new CalendarEventReceiver(this, new Handler());
+        receiver.registerCallback(action);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.calendar_new_event_menu, menu);
@@ -169,7 +177,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
                 return;
             }
             mCallback.onEventEdit(mTitle.getText().toString(), mDescription.getText().toString(),
-                    mEventBegin.getText().toString(), mEventEnd.getText().toString());
+                    mEventBegin.getText().toString(), mEventEnd.getText().toString(), receiver);
         } else {
             if (mTitle.getText().toString().isEmpty() || mDescription.getText().toString().isEmpty()) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this, R.style.CaledarDialogOverride);
@@ -185,7 +193,7 @@ public class NewEventActivity extends AppCompatActivity implements DatePickerDia
                 return;
             }
             mCallback.onEventSave(mTitle.getText().toString(), mDescription.getText().toString(),
-                    mEventBegin.getText().toString(), mEventEnd.getText().toString());
+                    mEventBegin.getText().toString(), mEventEnd.getText().toString(), receiver);
         }
     }
 

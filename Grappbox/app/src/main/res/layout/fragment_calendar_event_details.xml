@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:context="com.grappbox.grappbox.calendar_fragment.EventDetailsActivity">
 
     <TextView
         android:padding="15dp"
@@ -12,7 +14,7 @@
         android:textAlignment="textStart"
         android:textColor="@color/GrappWhiteLight"
         android:textAppearance="@style/EmphasisTextView"
-        android:text="this is a loooooonnnnng description and you will accept it"
+        android:text="Event description"
         android:id="@+id/description"
         />
 

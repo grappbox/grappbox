@@ -45,8 +45,10 @@ import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
 import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 import com.grappbox.grappbox.model.BugModel;
+import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.project_fragments.CloudFragment;
 import com.grappbox.grappbox.receiver.BugReceiver;
+import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.singleton.Session;
 
 import org.json.JSONArray;
@@ -2745,6 +2747,15 @@ public class GrappboxJustInTimeService extends IntentService {
                         selection += ")";
                     }
                     getContentResolver().delete(GrappboxContract.EventParticipantEntry.CONTENT_URI, selection, new String[]{String.valueOf(eventId)});
+                    Cursor event = getContentResolver().query(EventEntry.CONTENT_URI, null, EventEntry._ID + "=?", new String[]{String.valueOf(eventId)}, null);
+                    if (event != null) {
+                        if (event.moveToFirst() && responseObserver != null) {
+                            Bundle answer = new Bundle();
+                            CalendarEventModel model = new CalendarEventModel(event);
+                            answer.putParcelable(CalendarEventReceiver.EXTRA_CALENDAR_EVENT_MODEL, model);
+                            responseObserver.send(Activity.RESULT_OK, answer);
+                        }
+                    }
                 }
             }
         } catch (IOException | JSONException | NetworkErrorException | ParseException e) {

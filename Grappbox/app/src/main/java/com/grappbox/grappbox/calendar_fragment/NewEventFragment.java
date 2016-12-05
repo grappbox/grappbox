@@ -26,6 +26,7 @@ import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.model.CalendarEventModel;
 import com.grappbox.grappbox.model.CalendarProjectModel;
 import com.grappbox.grappbox.model.UserModel;
+import com.grappbox.grappbox.receiver.CalendarEventReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
@@ -36,7 +37,7 @@ import java.util.List;
  * Created by tan_f on 04/11/2016.
  */
 
-public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NewEventActivity.OnEventCallback{
+public class NewEventFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, NewEventActivity.OnEventCallback, CalendarEventReceiver.Callback{
 
     private static final String LOG_TAG = NewEventFragment.class.getSimpleName();
 
@@ -77,6 +78,10 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         mParticipantsRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         mParticipantsRecycler.setAdapter(mParticipantAdapter);
 
+        if (getActivity() instanceof NewEventActivity) {
+            ((NewEventActivity)getActivity()).registerActivityActionCallback(this);
+        }
+
         v.findViewById(R.id.project_btn).setOnClickListener(new OnChangeProject(getActivity()));
         v.findViewById(R.id.participant_btn).setOnClickListener(new OnChangeParticipant(getActivity()));
 
@@ -84,7 +89,12 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onEventSave(String title, String desc, String begin, String end) {
+    public void onDataReceived(CalendarEventModel model) {
+        getActivity().finish();
+    }
+
+    @Override
+    public void onEventSave(String title, String desc, String begin, String end, CalendarEventReceiver receiver) {
         ArrayList<Long> idGrappboxList = new ArrayList<>();
         for (UserModel model : mParticipantAdapter.getDataSet()) {
             idGrappboxList.add(model._id);
@@ -93,6 +103,7 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         Bundle apiPar = new Bundle();
         apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_ADD_PARTICIPANT, idGrappboxList);
         save.setAction(GrappboxJustInTimeService.ACTION_CREATE_EVENT);
+        save.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, receiver);
         save.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, title);
         save.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, desc);
         save.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_EVENT_BEGIN, begin);
@@ -111,7 +122,7 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
     }
 
     @Override
-    public void onEventEdit(String title, String desc, String begin, String end) {
+    public void onEventEdit(String title, String desc, String begin, String end, CalendarEventReceiver receiver) {
         ArrayList<Long> idGrappboxList = new ArrayList<>();
         ArrayList<Long> idGrappboxInitList = new ArrayList<>();
         for (UserModel model : mParticipantAdapter.getDataSet()) {
@@ -135,6 +146,7 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_ADD_PARTICIPANT, mToAdd);
         apiPar.putSerializable(GrappboxJustInTimeService.EXTRA_DEL_PARTICIPANT, mToDelete);
         edit.setAction(GrappboxJustInTimeService.ACTION_EDIT_EVENT);
+        edit.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, receiver);
         edit.putExtra(GrappboxJustInTimeService.EXTRA_EVENT_ID, mEventId);
         edit.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, title);
         edit.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, desc);

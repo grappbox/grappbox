@@ -31,11 +31,11 @@ public class CalendarEventAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private SimpleDateFormat format = new SimpleDateFormat("hh:mm");
     private SimpleDateFormat mDateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-    private Context mContext;
+    private Activity mContext;
     private LayoutInflater inflater;
     private List<CalendarEventModel> mDataSet;
 
-    public CalendarEventAdapter(Context context) {
+    public CalendarEventAdapter(Activity context) {
         super();
         mContext = context;
         mDataSet = new ArrayList<>();
