@@ -548,9 +548,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             do {
                 long projectId = projectsCursor.getLong(0);
 
-                /*syncNextMeeting(token, projectId);
+                syncNextMeeting(token, projectId);
                 syncBug(token, projectId, uid);
-                syncTimeline(token, projectId);*/
+                syncTimeline(token, projectId);
                 syncPlanningMonth(token, -1);
                 syncPlanningMonth(token, 0);
                 syncPlanningMonth(token, 1);

@@ -21,9 +21,7 @@ import java.util.List;
 
 public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private static final int TYPE_DATE = 0;
-    private static final int TYPE_SUBTITLE = 1;
-    private static final int TYPE_PARTICIPANT = 2;
+    private static final int TYPE_PARTICIPANT = 0;
 
     private List<UserModel> mParticipant;
 
@@ -46,11 +44,6 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case TYPE_SUBTITLE:
-                return new SubtitleHolder(mInflater.inflate(R.layout.list_item_custom_title, parent, false));
-
-            case TYPE_DATE:
-                return new DateHolder(mInflater.inflate(R.layout.list_item_calendar_date, parent, false));
 
             case TYPE_PARTICIPANT:
                 return new ParticipantHolder(mInflater.inflate(R.layout.list_item_calendar_participant, parent, false));
@@ -60,10 +53,9 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
-
     @Override
     public int getItemViewType(int position) {
-        return position;
+        return TYPE_PARTICIPANT;
     }
 
     @Override
@@ -71,28 +63,18 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         super.onBindViewHolder(holder, position, payloads);
     }
 
-    private void bindDate()
+    private void bindParticipant(final ParticipantHolder holder, int position)
     {
-
-    }
-
-    private void bindParticipant()
-    {
-
+        UserModel userModel = mParticipant.get(position);
+        holder.mUsername.setText(userModel.toString());
     }
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
-            case TYPE_SUBTITLE:
-                break;
-
-            case TYPE_DATE:
-                bindDate();
-                break;
 
             case TYPE_PARTICIPANT:
-                bindParticipant();
+                bindParticipant((ParticipantHolder)holder, position);
                 break;
 
             default:
@@ -102,19 +84,7 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public int getItemCount() {
-        return 3;
-    }
-
-    private static class DateHolder extends RecyclerView.ViewHolder {
-
-        public TextView mBeginDate;
-        public TextView mEndDate;
-
-        public DateHolder(View itemView) {
-            super(itemView);
-            mBeginDate = (TextView)itemView.findViewById(R.id.event_begin);
-            mEndDate = (TextView)itemView.findViewById(R.id.event_end);
-        }
+        return mParticipant.size();
     }
 
     private static class ParticipantHolder extends RecyclerView.ViewHolder {
@@ -127,16 +97,6 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
             super(itemView);
             mUsername = (TextView) itemView.findViewById(R.id.username);
             mAvatar = (ImageView) itemView.findViewById(R.id.avatar);
-        }
-    }
-
-    private static class  SubtitleHolder extends RecyclerView.ViewHolder {
-
-        public TextView description;
-
-        public SubtitleHolder(View itemView) {
-            super(itemView);
-            description = (TextView) itemView.findViewById(R.id.title);
         }
     }
 }
