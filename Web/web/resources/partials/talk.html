@@ -72,16 +72,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p class="info"><strong>{[{ ::talks.data.title }]}</strong></p>
                   <p class="body">{[{ ::talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
+                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons">{[{ ::path.icons['/bugtracker'] }]}</i></a>
                   </div>
                 </div>
                 <div data-ng-if="talks.data.creator.id == user.id">
                   <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
                   <p class="body">{[{ talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn {[{ ::path.colors['/bugtracker'] + '-color' }]} {[{ ::path.colors['/bugtracker'] + '-background-hover' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)">Convert to issue</a>
-                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="talks.edit(talks.data)">Edit</a>
-                    <a href="" class="btn red-color red-background-hover" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)">Delete</a>
+                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons">{[{ ::path.icons['/bugtracker'] }]}</i></a>
+                    <a href="" class="btn btn-rounded gray-hover gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons">mode_edit</i></a>
+                    <a href="" class="btn btn-rounded red-hover red-background" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)"><i class="material-icons">delete</i></a>
                   </div>
                 </div>
               </div>
@@ -130,8 +130,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <p class="body">{[{ comment.comment }]}</p>
                   </div>
                   <div class="user-actions col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding">
-                    <a href="" class="btn gray-color gray-background-hover" title="Edit this talk" data-ng-click="comments.edit(comment)">Edit</a>
-                    <a href="" class="btn gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)">Delete</a>
+                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Edit this comment" data-ng-click="comments.edit(comment)"><i class="material-icons">mode_edit</i></a>
+                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)"><i class="material-icons">delete</i></a>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -169,7 +169,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <input id="new_comment" type="text" class="form-control" data-ng-model="new.comment" data-ng-disabled="new.disabled" required>
                 </div>
                 <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 no-padding user-add">
-                  <button class="btn blue-color blue-background-hover {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()">Add</button>
+                  <button class="btn blue-color blue-background-hover {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()">Comment</button>
                 </div>
                 <div class="clearfix">
               </fieldset>
@@ -209,7 +209,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
 </script>
 
-
 <!-- Talk comment edition -->
 <script type="text/ng-template" id="talkCommentEdition.html">
   <div class="modal-header">
@@ -232,8 +231,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
 </script>
 
-
-
 <!-- Talk deletion -->
 <script type="text/ng-template" id="talkDeletion.html">
   <div class="modal-header">
@@ -248,8 +245,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="talkDeletionConfirmed()">Delete</button>
   </div>
 </script>
-
-
 
 <!-- Talk comment deletion -->
 <script type="text/ng-template" id="talkCommentDeletion.html">

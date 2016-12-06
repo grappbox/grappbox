@@ -59,12 +59,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
           }
         }
-        else {
-          $scope.talks = null;
-          $scope.talks.valid = false;
-          $scope.talks.authorized = true;
-          $scope.talks.loaded = true;
-        }
+        else
+          $rootScope.reject(true);
       },
       function talkNotReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -88,12 +84,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
           }
         }
-        else {
-          $scope.talks.data = null;
-          $scope.talks.valid = false;
-          $scope.talks.authorized = true;
-          $scope.talks.loaded = true;
-        }
+        else
+          $rootScope.reject(true);
       }
     );
   };
@@ -127,12 +119,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
           }
         }
-        else {
-          $scope.comments.data = null;
-          $scope.comments.valid = false;
-          $scope.comments.authorized = true;
-          $scope.comments.loaded = true;
-        }
+        else
+          $rootScope.reject(true);
       },
       function talkCommentsNotReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -161,12 +149,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
             break;
           }
         }
-        else {
-          $scope.comments.data = null;
-          $scope.comments.valid = false;
-          $scope.comments.authorized = true;
-          $scope.comments.loaded = true;
-        }
+        else
+          $rootScope.reject(true);
       }
     );
   };
@@ -198,10 +182,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
             }
           }
-          else {
-            $location.path("talk/" + $scope.route.project_id);
-            notificationFactory.error();
-          }
+          else
+            $rootScope.reject(true);
         },
         function talkNotPosted(response) {
           if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -226,10 +208,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
             }
           }
-          else {
-            $location.path("talk/" + $scope.route.project_id);
-            notificationFactory.error();
-          }
+          else
+            $rootScope.reject(true);
         }
       );
     }
@@ -260,12 +240,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
             }
           }
-          else {
-            $scope.comments.data = null;
-            $scope.comments.valid = false;
-            $scope.comments.authorized = true;
-            $scope.comments.loaded = true;
-          }
+          else
+            $rootScope.reject(true);
         },
         function talkCommentNotPosted(response) {
           if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -291,12 +267,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
               break;
             }
           }
-          else {
-            $scope.comments.data = null;
-            $scope.comments.valid = false;
-            $scope.comments.authorized = true;
-            $scope.comments.loaded = true;
-          }
+          else
+            $rootScope.reject(true);
         }
       );
     }
@@ -314,7 +286,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     var talkEdition = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", scope: $scope, templateUrl: "talkEdition.html", controller: "TalkEditionController" });
 
     talkEdition.result.then(
-      function talkEditionConfirmed(data) {
+      function talkEditionConfirmed() {
         $http.put($rootScope.api.url + "/timeline/message/" + $scope.route.talklist_id + "/" + $scope.route.talk_id,
           { data: { title: $scope.new.title, message: $scope.new.body }},
           { headers: { "Authorization": $rootScope.user.token }}).then(
@@ -346,6 +318,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
                 break;
               }
             }
+            else
+              $rootScope.reject(true);
           }
         ),
         function talkEditionCancelled() {
@@ -363,7 +337,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     var talkCommentEdition = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", scope: $scope, templateUrl: "talkCommentEdition.html", controller: "TalkCommentEditionController" });
 
     talkCommentEdition.result.then(
-      function talkCommentEditionConfirmed(data) {
+      function talkCommentEditionConfirmed() {
         $http.put($rootScope.api.url + "/timeline/comment/" + $scope.route.talklist_id,
           { data: { commentId: comment_data.id, comment: $scope.new.body }},
           { headers: { "Authorization": $rootScope.user.token }}).then(
@@ -394,6 +368,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
                 break;
               }
             }
+            else
+              $rootScope.reject(true);
           }
         ),
         function talkCommentEditionCancelled() {
@@ -412,7 +388,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     var talkDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "talkDeletion.html", controller: "TalkDeletionController" });
 
     talkDeletion.result.then(
-      function talkDeletionConfirmed(data) {
+      function talkDeletionConfirmed() {
         $http.delete($rootScope.api.url + "/timeline/message/" + $scope.route.talklist_id + "/" + talk_id,
           { headers: { "Authorization": $rootScope.user.token }}).then(
           function talkDeleted() {
@@ -441,6 +417,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
                 break;
               }
             }
+            else
+              $rootScope.reject(true);
           }
         ),
         function talkDeletionCancelled() {}
@@ -453,7 +431,7 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
     var talkCommentDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "talkCommentDeletion.html", controller: "TalkCommentDeletionController" });
 
     talkCommentDeletion.result.then(
-      function talkCommentDeletionConfirmed(data) {
+      function talkCommentDeletionConfirmed() {
         $http.delete($rootScope.api.url + "/timeline/comment/" + comment_id,
           { headers: { "Authorization": $rootScope.user.token }}).then(
           function talkCommentDeleted() {
@@ -482,6 +460,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
                 break;
               }
             }
+            else
+              $rootScope.reject(true);
           }
         ),
         function talkCommentDeletionCancelled() {}

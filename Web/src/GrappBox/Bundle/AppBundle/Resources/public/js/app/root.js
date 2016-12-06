@@ -84,8 +84,11 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
 
   // ROOTSCOPE routine
   // Toggle sidebar state
-  $rootScope.sidebar.toggle = function() {
-    $rootScope.sidebar.open = !$rootScope.sidebar.open;
+  $rootScope.sidebar.toggle = function(state) {
+    if (angular.isUndefined(state))
+      $rootScope.sidebar.open = !$rootScope.sidebar.open;
+    else
+      $rootScope.sidebar.open = state;
   };
 
 

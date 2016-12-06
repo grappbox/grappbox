@@ -138,18 +138,17 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		caseInsensitiveMatch : true
   })
   .when("/talk/:project_id/:talklist_id/:talk_id", {
-    title: "Talks",
+    title: "Talk",
     controller  : "TalkController",
     templateUrl : "../resources/partials/talk.html",
     caseInsensitiveMatch : true
   })
 	// Whiteboard pages
   .when("/whiteboard/:project_id", {
-		title: "Whiteboard",
+		title: "Whiteboards",
     controller  : "WhiteboardListController",
 		templateUrl : "../resources/partials/whiteboard-list.html",
-		caseInsensitiveMatch : true,
-    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
+		caseInsensitiveMatch : true
 	})
   .when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",
