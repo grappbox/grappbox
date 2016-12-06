@@ -67,18 +67,20 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   					break;
   				}
   			}
-  			else {
-          _resetTalkList();
-  				deferred.reject();
-  			}
+        else
+          $rootScope.reject(true);
   			return deferred.promise;
   		},
   		function talkListNotReceived(response) {
-  			if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "11.1.3")
-  				$rootScope.reject();
-				$scope.talk.team.messages = null;
-				$scope.talk.customer.messages = null;
-  			deferred.reject();
+        if (response && response.data && response.data.info && response.data.info.return_code) {
+    			if (response.data.info.return_code == "11.1.3")
+    				$rootScope.reject();
+  				$scope.talk.team.messages = null;
+  				$scope.talk.customer.messages = null;
+    			deferred.reject();
+        }
+        else
+          $rootScope.reject(true);
 
 				return deferred.promise;
   		}
@@ -117,11 +119,8 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   					break;
   				}
   			}
-  			else {
-					talk.messages = null;
-  				talk.valid = false;
-					talk.loaded = true;
-  			}
+        else
+          $rootScope.reject(true);
   		},
   		function talksNotReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -144,11 +143,8 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
             break;
           }
         }
-        else {
-          talk.messages = null;
-          talk.valid = false;
-          talk.loaded = true;
-        }
+        else
+          $rootScope.reject(true);
   		}
 		);
   };
@@ -162,13 +158,13 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   
   var talkList_promise = _getTalkList();
   talkList_promise.then(
-  	function onPromiseGetSuccess() {
+  	function talkListPromiseSuccess() {
       $scope.talk.team.messages = _getTalks($scope.talk.team);
       $scope.talk.customer.messages = _getTalks($scope.talk.customer);
 			$scope.view.valid = true;
 			$scope.view.loaded = true;
   	},
-  	function onPromiseGetFail() {
+  	function talkListPromiseFail() {
 			$scope.view.valid = false;
 			$scope.view.loaded = true;
   	}
