@@ -105,6 +105,9 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
       else
         $rootScope.path.routes[value] = false;
     }, $rootScope);
+
+    if ($window.innerWidth <= 1600)
+      $rootScope.sidebar.toggle(false);
   };
 
 
