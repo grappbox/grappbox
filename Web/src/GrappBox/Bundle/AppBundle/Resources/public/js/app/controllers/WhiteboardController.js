@@ -245,7 +245,7 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             break;
 
             case "10.3.4":
-            $location.path("whiteboard/" + $route.  current.params.project_id);
+            $location.path("whiteboard/" + $route.current.params.project_id);
             notificationFactory.warning("This whiteboard has been deleted.");
             deferred.reject();
             break;

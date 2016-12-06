@@ -2,111 +2,109 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- Whiteboard (list) -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
-
-<div class="panel panel-default">
-  <div class="panel-heading">Draw and share your ideas.</div>
-  <div class="panel-body">
-    <p>
-      Welcome to your project's whiteboards management page. Each whiteboard is collaborative, which means that it's <strong>shared</strong> between all GrappBox platforms.<br>Use the <strong>"Open"</strong> button to go to a whiteboard, or add a new one via the <strong>"+"</strong> button. 
-    </p>
+<!-- Whiteboards -->
+<section class="whiteboard-list">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/whiteboard.svg" width="300" height="auto" alt="Whiteboards">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Whiteboards</h1>
+      <p>Welcome to your project's whiteboards management page.<br>Each whiteboard is collaborative, which means that it's <strong>shared in real-time</strong> between all GrappBox platforms.</p>
+    </div>
+    <div class="clearfix"></div>
   </div>
-</div>
 
-<!-- whiteboard: new whiteboard fixed button -->
-<section>
-  <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new whiteboard" data-ng-click="action.onNewWhiteboard()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
-</section>
+  <div data-ng-if="!view.loaded">
+    <div class="spinner section">
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+    </div>
+  </div>
+  <div data-ng-if="view.loaded">
+    <div data-ng-if="view.valid && view.authorized">
+      <div class="box-row">
 
-<!-- whiteboard: list -->
-<section id="whiteboard-list">
-  <div class="row">
-    <div class="col-lg-12">
-      <div data-ng-if="view.onLoad">
-        <div class="spinner section">
-          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+          <a href="" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover new" title="Create a whiteboard for this project" data-ng-click="whiteboards.add()">Create a new whiteboard</a>
         </div>
-      </div>
-      <div data-ng-if="!view.onLoad">
-        <div data-ng-if="view.authorized">
-          <div data-ng-if="view.valid && whiteboards.list">
-            <div class="each-data each-whiteboard col-md-4" data-ng-repeat="whiteboard in whiteboards.list">
-              <div class="well">
-                <ul>
-                  <li class="ellipsis title">"{[{ whiteboard.name }]}"</li>
-                  <li><i class="material-icons">alarm_on</i>Created: {[{ method.formatObjectDate(whiteboard.createdAt.date) }]} <span class="author">by {[{ whiteboard.user.firstname }]} {[{ whiteboard.user.lastname }]}</span></li>
-                  <li><i class="material-icons">alarm_add</i>Last update: {[{ method.formatObjectDate(whiteboard.updatedAt.date) }]} <span class="updator">by {[{ whiteboard.updator.firstname }]} {[{ whiteboard.updator.lastname }]}</span></li>
-                </ul>
-                <a href="whiteboard/{[{ whiteboards.project_id }]}/{[{ whiteboard.id }]}" title="Open whiteboard '{[{ whiteboard.name }]}'" class="btn">Open</a>
-                <a href="" title="Delete this message" class="btn btn-default" data-ng-click="action.onDeleteWhiteboard(whiteboard.id)">Delete</a>
-                <div class="clearfix"></div>
-              </div>
+        <div data-ng-if="whiteboards.list" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 no-padding each-whiteboard" data-ng-repeat="whiteboard in whiteboards.list">
+          <div class="box">
+            <div class="avatar">
+              <img src="../resources/img/app/default-avatar.min.png" alt="{[{ ::whiteboard.user.firstname }]} {[{ ::whiteboard.user.lastname }]}" width="48px" height="48px">
             </div>
-          </div>
-          <div data-ng-if="!view.onLoad && view.valid && !whiteboards.list">
-            <div class="well text-center">
-              <p><i class="material-icons">border_color</i><br>This project contains no whiteboards.<br>Create one now!</p>
-            </div>
-          </div>
-          <div data-ng-if="!view.onLoad && !view.valid">
-            <div class="well text-center">
-              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+            <ul>
+              <li class="title"><strong>{[{ ::whiteboard.name }]}</strong></li>
+              <li class="author">{[{ ::whiteboard.user.firstname }]} {[{ ::whiteboard.user.lastname }]}</li>
+              <li class="date"><span>{[{ ::whiteboard.createdAt }]}</span></li>
+            </ul>
+            <div class="clearfix"></div>
+            <div class="submit">
+              <a href="whiteboard/{[{ ::whiteboards.project_id }]}/{[{ ::whiteboard.id }]}" title="Open {[{ ::whiteboard.user.firstname }]}'s whiteboard" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}">Open</a>
             </div>
           </div>
         </div>
-        <div data-ng-if="!view.authorized">
-          <div class="well text-center">
-            <p><i class="material-icons">block</i><br>You don't have sufficient rights to perform this operation.</p>
+         <div data-ng-if="!whiteboards.list" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box-row">
+            <div class="box error text-center">
+              <p><i class="material-icons">speaker_notes_off</i>This project has no whiteboards.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
+
+    <div data-ng-if="!view.valid">
+      <div class="box-row">
+        <div class="box error text-center">
+          <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+        </div>
+      </div>
+    </div>
+    <div data-ng-if="!view.authorized">
+      <div class="box-row">
+        <div class="box error text-center">
+          <p><i class="material-icons">block</i>You don't have sufficient rights to see this project's whiteboards.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
-<!-- whiteboard: whiteboard creation modal -->
-<div>
-  <script type="text/ng-template" id="modal_createNewWhiteboard.html">
-    <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelWhiteboardCreation()">×</button>
-      <h4 class="modal-title">Whiteboard creation</h4>
-    </div>
-    <div class="modal-body">
-      <form class="form-horizontal">
-        <fieldset>
-          <div class="form-group {[{ error.name ? 'has-error' : '' }]}">
-            <label for="new-whiteboard-name" class="col-md-1 control-label">Name</label>
-            <div class="col-md-11">
-              <input type="text" class="form-control" id="new-whiteboard-name" data-ng-model="new.name" placeholder="Name">
-            </div>
-          </div>
-        </fieldset>
-      </form>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmWhiteboardCreation()">Create</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelWhiteboardCreation()">Cancel</button>
-    </div>
-  </script>
-</div>
 
-<!-- whiteboard: whiteboard deletion modal -->
-<div>
-  <script type="text/ng-template" id="modal_deleteWhiteboard.html">
-    <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelWhiteboardDeletion()">×</button>
-      <h4 class="modal-title">Whiteboard deletion</h4>
-    </div>
-    <div class="modal-body">
+
+<!-- Whiteboard creation -->
+<script type="text/ng-template" id="whiteboardCreation.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="whiteboardCreationCancelled()">×</button>
+    <h4 class="modal-title">Whiteboard creation</h4>
+  </div>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ whiteboards.new.error ? 'has-error' : '' }]}">
+          <label for="name" class="control-label">Name</label>
+          <input id="name" type="text" class="form-control" data-ng-model="whiteboards.new.name" required>
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="whiteboardCreationCancelled()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="whiteboardCreationConfirmed()">Create</button>
+  </div>
+</script>
+
+<!-- Whiteboard deletion -->
+<script type="text/ng-template" id="whiteboardDeletion.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="whiteboardDeletionCancelled()">×</button>
+    <h4 class="modal-title">Whiteboard deletion</h4>
+  </div>
+  <div class="modal-body">
     <p>Are you sure you want to delete this whiteboard?</p>
-    </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmWhiteboardDeletion()">Yes</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelWhiteboardDeletion()">No</button>
-    </div>
-  </script>
-</div>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="whiteboardDeletionCancelled()">Cancel</button>
+    <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="whiteboardDeletionConfirmed()">Delete</button>
+  </div>
+</script>

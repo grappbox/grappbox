@@ -148,8 +148,7 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
 		title: "Whiteboards",
     controller  : "WhiteboardListController",
 		templateUrl : "../resources/partials/whiteboard-list.html",
-		caseInsensitiveMatch : true,
-    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
+		caseInsensitiveMatch : true
 	})
   .when("/whiteboard/:project_id/:id", {
 		title: "Whiteboard",

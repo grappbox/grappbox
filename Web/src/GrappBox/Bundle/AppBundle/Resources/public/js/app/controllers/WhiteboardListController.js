@@ -6,18 +6,14 @@
 
 // Controller definition
 // APP whiteboard list
-app.controller("WhiteboardListController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope", "$uibModal",
-    function($http, notificationFactory, $rootScope, $route, $scope, $uibModal) {
+app.controller("WhiteboardListController", ["accessFactory", "$http", "notificationFactory", "$rootScope", "$route", "$scope", "$uibModal",
+    function(accessFactory, $http, notificationFactory, $rootScope, $route, $scope, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.view = { onLoad: true, valid: false, authorized: false };
-  $scope.method = { formatObjectDate: "" };
-
-  $scope.whiteboards = { project_id: $route.current.params.project_id, list: "" };
-  $scope.action = { addWhiteboard: "", deleteWhiteboard: "" };
-  $scope.new = { name: "" };
+  $scope.view = { loaded: false, valid: false, authorized: false };
+  $scope.whiteboards = { project_id: $route.current.params.project_id, list: "", add: "", delete: "", new: { name: "", error: "" } };
 
 
 
@@ -26,120 +22,98 @@ app.controller("WhiteboardListController", ["$http", "notificationFactory", "$ro
   // Routine definition (local)
   // Get whiteboard list
   var _getWhiteboardList = function() {
-    $scope.view.valid = false;
-    $scope.view.onLoad = true;
-
     $http.get($rootScope.api.url + "/whiteboards/" + $scope.whiteboards.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onGetWhiteboardListSuccess(response) {
-        if (response.data.info) {
+      function whiteboardListReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "1.10.1":
-            $scope.whiteboards.list = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
+            $scope.whiteboards.list = (response.data.data && response.data.data.array ? response.data.data.array : null);
             $scope.view.valid = true;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
 
             case "1.10.3":
             $scope.whiteboards.list = null;
             $scope.view.valid = true;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
 
             default:
             $scope.whiteboards.list = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
           }
         }
-        else {
-          $scope.whiteboards.list = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-        }
+        else
+          $rootScope.reject(true);
       },
-      function onGetWhiteboardListFail(response) {
-        if (response.data.info) {
+      function whiteboardListNotReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "10.1.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "10.1.9":
             $scope.whiteboards.list = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = false;
             break;
 
             default:
             $scope.whiteboards.list = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
           }
         }
-        else {
-          $scope.whiteboards.list = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-        }
+        else
+          $rootScope.reject(true);
       }
     );
   }; 
 
 
 
-  /* ==================== SCOPE ROUTINES ==================== */
-
-  // Routine definition (scope)
-  // Format object date
-  $scope.method.formatObjectDate = function(dateToFormat) {
-    return (dateToFormat ? dateToFormat.substring(0, dateToFormat.lastIndexOf(":")) : "N/A");
-  };
-
-
-
   /* ==================== EXECUTION ==================== */
 
+  accessFactory.projectAvailable();
   _getWhiteboardList();
 
 
 
-  /* ==================== CREATE OBJECT (CREATE WHITEBOARD) ==================== */
+  /* ==================== CREATE WHITEBOARD ==================== */
 
   // "Add whiteboard" button handler
-  $scope.action.onNewWhiteboard = function() {
-    $scope.new.name = "";
+  $scope.whiteboards.add = function() {
+    $scope.whiteboards.new.name = "";
 
-    var modal_newWhiteboard = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewWhiteboard.html", controller: "modal_createNewWhiteboard" });
-    modal_newWhiteboard.result.then(
-      function onModalConfirm() {
+    var whiteboardCreation = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "whiteboardCreation.html", controller: "WhiteboardCreationController" });
+    whiteboardCreation.result.then(
+      function whiteboardCreationConfirmed() {
         $http.post($rootScope.api.url + "/whiteboard",
-          { data: { projectId: $scope.whiteboards.project_id, whiteboardName: $scope.new.name }},
+          { data: { projectId: $scope.whiteboards.project_id, whiteboardName: $scope.whiteboards.new.name }},
           { headers: { 'Authorization': $rootScope.user.token }}).then(
-          function onPostWhiteboardSuccess(response) {
-            if (response.data.info && response.data.info.return_code !== "1.10.1")
-              notificationFactory.error();
-            else
-              notificationFactory.success("Whiteboard successfully created.");
+          function whiteboardCreated(response) {
+            notificationFactory.success("Whiteboard created.");
             _getWhiteboardList();     
+            $scope.whiteboards.new.name = "";
           },
-          function onPostWhiteboardFail(response) {
-            if (response.data.info)
+          function whiteboardNotCreated(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
               switch(response.data.info.return_code) {
                 case "10.2.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "10.2.9":
-                notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
+                notificationFactory.warning("You don\'t have permission to create a new whiteboard.");
                 break;
 
                 default:
@@ -147,38 +121,40 @@ app.controller("WhiteboardListController", ["$http", "notificationFactory", "$ro
                 break;
               }
             }
-          ),
-        function onModalDismiss() { }
+            else
+              $rootScope.reject(true);
+          }
+        ),
+        function whiteboardCreationCancelled() {
+          $scope.whiteboards.new.name = "";
+        }
       }
     );
   };
 
 
 
-  /* ==================== DELETE OBJECT (DELETE WHITEBOARD) ==================== */
+  /* ==================== DELETE WHITEBOARD ==================== */
 
   // "Delete whiteboard" button handler
-  $scope.action.onDeleteWhiteboard = function(whiteboard_id) {
-    var modal_deleteWhiteboard = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "modal_deleteWhiteboard.html", controller: "modal_deleteWhiteboard" });
-    modal_deleteWhiteboard.result.then(
-      function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/whiteboard/" + whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
-          function onDeleteWhiteboardSuccess(response) {
-            if (response.data.info && response.data.info.return_code !== "1.10.1")
-              notificationFactory.error();
-            else
-              notificationFactory.success("Whiteboard successfully deleted.");
+  $scope.whiteboards.delete = function(whiteboard_data) {
+    var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
+    whiteboardDeletion.result.then(
+      function whiteboardDeletionConfirmed(data) {
+        $http.delete($rootScope.api.url + "/whiteboard/" + whiteboard_data, { headers: { 'Authorization': $rootScope.user.token }}).then(
+          function whiteboardDeleted(response) {
+            notificationFactory.success("Whiteboard successfully deleted.");
             _getWhiteboardList();
           },
-          function onDeleteWhiteboardFail(response) {
-            if (response.data.info)
+          function whiteboardNotDeleted(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
               switch(response.data.info.return_code) {
                 case "10.6.3":
-                $rootScope.onUserTokenError();
+                $rootScope.reject();
                 break;
 
                 case "10.6.9":
-                notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
+                notificationFactory.warning("You don\'t have permission to delete whiteboards.");
                 break;
 
                 default:
@@ -186,8 +162,11 @@ app.controller("WhiteboardListController", ["$http", "notificationFactory", "$ro
                 break;
               }
             }
-          ),
-        function onModalDismiss() { }
+            else
+              $rootScope.reject(true);
+          }
+        ),
+        function whiteboardDeletionCancelled() { }
       }
     );
   };
@@ -198,29 +177,27 @@ app.controller("WhiteboardListController", ["$http", "notificationFactory", "$ro
 
 /**
 * Controller definition (from view)
-* WHITEBOARD CREATION => new message form.
+* Confirmation prompt for whiteboard creation.
 *
 */
-app.controller("modal_createNewWhiteboard", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-  $scope.error = { name: false };
-
-  $scope.modal_confirmWhiteboardCreation = function() {
-    $scope.error.name = ($scope.new.name && $scope.new.name.length ? false : true);
-    if (!$scope.error.name)
+app.controller("WhiteboardCreationController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.whiteboardCreationConfirmed = function() {
+    $scope.whiteboards.new.error = ($scope.whiteboards.new.name && $scope.whiteboards.new.name.length ? false : true);
+    if (!$scope.whiteboards.new.error)
       $uibModalInstance.close();
   };
-  $scope.modal_cancelWhiteboardCreation = function() { $uibModalInstance.dismiss(); };
+  $scope.whiteboardCreationCancelled = function() { $uibModalInstance.dismiss(); };
 }]);
 
 
 
 /**
 * Controller definition (from view)
-* WHITEBOARD DELETION => confirmation prompt.
+* Confirmation prompt for whiteboard deletion.
 *
 */
-app.controller("modal_deleteWhiteboard", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+app.controller("WhiteboardDeletionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
-  $scope.modal_confirmWhiteboardDeletion = function() { $uibModalInstance.close(); };
-  $scope.modal_cancelWhiteboardDeletion = function() { $uibModalInstance.dismiss(); };
+  $scope.whiteboardDeletionConfirmed = function() { $uibModalInstance.close(); };
+  $scope.whiteboardDeletionCancelled = function() { $uibModalInstance.dismiss(); };
 }]);
