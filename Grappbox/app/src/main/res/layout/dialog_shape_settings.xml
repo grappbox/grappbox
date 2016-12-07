@@ -4,20 +4,18 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="10dp"
     android:padding="10dp">
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-        app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout"
-        android:id="@+id/til_login">
-        <android.support.design.widget.TextInputEditText
+        app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/directory_name"
-            android:id="@+id/input_dirname"
+            android:hint="@string/stroke_color"
+            android:id="@+id/input_stroke_color"
             android:inputType="text"/>
     </android.support.design.widget.TextInputLayout>
 
@@ -26,13 +24,27 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="20dp"
         app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
-        app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout"
-        android:id="@+id/til_safe">
-        <android.support.design.widget.TextInputEditText
+        app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/hint_safe_password"
-            android:id="@+id/input_safe"
-            android:inputType="textPassword"/>
+            android:hint="@string/background_color"
+            android:id="@+id/input_background_color"
+            android:inputType="text"/>
     </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp"
+        app:hintTextAppearance="@style/TextAppearence.App.TextInputLayout"
+        app:errorTextAppearance="@style/TextAppearence.App.TextInputLayout">
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/line_weight"
+            android:id="@+id/input_line_weight"
+            android:inputType="number"/>
+    </android.support.design.widget.TextInputLayout>
+
 </LinearLayout>

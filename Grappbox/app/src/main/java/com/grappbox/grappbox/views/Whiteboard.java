@@ -67,7 +67,8 @@ public class Whiteboard extends View {
         E_ELLIPSIS,
         E_RECTANGLE,
         E_DIAMOND,
-        E_TEXT
+        E_TEXT,
+        E_ERASER
     }
 
     /**
@@ -83,6 +84,8 @@ public class Whiteboard extends View {
     private abstract class ObjectModel{
         public Tool drawingTool;
         public int strokeColor;
+        public String id;
+        public boolean isSent;
 
         /**
          * Constructor
@@ -99,7 +102,34 @@ public class Whiteboard extends View {
          */
         public void init(JSONObject object) throws JSONException{
             String color = object.isNull("color") ? "" : object.getString("color");
-            strokeColor = object.isNull("color") ? -1 : Color.parseColor((color.startsWith("#") ? "" : "#") + color);
+            strokeColor = object.isNull("color") ? Integer.MAX_VALUE : Color.parseColor((color.startsWith("#") ? "" : "#") + color);
+            id = object.getString("id");
+            isSent = true;
+        }
+
+        public void init(int strokeColor){
+            this.strokeColor = strokeColor;
+            isSent = false;
+        }
+
+        public JSONObject toJSON() throws JSONException {
+            JSONObject json = new JSONObject();
+
+            if (drawingTool == Tool.E_DIAMOND)
+                json.put("type", "DIAMOND");
+            else if (drawingTool == Tool.E_ELLIPSIS)
+                json.put("type", "ELLIPSE");
+            else if (drawingTool == Tool.E_HANDWRITE)
+                json.put("type", "HANDWRITE");
+            else if (drawingTool == Tool.E_LINE)
+                json.put("type", "LINE");
+            else if (drawingTool == Tool.E_RECTANGLE)
+                json.put("type", "RECTANGLE");
+            else if (drawingTool == Tool.E_TEXT)
+                json.put("type", "TEXT");
+            json.put("color", strokeColor == Integer.MAX_VALUE ? null : colorToString(strokeColor));
+
+            return json;
         }
 
         /**
@@ -139,8 +169,20 @@ public class Whiteboard extends View {
          * @return A float rectangle which describe the real position on screen. It can be negative or exceed screen size
          */
         public RectF getPosition(){
-            return new RectF(mScreenPosition.x - positionStart.x, mScreenPosition.y - positionStart.y,
-                            mScreenPosition.x - positionEnd.x,mScreenPosition.y - positionEnd.y);
+            float tmp;
+            RectF ret = new RectF(positionStart.x - mScreenPosition.x,positionStart.y - mScreenPosition.y,
+                    positionEnd.x - mScreenPosition.x, positionEnd.y - mScreenPosition.y);
+            if (ret.right < ret.left){
+                tmp = ret.right;
+                ret.right = ret.left;
+                ret.left = tmp;
+            }
+            if (ret.bottom < ret.top){
+                tmp = ret.bottom;
+                ret.bottom = ret.top;
+                ret.top = tmp;
+            }
+            return ret;
         }
 
         /**
@@ -155,10 +197,38 @@ public class Whiteboard extends View {
 
             super.init(object);
             String bgColor = object.isNull("background") ? "" : object.getString("background");
-            backgroundColor = object.isNull("background") ? -1 : Color.parseColor((bgColor.startsWith("#") ? ""  : "#") + bgColor);
+            backgroundColor = object.isNull("background") ? Integer.MAX_VALUE : Color.parseColor((bgColor.startsWith("#") ? ""  : "#") + bgColor);
             positionStart = new Float2((float)startObject.getDouble("x"), (float)startObject.getDouble("y"));
             positionEnd = new Float2((float)endObject.getDouble("x"), (float)endObject.getDouble("y"));
             lineWeight = object.has("lineWeight") && !object.isNull("lineWeight") ? object.getInt("lineWeight") :  0;
+        }
+
+        public void setPositionEnd(Float2 posEnd){
+            positionEnd = posEnd;
+        }
+
+        public void init(int backgroundColor, Float2 positionStart, Float2 positionEnd, int strokeColor, int lineWeight) {
+            super.init(strokeColor);
+            this.backgroundColor = backgroundColor;
+            this.positionStart = positionStart;
+            this.positionEnd = positionEnd;
+            this.lineWeight = lineWeight;
+        }
+
+        @Override
+        public JSONObject toJSON() throws JSONException {
+            JSONObject json = super.toJSON();
+            JSONObject jpositionStart = new JSONObject(), jpositionEnd = new JSONObject();
+
+            json.put("background", backgroundColor == Integer.MAX_VALUE ? null : colorToString(backgroundColor));
+            jpositionStart.put("x", positionStart.x);
+            jpositionStart.put("y", positionStart.y);
+            jpositionEnd.put("x", positionEnd.x);
+            jpositionEnd.put("y", positionEnd.y);
+            json.put("positionStart", jpositionStart);
+            json.put("positionEnd", jpositionEnd);
+            json.put("lineWeight", lineWeight);
+            return json;
         }
     }
 
@@ -197,6 +267,15 @@ public class Whiteboard extends View {
             isBold = object.getBoolean("isBold");
         }
 
+        public void init(int color, String text, int size, Float2 positionStart, boolean isItalic, boolean isBold){
+            super.init(color);
+            this.positionStart = positionStart;
+            this.text = text;
+            this.size = size;
+            this.isItalic = isItalic;
+            this.isBold = isBold;
+        }
+
         /**
          * Event to call when we need to draw the object
          * @param canvas The canvas given by the whiteboard view to draw on
@@ -206,12 +285,34 @@ public class Whiteboard extends View {
             if (strokeColor == -1)
                 return;
             mTextPainter.setColor(strokeColor);
-            mTextPainter.setTextSize(size);
+            mTextPainter.setTextSize((float) (size * 1.333333));
             if (isItalic){
                 mTextPainter.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.ITALIC));
             }
             mTextPainter.setFakeBoldText(isBold);
-            canvas.drawText(text, positionStart.x, positionStart.y, mTextPainter);
+            canvas.drawText(text, positionStart.x - mScreenPosition.x, positionStart.y - mScreenPosition.y, mTextPainter);
+        }
+
+        @Override
+        public JSONObject toJSON() throws JSONException {
+            JSONObject json = super.toJSON();
+            JSONObject jpositionStart = new JSONObject(), jpositionEnd = new JSONObject();
+
+            float width = mTextPainter.measureText(text);
+            Paint.FontMetrics metrics = mTextPainter.getFontMetrics();
+            float height = metrics.bottom - metrics.top;
+            jpositionStart.put("x", positionStart.x);
+            jpositionStart.put("y", positionStart.y);
+            jpositionEnd.put("x", positionStart.x + width);
+            jpositionEnd.put("y", positionStart.y + height);
+            json.put("positionStart", jpositionStart);
+            json.put("positionEnd", jpositionEnd);
+            json.put("text", text);
+            json.put("size", size);
+            json.put("isItalic", isItalic);
+            json.put("isBold", isBold);
+
+            return json;
         }
     }
 
@@ -250,13 +351,19 @@ public class Whiteboard extends View {
             }
         }
 
+        public void init(int strokeColor, int lineWeight, List<Float2> points){
+            super.init(strokeColor);
+            this.lineWeight = lineWeight;
+            this.points = points;
+        }
+
         /**
          * Calculate the real position on screen based on virtual canvas camera position
          * @param point The point to process
          * @return A float pair which describe the real point position on screen. It can be negative or exceed screen size
          */
         public Float2 getPosition(Float2 point){
-            return new Float2(mScreenPosition.x - point.x, mScreenPosition.y - point.y);
+            return new Float2(point.x - mScreenPosition.x, point.y - mScreenPosition.y);
         }
 
         /**
@@ -265,7 +372,7 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-            if (lineWeight > 0 && strokeColor != -1){
+            if (lineWeight > 0 && strokeColor != Integer.MAX_VALUE){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 Path handwrite = new Path();
@@ -279,6 +386,24 @@ public class Whiteboard extends View {
                 }
                 canvas.drawPath(handwrite, mStrokePainter);
             }
+        }
+
+        @Override
+        public JSONObject toJSON() throws JSONException {
+            JSONObject json = super.toJSON();
+            JSONArray pointsArr = new JSONArray();
+
+            for (Float2 point : points){
+                JSONObject pos = new JSONObject();
+                pos.put("x", point.x);
+                pos.put("y", point.y);
+                pointsArr.put(pos);
+            }
+
+            json.put("lineWeight", lineWeight);
+            json.put("points", pointsArr);
+
+            return json;
         }
     }
 
@@ -315,15 +440,30 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-            if (backgroundColor != -1){
+            if (backgroundColor != Integer.MAX_VALUE){
                 mPainter.setColor(backgroundColor);
                 canvas.drawOval(getPosition(), mPainter);
             }
-            if (lineWeight > 0 && strokeColor != -1){
+            if (lineWeight > 0 && strokeColor != Integer.MAX_VALUE){
                 mStrokePainter.setStrokeWidth(lineWeight);
                 mStrokePainter.setColor(strokeColor);
                 canvas.drawOval(getPosition(), mStrokePainter);
             }
+        }
+
+        @Override
+        public JSONObject toJSON() throws JSONException {
+            JSONObject json = super.toJSON();
+            JSONObject jradius = new JSONObject();
+
+            RectF pos = getPosition();
+            float width = pos.right - pos.left;
+            float height = pos.bottom - pos.top;
+            jradius.put("x", width / 2);
+            jradius.put("y", height / 2);
+            json.put("radius", jradius);
+
+            return json;
         }
     }
 
@@ -340,6 +480,13 @@ public class Whiteboard extends View {
             super(Tool.E_LINE);
         }
 
+        @Override
+        public RectF getPosition() {
+            RectF ret = new RectF(positionStart.x - mScreenPosition.x,positionStart.y - mScreenPosition.y,
+                    positionEnd.x - mScreenPosition.x, positionEnd.y - mScreenPosition.y);
+            return ret;
+        }
+
         /**
          * Event to call when we need to draw the object
          * @param canvas The canvas given by the whiteboard view to draw on
@@ -347,7 +494,7 @@ public class Whiteboard extends View {
         @Override
         public void draw(Canvas canvas) {
             RectF position = getPosition();
-            if (lineWeight > 0 && strokeColor != -1){
+            if (lineWeight > 0 && strokeColor != Integer.MAX_VALUE){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 canvas.drawLine(position.left, position.top, position.right, position.bottom, mStrokePainter);
@@ -374,16 +521,15 @@ public class Whiteboard extends View {
          */
         @Override
         public void draw(Canvas canvas) {
-            if (backgroundColor != -1){
+            if (backgroundColor != Integer.MAX_VALUE){
                 mPainter.setColor(backgroundColor);
                 canvas.drawRect(getPosition(), mPainter);
             }
-            if (lineWeight > 0 && strokeColor != -1){
+            if (lineWeight > 0 && strokeColor != Integer.MAX_VALUE){
                 mStrokePainter.setColor(strokeColor);
                 mStrokePainter.setStrokeWidth(lineWeight);
                 canvas.drawRect(getPosition(), mStrokePainter);
             }
-
         }
     }
 
@@ -413,7 +559,8 @@ public class Whiteboard extends View {
             shape.lineTo(position.left, position.top + ((position.bottom - position.top) / 2));
             shape.lineTo(position.left + ((position.right - position.left) / 2), position.bottom);
             shape.lineTo(position.right, position.top + ((position.bottom - position.top) / 2));
-            if (backgroundColor != -1){
+            shape.lineTo(position.left + ((position.right - position.left) / 2), position.top);
+            if (backgroundColor != Integer.MAX_VALUE){
                 mPainter.setColor(backgroundColor);
                 canvas.drawPath(shape, mPainter);
             }
@@ -432,6 +579,31 @@ public class Whiteboard extends View {
     private List<Callbacks> mCallbacks;
     private Paint mPainter, mTextPainter, mStrokePainter;
     private GestureDetector mGestures;
+
+    private ObjectModel currentDraw = null;
+    private int currentBackgroundColor = Integer.MAX_VALUE, currentLineColor = Integer.MAX_VALUE, currentSize = 0, currentLineWeight = 0;
+    private String currentText = "";
+    private boolean currentItalic = false, currentBold = false;
+
+    private int stringToColor(String color){
+        return color == null || color.isEmpty() ? Integer.MAX_VALUE : Color.parseColor((color.startsWith("#") ? ""  : "#") + color);
+    }
+
+    public void setCurrentShapeSettings(String background, String stroke, int lineWeight, Tool tool){
+        mCurrentTool = tool;
+        currentBackgroundColor = stringToColor(background);
+        currentLineColor = stringToColor(stroke);
+        currentLineWeight = lineWeight;
+    }
+
+    public void setCurrentTextSettings(String color, int currentSize, String text, boolean isItalic, boolean isBold){
+        currentLineColor = stringToColor(color);
+        this.currentSize = currentSize;
+        this.currentText = text;
+        this.currentItalic = isItalic;
+        this.currentBold = isBold;
+        mCurrentTool = Tool.E_TEXT;
+    }
 
     /**
      * Constructor
@@ -468,8 +640,19 @@ public class Whiteboard extends View {
         mStrokePainter = new Paint(Paint.ANTI_ALIAS_FLAG);
         mStrokePainter.setStyle(Paint.Style.STROKE);
         mScreenPosition = new Float2(0, 0);
-        mMaxPosition = new Float2(getWidth(), getHeight());
+        mMaxPosition = new Float2(4096, 2160);
         mGestures = new GestureDetector(context, new EventDetector());
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        mMaxPosition.x = 4096 - getWidth() / 2;
+        mMaxPosition.y = 2160 - getHeight() / 2;
+        if (mMaxPosition.x < 0)
+            mMaxPosition.x = 0;
+        if (mMaxPosition.y < 0)
+            mMaxPosition.y = 0;
     }
 
     /**
@@ -553,7 +736,6 @@ public class Whiteboard extends View {
     public void feed(JSONArray objects) throws JSONException{
         if (objects == null)
             return;
-        Log.e(LOG_TAG, objects.toString());
         for (int i = 0; i < objects.length(); ++i){
             JSONObject current = objects.getJSONObject(i);
             ObjectModel object = createObjectModel(current.getString("type"));
@@ -563,32 +745,129 @@ public class Whiteboard extends View {
         postInvalidate();
     }
 
+    public void deleteObject(String id){
+        for(ObjectModel model : mObjects){
+            if (model.id.equals(id)){
+                mObjects.remove(model);
+                break;
+            }
+        }
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
+        canvas.scale(2, 2);
         for (ObjectModel object : mObjects) {
             object.draw(canvas);
         }
+        if (currentDraw != null)
+            currentDraw.draw(canvas);
+    }
+
+    private String colorToString(int color){
+        return String.format("#%06X", 0xFFFFFF & color);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        if (event.getAction() == MotionEvent.ACTION_UP && mCurrentTool != Tool.E_MOVE){
+            if (mCurrentTool == Tool.E_TEXT){
+                Float2 pos = new Float2(event.getX() / 2 + mScreenPosition.x, event.getY() / 2 + mScreenPosition.y);
+                TextModel model = new TextModel();
+                model.init(currentLineColor, currentText,currentSize, pos, currentItalic, currentBold);
+                currentDraw = model;
+            }
+             else if (mCurrentTool == Tool.E_ERASER){
+                JSONObject erase = new JSONObject();
+                JSONObject center = new JSONObject();
+                try {
+                    center.put("x", event.getX()/2 + mScreenPosition.x);
+                    center.put("y", event.getY()/2 + mScreenPosition.y);
+                    erase.put("center", center);
+                    erase.put("radius", "8");
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                for (Callbacks callback : mCallbacks){
+                    if (callback == null)
+                        continue;
+                    callback.onDeleteArea(erase);
+                }
+            } else {
+                currentDraw.isSent = true;
+                for (Callbacks callback : mCallbacks){
+                    if (callback == null)
+                        continue;
+                    try {
+                        callback.onNewObject(currentDraw.toJSON());
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }
+        return mGestures.onTouchEvent(event);
+    }
+
+    public boolean isShapeTool(Tool tool){
+        return (tool == Tool.E_DIAMOND || tool == Tool.E_ELLIPSIS || tool == Tool.E_LINE || tool == Tool.E_RECTANGLE);
+    }
+
+    public boolean isDrawingTool(Tool tool){
+        return (isShapeTool(tool) || tool == Tool.E_HANDWRITE || tool == Tool.E_TEXT);
     }
 
     class EventDetector extends GestureDetector.SimpleOnGestureListener{
+
         @Override
         public boolean onDown(MotionEvent e) {
+            Float2 pos = new Float2(e.getX() / 2 + mScreenPosition.x, e.getY() / 2 + mScreenPosition.y);
+            Log.e("TEST", "On Down : " + mCurrentTool);
+            if (isShapeTool(mCurrentTool)){
+
+                if (mCurrentTool == Tool.E_DIAMOND) {
+                    currentDraw = new DiamondModel();
+                } else if (mCurrentTool == Tool.E_LINE) {
+                    currentDraw = new LineModel();
+                } else if (mCurrentTool == Tool.E_RECTANGLE) {
+                    currentDraw = new RectangleModel();
+                } else {
+                    currentDraw = new EllipsisModel();
+                }
+
+                ((ShapeModel)currentDraw).init(currentBackgroundColor, pos, pos, currentLineColor, currentLineWeight);
+            } else if (mCurrentTool == Tool.E_HANDWRITE){
+                HandwriteModel model = new HandwriteModel();
+
+                model.init(currentLineColor, currentLineWeight, new ArrayList<Float2>());
+                model.points.add(new Float2(e.getX() / 2 + mScreenPosition.x, e.getY() / 2 + mScreenPosition.y));
+                currentDraw = model;
+            }
             return true;
         }
 
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            if (mCurrentTool != Tool.E_MOVE){
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            if (mCurrentTool == Tool.E_MOVE){
+                mScreenPosition.x += distanceX / 2;
+                mScreenPosition.y += distanceY / 2;
+                if (mScreenPosition.x < 0)
+                    mScreenPosition.x = 0;
+                if (mScreenPosition.y < 0)
+                    mScreenPosition.y = 0;
+                if (mScreenPosition.x > mMaxPosition.x)
+                    mScreenPosition.x = mMaxPosition.x;
+                if (mScreenPosition.y > mMaxPosition.y)
+                    mScreenPosition.y = mMaxPosition.y;
+            } else if (mCurrentTool == Tool.E_ERASER){
                 return true;
+            } else if (currentDraw instanceof ShapeModel){
+                ((ShapeModel) currentDraw).setPositionEnd(new Float2(e2.getX() / 2 + mScreenPosition.x, e2.getY() / 2 + mScreenPosition.y));
+            } else if (currentDraw instanceof HandwriteModel){
+                ((HandwriteModel) currentDraw).points.add(new Float2(e2.getX() / 2 + mScreenPosition.x, e2.getY() / 2 + mScreenPosition.y));
             }
-            mScreenPosition.x += velocityX;
-            mScreenPosition.y += velocityY;
-            if (mScreenPosition.x > mMaxPosition.x)
-                mScreenPosition.x = mMaxPosition.x;
-            if (mScreenPosition.y > mMaxPosition.y)
-                mScreenPosition.y = mMaxPosition.y;
             postInvalidate();
             return true;
         }

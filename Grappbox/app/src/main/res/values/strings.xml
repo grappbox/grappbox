@@ -340,4 +340,14 @@
         <item>@string/read_write</item>
     </string-array>
     <string name="title_activity_whiteboard_drawing">WhiteboardDrawingActivity</string>
+    <string name="stroke_color">Stroke color</string>
+    <string name="background_color">Background color</string>
+    <string name="line_weight">Line weight</string>
+    <string name="color">Color</string>
+    <string name="text">Text</string>
+    <string name="text_size">Text size</string>
+    <string name="italic">Italic</string>
+    <string name="bold">Bold</string>
+    <string name="create_whiteboard_title">Create whiteboard</string>
+    <string name="whiteboard_s_name">Whiteboard\'s name</string>
 </resources>

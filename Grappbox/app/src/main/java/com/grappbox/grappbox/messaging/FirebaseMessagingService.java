@@ -16,7 +16,6 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
 
 import com.google.firebase.messaging.RemoteMessage;
 import com.grappbox.grappbox.DebugActivity;
@@ -82,6 +81,7 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
         MainDispatcher(Context context){
             mContext = context;
             MessagingDispatcher projectDispatcher = new ProjectMessagingDispatcher(mContext);
+            MessagingDispatcher whiteboardDispatcher = new WhiteboardMessagingDispatcher(mContext);
             mDispatcher = new HashMap<>();
             mDispatcher.put("bug", new BugMessagingDispatcher(mContext));
             mDispatcher.put("event", new EventMessagingDispatcher(mContext));
@@ -90,6 +90,8 @@ public class FirebaseMessagingService extends com.google.firebase.messaging.Fire
             mDispatcher.put("message", new TimelineMessageDispatcher(mContext));
             mDispatcher.put("role", new RoleMessagingDispatcher(mContext));
             mDispatcher.put("task", new TaskMessagingDispatcher(mContext));
+            mDispatcher.put("whiteboard", whiteboardDispatcher);
+            mDispatcher.put("object", whiteboardDispatcher);
         }
 
         @Override

@@ -34,8 +34,14 @@ public class GrappboxWhiteboardJIT extends IntentService {
     public static final String ACTION_GET_LIST = "com.grappbox.action.get_list";
     public static final String ACTION_OPEN = "com.grappbox.action.open";
     public static final String ACTION_CLOSE = "com.grappbox.action.close";
+    public static final String ACTION_PUSH = "com.grappbox.action.push";
+    public static final String ACTION_DELETE_OBJECT = "com.grappbox.action.delete_object";
+    public static final String ACTION_NEW = "com.grappbox.action.new";
+    public static final String ACTION_DELETE = "com.grappbox.action.delete";
 
     public static final String EXTRA_WHITEBOARD_ID = "com.grappbox.extra.whiteboard_id";
+    public static final String EXTRA_NAME = "com.grappbox.extra.name";
+    public static final String EXTRA_JSON = "com.grappbox.extra.json";
 
     public static final String BUNDLE_PARCELABLE_ARRAY = "com.grappbox.bundle.parcelable_array";
     public static final String BUNDLE_JSON_OBJS = "com.grappbox.bundle.json_objs";
@@ -63,6 +69,26 @@ public class GrappboxWhiteboardJIT extends IntentService {
                 break;
             case ACTION_CLOSE:
                 processClose(intent.getStringExtra(EXTRA_WHITEBOARD_ID));
+                break;
+            case ACTION_DELETE_OBJECT:
+                try {
+                    processDeleteObject(intent.getStringExtra(EXTRA_WHITEBOARD_ID), new JSONObject(intent.getStringExtra(EXTRA_JSON)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case ACTION_PUSH:
+                try {
+                    processPush(intent.getStringExtra(EXTRA_WHITEBOARD_ID), new JSONObject(intent.getStringExtra(EXTRA_JSON)));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                break;
+            case ACTION_NEW:
+                processNew(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_NAME));
+                break;
+            case ACTION_DELETE:
+                processDelete(intent.getStringExtra(EXTRA_WHITEBOARD_ID));
                 break;
             default:
                 throw new UnsupportedOperationException("Invalid action");
@@ -149,7 +175,9 @@ public class GrappboxWhiteboardJIT extends IntentService {
             JSONArray objects = new JSONArray();
             for (int i = 0; i < content.length(); ++i){
                 JSONObject current = content.getJSONObject(i);
-                objects.put(current.getJSONObject("object"));
+                JSONObject object = current.getJSONObject("object");
+                object.put("id", current.getString("id"));
+                objects.put(object);
             }
             Bundle answer = new Bundle();
             answer.putString(BUNDLE_JSON_OBJS, objects.toString());
@@ -172,6 +200,103 @@ public class GrappboxWhiteboardJIT extends IntentService {
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("PUT");
             connection.connect();
+            String returnedJson = Utils.JSON.readDataFromConnection(connection);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    private void processPush(String whiteboardId, JSONObject json){
+        HttpURLConnection connection = null;
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        JSONObject data = new JSONObject();
+        JSONObject send = new JSONObject();
+        try{
+            URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/whiteboard/draw/"+whiteboardId);
+            data.put("object", json);
+            send.put("data", data);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("PUT");
+            Utils.JSON.sendJsonOverConnection(connection, send);
+            connection.connect();
+            String returnedJson = Utils.JSON.readDataFromConnection(connection);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    private void processDeleteObject(String whiteboardId, JSONObject json){
+        HttpURLConnection connection = null;
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        JSONObject send = new JSONObject();
+        try{
+            URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/whiteboard/object/"+whiteboardId);
+            send.put("data", json);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            Utils.JSON.sendJsonOverConnection(connection, send);
+            connection.connect();
+            String returnedJson = Utils.JSON.readDataFromConnection(connection);
+        } catch (IOException | JSONException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    private void processNew(long projectId, String name){
+
+        HttpURLConnection connection = null;
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        JSONObject send = new JSONObject();
+        JSONObject json = new JSONObject();
+        Cursor project = null;
+        try{
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID+"=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/whiteboard");
+            json.put("projectId", project.getString(0));
+            json.put("whiteboardName", name);
+            send.put("data", json);
+            Log.e("TEST", "processNew");
+            Log.e("TEST", send.toString());
+            Log.e("TEST", apiToken);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("POST");
+            connection.setRequestProperty("Authorization", apiToken);
+            Utils.JSON.sendJsonOverConnection(connection, send);
+            connection.connect();
+            String returnedJson = Utils.JSON.readDataFromConnection(connection);
+        } catch (IOException | JSONException | OperationApplicationException e) {
+            e.printStackTrace();
+        } finally {
+            if (connection != null)
+                connection.disconnect();
+            if (project != null && !project.isClosed())
+                project.close();
+        }
+    }
+
+    private void processDelete(String whiteboardId){
+        HttpURLConnection connection = null;
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        try{
+            URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/whiteboard/"+whiteboardId);
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("DELETE");
+            connection.connect();
+            String returnedJson = Utils.JSON.readDataFromConnection(connection);
         } catch (IOException e) {
             e.printStackTrace();
         } finally {

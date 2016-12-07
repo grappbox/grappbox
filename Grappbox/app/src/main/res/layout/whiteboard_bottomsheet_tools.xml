@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="5dp">
+
+    <TextView
+        android:textColor="@color/GrappBlackMedium"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:background="@drawable/bg_bottom_border"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Change tool"
+        android:id="@+id/textView" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/tool_move"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+            <ImageView
+                android:contentDescription="@string/folder_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_move"
+                android:layout_weight="1"
+                style="@style/BottomSheetImageView"
+                tools:ignore="NestedWeights" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Move"
+                style="@style/BottomSheetTextView"
+                android:gravity="center"
+                android:layout_weight="1"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/tool_erase"
+            android:layout_weight="1"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            tools:ignore="UseCompoundDrawables">
+            <ImageView
+                android:contentDescription="@string/upload_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_delete"
+                style="@style/BottomSheetImageView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Erase"
+                android:gravity="center"
+                style="@style/BottomSheetTextView" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/tool_handwriting"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            tools:ignore="UseCompoundDrawables">
+            <ImageView
+                android:contentDescription="@string/locker_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_brush"
+                style="@style/BottomSheetImageView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Free"
+                android:gravity="center"
+                style="@style/BottomSheetTextView" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/tool_line"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+            <ImageView
+                android:contentDescription="@string/folder_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_line"
+                android:layout_weight="1"
+                style="@style/BottomSheetImageView"
+                tools:ignore="NestedWeights" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Line"
+                style="@style/BottomSheetTextView"
+                android:gravity="center"
+                android:layout_weight="1"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingTop="5dp"
+        android:paddingStart="15dp"
+        android:paddingEnd="15dp"
+        android:baselineAligned="false">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/tool_rectangle"
+            android:layout_weight="1"
+            tools:ignore="UseCompoundDrawables">
+            <ImageView
+                android:paddingEnd="30dp"
+                android:paddingStart="30dp"
+                android:contentDescription="@string/upload_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_rectangle"
+                style="@style/BottomSheetImageView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Rectangle"
+                android:gravity="center"
+                style="@style/BottomSheetTextView" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/tool_ellipsis"
+            android:paddingStart="20dp"
+            android:paddingEnd="20dp">
+            <ImageView
+                android:contentDescription="@string/folder_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_ellipsis"
+                android:layout_weight="1"
+                style="@style/BottomSheetImageView"
+                tools:ignore="NestedWeights" />
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Ellipsis"
+                style="@style/BottomSheetTextView"
+                android:gravity="center"
+                android:layout_weight="1"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:id="@+id/tool_text"
+            android:layout_weight="1"
+            android:paddingEnd="20dp"
+            android:paddingStart="20dp"
+            tools:ignore="UseCompoundDrawables">
+            <ImageView
+                android:contentDescription="@string/upload_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_text"
+                style="@style/BottomSheetImageView"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Text"
+                android:gravity="center"
+                style="@style/BottomSheetTextView" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:layout_weight="1"
+            android:id="@+id/tool_diamond"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:paddingEnd="30dp"
+                android:paddingStart="30dp"
+                android:contentDescription="@string/locker_icon"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/ic_diamond"
+                style="@style/BottomSheetImageView"
+                android:id="@+id/imageView" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Diamond"
+                android:gravity="center"
+                style="@style/BottomSheetTextView" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

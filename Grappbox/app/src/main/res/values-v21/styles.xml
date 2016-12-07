@@ -32,4 +32,9 @@
         <item name="android:colorPrimary">@color/GrappRed</item>
         <item name="colorAccent">@color/GrappRed</item>
     </style>
+
+    <style name="WhiteboardTheme" parent="BaseTheme">
+        <item name="colorPrimary">@color/GrappGreen</item>
+        <item name="colorAccent">@color/GrappGreen</item>
+    </style>
 </resources>
