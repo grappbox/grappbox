@@ -17,7 +17,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
   <div data-ng-if="!view.loaded">
     <div class="spinner section">
-      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
     </div>
   </div>
   <div data-ng-if="view.loaded">  
@@ -32,7 +32,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <fieldset>
                 <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12">
                   <div class="form-group label-floating">
-                    <p class="hint">Please <a href='mailto:grappbox@gmail.com?subject=Account email change request ({[{ user.email }]})' alt='Contact GrappBox by email' target='_blank' class='blue-color'>contact us</a> if you need to change your email.</p>
+                    <p class="hint">Please <a href='mailto:grappbox@gmail.com?subject=Account email change request ({[{ user.email }]})' title='Contact GrappBox by email' target='_blank' class='blue-color'>contact us</a> if you need to change your email.</p>
                     <input id="email" type="email" class="form-control" data-ng-model="local.email" disabled>
                   </div>
                   <div class="form-group label-floating">

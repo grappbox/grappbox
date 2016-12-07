@@ -24,15 +24,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div data-ng-if="view.loaded">
     <div data-ng-if="view.valid && projects">
       <div class="box-row">
-        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 no-padding animate" data-ng-repeat="project in projects">
+        <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 no-padding" data-ng-repeat="project in projects">
           <div class="box" data-ng-click="method.loadProject(project)">
-            <img data-ng-if="!project.logo" src="../resources/img/app/default-logo.min.png" height="120" width="120" alt="{[{ project.name }] (logo)">
-            <img data-ng-if="project.logo" data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" height="120" width="120" alt="{[{ project.name }] (logo)">
+            <img data-ng-if="!project.logo" src="../resources/img/app/default-logo.min.png" height="120" width="120" alt="{[{ project.name }]}">
+            <img data-ng-if="project.logo" data-ng-src="data:image/png;base64,{[{ ::project.logo }]}" height="120" width="120" alt="{[{ project.name }]}">
             <div class="preview">
               <p class="ellipsis title">"{[{ project.name }]}"</p>
-              <p><i class="material-icons rounded {[{ path.colors['/bugtracker'] + '-color' }]}">bug_report</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</p>
-              <p><i class="material-icons rounded {[{ path.colors['/timeline'] + '-color' }]}">message</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</p>
-              <p><i class="material-icons rounded {[{ path.colors['/tasks'] + '-color' }]}">playlist_add_check</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</p>
+              <p><i class="material-icons rounded {[{ path.colors['/bugtracker'] + '-color' }]}">{[{ path.icons['/bugtracker'] }]}</i>{[{ project.number_messages > 0 ? project.number_bugs : "No" }]} issues</p>
+              <p><i class="material-icons rounded {[{ path.colors['/talk'] + '-color' }]}">{[{ path.icons['/talk'] }]}</i>{[{ project.number_messages > 0 ? project.number_messages : "No" }]} messages</p>
+              <p><i class="material-icons rounded {[{ path.colors['/tasks'] + '-color' }]}">{[{ path.icons['/tasks'] }]}</i>{[{ project.number_ongoing_tasks }]}/{[{ project.number_finished_tasks }]} finished tasks</p>
             </div>
             <div class="clearfix"></div>
             <a href="" title="Load this project" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]}" data-ng-click="method.loadProject(project)">Open</a>

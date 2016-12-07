@@ -58,7 +58,7 @@
 /* ======================================================== */
 
 body {
-  font-family: "Roboto", "Helvetica", "Arial", sans-serif;
+  font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Helvetica Neue", "Segoe UI", "Oxygen", "Ubuntu", "Cantarell", "Open Sans", sans-serif;
   font-weight: 400;
   overflow-x: hidden;
   color: #212121;
@@ -601,6 +601,11 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .talk .each-comment .box .body { padding: 0 0 10px 15px; }
 
 @media (max-width: 768px) {
+  .talk-list .tab-wrapper .tab-label-content:nth-of-type(1) { margin-left: -15px; }
+  .talk-list .tab-wrapper .tab-label-content:nth-of-type(2) { margin-right: -15px; }
+  .talk-list .tab-wrapper .tab-label-content:nth-of-type(1) label { padding-left: 12px; }
+  .talk-list .tab-wrapper .tab-label-content:nth-of-type(2) label { padding-right: 12px; }
+
   .talk .user-actions,
   .talk .user-add { text-align: center; }
 
@@ -657,6 +662,7 @@ fieldset[disabled] .form-group .form-control { background: #ccc; padding: 0 10px
 .whiteboard-list .new { margin-bottom: 30px; }
 .whiteboard-list .box .submit { padding: 0 5px 5px 0!important; }
 .whiteboard-list .box .btn { margin: 0!important; }
+
 
 
 
