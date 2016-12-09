@@ -1154,7 +1154,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('tagId', $content))
+		if ($content === null || !array_key_exists('tagId', $content))
 			return $this->setBadRequest("4.19.6", "Bugtracker", "assignTagToBug", "Missing Parameter");
 
 		$user = $this->checkToken($request->headers->get('Authorization'));
