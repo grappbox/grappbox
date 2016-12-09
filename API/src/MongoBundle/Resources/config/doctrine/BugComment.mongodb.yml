@@ -8,7 +8,7 @@ MongoBundle\Document\BugComment:
           id: true
           strategy: AUTO
         comment:
-          type: text
+          type: string
         createdAt:
           type: date
           name: created_at

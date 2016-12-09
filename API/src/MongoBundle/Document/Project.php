@@ -1272,4 +1272,24 @@ class Project
     {
         return $this->statStorageSize;
     }
+
+    /**
+     * Add statLateTask
+     *
+     * @param MongoBundle\Document\StatLateTasks $statLateTask
+     */
+    public function addStatLateTask(\MongoBundle\Document\StatLateTasks $statLateTask)
+    {
+        $this->statLateTasks[] = $statLateTask;
+    }
+
+    /**
+     * Remove statLateTask
+     *
+     * @param MongoBundle\Document\StatLateTasks $statLateTask
+     */
+    public function removeStatLateTask(\MongoBundle\Document\StatLateTasks $statLateTask)
+    {
+        $this->statLateTasks->removeElement($statLateTask);
+    }
 }
