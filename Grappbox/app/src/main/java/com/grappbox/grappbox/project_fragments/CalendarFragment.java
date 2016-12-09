@@ -76,7 +76,6 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
         View v = inflater.inflate(R.layout.fragment_calendar, container, false);
 
         mRecyclerView = (RecyclerView) v.findViewById(R.id.agendalist);
-        initRecyclerView();
         mCalendarView = (CalendarView)v.findViewById(R.id.calendarview);
         mCalendar = Calendar.getInstance();
         mCalendar.setTimeInMillis(mCalendarView.getDate());
@@ -98,12 +97,12 @@ public class CalendarFragment extends Fragment implements LoaderManager.LoaderCa
                 getContext().startActivity(newEvent);
             }
         });
-
+        mAdapter = new CalendarEventAdapter(getContext());
+        initRecyclerView();
         return v;
     }
 
     private void initRecyclerView() {
-        mAdapter = new CalendarEventAdapter(getActivity());
         mRecyclerView.setAdapter(mAdapter);
         mLinearLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.addItemDecoration(new HorizontalDivider(ContextCompat.getColor(getActivity(), R.color.GrappBlue)));

@@ -36,15 +36,16 @@ public class EventDetailsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setTheme(R.style.CalendarTheme);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP){
+            getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.GrappBlue));
+        }
         setContentView(R.layout.activity_calendar_event_details);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.GrappBlue)));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(this, R.color.GrappBlue)));
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(Utils.Color.getThemeAccentColor(this));
-        }
         mData = getIntent().getParcelableExtra(EXTRA_CALENDAR_EVENT_MODEL);
         getSupportActionBar().setTitle(mData._title);
     }
