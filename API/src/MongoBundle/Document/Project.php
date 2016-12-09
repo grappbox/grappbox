@@ -229,7 +229,7 @@ class Project
      */
     public function objectToArray($em, $user)
     {
-        $color = $em->getRepository('SQLBundle:Color')->findOneBy(array("project" => $this, "user" => $user));
+        $color = $em->getRepository('MongoBundle:Color')->findOneBy(array("project" => $this, "user" => $user));
         if ($color === null)
             $color = $this->getColor();
         else
@@ -1271,25 +1271,5 @@ class Project
     public function getStatStorageSize()
     {
         return $this->statStorageSize;
-    }
-
-    /**
-     * Add statLateTask
-     *
-     * @param MongoBundle\Document\StatLateTasks $statLateTask
-     */
-    public function addStatLateTask(\MongoBundle\Document\StatLateTasks $statLateTask)
-    {
-        $this->statLateTasks[] = $statLateTask;
-    }
-
-    /**
-     * Remove statLateTask
-     *
-     * @param MongoBundle\Document\StatLateTasks $statLateTask
-     */
-    public function removeStatLateTask(\MongoBundle\Document\StatLateTasks $statLateTask)
-    {
-        $this->statLateTasks->removeElement($statLateTask);
     }
 }

@@ -7,13 +7,12 @@ MongoBundle\Document\StatUserWorkingCharge:
             type: id
             id: true
             strategy: AUTO
-        user:
-            type: string
-            length: 255
         charge:
             type: int
     referenceOne:
         project:
           targetDocument: Project
           inversedBy: statUserWorkingCharge
+        user:
+          targetDocument: User
     lifecycleCallbacks: {  }
