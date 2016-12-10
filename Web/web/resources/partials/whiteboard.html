@@ -26,7 +26,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
         <!-- Information -->
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding {[{ canvas.fullscreen ? 'hidden' : '' }]}">
-          <div class="box information">
+          <div class="box flattened information">
             <div class="avatar">
               <img src="../resources/img/app/default-avatar.min.png" alt="{[{ whiteboard.creator }]}" width="48" height="48">
             </div>
@@ -102,7 +102,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <label title="Reset selection" for="reset" class="btn btn-rounded small tool {[{ !tool.selected.name ? 'white-background gray-color' : '' }]}">
                 <i class="material-icons" aria-hidden="true">open_with</i>
                 <input type=radio data-ng-click="tool.reset()" id="reset" value="reset">
-              </label>              
+              </label>
             </div>
 
             <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
@@ -126,7 +126,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <label title="Font size" for="size" class="tool tool-select col-lg-3 col-md-6 col-sm-12 col-xs-12">
                 <i class="material-icons white-color col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding" aria-hidden="true">format_size</i>
                 <select id="size" data-ng-options="size.label for size in tool.sizes track by size.value" data-ng-model="tool.selected.text.size" class="col-lg-10 col-md-10 col-sm-10 col-xs-10 no-padding"></select>
-              </label>              
+              </label>
               <div class="clearfix"></div>
             </div>
 

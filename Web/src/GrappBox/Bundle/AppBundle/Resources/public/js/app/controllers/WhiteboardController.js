@@ -491,8 +491,8 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
 
   // Stop pull interval on route change
   $scope.$on('$destroy', function() {
-    if($scope.whiteboard.pull.interval)
-      $interval.cancel($scope.whiteboard.pull.interval);   
+    if ($scope.whiteboard.pull.interval)
+      $interval.cancel($scope.whiteboard.pull.interval);
   });
 
 
@@ -504,6 +504,8 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
     var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
     whiteboardDeletion.result.then(
       function whiteboardDeletionConfirmed(data) {
+        if ($scope.whiteboard.pull.interval)
+          $interval.cancel($scope.whiteboard.pull.interval);
         $http.delete($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function whiteboardDeleted(response) {
             $location.path("whiteboard/" + $scope.route.project_id);            
