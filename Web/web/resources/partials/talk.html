@@ -4,7 +4,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Talk -->
 <section class="talk">
-  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]} small">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
       <img src="../resources/img/app/talk.svg" width="300" height="auto" alt="Talks">
     </div>
@@ -72,16 +72,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p class="info"><strong>{[{ ::talks.data.title }]}</strong></p>
                   <p class="body">{[{ ::talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons">{[{ ::path.icons['/bugtracker'] }]}</i></a>
+                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
                   </div>
                 </div>
                 <div data-ng-if="talks.data.creator.id == user.id">
                   <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
                   <p class="body">{[{ talks.data.message }]}</p>
                   <div class="submit">
-                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons">{[{ ::path.icons['/bugtracker'] }]}</i></a>
-                    <a href="" class="btn btn-rounded gray-hover gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons">mode_edit</i></a>
-                    <a href="" class="btn btn-rounded red-hover red-background" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)"><i class="material-icons">delete</i></a>
+                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
+                    <a href="" class="btn btn-rounded gray-hover gray-focus gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
+                    <a href="" class="btn btn-rounded red-hover red-focus red-background" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)"><i class="material-icons" aria-hidden="true">delete</i></a>
                   </div>
                 </div>
               </div>
@@ -91,7 +91,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="!talks.data" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box-row">
             <div class="box error text-center">
-              <p><i class="material-icons">speaker_notes_off</i>This talk is empty.</p>
+              <p><i class="material-icons" aria-hidden="true">speaker_notes_off</i>This talk is empty.</p>
             </div>
           </div>
         </div>
@@ -100,14 +100,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div data-ng-if="!talks.valid && !talks.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box-row">
           <div class="box error text-center">
-            <p><i class="material-icons">block</i>You don't have sufficient rights to see this talk.</p>
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this talk.</p>
           </div>
         </div>
       </div>
       <div data-ng-if="!talks.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
         <div class="box-row">
           <div class="box error text-center">
-            <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+            <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
           </div>
         </div>
       </div>
@@ -130,8 +130,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <p class="body">{[{ comment.comment }]}</p>
                   </div>
                   <div class="user-actions col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding">
-                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Edit this comment" data-ng-click="comments.edit(comment)"><i class="material-icons">mode_edit</i></a>
-                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)"><i class="material-icons">delete</i></a>
+                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Edit this comment" data-ng-click="comments.edit(comment)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
+                    <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)"><i class="material-icons" aria-hidden="true">delete</i></a>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -144,14 +144,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div data-ng-if="!comments.valid && !comments.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
         <div class="box-row">
           <div class="box error text-center">
-            <p><i class="material-icons">block</i>You don't have sufficient rights to see this talk's comments.</p>
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this talk's comments.</p>
           </div>
         </div>
       </div>
       <div data-ng-if="!comments.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
         <div class="box-row">
           <div class="box error text-center">
-            <p><i class="material-icons">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+            <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
           </div>
         </div>
       </div>

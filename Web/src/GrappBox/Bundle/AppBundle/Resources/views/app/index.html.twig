@@ -155,7 +155,7 @@
       <div class="container-fluid">
         <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs no-padding">
           <div class="navigation-left hidden-xs">
-            <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons">menu</i></a>
+            <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons" aria-hidden="true">menu</i></a>
             <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
           </div>
         </div>
@@ -165,23 +165,23 @@
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs no-padding">
           <div class="navigation-right {[{ path.colors[path.current] + '-color' }]}">
-            <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}"><i class="material-icons">{[{ path.icons['/notifications'] }]}</i></a>
-            <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}"><i class="material-icons">{[{ path.icons['/profile'] }]}</i></a>
-            <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" ><i class="material-icons">{[{ path.icons['/logout'] }]}</i></a>
+            <a href="notifications" title="See all your notifications" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">{[{ path.icons['/notifications'] }]}</i></a>
+            <a href="profile" title="View and edit your profile" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">{[{ path.icons['/profile'] }]}</i></a>
+            <a href="logout" title="Sign out of GrappBox" class="btn hidden-xs {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" ><i class="material-icons" aria-hidden="true">{[{ path.icons['/logout'] }]}</i></a>
           </div>
         </div>
         <div class="visible-xs col-xs-2 no-padding navigation-right">
-          <a href="" data-target="#" class="dropdown-toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-toggle="dropdown"><i class="material-icons">more_vert</i></a>
+          <a href="" data-target="#" class="dropdown-toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-toggle="dropdown"><i class="material-icons" aria-hidden="true">more_vert</i></a>
           <ul class="dropdown-menu">
             <li>
-              <a href="notifications" title="See all your notifications" class="btn {[{ path.routes['/notifications'] ? 'active' : '' }]}"><i class="material-icons">{[{ path.icons['/notifications'] }]}</i>Notifications</a>
+              <a href="notifications" title="See all your notifications" class="btn {[{ path.routes['/notifications'] ? 'active' : '' }]}"><i class="material-icons" aria-hidden="true">{[{ path.icons['/notifications'] }]}</i>Notifications</a>
             </li>
             <li>
-              <a href="profile" title="View and edit your profile" class="btn {[{ path.routes['/profile'] ? 'active' : '' }]}"><i class="material-icons">{[{ path.icons['/profile'] }]}</i>Profile</a>
+              <a href="profile" title="View and edit your profile" class="btn {[{ path.routes['/profile'] ? 'active' : '' }]}"><i class="material-icons" aria-hidden="true">{[{ path.icons['/profile'] }]}</i>Profile</a>
             </li>
             <li>
               <a href="logout" title="Sign out of GrappBox" class="btn">
-              <i class="material-icons">{[{ path.icons['/logout'] }]}</i>Logout</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/logout'] }]}</i>Logout</a>
             </li>
           </ul>
         </div>
@@ -193,7 +193,7 @@
     <div class="navigation visible-xs {[{ path.colors[path.current] + '-background' }]} {[{ sidebar.open ? 'open' : '' }]}" data-ng-cloak>
       <div class="container-fluid">
         <div class="navigation-left">
-          <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
+          <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons" aria-hidden="true">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
           <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
         </div>
       </div>
@@ -203,7 +203,7 @@
     <!-- Navigation drawer -->
     <aside class="sidebar {[{ sidebar.open ? 'open' : '' }]}">
       <div class="sidebar-header">
-        <a class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" href="" data-ng-click="sidebar.toggle()" title="Close navigation drawer"><i class="material-icons">arrow_back</i></a>
+        <a class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" href="" data-ng-click="sidebar.toggle()" title="Close navigation drawer"><i class="material-icons" aria-hidden="true">arrow_back</i></a>
         <div class="profile">
           <img src="../resources/img/app/default-avatar.min.png" alt="{[{ user.firstname }]} {[{ user.lastname }]}" width="65" height="65">
           <p class="ellipsis">{[{ user.firstname }]} {[{ user.lastname }]}</p>
@@ -214,47 +214,47 @@
         <ul>
           <li data-ng-if="project.set">
             <a href="" title="Sign out of this project" data-ng-click="project.logout()" class="btn">
-              <i class="material-icons">arrow_back</i>Change project</a>
+              <i class="material-icons" aria-hidden="true">arrow_back</i>Change project</a>
           </li>            
           <li>
             <a data-ng-href="{[{ project.set ? 'dashboard/' + project.id : './' }]}" title="Go to your dashboard" class="btn {[{ path.routes['/dashboard'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/dashboard'] }]}</i>Dashboard</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/dashboard'] }]}</i>Dashboard</a>
           </li>
           <li>
             <a href="calendar" title="Go to your calendar" class="btn {[{ path.routes['/calendar'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/calendar'] }]}</i>Calendar</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/calendar'] }]}</i>Calendar</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'cloud/' + project.id }]}" title="Access your online files and folders" class="btn {[{ path.routes['/cloud'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/cloud'] }]}</i>Cloud</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/cloud'] }]}</i>Cloud</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'talk/' + project.id }]}" title="Go to your projects talks" class="btn {[{ path.routes['/talk'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/talk'] }]}</i>Talks</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/talk'] }]}</i>Talks</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'bugtracker/' + project.id }]}" title="Go to the bugtracker section" class="btn {[{ path.routes['/bugtracker'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ path.routes['/tasks'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/tasks'] }]}</i>Tasks</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/tasks'] }]}</i>Tasks</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ path.routes['/gantt'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/gantt'] }]}</i>Gantt</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/gantt'] }]}</i>Gantt</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'whiteboard/' + project.id }]}" title="Use your projects collaborative whiteboards" class="btn {[{ path.routes['/whiteboard'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/whiteboard'] }]}</i>Whiteboards</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/whiteboard'] }]}</i>Whiteboards</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'statistics/' + project.id }]}" title="View all statistics for this project" class="btn {[{ path.routes['/statistics'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/statistics'] }]}</i>Statistics</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/statistics'] }]}</i>Statistics</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ path.routes['/settings'] ? 'active' : '' }]}">
-              <i class="material-icons">{[{ path.icons['/settings'] }]}</i>Project settings</a>
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/settings'] }]}</i>Project settings</a>
           </li>
         </ul>
       </div>
