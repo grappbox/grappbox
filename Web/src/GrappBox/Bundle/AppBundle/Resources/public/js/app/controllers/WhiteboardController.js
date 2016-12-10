@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP whiteboard
-app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory", "$uibModal",
-    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory, $uibModal) {
+app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory", "$uibModal",
+    function(accessFactory, $http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -477,6 +477,9 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   $scope.view.valid = true;
   $scope.view.loaded = true;
   $scope.view.authorized = true;
+
+  accessFactory.projectAvailable();
+  accessFactory.whiteboardAvailable();
 
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(

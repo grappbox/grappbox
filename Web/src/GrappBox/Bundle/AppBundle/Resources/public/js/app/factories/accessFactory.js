@@ -57,7 +57,7 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
           case "4.1.9":
           deferred.reject();
           $location.path("bugtracker");
-          notificationFactory.warning("You don't have access to this ticket.");
+          notificationFactory.warning("You don't have permission to see this ticket.");
           break;
 
           default:
@@ -67,11 +67,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
           break;
         }
       }
-      else {
-        deferred.reject();
-        $location.path("bugtracker");
-        notificationFactory.error();
-      }
+      else
+        $rootScope.reject(true);
     });
 
     return deferred.promise;
@@ -107,7 +104,7 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
             case "6.3.9":
             deferred.reject();
             $rootScope.project.logout(true);
-            notificationFactory.warning("You don't have access to this part of the project.");
+            notificationFactory.warning("You don't have access to this project.");
             break;
 
             default:
@@ -117,11 +114,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
             break;
           }
         }
-        else {
-          deferred.reject();
-          $rootScope.project.logout(true);
-          notificationFactory.error();
-        }
+        else
+          $rootScope.reject(true);
       }
     );
 
@@ -193,11 +187,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
               break;
             }
           }
-          else {
-            deferred.reject();
-            $location.path("/");
-            notificationFactory.error();
-          }
+          else
+            $rootScope.reject(true);
         }
       );
 
@@ -247,11 +238,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
               break;
             }
           }
-          else {
-            deferred.reject();
-            $location.path("tasks");
-            notificationFactory.error();
-          }
+          else
+            $rootScope.reject(true);
         }
       );
 
@@ -302,11 +290,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
             break;
           }
         }
-        else {
-          deferred.reject();
-          $location.path("whiteboard/" + $route.current.params.project_id);
-          notificationFactory.error();
-        }
+        else
+          $rootScope.reject(true);
       },
       function whiteboardListFail(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -329,11 +314,8 @@ app.factory("accessFactory", ["$base64", "$http", "localStorageService", "$locat
             break;
           }
         }
-        else {
-          deferred.reject();
-          $location.path("whiteboard/" + $route.current.params.project_id);
-          notificationFactory.error();
-        }
+        else
+          $rootScope.reject(true);
       }
     );
 
