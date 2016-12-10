@@ -48,37 +48,37 @@ app.factory("whiteboardObjectFactory", function() {
 
 	// Routine definition
 	// Compile canvas data into a local render object
-	var _setRenderObject = function(id, scope) {
+	var _setRenderObject = function(id, tool, points, mouse) {
 		var data = {};
 
-	  switch (scope.selected.tool) {
+	  switch (tool.name) {
 	    case "pencil":
-	    data = _newPencil(id, scope.selected.color.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.whiteboard.points);
+	    data = _newPencil(id, tool.shape.color, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, points);
 	    break;
 
 	    case "line":
-	    data = _newLine(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newLine(id, tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "rectangle":
-	    data = _newRectange(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newRectange(id, tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "diamond":
-	    data = _newDiamond(id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newDiamond(id, tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "ellipse":
 	    data = _newEllipse(
-	    	id, scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value,
-	      (scope.mouse.start.x < scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y < scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y),
-	      (scope.mouse.start.x > scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y > scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y));
+	    	id, tool.shape.color, tool.shape.background, tool.shape.thickness.value,
+	      (mouse.start.x < mouse.end.x ? mouse.start.x : mouse.end.x),
+	      (mouse.start.y < mouse.end.y ? mouse.start.y : mouse.end.y),
+	      (mouse.start.x > mouse.end.x ? mouse.start.x : mouse.end.x),
+	      (mouse.start.y > mouse.end.y ? mouse.start.y : mouse.end.y));
 	    break;
 
 	    case "text":
-	    data = _newText(id, scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.text.value, scope.text.italic, scope.text.bold, scope.text.size.value);
+	    data = _newText(id, tool.shape.color, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, tool.text.value, tool.text.italic, tool.text.bold, tool.text.size.value);
 	    break;
 
 	    default:
@@ -100,24 +100,24 @@ app.factory("whiteboardObjectFactory", function() {
 
 	  switch (object.type) {
 	    case "HANDWRITE":
-	    data = _newPencil(id, object.color, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y, object.points);
+	    data = _newPencil(id, object.color, object.lineWeight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y, object.points);
 	    break;
 
 	    case "LINE":
-	    data = _newLine(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+	    data = _newLine(id, object.color, object.background, object.lineWeight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "RECTANGLE":
-	    data = _newRectange(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+	    data = _newRectange(id, object.color, object.background, object.lineWeight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "DIAMOND":
-	    data = _newDiamond(id, object.color, object.background, object.lineweight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
+	    data = _newDiamond(id, object.color, object.background, object.lineWeight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y);
 	    break;
 
 	    case "ELLIPSE":
 	    data = _newEllipse(
-	    	id, object.color, object.background, object.lineweight,
+	    	id, object.color, object.background, object.lineWeight,
 	      (object.positionStart.x < object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
 	      (object.positionStart.y < object.positionEnd.y ? object.positionStart.y : object.positionEnd.y),
 	      (object.positionStart.x > object.positionEnd.x ? object.positionStart.x : object.positionEnd.x),
@@ -143,31 +143,31 @@ app.factory("whiteboardObjectFactory", function() {
 	// Routine definition
 	// Convert pencil render object to API draw object
 	var _newPencil_API = function(color, thickness, start_x, start_y, end_x, end_y, points) {
-	  return { type: "HANDWRITE", lineweight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y }, points: points };
+	  return { type: "HANDWRITE", lineWeight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y }, points: points };
 	};
 
 	// Routine definition
 	// Convert line render object to API draw object
 	var _newLine_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
-	  return { type: "LINE", lineweight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
+	  return { type: "LINE", lineWeight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
 	};
 
 	// Routine definition
 	// Convert rectangle render object to API draw object
 	var _newRectange_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
-	  return { type: "RECTANGLE", lineweight: Number(thickness), color: color, background: background, positionStart: { x: Math.abs(start_x), y: Math.abs(start_y) }, positionEnd: { x: Math.abs(end_x), y: Math.abs(end_y) } };
+	  return { type: "RECTANGLE", lineWeight: Number(thickness), color: color, background: background, positionStart: { x: Math.abs(start_x), y: Math.abs(start_y) }, positionEnd: { x: Math.abs(end_x), y: Math.abs(end_y) } };
 	};
 
 	// Routine definition
 	// Convert diamond render object to API draw object
 	var _newDiamond_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
-	  return { type: "DIAMOND", lineweight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
+	  return { type: "DIAMOND", lineWeight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y } };
 	};
 
 	// Routine definition
 	// Convert ellipse render object to API draw object
 	var _newEllipse_API = function(color, background, thickness, start_x, start_y, end_x, end_y) {
-	  return { type: "ELLIPSE", lineweight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y },
+	  return { type: "ELLIPSE", lineWeight: Number(thickness), color: color, background: background, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y },
 	  				 radius: { x: (Math.abs((end_x - start_x) / 2) != 0 ? Math.abs((end_x - start_x) / 2) : 1), y: (Math.abs((end_y - start_y)  / 2) != 0 ? Math.abs((end_y - start_y)  / 2) : 1) } };
 	};
 
@@ -179,37 +179,37 @@ app.factory("whiteboardObjectFactory", function() {
 
 	// Routine definition
 	// Convert/compile canvas data to render (to API)
-	var _convertToAPIObject = function(scope) {
+	var _convertToAPIObject = function(tool, points, mouse) {
 		var data = {};
 
-	  switch (scope.selected.tool) {
+	  switch (tool.name) {
 	    case "pencil":
-	    data = _newPencil_API(scope.selected.color.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.whiteboard.points);
+	    data = _newPencil_API(tool.shape.color, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, points);
 	    break;
 
 	    case "line":
-	    data = _newLine_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newLine_API(tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "rectangle":
-	    data = _newRectange_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newRectange_API(tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "diamond":
-	    data = _newDiamond_API(scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y);
+	    data = _newDiamond_API(tool.shape.color, tool.shape.background, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y);
 	    break;
 
 	    case "ellipse":
 	    data = _newEllipse_API(
-	    	scope.selected.color.value, scope.selected.background.value, scope.selected.thickness.value,
-	      (scope.mouse.start.x < scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y < scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y),
-	      (scope.mouse.start.x > scope.mouse.end.x ? scope.mouse.start.x : scope.mouse.end.x),
-	      (scope.mouse.start.y > scope.mouse.end.y ? scope.mouse.start.y : scope.mouse.end.y));
+	    	tool.shape.color, tool.shape.background, tool.shape.thickness.value,
+	      (mouse.start.x < mouse.end.x ? mouse.start.x : mouse.end.x),
+	      (mouse.start.y < mouse.end.y ? mouse.start.y : mouse.end.y),
+	      (mouse.start.x > mouse.end.x ? mouse.start.x : mouse.end.x),
+	      (mouse.start.y > mouse.end.y ? mouse.start.y : mouse.end.y));
 	    break;
 
 	    case "text":
-	    data = _newText_API(scope.selected.color.value, scope.mouse.start.x, scope.mouse.start.y, scope.mouse.end.x, scope.mouse.end.y, scope.text.value, scope.text.italic, scope.text.bold, scope.text.size.value);
+	    data = _newText_API(tool.shape.color, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, tool.text.value, tool.text.italic, tool.text.bold, tool.text.size.value);
 	    break;
 
 	    default:
@@ -226,16 +226,16 @@ app.factory("whiteboardObjectFactory", function() {
 
   // Give access to built-in routines
   return {
-    setRenderObject: function(id, scope) {
-      return _setRenderObject(id, scope);
+    setRenderObject: function(id, tool, points, mouse) {
+      return _setRenderObject(id, tool, points, mouse);
     },
 
     convertToLocalObject: function(id, object) {
       return _convertToLocalObject(id, object);
     },
 
-    convertToAPIObject: function(scope) {
-    	return _convertToAPIObject(scope);
+    convertToAPIObject: function(tool, points, mouse) {
+    	return _convertToAPIObject(tool, points, mouse);
     }
   };
 

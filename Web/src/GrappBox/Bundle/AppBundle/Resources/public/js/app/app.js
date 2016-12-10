@@ -21,6 +21,7 @@ var app = angular.module("grappbox", [
   "ui-notification",
   "LocalStorageModule",
   "ui.tree",
+  "ng-drag-scroll",
   "ang-drag-drop",
   "googlechart",
   "gantt",

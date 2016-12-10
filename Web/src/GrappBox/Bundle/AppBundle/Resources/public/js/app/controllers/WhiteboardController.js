@@ -6,52 +6,58 @@
 
 // Controller definition
 // APP whiteboard
-app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory",
-    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory) {
+app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory", "$uibModal",
+    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
   // Scope variables initialization
-  $scope.view = { onLoad: true, valid: false, authorized: false };
-  $scope.data = { id: $route.current.params.id, project_id: $route.current.params.project_id, name: "", creator: "" };
-  $scope.whiteboard = { canvas: {}, objects: [], points: [], fullscreen: false, wrapper: "" };
-  $scope.pull = { date: "", add: {}, delete: {}, interval: "", time: 2 };
-  $scope.push = { date: "" };
-  $scope.action = { resetTool: "", toggleFullscreen: "" };
+  $scope.view = { loaded: false, valid: false, authorized: false };
+  $scope.route = { whiteboard_id: $route.current.params.id, project_id: $route.current.params.project_id };
+  $scope.whiteboard = { objects: [], points: [], pull: {}, push: {}, name: "", creator: { id:"", firstname: "", lastname: "" }, date: "", delete: "" };
+  $scope.canvas = { mouse: {}, element: "", wrapper: "", fullscreen: false, expand: "" }
+  $scope.tool = { colors: [], sizes: [], thicknesses: [], selected: {}, reset: "" }
 
-  $scope.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
-  $scope.text = { value: "", italic: false, bold: false, size: { label: "24 pt", value: "24" } };
+  $scope.whiteboard.pull = { date: "", add: {}, delete: {}, interval: "", time: 2 };
+  $scope.whiteboard.push = { date: "" };
+  $scope.canvas.mouse = { start: { x: 0, y: 0 }, end: { x: 0, y: 0 }, pressed: false };
 
-  $scope.colors = [
-    { name: "-None-", value: null },
-    { name: "Red", value: "#F44336" },
-    { name: "Pink", value: "#E91E63" },
-    { name: "Purple", value: "#9C27B0" },
-    { name: "Deep Purple", value: "#673AB7" },
-    { name: "Indigo", value: "#3F51B5" },
-    { name: "Blue", value: "#2196F3" },
-    { name: "Light Blue", value: "#03A9F4" },
-    { name: "Cyan", value: "#00BCD4" },
-    { name: "Teal", value: "#009688" },
-    { name: "Green", value: "#4CAF50" },
-    { name: "Light Green", value: "#8BC34A" },
-    { name: "Lime", value: "#CDDC39" },
-    { name: "Yellow", value: "#FFEB3B" },
-    { name: "Amber", value: "#FFC107" },
-    { name: "Orange", value: "#FF9800" },
-    { name: "Deep Orange", value: "#FF5722" },
-    { name: "Brown", value: "#795548" },
-    { name: "Blue Grey", value: "#607D8B" },
-    { name: "White", value: "#FFFFFF" },
-    { name: "Grey 20%", value: "#EEEEEE" },
-    { name: "Grey 40%", value: "#BDBDBD" },
-    { name: "Grey 50%", value: "#9E9E9E" },
-    { name: "Grey 60%", value: "#757575" },
-    { name: "Grey 80%", value: "#424242" },
-    { name: "Black", value: "#000000" }
+  $scope.tool.selected = {
+    shape: { color: "", background: "", thickness: { label: "0.5 pt", value: "0.5" } },
+    text: { value: "", italic: false, bold: false, size: { label: "11 pt", value: "11" } },
+    name: null
+  };
+
+  $scope.tool.colors = [
+    { name: "-None-", value: null , style: { "background-color": "none", "color": "#212121" } },
+    { name: "Red", value: "#F44336", style: { "background-color": "#F44336", "color": "#fff" } },
+    { name: "Pink", value: "#E91E63", style: { "background-color": "#E91E63", "color": "#fff" } },
+    { name: "Purple", value: "#9C27B0", style: { "background-color": "#9C27B0", "color": "#fff" }  },
+    { name: "Deep Purple", value: "#673AB7", style: { "background-color": "#673AB7", "color": "#fff" } },
+    { name: "Indigo", value: "#3F51B5", style: { "background-color": "#3F51B5", "color": "#fff" } },
+    { name: "Blue", value: "#2196F3", style: { "background-color": "#2196F3", "color": "#fff" } },
+    { name: "Light Blue", value: "#03A9F4", style: { "background-color": "#03A9F4", "color": "#fff" } },
+    { name: "Cyan", value: "#00BCD4", style: { "background-color": "#00BCD4", "color": "#fff" } },
+    { name: "Teal", value: "#009688", style: { "background-color": "#009688", "color": "#fff" } },
+    { name: "Green", value: "#4CAF50", style: { "background-color": "#4CAF50", "color": "#fff" } },
+    { name: "Light Green", value: "#8BC34A", style: { "background-color": "#8BC34A", "color": "#fff" } },
+    { name: "Lime", value: "#CDDC39", style: { "background-color": "#CDDC39", "color": "#212121" } },
+    { name: "Yellow", value: "#FFEB3B", style: { "background-color": "#FFEB3B", "color": "#212121" }  },
+    { name: "Amber", value: "#FFC107", style: { "background-color": "#FFC107", "color": "#212121" } },
+    { name: "Orange", value: "#FF9800", style: { "background-color": "#FF9800", "color": "#fff" } },
+    { name: "Deep Orange", value: "#FF5722", style: { "background-color": "#FF5722", "color": "#fff" } },
+    { name: "Brown", value: "#795548", style: { "background-color": "#795548", "color": "#fff" } },
+    { name: "Blue Grey", value: "#607D8B", style: { "background-color": "#607D8B", "color": "#fff" } },
+    { name: "White", value: "#FFFFFF", style: { "background-color": "#FFFFFF", "color": "#212121" } },
+    { name: "Grey 20%", value: "#EEEEEE", style: { "background-color": "#EEEEEE", "color": "#212121" } },
+    { name: "Grey 40%", value: "#BDBDBD", style: { "background-color": "#BDBDBD", "color": "#212121" } },
+    { name: "Grey 50%", value: "#9E9E9E", style: { "background-color": "#9E9E9E", "color": "#fff" } },
+    { name: "Grey 60%", value: "#757575", style: { "background-color": "#757575", "color": "#fff" } },
+    { name: "Grey 80%", value: "#424242", style: { "background-color": "#424242", "color": "#fff" } },
+    { name: "Black", value: "#000000", style: { "background-color": "#000000", "color": "#fff" } }
   ];
 
-  $scope.size = [
+  $scope.tool.sizes = [
     { label: "8 pt", value: "8" },
     { label: "9 pt", value: "9" },
     { label: "10 pt", value: "10" },
@@ -68,7 +74,7 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
     { label: "96 pt", value: "96" }
   ];
 
-  $scope.thickness = [
+  $scope.tool.thicknesses = [
     { label: "0.5 pt", value: "0.5" },
     { label: "1 pt", value: "1" },
     { label: "1.5 pt", value: "1.5" },
@@ -79,13 +85,6 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
     { label: "5 pt", value: "5" }
   ];
 
-  $scope.selected = {
-    color: { name: "Black", value: "#000000" },
-    background: { name: "-None-", value: null },
-    thickness: { label: "1 pt", value: "1" },
-    tool: null
-  };
-
 
 
   /* ==================== SETUP ==================== */
@@ -94,24 +93,24 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   // Handle page fullscreen changes
   var _onFullscreenChange = function() {
     if (document.webkitIsFullScreen || document.mozFullScreen || document.msFullscreenElement)
-      $scope.whiteboard.fullscreen = true;
+      $scope.canvas.fullscreen = true;
     else if (!document.webkitIsFullScreen && !document.mozFullScreen && !document.msFullscreenElement)
-      $scope.whiteboard.fullscreen = false;
+      $scope.canvas.fullscreen = false;
   };
 
   // Routine definition (setup)
   // Set whiteboard canvas and context
   var _setCanvas = function() {
-    $scope.whiteboard.wrapper = document.getElementById("whiteboard-wrapper");
+    $scope.whiteboard.wrapper = document.getElementById("wrapper");
 
     document.addEventListener('webkitfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('mozfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('msfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('fullscreenchange', _onFullscreenChange(), false);
 
-    $scope.whiteboard.canvas = document.getElementById("whiteboard-canvas");
-    whiteboardRenderFactory.setCanvas($scope.whiteboard.canvas);
-    whiteboardRenderFactory.setCanvasContext($scope.whiteboard.canvas.getContext("2d"));
+    $scope.canvas.element = document.getElementById("canvas");
+    whiteboardRenderFactory.setCanvas($scope.canvas.element);
+    whiteboardRenderFactory.setCanvasContext($scope.canvas.element.getContext("2d"));
     whiteboardRenderFactory.clearCanvasBuffer();
   };
 
@@ -119,48 +118,48 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   // Set whiteboard mouse handlers
   var _setMouseHandlers = function() {
     // Canvas default callback: mouse pressed
-    $scope.whiteboard.canvas.onmousedown = function(event) {
-      if ($scope.selected.tool) {
-        $scope.mouse.pressed = true;
-        $scope.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-        $scope.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
-        $scope.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-        $scope.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
-        $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
-        if ($scope.selected.tool != "eraser")
-          _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope));
+    $scope.canvas.element.onmousedown = function(event) {
+      if ($scope.tool.selected.name) {
+        $scope.canvas.mouse.pressed = true;
+        $scope.canvas.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+        $scope.canvas.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        $scope.canvas.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+        $scope.canvas.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.tool.selected.color });
+        if ($scope.tool.selected.name != "eraser")
+          _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
       }
     };
 
     // Canvas default callback: mouse drag
-    $scope.whiteboard.canvas.onmousemove = function(event) {
-      if ($scope.selected.tool) {
-        if ($scope.mouse.pressed) {
+    $scope.canvas.element.onmousemove = function(event) {
+      if ($scope.tool.selected.name) {
+        if ($scope.canvas.mouse.pressed) {
           var last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
-          $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.selected.color.value });
-          $scope.mouse.end.x = last.x;
-          $scope.mouse.end.y = last.y;
-          if ($scope.selected.tool != "eraser")
-            _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope));
+          $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.tool.selected.color });
+          $scope.canvas.mouse.end.x = last.x;
+          $scope.canvas.mouse.end.y = last.y;
+          if ($scope.tool.selected.name != "eraser")
+            _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
         }
       }
     };
 
     // Canvas default callback: mouse release
-    $scope.whiteboard.canvas.onmouseup = function() {
-      if ($scope.selected.tool) {
-        if ($scope.selected.tool != "eraser") {
-          whiteboardRenderFactory.addToCanvasBuffer(whiteboardObjectFactory.setRenderObject(0, $scope));
-          _push(whiteboardObjectFactory.convertToAPIObject($scope));
+    $scope.canvas.element.onmouseup = function() {
+      if ($scope.tool.selected.name) {
+        if ($scope.tool.selected.name != "eraser") {
+          whiteboardRenderFactory.addToCanvasBuffer(whiteboardObjectFactory.setRenderObject(0, $scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
+          _pushObject(whiteboardObjectFactory.convertToAPIObject($scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
         }
         else
-          _erase($scope);
-        $scope.mouse.pressed = false;
+          _eraseObject($scope.canvas.mouse);
+        $scope.canvas.mouse.pressed = false;
         $scope.whiteboard.points = [];
-        $scope.mouse.start.x = 0;
-        $scope.mouse.start.y = 0;
-        $scope.mouse.end.x = 0;
-        $scope.mouse.start.y = 0;
+        $scope.canvas.mouse.start.x = 0;
+        $scope.canvas.mouse.start.y = 0;
+        $scope.canvas.mouse.end.x = 0;
+        $scope.canvas.mouse.start.y = 0;
       }
     };
   };
@@ -182,9 +181,9 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   var _openWhiteboard = function() {
     var deferred = $q.defer();
 
-    $http.get($rootScope.api.url + "/whiteboard/" + $scope.data.id, { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onGetWhiteboardSuccess(response) {
-        if (response.data.info) {
+    $http.get($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function whiteboardOpened(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "1.10.1":
             _setCanvas();
@@ -194,10 +193,13 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             whiteboardRenderFactory.clearCanvasBuffer();
             whiteboardRenderFactory.clearCanvas();
 
-            $scope.data.name = response.data.data.name;
-            $scope.data.creator = response.data.data.user.firstname + " " + response.data.data.user.lastname;
-            $scope.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
-            moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
+            $scope.whiteboard.name = response.data.data.name;
+            $scope.whiteboard.creator.id = response.data.data.user.id;
+            $scope.whiteboard.creator.firstname = response.data.data.user.firstname;
+            $scope.whiteboard.creator.lastname = response.data.data.user.lastname;
+            $scope.whiteboard.date = response.data.data.createdAt;
+            $scope.whiteboard.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
+            moment($scope.whiteboard.pull.date).subtract($scope.whiteboard.pull.time, 'seconds');
 
             if (response.data.data.content)
             angular.forEach(response.data.data.content, function(value, key) {
@@ -213,39 +215,34 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             default:
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             deferred.reject();
             break;
           }
         }
-        else {
-          $scope.whiteboards.objects = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-          deferred.reject();
-        }
+        else
+          $rootScope.reject(true);
         return deferred.promise;
       },
-      function onGetWhiteboardFail(response) {
-        if (response.data.info) {
+      function whiteboardNotOpened(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "10.3.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             deferred.reject();
             break;
 
             case "10.3.9":
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = false;
             deferred.reject();
             break;
 
             case "10.3.4":
-            $location.path("whiteboard/" + $route.current.params.project_id);
+            $location.path("whiteboard/" + $scope.route.project_id);
             notificationFactory.warning("This whiteboard has been deleted.");
             deferred.reject();
             break;
@@ -253,19 +250,14 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             default:
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             deferred.reject();
             break;
           }
         }
-        else {
-          $scope.whiteboards.objects = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-          deferred.reject();
-        }
+        else
+          $rootScope.reject(true);
         return deferred.promise;
       }
     );
@@ -274,25 +266,25 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
 
   // Routine definition (local)
   // Pull whiteboard modifications
-  var _pull = function() {
-    $http.post($rootScope.api.url + "/whiteboard/draw/" + $scope.data.id,
-      { data: { lastUpdate: $scope.pull.date }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onPostWhiteboardUpdateSuccess(response) {
-        if (response.data.info) {
+  var _pullObjects = function() {
+    $http.post($rootScope.api.url + "/whiteboard/draw/" + $scope.route.whiteboard_id,
+      { data: { lastUpdate: $scope.whiteboard.pull.date }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function objectsPulled(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "1.10.1":
-            $scope.pull.add = (response.data.data.add ? response.data.data.add : null);
-            $scope.pull.delete = (response.data.data.delete ? response.data.data.delete : null);
-            $scope.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
-            moment($scope.pull.date).subtract($scope.pull.time, 'seconds');
+            $scope.whiteboard.pull.add = (response.data.data.add ? response.data.data.add : null);
+            $scope.whiteboard.pull.delete = (response.data.data.delete ? response.data.data.delete : null);
+            $scope.whiteboard.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
+            moment($scope.whiteboard.pull.date).subtract($scope.whiteboard.pull.time, 'seconds');
 
-            angular.forEach($scope.pull.add, function(value, key) {
+            angular.forEach($scope.whiteboard.pull.add, function(value, key) {
               var data = whiteboardObjectFactory.convertToLocalObject(value.id, value.object);
               $scope.whiteboard.objects.push(data);
               whiteboardRenderFactory.addToCanvasBuffer(data);
               whiteboardRenderFactory.renderObject(data);
             });
-            angular.forEach($scope.pull.delete, function(value, key) {
+            angular.forEach($scope.whiteboard.pull.delete, function(value, key) {
               for (i = 0; i < $scope.whiteboard.objects.length; ++i)
                 if ($scope.whiteboard.objects[i].id == value.id || $scope.whiteboard.objects[i].id == 0 || $scope.whiteboard.objects[i].with <= 0 || $scope.whiteboard.objects[i].height <= 0) {
                   $scope.whiteboard.objects.splice(i, 1);
@@ -305,62 +297,54 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             default:
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
           }
         }
-        else {
-          $scope.whiteboards.objects = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-        }
+        else
+          $rootScope.reject(true);
       },
-      function onPostWhiteboardUpdateFail(response) {
-        if (response.data.info) {
+      function objectsNotPulled(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "10.5.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "10.5.9":
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = false;
             break;
 
             case "10.5.4":
-            $location.path("whiteboard/" + $route.current.params.project_id);
+            $location.path("whiteboard/" + $scope.route.project_id);
             notificationFactory.warning("This whiteboard has been deleted.");
             break;
 
             default:
             $scope.whiteboards.objects = null;
             $scope.view.valid = false;
-            $scope.view.onLoad = false;
+            $scope.view.loaded = true;
             $scope.view.authorized = true;
             break;
           }
         }
-        else {
-          $scope.whiteboards.objects = null;
-          $scope.view.valid = false;
-          $scope.view.onLoad = false;
-          $scope.view.authorized = true;
-        }
+        else
+          $rootScope.reject(true);
       }
     );
   };
 
   // Routine definition (local)
   // Push whiteboard modifications
-  var _push = function(object) {
+  var _pushObject = function(object) {
     if (object)
-      $http.put($rootScope.api.url + "/whiteboard/draw/" + $scope.data.id, { data: { object: object }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
-        function onWhiteboardPushSuccess(response) {
-          if (response.data.info) {
+      $http.put($rootScope.api.url + "/whiteboard/draw/" + $scope.route.whiteboard_id, { data: { object: object }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
+        function objectPushed(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
             switch(response.data.info.return_code) {
               case "1.10.1":
               var data = whiteboardObjectFactory.convertToLocalObject(response.data.data.id, response.data.data.object);
@@ -377,15 +361,15 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
           else
             notificationFactory.error();
         },
-        function onWhiteboardPushFail(response) {
-          if (response.data.info) {
+        function objectNotPushed(response) {
+          if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
             switch(response.data.info.return_code) {
               case "10.4.3":
-              $rootScope.onUserTokenError();
+              $rootScope.reject();
               break;
 
               case "10.4.9":
-              notificationFactory.warning("You don't have sufficient rights to perform this operation.");
+              notificationFactory.warning("You don't have permission to draw on this project's whiteboards.");
               break;
 
               default:
@@ -394,19 +378,19 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
             }
           }
           else
-            notificationFactory.error();
+            $rootScope.reject(true);
         }
       );
   };
 
   // Routine definition (local)
   // Erase object
-  var _erase = function(scope) {
-    $http.delete($rootScope.api.url + "/whiteboard/object/" + $scope.data.id,
-    { data: { data: { radius: 30, center: { x: (scope.mouse.start.x + scope.mouse.end.x) / 2, y: (scope.mouse.start.y + scope.mouse.end.y) / 2 }}},
+  var _eraseObject = function(mouse) {
+    $http.delete($rootScope.api.url + "/whiteboard/object/" + $scope.route.whiteboard_id,
+    { data: { data: { radius: 30, center: { x: (mouse.start.x + mouse.end.x) / 2, y: (mouse.start.y + mouse.end.y) / 2 }}},
     headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onWhiteboardEraseSuccess(response) {
-        if (response.data.info) {
+      function objectErased(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "1.10.1":
             for (i = 0; i < $scope.whiteboard.objects.length; ++i)
@@ -428,15 +412,15 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
         else
           notificationFactory.error();
       },
-      function onWhiteboardEraseFail(response) {
-        if (response.data.info) {
+      function objectNotErased(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "10.4.3":
-            $rootScope.onUserTokenError();
+            $rootScope.reject();
             break;
 
             case "10.4.9":
-            notificationFactory.warning("You don\'t have sufficient rights to perform this operation.");
+            notificationFactory.warning("You don\'t have permission to delete objects.");
             break;
 
             default:
@@ -454,15 +438,15 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   /* ==================== SCOPE ROUTINES ==================== */
 
   // "Deselect" button handler
-  $scope.action.resetTool = function() {
-    $scope.selected.tool = null;
-    $scope.text.italic = false;
-    $scope.text.bold = false;
+  $scope.tool.reset = function() {
+    $scope.tool.selected.name = null;
+    $scope.tool.selected.text.italic = false;
+    $scope.tool.selected.text.bold = false;
   };
 
   // "Fullscreen" button handler
-  $scope.action.toggleFullscreen = function() {
-    if (!$scope.whiteboard.fullscreen) {
+  $scope.canvas.expand = function() {
+    if (!$scope.canvas.fullscreen) {
       if ($scope.whiteboard.wrapper.requestFullscreen)
         $scope.whiteboard.wrapper.requestFullscreen();
       else if ($scope.whiteboard.wrapper.webkitRequestFullscreen)
@@ -471,7 +455,7 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
         $scope.whiteboard.wrapper.mozRequestFullScreen();
       else if ($scope.whiteboard.wrapper.msRequestFullscreen)
         $scope.whiteboard.wrapper.msRequestFullscreen();
-      $scope.whiteboard.fullscreen = true;
+      $scope.canvas.fullscreen = true;
     }
     else {
       if (document.exitFullscreen)
@@ -482,7 +466,7 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
         document.mozCancelFullScreen();
       else if (document.msExitFullscreen)
         document.msExitFullscreen();
-      $scope.whiteboard.fullscreen = false;
+      $scope.canvas.fullscreen = false;
     }
   };
 
@@ -491,21 +475,73 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   /* ==================== EXECUTION ==================== */
 
   $scope.view.valid = true;
-  $scope.view.onLoad = false;
+  $scope.view.loaded = true;
   $scope.view.authorized = true;
 
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
-    function onOpenWhiteboardSuccess() {
-      $scope.pull.interval = $interval(_openWhiteboard, ($scope.pull.time * 1000));
+    function whiteboardOpened() {
+      $scope.whiteboard.pull.interval = $interval(_openWhiteboard, ($scope.whiteboard.pull.time * 1000));
     },
-    function onOpenWhiteboardFail() { }
+    function whiteboardNotOpened() { }
   );
 
   // Stop pull interval on route change
-  $scope.$on('$destroy',function() {
-    if($scope.pull.interval)
-      $interval.cancel($scope.pull.interval);   
+  $scope.$on('$destroy', function() {
+    if($scope.whiteboard.pull.interval)
+      $interval.cancel($scope.whiteboard.pull.interval);   
   });
 
+
+
+  /* ==================== DELETE WHITEBOARD ==================== */
+
+  // "Delete whiteboard" button handler
+  $scope.whiteboard.delete = function() {
+    var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
+    whiteboardDeletion.result.then(
+      function whiteboardDeletionConfirmed(data) {
+        $http.delete($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+          function whiteboardDeleted(response) {
+            $location.path("whiteboard/" + $scope.route.project_id);            
+            notificationFactory.success("Whiteboard successfully deleted.");
+          },
+          function whiteboardNotDeleted(response) {
+            if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+              switch(response.data.info.return_code) {
+                case "10.6.3":
+                $rootScope.reject();
+                break;
+
+                case "10.6.9":
+                notificationFactory.warning("You don\'t have permission to delete whiteboards.");
+                break;
+
+                default:
+                notificationFactory.error();
+                break;
+              }
+            }
+            else
+              $rootScope.reject(true);
+          }
+        ),
+        function whiteboardDeletionCancelled() { }
+      }
+    );
+  };
+
+}]);
+
+
+
+/**
+* Controller definition (from view)
+* Confirmation prompt for whiteboard deletion.
+*
+*/
+app.controller("WhiteboardDeletionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+
+  $scope.whiteboardDeletionConfirmed = function() { $uibModalInstance.close(); };
+  $scope.whiteboardDeletionCancelled = function() { $uibModalInstance.dismiss(); };
 }]);
