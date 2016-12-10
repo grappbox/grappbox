@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP whiteboard
-app.controller("WhiteboardController", ["$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory", "$uibModal",
-    function($http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory, $uibModal) {
+app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "$location", "moment", "notificationFactory", "$q", "$rootScope", "$route", "$scope", "whiteboardObjectFactory", "whiteboardRenderFactory", "$uibModal",
+    function(accessFactory, $http, $interval, $location, moment, notificationFactory, $q, $rootScope, $route, $scope, whiteboardObjectFactory, whiteboardRenderFactory, $uibModal) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -478,6 +478,9 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
   $scope.view.loaded = true;
   $scope.view.authorized = true;
 
+  accessFactory.projectAvailable();
+  accessFactory.whiteboardAvailable();
+
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
     function whiteboardOpened() {
@@ -488,8 +491,8 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
 
   // Stop pull interval on route change
   $scope.$on('$destroy', function() {
-    if($scope.whiteboard.pull.interval)
-      $interval.cancel($scope.whiteboard.pull.interval);   
+    if ($scope.whiteboard.pull.interval)
+      $interval.cancel($scope.whiteboard.pull.interval);
   });
 
 
@@ -501,6 +504,8 @@ app.controller("WhiteboardController", ["$http", "$interval", "$location", "mome
     var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
     whiteboardDeletion.result.then(
       function whiteboardDeletionConfirmed(data) {
+        if ($scope.whiteboard.pull.interval)
+          $interval.cancel($scope.whiteboard.pull.interval);
         $http.delete($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function whiteboardDeleted(response) {
             $location.path("whiteboard/" + $scope.route.project_id);            

@@ -72,7 +72,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "CloudController",
     templateUrl : "../resources/partials/cloud.html",
     caseInsensitiveMatch : true,
-    resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Gantt pages
   .when("/gantt/:project_id", {
@@ -155,7 +154,6 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     controller  : "WhiteboardController",
 		templateUrl : "../resources/partials/whiteboard.html",
 		caseInsensitiveMatch : true,
-    resolve: { whiteboardAvailability: ["accessFactory", function(accessFactory) { return accessFactory.whiteboardAvailable(); }]}
 	})
 	// Error page (default behavior)
 	.otherwise({
