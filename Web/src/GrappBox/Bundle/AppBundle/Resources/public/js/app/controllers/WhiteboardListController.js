@@ -24,7 +24,7 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
   var _getWhiteboardList = function() {
     $http.get($rootScope.api.url + "/whiteboards/" + $scope.whiteboards.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function whiteboardListReceived(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "1.10.1":
             $scope.whiteboards.list = (response.data.data && response.data.data.array ? response.data.data.array : null);
@@ -52,7 +52,7 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
           $rootScope.reject(true);
       },
       function whiteboardListNotReceived(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "10.1.3":
             $rootScope.reject();
@@ -106,7 +106,7 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
             $scope.whiteboards.new.name = "";
           },
           function whiteboardNotCreated(response) {
-            if (response && response.data && response.data.info && response.data.info.return_code) {
+            if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
               switch(response.data.info.return_code) {
                 case "10.2.3":
                 $rootScope.reject();
@@ -132,45 +132,6 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
     );
   };
 
-
-
-  /* ==================== DELETE WHITEBOARD ==================== */
-
-  // "Delete whiteboard" button handler
-  $scope.whiteboards.delete = function(whiteboard_data) {
-    var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
-    whiteboardDeletion.result.then(
-      function whiteboardDeletionConfirmed(data) {
-        $http.delete($rootScope.api.url + "/whiteboard/" + whiteboard_data, { headers: { 'Authorization': $rootScope.user.token }}).then(
-          function whiteboardDeleted(response) {
-            notificationFactory.success("Whiteboard successfully deleted.");
-            _getWhiteboardList();
-          },
-          function whiteboardNotDeleted(response) {
-            if (response && response.data && response.data.info && response.data.info.return_code) {
-              switch(response.data.info.return_code) {
-                case "10.6.3":
-                $rootScope.reject();
-                break;
-
-                case "10.6.9":
-                notificationFactory.warning("You don\'t have permission to delete whiteboards.");
-                break;
-
-                default:
-                notificationFactory.error();
-                break;
-              }
-            }
-            else
-              $rootScope.reject(true);
-          }
-        ),
-        function whiteboardDeletionCancelled() { }
-      }
-    );
-  };
-
 }]);
 
 
@@ -187,17 +148,4 @@ app.controller("WhiteboardCreationController", ["$scope", "$uibModalInstance", f
       $uibModalInstance.close();
   };
   $scope.whiteboardCreationCancelled = function() { $uibModalInstance.dismiss(); };
-}]);
-
-
-
-/**
-* Controller definition (from view)
-* Confirmation prompt for whiteboard deletion.
-*
-*/
-app.controller("WhiteboardDeletionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-
-  $scope.whiteboardDeletionConfirmed = function() { $uibModalInstance.close(); };
-  $scope.whiteboardDeletionCancelled = function() { $uibModalInstance.dismiss(); };
 }]);

@@ -3,157 +3,173 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Whiteboard -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
-
-<div class="navigation">
-  <h4>{[{ data.name ? '"' + data.name + '"' : 'Loading...' }]}{[{ data.creator ? ', by ' + data.creator : '' }]}</h4>
-  <a href="whiteboard/{[{ data.project_id }]}" title="Go back to the whiteboard list" class="btn btn-raised btn-info">Back</a>
-</div>
-<div class="panel panel-default">
-  <div class="panel-heading">Draw and share your ideas.</div>
-  <div class="panel-body">
-    <p>
-      Use the <strong>toolbox</strong> of each whiteboard to draw lines, shapes and words.<br>If you or one of your team members have trouble connecting to any whiteboard, please check your access rights using <strong>the project settings</strong> page.
-    </p>
+<section class="whiteboard">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/whiteboard.svg" width="300" height="auto" alt="Whiteboard">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Whiteboard</h1>
+      <p>Use the <strong>toolbox</strong> below to draw lines, shapes and words.<br>You can also go fullscreen to be more comfortable.</p>
+    </div>
+    <div class="clearfix"></div>
   </div>
-</div>
 
-<!-- whiteboard: canvas and toolbox -->
-<section id="whiteboard">
-  <div class="row">
-    <div class="col-lg-12" id="whiteboard-wrapper">
-      <div data-ng-if="view.onLoad">
-        <div class="spinner section">
-          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+  <div data-ng-if="!view.loaded">
+    <div class="spinner section">
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
+    </div>
+  </div>
+  <div data-ng-if="view.loaded">
+    <div data-ng-if="view.valid && view.authorized">
+      <div class="box-row {[{ canvas.fullscreen ? 'fullscreen' : '' }]}" id="wrapper">
+
+        <!-- Information -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding {[{ canvas.fullscreen ? 'hidden' : '' }]}">
+          <div class="box information">
+            <div class="avatar">
+              <img src="../resources/img/app/default-avatar.min.png" alt="{[{ whiteboard.creator }]}" width="48" height="48">
+            </div>
+            <ul>
+              <li class="title"><strong>{[{ whiteboard.name }]}</strong></li>
+              <li class="author">{[{ whiteboard.creator.firstname }]} {[{ whiteboard.creator.lastname }]}</li>
+              <li class="date"><span>{[{ whiteboard.date }]}</span></li>
+            </ul>
+            <div class="submit" data-ng-if="whiteboard.creator.id == user.id">
+              <a href="" class="btn btn-rounded red-hover red-focus red-background" title="Delete this whiteboard" data-ng-click="whiteboard.delete()"><i class="material-icons" aria-hidden="true">delete</i></a>
+            </div>
+            <div class="clearfix"></div>
+          </div>
         </div>
-      </div>
-      <div data-ng-if="!view.onLoad">
-        <div data-ng-if="view.authorized">
-          <div data-ng-if="view.valid">
 
-            <div class="well {[{ whiteboard.fullscreen ? 'fullscreen' : '' }]}">
-              <!-- whiteboard: toolbox -->
-              <div class="col-lg-12 col-md-12 col-xs-12 action">
-                <div class="col-lg-12 col-md-12 col-xs-12">
-                  <div class="form-group">
-                    <label title="Pencil (free-hand)" for="pencil" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'pencil' ? 'active' : '' }]}">
-                      <i class="material-icons">mode_edit</i>
-                      <input type="radio" data-ng-model="selected.tool" id="pencil" value="pencil">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label title="Line" for="line" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'line' ? 'active' : '' }]}">
-                      <i class="material-icons">remove</i>
-                      <input type="radio" data-ng-model="selected.tool" id="line" value="line">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label title="Rectangle and square" for="rectangle" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'rectangle' ? 'active' : '' }]}">
-                      <i class="material-icons">crop_square</i>
-                      <input type="radio" data-ng-model="selected.tool" id="rectangle" value="rectangle">
-                    </label>
-                  </div>        
-                  <div class="form-group">
-                    <label title="Diamond" for="diamond" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'diamond' ? 'active' : '' }]}">
-                      <i class="material-icons diamond">crop_square</i>
-                      <input type="radio" data-ng-model="selected.tool" id="diamond" value="diamond">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label title="Ellipse and circle" for="ellipse" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'ellipse' ? 'active' : '' }]}">
-                      <i class="material-icons">radio_button_unchecked</i>
-                      <input type="radio" data-ng-model="selected.tool" id="ellipse" value="ellipse">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label title="Eraser" for="eraser" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'eraser' ? 'active' : '' }]}">
-                      <i class="material-icons">delete</i>
-                      <input type="radio" data-ng-model="selected.tool" id="eraser" value="eraser">
-                    </label>
-                  </div>                  
-                  <div class="divider"></div>
-                  <div class="form-group">
-                    <label title="Reset selection" for="reset" class="col-md-1 col-xs-1">
-                      <i class="material-icons">block</i>
-                      <input type=radio data-ng-click="action.resetTool()" id="reset" value="reset"></input>
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label title="Enter fullscreen mode" for="fullscreen" class="col-md-1 col-xs-1" data-ng-if="!whiteboard.fullscreen">
-                      <i class="material-icons">fullscreen</i>
-                      <input type="radio" data-ng-click="action.toggleFullscreen()" id="fullscreen" value="fullscreen"></input>
-                    </label>
-                    <label title="Exit fullscreen mode" for="fullscreen-exit" class="col-md-1 col-xs-1 active" data-ng-if="whiteboard.fullscreen">
-                      <i class="material-icons">fullscreen_exit</i>
-                      <input type="radio" data-ng-click="action.toggleFullscreen()" id="fullscreen-exit" value="fullscreen-exit"></input>
-                    </label>
-                  </div>
-                </div>
-                <div class="col-lg-12 col-md-12 col-xs-12">
-                  <div class="form-group">
-                    <label for="color" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">color_lens</i></label>
-                    <select id="color" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.color"></select>
-                  </div>
-                  <div class="form-group">
-                    <label for="background" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_color_fill</i></label>
-                    <select id="background" class="col-md-2 col-xs-12" data-ng-options="color.name for color in colors track by color.value" data-ng-model="selected.background"></select>
-                  </div>
-                  <div class="form-group">
-                    <label for="thickness" class="col-md-1 col-xs-1 control-label no-select"><i class="material-icons">format_line_spacing</i></label>
-                    <select id="thickness" class="col-md-2 col-xs-12" data-ng-options="thickness.label for thickness in thickness track by thickness.value" data-ng-model="selected.thickness"></select>
-                  </div>
-                </div>
-                <div class="col-lg-12 col-md-12 col-xs-12">
-                  <div class="form-group">
-                    <label for="text" class="col-md-1 col-xs-1 control-label {[{ selected.tool == 'text' ? 'active' : '' }]}">
-                      <i class="material-icons">format_color_text</i>
-                      <input type="radio" data-ng-model="selected.tool" id="text" value="text">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <input type="text" data-ng-model="text.value" class="col-md-6 col-xs-12" placeholder="Text to draw">
-                  </div>
-                  <div class="form-group">
-                    <label for="italic" class="col-md-1 col-xs-12 control-label {[{ text.italic ? 'active' : '' }]}">
-                      <i class="material-icons">format_italic</i>
-                      <input type="checkbox" data-ng-model="text.italic" id="italic" value="italic">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label for="bold" class="col-md-1 col-xs-12 control-label {[{ text.bold ? 'active' : '' }]}">
-                      <i class="material-icons">format_bold</i>
-                      <input type="checkbox" data-ng-model="text.bold" id="bold" value="bold">
-                    </label>
-                  </div>
-                  <div class="form-group">
-                    <label for="size" class="col-md-1 col-xs-12 control-label no-select"><i class="material-icons">format_size</i></label>
-                    <select id="size" class="col-md-2 col-xs-12" data-ng-options="size.label for size in size track by size.value" data-ng-model="text.size"></select>
-                  </div>                  
-                </div>
-              </div>
-              <!-- whiteboard: canvas -->
-              <div class="col-lg-12 col-md-12 col-xs-12 canvas-wrapper">
-                <canvas class="{[{ selected.tool ? 'edit' : '' }]}" id="whiteboard-canvas" height="2160px" width="4096px"></canvas>
-              </div>
+        <!-- Canvas -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+          <div class="box canvas {[{ tool.selected.name ? 'edit' : '' }]}" data-ng-attr-drag-scroll="!tool.selected.name">
+            <canvas id="canvas" height="2160px" width="4096px"></canvas>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <!-- Toolbox -->
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box toolbox">
+
+            <div class="col-lg-5 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+              <label title="Pencil (free-hand)" for="pencil" class="btn btn-rounded small tool {[{ tool.selected.name == 'pencil' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">mode_edit</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="pencil" value="pencil">
+              </label>
+              <label title="Line" for="line" class="btn btn-rounded small tool {[{ tool.selected.name == 'line' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">remove</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="line" value="line">
+              </label>
+              <label title="Rectangle and square" for="rectangle" class="btn btn-rounded small tool {[{ tool.selected.name == 'rectangle' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">crop_square</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="rectangle" value="rectangle">
+              </label>
+              <label title="Diamond" for="diamond" class="btn btn-rounded small tool {[{ tool.selected.name == 'diamond' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons diamond" aria-hidden="true">crop_square</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="diamond" value="diamond">
+              </label>
+              <label title="Ellipse and circle" for="ellipse" class="btn btn-rounded small tool {[{ tool.selected.name == 'ellipse' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">radio_button_unchecked</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="ellipse" value="ellipse">
+              </label>
+              <label title="Eraser" for="eraser" class="btn btn-rounded small tool {[{ tool.selected.name == 'eraser' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">delete</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="eraser" value="eraser">
+              </label>
+              <label title="Enter fullscreen mode" for="fullscreen" class="btn btn-rounded small tool" data-ng-if="!canvas.fullscreen">
+                <i class="material-icons" aria-hidden="true">fullscreen</i>
+                <input type="radio" data-ng-click="canvas.expand()" id="fullscreen" value="fullscreen">
+              </label>
+              <label title="Exit fullscreen mode" for="fullscreen-exit" class="btn btn-rounded small white-color tool" data-ng-if="canvas.fullscreen">
+                <i class="material-icons" aria-hidden="true">fullscreen_exit</i>
+                <input type="radio" data-ng-click="canvas.expand()" id="fullscreen-exit" value="fullscreen-exit">
+              </label>
+              <label title="Text mode (to use with input below)" for="text" class="btn btn-rounded small tool {[{ tool.selected.name == 'text' ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">font_download</i>
+                <input type="radio" data-ng-model="tool.selected.name" id="text" value="text">
+              </label>
+              <label title="Italic" for="italic" class="btn btn-rounded small tool {[{ tool.selected.text.italic ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">format_italic</i>
+                <input type="checkbox" data-ng-model="tool.selected.text.italic" id="italic" value="italic">
+              </label>
+              <label title="Bold" for="bold" class="btn btn-rounded small tool {[{ tool.selected.text.bold ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">format_bold</i>
+                <input type="checkbox" data-ng-model="tool.selected.text.bold" id="bold" value="bold">
+              </label>
+              <label title="Reset selection" for="reset" class="btn btn-rounded small tool {[{ !tool.selected.name ? 'white-background gray-color' : '' }]}">
+                <i class="material-icons" aria-hidden="true">open_with</i>
+                <input type=radio data-ng-click="tool.reset()" id="reset" value="reset">
+              </label>              
+            </div>
+
+            <div class="col-lg-7 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
+              <label title="Draw color" for="color" class="tool tool-select col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <i class="material-icons white-color col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding" aria-hidden="true">color_lens</i>
+                <select id="color" data-ng-model="tool.selected.shape.color" class="col-lg-10 col-md-10 col-sm-10 col-xs-10 no-padding">
+                  <option data-ng-repeat="color in tool.colors" data-ng-style="{[{ color.style }]}" value="{[{ color.value }]}">{[{ ::color.name }]}</option>
+                </select>
+              </label>
+
+              <label title="Fill color" for="background" class="tool tool-select col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <i class="material-icons white-color col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding" aria-hidden="true">format_color_fill</i>
+                <select id="background" data-ng-model="tool.selected.shape.background" class="col-lg-10 col-md-10 col-sm-10 col-xs-10 no-padding">
+                  <option data-ng-repeat="color in tool.colors" data-ng-style="{[{ color.style }]}" value="{[{ color.value }]}">{[{ ::color.name }]}</option>
+                </select>
+              </label>
+              <label title="Thickness" for="thickness" class="tool tool-select col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <i class="material-icons white-color col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding" aria-hidden="true">format_line_spacing</i>
+                <select id="thickness" data-ng-options="thickness.label for thickness in tool.thicknesses track by thickness.value" data-ng-model="tool.selected.shape.thickness" class="col-lg-10 col-md-10 col-sm-10 col-xs-10 no-padding"></select>
+              </label>
+              <label title="Font size" for="size" class="tool tool-select col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                <i class="material-icons white-color col-lg-2 col-md-2 col-sm-2 col-xs-2 no-padding" aria-hidden="true">format_size</i>
+                <select id="size" data-ng-options="size.label for size in tool.sizes track by size.value" data-ng-model="tool.selected.text.size" class="col-lg-10 col-md-10 col-sm-10 col-xs-10 no-padding"></select>
+              </label>              
               <div class="clearfix"></div>
             </div>
+
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+              <input type="text" data-ng-model="tool.selected.text.value" placeholder="Text to draw" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 tool tool-select tool-select-alt">
+            </div>
+            <div class="clearfix"></div>
           </div>
-          
-          <div data-ng-if="!view.onLoad && !view.valid">
-            <div class="well text-center">
-              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
+        </div>
+        <div class="clearfix"></div>
+
+        <div data-ng-if="!view.valid">
+          <div class="box-row">
+            <div class="box error text-center">
+              <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
             </div>
           </div>
         </div>
         <div data-ng-if="!view.authorized">
-          <div class="well text-center">
-            <p><i class="material-icons">block</i><br>You don't have sufficient rights to perform this operation.</p>
+          <div class="box-row">
+            <div class="box error text-center">
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this project's whiteboards.</p>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </section>
+
+
+
+<!-- Whiteboard deletion -->
+<script type="text/ng-template" id="whiteboardDeletion.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="whiteboardDeletionCancelled()">×</button>
+    <h4 class="modal-title">Whiteboard deletion</h4>
+  </div>
+  <div class="modal-body">
+    <p>Are you sure you want to delete this whiteboard?</p>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="whiteboardDeletionCancelled()">Cancel</button>
+    <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="whiteboardDeletionConfirmed()">Delete</button>
+  </div>
+</script>
