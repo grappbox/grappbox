@@ -110,6 +110,14 @@ public class GrappboxProvider extends ContentProvider {
     public static final int TIMELINE_COMMENTS_BY_ID = 263;
     public static final int TIMELINE_COMMENTS_BY_GRAPPBOX_ID = 264;
 
+    public static final int STATS = 270;
+    public static final int STATS_BY_ID = 271;
+    public static final int STATS_BY_GRAPPBOX_ID = 272;
+
+    public static final int ADVANCEMENT = 280;
+    public static final int ADVANCEMENT_BY_ID = 281;
+    public static final int ADVANCEMENT_BY_STAT_ID = 282;
+
 
 
     public static UriMatcher buildUriMatcher() {
@@ -215,6 +223,17 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD, CLOUD);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/#", CLOUD_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_CLOUD + "/withproject", CLOUD_WITH_PROJECT);
+
+        //Stats related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS, STATS);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS + "/#", STATS_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS + "/*", STATS_BY_GRAPPBOX_ID);
+
+        //Advancement related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT, ADVANCEMENT);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/#", ADVANCEMENT_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/*", ADVANCEMENT_BY_STAT_ID);
+
         return matcher;
     }
 
@@ -329,6 +348,17 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.CloudEntry.CONTENT_TYPE;
             case CLOUD_BY_ID:
                 return GrappboxContract.CloudEntry.CONTENT_ITEM_TYPE;
+
+            case STATS:
+            case STATS_BY_ID:
+            case STATS_BY_GRAPPBOX_ID:
+                return GrappboxContract.StatEntry.CONTENT_TYPE;
+
+            case ADVANCEMENT:
+            case ADVANCEMENT_BY_ID:
+            case ADVANCEMENT_BY_STAT_ID:
+                return GrappboxContract.AdvancementEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -366,6 +396,10 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.EventParticipantEntry.TABLE_NAME;
             case TAG:
                 return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
+            case STATS:
+                return GrappboxContract.StatEntry.TABLE_NAME;
+            case ADVANCEMENT:
+                return GrappboxContract.AdvancementEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -575,6 +609,18 @@ public class GrappboxProvider extends ContentProvider {
             case CLOUD_WITH_PROJECT:
                 retCursor = CloudCursors.query_CloudWithProject(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case STATS:
+                retCursor = StatCursors.query_Stat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case STATS_BY_ID:
+                retCursor = StatCursors.query_StatById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                retCursor = AdvancementCursors.query_Advancement(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case ADVANCEMENT_BY_ID:
+                retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -645,6 +691,12 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT_PARTICIPANT:
                 returnedUri = EventParticipantCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case STATS:
+                returnedUri = StatCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -711,6 +763,12 @@ public class GrappboxProvider extends ContentProvider {
             case EVENT:
                 ret = EventCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case STATS:
+                ret = StatCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -760,6 +818,12 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case EVENT:
                 returnCount = EventCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case STATS:
+                returnCount = StatCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                returnCount = AdvancementCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

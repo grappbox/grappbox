@@ -5,7 +5,9 @@ import android.content.ContentUris;
 import android.content.ContentValues;
 import android.net.Uri;
 import android.provider.BaseColumns;
+import android.provider.SyncStateContract;
 
+import java.net.URI;
 import java.util.HashMap;
 
 /**
@@ -20,7 +22,6 @@ public class GrappboxContract {
     public static final String PATH_USER = "user";
     public static final String PATH_OCCUPATION = "occupation";
     public static final String PATH_EVENT = "event";
-    public static final String PATH_EVENT_TYPE = "event_types";
     public static final String PATH_EVENT_PARTICIPANT = "event_participant";
     public static final String PATH_TIMELINE = "timeline";
     public static final String PATH_TIMELINE_MESSAGES = "timeline_messages";
@@ -32,6 +33,8 @@ public class GrappboxContract {
     public static final String PATH_BUG_TAG = "bug_tag";
     public static final String PATH_BUG_ASSIGNATION = "bug_assignations";
     public static final String PATH_CLOUD = "cloud";
+    public static final String PATH_STATS = "stats";
+    public static final String PATH_ADVANCEMENT = "advancement";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -461,6 +464,61 @@ public class GrappboxContract {
 
         public static Uri buildWithProjectJoin(){
             return CONTENT_URI.buildUpon().appendPath("withproject").build();
+        }
+    }
+
+    public static final class StatEntry implements BaseColumns {
+        public static final String TABLE_NAME = "stats";
+
+        public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
+
+        public static final String COLUMN_TIMELINE_TEAM_MESSAGE = "timeline_team_message_number";
+        public static final String COLUMN_TIMELINE_CUSTOMER_MESSAGE = "timeline_customer_message_number";
+
+        public static final String COLUMN_CUSTOMER_ACCESS_ACTUAL = "customer_access_actual_number";
+        public static final String COLUMN_CUSTOMER_ACCESS_MAX = "customer_access_max_number";
+
+        public static final String COLUMN_BUG_OPEN = "bug_open";
+        public static final String COLUMN_BUG_CLOSE = "bug_close";
+
+        public static final String COLUMN_TASK_DONE = "task_done";
+        public static final String COLUMN_TASK_DOING = "task_doing";
+        public static final String COLUMN_TASK_TODO = "task_todo";
+        public static final String COLUMN_TASK_LATE = "task_late";
+        public static final String COLUMN_TASK_TOTAL = "task_total";
+
+        public static final String COLUMN_CLIENT_BUGTRACKER = "client_bugtracker";
+        public static final String COLUMN_BUGTRACKER_ASSIGN = "bugtracker_assign";
+
+        public static final String COLUMN_STORAGE_OCCUPIED = "storage_occupied";
+        public static final String COLUMN_STORAGE_TOTAL = "storage_total";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_STATS).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
+        public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
+
+        public static Uri buildStatWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class AdvancementEntry implements BaseColumns {
+        public static final String TABLE_NAME = "task_advancement";
+
+        public static final String COLUMN_ADVANCEMENT_DATE = "advancement_date";
+        public static final String COLUMN_PERCENTAGE = "percentage";
+        public static final String COLUMN_PROGRESS = "progress";
+        public static final String COLUMN_TOTAL_TASK = "total_task";
+        public static final String COLUMN_FINISHED_TASk = "finished_task";
+
+        public static final String COLUMN_LOCAL_STATS_ID = "local_stats_id";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_ADVANCEMENT).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ADVANCEMENT;
+        public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ADVANCEMENT;
+
+        public static Uri buildAdvancementWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
 }

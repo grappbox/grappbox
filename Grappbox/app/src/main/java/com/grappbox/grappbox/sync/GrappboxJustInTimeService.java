@@ -8,6 +8,7 @@ import android.app.IntentService;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.app.admin.SecurityLog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -120,6 +121,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_DELETE_EVENT = "com.grappbox.grappbox.sync.ACTION_DELETE_EVENT";
     public static final String ACTION_SET_PARTICIPANT_EVENT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT_EVENT";
     public static final String ACTION_GET_MONTH_PLANNING = "com.grappbox.grappbox.sync.ACTION_GET_MONTH_PLANNING";
+    public static final String ACTION_SYNC_ALL_STATS = "com.grappbox.grappbox.sync.ACTION_SYNC_ALL_STATS";
 
     public static final String EXTRA_API_TOKEN = "api_token";
     public static final String EXTRA_USER_ID = "uid";
@@ -301,6 +303,8 @@ public class GrappboxJustInTimeService extends IntentService {
             } else if (ACTION_SET_PARTICIPANT_EVENT.equals(action)) {
                 Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
                 handleEventSetParticipant(intent.getLongExtra(EXTRA_EVENT_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
+            } else if (ACTION_SYNC_ALL_STATS.equals(action)) {
+                handleAllStatGet(intent.getStringExtra(EXTRA_API_TOKEN), intent.getLongExtra(EXTRA_PROJECT_ID, -1));
             }
         }
     }
@@ -3060,6 +3064,36 @@ public class GrappboxJustInTimeService extends IntentService {
         } catch (IOException | NetworkErrorException | JSONException | OperationApplicationException e) {
             e.printStackTrace();
         } finally {
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+    private void handleAllStatGet(String apiToken, long projectId)
+    {
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor project = null;
+
+        try {
+            project = getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, ProjectEntry._ID + "=?", new String[]{String.valueOf(projectId)}, null);
+            if (project == null || !project.moveToFirst())
+                return;
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/statistics/" + project.getLong(0));
+            connection = (HttpURLConnection)url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            Log.v(LOG_TAG, "url : " + url.toString() + ", apiToken : " + apiToken);
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson == null || returnedJson.isEmpty())
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            Log.v(LOG_TAG, "returnedJSON : " + returnedJson);
+        } catch (IOException | NetworkErrorException e) {
+            e.printStackTrace();
+        } finally {
+            if (project != null)
+                project.close();
             if (connection != null)
                 connection.disconnect();
         }

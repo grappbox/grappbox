@@ -519,6 +519,15 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(launchNextMeetingSyncing);
     }
 
+    private void syncStats(String apiToken, long projectId) {
+        //synchronyze the stats
+        Intent launchAllStatSync = new Intent(getContext(), GrappboxJustInTimeService.class);
+        launchAllStatSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_ALL_STATS);
+        launchAllStatSync.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
+        launchAllStatSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
+        getContext().startService(launchAllStatSync);
+    }
+
     @Override
     public void onPerformSync(Account account, Bundle bundle, String s, ContentProviderClient contentProviderClient, SyncResult syncResult) {
         Log.e(LOG_TAG, "Sync Started");
@@ -554,6 +563,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 syncPlanningMonth(token, -1);
                 syncPlanningMonth(token, 0);
                 syncPlanningMonth(token, 1);
+                syncStats(token, projectId);
             } while (projectsCursor.moveToNext());
 
         } catch (IOException | JSONException | OperationApplicationException | AuthenticatorException e) {
