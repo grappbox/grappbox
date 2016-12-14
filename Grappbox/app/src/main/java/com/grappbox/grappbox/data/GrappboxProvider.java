@@ -118,6 +118,11 @@ public class GrappboxProvider extends ContentProvider {
     public static final int ADVANCEMENT_BY_ID = 281;
     public static final int ADVANCEMENT_BY_STAT_ID = 282;
 
+    public static final int USER_ADVANCEMENT_TASK = 290;
+    public static final int USER_ADVANCEMENT_TASK_BY_ID = 291;
+    public static final int USER_ADVANCEMENT_TASK_BY_STAT_ID = 292;
+    public static final int USER_ADVANCEMENT_TASK_BY_USER_ID = 293;
+
 
 
     public static UriMatcher buildUriMatcher() {
@@ -232,7 +237,13 @@ public class GrappboxProvider extends ContentProvider {
         //Advancement related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT, ADVANCEMENT);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/#", ADVANCEMENT_BY_ID);
-        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/*", ADVANCEMENT_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/stat/#", ADVANCEMENT_BY_STAT_ID);
+
+        //User Advancement Task related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK, USER_ADVANCEMENT_TASK);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/#",  USER_ADVANCEMENT_TASK_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/stat/#", USER_ADVANCEMENT_TASK_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/user/#", USER_ADVANCEMENT_TASK_BY_USER_ID);
 
         return matcher;
     }
@@ -359,6 +370,11 @@ public class GrappboxProvider extends ContentProvider {
             case ADVANCEMENT_BY_STAT_ID:
                 return GrappboxContract.AdvancementEntry.CONTENT_TYPE;
 
+            case USER_ADVANCEMENT_TASK:
+            case USER_ADVANCEMENT_TASK_BY_ID:
+            case USER_ADVANCEMENT_TASK_BY_STAT_ID:
+                return GrappboxContract.UserAdvancementTaskEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -400,6 +416,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.StatEntry.TABLE_NAME;
             case ADVANCEMENT:
                 return GrappboxContract.AdvancementEntry.TABLE_NAME;
+            case USER_ADVANCEMENT_TASK:
+                return GrappboxContract.UserAdvancementTaskEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -621,6 +639,10 @@ public class GrappboxProvider extends ContentProvider {
             case ADVANCEMENT_BY_ID:
                 retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case ADVANCEMENT_BY_STAT_ID:
+                retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -697,6 +719,9 @@ public class GrappboxProvider extends ContentProvider {
             case ADVANCEMENT:
                 returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case USER_ADVANCEMENT_TASK:
+                returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -769,6 +794,9 @@ public class GrappboxProvider extends ContentProvider {
             case ADVANCEMENT:
                 ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case USER_ADVANCEMENT_TASK:
+                ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -824,6 +852,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case ADVANCEMENT:
                 returnCount = AdvancementCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK:
+                returnCount = UserAdvancementTask.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

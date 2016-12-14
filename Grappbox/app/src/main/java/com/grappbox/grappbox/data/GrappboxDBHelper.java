@@ -231,7 +231,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 StatEntry.COLUMN_STORAGE_TOTAL + " INTEGER, " +
                 " UNIQUE (" + StatEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
-        final String SQL_CREATE_ADVANCEMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + StatEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_ADVANCEMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + AdvancementEntry.TABLE_NAME + " (" +
                 AdvancementEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 AdvancementEntry.COLUMN_ADVANCEMENT_DATE + " TEXT NOT NULL, " +
                 AdvancementEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
@@ -240,6 +240,17 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 AdvancementEntry.COLUMN_FINISHED_TASk + " INTEGER NOT NULL, " +
                 AdvancementEntry.COLUMN_LOCAL_STATS_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY ("+AdvancementEntry.COLUMN_LOCAL_STATS_ID+") REFERENCES "+StatEntry.TABLE_NAME+" ("+StatEntry._ID+")); ";
+
+        final String SQL_CREATE_ADVANCEMENT_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + UserAdvancementTaskEntry.TABLE_NAME + " (" +
+                UserAdvancementTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_TODO + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_DOING + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_DONE + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_LATE + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
@@ -259,6 +270,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_CLOUD_TABLE);
         db.execSQL(SQL_CREATE_STATS_TABLE);
         db.execSQL(SQL_CREATE_ADVANCEMENT_TABLE);
+        db.execSQL(SQL_CREATE_ADVANCEMENT_TASK_TABLE);
     }
 
     @Override

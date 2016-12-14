@@ -29,7 +29,7 @@ public class AdvancementCursors {
     }
 
     public static Cursor query_AdvancementById(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
-        return openHelper.getReadableDatabase().query(AdvancementEntry.TABLE_NAME, projection, GrappboxContract.CloudEntry._ID + "=?", new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
+        return openHelper.getReadableDatabase().query(AdvancementEntry.TABLE_NAME, projection, AdvancementEntry._ID + "=?", new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
     }
 
     public static Uri insert(@NonNull Uri uri, ContentValues values, GrappboxDBHelper openHelper) {
@@ -55,6 +55,10 @@ public class AdvancementCursors {
             db.endTransaction();
         }
         return returnCount;
+    }
+
+    public static Cursor query_AdvancementWithStat(Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper mOpenHelper) {
+        return sStatJoinQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {

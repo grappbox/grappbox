@@ -35,6 +35,7 @@ public class GrappboxContract {
     public static final String PATH_CLOUD = "cloud";
     public static final String PATH_STATS = "stats";
     public static final String PATH_ADVANCEMENT = "advancement";
+    public static final String PATH_USER_ADVANCEMENT_TASK = "user_advancement_task";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -503,7 +504,7 @@ public class GrappboxContract {
     }
 
     public static final class AdvancementEntry implements BaseColumns {
-        public static final String TABLE_NAME = "task_advancement";
+        public static final String TABLE_NAME = "advancement";
 
         public static final String COLUMN_ADVANCEMENT_DATE = "advancement_date";
         public static final String COLUMN_PERCENTAGE = "percentage";
@@ -518,6 +519,24 @@ public class GrappboxContract {
         public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_ADVANCEMENT;
 
         public static Uri buildAdvancementWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class UserAdvancementTaskEntry implements BaseColumns {
+        public static final String TABLE_NAME = "user_advancement_task";
+
+        public static final String COLUMN_LOCAL_USER_ID = "user_id";
+        public static final String COLUMN_TASK_TODO = "task_todo";
+        public static final String COLUMN_TASK_DOING = "task_doing";
+        public static final String COLUMN_TASK_DONE = "task_done";
+        public static final String COLUMN_TASK_LATE = "task_late";
+        public static final String COLUMN_LOCAL_STAT_ID = "local_stat_id";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER_ADVANCEMENT_TASK).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER_ADVANCEMENT_TASK;
+
+        public static Uri builAdvancementTaskWithLocalUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }
