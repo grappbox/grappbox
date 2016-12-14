@@ -52,6 +52,18 @@
         <file>qrc/FiltersMenuField.qml</file>
         <file>qrc/CustomProgressCircle.qml</file>
         <file>qrc/CustomListStandart.qml</file>
+        <file>qrc/Statistics.qml</file>
+        <file>qrc/CustomLegendChart.qml</file>
+        <file>qrc/StatisticsPie.qml</file>
+        <file>qrc/StatisticsField.qml</file>
+        <file>qrc/StatisticsBar.qml</file>
+        <file>qrc/StatisticsCurve.qml</file>
+        <file>qrc/StatisticsProject.qml</file>
+        <file>qrc/StatisticsTasks.qml</file>
+        <file>qrc/StatisticsCategoryName.qml</file>
+        <file>qrc/StatisticsBugTracker.qml</file>
+        <file>qrc/StatisticsBarUndefined.qml</file>
+        <file>qrc/NotificationPopup.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

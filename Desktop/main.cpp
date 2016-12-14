@@ -1,4 +1,4 @@
-#include <QGuiApplication>
+#include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
 
@@ -53,7 +53,7 @@ static QObject *qobject_dataimageprovider_provider(QQmlEngine *engine, QJSEngine
 
 int main(int argc, char *argv[])
 {
-    QGuiApplication app(argc, argv);
+    QApplication app(argc, argv);
 
     LOG(QString("Initialized !"));
 

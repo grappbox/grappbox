@@ -234,10 +234,9 @@ public:
         m_creator->setId(task["creator"].toObject()["id"].toInt());
         m_creator->setFirstName(task["creator"].toObject()["firstname"].toString());
         m_creator->setLastName(task["creator"].toObject()["lastname"].toString());
-        QVariantList user;
         QVariantList dependencies;
-        QVariantList tags;
         QVariantList tasks;
+        m_usersAssigned.clear();
         for (QJsonValueRef ref : task["users"].toArray())
         {
             QJsonObject obj = ref.toObject();
@@ -246,11 +245,35 @@ public:
             newUser->setFirstName(obj["firstname"].toString());
             newUser->setLastName(obj["lastname"].toString());
             newUser->setOccupation(obj["percent"].toInt());
-            user.push_back(qVariantFromValue(user));
+            m_usersAssigned.push_back(newUser);
         }
         for (QJsonValueRef ref : task["tags"].toArray())
         {
-            tags.push_back(ref.toObject()["id"].toInt());
+            QJsonObject objTag = ref.toObject();
+            TaskTagData *tag = nullptr;//new TaskTagData();
+            for (TaskTagData *item : m_tagAssigned)
+            {
+                if (item->id() == objTag["id"].toInt())
+                {
+                    tag = item;
+                    break;
+                }
+            }
+            if (tag == nullptr)
+            {
+                tag = new TaskTagData();
+                tag->setId(objTag["id"].toInt());
+                tag->setColor(objTag["color"].toString());
+                tag->setName(objTag["name"].toString());
+                m_tagAssigned.push_back(tag);
+                qDebug() << "Add a tag...";
+            }
+            else
+            {
+                tag->setId(objTag["id"].toInt());
+                tag->setColor(objTag["color"].toString());
+                tag->setName(objTag["name"].toString());
+            }
         }
         for (QJsonValueRef ref : task["dependencies"].toArray())
         {
@@ -271,9 +294,9 @@ public:
         {
             tasks.push_back(ref.toObject()["id"].toInt());
         }
-        setUserAssigned(user);
+        emit usersAssignedChanged(usersAssigned());
         setDependenceiesAssigned(dependencies);
-        setTagAssigned(tags);
+        emit tagAssignedChanged(tagAssigned());
         setTaskChild(tasks);
     }
 
@@ -411,6 +434,7 @@ public:
         {
             list.append(qVariantFromValue(data));
         }
+        qDebug() << "Get tag ? : " << list.size();
         return list;
     }
 

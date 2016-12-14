@@ -27,11 +27,12 @@ Column {
             dates.text = "The " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm");
         taskProgression.value = currentTask.progression;
         repeaterTag.model = currentTask.tagAssigned;
+        console.log(currentTask.tagAssigned)
         repeaterUserAssigned.model = currentTask.usersRessources;
+        console.log(currentTask.usersRessources)
         repeaterDependencies.model = currentTask.dependenciesAssigned;
         repeaterTasks.model = currentTask.taskChild;
         createdBy.text = "Created by " + currentTask.creator.firstName + " " + currentTask.creator.lastName + " the " + Qt.formatDateTime(currentTask.createDate, "yyyy-MM-dd hh:mm:ss");
-        console.log(repeaterTasks.model)
     }
 
     signal edit(var task)
@@ -189,7 +190,7 @@ Column {
             anchors.leftMargin: Units.dp(16)
             height: sectionHeaderTag.expanded ? flowTag.implicitHeight + Units.dp(16) : 0
 
-            visible: repeaterTag.model.Length > 0
+            //visible: repeaterTag.model.Length > 0
 
             Behavior on height {
                 NumberAnimation {
@@ -209,48 +210,25 @@ Column {
                     id: repeaterTag
                     model: []
                     delegate: Button {
-                        text: modelData
-                        visible: text !== ""
+                        text: modelData.name
                         elevation: 1
                         textColor: "#FFF"
-                        backgroundColor: "#44BBFF"
-
-                        enabled: false
+                        backgroundColor: "#" + modelData.color
 
                         onClicked: {
-                            /*for (var item in bugModel.tags)
+                            /*for (var item in ganttModel.taskTags)
                             {
-                                if (bugModel.tags[item].id === modelData)
+                                if (ganttModel.taskTags[item].id === modelData)
                                 {
-                                    tagEdit.assignedTag = bugModel.tags[item]
-                                    console.log(tagEdit.assignedTag)
+                                    tagEdit.assignedTag = ganttModel.taskTags[item]
+                                    tagEdit.open()
                                     break
                                 }
-                            }
-                            tagEdit.open()*/
+                            }*/
                         }
 
                         Component.onCompleted: {
-                            text = Qt.binding(function() {
-                                for (var item in ganttModel.taskTags)
-                                {
-                                    if (ganttModel.taskTags[item].id === modelData)
-                                    {
-                                        return ganttModel.taskTags[item].name
-                                    }
-                                }
-                                return ""
-                            })
-                            backgroundColor = Qt.binding(function() {
-                                for (var item in ganttModel.taskTags)
-                                {
-                                    if (ganttModel.taskTags[item].id === modelData)
-                                    {
-                                        return "#" + ganttModel.taskTags[item].color
-                                    }
-                                }
-                                return "#44BBFF"
-                            })
+                            console.log(repeaterTag.model.length)
                         }
                     }
                 }
@@ -400,16 +378,20 @@ Column {
                                 anchors.verticalCenter: parent.verticalCenter
                                 anchors.right: parent.right
 
-                                text: enumToTextType[modelData.type]
+                                text: columnDependencies.enumToTextType[modelData.type]
                             }
 
                             Component.onCompleted: {
+                                console.log(modelData.type, " : ", modelData.linkedTask)
                                 text = Qt.binding(function () {
-                                    for (var i = 0; i < ganttModel.tasks; ++i)
+                                    console.log(ganttModel.tasks)
+                                    for (var i = 0; i < ganttModel.tasks.length; ++i)
                                     {
+                                        console.log(ganttModel.tasks[i])
                                         if (ganttModel.tasks[i].id === modelData.linkedTask)
                                         {
-                                            return ganttModel.tasks[i].name;
+                                            console.log(ganttModel.tasks[i].title);
+                                            return ganttModel.tasks[i].title;
                                         }
                                     }
                                     return "";
@@ -554,7 +536,7 @@ Column {
                 anchors.right: closeButton.left
                 anchors.rightMargin: Units.dp(8)
 
-                text: "Edit"
+                text: "Save"
 
                 onClicked: {
                     edit(currentTask.id)
@@ -564,11 +546,11 @@ Column {
             Button {
                 id: closeButton
                 anchors.right: parent.right
-                text: "Delete"
+                text: "Cancel"
                 textColor: Theme.primaryColor
 
                 onClicked: {
-                    console.log("DELETE")
+                    back()
                 }
             }
 
@@ -578,6 +560,33 @@ Column {
             height: Units.dp(8)
             width: parent.width
         }
+    }
+
+
+    BottomActionSheet {
+        id: tagEdit
+
+        title: "Action"
+        property BugTrackerTags assignedTag
+
+        actions: [
+            Action {
+                iconName: "action/delete"
+                name: "Delete from task"
+                onTriggered: {
+                    bugModel.removeTagsToTicket(ticket.id, tagEdit.assignedTag.id)
+                }
+            },
+            Action {
+                iconName: "action/delete"
+                name: "Delete permanently"
+
+                onTriggered: {
+                    bugModel.removeTags(tagEdit.assignedTag.id)
+                }
+            }
+
+        ]
     }
 
 }

@@ -67,6 +67,7 @@ Item {
                                         "Tasks",
                                         "Gantt",
                                         "Whiteboard",
+                                        "Statistics",
                                         "Project Settings",
                                         "Login" ]
 
@@ -80,6 +81,7 @@ Item {
                                         "action/view_list",
                                         "content/sort",
                                         "content/create",
+                                        "content/create",
                                         "action/settings" ]
 
         property var sectionColor: [    "#FC575E",
@@ -90,6 +92,7 @@ Item {
                                         "#44BBFF",
                                         "#44BBFF",
                                         "#27AE60",
+                                        "#FC575E",
                                         "#FC575E",
                                         "#FC575E"
                                         ]
@@ -124,10 +127,15 @@ Item {
                     },
 
                     Action {
+                        id: iconNotif
                         iconName: "social/notifications"
                         name: "Notification"
                         hoverAnimation: true
                         visible: demo.selectedComponent != "Login"
+
+                        onTriggered: {
+                            notification.open = !notification.open
+                        }
                     },
 
 
@@ -195,6 +203,10 @@ Item {
 
                     visible: active
                     active: true
+                }
+
+                NotificationPopup {
+                    id: notification
                 }
 
 
@@ -280,7 +292,7 @@ Item {
                         flickableItem: flickableNavDrawer
                     }
                 }
-            }
+        }
 
         MouseArea {
             id: cursorMouseArea
