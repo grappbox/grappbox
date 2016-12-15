@@ -3089,7 +3089,42 @@ public class GrappboxJustInTimeService extends IntentService {
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
             Log.v(LOG_TAG, "returnedJSON : " + returnedJson);
-        } catch (IOException | NetworkErrorException e) {
+            JSONObject json = new JSONObject(returnedJson).getJSONObject("data");
+            ContentValues projectStat = new ContentValues();
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_GRAPPBOX_ID, String.valueOf(projectId));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TIMELINE_TEAM_MESSAGE, Integer.valueOf(json.getJSONObject("timelinesMessageNumber").getString("team")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TIMELINE_CUSTOMER_MESSAGE, Integer.valueOf(json.getJSONObject("timelinesMessageNumber").getString("customer")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_CUSTOMER_ACCESS_ACTUAL, Integer.valueOf(json.getJSONObject("customerAccessNumber").getString("actual")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_CUSTOMER_ACCESS_MAX, Integer.valueOf(json.getJSONObject("customerAccessNumber").getString("maximum")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_BUG_OPEN, Integer.valueOf(json.getJSONObject("openCloseBug").getString("open")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_BUG_CLOSE, Integer.valueOf(json.getJSONObject("openCloseBug").getString("closed")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TASK_DONE, Integer.valueOf(json.getJSONObject("taskStatus").getString("done")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TASK_DOING, Integer.valueOf(json.getJSONObject("taskStatus").getString("doing")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TASK_TODO, Integer.valueOf(json.getJSONObject("taskStatus").getString("toDo")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TASK_LATE, Integer.valueOf(json.getJSONObject("taskStatus").getString("late")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_TASK_TOTAL, Integer.valueOf(json.getString("totalTasks")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_CLIENT_BUGTRACKER, Integer.valueOf(json.getString("clientBugTracker")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_BUGTRACKER_ASSIGN, Integer.valueOf(json.getJSONObject("bugAssignationTracker").getString("assigned")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_BUGTRACKER_UNASSIGN, Integer.valueOf(json.getJSONObject("bugAssignationTracker").getString("unassigned")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_STORAGE_OCCUPIED, Integer.valueOf(json.getJSONObject("storageSize").getString("occupied")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_STORAGE_TOTAL, Integer.valueOf(json.getJSONObject("storageSize").getString("total")));
+            Uri res = getContentResolver().insert(GrappboxContract.StatEntry.CONTENT_URI, projectStat);
+            if (res == null)
+                throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
+            long statId = Long.parseLong(res.getLastPathSegment());
+            JSONArray advancementArray = json.getJSONArray("projectAdvancement");
+            for (int i = 0; i  < advancementArray.length(); ++i) {
+                JSONObject advancement = advancementArray.getJSONObject(i);
+                ContentValues ad = new ContentValues();
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_ADVANCEMENT_DATE, advancement.getJSONObject("date").getString("date"));
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_PERCENTAGE, advancement.getInt("percentage"));
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_PROGRESS, advancement.getInt("progress"));
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_TOTAL_TASK, advancement.getInt("totalTasks"));
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_FINISHED_TASk, advancement.getInt("finishedTasks"));
+                ad.put(GrappboxContract.AdvancementEntry.COLUMN_LOCAL_STATS_ID, statId);
+                getContentResolver().insert(GrappboxContract.AdvancementEntry.CONTENT_URI, ad);
+            }
+        } catch (IOException | NetworkErrorException | JSONException e) {
             e.printStackTrace();
         } finally {
             if (project != null)

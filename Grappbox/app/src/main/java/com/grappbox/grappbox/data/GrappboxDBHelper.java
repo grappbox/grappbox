@@ -214,21 +214,22 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         final String SQL_CREATE_STATS_TABLE = "CREATE TABLE IF NOT EXISTS " + StatEntry.TABLE_NAME + " (" +
                 StatEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 StatEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
-                StatEntry.COLUMN_TIMELINE_TEAM_MESSAGE + " INTEGER, " +
-                StatEntry.COLUMN_TIMELINE_CUSTOMER_MESSAGE + " INTEGER, " +
-                StatEntry.COLUMN_CUSTOMER_ACCESS_ACTUAL + " INTEGER, " +
-                StatEntry.COLUMN_CUSTOMER_ACCESS_MAX + " INTEGER, " +
-                StatEntry.COLUMN_BUG_OPEN + " INTEGER, " +
-                StatEntry.COLUMN_BUG_CLOSE + " INTEGER, " +
-                StatEntry.COLUMN_TASK_DONE + " INTEGER, " +
-                StatEntry.COLUMN_TASK_DOING + " INTEGER, " +
-                StatEntry.COLUMN_TASK_TODO + " INTEGER, " +
-                StatEntry.COLUMN_TASK_LATE + " INTEGER, " +
-                StatEntry.COLUMN_TASK_TOTAL + " INTEGER, " +
-                StatEntry.COLUMN_CLIENT_BUGTRACKER + " INTEGER, " +
-                StatEntry.COLUMN_BUGTRACKER_ASSIGN + " INTEGER, " +
-                StatEntry.COLUMN_STORAGE_OCCUPIED + " INTEGER, " +
-                StatEntry.COLUMN_STORAGE_TOTAL + " INTEGER, " +
+                StatEntry.COLUMN_TIMELINE_TEAM_MESSAGE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TIMELINE_CUSTOMER_MESSAGE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CUSTOMER_ACCESS_ACTUAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CUSTOMER_ACCESS_MAX + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUG_OPEN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUG_CLOSE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_DONE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_DOING + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_TODO + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_LATE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_TOTAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CLIENT_BUGTRACKER + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUGTRACKER_ASSIGN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUGTRACKER_UNASSIGN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_STORAGE_OCCUPIED + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_STORAGE_TOTAL + " INTEGER NOT NULL, " +
                 " UNIQUE (" + StatEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_ADVANCEMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + AdvancementEntry.TABLE_NAME + " (" +
@@ -252,6 +253,17 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
+        final String SQL_CREATE_LATE_TASK = "CREATE TABLE IF NOT EXIST " + LateTaskEntry.TABLE_NAME + " (" +
+                LateTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LateTaskEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_ROLE + " STRING NOT NULL, " +
+                LateTaskEntry.COLUMN_DATE + " STRING NOT NULL, " +
+                LateTaskEntry.COLUMN_LATE_TASK + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_ON_TIME_TASK + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
@@ -271,6 +283,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_STATS_TABLE);
         db.execSQL(SQL_CREATE_ADVANCEMENT_TABLE);
         db.execSQL(SQL_CREATE_ADVANCEMENT_TASK_TABLE);
+        db.execSQL(SQL_CREATE_LATE_TASK);
     }
 
     @Override

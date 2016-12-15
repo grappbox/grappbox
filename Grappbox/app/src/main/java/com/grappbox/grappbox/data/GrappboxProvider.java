@@ -9,11 +9,8 @@ import android.net.Uri;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.util.Log;
 
 import com.grappbox.grappbox.R;
-
-import java.sql.Time;
 
 /**
  * Created by marcw on 30/08/2016.
@@ -122,6 +119,8 @@ public class GrappboxProvider extends ContentProvider {
     public static final int USER_ADVANCEMENT_TASK_BY_ID = 291;
     public static final int USER_ADVANCEMENT_TASK_BY_STAT_ID = 292;
     public static final int USER_ADVANCEMENT_TASK_BY_USER_ID = 293;
+
+    public static final int LATE_TASK = 300;
 
 
 
@@ -244,6 +243,9 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/#",  USER_ADVANCEMENT_TASK_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/stat/#", USER_ADVANCEMENT_TASK_BY_STAT_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/user/#", USER_ADVANCEMENT_TASK_BY_USER_ID);
+
+        //Late Task related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_LATE_TASK, LATE_TASK);
 
         return matcher;
     }
@@ -375,6 +377,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK_BY_STAT_ID:
                 return GrappboxContract.UserAdvancementTaskEntry.CONTENT_TYPE;
 
+            case LATE_TASK:
+                return GrappboxContract.LateTaskEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -418,6 +423,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.AdvancementEntry.TABLE_NAME;
             case USER_ADVANCEMENT_TASK:
                 return GrappboxContract.UserAdvancementTaskEntry.TABLE_NAME;
+            case LATE_TASK:
+                return GrappboxContract.LateTaskEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -642,6 +649,8 @@ public class GrappboxProvider extends ContentProvider {
             case ADVANCEMENT_BY_STAT_ID:
                 retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case LATE_TASK:
+                retCursor = LateTaskCursors.query_LateTask(uri, projection, selection, args, sortOrder, mOpenHelper);
 
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
@@ -722,6 +731,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK:
                 returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case LATE_TASK:
+                returnedUri = LateTaskCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -797,6 +809,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK:
                 ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case LATE_TASK:
+                ret = LateTaskCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -854,7 +869,10 @@ public class GrappboxProvider extends ContentProvider {
                 returnCount = AdvancementCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             case USER_ADVANCEMENT_TASK:
-                returnCount = UserAdvancementTask.bulkInsert(uri, values, mOpenHelper);
+                returnCount = UserAdvancementTaskCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case LATE_TASK:
+                returnCount = LateTaskCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

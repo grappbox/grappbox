@@ -36,6 +36,7 @@ public class GrappboxContract {
     public static final String PATH_STATS = "stats";
     public static final String PATH_ADVANCEMENT = "advancement";
     public static final String PATH_USER_ADVANCEMENT_TASK = "user_advancement_task";
+    public static final String PATH_LATE_TASK = "late_task";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -490,6 +491,7 @@ public class GrappboxContract {
 
         public static final String COLUMN_CLIENT_BUGTRACKER = "client_bugtracker";
         public static final String COLUMN_BUGTRACKER_ASSIGN = "bugtracker_assign";
+        public static final String COLUMN_BUGTRACKER_UNASSIGN = "bugtracker_unassign";
 
         public static final String COLUMN_STORAGE_OCCUPIED = "storage_occupied";
         public static final String COLUMN_STORAGE_TOTAL = "storage_total";
@@ -537,6 +539,25 @@ public class GrappboxContract {
         public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_USER_ADVANCEMENT_TASK;
 
         public static Uri builAdvancementTaskWithLocalUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class LateTaskEntry implements BaseColumns {
+        public static final String TABLE_NAME = "late_task";
+
+        public static final String COLUMN_LOCAL_USER_ID = "user_id";
+        public static final String COLUMN_LOCAL_STAT_ID = "stat_id";
+        public static final String COLUMN_ROLE = "role";
+        public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_LATE_TASK = "late_task";
+        public static final String COLUMN_ON_TIME_TASK = "on_time_task";
+
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_LATE_TASK).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LATE_TASK;
+
+        public static Uri buildLateTaskWithLocalUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

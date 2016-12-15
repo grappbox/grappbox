@@ -16,7 +16,7 @@ import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
  * Created by tan_f on 14/12/2016.
  */
 
-public class UserAdvancementTask {
+public class UserAdvancementTaskCursors {
 
     private static final SQLiteQueryBuilder sUserAdvancementTaskQueryBuilder;
 
