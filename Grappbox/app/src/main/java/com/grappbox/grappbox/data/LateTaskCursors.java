@@ -35,7 +35,7 @@ public class LateTaskCursors {
         long id = openHelper.getWritableDatabase().insert(LateTaskEntry.TABLE_NAME, null, values);
         if (id <= 0)
             throw new SQLException("Failed to insert row into " + uri);
-        return GrappboxContract.BugEntry.buildBugWithLocalIdUri(id);
+        return GrappboxContract.LateTaskEntry.buildLateTaskWithLocalUri(id);
     }
 
     public static int bulkInsert(@NonNull Uri uri, ContentValues[] values, GrappboxDBHelper openHelper) {

@@ -37,6 +37,7 @@ public class GrappboxContract {
     public static final String PATH_ADVANCEMENT = "advancement";
     public static final String PATH_USER_ADVANCEMENT_TASK = "user_advancement_task";
     public static final String PATH_LATE_TASK = "late_task";
+    public static final String PATH_USER_WORKING_CHARGE = "user_working_charge";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -558,6 +559,21 @@ public class GrappboxContract {
         public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_LATE_TASK;
 
         public static Uri buildLateTaskWithLocalUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class UserWorkingChargeEntry implements BaseColumns {
+        public static final String TABLE_NAME = "user_working_charge";
+
+        public static final String COLUMN_LOCAL_USER_ID = "user_id";
+        public static final String COLUMN_LOCAL_STAT_ID = "stat_id";
+        public static final String COLUMN_CHARGE = "charge";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_USER_WORKING_CHARGE).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" +PATH_USER_WORKING_CHARGE;
+
+        public static Uri buildUserWorkingChargeLocalUri(long id) {
             return ContentUris.withAppendedId(CONTENT_URI, id);
         }
     }

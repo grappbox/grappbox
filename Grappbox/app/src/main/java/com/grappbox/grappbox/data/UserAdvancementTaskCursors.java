@@ -29,11 +29,11 @@ public class UserAdvancementTaskCursors {
         " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
     }
 
-    public static Cursor query_UserAdvancementTasl(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {
+    public static Cursor query_UserAdvancementTask(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {
         return openHelper.getReadableDatabase().query(UserAdvancementTaskEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
     }
 
-    public static Cursor query_AdvancementById(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
+    public static Cursor query_UserAdvancementById(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return openHelper.getReadableDatabase().query(UserAdvancementTaskEntry.TABLE_NAME, projection, UserAdvancementTaskEntry._ID + "=?", new String[]{uri.getLastPathSegment()}, null, null, sortOrder);
     }
 
@@ -41,7 +41,7 @@ public class UserAdvancementTaskCursors {
         long id = openHelper.getWritableDatabase().insert(UserAdvancementTaskEntry.TABLE_NAME, null, values);
         if (id <= 0)
             throw new SQLException("Failed to insert row into " + uri);
-        return GrappboxContract.AdvancementEntry.buildAdvancementWithLocalIdUri(id);
+        return GrappboxContract.UserAdvancementTaskEntry.builAdvancementTaskWithLocalUri(id);
     }
 
     public static int bulkInsert(@NonNull Uri uri, ContentValues[] values, GrappboxDBHelper openHelper){
@@ -60,6 +60,10 @@ public class UserAdvancementTaskCursors {
             db.endTransaction();
         }
         return returnCount;
+    }
+
+    public static Cursor query_UserAdvancementWithStat(Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper mOpenHelper) {
+        return sUserAdvancementTaskQueryBuilder.query(mOpenHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static int update(Uri uri, ContentValues contentValues, String selection, String[] args, GrappboxDBHelper mOpenHelper) {
