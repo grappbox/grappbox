@@ -15,5 +15,7 @@ before_script:
   - php bin/console doctrine:generate:entities SQLBundle
   - php bin/console doctrine:schema:create --env=test
   - echo "INSERT INTO symfony.timeline_types (id, name) VALUES (NULL, 'customerTimeline'),(NULL, 'teamTimeline');" | mysql -u root
+  - sudo apt-get install siege
 script:
   - phpunit --debug
+  - siege https://api.grappbox.com -c300 -t15M
