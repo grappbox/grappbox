@@ -90,7 +90,6 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_TAG_BY_BUG_ID = 221;
     public static final int BUG_TAG_BY_GRAPPBOX_BUG_ID = 222;
 
-
     public static final int BUG_ASSIGNATION = 230;
     public static final int BUG_ASSIGNATION_BY_BUG_ID = 231;
     public static final int BUG_ASSIGNATION_BY_GRAPPBOX_BUG_ID = 232;
@@ -122,9 +121,13 @@ public class GrappboxProvider extends ContentProvider {
 
     public static final int LATE_TASK = 300;
 
-    public static final int USER_WORKING_CHARGE = 310;
-    public static final int USER_WORKING_CHARGE_BY_ID = 311;
+    public static final int TASK_REPARTITION = 310;
+    public static final int TASK_REPARTITION_BY_ID = 311;
+    public static final int TASK_REPARTITION_BY_STAT_ID = 312;
+    public static final int TASK_REPARTITION_BY_USER_ID = 313;
 
+    public static final int USER_WORKING_CHARGE = 320;
+    public static final int USER_WORKING_CHARGE_BY_ID = 321;
 
 
     public static UriMatcher buildUriMatcher() {
@@ -249,6 +252,12 @@ public class GrappboxProvider extends ContentProvider {
 
         //Late Task related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_LATE_TASK, LATE_TASK);
+
+        //Task Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION, TASK_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/#", TASK_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/stat/#", TASK_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/user/#", TASK_REPARTITION_BY_USER_ID);
 
         //User Working Charge related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE, USER_WORKING_CHARGE);
@@ -387,6 +396,12 @@ public class GrappboxProvider extends ContentProvider {
             case LATE_TASK:
                 return GrappboxContract.LateTaskEntry.CONTENT_TYPE;
 
+            case TASK_REPARTITION:
+            case TASK_REPARTITION_BY_ID:
+            case TASK_REPARTITION_BY_STAT_ID:
+            case TASK_REPARTITION_BY_USER_ID:
+                return GrappboxContract.TaskRepartitionEntry.CONTENT_TYPE;
+
             case USER_WORKING_CHARGE:
             case USER_WORKING_CHARGE_BY_ID:
                 return GrappboxContract.UserWorkingChargeEntry.CONTENT_TYPE;
@@ -436,6 +451,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.UserAdvancementTaskEntry.TABLE_NAME;
             case LATE_TASK:
                 return GrappboxContract.LateTaskEntry.TABLE_NAME;
+            case TASK_REPARTITION:
+                return GrappboxContract.TaskRepartitionEntry.TABLE_NAME;
             case USER_WORKING_CHARGE:
                 return GrappboxContract.UserWorkingChargeEntry.TABLE_NAME;
             default:
@@ -674,11 +691,23 @@ public class GrappboxProvider extends ContentProvider {
             case LATE_TASK:
                 retCursor = LateTaskCursors.query_LateTask(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case TASK_REPARTITION:
+                retCursor = TaskRepartitionCursors.query_TaskRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_STAT_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionWithStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_USER_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionWithUser(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             case USER_WORKING_CHARGE:
-                retCursor = UserWorkingChargeCursor.query_UserWorkingChargeTask(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserWorkingChargeCursors.query_UserWorkingCharge(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case USER_WORKING_CHARGE_BY_ID:
-                retCursor = UserWorkingChargeCursor.query_UserWorkingChargeById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                retCursor = UserWorkingChargeCursors.query_UserWorkingChargeById(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
 
             default:
@@ -760,11 +789,14 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK:
                 returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case TASK_REPARTITION:
+                returnedUri = TaskRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             case LATE_TASK:
                 returnedUri = LateTaskCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case USER_WORKING_CHARGE:
-                returnedUri = UserWorkingChargeCursor.insert(uri, contentValues, mOpenHelper);
+                returnedUri = UserWorkingChargeCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
@@ -841,11 +873,14 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK:
                 ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case TASK_REPARTITION:
+                ret = TaskRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case LATE_TASK:
                 ret = LateTaskCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             case USER_WORKING_CHARGE:
-                ret = UserWorkingChargeCursor.update(uri, contentValues, selection, args, mOpenHelper);
+                ret = UserWorkingChargeCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
@@ -906,11 +941,14 @@ public class GrappboxProvider extends ContentProvider {
             case USER_ADVANCEMENT_TASK:
                 returnCount = UserAdvancementTaskCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
+            case TASK_REPARTITION:
+                returnCount = TaskRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
             case LATE_TASK:
                 returnCount = LateTaskCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             case USER_WORKING_CHARGE:
-                returnCount = UserWorkingChargeCursor.builInsert(uri, values, mOpenHelper);
+                returnCount = UserWorkingChargeCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

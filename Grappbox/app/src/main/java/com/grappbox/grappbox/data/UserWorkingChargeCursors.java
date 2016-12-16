@@ -16,7 +16,7 @@ import com.grappbox.grappbox.data.GrappboxContract.UserWorkingChargeEntry;
  * Created by tan_f on 16/12/2016.
  */
 
-public class UserWorkingChargeCursor {
+public class UserWorkingChargeCursors {
 
     public static final SQLiteQueryBuilder sUserWorkingChargeCompleteQueryBuilder;
 
@@ -29,7 +29,7 @@ public class UserWorkingChargeCursor {
                 " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
     }
 
-    public static Cursor query_UserWorkingChargeTask(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
+    public static Cursor query_UserWorkingCharge(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper){
         return openHelper.getReadableDatabase().query(UserWorkingChargeEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
     }
 
@@ -44,7 +44,7 @@ public class UserWorkingChargeCursor {
         return UserWorkingChargeEntry.buildUserWorkingChargeLocalUri(id);
     }
 
-    public static int builInsert(@NonNull Uri uri, ContentValues[] values, GrappboxDBHelper openHelper) {
+    public static int bulkInsert(@NonNull Uri uri, ContentValues[] values, GrappboxDBHelper openHelper) {
         final SQLiteDatabase db = openHelper.getWritableDatabase();
         int returnCount = 0;
 

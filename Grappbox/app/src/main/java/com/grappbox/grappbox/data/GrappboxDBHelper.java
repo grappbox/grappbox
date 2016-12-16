@@ -272,6 +272,15 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
+        final String SQL_CREATE_TASK_REPARTITION_TASK = "CREATE TABLE IF NOT EXISTS " + TaskRepartitionEntry.TABLE_NAME + " (" +
+                TaskRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
@@ -293,6 +302,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_ADVANCEMENT_TASK_TABLE);
         db.execSQL(SQL_CREATE_LATE_TASK);
         db.execSQL(SQL_CREATE_USER_WORKING_CHARGE_TASK);
+        db.execSQL(SQL_CREATE_TASK_REPARTITION_TASK);
     }
 
     @Override
