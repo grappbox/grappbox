@@ -129,6 +129,22 @@ public class GrappboxProvider extends ContentProvider {
     public static final int USER_WORKING_CHARGE = 320;
     public static final int USER_WORKING_CHARGE_BY_ID = 321;
 
+    public static final int BUG_USER_REPARTITION = 330;
+    public static final int BUG_USER_REPARTITION_BY_ID = 331;
+    public static final int BUG_USER_REPARTITION_BY_STAT_ID = 332;
+    public static final int BUG_USER_REPARTITION_BY_USER_ID = 333;
+    public static final int BUG_USER_REPARTITION_BY_BUG_ID = 334;
+
+    public static final int BUG_TAGS_REPARTITION = 340;
+    public static final int BUG_TAGS_REPARTITION_BY_ID = 341;
+    public static final int BUG_TAGS_REPARTITION_BY_STAT_ID = 342;
+    public static final int BUG_TAGS_REPARTITION_BY_TAG_ID = 343;
+    public static final int BUG_TAGS_REPARTITION_BY_BUG_ID = 344;
+
+    public static final int BUG_EVOLUTION = 350;
+    public static final int BUG_EVOLUTION_BY_ID = 351;
+    public static final int BUG_EVOLUTION_BY_STAT_ID = 352;
+    public static final int BUG_EVOLUTION_BY_BUG_ID = 353;
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -262,6 +278,8 @@ public class GrappboxProvider extends ContentProvider {
         //User Working Charge related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE, USER_WORKING_CHARGE);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE + "/#", USER_WORKING_CHARGE_BY_ID);
+
+        //Bug User Repartition related URIs
 
         return matcher;
     }

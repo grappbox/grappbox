@@ -39,6 +39,9 @@ public class GrappboxContract {
     public static final String PATH_LATE_TASK = "late_task";
     public static final String PATH_TASK_REPARTITION = "task_repartition";
     public static final String PATH_USER_WORKING_CHARGE = "user_working_charge";
+    public static final String PATH_BUG_USER_REPARTITION = "bug_user_repartition";
+    public static final String PATH_BUG_TAGS_REPARTITION = "bug_tags_repartition";
+    public static final String PATH_BUG_EVOLUTION = "bug_evolution";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 
@@ -595,5 +598,51 @@ public class GrappboxContract {
         }
     }
 
+    public static final class BugUserRepartitionEntry implements BaseColumns {
+        public static final String TABLE_NAME = "bug_user_repartition";
 
+        public static final String COLUMN_LOCAL_USER_ID = "user_id";
+        public static final String COLUMN_LOCAL_STAT_ID = "stat_id";
+        public static final String COLUMN_VALUE = "value";
+        public static final String COLUMN_PERCENTAGE = "percentage";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BUG_USER_REPARTITION).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BUG_USER_REPARTITION;
+
+        public static Uri buildBugUserRepartitionLocalUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class BugTagsRepartitionEntry implements BaseColumns {
+        public static final String TABLE_NAME = "bug_tags_repartition";
+
+        public static final String COLUMN_LOCAL_STAT_ID = "stat_id";
+        public static final String COLUMN_NAME = "name";
+        public static final String COLUMN_VALUE = "value";
+        public static final String COLUMN_PERCENTAGE = "percentage";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BUG_TAGS_REPARTITION).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BUG_TAGS_REPARTITION;
+
+        public static Uri buildBugTagsRepartitionlocalUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
+
+    public static final class BugEvolutionEntry implements BaseColumns {
+        public static final String TABLE_NAME = "bug_evolution";
+
+        public static final String COLUMN_LOCAL_STAT_ID = "stat_id";
+        public static final String COLUMN_DATE = "date";
+        public static final String COLUMN_CREATED_BUG = "created_bug";
+        public static final String COLUMN_CLOSED_BUG = "closed_bug";
+
+        public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_BUG_EVOLUTION).build();
+        public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_BUG_EVOLUTION;
+
+        public static Uri buildBugEvolutionLocalUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
+    }
 }

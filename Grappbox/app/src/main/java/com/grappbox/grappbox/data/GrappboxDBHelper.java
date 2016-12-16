@@ -253,7 +253,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
-        final String SQL_CREATE_LATE_TASK = "CREATE TABLE IF NOT EXISTS " + LateTaskEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_LATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + LateTaskEntry.TABLE_NAME + " (" +
                 LateTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 LateTaskEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
                 LateTaskEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
@@ -264,7 +264,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
-        final String SQL_CREATE_USER_WORKING_CHARGE_TASK = "CREATE TABLE IF NOT EXISTS " + UserWorkingChargeEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_USER_WORKING_CHARGE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + UserWorkingChargeEntry.TABLE_NAME + " (" +
                 UserWorkingChargeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
                 UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
@@ -272,7 +272,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
 
-        final String SQL_CREATE_TASK_REPARTITION_TASK = "CREATE TABLE IF NOT EXISTS " + TaskRepartitionEntry.TABLE_NAME + " (" +
+        final String SQL_CREATE_TASK_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskRepartitionEntry.TABLE_NAME + " (" +
                 TaskRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
                 TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
@@ -280,6 +280,31 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TaskRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
                 " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_USER_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugUserRepartitionEntry.TABLE_NAME + " (" +
+                BugUserRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_TAGS_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugTagsRepartitionEntry.TABLE_NAME + " (" +
+                BugTagsRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugTagsRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugTagsRepartitionEntry.COLUMN_NAME + " TEXT, " +
+                BugTagsRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                BugTagsRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugTagsRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_EVOLUTION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugEvolutionEntry.TABLE_NAME + " (" +
+                BugEvolutionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugEvolutionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugEvolutionEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                BugEvolutionEntry.COLUMN_CREATED_BUG + " INTEGER NOT NULL, " +
+                BugEvolutionEntry.COLUMN_CLOSED_BUG + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugEvolutionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "));";
 
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
@@ -300,9 +325,12 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_STATS_TABLE);
         db.execSQL(SQL_CREATE_ADVANCEMENT_TABLE);
         db.execSQL(SQL_CREATE_ADVANCEMENT_TASK_TABLE);
-        db.execSQL(SQL_CREATE_LATE_TASK);
-        db.execSQL(SQL_CREATE_USER_WORKING_CHARGE_TASK);
-        db.execSQL(SQL_CREATE_TASK_REPARTITION_TASK);
+        db.execSQL(SQL_CREATE_LATE_TASK_TABLE);
+        db.execSQL(SQL_CREATE_USER_WORKING_CHARGE_TASK_TABLE);
+        db.execSQL(SQL_CREATE_TASK_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_USER_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_TAGS_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_EVOLUTION_TABLE);
     }
 
     @Override
