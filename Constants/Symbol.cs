@@ -12,12 +12,15 @@ namespace Grappbox
     {
         #region Material Icons codes
 
-        public const string DashboardSymbol = "\uE871";
-        public const string CalendarSymbol = "\uE916";
-        public const string TimelineSymbol = "\uE0BF";
+        public const string DashboardSymbol = "\uE8F1";
+        public const string CalendarSymbol = "\uE616";
+        public const string CloudSymbol = "\uE2BD";
+        public const string TimelineSymbol = "\uE0B7";
         public const string BugtrackerSymbol = "\uE868";
-        public const string TasksSymbol = "\uE85D";
-        public const string WhiteboardSymbol = "\uE254";
+        public const string TasksSymbol = "\uE862";
+        public const string GanttSymbol = "\uE164";
+        public const string WhiteboardSymbol = "\uE150";
+        public const string StatsSymbol = "\uE922";
         public const string ProjectSettingsSymbol = "\uE8B8";
         public const string UserSettingsSymbol = "\uE7FD";
         public const string LogoutSymbol = "\uE879";

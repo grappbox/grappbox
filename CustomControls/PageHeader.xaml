@@ -17,7 +17,7 @@
                    TextAlignment="Left"
                    HorizontalAlignment="Stretch"
                    Padding="0,0,0,3"
-                   Text="{x:Bind HeaderContent}"
+                   Text="{x:Bind HeaderContent, Mode=TwoWay}"
                    Style="{StaticResource PageTitleTextBlockStyle}" />
     </Grid>
 </UserControl>

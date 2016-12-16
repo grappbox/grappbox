@@ -1,23 +1,15 @@
 ﻿using Grappbox.CustomControls;
 using Grappbox.Helpers;
 using Grappbox.View;
-using Grappbox.ViewModel;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation;
-using Windows.Foundation.Metadata;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
@@ -53,6 +45,13 @@ namespace Grappbox
                 },
                 new NavMenuItem()
                 {
+                    Symbol = Constants.CloudSymbol,
+                    Label = "Cloud",
+                    DestPage = typeof(View.CloudView),
+                    ForegroundColor = SystemInformation.GetStaticResource("YellowGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
                     Symbol = Constants.TimelineSymbol,
                     Label = "Timeline",
                     DestPage = typeof(TimelineView),
@@ -70,7 +69,14 @@ namespace Grappbox
                     Symbol = Constants.TasksSymbol,
                     Label = "Tasks",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.GanttSymbol,
+                    Label = "Gantt",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
@@ -104,12 +110,26 @@ namespace Grappbox
 
         private ObservableCollection<NavMenuItem> completeNavList = new ObservableCollection<NavMenuItem>() {
             new NavMenuItem()
-            {
-                Symbol = Constants.DashboardSymbol,
-                Label = "Dashboard",
-                DestPage = typeof(DashBoardView),
-                ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-            },
+                {
+                    Symbol = Constants.DashboardSymbol,
+                    Label = "Dashboard",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.CalendarSymbol,
+                    Label = "Calendar",
+                    DestPage = typeof(View.CalendarView),
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.CloudSymbol,
+                    Label = "Cloud",
+                    DestPage = typeof(View.CloudView),
+                    ForegroundColor = SystemInformation.GetStaticResource("YellowGrappboxBrush") as SolidColorBrush
+                },
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
@@ -129,7 +149,14 @@ namespace Grappbox
                     Symbol = Constants.TasksSymbol,
                     Label = "Tasks",
                     DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.GanttSymbol,
+                    Label = "Gantt",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
@@ -144,7 +171,21 @@ namespace Grappbox
                     Label = "Project Settings",
                     DestPage = typeof(ProjectSettingsView),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                }
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.UserSettingsSymbol,
+                    Label = "User Settings",
+                    DestPage = typeof(UserView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
+                    Symbol = Constants.LogoutSymbol,
+                    Label = "Logout",
+                    DestPage = typeof(DashBoardView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
         };
 
         public static AppShell Current = null;
@@ -411,13 +452,13 @@ namespace Grappbox
         }
 
         private void CheckUserIdentity()
-        {if (session == null)
+        {
+            if (session == null)
                 return;
             if (session.IsUserConnected == true)
             {
                 UserNameTextBlock.Text = session.UserName;
             }
-            Debug.WriteLine("UserName= " + UserNameTextBlock.Text);
         }
     }
 }

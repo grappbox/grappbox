@@ -78,20 +78,20 @@ namespace Grappbox.View
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             dialog.ShowAsync();
 
-            ProjectName.Text = "";
-            ProjectDescription.Text = "";
+            ProjectName.Text = string.Empty;
+            ProjectDescription.Text = string.Empty;
             img.Source = null;
-            Phone.Text = "";
-            Company.Text = "";
-            Mail.Text = "";
-            Facebook.Text = "";
-            Twitter.Text = "";
-            password.Password = "";
-            oldPassword.Password = "";
-            newPassword.Password = "";
-            retypePassword.Password = "";
-            UserMail.Text = "";
-            CustomerName.Text = "";
+            Phone.Text = string.Empty;
+            Company.Text = string.Empty;
+            Mail.Text = string.Empty;
+            Facebook.Text = string.Empty;
+            Twitter.Text = string.Empty;
+            password.Password = string.Empty;
+            oldPassword.Password = string.Empty;
+            newPassword.Password = string.Empty;
+            retypePassword.Password = string.Empty;
+            UserMail.Text = string.Empty;
+            CustomerName.Text = string.Empty;
             isNew = false;
             User.IsEnabled = true;
             CustomerAccess.IsEnabled = true;
@@ -112,7 +112,7 @@ namespace Grappbox.View
                 if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
                 {
                     DeleteDate.Visibility = Visibility.Visible;
-                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                    DeleteDate.Text = string.Format("Your project will be deleted at {0}", vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss"));
                 }
                 else
                 {
@@ -162,21 +162,13 @@ namespace Grappbox.View
             filePicker.FileTypeFilter.Add(".jpeg");
             filePicker.FileTypeFilter.Add(".jpg");
 
-            await filePicker.PickSingleFileAsync();
-            view.Activated += viewActivated;
-        }
-
-        private async void viewActivated(CoreApplicationView sender, IActivatedEventArgs args1)
-        {
-            FileOpenPickerContinuationEventArgs args = args1 as FileOpenPickerContinuationEventArgs;
-
-            if (args != null)
+            StorageFile file = await filePicker.PickSingleFileAsync();
+            if (file != null)
             {
-                if (args.Files.Count == 0) return;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+                dialog.ShowAsync();
 
-                view.Activated -= viewActivated;
-                StorageFile storageFile = args.Files[0];
-                var stream = await storageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
                 var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
                 await bitmapImage.SetSourceAsync(stream);
 
@@ -184,14 +176,16 @@ namespace Grappbox.View
                 img.Source = bitmapImage;
 
                 //For Convert Bitmap Image to Base64
-                string newAvatar = await StorageFileToBase64(args.Files[0]);
+                string newAvatar = await StorageFileToBase64(file);
                 vm.logo = newAvatar;
+
+                dialog.Hide();
             }
         }
 
         private async Task<string> StorageFileToBase64(StorageFile file)
         {
-            string Base64String = "";
+            string Base64String = string.Empty;
 
             if (file != null)
             {
@@ -212,7 +206,7 @@ namespace Grappbox.View
         {
             if (isNew == false)
             {
-                if (oldPassword.Password == "" && newPassword.Password == "")
+                if (string.IsNullOrEmpty(oldPassword.Password) && string.IsNullOrEmpty(newPassword.Password))
                     await vm.updateProjectSettings();
                 else
                 {
@@ -226,8 +220,8 @@ namespace Grappbox.View
                     else
                     {
                         await vm.updateProjectSettings(oldPassword.Password, newPassword.Password);
-                        newPassword.Password = "";
-                        retypePassword.Password = "";
+                        newPassword.Password = string.Empty;
+                        retypePassword.Password = string.Empty;
                         newPassword.BorderBrush = new SolidColorBrush();
                         retypePassword.BorderBrush = new SolidColorBrush();
                     }
@@ -247,7 +241,7 @@ namespace Grappbox.View
             dialog.ShowAsync();
 
             await vm.addProjectUser(UserMail.Text);
-            UserMail.Text = "";
+            UserMail.Text = string.Empty;
 
             dialog.Hide();
         }
@@ -283,7 +277,7 @@ namespace Grappbox.View
                 if (vm.DeletedAt != null)
                 {
                     DeleteDate.Visibility = Visibility.Visible;
-                    DeleteDate.Text = "Your project will be deleted at " + vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss");
+                    DeleteDate.Text = string.Format("Your project will be deleted at {0}", vm.DeletedAt.ToString("yyyy-MM-dd hh:mm:ss"));
                     ProjectDelete.Label = "Retreive Project";
                 }
             }
@@ -371,14 +365,14 @@ namespace Grappbox.View
                 if (item.Name == CustomerName.Text)
                     exist = true;
             }
-            if (CustomerName.Text != "" && CustomerName.Text != null && exist == false)
+            if (!string.IsNullOrEmpty(CustomerName.Text) && exist == false)
             {
                 await vm.addCustomerAccess(CustomerName.Text);
-                CustomerName.Text = "";
+                CustomerName.Text = string.Empty;
             }
             else
             {
-                if (CustomerName.Text == "" || CustomerName.Text == null)
+                if (string.IsNullOrEmpty(CustomerName.Text))
                 {
                     MessageDialog msgbox = new MessageDialog("The name must not be empty");
                     await msgbox.ShowAsync();

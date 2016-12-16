@@ -14,25 +14,11 @@
         <Style TargetType="ListViewItem" BasedOn="{StaticResource RedListview}"/>
         <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar Visibility="Collapsed" x:Name="CB" ClosedDisplayMode="Compact">
-            <CommandBar.PrimaryCommands>
-                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Save" Click="ProjectSettingsUpdate_Click" Icon="Save" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit" />
-            </CommandBar.PrimaryCommands>
-            <CommandBar.SecondaryCommands>
-                <AppBarButton Name="ProjectDelete" Label="Delete Project" Icon="Delete" Click="Delete_Click" />
-            </CommandBar.SecondaryCommands>
-        </CommandBar>
-    </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="Project settings" />
         <Pivot Grid.Row="1" Name="PivotPS" Style="{StaticResource RedPivot}" SelectionChanged="Pivot_SelectionChanged">
@@ -142,5 +128,18 @@
                 </StackPanel>
             </PivotItem>
         </Pivot>
+        <CommandBar Visibility="Collapsed" Grid.Row="3" x:Name="CB" ClosedDisplayMode="Compact">
+            <CommandBar.PrimaryCommands>
+                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Save" Click="ProjectSettingsUpdate_Click" Icon="Save" />
+                <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete" />
+                <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete" />
+                <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync" />
+                <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete" />
+                <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit" />
+            </CommandBar.PrimaryCommands>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Name="ProjectDelete" Label="Delete Project" Icon="Delete" Click="Delete_Click" />
+            </CommandBar.SecondaryCommands>
+        </CommandBar>
     </Grid>
 </Page>

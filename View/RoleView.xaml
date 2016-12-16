@@ -12,16 +12,11 @@
     <Page.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar Visibility="Visible" x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Name="Update" Visibility="Collapsed" Label="Update" Click="Update_Click" Icon="Save" />
-            <AppBarButton Name="Add" Visibility="Collapsed" Label="Add" Click="AddRole_Click" Icon="Save" />
-        </CommandBar>
-    </Page.BottomAppBar>
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="User settings" />
         <ScrollViewer Grid.Row="1" Padding="15">
@@ -74,5 +69,9 @@
                 <RadioButton x:Name="CRWradioButton" Content="Read and Write" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" GroupName="Cloud" Checked="Button_Checked" />
             </StackPanel>
         </ScrollViewer>
+        <CommandBar Visibility="Visible" Grid.Row="3" x:Name="CB" ClosedDisplayMode="Compact">
+            <AppBarButton Name="Update" Visibility="Collapsed" Label="Update" Click="Update_Click" Icon="Save" />
+            <AppBarButton Name="Add" Visibility="Collapsed" Label="Add" Click="AddRole_Click" Icon="Save" />
+        </CommandBar>
     </Grid>
 </Page>

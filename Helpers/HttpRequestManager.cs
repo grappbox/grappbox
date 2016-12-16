@@ -74,7 +74,6 @@ namespace Grappbox.HttpRequest
                 data.Add(it.Key, JToken.FromObject(it.Value));
             }
             post.Add("data", JToken.FromObject(data));
-            Debug.WriteLine(post.ToString());
             using (var httpClient = new HttpClient())
             {
                 InitHeaders(httpClient);
@@ -151,7 +150,6 @@ namespace Grappbox.HttpRequest
                     if (session.IsUserConnected == true)
                     {
                         string token = session.UserToken;
-                        Debug.WriteLine(token);
                         return true;
                     }
                     else

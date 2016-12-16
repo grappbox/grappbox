@@ -17,17 +17,11 @@
             <Setter Property="Margin" Value="0,10,0,0" />
         </Style>
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Name="AddTeamMessage" Label="Add" Click="AddTeam_Click" Icon="Add"/>
-            <AppBarButton Name="AddCustomerMessage" Visibility="Collapsed" Label="Add" Click="AddCustomer_Click" Icon="Add"/>
-        </CommandBar>
-    </Page.BottomAppBar>
-
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}" HeaderContent="Timeline" />
         <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
@@ -100,5 +94,9 @@
                 </Grid>
             </PivotItem>
         </Pivot>
+        <CommandBar Name="CB" Grid.Row="3" ClosedDisplayMode="Compact">
+            <AppBarButton Name="AddTeamMessage" Label="Add" Click="AddTeam_Click" Icon="Add"/>
+            <AppBarButton Name="AddCustomerMessage" Visibility="Collapsed" Label="Add" Click="AddCustomer_Click" Icon="Add"/>
+        </CommandBar>
     </Grid>
 </Page>

@@ -19,7 +19,6 @@ namespace Grappbox.Helpers
             try
             {
                 channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
-                Debug.WriteLine("ChannelUri= " + channel.Uri.ToString());
             }
             catch (Exception ex)
             {
@@ -51,7 +50,6 @@ namespace Grappbox.Helpers
                     notificationContent = e.RawNotification.Content;
                     break;
             }
-            Debug.WriteLine("Notif= " + notificationContent);
             e.Cancel = true;
         }
     }

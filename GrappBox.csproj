@@ -93,6 +93,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\desk_office.png" />
+    <Content Include="Assets\file.png" />
+    <Content Include="Assets\folder.png" />
     <Content Include="Assets\MaterialIcons-Regular.otf" />
     <None Include="GrappBox_StoreKey.pfx" />
     <None Include="project.json" />
@@ -108,6 +110,18 @@
     <Compile Include="Constants\Colors.cs" />
     <Compile Include="Constants\Symbol.cs" />
     <Compile Include="CustomControls\BindableCalendarDatePicker.cs" />
+    <Compile Include="CustomControls\CloudInfos.xaml.cs">
+      <DependentUpon>CloudInfos.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudPasswordSafe.xaml.cs">
+      <DependentUpon>CloudPasswordSafe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudPassword.xaml.cs">
+      <DependentUpon>CloudPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudFolder.xaml.cs">
+      <DependentUpon>CloudFolder.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
@@ -146,7 +160,9 @@
     <Compile Include="Model\CalendarModel.cs" />
     <Compile Include="Model\Calendar\Creator.cs" />
     <Compile Include="Model\Calendar\Event.cs" />
+    <Compile Include="Model\Cloud\CloudModel.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
+    <Compile Include="Model\Global\DateModel.cs" />
     <Compile Include="Model\Global\TagModel.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
@@ -166,6 +182,7 @@
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
+    <Compile Include="ViewModel\CloudViewModel.cs" />
     <Compile Include="ViewModel\EventViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
@@ -189,6 +206,9 @@
     </Compile>
     <Compile Include="View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\CloudView.xaml.cs">
+      <DependentUpon>CloudView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
@@ -249,6 +269,22 @@
     <Page Include="AppShell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudInfos.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudPasswordSafe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudPassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudFolder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\GenericDashboardItem.xaml">
       <SubType>Designer</SubType>
@@ -353,6 +389,10 @@
     <Page Include="View\CalendarView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\CloudView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="View\DashBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>

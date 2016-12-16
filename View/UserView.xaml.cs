@@ -29,8 +29,8 @@ namespace Grappbox.View
         private CoreApplicationView view;
         private String ImagePath;
         private bool isPasswordVisible = false;
-        private string password = "";
-        private string oldPwd = "";
+        private string password = string.Empty;
+        private string oldPwd = string.Empty;
         private UserSettingsViewModel vm = UserSettingsViewModel.GetViewModel();
 
         static private UserView instance = null;
@@ -76,14 +76,14 @@ namespace Grappbox.View
 
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
-            if (password != "")
+            if (! string.IsNullOrEmpty(password))
             {
                 await vm.updateAPI(password, oldPwd);
-                password = "";
-                oldPwd = "";
-                oldPassword.Password = "";
-                newPassword.Password = "";
-                retypePassword.Password = "";
+                password = string.Empty;
+                oldPwd = string.Empty;
+                oldPassword.Password = string.Empty;
+                newPassword.Password = string.Empty;
+                retypePassword.Password = string.Empty;
             }
             else
                 await vm.updateAPI();
@@ -162,21 +162,13 @@ namespace Grappbox.View
             filePicker.FileTypeFilter.Add(".jpeg");
             filePicker.FileTypeFilter.Add(".jpg");
 
-            await filePicker.PickSingleFileAsync();
-            view.Activated += viewActivated;
-        }
-
-        private async void viewActivated(CoreApplicationView sender, IActivatedEventArgs args1)
-        {
-            FileOpenPickerContinuationEventArgs args = args1 as FileOpenPickerContinuationEventArgs;
-
-            if (args != null)
+            StorageFile file = await filePicker.PickSingleFileAsync();
+            if (file != null)
             {
-                if (args.Files.Count == 0) return;
+                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+                dialog.ShowAsync();
 
-                view.Activated -= viewActivated;
-                StorageFile storageFile = args.Files[0];
-                var stream = await storageFile.OpenAsync(Windows.Storage.FileAccessMode.Read);
+                var stream = await file.OpenAsync(Windows.Storage.FileAccessMode.Read);
                 var bitmapImage = new Windows.UI.Xaml.Media.Imaging.BitmapImage();
                 await bitmapImage.SetSourceAsync(stream);
 
@@ -184,14 +176,16 @@ namespace Grappbox.View
                 img.Source = bitmapImage;
 
                 //For Convert Bitmap Image to Base64
-                string newAvatar = await StorageFileToBase64(args.Files[0]);
+                string newAvatar = await StorageFileToBase64(file);
                 vm.avatar = newAvatar;
+
+                dialog.Hide();
             }
         }
 
         private async Task<string> StorageFileToBase64(StorageFile file)
         {
-            string Base64String = "";
+            string Base64String = string.Empty;
 
             if (file != null)
             {
