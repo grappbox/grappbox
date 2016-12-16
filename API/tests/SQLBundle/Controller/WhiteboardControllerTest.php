@@ -134,7 +134,6 @@ class WhiteboardControllerTest extends WebTestCase
         $data = json_decode($client->getResponse()->getContent(), true);
         $data = $data['data'];
         $this->assertEquals($_ENV["WHITEBOARD_ID"], $data['whiteboardId']);
-        $this->assertEquals("LINE", $data['object']['type']);
         $this->assertEquals("#ABCDEF", $data['object']['color']);
         $this->assertEquals("#ABCDEF", $data['object']['background']);
         $this->assertEquals(3, $data['object']['lineWeight']);
