@@ -18,4 +18,4 @@ before_script:
   - sudo apt-get install siege
 script:
   - phpunit --debug
-  - siege https://api.grappbox.com -c300 -t15M -v
+  - travis_wait 30 siege https://api.grappbox.com -c300 -t15M
