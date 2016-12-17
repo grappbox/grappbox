@@ -5,6 +5,12 @@ android {
         abortOnError false
     }
     signingConfigs {
+        debugvariant {
+            keyAlias 'debug'
+            keyPassword 'tester'
+            storeFile file('/Users/marc/Documents/debug-variants.jks')
+            storePassword 'tester'
+        }
     }
     compileSdkVersion 24
     buildToolsVersion "24.0.2"
@@ -22,15 +28,21 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'GRAPPBOX_API_URL', '"https://api.grappbox.com/"'
+            buildConfigField 'String', 'GRAPPBOX_API_VERSION', '"0.3"'
         }
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             buildConfigField 'String', 'GRAPPBOX_API_URL', '"https://api.grappbox.com/"'
+            buildConfigField 'String', 'GRAPPBOX_API_VERSION', '"0.3"'
         }
-    }
-    buildTypes.each {
-        it.buildConfigField 'String', 'GRAPPBOX_API_VERSION', '"0.3"'
+        roland {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            buildConfigField 'String', 'GRAPPBOX_API_URL', '"http://10.10.252.112/grappbox/api"'
+            buildConfigField 'String', 'GRAPPBOX_API_VERSION', '"0.3"'
+            signingConfig signingConfigs.debugvariant
+        }
     }
 }
 

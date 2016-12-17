@@ -23,6 +23,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -742,16 +743,20 @@ public class Whiteboard extends View {
             object.init(current);
             mObjects.add(object);
         }
+
         postInvalidate();
     }
 
     public void deleteObject(String id){
+        int i = 0;
         for(ObjectModel model : mObjects){
             if (model.id.equals(id)){
-                mObjects.remove(model);
+                mObjects.remove(i);
                 break;
             }
+            ++i;
         }
+        postInvalidate();
     }
 
     @Override

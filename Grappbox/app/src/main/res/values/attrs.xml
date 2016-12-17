@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="GanttChart">
+        <attr name="taskColor" format="color"/>
+        <attr name="textColor" format="color"/>
+        <attr name="todayLineColor" format="color"/>
+        <attr name="dependeciesLineColor" format="color"/>
+        <attr name="backgroundColor" format="color"/>
+        <attr name="dividerColor" format="color"/>
+        <attr name="textSize" format="integer" />
+        <attr name="strokeWidth" format="integer"/>
+        <attr name="taskListPadding" format="integer"/>
+        <attr name="taskHeight" format="integer"/>
+        <attr name="timelineHeight" format="integer"/>
+        <attr name="accomplishementTaskColor" format="color"/>
+    </declare-styleable>
+</resources>

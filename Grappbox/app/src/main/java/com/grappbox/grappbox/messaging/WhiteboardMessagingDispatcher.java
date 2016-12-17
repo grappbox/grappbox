@@ -46,7 +46,11 @@ class WhiteboardMessagingDispatcher implements MessagingDispatcher {
 
         @Override
         public void dispatch(String action, JSONObject body) {
-
+            try {
+                WhiteboardDrawingActivityFragment.mDrawingArea.deleteObject(body.getString("id"));
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
         }
     }
 
