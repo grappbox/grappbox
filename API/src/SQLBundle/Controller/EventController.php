@@ -14,21 +14,19 @@ use SQLBundle\Entity\Project;
 use DateTime;
 
 /**
-*  @IgnoreAnnotation("apiName")
-*  @IgnoreAnnotation("apiGroup")
-*  @IgnoreAnnotation("apiDescription")
-*  @IgnoreAnnotation("apiVersion")
-*  @IgnoreAnnotation("apiSuccess")
-*  @IgnoreAnnotation("apiSuccessExample")
-*  @IgnoreAnnotation("apiError")
-*  @IgnoreAnnotation("apiErrorExample")
-*  @IgnoreAnnotation("apiParam")
-*  @IgnoreAnnotation("apiParamExample")
-*  @IgnoreAnnotation("apiHeader")
-*  @IgnoreAnnotation("apiHeaderExample")
-*/
-
-
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
+ */
 class EventController extends RolesAndTokenVerificationController
 {
 	/**

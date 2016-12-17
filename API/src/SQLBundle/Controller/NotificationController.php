@@ -26,6 +26,8 @@ use DateTime;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
  */
 class NotificationController extends RolesAndTokenVerificationController
 {

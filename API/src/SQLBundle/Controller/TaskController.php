@@ -18,6 +18,7 @@ use Datetime;
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiVersion")
  *  @IgnoreAnnotation("apiSuccess")
  *  @IgnoreAnnotation("apiSuccessExample")
@@ -25,8 +26,6 @@ use Datetime;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
- *	@IgnoreAnnotation("apiDescription")
- *	@IgnoreAnnotation("apiIgnore")
  *  @IgnoreAnnotation("apiHeader")
  *  @IgnoreAnnotation("apiHeaderExample")
  */

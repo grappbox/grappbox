@@ -20,20 +20,19 @@ use SQLBundle\Entity\Timeline;
 use SQLBundle\Entity\Color;
 
 /**
-*  @IgnoreAnnotation("apiName")
-*  @IgnoreAnnotation("apiGroup")
-*  @IgnoreAnnotation("apiVersion")
-*  @IgnoreAnnotation("apiSuccess")
-*  @IgnoreAnnotation("apiSuccessExample")
-*  @IgnoreAnnotation("apiError")
-*  @IgnoreAnnotation("apiErrorExample")
-*  @IgnoreAnnotation("apiParam")
-*  @IgnoreAnnotation("apiParamExample")
-*  @IgnoreAnnotation("apiIgnore")
-*  @IgnoreAnnotation("apiDescription")
-*  @IgnoreAnnotation("apiHeader")
-*  @IgnoreAnnotation("apiHeaderExample")
-*/
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
+ */
 class ProjectController extends RolesAndTokenVerificationController
 {
 	/**

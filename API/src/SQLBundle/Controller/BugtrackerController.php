@@ -19,7 +19,7 @@ use DateTime;
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
- *	@IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiVersion")
  *  @IgnoreAnnotation("apiSuccess")
  *  @IgnoreAnnotation("apiSuccessExample")

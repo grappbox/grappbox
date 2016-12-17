@@ -16,7 +16,7 @@ use SQLBundle\Entity\Task;
 /**
  *  @IgnoreAnnotation("apiName")
  *  @IgnoreAnnotation("apiGroup")
- *	@IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiVersion")
  *  @IgnoreAnnotation("apiSuccess")
  *  @IgnoreAnnotation("apiSuccessExample")
@@ -24,7 +24,6 @@ use SQLBundle\Entity\Task;
  *  @IgnoreAnnotation("apiErrorExample")
  *  @IgnoreAnnotation("apiParam")
  *  @IgnoreAnnotation("apiParamExample")
- *	@IgnoreAnnotation("apiDescription")
  *  @IgnoreAnnotation("apiHeader")
  *  @IgnoreAnnotation("apiHeaderExample")
  */

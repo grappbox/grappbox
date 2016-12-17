@@ -21,19 +21,19 @@ use SQLBundle\Entity\StatStorageSize;
 use DateTime;
 
 /**
-*  @IgnoreAnnotation("apiName")
-*  @IgnoreAnnotation("apiGroup")
-*  @IgnoreAnnotation("apiVersion")
-*  @IgnoreAnnotation("apiSuccess")
-*  @IgnoreAnnotation("apiSuccessExample")
-*  @IgnoreAnnotation("apiError")
-*  @IgnoreAnnotation("apiErrorExample")
-*  @IgnoreAnnotation("apiParam")
-*  @IgnoreAnnotation("apiDescription")
-*  @IgnoreAnnotation("apiParamExample")
-*  @IgnoreAnnotation("apiHeader")
-*  @IgnoreAnnotation("apiHeaderExample")
-*/
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
+ */
 class StatisticController extends RolesAndTokenVerificationController
 {
 

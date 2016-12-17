@@ -14,19 +14,19 @@ use DateTime;
 use DateInterval;
 
 /**
-*  @IgnoreAnnotation("apiName")
-*  @IgnoreAnnotation("apiGroup")
-*  @IgnoreAnnotation("apiVersion")
-*  @IgnoreAnnotation("apiSuccess")
-*  @IgnoreAnnotation("apiSuccessExample")
-*  @IgnoreAnnotation("apiError")
-*  @IgnoreAnnotation("apiErrorExample")
-*  @IgnoreAnnotation("apiParam")
-*  @IgnoreAnnotation("apiParamExample")
-*  @IgnoreAnnotation("apiDescription")
-*  @IgnoreAnnotation("apiHeader")
-*  @IgnoreAnnotation("apiHeaderExample")
-*/
+ *  @IgnoreAnnotation("apiName")
+ *  @IgnoreAnnotation("apiGroup")
+ *  @IgnoreAnnotation("apiDescription")
+ *  @IgnoreAnnotation("apiVersion")
+ *  @IgnoreAnnotation("apiSuccess")
+ *  @IgnoreAnnotation("apiSuccessExample")
+ *  @IgnoreAnnotation("apiError")
+ *  @IgnoreAnnotation("apiErrorExample")
+ *  @IgnoreAnnotation("apiParam")
+ *  @IgnoreAnnotation("apiParamExample")
+ *  @IgnoreAnnotation("apiHeader")
+ *  @IgnoreAnnotation("apiHeaderExample")
+ */
 class RoleController extends RolesAndTokenVerificationController
 {
 	/**
