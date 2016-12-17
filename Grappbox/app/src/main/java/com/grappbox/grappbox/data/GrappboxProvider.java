@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -133,18 +134,15 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_USER_REPARTITION_BY_ID = 331;
     public static final int BUG_USER_REPARTITION_BY_STAT_ID = 332;
     public static final int BUG_USER_REPARTITION_BY_USER_ID = 333;
-    public static final int BUG_USER_REPARTITION_BY_BUG_ID = 334;
 
     public static final int BUG_TAGS_REPARTITION = 340;
     public static final int BUG_TAGS_REPARTITION_BY_ID = 341;
     public static final int BUG_TAGS_REPARTITION_BY_STAT_ID = 342;
     public static final int BUG_TAGS_REPARTITION_BY_TAG_ID = 343;
-    public static final int BUG_TAGS_REPARTITION_BY_BUG_ID = 344;
 
     public static final int BUG_EVOLUTION = 350;
     public static final int BUG_EVOLUTION_BY_ID = 351;
     public static final int BUG_EVOLUTION_BY_STAT_ID = 352;
-    public static final int BUG_EVOLUTION_BY_BUG_ID = 353;
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -280,6 +278,21 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE + "/#", USER_WORKING_CHARGE_BY_ID);
 
         //Bug User Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION, BUG_USER_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/#", BUG_USER_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/stat/#", BUG_USER_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/user/#", BUG_USER_REPARTITION_BY_USER_ID);
+
+        //Bug Tags Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION, BUG_TAGS_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/#", BUG_TAGS_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/stat/#", BUG_TAGS_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/tags/#", BUG_TAGS_REPARTITION_BY_TAG_ID);
+
+        //Bugs evolution related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION, BUG_EVOLUTION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/#", BUG_EVOLUTION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/stat/", BUG_EVOLUTION_BY_STAT_ID);
 
         return matcher;
     }
@@ -424,6 +437,23 @@ public class GrappboxProvider extends ContentProvider {
             case USER_WORKING_CHARGE_BY_ID:
                 return GrappboxContract.UserWorkingChargeEntry.CONTENT_TYPE;
 
+            case BUG_USER_REPARTITION:
+            case BUG_USER_REPARTITION_BY_ID:
+            case BUG_USER_REPARTITION_BY_STAT_ID:
+            case BUG_USER_REPARTITION_BY_USER_ID:
+                return GrappboxContract.BugUserRepartitionEntry.CONTENT_TYPE;
+
+            case BUG_TAGS_REPARTITION:
+            case BUG_TAGS_REPARTITION_BY_ID:
+            case BUG_TAGS_REPARTITION_BY_STAT_ID:
+            case BUG_TAGS_REPARTITION_BY_TAG_ID:
+                return GrappboxContract.BugTagsRepartitionEntry.CONTENT_TYPE;
+
+            case BUG_EVOLUTION:
+            case BUG_EVOLUTION_BY_ID:
+            case BUG_EVOLUTION_BY_STAT_ID:
+                return GrappboxContract.BugEvolutionEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -473,6 +503,12 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.TaskRepartitionEntry.TABLE_NAME;
             case USER_WORKING_CHARGE:
                 return GrappboxContract.UserWorkingChargeEntry.TABLE_NAME;
+            case BUG_USER_REPARTITION:
+                return GrappboxContract.BugUserRepartitionEntry.TABLE_NAME;
+            case BUG_TAGS_REPARTITION:
+                return GrappboxContract.BugTagsRepartitionEntry.TABLE_NAME;
+            case BUG_EVOLUTION:
+                return GrappboxContract.BugEvolutionEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -727,7 +763,33 @@ public class GrappboxProvider extends ContentProvider {
             case USER_WORKING_CHARGE_BY_ID:
                 retCursor = UserWorkingChargeCursors.query_UserWorkingChargeById(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
-
+            case BUG_USER_REPARTITION:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION_BY_ID:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION_BY_STAT_ID:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartitionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION_BY_ID:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION_BY_STAT_ID:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartitionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                retCursor = BugEvolutionCursors.query_BugEvolution(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION_BY_ID:
+                retCursor = BugEvolutionCursors.query_BugEvolutionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION_BY_STAT_ID:
+                retCursor = BugEvolutionCursors.query_BugEvolutionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -816,6 +878,15 @@ public class GrappboxProvider extends ContentProvider {
             case USER_WORKING_CHARGE:
                 returnedUri = UserWorkingChargeCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case BUG_USER_REPARTITION:
+                returnedUri = BugUserRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                returnedUri = BugUserRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                returnedUri = BugEvolutionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -900,6 +971,15 @@ public class GrappboxProvider extends ContentProvider {
             case USER_WORKING_CHARGE:
                 ret = UserWorkingChargeCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case BUG_USER_REPARTITION:
+                ret = BugUserRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                ret = BugTagsRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                ret = BugEvolutionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -967,6 +1047,15 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case USER_WORKING_CHARGE:
                 returnCount = UserWorkingChargeCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION:
+                returnCount = BugUserRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                returnCount = BugTagsRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                returnCount = BugEvolutionCursors.bulkinsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);
