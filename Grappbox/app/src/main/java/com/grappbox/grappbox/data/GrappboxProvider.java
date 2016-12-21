@@ -867,7 +867,7 @@ public class GrappboxProvider extends ContentProvider {
                 returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case USER_ADVANCEMENT_TASK:
-                returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
+                returnedUri = UserAdvancementTaskCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             case TASK_REPARTITION:
                 returnedUri = TaskRepartitionCursors.insert(uri, contentValues, mOpenHelper);

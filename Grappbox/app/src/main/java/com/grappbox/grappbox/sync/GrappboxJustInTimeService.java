@@ -3112,9 +3112,12 @@ public class GrappboxJustInTimeService extends IntentService {
             if (res == null)
                 throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);
             long statId = Long.parseLong(res.getLastPathSegment());
-            JSONArray advancementArray = json.getJSONArray("projectAdvancement");
-            for (int i = 0; i  < advancementArray.length(); ++i) {
-                JSONObject advancement = advancementArray.getJSONObject(i);
+
+            //Project Advancement Stat
+            JSONArray contentArray = json.getJSONArray("projectAdvancement");
+            ArrayList<Long> existingEntry = new ArrayList<>();
+            for (int i = 0; i  < contentArray.length(); ++i) {
+                JSONObject advancement = contentArray.getJSONObject(i);
                 ContentValues ad = new ContentValues();
                 ad.put(GrappboxContract.AdvancementEntry.COLUMN_ADVANCEMENT_DATE, advancement.getJSONObject("date").getString("date"));
                 ad.put(GrappboxContract.AdvancementEntry.COLUMN_PERCENTAGE, advancement.getInt("percentage"));
@@ -3122,8 +3125,161 @@ public class GrappboxJustInTimeService extends IntentService {
                 ad.put(GrappboxContract.AdvancementEntry.COLUMN_TOTAL_TASK, advancement.getInt("totalTasks"));
                 ad.put(GrappboxContract.AdvancementEntry.COLUMN_FINISHED_TASk, advancement.getInt("finishedTasks"));
                 ad.put(GrappboxContract.AdvancementEntry.COLUMN_LOCAL_STATS_ID, statId);
-                getContentResolver().insert(GrappboxContract.AdvancementEntry.CONTENT_URI, ad);
+                Uri adEntryURI =  getContentResolver().insert(GrappboxContract.AdvancementEntry.CONTENT_URI, ad);
+                if (adEntryURI == null)
+                    continue;
+                Long adEntryId = Long.parseLong(adEntryURI.getLastPathSegment());
+                existingEntry.add(adEntryId);
             }
+            String selection = GrappboxContract.AdvancementEntry.COLUMN_LOCAL_STATS_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.AdvancementEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.AdvancementEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
+            //User Task Advancement Stats
+            contentArray = json.getJSONArray("userTasksAdvancement");
+            existingEntry.clear();
+            for (int i = 0; i < contentArray.length(); ++i) {
+                JSONObject userTaskAd = contentArray.getJSONObject(i);
+                ContentValues userTask = new ContentValues();
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID, statId);
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_TASK_TODO, userTaskAd.getLong("tasksToDo"));
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_TASK_DOING, userTaskAd.getLong("tasksDoing"));
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_TASK_DONE, userTaskAd.getLong("tasksDone"));
+                userTask.put(GrappboxContract.UserAdvancementTaskEntry.COLUMN_TASK_LATE, userTaskAd.getLong("tasksLate"));
+                Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.UserAdvancementTaskEntry.CONTENT_URI, userTask);
+                if (userTaskAdEntry == null)
+                    continue;
+                long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());
+                existingEntry.add(userTaskEntryId);
+            }
+            selection = GrappboxContract.UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.AdvancementEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.UserAdvancementTaskEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
+            //Late Task Stats
+            contentArray = json.getJSONArray("lateTask");
+            existingEntry.clear();
+            for (int i = 0; i < contentArray.length(); ++i) {
+                JSONObject userTaskAd = contentArray.getJSONObject(i);
+                ContentValues userTask = new ContentValues();
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_LOCAL_STAT_ID, statId);
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_ROLE, userTaskAd.getString("role"));
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_DATE, userTaskAd.getJSONObject("date").getString("date"));
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_ON_TIME_TASK, userTaskAd.getLong("ontimeTasks"));
+                userTask.put(GrappboxContract.LateTaskEntry.COLUMN_LATE_TASK, userTaskAd.getLong("lateTasks"));
+                Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.LateTaskEntry.CONTENT_URI, userTask);
+                if (userTaskAdEntry == null)
+                    continue;
+                long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());
+                existingEntry.add(userTaskEntryId);
+            }
+            selection = GrappboxContract.LateTaskEntry.COLUMN_LOCAL_STAT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.LateTaskEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.LateTaskEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
+            //Bug Users Repartitions Stats
+            contentArray = json.getJSONArray("bugsUsersRepartition");
+            existingEntry.clear();
+            for (int i = 0; i < contentArray.length(); ++i) {
+                JSONObject userTaskAd = contentArray.getJSONObject(i);
+                ContentValues userTask = new ContentValues();
+                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID, statId);
+                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_VALUE, userTaskAd.getLong("value"));
+                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_PERCENTAGE, userTaskAd.getLong("percentage"));
+                Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.BugUserRepartitionEntry.CONTENT_URI, userTask);
+                if (userTaskAdEntry == null)
+                    continue;
+                long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());
+                existingEntry.add(userTaskEntryId);
+            }
+            selection = GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.BugUserRepartitionEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.BugUserRepartitionEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
+            //Task Repartitions Stats
+            contentArray = json.getJSONArray("tasksRepartition");
+            existingEntry.clear();
+            for (int i = 0; i < contentArray.length(); ++i) {
+                JSONObject userTaskAd = contentArray.getJSONObject(i);
+                ContentValues userTask = new ContentValues();
+                userTask.put(GrappboxContract.TaskRepartitionEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                userTask.put(GrappboxContract.TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID, statId);
+                userTask.put(GrappboxContract.TaskRepartitionEntry.COLUMN_VALUE, userTaskAd.getLong("value"));
+                userTask.put(GrappboxContract.TaskRepartitionEntry.COLUMN_PERCENTAGE, userTaskAd.getLong("percentage"));
+                Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.TaskRepartitionEntry.CONTENT_URI, userTask);
+                if (userTaskAdEntry == null)
+                    continue;
+                long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());
+                existingEntry.add(userTaskEntryId);
+            }
+            selection = GrappboxContract.TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.TaskRepartitionEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.TaskRepartitionEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
+            //User Working charge Stats
+            contentArray = json.getJSONArray("userWorkingCharge");
+            existingEntry.clear();
+            for (int i = 0; i < contentArray.length(); ++i) {
+                JSONObject userTaskAd = contentArray.getJSONObject(i);
+                ContentValues userTask = new ContentValues();
+                userTask.put(GrappboxContract.UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                userTask.put(GrappboxContract.UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID, statId);
+                userTask.put(GrappboxContract.UserWorkingChargeEntry.COLUMN_CHARGE, userTaskAd.getLong("charge"));
+                Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.UserWorkingChargeEntry.CONTENT_URI, userTask);
+                if (userTaskAdEntry == null)
+                    continue;
+                long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());
+                existingEntry.add(userTaskEntryId);
+            }
+            selection = GrappboxContract.UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.UserWorkingChargeEntry._ID + " NOT IN (" : "");
+            if (existingEntry.size() > 0) {
+                boolean isFirst = true;
+                for (Long idAd : existingEntry) {
+                    selection += isFirst ? idAd.toString() : "," + idAd.toString();
+                    isFirst = false;
+                }
+                selection += ")";
+            }
+            getContentResolver().delete(GrappboxContract.UserWorkingChargeEntry.CONTENT_URI, selection, new String[]{String.valueOf(statId)});
+
         } catch (IOException | NetworkErrorException | JSONException e) {
             e.printStackTrace();
         } finally {
