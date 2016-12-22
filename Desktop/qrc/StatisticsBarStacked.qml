@@ -10,21 +10,40 @@ import QtQuick.Controls.Styles 1.3 as Styles
 import QtCharts 2.0
 
 View {
+    id: statisticsBar
     elevation: 1
     width: Units.dp(500)
-    height: columnPieChart.implicitHeight
-    property alias widthPie: chartView.width
+    property alias widthBar: chartView.width
     property var colorsUsed: ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B"]
     property alias titleText: title.text
     property alias subtitleText: subtitle.text
+    property double minValue: 0
+    property double maxValue: 100
+    property bool calculateMaxValue: true
 
+    property var dataCategories: []
     property var dataValues: []
 
     Component.onCompleted: {
+        var realCategories = [];
         for (var i = 0; i < dataValues.length; ++i)
+            realCategories.push(dataValues[i].label);
+        axisXBar.categories = realCategories;
+        var maxValueCal = -1
+        for (var i = 0; i < dataCategories.length; ++i)
         {
-            console.log("Append to pie : ", dataValues[i].label, " => ", dataValues[i].value)
-            seriesPie.append(dataValues[i].label, dataValues[i].value)
+            var nb = [];
+            for (var j = 0; j < dataValues.length; ++j)
+            {
+                if (maxValue == -1 || maxValueCal < dataValues[j].value[i])
+                    maxValueCal = dataValues[j].value[i];
+                nb.push(dataValues[j].value[i]);
+            }
+            seriesBar.append(dataCategories[i], nb);
+        }
+        if (calculateMaxValue)
+        {
+            maxValue = Math.ceil(maxValueCal / 5) * 5;
         }
     }
 
@@ -65,7 +84,7 @@ View {
                 antialiasing: true
                 legend.visible: false
                 width: Units.dp(300)
-                height: width
+                height: statisticsBar.height - Units.dp(80)
 
                 onSeriesAdded: {
                 }
@@ -74,15 +93,23 @@ View {
 
                 }
 
-                PieSeries {
-                    id: seriesPie
+                StackedBarSeries {
+                    id: seriesBar
 
-                    onSliceAdded: {
-                        slice.color = colorsUsed[seriesPie.count - 1]
-                        chartLegend.addSeries(slice.label, slice.color)
+                    axisX: BarCategoryAxis {
+                        id: axisXBar
                     }
 
-                    Component.onCompleted: {
+                    axisY: ValueAxis {
+                        id: axisYBar
+                        min: minValue
+                        max: maxValue
+                    }
+
+                    onBarsetsAdded: {
+                        var barset = seriesBar.at(seriesBar.count - 1);
+                        barset.color = colorsUsed[seriesBar.count - 1]
+                        chartLegend.addSeries(barset.label, barset.color)
                     }
                 }
             }

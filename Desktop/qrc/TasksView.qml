@@ -155,36 +155,26 @@ Column {
                     anchors.margins: Units. dp(8)
                     width: parent.width * purcentWidth[2]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.tag
+                    text: ""//modelData.tag
                     style: "body1"
                     wrapMode: Text.Wrap
 
+                    function updateText() {
+                        console.log("Update : ", modelData.tagAssigned.length)
+                        for (var item in modelData.tagAssigned)
+                        {
+                            if (text === "")
+                                text = modelData.tagAssigned[item].name
+                            else
+                                text += ", " + modelData.tagAssigned[item].name
+                        }
+                        if (text === "")
+                            text = "-"
+                    }
+
                     Component.onCompleted: {
-                        text = Qt.binding(function() {
-                            var ret = ""
-                            for (var item in modelData.tags)
-                            {
-                                var realname = ""
-                                for (var itemName in bugModel.tags)
-                                {
-                                    if (modelData.tagAssigned[item] === ganttModel.tags[itemName].id)
-                                    {
-                                        realname = bugModel.tags[itemName].name
-                                        break
-                                    }
-                                }
-                                if (realname != "")
-                                {
-                                    if (ret === "")
-                                        ret = realname
-                                    else
-                                        ret += ", " + realname
-                                }
-                            }
-                            if (ret === "")
-                                ret = "-"
-                            return ret
-                        })
+                        modelData.tagAssignedChanged.connect(updateText);
+                        updateText();
                     }
                 }
 
@@ -192,35 +182,30 @@ Column {
                     anchors.margins: Units. dp(8)
                     width: parent.width * purcentWidth[3]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.user
+                    text: ""//modelData.user
                     style: "body1"
                     wrapMode: Text.Wrap
-                    Component.onCompleted: {
-                        text = Qt.binding(function() {
-                            var ret = ""
-                            for (var item in modelData.users)
-                            {
-                                var realname = ""
-                                for (var itemName in SDataManager.project.users)
-                                {
-                                    if (modelData.usersRessources[item] === SDataManager.project.users[itemName].id)
-                                    {
-                                        realname = SDataManager.project.users[itemName].firstName + " " + SDataManager.project.users[itemName].lastName
-                                        break
-                                    }
-                                }
-                                if (realname != "")
-                                {
-                                    if (ret === "")
-                                        ret = realname
-                                    else
-                                        ret += ", " + realname
-                                }
-                            }
+
+                    function updateText() {
+                        console.log("Update text !! : ", modelData.title)
+                        console.log(modelData.usersAssigned)
+                        var ret = ""
+                        for (var item in modelData.usersAssigned)
+                        {
+                            var realname = modelData.usersAssigned[item].firstName + " " + modelData.usersAssigned[item].lastName + "(" + modelData.usersAssigned[item].percent + "%)"
                             if (ret === "")
-                                ret = "-"
-                            return ret
-                        })
+                                ret = realname
+                            else
+                                ret += ", " + realname
+                        }
+                        if (ret === "")
+                            ret = "-"
+                        text = ret
+                    }
+
+                    Component.onCompleted: {
+                        modelData.usersAssignedChanged.connect(updateText)
+                        updateText()
                     }
                 }
 
@@ -228,7 +213,7 @@ Column {
                     anchors.margins: Units. dp(8)
                     width: parent.width * purcentWidth[4]
                     anchors.verticalCenter: parent.verticalCenter
-                    text: Qt.formatDate(modelData.dueDate, "yyyy-MM-dd hh:mm:ss")
+                    text: Qt.formatDateTime(modelData.dueDate, "yyyy-MM-dd hh:mm:ss")
                     style: "body1"
                     wrapMode: Text.Wrap
 

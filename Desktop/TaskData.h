@@ -207,6 +207,7 @@ class TaskData : public QObject
     Q_PROPERTY(QVariantList tagAssigned READ tagAssigned WRITE setTagAssigned NOTIFY tagAssignedChanged)
     Q_PROPERTY(QVariantList dependenciesAssigned WRITE setDependenceiesAssigned READ dependenciesAssigned NOTIFY dependenciesAssignedChanged)
     Q_PROPERTY(QVariantList usersRessources READ usersRessources WRITE setUserRessources NOTIFY userRessourcesChanged)
+    Q_PROPERTY(QVariantList usersAssigned READ usersAssigned WRITE setUsersAssigned NOTIFY usersAssignedChanged)
     Q_PROPERTY(float progression READ progression WRITE setProgression WRITE setProgression NOTIFY progressionChanged)
     Q_PROPERTY(UserData *creator READ creator WRITE setCreator NOTIFY creatorChanged)
 
@@ -222,6 +223,7 @@ public:
     {
         setId(task["id"].toInt());
         setTitle(task["title"].toString());
+        qDebug() << "TASKS " << m_title;
         setDescription(task["description"].toString());
         setIsMilestone(task["is_milestone"].toBool());
         setDueDate(JSON_TO_DATETIME(task["due_date"].toString()));
@@ -240,6 +242,7 @@ public:
         for (QJsonValueRef ref : task["users"].toArray())
         {
             QJsonObject obj = ref.toObject();
+            qDebug() << "New users : " << obj;
             UserData *newUser = new UserData();
             newUser->setId(obj["id"].toInt());
             newUser->setFirstName(obj["firstname"].toString());
@@ -297,6 +300,7 @@ public:
         emit usersAssignedChanged(usersAssigned());
         setDependenceiesAssigned(dependencies);
         emit tagAssignedChanged(tagAssigned());
+        qDebug() << m_tagAssigned.length();
         setTaskChild(tasks);
     }
 
@@ -535,7 +539,7 @@ public:
         emit descriptionChanged(description);
     }
 
-    void setUserAssigned(QVariantList usersAssigned)
+    void setUsersAssigned(QVariantList usersAssigned)
     {
         m_usersAssigned.clear();
         for (QVariant var : usersAssigned)

@@ -10,6 +10,9 @@ import QtQuick.Controls.Styles 1.3 as Styles
 import QtCharts 2.0
 
 Column {
+
+    property StatisticsModel modelState
+
     anchors.left: parent.left
     anchors.right: parent.right
     spacing: Units.dp(10)
@@ -21,24 +24,36 @@ Column {
 
         StatisticsField {
             Layout.fillWidth: true
-            text: "%1 number of issues".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
+            text: "%1 bugs created by clients.".arg(modelState.bugTrackerInfo.clientBug)
+            subText: "On a total of %1 bugs".arg(modelState.bugTrackerInfo.totalBug)
             icon: "action/query_builder"
         }
 
         StatisticsField {
             Layout.fillWidth: true
-            text: "%1 number of issues".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
+            text: "%1 assigned bugs and %2 not assigned bugs".arg(modelState.bugTrackerInfo.assignedBug).arg(modelState.bugTrackerInfo.unassignedBug)
+            subText: "On a total of %1 bugs".arg(modelState.bugTrackerInfo.totalBug)
             icon: "action/query_builder"
         }
 
         StatisticsField {
             Layout.fillWidth: true
-            text: "%1 number of issues".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
+            text: "%1 opened bugs and %2 closed bugs".arg(modelState.bugTrackerInfo.openBug).arg(modelState.bugTrackerInfo.closeBug)
             icon: "action/query_builder"
         }
+    }
+
+    StatisticsBar {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: Units.dp(400)
+        widthBar: height - Units.dp(60)
+        minValue: 0
+        maxValue: 10
+        titleText: "Number of bugs opened and closed"
+        subtitleText: "(By time)"
+        dataCategories: ["Doing", "Done"]
+        dataValues: modelState.bugTrackerInfo.bugEvolution
     }
 
     RowLayout {
@@ -51,39 +66,20 @@ Column {
             Layout.fillWidth: true
             Layout.fillHeight: true
             height: parent.height
-            widthPie: width - Units.dp(200)
-            titleText: "Repartition of tasks"
-            subtitleText: "(By roles)"
-            dataValues: [{label: "Dev", value: 20}, {label: "Graphiste", value: 10}]
+            widthPie: height - Units.dp(60)
+            titleText: "Repartition of bugs"
+            subtitleText: "(By tags)"
+            dataValues: modelState.bugTrackerInfo.bugRepartitionTag
         }
 
-        StatisticsBar {
+        StatisticsPie {
             Layout.fillWidth: true
             Layout.fillHeight: true
-            widthBar: width - Units.dp(200)
-            minValue: 0
-            maxValue: 10
-            titleText: "Number of task"
+            height: parent.height
+            widthPie: height - Units.dp(60)
+            titleText: "Repartition of bugs"
             subtitleText: "(By users)"
-            dataCategories: ["Doing", "Done"]
-            dataValues: [
-                {
-                    label: "Léo Nadeau",
-                    value: [5, 1]
-                },
-                {
-                    label: "Marc Wieser",
-                    value: [1, 7]
-                },
-                {
-                    label: "Roland Hemmer",
-                    value: [3, 0]
-                },
-                {
-                    label: "Valentin Mougenot",
-                    value: [8, 4]
-                }
-            ]
+            dataValues: modelState.bugTrackerInfo.bugRepartitionUser
         }
     }
 }

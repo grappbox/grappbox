@@ -10,6 +10,8 @@ import QtQuick.Controls.Styles 1.3 as Styles
 import QtCharts 2.0
 
 Column {
+    property StatisticsModel modelStat
+
     anchors.left: parent.left
     anchors.right: parent.right
     spacing: Units.dp(10)
@@ -21,69 +23,46 @@ Column {
 
         StatisticsField {
             Layout.fillWidth: true
-            text: "%1 number of tasks".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
+            text: "%1 tasks late".arg(modelStat.taskInfo.taskLate)
+            subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
             icon: "action/query_builder"
         }
 
         StatisticsField {
             Layout.fillWidth: true
-            text: "%1 number of tasks".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
-            icon: "action/query_builder"
-        }
-
-        StatisticsField {
-            Layout.fillWidth: true
-            text: "%1 number of tasks".arg(0)
-            subText: "On a total of %1 tasks".arg(3)
+            text: "%1 tasks done".arg(modelStat.taskInfo.taskDone)
+            subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
             icon: "action/query_builder"
         }
     }
 
     RowLayout {
-        height: Units.dp(400)
         anchors.left: parent.left
         anchors.right: parent.right
         spacing: Units.dp(10)
 
-        StatisticsPie {
+        StatisticsField {
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            height: parent.height
-            widthPie: width - Units.dp(200)
-            titleText: "Repartition of tasks"
-            subtitleText: "(By roles)"
-            dataValues: [{label: "Dev", value: 20}, {label: "Graphiste", value: 10}]
+            text: "%1 tasks waiting".arg(modelStat.taskInfo.taskToDo)
+            subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
+            icon: "action/query_builder"
         }
 
-        StatisticsBar {
+        StatisticsField {
             Layout.fillWidth: true
-            Layout.fillHeight: true
-            widthBar: width - Units.dp(200)
-            minValue: 0
-            maxValue: 10
-            titleText: "Number of task"
-            subtitleText: "(By users)"
-            dataCategories: ["Doing", "Done"]
-            dataValues: [
-                {
-                    label: "Léo Nadeau",
-                    value: [5, 1]
-                },
-                {
-                    label: "Marc Wieser",
-                    value: [1, 7]
-                },
-                {
-                    label: "Roland Hemmer",
-                    value: [3, 0]
-                },
-                {
-                    label: "Valentin Mougenot",
-                    value: [8, 4]
-                }
-            ]
+            text: "%1 tasks in development".arg(modelStat.taskInfo.taskDoing)
+            subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
+            icon: "action/query_builder"
         }
+    }
+
+    StatisticsPie {
+        anchors.left: parent.left
+        anchors.right: parent.right
+        height: Units.dp(400)
+        widthPie: height - Units.dp(60)
+        titleText: "Repartition of tasks"
+        subtitleText: "(By roles) CHANGE THIS"
+        dataValues: modelStat.taskInfo.taskRepartition
     }
 }

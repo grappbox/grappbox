@@ -33,9 +33,11 @@ public:
 
     Q_INVOKABLE void loadTasks();
     Q_INVOKABLE void loadTaskTag();
+    Q_INVOKABLE void loadTask(int id);
     Q_INVOKABLE int idByTaskNameArray(int index) const;
-    Q_INVOKABLE void addTag(QString name);
+    Q_INVOKABLE void addTag(QString name, QString color);
     Q_INVOKABLE void removeTag(int id);
+    Q_INVOKABLE void addTask(QString title, QString description, bool isMilestone, int progression, QDateTime startDate, QDateTime endDate, QVariantList users, QVariantList dependencies, QVariantList containedTasks, QVariantList tags);
 
 signals:
     void tasksChanged();
@@ -44,6 +46,8 @@ signals:
     void error(QString title, QString message);
 
     void taskNameChanged();
+
+    void newTagAdded(TaskTagData *tag);
 
 public slots:
     void OnLoadTaskDone(int id, QByteArray data);
@@ -54,6 +58,8 @@ public slots:
     void OnAddTagFail(int id, QByteArray data);
     void OnRemoveTagDone(int id, QByteArray data);
     void OnRemoveTagFail(int id, QByteArray data);
+    void OnAddTaskDone(int id, QByteArray data);
+    void OnAddTaskFail(int id, QByteArray data);
 
 private:
     QList<TaskData*> _Tasks;

@@ -64,6 +64,9 @@
         <file>qrc/StatisticsBugTracker.qml</file>
         <file>qrc/StatisticsBarUndefined.qml</file>
         <file>qrc/NotificationPopup.qml</file>
+        <file>qrc/TaskAddView.qml</file>
+        <file>qrc/StatisticsUsers.qml</file>
+        <file>qrc/StatisticsBarStacked.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>

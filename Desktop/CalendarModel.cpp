@@ -77,7 +77,6 @@ void CalendarModel::addEvent(QString title, QString message, int projectId, QDat
         for (int item : idToAdd)
             ADD_FIELD_ARRAY(item, "users");
         POST(API::DP_CALENDAR, API::PR_POST_EVENT);
-        GENERATE_JSON_DEBUG;
     }
     END_REQUEST;
 }
@@ -96,7 +95,6 @@ void CalendarModel::editEvent(int eventId, QString title, QString message, int p
         ADD_ARRAY("toAddUsers");
         ADD_ARRAY("toRemoveUsers");
         m_usersForEvents[PUT(API::DP_CALENDAR, API::PUTR_EDIT_EVENT)] = users;
-        GENERATE_JSON_DEBUG;
     }
     END_REQUEST;
 }

@@ -269,7 +269,6 @@ void CloudController::sendFiles(QList<QUrl> files)
             if (_CurrentTransit->password() != "")
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
-            GENERATE_JSON_DEBUG;
         }
         END_REQUEST;
     }
@@ -325,7 +324,6 @@ void CloudController::sendFile(QUrl file, QString password)
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
             qDebug() << "OPEN STREAM";
-            GENERATE_JSON_DEBUG;
         }
         END_REQUEST;
     }
@@ -524,7 +522,6 @@ void CloudController::OnSendChunkSuccess(int id, QByteArray array)
             ADD_URL_FIELD(PROJECT);
             ADD_URL_FIELD(_CurrentUploadID);
             DELETE_REQ(API::DP_CLOUD, API::DR_CLOSE_STREAM);
-            GENERATE_JSON_DEBUG;
         }
         END_REQUEST;
     }
@@ -566,7 +563,6 @@ void CloudController::OnSendChunkFailed(int id, QByteArray array)
             if (_CurrentTransit->password() != "")
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
-            GENERATE_JSON_DEBUG;
         }
         END_REQUEST;
     }
@@ -619,7 +615,7 @@ void CloudController::OnOpenStreamFailed(int id, QByteArray array)
             if (_CurrentTransit->password() != "")
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
-            GENERATE_JSON_DEBUG;
+
         }
         END_REQUEST;
     }
@@ -662,7 +658,7 @@ void CloudController::OnCloseStreamSuccess(int id, QByteArray array)
             if (_CurrentTransit->password() != "")
                 ADD_FIELD("password", _CurrentTransit->password());
             POST(API::DP_CLOUD, API::PR_OPEN_STREAM);
-            GENERATE_JSON_DEBUG;
+
         }
         END_REQUEST;
     }

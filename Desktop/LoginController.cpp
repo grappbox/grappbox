@@ -23,7 +23,7 @@ void LoginController::login(QString name, QString password)
         ADD_FIELD("mac", getMacAdress());
         ADD_FIELD("flag", "desk");
         ADD_FIELD("device_name", QHostInfo::localHostName());
-        GENERATE_JSON_DEBUG;
+        
         POST(API::DP_USER_DATA, API::PR_LOGIN);
     }
     END_REQUEST;

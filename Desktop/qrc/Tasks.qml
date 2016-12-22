@@ -45,6 +45,9 @@ Item {
                 },
                 State {
                     name: "AddView"
+                },
+                State {
+                    name: "EditView"
                 }
 
             ]
@@ -78,11 +81,11 @@ Item {
 
                 width: Math.min(parent.width - Units. dp(32), 1140)
 
-                visible: mainView.state != "TasksView"
+                visible: mainView.state == "TaskView"
 
                 elevation: 1
 
-                height: taskColumn.implicitHeight + Units. dp(32)
+                height: taskColumn.implicitHeight + Units.dp(32)
 
                 TaskInfoView {
                     id: taskColumn
@@ -96,6 +99,29 @@ Item {
                     onEdit: {
                         console.log("EDIT !");
                     }
+                }
+            }
+
+            /*TaskForm {
+                id: taskFormColumn
+                visible: mainView.state == "EditView"
+            }*/
+
+            TaskAddView {
+                id: taskAddColumn
+
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.top: parent.top
+
+                anchors.margins: Units.dp(16)
+
+                visible: mainView.state == "AddView"
+
+                ganttModel: ganttModel
+
+                onBack: {
+                    mainView.state = "TasksView"
                 }
             }
         }

@@ -22,6 +22,9 @@
 #include "CalendarModel.h"
 #include "eventmodeldata.h"
 #include "WhiteboardModel.h"
+#include "StatisticsModel.h"
+#include "NotificationInfoData.h"
+#include "NotificationModel.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
 #define MAJOR_VERSION 1
@@ -84,6 +87,10 @@ int main(int argc, char *argv[])
     qmlRegisterType<EventModelData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "EventModelData");
     qmlRegisterType<WhiteboardData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "WhiteboardData");
     qmlRegisterType<WhiteboardModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "WhiteboardModel");
+    qmlRegisterType<StatisticsModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "StatisticsModel");
+    qmlRegisterType<NotificationModel>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "NotificationModel");
+    qmlRegisterType<NotificationInfoData>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "NotificationInfoData");
+
     qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
     qmlRegisterSingletonType<SInfoManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SInfoManager", qobject_infomanager_provider);
     qmlRegisterSingletonType<DataImageProvider>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DataImageProvider", qobject_dataimageprovider_provider);

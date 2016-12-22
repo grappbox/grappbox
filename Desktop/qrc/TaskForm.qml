@@ -270,7 +270,6 @@ Item {
                             Rectangle {
                                 Layout.fillHeight: true
                                 Layout.preferredWidth: 100
-                                color: task.color
                             }
 
                             Button {

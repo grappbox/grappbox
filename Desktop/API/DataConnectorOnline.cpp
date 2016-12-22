@@ -44,7 +44,7 @@ DataConnectorOnline::DataConnectorOnline()
 	_GetMap[GR_USER_SETTINGS] = "";
     _GetMap[GR_PROJECTS_USER] = "project/users";
     _GetMap[GR_PROJECT_ROLE] = "roles";
-    _GetMap[GR_PROJECT_USERS] = "projects/getusertoproject";
+    _GetMap[GR_PROJECT_USERS] = "project/users";
 	_GetMap[GR_PROJECT_CANCEL_DELETE] = "";
     _GetMap[GR_PROJECT_USER_ROLE] = "roles/project/user";
     _GetMap[GR_CUSTOMER_ACCESSES] = "project/customeraccesses";
@@ -56,7 +56,7 @@ DataConnectorOnline::DataConnectorOnline()
     _GetMap[GR_BUGCOMMENT] = "bugtracker/comments";
 	_GetMap[GR_GETBUGS_STATUS] = "bugtracker/getstates";
     _GetMap[GR_PROJECTBUGTAG_ALL] = "bugtracker/project/tags";
-	_GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
+    _GetMap[GR_PROJECT_USERS_ALL] = "projects/getusertoproject";
     _GetMap[GR_BUG_OPEN] = "bugtracker/tickets/opened";
     _GetMap[GR_BUG_CLOSED] = "bugtracker/tickets/closed";
     _GetMap[GR_BUG_YOURS] = "bugtracker/tickets/user";
@@ -70,6 +70,8 @@ DataConnectorOnline::DataConnectorOnline()
     _GetMap[GR_REOPEN_BUG] = "bugtracker/ticket/reopen";
     _GetMap[GR_LIST_WHITEBOARD] = "whiteboards";
     _GetMap[GR_OPEN_WHITEBOARD] = "whiteboard";
+    _GetMap[GR_STAT] = "statistics";
+    _GetMap[GR_NOTIF] = "notification";
 
 	// Initialize Post request
     _PostMap[PR_LOGIN] = "account/login";
@@ -85,11 +87,12 @@ DataConnectorOnline::DataConnectorOnline()
 	_PostMap[PR_NEW_WHITEBOARD] = "";
     _PostMap[PR_CREATE_DIRECTORY] = "cloud/createdir";
     _PostMap[PR_OPEN_STREAM] = "cloud/stream";
-    _PostMap[PR_ADD_TAG_TASK] = "tasks/tagcreation";
+    _PostMap[PR_ADD_TAG_TASK] = "tasks/tag";
     _PostMap[PR_ADD_USER_PROJECT] = "project/user";
     _PostMap[PR_CREATE_PROJECT] = "project";
     _PostMap[PR_CREATE_WHITEBOARD] = "whiteboard";
     _PostMap[PR_PULL_WHITEBOARD] = "whiteboard/draw";
+    _PostMap[PR_CREATE_TASK] = "task";
 
 	// Initialize Delete request
     _DeleteMap[DR_PROJECT_ROLE] = "role";
@@ -106,7 +109,7 @@ DataConnectorOnline::DataConnectorOnline()
     _DeleteMap[DR_CLOSE_STREAM] = "cloud/stream";
     _DeleteMap[DR_DELETE_ITEM] = "cloud/file";
     _DeleteMap[DR_DELETE_SECURE_ITEM] = "cloud/filesecured";
-    _DeleteMap[DR_TASK_TAG] = "tasks/deletetag";
+    _DeleteMap[DR_TASK_TAG] = "tasks/tag";
     _DeleteMap[DR_DELETE_COMMENT_TIMELINE] = "bugtracker/comment";
     _DeleteMap[DR_DELETE_WHITEBOARD] = "whiteboard";
     _DeleteMap[DR_DELETE_OBJECT] = "whiteboard/object";

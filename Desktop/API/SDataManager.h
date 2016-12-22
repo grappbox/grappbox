@@ -44,6 +44,7 @@
 #define SHOW_JSON(param) API::SDataManager::GenerateFileDebug(param)
 
 #define JSON_TO_DATETIME(date) QDateTime::fromString(date, "yyyy-MM-dd HH:mm:ss")
+#define JSON_TO_DATETIME_CUSTOM(date, format) QDateTime::fromString(date, format)
 #define JSON_TO_DATE(datep) QDate::fromString(datep, "yyyy-MM-dd")
 
 namespace API

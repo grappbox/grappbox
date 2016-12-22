@@ -17,46 +17,116 @@ Item {
 
     property var colorsUsed: ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B"]
 
-    Flickable {
-        id: mainFlickable
-        anchors.fill: parent
-        contentHeight: Math.max(mainColumn.implicitHeight + Units.dp(96), parent.height)
+    StatisticsModel {
+        id: modelSt
 
-        Column {
-            id: mainColumn
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: parent.top
-            anchors.margins: Units.dp(48)
-            spacing: Units.dp(10)
+        Component.onCompleted: {
+            updateStatisticsInfo();
+        }
 
-            StatisticsCategoryName {
-                colorIcon: "#FC575E"
-                iconName: "action/dashboard"
-                categoryName: "Project"
+        onLoaded: {
+            console.log(bugTrackerInfo.bugsTagsRepartition)
+            for (var item in bugTrackerInfo.bugsTagsRepartition)
+            {
+                console.log(bugTrackerInfo.bugsTagsRepartition[item].label);
+                console.log(bugTrackerInfo.bugsTagsRepartition[item].value);
             }
 
-            StatisticsProject {}
-
-            Item {
-                height: Units.dp(32)
-                width: parent.width
-            }
-
-            StatisticsCategoryName {
-                colorIcon: "#44BBFF"
-                iconName: "action/view_list"
-                categoryName: "Tasks"
-            }
-
-            StatisticsTasks {}
-
-
+            loader.sourceComponent = statistics
         }
     }
 
-    Scrollbar {
-        flickableItem: mainFlickable
+    Loader {
+        id: loader
+        anchors.fill: parent
+
+        visible: active
+        active: true
+    }
+
+    Component {
+        id: statistics
+
+        Item {
+            Flickable {
+                id: mainFlickable
+                anchors.fill: parent
+                contentHeight: Math.max(mainColumn.implicitHeight + Units.dp(96), parent.height)
+
+                Column {
+                    id: mainColumn
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.top: parent.top
+                    anchors.margins: Units.dp(48)
+                    spacing: Units.dp(10)
+
+                    StatisticsCategoryName {
+                        colorIcon: "#FC575E"
+                        iconName: "action/dashboard"
+                        categoryName: "Project"
+                    }
+
+                    StatisticsProject
+                    {
+                        modelStat: modelSt
+                    }
+
+                    Item {
+                        height: Units.dp(32)
+                        width: parent.width
+                    }
+
+                    StatisticsCategoryName {
+                        colorIcon: "#44BBFF"
+                        iconName: "action/view_list"
+                        categoryName: "Tasks"
+                    }
+
+                    StatisticsTasks
+                    {
+                        modelStat: modelSt
+                    }
+
+                    Item {
+                        height: Units.dp(32)
+                        width: parent.width
+                    }
+
+                    StatisticsCategoryName {
+                        colorIcon: "#9E58DC"
+                        iconName: "action/bug_report"
+                        categoryName: "BugTracker"
+                    }
+
+                    StatisticsBugTracker
+                    {
+                        modelState: modelSt
+                    }
+
+                    Item {
+                        height: Units.dp(32)
+                        width: parent.width
+                    }
+
+                    StatisticsCategoryName {
+                        colorIcon: "#FC575E"
+                        iconName: "action/account_circle"
+                        categoryName: "Users"
+                    }
+
+                    StatisticsUsers
+                    {
+                        modelStat: modelSt
+                    }
+
+                }
+            }
+
+            Scrollbar {
+                flickableItem: mainFlickable
+            }
+        }
     }
 }
 

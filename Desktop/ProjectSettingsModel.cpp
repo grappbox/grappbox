@@ -151,7 +151,7 @@ void ProjectSettingsModel::addNewRole(QString name, QList<int> roleValue)
             ADD_FIELD(var, roleValue[i]);
             ++i;
         }
-        GENERATE_JSON_DEBUG;
+        
         POST(API::DP_PROJECT, API::PR_ROLE_ADD);
     }
     END_REQUEST;
@@ -181,7 +181,7 @@ void ProjectSettingsModel::updateRole(int id, QList<int> roleValue)
             ADD_FIELD(var, roleValue[i]);
             ++i;
         }
-        GENERATE_JSON_DEBUG;
+        
         PUT(API::DP_PROJECT, API::PUTR_ROLE);
     }
     END_REQUEST;
@@ -196,7 +196,7 @@ void ProjectSettingsModel::changePassword(QString oldPass, QString newPass)
         ADD_URL_FIELD(m_idProject);
         ADD_FIELD("password", QCryptographicHash::hash(newPass.toLocal8Bit(), QCryptographicHash::Sha512).toHex());
         ADD_FIELD("oldPassword", QCryptographicHash::hash(oldPass.toLocal8Bit(), QCryptographicHash::Sha512).toHex());
-        GENERATE_JSON_DEBUG;
+        
         PUT(API::DP_PROJECT, API::PUTR_EDIT_PROJECT);
     }
     END_REQUEST;

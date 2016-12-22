@@ -47,6 +47,28 @@ View {
         }
     }
 
+    onDataValuesChanged: {
+        var realCategories = [];
+        for (var i = 0; i < dataValues.length; ++i)
+            realCategories.push(dataValues[i].label);
+        axisXBar.categories = realCategories;
+        var maxValueCal = -1
+        for (var i = 0; i < dataCategories.length; ++i)
+        {
+            var nb = [];
+            for (var j = 0; j < dataValues.length; ++j)
+            {
+                if (maxValue == -1 || maxValueCal < dataValues[j].value[i])
+                    maxValueCal = dataValues[j].value[i];
+                nb.push(dataValues[j].value[i]);
+            }
+        }
+        if (calculateMaxValue)
+        {
+            maxValue = Math.ceil(maxValueCal / 5) * 5;
+        }
+    }
+
     Column {
         id: columnPieChart
         anchors.fill: parent

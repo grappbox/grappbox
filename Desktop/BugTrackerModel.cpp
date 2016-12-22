@@ -23,7 +23,6 @@ void BugTrackerModel::loadClosedTickets()
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(PROJECT);
         GET(API::DP_BUGTRACKER, API::GR_BUG_CLOSED);
-        GENERATE_JSON_DEBUG;
     }
     END_REQUEST;
 }
@@ -76,7 +75,6 @@ void BugTrackerModel::addTicket(QString title, QString message, QVariantList use
         ADD_FIELD("clientOrigin", false);
         ADD_ARRAY("tags");
         ADD_ARRAY("users");
-        GENERATE_JSON_DEBUG;
         POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG);
     }
     END_REQUEST;
@@ -111,7 +109,6 @@ void BugTrackerModel::addUsersToTicket(int idTicket, int idUsers)
         ADD_ARRAY("toAdd");
         ADD_FIELD_ARRAY(idUsers, "toAdd");
         ADD_ARRAY("toRemove");
-        GENERATE_JSON_DEBUG;
         PUT(API::DP_BUGTRACKER, API::PUTR_ASSIGNUSER_BUG);
     }
     END_REQUEST;
@@ -177,7 +174,6 @@ void BugTrackerModel::createAndAddTagsToTicket(int idTicket, QString tag, QStrin
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", tag);
         ADD_FIELD("color", color.right(6));
-        GENERATE_JSON_DEBUG;
         if (idTicket == -1)
             POST(API::DP_BUGTRACKER, API::PR_CREATE_BUG_TAG);
         else

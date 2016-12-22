@@ -28,10 +28,11 @@ Column {
         taskProgression.value = currentTask.progression;
         repeaterTag.model = currentTask.tagAssigned;
         console.log(currentTask.tagAssigned)
-        repeaterUserAssigned.model = currentTask.usersRessources;
+        repeaterUserAssigned.model = currentTask.usersAssigned;
         console.log(currentTask.usersRessources)
         repeaterDependencies.model = currentTask.dependenciesAssigned;
         repeaterTasks.model = currentTask.taskChild;
+        console.log(currentTask.createDate)
         createdBy.text = "Created by " + currentTask.creator.firstName + " " + currentTask.creator.lastName + " the " + Qt.formatDateTime(currentTask.createDate, "yyyy-MM-dd hh:mm:ss");
     }
 
@@ -213,7 +214,7 @@ Column {
                         text: modelData.name
                         elevation: 1
                         textColor: "#FFF"
-                        backgroundColor: "#" + modelData.color
+                        backgroundColor: modelData.color
 
                         onClicked: {
                             /*for (var item in ganttModel.taskTags)
@@ -536,7 +537,7 @@ Column {
                 anchors.right: closeButton.left
                 anchors.rightMargin: Units.dp(8)
 
-                text: "Save"
+                text: "EDIT"
 
                 onClicked: {
                     edit(currentTask.id)
@@ -546,7 +547,7 @@ Column {
             Button {
                 id: closeButton
                 anchors.right: parent.right
-                text: "Cancel"
+                text: "DELETE"
                 textColor: Theme.primaryColor
 
                 onClicked: {

@@ -474,7 +474,7 @@ void TimelineModel::addMessageTimeline(int idParent, QString message)
         ADD_FIELD("comment", message);
         ADD_FIELD("commentedId", idParent);
         POST(API::DP_TIMELINE, API::PR_COMMENT_TIMELINE);
-        GENERATE_JSON_DEBUG;
+        
     }
     END_REQUEST;
     setIsLoadingAction(true);

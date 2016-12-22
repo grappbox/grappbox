@@ -72,7 +72,9 @@ namespace API
         GR_USER_AVATAR,
         GR_REOPEN_BUG,
         GR_LIST_WHITEBOARD,
-        GR_OPEN_WHITEBOARD
+        GR_OPEN_WHITEBOARD,
+        GR_STAT,
+        GR_NOTIF
     };
 
     enum PostRequest
@@ -95,7 +97,8 @@ namespace API
         PR_ADD_USER_PROJECT,
         PR_CREATE_PROJECT,
         PR_CREATE_WHITEBOARD,
-        PR_PULL_WHITEBOARD
+        PR_PULL_WHITEBOARD,
+        PR_CREATE_TASK
     };
 
     enum DeleteRequest

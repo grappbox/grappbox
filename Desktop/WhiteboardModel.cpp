@@ -75,7 +75,7 @@ int WhiteboardModel::pushObject(QVariantMap obj)
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(m_currentId);
         ADD_FIELD("object#object", qVariantFromValue(WhiteboardData::JSToJson(obj)));
-        GENERATE_JSON_DEBUG;
+        
         ret = PUT(API::DP_WHITEBOARD, API::PUTR_PUSH_WHITEBOARD);
     }
     END_REQUEST;
@@ -104,7 +104,7 @@ void WhiteboardModel::removeObjectAt(QVariantMap center, float radius)
         ADD_URL_FIELD(m_currentId);
         ADD_FIELD("object#center", qVariantFromValue(WhiteboardData::JSToJson(center)));
         ADD_FIELD("radius", radius);
-        GENERATE_JSON_DEBUG;
+        
         DELETE_REQ(API::DP_WHITEBOARD, API::DR_DELETE_OBJECT);
     }
     END_REQUEST;

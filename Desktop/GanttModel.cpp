@@ -62,6 +62,21 @@ void GanttModel::loadTaskTag()
     emit isLoadingChanged();
 }
 
+// PROBLEME
+void GanttModel::loadTask(int id)
+{
+    BEGIN_REQUEST;
+    {
+        SET_CALL_OBJECT(this);
+        SET_ON_DONE("OnLoadTaskTagDone");
+        SET_ON_FAIL("OnLoadTaskTagFail");
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(_Tasks[id]->id());
+        GET(API::DP_GANTT, API::GR_TASK);
+    }
+    END_REQUEST;
+}
+
 QStringListModel &GanttModel::taskNameModel(int ignoreId)
 {
     _Model.setStringList(taskName(ignoreId));
@@ -94,7 +109,7 @@ int GanttModel::idByTaskNameArray(int index) const
     return -1;
 }
 
-void GanttModel::addTag(QString name)
+void GanttModel::addTag(QString name, QString color)
 {
     BEGIN_REQUEST;
     {
@@ -105,6 +120,8 @@ void GanttModel::addTag(QString name)
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", name);
+        qDebug() << color << " : " << color.split("#")[1];
+        ADD_FIELD("color", color.split("#")[1]);
         POST(API::DP_GANTT, API::PR_ADD_TAG_TASK);
     }
     END_REQUEST;
@@ -115,11 +132,38 @@ void GanttModel::removeTag(int id)
     BEGIN_REQUEST;
     {
         SET_CALL_OBJECT(this);
-        SET_ON_DONE("OnAddTagDone");
-        SET_ON_FAIL("OnAddTagFail");
+        SET_ON_DONE("OnRemoveTagDone");
+        SET_ON_FAIL("OnRemoveTagFail");
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_URL_FIELD(id);
         DELETE_REQ(API::DP_GANTT, API::DR_TASK_TAG);
+    }
+    END_REQUEST;
+}
+
+void GanttModel::addTask(QString title,
+                         QString description,
+                         bool isMilestone,
+                         int progression,
+                         QDateTime startDate,
+                         QDateTime endDate,
+                         QVariantList users,
+                         QVariantList dependencies,
+                         QVariantList containedTasks,
+                         QVariantList tags)
+{
+    BEGIN_REQUEST_ADV(this, "OnAddTaskDone", "OnAddTaskFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_FIELD("projectId", PROJECT);
+        ADD_FIELD("title", title);
+        ADD_FIELD("description", description);
+        ADD_FIELD("is_milestone", isMilestone);
+        ADD_FIELD("is_container", containedTasks.length() > 0);
+        ADD_FIELD("started_at", startDate.toString("yyyy-MM-dd hh:mm:ss"));
+        ADD_FIELD("due_date", endDate.toString("yyyy-MM-dd hh:mm:ss"));
+        ADD_FIELD("advance", progression);
+        POST(API::DP_TASK, API::PR_CREATE_TASK);
     }
     END_REQUEST;
 }
@@ -187,7 +231,7 @@ void GanttModel::OnLoadTaskTagDone(int id, QByteArray data)
             if (tmpTag->id() == taskData["id"].toInt())
             {
                 tmpTag->setName(taskData["name"].toString());
-                tmpTag->setColor(taskData["color"].toString());
+                tmpTag->setColor("#" + taskData["color"].toString());
                 data = tmpTag;
                 break;
             }
@@ -195,7 +239,7 @@ void GanttModel::OnLoadTaskTagDone(int id, QByteArray data)
         if (data == nullptr)
         {
             data = new TaskTagData(taskData["id"].toInt(), taskData["name"].toString());
-            data->setColor(taskData["color"].toString());
+            data->setColor("#" + taskData["color"].toString());
             _TaskTags.push_back(data);
         }
     }
@@ -252,4 +296,18 @@ void GanttModel::OnRemoveTagFail(int id, QByteArray data)
     Q_UNUSED(id)
     Q_UNUSED(data)
     emit error("Project task error", "Unable to remove the tag. Please try again later.");
+}
+
+void GanttModel::OnAddTaskDone(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    loadTasks();
+}
+
+void GanttModel::OnAddTaskFail(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    emit error("Project task error", "Unable to add tasks.");
 }

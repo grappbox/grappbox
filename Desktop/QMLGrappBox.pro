@@ -23,7 +23,10 @@ SOURCES += main.cpp \
     Manager/DataImageProvider.cpp \
     CalendarModel.cpp \
     WhiteboardController.cpp \
-    WhiteboardModel.cpp
+    WhiteboardModel.cpp \
+    StatisticsModel.cpp \
+    NotificationModel.cpp \
+    NotificationInfoData.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -65,7 +68,10 @@ HEADERS += \
     CalendarModel.h \
     eventmodeldata.h \
     WhiteboardController.h \
-    WhiteboardModel.h
+    WhiteboardModel.h \
+    StatisticsModel.h \
+    NotificationModel.h \
+    NotificationInfoData.h
 
 RCC_DIR = qrc
 

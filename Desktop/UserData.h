@@ -23,6 +23,7 @@ class UserData : public QObject
     Q_PROPERTY(int roleId READ roleId WRITE setRoleId NOTIFY roleIdChanged)
     Q_PROPERTY(int occupation READ occupation WRITE setOccupation NOTIFY occupationChanged)
     Q_PROPERTY(QDateTime avatarDate READ avatarDate WRITE setAvatarDate NOTIFY avatarDateChanged)
+    Q_PROPERTY(int percent READ percent WRITE setPercent NOTIFY percentChanged)
 
 public:
     UserData();
@@ -118,6 +119,11 @@ public:
         return m_avatarDate;
     }
 
+    int percent() const
+    {
+        return m_percent;
+    }
+
 signals:
 
     void firstNameChanged(QString firstName);
@@ -145,6 +151,8 @@ signals:
     void roleIdChanged(int roleId);
 
     void avatarDateChanged(QDateTime avatarDate);
+
+    void percentChanged(int percent);
 
 public slots:
 
@@ -265,6 +273,15 @@ public slots:
         emit avatarDateChanged(avatarDate);
     }
 
+    void setPercent(int percent)
+    {
+        if (m_percent == percent)
+            return;
+
+        m_percent = percent;
+        emit percentChanged(percent);
+    }
+
 private:/*
     int m_id;
     QString m_firstName;
@@ -290,6 +307,7 @@ private:/*
     QString m_country;
     int m_roleId;
     QDateTime m_avatarDate;
+    int m_percent;
 };
 
 Q_DECLARE_METATYPE(UserData)
