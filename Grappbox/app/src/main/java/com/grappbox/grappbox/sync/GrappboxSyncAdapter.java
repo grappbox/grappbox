@@ -581,6 +581,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         register.setAction(GrappboxJustInTimeService.ACTION_REGISTER_DEVICE);
         register.putExtra(GrappboxJustInTimeService.EXTRA_ACCOUNT, newAccount);
         context.startService(register);
+        syncNow(newAccount, context);
     }
 
     @NonNull

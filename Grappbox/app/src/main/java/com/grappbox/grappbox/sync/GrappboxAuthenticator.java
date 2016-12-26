@@ -120,7 +120,6 @@ public class GrappboxAuthenticator extends AbstractAccountAuthenticator {
             answer.putString(AccountManager.KEY_AUTHTOKEN, data.getString("token"));
             am.setUserData(account, GrappboxJustInTimeService.EXTRA_API_TOKEN, data.getString("token"));
             am.setUserData(account, Session.ACCOUNT_EXPIRATION_TOKEN, String.valueOf(cal.getTimeInMillis()));
-
         } catch (IOException | JSONException e) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                 am.removeAccountExplicitly(account);

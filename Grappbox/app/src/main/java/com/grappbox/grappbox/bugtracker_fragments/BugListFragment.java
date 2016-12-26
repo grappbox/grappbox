@@ -128,7 +128,7 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
                     BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
                 };
-                long uid = Long.parseLong(AccountManager.get(getActivity()).getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
+                long uid = Session.getInstance(getActivity()).getSelectedProject();
 
                 selection = BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_PROJECT_ID + "=? AND " + BugEntry.COLUMN_LOCAL_PARENT_ID + " IS NULL AND " + BugEntry.COLUMN_DATE_DELETED_UTC + " IS NULL AND " +
                         GrappboxContract.BugAssignationEntry.TABLE_NAME + "." + GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?";
@@ -181,6 +181,8 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onRefresh() {
         AccountManager am = AccountManager.get(getActivity());
+        Log.e("TEST", Session.getInstance(getActivity()).getCurrentAccount().name);
+
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
         Intent bugSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
         bugSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
