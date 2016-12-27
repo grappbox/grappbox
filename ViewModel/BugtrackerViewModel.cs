@@ -9,6 +9,10 @@ using Grappbox.ViewModel;
 using Grappbox.HttpRequest;
 using Grappbox.Helpers;
 using System.Linq;
+using Windows.Networking.PushNotifications;
+using Newtonsoft.Json.Linq;
+using Windows.ApplicationModel.Core;
+using Windows.UI.Core;
 
 namespace Grappbox.ViewModel
 {
@@ -16,12 +20,12 @@ namespace Grappbox.ViewModel
     {
         static private BugtrackerViewModel instance = null;
         private BugtrackerModel _model = new BugtrackerModel();
-        private ObservableCollection<BugtrackerModel> _openBugs;
-        private ObservableCollection<BugtrackerModel> _closeBugs;
-        private ObservableCollection<BugtrackerModel> _yoursBugs;
+        private ObservableCollection<BugtrackerModel> _openBugs = new ObservableCollection<BugtrackerModel>();
+        private ObservableCollection<BugtrackerModel> _closeBugs = new ObservableCollection<BugtrackerModel>();
+        private ObservableCollection<BugtrackerModel> _yoursBugs = new ObservableCollection<BugtrackerModel>();
         private ObservableCollection<BugtrackerModel> _commentList = new ObservableCollection<BugtrackerModel>();
-        private ObservableCollection<TagModel> _tagList;
-        private ObservableCollection<UserModel> _userList;
+        private ObservableCollection<TagModel> _tagList = new ObservableCollection<TagModel>();
+        private ObservableCollection<UserModel> _userList = new ObservableCollection<UserModel>();
         private List<int> _toAdd = new List<int>();
         private List<int> _toRemove = new List<int>();
         private BugtrackerModel _openSelect;
@@ -676,6 +680,111 @@ namespace Grappbox.ViewModel
         public void newModel()
         {
             _model = new BugtrackerModel();
+        }
+        
+        private void pushNotif(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
+        {
+            if (e.NotificationType == PushNotificationType.Raw)
+            {
+                string title = JObject.Parse(e.RawNotification.Content).GetValue("title").ToString();
+                switch (title)
+                {
+                    case "new bug":
+                        BugtrackerModel tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                        _openBugs.Insert(0, tmp);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            e.Cancel = true;
+        }
+
+        public async void OnPushNotification(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
+        {
+            await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,
+            () =>
+            {
+                if (e.NotificationType == PushNotificationType.Raw)
+                {
+                    string title = JObject.Parse(e.RawNotification.Content).GetValue("title").ToString();
+                    BugtrackerModel tmp;
+                    TagModel tag;
+                    switch (title)
+                    {
+                        case "new bug":
+                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            _openBugs.Insert(0, tmp);
+                            break;
+                        case "update bug":
+                        case "assign tag bug":
+                        case "participants bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            int pos = 0;
+                            foreach (var item in _openBugs)
+                            {
+                                if (item.Id == tmp.Id)
+                                    pos = _openBugs.IndexOf(item);
+                            }
+                            if (pos != 0)
+                                _openBugs[pos] = tmp;
+                            if (tmp.Id == _openSelect.Id)
+                                _openSelect = tmp;
+                            if (tmp.Id == _closeSelect.Id)
+                                _closeSelect = tmp;
+                            break;
+                        case "close bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            _openBugs.Remove(tmp);
+                            _closeBugs.Insert(0, tmp);
+                            break;
+                        case "reopen bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            _closeBugs.Remove(tmp);
+                            _openBugs.Insert(0, tmp);
+                            break;
+                        case "new comment bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            if (_commentList[0].ParentId == tmp.ParentId)
+                                _commentList.Insert(0, tmp);
+                            break;
+                        case "edit comment bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            if (_commentList[0].ParentId == tmp.ParentId)
+                            {
+                                int pos2 = 0;
+                                foreach (var item in _commentList)
+                                {
+                                    if (item.Id == tmp.Id)
+                                        pos2 = _commentList.IndexOf(item);
+                                }
+                                _commentList[pos2] = tmp;
+                            }
+                            break;
+                        case "new tag bug":
+                            tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            _tagList.Insert(0, tag);
+                            break;
+                        case "update tag bug":
+                            tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            int pos3 = 0;
+                            foreach (var item in _tagList)
+                            {
+                                if (item.Id == tag.Id)
+                                    pos3 = _tagList.IndexOf(item);
+                            }
+                            _tagList[pos3] = tag;
+                            break;
+                        case "delete tag bug":
+                            tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            _tagList.Remove(tag);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                e.Cancel = true;
+            });
         }
     }
 }

@@ -48,6 +48,8 @@ namespace Grappbox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived += vm.OnPushNotification;
             //Mobile customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
@@ -79,6 +81,8 @@ namespace Grappbox.View
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived -= vm.OnPushNotification;
             vm.Title = string.Empty;
             vm.Description = string.Empty;
             Title.Text = string.Empty;

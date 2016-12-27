@@ -1,4 +1,6 @@
 ﻿using Grappbox.Helpers;
+using Grappbox.HttpRequest;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -8,49 +10,46 @@ using System.Threading.Tasks;
 using Windows.Data.Xml.Dom;
 using Windows.Networking.PushNotifications;
 using Windows.UI.Notifications;
+using Windows.Web.Http;
 
 namespace Grappbox.Helpers
 {
-    public class NotificationManager
+    public static class NotificationManager
     {
-        public static async Task<PushNotificationChannel> RequestChannel()
+        public static PushNotificationChannel NotificationChannel
         {
-            PushNotificationChannel channel = null;
+            get;
+            set;
+        }
+        public static async Task RequestChannel()
+        {
             try
             {
-                channel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
+                NotificationManager.NotificationChannel = await PushNotificationChannelManager.CreatePushNotificationChannelForApplicationAsync();
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
-                return null;
             }
-            return channel;
         }
 
-        public static async void OnPushNotification(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
+
+        public static async Task SendToken()
         {
-            String notificationContent = String.Empty;
+            Dictionary<string, object> data = new Dictionary<string, object>();
 
-            switch (e.NotificationType)
+            data.Add("device_type", "WP");
+            data.Add("device_token", NotificationChannel.Uri.ToString());
+            data.Add("device_name", "WindowsPhone");
+            HttpResponseMessage res = await HttpRequestManager.Post(data, "notification/device");
+            if (res?.IsSuccessStatusCode == false)
             {
-                case PushNotificationType.Badge:
-                    notificationContent = e.BadgeNotification.Content.GetXml();
-                    break;
-
-                case PushNotificationType.Tile:
-                    notificationContent = e.TileNotification.Content.GetXml();
-                    break;
-
-                case PushNotificationType.Toast:
-                    notificationContent = e.ToastNotification.Content.GetXml();
-                    break;
-
-                case PushNotificationType.Raw:
-                    notificationContent = e.RawNotification.Content;
-                    break;
+                Debug.WriteLine("Device register error");
+                if (res.StatusCode <= HttpStatusCode.InternalServerError)
+                {
+                    Debug.WriteLine(res.Content.ReadAsStringAsync().GetResults());
+                }
             }
-            e.Cancel = true;
         }
     }
 }

@@ -27,6 +27,21 @@ namespace Grappbox.Helpers
             }
         }
 
+        public static T DeserializeObject<T>(string data)
+        {
+            try
+            {
+                T obj;
+                obj = JsonConvert.DeserializeObject<T>(data);
+                return obj;
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                throw (ex);
+            }
+        }
+
         public static T DeserializeArrayJson<T>(string json)
         {
             string data = JObject.Parse(json).GetValue("data").ToString();

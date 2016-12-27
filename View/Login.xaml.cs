@@ -55,6 +55,7 @@ namespace Grappbox.View
             bool result = await HttpRequestManager.Login(loginBlock.Text, pwdBlock.Password);
             if (result == true)
             {
+                await NotificationManager.SendToken();
                 dialog.Hide();
                 await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.GenericDahsboard)));
             }

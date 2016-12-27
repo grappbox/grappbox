@@ -31,7 +31,7 @@
                 </PivotItem.Header>
                 <StackPanel Margin="10">
                     <TextBox x:Name="Title" Header="Title" PlaceholderText="Title" Text="{Binding Title, Mode=TwoWay}" IsEnabled="{Binding IdCheck}"/>
-                    <TextBox x:Name="Description" Header="Description" TextWrapping="Wrap" Height="90" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" IsEnabled="{Binding IdCheck}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
+                    <TextBox x:Name="Description" Header="Description" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" IsEnabled="{Binding IdCheck}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto"/>
                     <TextBlock Text="Assign users" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" Margin="0,15"/>
                     <ListView x:Name="UserListView" SelectionMode="None" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                         <ListView.ItemTemplate>

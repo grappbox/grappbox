@@ -23,7 +23,7 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}" HeaderContent="Timeline" />
+        <customControl:PageHeader Background="{StaticResource OrangeGrappboxBrush}" HeaderContent="Talks" />
         <Pivot Name="Pivot" Grid.Row="1" Style="{StaticResource OrangePivot}" SelectionChanged="Pivot_SelectionChanged">
             <PivotItem>
                 <PivotItem.Header>

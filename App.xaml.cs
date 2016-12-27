@@ -57,11 +57,8 @@ namespace Grappbox
                 //this.DebugSettings.EnableFrameRateCounter = true;
             }
 #endif
-            PushNotificationChannel pc = null;
-            if ((pc = await NotificationManager.RequestChannel()) != null)
-            {
-                pc.PushNotificationReceived += NotificationManager.OnPushNotification;
-            }
+            await NotificationManager.RequestChannel();
+
             StatusBar sb = StatusBar.GetForCurrentView();
             sb.ForegroundColor = Colors.Black;
 
