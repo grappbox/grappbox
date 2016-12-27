@@ -32,6 +32,7 @@ import com.grappbox.grappbox.model.BugTagModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.receiver.ErrorReceiver;
 import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.BugtrackerJIT;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.util.ArrayList;
@@ -181,10 +182,10 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
                             TextView comView = ((TextView)dialog.findViewById(R.id.comment));
                             assert comView != null;
                             String comment = comView.getText().toString();
-                            Intent edit = new Intent(mContext, GrappboxJustInTimeService.class);
-                            edit.setAction(GrappboxJustInTimeService.ACTION_EDIT_COMMENT);
+                            Intent edit = new Intent(mContext, BugtrackerJIT.class);
+                            edit.setAction(BugtrackerJIT.ACTION_EDIT_COMMENT);
                             edit.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, new ErrorReceiver(new Handler(), (Activity) mContext));
-                            edit.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, mBug._id);
+                            edit.putExtra(BugtrackerJIT.EXTRA_BUG_ID, mBug._id);
                             edit.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, mBug.projectID);
                             edit.putExtra(GrappboxJustInTimeService.EXTRA_COMMENT_ID, data._id);
                             edit.putExtra(GrappboxJustInTimeService.EXTRA_MESSAGE, comment);
@@ -234,10 +235,10 @@ public class BugDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             @Override
             public void onClick(View v) {
                 Log.e("test", String.valueOf(mBug.grappboxId));
-                Intent postComment = new Intent(mContext, GrappboxJustInTimeService.class);
-                postComment.setAction(GrappboxJustInTimeService.ACTION_POST_COMMENT);
+                Intent postComment = new Intent(mContext, BugtrackerJIT.class);
+                postComment.setAction(BugtrackerJIT.ACTION_POST_COMMENT);
                 postComment.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID ,mBug.projectID);
-                postComment.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID ,mBug._id);
+                postComment.putExtra(BugtrackerJIT.EXTRA_BUG_ID ,mBug._id);
                 postComment.putExtra(GrappboxJustInTimeService.EXTRA_MESSAGE ,holder.comment.getText().toString());
                 postComment.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, new ErrorReceiver(new Handler(), (Activity) mContext));
                 mContext.startService(postComment);

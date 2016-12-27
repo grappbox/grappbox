@@ -8,6 +8,7 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
@@ -29,6 +30,7 @@ import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.model.BugTagModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.receiver.BugReceiver;
+import com.grappbox.grappbox.sync.BugtrackerJIT;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.util.ArrayList;
@@ -306,23 +308,23 @@ public class NewBugFragment extends Fragment implements LoaderManager.LoaderCall
             List<UserModel> assignees = mAssigneeAdapter.getDataset();
 
             for (BugTagModel tag : delTags){
-                Intent apiTag = new Intent(getActivity(), GrappboxJustInTimeService.class);
-                apiTag.setAction(GrappboxJustInTimeService.ACTION_REMOVE_BUGTAG);
-                apiTag.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, model._id);
+                Intent apiTag = new Intent(getActivity(), BugtrackerJIT.class);
+                apiTag.setAction(BugtrackerJIT.ACTION_REMOVE_BUGTAG);
+                apiTag.putExtra(BugtrackerJIT.EXTRA_BUG_ID, model._id);
                 apiTag.putExtra(GrappboxJustInTimeService.EXTRA_TAG_ID, tag._id);
                 getActivity().startService(apiTag);
             }
 
             for (BugTagModel tag : tags){
-                Intent apiTag = new Intent(getActivity(), GrappboxJustInTimeService.class);
+                Intent apiTag = new Intent(getActivity(), BugtrackerJIT.class);
                 if (mCreatingTag.contains(tag)){
-                    apiTag.setAction(GrappboxJustInTimeService.ACTION_CREATE_TAG);
+                    apiTag.setAction(BugtrackerJIT.ACTION_CREATE_TAG);
                     apiTag.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, model.projectID);
-                    apiTag.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, model._id);
+                    apiTag.putExtra(BugtrackerJIT.EXTRA_BUG_ID, model._id);
                     apiTag.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, tag.name);
                 } else {
-                    apiTag.setAction(GrappboxJustInTimeService.ACTION_EDIT_BUGTAG);
-                    apiTag.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, model._id);
+                    apiTag.setAction(BugtrackerJIT.ACTION_EDIT_BUGTAG);
+                    apiTag.putExtra(BugtrackerJIT.EXTRA_BUG_ID, model._id);
                     apiTag.putExtra(GrappboxJustInTimeService.EXTRA_TAG_ID, tag._id);
                 }
                 getActivity().startService(apiTag);
@@ -338,20 +340,21 @@ public class NewBugFragment extends Fragment implements LoaderManager.LoaderCall
                         break;
                     }
                 }
-                if (!contain && !assignees.contains(umodel)){
+                if (contain && !assignees.contains(umodel)){
                     assignDel.add(umodel._id);
                 }
                 else if (!contain && assignees.contains(umodel)){
                     assignAdd.add(umodel._id);
                 }
             }
-            Intent apiUser = new Intent(getActivity(), GrappboxJustInTimeService.class);
+            Intent apiUser = new Intent(getActivity(), BugtrackerJIT.class);
             Bundle apiArgs = new Bundle();
+            Log.e("Test", String.valueOf(assignDel));
             apiArgs.putSerializable(GrappboxJustInTimeService.EXTRA_DEL_PARTICIPANT, assignDel);
             apiArgs.putSerializable(GrappboxJustInTimeService.EXTRA_ADD_PARTICIPANT, assignAdd);
-            apiUser.setAction(GrappboxJustInTimeService.ACTION_SET_PARTICIPANT);
+            apiUser.setAction(BugtrackerJIT.ACTION_SET_PARTICIPANT);
             apiUser.putExtra(GrappboxJustInTimeService.EXTRA_BUNDLE, apiArgs);
-            apiUser.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, model._id);
+            apiUser.putExtra(BugtrackerJIT.EXTRA_BUG_ID, model._id);
             getActivity().startService(apiUser);
             return null;
         }

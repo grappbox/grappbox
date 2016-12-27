@@ -94,6 +94,6 @@ public class UserModel implements Parcelable {
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof UserModel && Objects.equals(((UserModel) obj)._id, this._id);
+        return obj instanceof UserModel && ((UserModel) obj)._id == this._id;
     }
 }

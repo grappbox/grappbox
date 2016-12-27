@@ -26,7 +26,6 @@ import android.util.Pair;
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
-import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.ProjectAccountEntry;
 import com.grappbox.grappbox.data.GrappboxContract.ProjectEntry;
 import com.grappbox.grappbox.data.GrappboxContract.RolesAssignationEntry;
@@ -41,8 +40,6 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -429,18 +426,17 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         }
     }
 
-    private void syncBug(String apiToken, long projectId, long uid) {
-        Intent launchBugSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
-        launchBugSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
-        launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
+    private void syncBug(long projectId, long uid) {
+        Intent launchBugSyncing = new Intent(getContext(), BugtrackerJIT.class);
+        launchBugSyncing.setAction(BugtrackerJIT.ACTION_SYNC_BUGS);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
         launchBugSyncing.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
         getContext().startService(launchBugSyncing);
-        launchBugSyncing.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
+        launchBugSyncing.addCategory(BugtrackerJIT.CATEGORY_CLOSED);
         getContext().startService(launchBugSyncing);
 
-        Intent syncTags = new Intent(getContext(), GrappboxJustInTimeService.class);
-        syncTags.setAction(GrappboxJustInTimeService.ACTION_SYNC_TAGS);
+        Intent syncTags = new Intent(getContext(), BugtrackerJIT.class);
+        syncTags.setAction(BugtrackerJIT.ACTION_SYNC_TAGS);
         syncTags.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
         getContext().startService(syncTags);
     }
@@ -547,7 +543,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 long projectId = projectsCursor.getLong(0);
 
                 syncNextMeeting(token, projectId);
-                syncBug(token, projectId, uid);
+                syncBug(projectId, uid);
                 syncTimeline(token, projectId);
                 syncCustomerAccess(projectId);
             } while (projectsCursor.moveToNext());

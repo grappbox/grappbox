@@ -79,9 +79,8 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 tagDeletionSelection += ", ";
             }
             tagDeletionSelection += String.valueOf(tag.getLong(0));
-            tag.close();
 
-            Cursor assignationExist = mContext.getContentResolver().query(GrappboxContract.BugTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugTagEntry._ID}, GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + GrappboxContract.BugTagEntry.COLUMN_LOCAL_TAG_ID + "=?", new String[]{String.valueOf(bugId), String.valueOf(tag.getLong(0))}, null);
+            Cursor assignationExist = mContext.getContentResolver().query(GrappboxContract.BugTagEntry.CONTENT_URI, new String[]{GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry._ID}, GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + GrappboxContract.BugTagEntry.COLUMN_LOCAL_TAG_ID + "=?", new String[]{String.valueOf(bugId), String.valueOf(tag.getLong(0))}, null);
             if (assignationExist == null || !assignationExist.moveToFirst()){
                 ContentValues values = new ContentValues();
                 values.put(GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID, bugId);
@@ -90,11 +89,13 @@ class BugMessagingDispatcher implements MessagingDispatcher {
             } else{
                 assignationExist.close();
             }
+            tag.close();
         }
         if (!tagDeletionSelection.isEmpty())
             tagDeletionSelection += ") AND ";
         tagDeletionSelection += GrappboxContract.BugTagEntry.TABLE_NAME + "." + GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID + "=" + String.valueOf(bugId);
         mContext.getContentResolver().delete(GrappboxContract.BugTagEntry.CONTENT_URI, tagDeletionSelection, null);
+        mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
     }
 
     private void processUserSync(long bugId, JSONObject body) throws JSONException{
@@ -111,7 +112,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 usersDeletionSelection += ", ";
             }
             usersDeletionSelection += String.valueOf(user.getLong(0));
-            Cursor assignationExist = mContext.getContentResolver().query(GrappboxContract.BugAssignationEntry.CONTENT_URI, new String[]{GrappboxContract.BugAssignationEntry._ID}, GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{String.valueOf(bugId), String.valueOf(user.getLong(0))}, null);
+            Cursor assignationExist = mContext.getContentResolver().query(GrappboxContract.BugAssignationEntry.CONTENT_URI, new String[]{GrappboxContract.BugAssignationEntry.TABLE_NAME + "." + GrappboxContract.BugAssignationEntry._ID}, GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID + "=? AND " + GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{String.valueOf(bugId), String.valueOf(user.getLong(0))}, null);
             if (assignationExist == null || !assignationExist.moveToFirst()){
                 ContentValues values = new ContentValues();
                 values.put(GrappboxContract.BugAssignationEntry.COLUMN_LOCAL_BUG_ID, bugId);
@@ -178,6 +179,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (project != null)
                     project.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -210,6 +212,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -232,6 +235,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (current != null)
                     current.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -252,6 +256,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (bug != null)
                     bug.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -289,7 +294,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (creator != null)
                     creator.close();
             }
-
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -309,6 +314,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (parent != null)
                     parent.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -345,6 +351,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                     project.close();
                 }
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -357,6 +364,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -400,6 +408,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (tag != null && !tag.isClosed())
                     tag.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 
@@ -420,6 +429,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
                 if (bug != null)
                     bug.close();
             }
+            mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         }
     }
 }

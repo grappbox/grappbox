@@ -18,6 +18,7 @@ import android.widget.TextView;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.model.BugModel;
 import com.grappbox.grappbox.receiver.BugReceiver;
+import com.grappbox.grappbox.sync.BugtrackerJIT;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import org.w3c.dom.Text;
@@ -103,9 +104,9 @@ public class NewBugActivity extends AppCompatActivity {
     }
 
     private void actionSave(){
-        Intent save = new Intent(this, GrappboxJustInTimeService.class);
-        save.setAction(mIsEditMode ? GrappboxJustInTimeService.ACTION_EDIT_BUG : GrappboxJustInTimeService.ACTION_CREATE_BUG);
-        save.putExtra(mIsEditMode ? GrappboxJustInTimeService.EXTRA_BUG_ID : GrappboxJustInTimeService.EXTRA_PROJECT_ID, mIsEditMode ? mModel._id : mProjectID);
+        Intent save = new Intent(this, BugtrackerJIT.class);
+        save.setAction(mIsEditMode ? BugtrackerJIT.ACTION_EDIT_BUG : BugtrackerJIT.ACTION_CREATE_BUG);
+        save.putExtra(mIsEditMode ? BugtrackerJIT.EXTRA_BUG_ID : GrappboxJustInTimeService.EXTRA_PROJECT_ID, mIsEditMode ? mModel._id : mProjectID);
         save.putExtra(GrappboxJustInTimeService.EXTRA_TITLE, mTitle.getText().toString());
         save.putExtra(GrappboxJustInTimeService.EXTRA_DESCRIPTION, mDescription.getText().toString());
         save.putExtra(GrappboxJustInTimeService.EXTRA_CLIENT_ACTION, false);

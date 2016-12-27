@@ -642,9 +642,11 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_TAG:
                 returnedUri = BugTagCursors.insert(uri, contentValues, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case BUG_ASSIGNATION:
                 returnedUri = BugAssignationCursors.insert(uri, contentValues, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case TIMELINE:
                 returnedUri = TimelineCursors.insert(uri, contentValues, mOpenHelper);
@@ -690,6 +692,8 @@ public class GrappboxProvider extends ContentProvider {
         int ret =  mOpenHelper.getWritableDatabase().delete(tableName, selection, args);
         if (ret > 0)
             getContext().getContentResolver().notifyChange(uri, null);
+        if (tableName.equals(GrappboxContract.BugAssignationEntry.TABLE_NAME) || tableName.equals(GrappboxContract.BugTagEntry.TABLE_NAME) || tableName.equals(GrappboxContract.BugtrackerTagEntry.TABLE_NAME))
+            getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
         return ret;
     }
 
@@ -720,9 +724,11 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_TAG:
                 ret = BugTagCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case BUG_ASSIGNATION:
                 ret = BugAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case TIMELINE:
                 ret = TimelineCursors.update(uri, contentValues, selection, args, mOpenHelper);
@@ -782,9 +788,11 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_TAG:
                 returnCount = BugTagCursors.bulkInsert(uri, values, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case BUG_ASSIGNATION:
                 returnCount = BugAssignationCursors.bulkInsert(uri, values, mOpenHelper);
+                getContext().getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
                 break;
             case TIMELINE:
                 returnCount = TimelineCursors.bulkInsert(uri, values, mOpenHelper);

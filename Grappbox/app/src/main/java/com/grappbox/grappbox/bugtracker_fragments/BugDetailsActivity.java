@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.bugtracker_fragments;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.view.MenuItem;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.model.BugModel;
+import com.grappbox.grappbox.sync.BugtrackerJIT;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 public class BugDetailsActivity extends AppCompatActivity {
@@ -33,10 +35,6 @@ public class BugDetailsActivity extends AppCompatActivity {
         }
         mData = getIntent().getParcelableExtra(EXTRA_BUG_MODEL);
         getSupportActionBar().setTitle(mData.title);
-    }
-
-    public BugModel getBugModel(){
-        return mData;
     }
 
     @Override
@@ -60,15 +58,15 @@ public class BugDetailsActivity extends AppCompatActivity {
 
     private void actionDelete(){
         if (mData.isClosed){
-            Intent open = new Intent(this, GrappboxJustInTimeService.class);
-            open.setAction(GrappboxJustInTimeService.ACTION_REOPEN_BUG);
-            open.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, mData._id);
+            Intent open = new Intent(this, BugtrackerJIT.class);
+            open.setAction(BugtrackerJIT.ACTION_REOPEN_BUG);
+            open.putExtra(BugtrackerJIT.EXTRA_BUG_ID, mData._id);
             startService(open);
             mData.isClosed = false;
         } else {
-            Intent close = new Intent(this, GrappboxJustInTimeService.class);
-            close.setAction(GrappboxJustInTimeService.ACTION_CLOSE_BUG);
-            close.putExtra(GrappboxJustInTimeService.EXTRA_BUG_ID, mData._id);
+            Intent close = new Intent(this, BugtrackerJIT.class);
+            close.setAction(BugtrackerJIT.ACTION_CLOSE_BUG);
+            close.putExtra(BugtrackerJIT.EXTRA_BUG_ID, mData._id);
             startService(close);
             Log.d("del", "actionDelete");
             mData.isClosed = true;

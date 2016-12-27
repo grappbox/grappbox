@@ -35,6 +35,7 @@ import com.grappbox.grappbox.model.BugTagModel;
 import com.grappbox.grappbox.model.UserModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
+import com.grappbox.grappbox.sync.BugtrackerJIT;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
 import java.text.ParseException;
@@ -143,20 +144,6 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         return new CursorLoader(getActivity(), BugEntry.CONTENT_URI, null, selection, selectionArgs, sortOrder);
     }
 
-    class StringDateComparator implements Comparator<BugModel>
-    {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        public int compare(BugModel lhs, BugModel rhs)
-        {
-            try {
-                return dateFormat.parse(rhs.date.split(" ")[2]).compareTo(dateFormat.parse(lhs.date.split(" ")[2]));
-            } catch (ParseException e) {
-                e.printStackTrace();
-            }
-            return -1;
-        }
-    }
-
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (!data.moveToFirst()){
@@ -169,8 +156,9 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
         do {
             models.add(new BugModel(getActivity(), data));
         } while (data.moveToNext());
-        Collections.sort(models, new StringDateComparator());
         AdditionalDataLoader task = new AdditionalDataLoader();
+
+        //noinspection unchecked
         task.execute(models);
     }
 
@@ -181,17 +169,17 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
     @Override
     public void onRefresh() {
         AccountManager am = AccountManager.get(getActivity());
-        Log.e("TEST", Session.getInstance(getActivity()).getCurrentAccount().name);
 
         long uid = Long.parseLong(am.getUserData(Session.getInstance(getActivity()).getCurrentAccount(), GrappboxJustInTimeService.EXTRA_USER_ID));
-        Intent bugSync = new Intent(getActivity(), GrappboxJustInTimeService.class);
-        bugSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_BUGS);
+        Intent bugSync = new Intent(getActivity(), BugtrackerJIT.class);
+        bugSync.setAction(BugtrackerJIT.ACTION_SYNC_BUGS);
 
         bugSync.putExtra(GrappboxJustInTimeService.EXTRA_RESPONSE_RECEIVER, mRefreshReceiver);
         bugSync.putExtra(GrappboxJustInTimeService.EXTRA_USER_ID, uid);
         bugSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, getActivity().getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
         if (getArguments().getInt(ARG_LIST_TYPE) == TYPE_CLOSE)
-            bugSync.addCategory(GrappboxJustInTimeService.CATEGORY_CLOSED);
+            bugSync.addCategory(BugtrackerJIT.CATEGORY_CLOSED);
+        Log.e("TEST", "start service bugtrackerJIT");
         getActivity().startService(bugSync);
     }
 

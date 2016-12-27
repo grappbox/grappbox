@@ -51,6 +51,9 @@
             android:name=".sync.GrappboxWhiteboardJIT"
             android:exported="false" />
         <service
+            android:name=".sync.BugtrackerJIT"
+            android:exported="false" />
+        <service
             android:name=".sync.GrappboxAuthenticatorService"
             android:exported="false">
             <intent-filter>
