@@ -34,7 +34,6 @@ public class TimelineFragment extends Fragment {
 
     private FragmentStatePagerAdapter mPagesAdapter;
     private ViewPager mViewPager;
-    private FloatingActionButton mAddMessage;
 
     public TimelineFragment() {
         // Required empty public constructor

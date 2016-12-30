@@ -3108,6 +3108,7 @@ public class GrappboxJustInTimeService extends IntentService {
             projectStat.put(GrappboxContract.StatEntry.COLUMN_BUGTRACKER_UNASSIGN, Integer.valueOf(json.getJSONObject("bugAssignationTracker").getString("unassigned")));
             projectStat.put(GrappboxContract.StatEntry.COLUMN_STORAGE_OCCUPIED, Integer.valueOf(json.getJSONObject("storageSize").getString("occupied")));
             projectStat.put(GrappboxContract.StatEntry.COLUMN_STORAGE_TOTAL, Integer.valueOf(json.getJSONObject("storageSize").getString("total")));
+            projectStat.put(GrappboxContract.StatEntry.COLUMN_LOCAL_PROJECT_ID, projectId);
             Uri res = getContentResolver().insert(GrappboxContract.StatEntry.CONTENT_URI, projectStat);
             if (res == null)
                 throw new SQLException(Utils.Errors.ERROR_SQL_INSERT_FAILED);

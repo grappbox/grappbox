@@ -230,6 +230,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 StatEntry.COLUMN_BUGTRACKER_UNASSIGN + " INTEGER NOT NULL, " +
                 StatEntry.COLUMN_STORAGE_OCCUPIED + " INTEGER NOT NULL, " +
                 StatEntry.COLUMN_STORAGE_TOTAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 " UNIQUE (" + StatEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_ADVANCEMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + AdvancementEntry.TABLE_NAME + " (" +

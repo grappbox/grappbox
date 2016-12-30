@@ -502,6 +502,9 @@ public class GrappboxContract {
         public static final String COLUMN_STORAGE_OCCUPIED = "storage_occupied";
         public static final String COLUMN_STORAGE_TOTAL = "storage_total";
 
+        public static final String COLUMN_PROJECT_ID = "project_id";
+        public static final String COLUMN_LOCAL_PROJECT_ID = "local_project_id";
+
         public static Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_STATS).build();
         public static String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
         public static String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_STATS;
