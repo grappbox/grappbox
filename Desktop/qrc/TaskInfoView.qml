@@ -26,11 +26,11 @@ Column {
         else
             dates.text = "The " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm");
         taskProgression.value = currentTask.progression;
-        repeaterTag.model = currentTask.tagAssigned;
-        console.log(currentTask.tagAssigned)
+        taskTag.repeaterTags.model = currentTask.tagAssigned;
+        console.log(ganttModel)
         repeaterUserAssigned.model = currentTask.usersAssigned;
         console.log(currentTask.usersRessources)
-        repeaterDependencies.model = currentTask.dependenciesAssigned;
+        dependencies.repeaterDependencies.model = currentTask.dependenciesAssigned;
         repeaterTasks.model = currentTask.taskChild;
         console.log(currentTask.createDate)
         createdBy.text = "Created by " + currentTask.creator.firstName + " " + currentTask.creator.lastName + " the " + Qt.formatDateTime(currentTask.createDate, "yyyy-MM-dd hh:mm:ss");
@@ -157,91 +157,10 @@ Column {
             width: parent.width
         }
 
-        View {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: sectionHeaderTag.expanded ? Units.dp(48) : 0
-
-            visible: repeaterTag.model.Length === 0
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
-
-            ListItem.Standard {
-
-                anchors.fill: parent
-
-                action: Icon {
-                    anchors.centerIn: parent
-                    name: "content/add_circle_outline"
-                    size: Units.dp(32)
-                }
-
-                text: "Add a tag to the task"
-            }
-        }
-
-
-        View {
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.leftMargin: Units.dp(16)
-            height: sectionHeaderTag.expanded ? flowTag.implicitHeight + Units.dp(16) : 0
-
-            //visible: repeaterTag.model.Length > 0
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
-
-            Flow {
-                id: flowTag
-                anchors.fill: parent
-                anchors.topMargin: Units.dp(8)
-                anchors.bottomMargin: Units.dp(8)
-
-                spacing: Units.dp(8)
-
-                Repeater {
-                    id: repeaterTag
-                    model: []
-                    delegate: Button {
-                        text: modelData.name
-                        elevation: 1
-                        textColor: "#FFF"
-                        backgroundColor: modelData.color
-
-                        onClicked: {
-                            /*for (var item in ganttModel.taskTags)
-                            {
-                                if (ganttModel.taskTags[item].id === modelData)
-                                {
-                                    tagEdit.assignedTag = ganttModel.taskTags[item]
-                                    tagEdit.open()
-                                    break
-                                }
-                            }*/
-                        }
-
-                        Component.onCompleted: {
-                            console.log(repeaterTag.model.length)
-                        }
-                    }
-                }
-
-                /*IconButton {
-                    Layout.alignment: Qt.AlignVCenter
-                    iconName: "content/add_circle_outline"
-                    onClicked: {
-                        addTagDialog.show()
-                    }
-                }*/
-            }
+        TaskTagEdit {
+            id: taskTag
+            ganttModel: infoView.ganttModel
+            expanded: sectionHeaderTag.expanded
         }
 
         Item {
@@ -350,67 +269,10 @@ Column {
             width: parent.width
         }
 
-        View {
-
-            id: viewDependencies
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: headerDependencies.expanded ? columnDependencies.implicitHeight : 0
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
-
-            Column {
-                id: columnDependencies
-                anchors.fill: parent
-
-                property var enumToTextType: ["Finish to start", " Start to start", "Finish to finish", "Start to finish"]
-
-                spacing: Units.dp(8)
-
-                    Repeater {
-                        id: repeaterDependencies
-                        model: []
-                        delegate: ListItem.Standard {
-                            secondaryItem: Label {
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right
-
-                                text: columnDependencies.enumToTextType[modelData.type]
-                            }
-
-                            Component.onCompleted: {
-                                console.log(modelData.type, " : ", modelData.linkedTask)
-                                text = Qt.binding(function () {
-                                    console.log(ganttModel.tasks)
-                                    for (var i = 0; i < ganttModel.tasks.length; ++i)
-                                    {
-                                        console.log(ganttModel.tasks[i])
-                                        if (ganttModel.tasks[i].id === modelData.linkedTask)
-                                        {
-                                            console.log(ganttModel.tasks[i].title);
-                                            return ganttModel.tasks[i].title;
-                                        }
-                                    }
-                                    return "";
-                                })
-                            }
-                        }
-                    }
-
-                    /*ListItem.Standard {
-                        action: Icon {
-                            anchors.centerIn: parent
-                            name: "content/add_circle_outline"
-                            size: Units.dp(32)
-                        }
-
-                        text: "Add a new dependency to the task"
-                    }*/
-            }
+        TaskDependenciesEdit {
+            id: dependencies
+            ganttModel: infoView.ganttModel
+            expanded: headerDependencies.expanded
         }
 
         Item {
@@ -564,7 +426,7 @@ Column {
     }
 
 
-    BottomActionSheet {
+/*    BottomActionSheet {
         id: tagEdit
 
         title: "Action"
@@ -589,6 +451,6 @@ Column {
 
         ]
     }
-
+*/
 }
 

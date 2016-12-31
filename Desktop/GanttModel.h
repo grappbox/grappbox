@@ -40,6 +40,7 @@ public:
     Q_INVOKABLE void addTask(QString title, QString description, bool isMilestone, int progression, QDateTime startDate, QDateTime endDate, QVariantList users, QVariantList dependencies, QVariantList containedTasks, QVariantList tags);
 
 signals:
+    void tagAdded(int idTag);
     void tasksChanged();
     void isLoadingChanged();
     void taskTagsChanged();
@@ -67,6 +68,7 @@ private:
     bool _IsLoading;
     QStringListModel _Model;
     QStringList _ListName;
+    int _lastTagAdded;
 };
 
 #endif // GANTTMODEL_H

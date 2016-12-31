@@ -35,6 +35,8 @@ void NotificationModel::OnUpdateDone(int id, QByteArray array)
     currentOffset += obj["array"].toArray().size();
     for (QJsonValueRef ref : obj["array"].toArray())
     {
+        if (ref.toObject()["message"].toString().startsWith("{"))
+            continue;
         NotificationInfoData *info = new NotificationInfoData(ref.toObject());
         m_notification.push_front(qVariantFromValue(info));
     }

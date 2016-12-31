@@ -3,6 +3,7 @@
 
 GanttModel::GanttModel(QObject *parent) : QObject(parent)
 {
+    _lastTagAdded = -1;
 }
 
 QVariantList GanttModel::tasks()
@@ -120,7 +121,6 @@ void GanttModel::addTag(QString name, QString color)
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
         ADD_FIELD("projectId", PROJECT);
         ADD_FIELD("name", name);
-        qDebug() << color << " : " << color.split("#")[1];
         ADD_FIELD("color", color.split("#")[1]);
         POST(API::DP_GANTT, API::PR_ADD_TAG_TASK);
     }
@@ -261,6 +261,11 @@ void GanttModel::OnLoadTaskTagDone(int id, QByteArray data)
     for (TaskTagData *data : toDelete)
         _TaskTags.removeAll(data);
     emit taskTagsChanged();
+    if (_lastTagAdded != -1)
+    {
+        emit tagAdded(_lastTagAdded);
+        _lastTagAdded = -1;
+    }
 }
 
 void GanttModel::OnLoadTaskTagFail(int id, QByteArray data)
@@ -273,7 +278,11 @@ void GanttModel::OnLoadTaskTagFail(int id, QByteArray data)
 void GanttModel::OnAddTagDone(int id, QByteArray data)
 {
     Q_UNUSED(id)
-    Q_UNUSED(data)
+    QJsonDocument doc;
+    doc = QJsonDocument::fromJson(data);
+    QJsonObject obj = doc.object()["data"].toObject();
+    qDebug() << "ID : " << obj["id"].toInt();
+    _lastTagAdded = obj["id"].toInt();
     loadTaskTag();
 }
 
@@ -301,7 +310,6 @@ void GanttModel::OnRemoveTagFail(int id, QByteArray data)
 void GanttModel::OnAddTaskDone(int id, QByteArray data)
 {
     Q_UNUSED(id)
-    Q_UNUSED(data)
     loadTasks();
 }
 

@@ -67,6 +67,8 @@
         <file>qrc/TaskAddView.qml</file>
         <file>qrc/StatisticsUsers.qml</file>
         <file>qrc/StatisticsBarStacked.qml</file>
+        <file>qrc/TaskDependenciesEdit.qml</file>
+        <file>qrc/TaskTagEdit.qml</file>
     </qresource>
     <qresource prefix="/images">
         <file>qrc/images/circle.png</file>
