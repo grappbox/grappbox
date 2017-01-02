@@ -3,24 +3,18 @@
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <LinearLayout
+    <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:background="@drawable/bg_bottom_border">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Project Advancement"
-            android:padding="10dp"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </LinearLayout>
+        android:text="@string/stat_advancement"
+        android:padding="10dp"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:background="@drawable/bg_bottom_border"/>
 
     <com.github.mikephil.charting.charts.LineChart
         android:id="@+id/advancement_line_chart"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        />
 
 </LinearLayout>

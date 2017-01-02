@@ -26,17 +26,13 @@ public class DashboardStatePagerAdapter extends FragmentStatePagerAdapter {
     public Fragment getItem(int position)
     {
         Fragment page;
-        if (position == 0) {
-            page = new StatisticAdvancementFragment();
-        } else {
-            page = new StatisticListFragment();
-        }
+        page = new StatisticListFragment();
         return page;
     }
 
     @Override
     public int getCount() {
-        return 2;
+        return 1;
     }
 
     @Override

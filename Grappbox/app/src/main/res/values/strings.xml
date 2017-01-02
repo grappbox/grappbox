@@ -233,4 +233,8 @@
     <string name="event_error_date">Date event error</string>
     <string name="title_activity_event_detail">Event details</string>
     <string name="event_no_project">No project</string>
+
+    <string name="stat_timeline">Timeline</string>
+    <string name="stat_advancement">Advancement</string>
+    <string name="stat_Storage">Storage</string>
 </resources>

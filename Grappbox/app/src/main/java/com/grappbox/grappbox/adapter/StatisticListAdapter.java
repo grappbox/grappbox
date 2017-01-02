@@ -27,13 +27,11 @@ public class StatisticListAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     private Activity mContext;
     private LayoutInflater mInflater;
-    private List<StatLineChartModel> mLineChartModel;
 
     public StatisticListAdapter(Activity context) {
         super();
         mContext = context;
         mInflater = LayoutInflater.from(context);
-        mLineChartModel = new ArrayList<>();
     }
 
     @Override
@@ -49,7 +47,6 @@ public class StatisticListAdapter extends RecyclerView.Adapter<RecyclerView.View
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         switch (getItemViewType(position)) {
             case STAT_ADVANCEMENT:
-                bindStatAdvancementEntry(mLineChartModel.get(position), (StatAdvancementHolder) holder, position);
                 break;
         }
     }
