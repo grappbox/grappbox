@@ -30,7 +30,7 @@ import java.util.ArrayList;
 
 public class StatisticCloudFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String LOG_TAG = StatisticTaskFragment.class.getSimpleName();
+    public static final String LOG_TAG = StatisticCloudFragment.class.getSimpleName();
     private PieChart mChart;
 
     public StatisticCloudFragment() {
