@@ -101,7 +101,7 @@ public class CloudListAdapter extends CursorAdapter {
 
     @Override
     public Cursor swapCursor(Cursor newCursor) {
-        if (newCursor == null || !newCursor.moveToFirst())
+        if (newCursor == null || !newCursor.moveToFirst() || getCursor() == newCursor)
             return super.swapCursor(newCursor);
 
         MatrixCursor subSafe = new MatrixCursor(new String[]{"_id", "subheader"});

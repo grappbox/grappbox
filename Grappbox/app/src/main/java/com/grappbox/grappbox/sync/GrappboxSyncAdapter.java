@@ -17,6 +17,7 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteAbortException;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -42,7 +43,9 @@ import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Marc Wieser the 30/08/2016.
@@ -137,6 +140,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
             connection.connect();
+            Log.v(LOG_TAG, "syncProjects : " + url.toString());
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
@@ -441,6 +445,13 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(syncTags);
     }
 
+    private void syncPlanningMonth(String apiToken, int offsetMonth){
+        Intent launchEventSync = new Intent(getContext(), GrappboxJustInTimeService.class);
+        launchEventSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_EVENT);
+        launchEventSync.putExtra(GrappboxJustInTimeService.EXTRA_CALENDAR_MONTH_OFFSET, offsetMonth);
+        getContext().startService(launchEventSync);
+    }
+
     private void syncTimeline(String apiToken, long projectId) {
         //synchronize Timeline's list
         Cursor grappboxProjectIdCursor = getContext().getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(projectId), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
@@ -449,7 +460,9 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         HttpURLConnection connection = null;
         String returnedJson;
         try {
+            Log.v(LOG_TAG, "project ID : " + grappboxProjectIdCursor.getString(0) + ", column name : " + grappboxProjectIdCursor.getColumnName(0));
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/timelines/"+ grappboxProjectIdCursor.getString(0));
+            Log.v(LOG_TAG, "url : " + url.toString());
             connection = (HttpURLConnection) url.openConnection();
             connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("GET");
@@ -482,7 +495,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_TIMELINE_ID, timelineId);
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
                 launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_OFFSET, 0);
-                launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 100);
+                launchTimelineMessageSync.putExtra(GrappboxJustInTimeService.EXTRA_LIMIT, 50);
                 getContext().startService(launchTimelineMessageSync);
             }
 
@@ -506,11 +519,21 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(launchNextMeetingSyncing);
     }
 
-    public void syncCustomerAccess(long projectId){
+
+    public void syncCustomerAccess(long projectId) {
         Intent sync = new Intent(getContext(), GrappboxJustInTimeService.class);
         sync.setAction(GrappboxJustInTimeService.ACTION_SYNC_CUSTOMER_ACCESS);
         sync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
         getContext().startService(sync);
+    }
+
+    private void syncStats(String apiToken, long projectId) {
+        //synchronyze the stats
+        Intent launchAllStatSync = new Intent(getContext(), GrappboxJustInTimeService.class);
+        launchAllStatSync.setAction(GrappboxJustInTimeService.ACTION_SYNC_ALL_STATS);
+        launchAllStatSync.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
+        launchAllStatSync.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
+        getContext().startService(launchAllStatSync);
     }
 
     @Override
@@ -546,6 +569,12 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 syncBug(projectId, uid);
                 syncTimeline(token, projectId);
                 syncCustomerAccess(projectId);
+
+                syncPlanningMonth(token, -1);
+                syncPlanningMonth(token, 0);
+                syncPlanningMonth(token, 1);
+                syncStats(token, projectId);
+
             } while (projectsCursor.moveToNext());
 
         } catch (IOException | JSONException | OperationApplicationException | NumberFormatException | AuthenticatorException e) {

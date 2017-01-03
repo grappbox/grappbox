@@ -37,7 +37,7 @@ public class BugCursors {
 
         sBugWithAssignationBuilder = new SQLiteQueryBuilder();
         sBugWithAssignationBuilder.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugAssignationEntry.TABLE_NAME +
-        " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID);
+                " ON " + BugEntry.TABLE_NAME + "." + BugEntry._ID + " = " + BugAssignationEntry.TABLE_NAME + "." + BugAssignationEntry.COLUMN_LOCAL_BUG_ID);
 
         sBugWithTag = new SQLiteQueryBuilder();
         sBugWithTag.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + BugTagEntry.TABLE_NAME +
@@ -47,7 +47,7 @@ public class BugCursors {
 
         sBugWithCreator = new SQLiteQueryBuilder();
         sBugWithCreator.setTables(BugEntry.TABLE_NAME + " INNER JOIN " + UserEntry.TABLE_NAME +
-        " ON " + BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_CREATOR_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
+                " ON " + BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_LOCAL_CREATOR_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
     }
 
 

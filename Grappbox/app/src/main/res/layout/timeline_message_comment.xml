@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/footer">
+
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="150dp"
+            android:indeterminateTint="@color/GrappOrange"
+            android:id="@+id/loader"
+            android:indeterminate="true" />
+
+        <TextView
+            android:padding="15dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/GrappOrange"
+            android:textAlignment="textStart"
+            android:textColor="@color/GrappWhiteLight"
+            android:textAppearance="@style/EmphasisTextView"
+            android:text="Timeline message"
+            android:id="@+id/message"
+            />
+
+        <android.support.v4.widget.SwipeRefreshLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/refresh"
+            tools:context="com.grappbox.grappbox.bugtracker_fragments.TimelineListFragment"
+            android:visibility="gone">
+
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/scrollable_content" />
+
+        </android.support.v4.widget.SwipeRefreshLayout>
+
+    </LinearLayout>
+
+    <FrameLayout
+        android:id="@+id/footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/GrappWhiteMedium">
+
+        <include layout="@layout/list_item_bug_comment_reply" />
+
+    </FrameLayout>
+
+</RelativeLayout>
+

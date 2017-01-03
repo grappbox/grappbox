@@ -122,12 +122,12 @@ public class BugListFragment extends Fragment implements LoaderManager.LoaderCal
             case TYPE_YOURS:
                 sortOrder = "date(" + BugEntry.COLUMN_DATE_LAST_EDITED_UTC + ") DESC";
                 String[] projection = {
-                    BugEntry.TABLE_NAME + "." + BugEntry._ID,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
-                    BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
+                        BugEntry.TABLE_NAME + "." + BugEntry._ID,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_GRAPPBOX_ID,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_TITLE,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DESCRIPTION,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_LAST_EDITED_UTC,
+                        BugEntry.TABLE_NAME + "." + BugEntry.COLUMN_DATE_DELETED_UTC
                 };
                 long uid = Session.getInstance(getActivity()).getSelectedProject();
 

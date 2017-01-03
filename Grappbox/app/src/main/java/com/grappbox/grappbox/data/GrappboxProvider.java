@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.net.Uri;
+import android.os.Build;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -90,7 +91,6 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_TAG_BY_BUG_ID = 221;
     public static final int BUG_TAG_BY_GRAPPBOX_BUG_ID = 222;
 
-
     public static final int BUG_ASSIGNATION = 230;
     public static final int BUG_ASSIGNATION_BY_BUG_ID = 231;
     public static final int BUG_ASSIGNATION_BY_GRAPPBOX_BUG_ID = 232;
@@ -101,19 +101,60 @@ public class GrappboxProvider extends ContentProvider {
     public static final int CLOUD_BY_ID = 241;
     public static final int CLOUD_WITH_PROJECT = 242;
 
-    public static final int CUSTOMER_ACCESS = 250;
-    public static final int CUSTOMER_ACCESS_WITH_PROJECT = 251;
+    public static final int CUSTOMER_ACCESS = 450;
+    public static final int CUSTOMER_ACCESS_WITH_PROJECT = 451;
 
-    public static final int TASK = 260;
-    public static final int TASK_WITH_USER = 261;
-    public static final int TASK_WITH_TAG = 262;
+    public static final int TASK = 460;
+    public static final int TASK_WITH_USER = 461;
+    public static final int TASK_WITH_TAG = 462;
 
-    public static final int TASK_TAG = 270;
+    public static final int TASK_TAG = 470;
 
-    public static final int TASK_USER_ASSIGN = 280;
-    public static final int TASK_TAG_ASSIGN = 290;
+    public static final int TASK_USER_ASSIGN = 480;
+    public static final int TASK_TAG_ASSIGN = 490;
 
+    public static final int TIMELINE_COMMENTS = 260;
+    public static final int TIMELINE_COMMENTS_BY_TIMELINE_ID = 261;
+    public static final int TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID = 262;
+    public static final int TIMELINE_COMMENTS_BY_ID = 263;
+    public static final int TIMELINE_COMMENTS_BY_GRAPPBOX_ID = 264;
 
+    public static final int STATS = 270;
+    public static final int STATS_BY_ID = 271;
+    public static final int STATS_BY_GRAPPBOX_ID = 272;
+
+    public static final int ADVANCEMENT = 280;
+    public static final int ADVANCEMENT_BY_ID = 281;
+    public static final int ADVANCEMENT_BY_STAT_ID = 282;
+
+    public static final int USER_ADVANCEMENT_TASK = 290;
+    public static final int USER_ADVANCEMENT_TASK_BY_ID = 291;
+    public static final int USER_ADVANCEMENT_TASK_BY_STAT_ID = 292;
+    public static final int USER_ADVANCEMENT_TASK_BY_USER_ID = 293;
+
+    public static final int LATE_TASK = 300;
+
+    public static final int TASK_REPARTITION = 310;
+    public static final int TASK_REPARTITION_BY_ID = 311;
+    public static final int TASK_REPARTITION_BY_STAT_ID = 312;
+    public static final int TASK_REPARTITION_BY_USER_ID = 313;
+
+    public static final int USER_WORKING_CHARGE = 320;
+    public static final int USER_WORKING_CHARGE_BY_ID = 321;
+
+    public static final int BUG_USER_REPARTITION = 330;
+    public static final int BUG_USER_REPARTITION_BY_ID = 331;
+    public static final int BUG_USER_REPARTITION_BY_STAT_ID = 332;
+    public static final int BUG_USER_REPARTITION_BY_USER_ID = 333;
+
+    public static final int BUG_TAGS_REPARTITION = 340;
+    public static final int BUG_TAGS_REPARTITION_BY_ID = 341;
+    public static final int BUG_TAGS_REPARTITION_BY_STAT_ID = 342;
+    public static final int BUG_TAGS_REPARTITION_BY_TAG_ID = 343;
+
+    public static final int BUG_EVOLUTION = 350;
+    public static final int BUG_EVOLUTION_BY_ID = 351;
+    public static final int BUG_EVOLUTION_BY_STAT_ID = 352;
 
     public static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
@@ -163,6 +204,13 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/timeline/*", TIMELINE_MESSAGES_BY_GRAPPBOX_TIMELINE_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/#", TIMELINE_MESSAGES_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_MESSAGES + "/*", TIMELINE_MESSAGES_BY_GRAPPBOX_ID);
+
+        //Timeline comments related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS, TIMELINE_COMMENTS);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/timeline/#", TIMELINE_COMMENTS_BY_TIMELINE_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/timeline/*", TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/#", TIMELINE_COMMENTS_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TIMELINE_COMMENTS + "/*", TIMELINE_COMMENTS_BY_GRAPPBOX_ID);
 
         //Role related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ROLE, ROLE);
@@ -227,6 +275,53 @@ public class GrappboxProvider extends ContentProvider {
         //Task tag related URIs
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_TAGS, TASK_TAG);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_TAGS_ASSIGNATION, TASK_TAG_ASSIGN);
+
+        //Stats related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS, STATS);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS + "/#", STATS_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_STATS + "/*", STATS_BY_GRAPPBOX_ID);
+
+        //Advancement related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT, ADVANCEMENT);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/#", ADVANCEMENT_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_ADVANCEMENT + "/stat/#", ADVANCEMENT_BY_STAT_ID);
+
+        //User Advancement Task related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK, USER_ADVANCEMENT_TASK);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/#",  USER_ADVANCEMENT_TASK_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/stat/#", USER_ADVANCEMENT_TASK_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_ADVANCEMENT_TASK + "/user/#", USER_ADVANCEMENT_TASK_BY_USER_ID);
+
+        //Late Task related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_LATE_TASK, LATE_TASK);
+
+        //Task Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION, TASK_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/#", TASK_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/stat/#", TASK_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_TASK_REPARTITION + "/user/#", TASK_REPARTITION_BY_USER_ID);
+
+        //User Working Charge related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE, USER_WORKING_CHARGE);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_USER_WORKING_CHARGE + "/#", USER_WORKING_CHARGE_BY_ID);
+
+        //Bug User Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION, BUG_USER_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/#", BUG_USER_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/stat/#", BUG_USER_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_USER_REPARTITION + "/user/#", BUG_USER_REPARTITION_BY_USER_ID);
+
+        //Bug Tags Repartition related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION, BUG_TAGS_REPARTITION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/#", BUG_TAGS_REPARTITION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/stat/#", BUG_TAGS_REPARTITION_BY_STAT_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_TAGS_REPARTITION + "/tags/#", BUG_TAGS_REPARTITION_BY_TAG_ID);
+
+        //Bugs evolution related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION, BUG_EVOLUTION);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/#", BUG_EVOLUTION_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/stat/", BUG_EVOLUTION_BY_STAT_ID);
+
         return matcher;
     }
 
@@ -285,6 +380,14 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES_BY_ID:
                 return GrappboxContract.TimelineMessageEntry.CONTENT_ITEM_TYPE;
 
+            case TIMELINE_COMMENTS:
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID:
+            case TIMELINE_COMMENTS_BY_TIMELINE_ID:
+                return GrappboxContract.TimelineCommentEntry.CONTENT_TYPE;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_ID:
+            case TIMELINE_COMMENTS_BY_ID:
+                return GrappboxContract.TimelineCommentEntry.CONTENT_ITEM_TYPE;
+
             case ROLE:
             case ROLE_BY_PROJECT_ID:
             case ROLE_BY_GRAPPBOX_PROJECT_ID:
@@ -333,6 +436,52 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.CloudEntry.CONTENT_TYPE;
             case CLOUD_BY_ID:
                 return GrappboxContract.CloudEntry.CONTENT_ITEM_TYPE;
+
+            case STATS:
+            case STATS_BY_ID:
+            case STATS_BY_GRAPPBOX_ID:
+                return GrappboxContract.StatEntry.CONTENT_TYPE;
+
+            case ADVANCEMENT:
+            case ADVANCEMENT_BY_ID:
+            case ADVANCEMENT_BY_STAT_ID:
+                return GrappboxContract.AdvancementEntry.CONTENT_TYPE;
+
+            case USER_ADVANCEMENT_TASK:
+            case USER_ADVANCEMENT_TASK_BY_ID:
+            case USER_ADVANCEMENT_TASK_BY_STAT_ID:
+                return GrappboxContract.UserAdvancementTaskEntry.CONTENT_TYPE;
+
+            case LATE_TASK:
+                return GrappboxContract.LateTaskEntry.CONTENT_TYPE;
+
+            case TASK_REPARTITION:
+            case TASK_REPARTITION_BY_ID:
+            case TASK_REPARTITION_BY_STAT_ID:
+            case TASK_REPARTITION_BY_USER_ID:
+                return GrappboxContract.TaskRepartitionEntry.CONTENT_TYPE;
+
+            case USER_WORKING_CHARGE:
+            case USER_WORKING_CHARGE_BY_ID:
+                return GrappboxContract.UserWorkingChargeEntry.CONTENT_TYPE;
+
+            case BUG_USER_REPARTITION:
+            case BUG_USER_REPARTITION_BY_ID:
+            case BUG_USER_REPARTITION_BY_STAT_ID:
+            case BUG_USER_REPARTITION_BY_USER_ID:
+                return GrappboxContract.BugUserRepartitionEntry.CONTENT_TYPE;
+
+            case BUG_TAGS_REPARTITION:
+            case BUG_TAGS_REPARTITION_BY_ID:
+            case BUG_TAGS_REPARTITION_BY_STAT_ID:
+            case BUG_TAGS_REPARTITION_BY_TAG_ID:
+                return GrappboxContract.BugTagsRepartitionEntry.CONTENT_TYPE;
+
+            case BUG_EVOLUTION:
+            case BUG_EVOLUTION_BY_ID:
+            case BUG_EVOLUTION_BY_STAT_ID:
+                return GrappboxContract.BugEvolutionEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -360,12 +509,12 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.TimelineEntry.TABLE_NAME;
             case TIMELINE_MESSAGES:
                 return GrappboxContract.TimelineMessageEntry.TABLE_NAME;
+            case TIMELINE_COMMENTS:
+                return GrappboxContract.TimelineCommentEntry.TABLE_NAME;
             case CLOUD:
                 return GrappboxContract.CloudEntry.TABLE_NAME;
             case EVENT:
                 return GrappboxContract.EventEntry.TABLE_NAME;
-            case TAG:
-                return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
             case CUSTOMER_ACCESS:
                 return GrappboxContract.CustomerAccessEntry.TABLE_NAME;
             case TASK:
@@ -376,6 +525,28 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.TaskAssignationEntry.TABLE_NAME;
             case TASK_TAG_ASSIGN:
                 return GrappboxContract.TaskTagAssignationEntry.TABLE_NAME;
+            case EVENT_PARTICIPANT:
+                return GrappboxContract.EventParticipantEntry.TABLE_NAME;
+            case TAG:
+                return GrappboxContract.BugtrackerTagEntry.TABLE_NAME;
+            case STATS:
+                return GrappboxContract.StatEntry.TABLE_NAME;
+            case ADVANCEMENT:
+                return GrappboxContract.AdvancementEntry.TABLE_NAME;
+            case USER_ADVANCEMENT_TASK:
+                return GrappboxContract.UserAdvancementTaskEntry.TABLE_NAME;
+            case LATE_TASK:
+                return GrappboxContract.LateTaskEntry.TABLE_NAME;
+            case TASK_REPARTITION:
+                return GrappboxContract.TaskRepartitionEntry.TABLE_NAME;
+            case USER_WORKING_CHARGE:
+                return GrappboxContract.UserWorkingChargeEntry.TABLE_NAME;
+            case BUG_USER_REPARTITION:
+                return GrappboxContract.BugUserRepartitionEntry.TABLE_NAME;
+            case BUG_TAGS_REPARTITION:
+                return GrappboxContract.BugTagsRepartitionEntry.TABLE_NAME;
+            case BUG_EVOLUTION:
+                return GrappboxContract.BugEvolutionEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -473,6 +644,21 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case TIMELINE_MESSAGES_BY_GRAPPBOX_ID:
                 retCursor = TimelineMessageCursors.query_TimelineMessageByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS:
+                retCursor = TimelineCommentCursors.query_TimelineComment(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_TIMELINE_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_TIMELINE_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByGrappboxTimelineId(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TIMELINE_COMMENTS_BY_GRAPPBOX_ID:
+                retCursor = TimelineCommentCursors.query_TimelineCommentByGrappboxId(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
             case ROLE:
                 retCursor = RoleCursors.query_Role(uri, projection, selection, args, sortOrder, mOpenHelper);
@@ -594,6 +780,78 @@ public class GrappboxProvider extends ContentProvider {
             case TASK_TAG_ASSIGN:
                 retCursor = TaskTagAssignationCursors.query(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case STATS:
+                retCursor = StatCursors.query_Stat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case STATS_BY_ID:
+                retCursor = StatCursors.query_StatById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                retCursor = AdvancementCursors.query_Advancement(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case ADVANCEMENT_BY_ID:
+                retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case ADVANCEMENT_BY_STAT_ID:
+                retCursor = AdvancementCursors.query_AdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK:
+                retCursor = UserAdvancementTaskCursors.query_UserAdvancementTask(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK_BY_ID:
+                retCursor = UserAdvancementTaskCursors.query_UserAdvancementById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK_BY_STAT_ID:
+                retCursor = UserAdvancementTaskCursors.query_UserAdvancementWithStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case LATE_TASK:
+                retCursor = LateTaskCursors.query_LateTask(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION:
+                retCursor = TaskRepartitionCursors.query_TaskRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_STAT_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionWithStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case TASK_REPARTITION_BY_USER_ID:
+                retCursor = TaskRepartitionCursors.query_TaskRepartitionWithUser(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case USER_WORKING_CHARGE:
+                retCursor = UserWorkingChargeCursors.query_UserWorkingCharge(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case USER_WORKING_CHARGE_BY_ID:
+                retCursor = UserWorkingChargeCursors.query_UserWorkingChargeById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION_BY_ID:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION_BY_STAT_ID:
+                retCursor = BugUserRepartitionCursors.query_BugUserRepartitionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartition(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION_BY_ID:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartitionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION_BY_STAT_ID:
+                retCursor = BugTagsRepartitionCursors.query_BugTagsRepartitionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                retCursor = BugEvolutionCursors.query_BugEvolution(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION_BY_ID:
+                retCursor = BugEvolutionCursors.query_BugEvolutionById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case BUG_EVOLUTION_BY_STAT_ID:
+                retCursor = BugEvolutionCursors.query_BugEvolutionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -654,6 +912,9 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 returnedUri = TimelineMessageCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                returnedUri = TimelineCommentCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             case CLOUD:
                 returnedUri = CloudCursors.insert(uri, contentValues, mOpenHelper);
                 break;
@@ -674,6 +935,36 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case TASK_TAG_ASSIGN:
                 returnedUri = TaskTagAssignationCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case EVENT_PARTICIPANT:
+                returnedUri = EventParticipantCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case STATS:
+                returnedUri = StatCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                returnedUri = AdvancementCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK:
+                returnedUri = UserAdvancementTaskCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case TASK_REPARTITION:
+                returnedUri = TaskRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case LATE_TASK:
+                returnedUri = LateTaskCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case USER_WORKING_CHARGE:
+                returnedUri = UserWorkingChargeCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION:
+                returnedUri = BugUserRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                returnedUri = BugUserRepartitionCursors.insert(uri, contentValues, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                returnedUri = BugEvolutionCursors.insert(uri, contentValues, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
@@ -736,6 +1027,9 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 ret = TimelineMessageCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                ret = TimelineCommentCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case CLOUD:
                 ret = CloudCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
@@ -756,6 +1050,33 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case TASK_TAG_ASSIGN:
                 ret = TaskTagAssignationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case STATS:
+                ret = StatCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK:
+                ret = AdvancementCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case TASK_REPARTITION:
+                ret = TaskRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case LATE_TASK:
+                ret = LateTaskCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case USER_WORKING_CHARGE:
+                ret = UserWorkingChargeCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION:
+                ret = BugUserRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                ret = BugTagsRepartitionCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                ret = BugEvolutionCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
@@ -800,6 +1121,9 @@ public class GrappboxProvider extends ContentProvider {
             case TIMELINE_MESSAGES:
                 returnCount = TimelineMessageCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
+            case TIMELINE_COMMENTS:
+                returnCount = TimelineCommentCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
             case CLOUD:
                 returnCount = CloudCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
@@ -808,6 +1132,33 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case CUSTOMER_ACCESS:
                 returnCount = CustomerAccessCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case STATS:
+                returnCount = StatCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case ADVANCEMENT:
+                returnCount = AdvancementCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case USER_ADVANCEMENT_TASK:
+                returnCount = UserAdvancementTaskCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case TASK_REPARTITION:
+                returnCount = TaskRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case LATE_TASK:
+                returnCount = LateTaskCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case USER_WORKING_CHARGE:
+                returnCount = UserWorkingChargeCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_USER_REPARTITION:
+                returnCount = BugUserRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_TAGS_REPARTITION:
+                returnCount = BugTagsRepartitionCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case BUG_EVOLUTION:
+                returnCount = BugEvolutionCursors.bulkinsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);

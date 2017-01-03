@@ -1,4 +1,4 @@
- package com.grappbox.grappbox.data;
+package com.grappbox.grappbox.data;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,7 +18,7 @@ import com.grappbox.grappbox.data.GrappboxContract.*;
   * GrappBox © 2016
   */
 public class GrappboxDBHelper extends SQLiteOpenHelper {
-    private static final int DATABASE_VERSION  = 7;
+    private static final int DATABASE_VERSION  = 8;
     public static final String DATABASE_NAME = "grappbox.db";
     private Context mContext;
 
@@ -91,7 +91,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 EventEntry.COLUMN_EVENT_DESCRIPTION + " TEXT, " +
                 EventEntry.COLUMN_DATE_BEGIN_UTC + " TEXT NOT NULL, " +
                 EventEntry.COLUMN_DATE_END_UTC + " TEXT NOT NULL, " +
-                EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
+                EventEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER, " +
                 EventEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + EventEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "), " +
@@ -119,7 +119,6 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TimelineMessageEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + " INTEGER NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
-                TimelineMessageEntry.COLUMN_PARENT_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_TITLE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_MESSAGE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
@@ -127,6 +126,18 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +
                 " UNIQUE (" + TimelineMessageEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_TIMELINE_COMMENTS_TABLE = "CREATE TABLE IF NOT EXISTS " + TimelineCommentEntry.TABLE_NAME + " (" +
+                TimelineCommentEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TimelineCommentEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + " INTEGER NOT NULL, " +
+                TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
+                TimelineCommentEntry.COLUMN_PARENT_ID + " INTEGER NOT NULL, " +
+                TimelineCommentEntry.COLUMN_MESSAGE + " TEXT, " +
+                TimelineCommentEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +
+                " FOREIGN KEY (" + TimelineCommentEntry.COLUMN_LOCAL_CREATOR_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
+                " FOREIGN KEY (" + TimelineCommentEntry.COLUMN_LOCAL_TIMELINE_ID + ") REFERENCES " + TimelineEntry.TABLE_NAME + " (" + TimelineEntry._ID + "), " +
+                " UNIQUE (" + TimelineCommentEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
 
         final String SQL_CREATE_ROLES_TABLE = "CREATE TABLE IF NOT EXISTS " + RolesEntry.TABLE_NAME + " (" +
                 RolesEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -202,6 +213,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 CloudEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
                 " FOREIGN KEY ("+CloudEntry.COLUMN_LOCAL_PROJECT_ID+") REFERENCES "+ProjectEntry.TABLE_NAME+" ("+ProjectEntry._ID+")); ";
 
+
         final String SQL_CREATE_CUSTOMER_ACCESS_TABLE = "CREATE TABLE IF NOT EXISTS " + CustomerAccessEntry.TABLE_NAME + " (" +
                 CustomerAccessEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 CustomerAccessEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
@@ -264,6 +276,102 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + TaskTagAssignationEntry.COLUMN_LOCAL_TAG + ") REFERENCES " + TaskTagEntry.TABLE_NAME + " (" + TaskTagEntry._ID + "), " +
                 "FOREIGN KEY (" + TaskTagAssignationEntry.COLUMN_LOCAL_TASK + ") REFERENCES " + TaskEntry.TABLE_NAME + " (" + TaskEntry._ID + "));";
 
+        final String SQL_CREATE_STATS_TABLE = "CREATE TABLE IF NOT EXISTS " + StatEntry.TABLE_NAME + " (" +
+                StatEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                StatEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
+                StatEntry.COLUMN_TIMELINE_TEAM_MESSAGE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TIMELINE_CUSTOMER_MESSAGE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CUSTOMER_ACCESS_ACTUAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CUSTOMER_ACCESS_MAX + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUG_OPEN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUG_CLOSE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_DONE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_DOING + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_TODO + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_LATE + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_TASK_TOTAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_CLIENT_BUGTRACKER + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUGTRACKER_ASSIGN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_BUGTRACKER_UNASSIGN + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_STORAGE_OCCUPIED + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_STORAGE_TOTAL + " INTEGER NOT NULL, " +
+                StatEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
+                " UNIQUE (" + StatEntry.COLUMN_GRAPPBOX_ID + ") ON CONFLICT REPLACE);";
+
+        final String SQL_CREATE_ADVANCEMENT_TABLE = "CREATE TABLE IF NOT EXISTS " + AdvancementEntry.TABLE_NAME + " (" +
+                AdvancementEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                AdvancementEntry.COLUMN_ADVANCEMENT_DATE + " TEXT NOT NULL, " +
+                AdvancementEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                AdvancementEntry.COLUMN_PROGRESS + " INTEGER NOT NULL, " +
+                AdvancementEntry.COLUMN_TOTAL_TASK + " INTEGER NOT NULL, " +
+                AdvancementEntry.COLUMN_FINISHED_TASk + " INTEGER NOT NULL, " +
+                AdvancementEntry.COLUMN_LOCAL_STATS_ID + " INTEGER NOT NULL, " +
+                " FOREIGN KEY ("+AdvancementEntry.COLUMN_LOCAL_STATS_ID+") REFERENCES "+StatEntry.TABLE_NAME+" ("+StatEntry._ID+")); ";
+
+        final String SQL_CREATE_ADVANCEMENT_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + UserAdvancementTaskEntry.TABLE_NAME + " (" +
+                UserAdvancementTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_TODO + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_DOING + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_DONE + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_TASK_LATE + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + UserAdvancementTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_LATE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + LateTaskEntry.TABLE_NAME + " (" +
+                LateTaskEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                LateTaskEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_ROLE + " STRING NOT NULL, " +
+                LateTaskEntry.COLUMN_DATE + " STRING NOT NULL, " +
+                LateTaskEntry.COLUMN_LATE_TASK + " INTEGER NOT NULL, " +
+                LateTaskEntry.COLUMN_ON_TIME_TASK + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + LateTaskEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_USER_WORKING_CHARGE_TASK_TABLE = "CREATE TABLE IF NOT EXISTS " + UserWorkingChargeEntry.TABLE_NAME + " (" +
+                UserWorkingChargeEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                UserWorkingChargeEntry.COLUMN_CHARGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + UserWorkingChargeEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_TASK_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + TaskRepartitionEntry.TABLE_NAME + " (" +
+                TaskRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                TaskRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + TaskRepartitionEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_USER_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugUserRepartitionEntry.TABLE_NAME + " (" +
+                BugUserRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                BugUserRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "), " +
+                " FOREIGN KEY (" + BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_TAGS_REPARTITION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugTagsRepartitionEntry.TABLE_NAME + " (" +
+                BugTagsRepartitionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugTagsRepartitionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugTagsRepartitionEntry.COLUMN_NAME + " TEXT, " +
+                BugTagsRepartitionEntry.COLUMN_VALUE + " INTEGER NOT NULL, " +
+                BugTagsRepartitionEntry.COLUMN_PERCENTAGE + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugTagsRepartitionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "));";
+
+        final String SQL_CREATE_BUG_EVOLUTION_TABLE = "CREATE TABLE IF NOT EXISTS " + BugEvolutionEntry.TABLE_NAME + " (" +
+                BugEvolutionEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                BugEvolutionEntry.COLUMN_LOCAL_STAT_ID + " INTEGER NOT NULL, " +
+                BugEvolutionEntry.COLUMN_DATE + " TEXT NOT NULL, " +
+                BugEvolutionEntry.COLUMN_CREATED_BUG + " INTEGER NOT NULL, " +
+                BugEvolutionEntry.COLUMN_CLOSED_BUG + " INTEGER NOT NULL, " +
+                " FOREIGN KEY (" + BugEvolutionEntry.COLUMN_LOCAL_STAT_ID + ") REFERENCES " + StatEntry.TABLE_NAME + " (" + StatEntry._ID + "));";
+
         db.execSQL(SQL_CREATE_USER_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
@@ -272,6 +380,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_EVENT_PARTICIPANT_TABLE);
         db.execSQL(SQL_CREATE_TIMELINE_TABLE);
         db.execSQL(SQL_CREATE_TIMELINE_MESSAGE_TABLE);
+        db.execSQL(SQL_CREATE_TIMELINE_COMMENTS_TABLE);
         db.execSQL(SQL_CREATE_ROLES_TABLE);
         db.execSQL(SQL_CREATE_ROLES_ASSIGNATIONS_TABLE);
         db.execSQL(SQL_CREATE_BUGTRACKER_TAG_TABLE);
@@ -279,12 +388,24 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_BUG_TAG_TABLE);
         db.execSQL(SQL_CREATE_BUG_ASSIGNATION_TABLE);
         db.execSQL(SQL_CREATE_CLOUD_TABLE);
+
         db.execSQL(SQL_CREATE_CUSTOMER_ACCESS_TABLE);
         db.execSQL(SQL_CREATE_TASK_TABLE);
         db.execSQL(SQL_CREATE_TASK_DEPENDENCIES_TABLE);
         db.execSQL(SQL_CREATE_TASK_ASSIGNATION_TABLE);
         db.execSQL(SQL_CREATE_TASK_TAG_TABLE);
         db.execSQL(SQL_CREATE_TASK_TAG_ASSIGNATION_TABLE);
+
+        db.execSQL(SQL_CREATE_STATS_TABLE);
+        db.execSQL(SQL_CREATE_ADVANCEMENT_TABLE);
+        db.execSQL(SQL_CREATE_ADVANCEMENT_TASK_TABLE);
+        db.execSQL(SQL_CREATE_LATE_TASK_TABLE);
+        db.execSQL(SQL_CREATE_USER_WORKING_CHARGE_TASK_TABLE);
+        db.execSQL(SQL_CREATE_TASK_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_USER_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_TAGS_REPARTITION_TABLE);
+        db.execSQL(SQL_CREATE_BUG_EVOLUTION_TABLE);
+
     }
 
     @Override
