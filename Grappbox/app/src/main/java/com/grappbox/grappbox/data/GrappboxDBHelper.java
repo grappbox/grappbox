@@ -119,6 +119,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 TimelineMessageEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID + " INTEGER NOT NULL, " +
                 TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID + " INTEGER NOT NULL, " +
+                TimelineMessageEntry.COLUMN_PARENT_ID + " INTEGER, " +
                 TimelineMessageEntry.COLUMN_TITLE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_MESSAGE + " TEXT, " +
                 TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC + " TEXT NOT NULL, " +

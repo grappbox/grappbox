@@ -361,6 +361,7 @@ public class GrappboxContract {
         public static final String COLUMN_GRAPPBOX_ID = GENERAL_GRAPPBOX_ID;
         public static final String COLUMN_LOCAL_TIMELINE_ID = "timeline_id";
         public static final String COLUMN_LOCAL_CREATOR_ID = "creator_id";
+        public static final String COLUMN_PARENT_ID = "parent_id";
         public static final String COLUMN_TITLE = "title";
         public static final String COLUMN_MESSAGE = "message";
         public static final String COLUMN_DATE_LAST_EDITED_AT_UTC = "last_edited_at";

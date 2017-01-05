@@ -132,23 +132,10 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String ACTION_TIMELINE_DELETE_MESSAGE = "com.grappbox.grappbox.sync.ACTION_TIMELINE_DELETE_MESSAGE";
     public static final String ACTION_TIMELINE_DELETE_COMMENT = "com.grappbox.grappbox.sync.ACTION_TIMELINE_DELETE_COMMENT";
 
-    public static final String ACTION_DELETE_COMMENT = "com.grappbox.grappbox.sync.ACTION_DELETE_COMMENT";
-    public static final String ACTION_CLOSE_BUG = "com.grappbox.grappbox.sync.ACTION_CLOSE_BUG";
-    public static final String ACTION_REOPEN_BUG = "com.grappbox.grappbox.sync.ACTION_REOPEN_BUG";
-    public static final String ACTION_CREATE_BUG = "com.grappbox.grappboxy.sync.ACTION_CREATE_BUG";
-    public static final String ACTION_EDIT_BUG = "com.grappbox.grappbox.sync.ACTION_EDIT_BUG";
-    public static final String ACTION_SYNC_TAGS = "com.grappbox.grappbox.sync.ACTION_SYNC_TAGS";
-    public static final String ACTION_CREATE_TAG = "com.grappbox.grappbox.sync.ACTION_CREATE_TAG";
-    public static final String ACTION_EDIT_BUGTAG = "com.grappbox.grappbox.sync.ACTION_EDIT_BUGTAG";
-    public static final String ACTION_REMOVE_BUGTAG = "com.grappbox.grappbox.sync.ACTION_REMOVE_BUGTAG";
-    public static final String ACTION_SET_PARTICIPANT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT";
     public static final String ACTION_SYNC_EVENT = "com.grappbox.grappbox.sync.ACTION_SYNC_EVENT";
     public static final String ACTION_CREATE_EVENT = "com.grappbox.grappbox.sync.ACTION_POST_EVENT";
     public static final String ACTION_EDIT_EVENT = "com.grappbox.grappbox.sync.ACTION_EDIT_EVENT";
-    public static final String ACTION_GET_EVENT = "com.grappbox.grappbox.sync.ACTION_GET_EVENT";
     public static final String ACTION_DELETE_EVENT = "com.grappbox.grappbox.sync.ACTION_DELETE_EVENT";
-    public static final String ACTION_SET_PARTICIPANT_EVENT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT_EVENT";
-    public static final String ACTION_GET_MONTH_PLANNING = "com.grappbox.grappbox.sync.ACTION_GET_MONTH_PLANNING";
     public static final String ACTION_SYNC_ALL_STATS = "com.grappbox.grappbox.sync.ACTION_SYNC_ALL_STATS";
 
     public static final String EXTRA_API_TOKEN = "api_token";
@@ -170,6 +157,7 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_CLOUD_PASSWORD = "cloud_password";
     public static final String EXTRA_CLOUD_FILE_PASSWORD = "cloud_file_password";
     public static final String EXTRA_DIRECTORY_NAME = "dir_name";
+    public static final String EXTRA_BUG_ID = "bug_id";
     public static final String EXTRA_FILENAME = "filename";
     public static final String EXTRA_MESSAGE = "msg";
     public static final String EXTRA_COMMENT_ID = "comment_id";
@@ -186,7 +174,6 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_EVENT_ID = "eventId";
-    public static final String EXTRA_CALENDAR_FIRST_DAY = "firstDay";
     public static final String EXTRA_CALENDAR_EVENT_BEGIN = "begin";
     public static final String EXTRA_CALENDAR_EVENT_END = "end";
     public static final String EXTRA_CALENDAR_MONTH_OFFSET = "montOffset";
@@ -220,7 +207,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 if (categories == null || categories.size() == 0 || categories.contains(CATEGORY_LOCAL_ID))
                     handleUserDetailSync(intent.getLongExtra(EXTRA_USER_ID, -1));
                 else
-                    handleUserDetailSync(this, intent.getStringExtra(EXTRA_USER_ID));
+                    handleUserDetailSync(intent.getStringExtra(EXTRA_USER_ID));
             }
             else if (ACTION_SYNC_TIMELINE_MESSAGES.equals(action)) {
                 handleTimelineMessagesSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50));
@@ -404,63 +391,6 @@ public class GrappboxJustInTimeService extends IntentService {
             if (null != role) {
                 role.close();
             }
-        }
-    }
-
-    private void handleLogin(String mail, String password, @Nullable ResultReceiver responseObserver) {
-        HttpURLConnection connection = null;
-        String returnedJson;
-        AccountManager am = AccountManager.get(this);
-        Bundle answer = new Bundle();
-
-
-        try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/account/login");
-            //Ask login
-            JSONObject json = new JSONObject();
-            JSONObject data = new JSONObject();
-
-            data.put("login", mail);
-            data.put("password", password);
-            data.put("mac", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
-            data.put("flag", "and");
-            data.put("device_name", Build.MODEL + " " + Build.SERIAL);
-            json.put("data", data);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestMethod("POST");
-            connection.connect();
-            Utils.JSON.sendJsonOverConnection(connection, json);
-            Log.d(LOG_TAG, json.toString());
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty()){
-                if (responseObserver != null)
-                    responseObserver.send(Activity.RESULT_CANCELED, null);
-                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
-            }
-
-            json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json)){
-                if (responseObserver != null)
-                    responseObserver.send(Activity.RESULT_CANCELED, null);
-                throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
-
-            }
-            data = json.getJSONObject("data");
-            Calendar cal = Calendar.getInstance();
-            cal.add(Calendar.DATE, 1);
-            cal.add(Calendar.HOUR, -2);
-            answer.putString(AccountManager.KEY_ACCOUNT_NAME, mail);
-            answer.putString(AccountManager.KEY_ACCOUNT_TYPE, getString(R.string.sync_account_type));
-            answer.putSerializable(EXTRA_API_TOKEN, data.getString("token"));
-            answer.putString(AccountManager.KEY_AUTHTOKEN, data.getString("token"));
-            answer.putString(EXTRA_CRYPTED_PASSWORD, Utils.Security.cryptString(password));
-            if (responseObserver != null)
-                responseObserver.send(Activity.RESULT_OK, answer);
-        } catch (IOException | JSONException | NetworkErrorException | OperationApplicationException e) {
-            e.printStackTrace();
-        } finally {
-            if (connection != null)
-                connection.disconnect();
         }
     }
 
@@ -886,7 +816,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_ID);
             handleSetUserRole(adminRole.getLong(0
             ), id, responseObserver);
-            handleUserDetailSync(this, data.getString("id"));
+            handleUserDetailSync(data.getString("id"));
             adminRole.close();
         } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
             e.printStackTrace();
@@ -1024,7 +954,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
     public void handleRetrieveProject(long projectId, ResultReceiver responseObserver){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
-        boolean isBug = keepDB != null && keepDB.length > 0 && keepDB[0];
+        //boolean isBug = keepDB != null && keepDB.length > 0 && keepDB[0];
         HttpURLConnection connection = null;
         String returnedJson;
         Cursor project = null;
@@ -1247,11 +1177,12 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    @SuppressLint("HardwareIds")
     private void handleLogin(String mail, String password, @Nullable ResultReceiver responseObserver) {
         HttpURLConnection connection = null;
         String returnedJson;
+        AccountManager am = AccountManager.get(this);
         Bundle answer = new Bundle();
+
 
         try {
             final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/account/login");
@@ -1264,10 +1195,8 @@ public class GrappboxJustInTimeService extends IntentService {
             data.put("mac", Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID));
             data.put("flag", "and");
             data.put("device_name", Build.MODEL + " " + Build.SERIAL);
-
             json.put("data", data);
             connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Authorization", apiToken);
             connection.setRequestMethod("POST");
             connection.connect();
             Utils.JSON.sendJsonOverConnection(connection, json);
@@ -2325,46 +2254,6 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "edit message end");
     }
 
-    @Nullable
-    private Pair<String, Long> syncProjectInfos(String apiToken, String apiID) throws IOException, JSONException {
-        HttpURLConnection connection = null;
-        String returnedJson;
-        Pair<String, Long> ret = null;
-        try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/project/" + apiID);
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Authorization", apiToken);
-            connection.setRequestMethod("GET");
-            connection.connect();
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty())
-                throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
-            JSONObject json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json))
-                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
-            JSONObject data = json.getJSONObject("data");
-            JSONObject creator = data.getJSONObject("creator");
-            Cursor userCreator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creator.getString("id")}, null);
-            if (userCreator == null || !userCreator.moveToFirst()) {
-                ContentValues newUser = new ContentValues();
-                newUser.put(UserEntry.COLUMN_FIRSTNAME, creator.getString("firstname"));
-                newUser.put(UserEntry.COLUMN_LASTNAME, creator.getString("lastname"));
-                newUser.put(UserEntry.COLUMN_GRAPPBOX_ID, creator.getString("id"));
-                getContentResolver().insert(UserEntry.CONTENT_URI, newUser);
-                userCreator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creator.getString("id")}, null);
-                if (userCreator == null || !userCreator.moveToFirst())
-                    throw new SQLException("Insert failed");
-                ret = new Pair<>(data.getString("color"), userCreator.getLong(0));
-                userCreator.close();
-            } else {
-                ret = new Pair<>(data.getString("color"), userCreator.getLong(0));
-                userCreator.close();
-            }
-        } catch (IOException | JSONException | NetworkErrorException e) {
-
-        }
-    }
-
     private void handleTimelineCommentDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver){
         String apiToken = Utils.Account.getAuthTokenService(this, null);
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
@@ -2414,7 +2303,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 resultReceiver.send(Activity.RESULT_OK, null);
             }
         }
-        return ret;
+        Log.v(LOG_TAG, "delete end");
     }
 
     private void handleTimelineMessageDelete(long localTimelineId, long messageId, ResultReceiver resultReceiver){
@@ -2640,7 +2529,7 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "Timeline sync end");
     }
 
-    private void handleUserDetailSync(long localUID) {
+    public void handleUserDetailSync(long localUID) {
         Cursor userGrappboxID = getContentResolver().query(UserEntry.buildUserWithLocalIdUri(localUID), new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
@@ -2653,7 +2542,7 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
-    private void handleUserDetailSync(String apiUID) {
+    public void handleUserDetailSync(String apiUID) {
         String apiToken = Utils.Account.getAuthTokenService(this, null);
 
         if (apiToken.isEmpty() || apiUID.isEmpty())
@@ -2693,56 +2582,6 @@ public class GrappboxJustInTimeService extends IntentService {
         } catch (JSONException e) {
             e.printStackTrace();
         } finally {
-            if (connection != null)
-                connection.disconnect();
-        }
-    }
-
-    private void handleNextMeetingsSync(long localPID) {
-        String apiToken = Utils.Account.getAuthTokenService(this, null);
-        if (apiToken.isEmpty() || localPID == -1)
-            return;
-        HttpURLConnection connection = null;
-        String returnedJson;
-        Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
-        if (grappboxProjectId == null || !grappboxProjectId.moveToFirst())
-            return;
-        try {
-            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/meetings/"+ grappboxProjectId.getString(0));
-
-            connection = (HttpURLConnection) url.openConnection();
-            connection.setRequestProperty("Authorization", apiToken);
-            connection.setRequestMethod("GET");
-            connection.connect();
-            returnedJson = Utils.JSON.readDataFromConnection(connection);
-            if (returnedJson == null || returnedJson.isEmpty())
-                return;
-
-            JSONObject json = new JSONObject(returnedJson);
-            if (Utils.Errors.checkAPIError(json))
-                return;
-            JSONArray nextMeetingsData = json.getJSONObject("data").getJSONArray("array");
-            if (nextMeetingsData.length() == 0)
-                return;
-            ContentValues[] nextMeetingsValues = new ContentValues[nextMeetingsData.length()];
-            for (int i = 0; i < nextMeetingsData.length(); ++i) {
-                ContentValues nextMeeting = new ContentValues();
-                JSONObject current = nextMeetingsData.getJSONObject(i);
-
-                nextMeeting.put(EventEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
-                nextMeeting.put(EventEntry.COLUMN_EVENT_DESCRIPTION, current.getString("description"));
-                nextMeeting.put(EventEntry.COLUMN_EVENT_TITLE, current.getString("title"));
-                nextMeeting.put(EventEntry.COLUMN_DATE_BEGIN_UTC, current.getJSONObject("begin_date").getString("date"));
-                nextMeeting.put(EventEntry.COLUMN_DATE_END_UTC, current.getJSONObject("end_date").getString("date"));
-                nextMeetingsValues[i] = nextMeeting;
-            }
-            getContentResolver().bulkInsert(EventEntry.CONTENT_URI, nextMeetingsValues);
-        } catch (IOException e) {
-            Log.e(LOG_TAG, "IOException : ", e);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        } finally {
-            grappboxProjectId.close();
             if (connection != null)
                 connection.disconnect();
         }
