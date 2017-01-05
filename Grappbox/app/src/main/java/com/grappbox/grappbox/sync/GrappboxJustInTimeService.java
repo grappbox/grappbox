@@ -134,8 +134,11 @@ public class GrappboxJustInTimeService extends IntentService {
 
     public static final String ACTION_SYNC_EVENT = "com.grappbox.grappbox.sync.ACTION_SYNC_EVENT";
     public static final String ACTION_CREATE_EVENT = "com.grappbox.grappbox.sync.ACTION_POST_EVENT";
+    public static final String ACTION_GET_EVENT = "com.grappbox.grappbox.sync.ACTION_GET_EVENT";
     public static final String ACTION_EDIT_EVENT = "com.grappbox.grappbox.sync.ACTION_EDIT_EVENT";
     public static final String ACTION_DELETE_EVENT = "com.grappbox.grappbox.sync.ACTION_DELETE_EVENT";
+    public static final String ACTION_SET_PARTICIPANT_EVENT = "com.grappbox.grappbox.sync.ACTION_SET_PARTICIPANT_EVENT";
+    public static final String ACTION_GET_MONTH_PLANNING = "com.grappbox.grappbox.sync.ACTION_GET_MONTH_PLANNING";
     public static final String ACTION_SYNC_ALL_STATS = "com.grappbox.grappbox.sync.ACTION_SYNC_ALL_STATS";
 
     public static final String EXTRA_API_TOKEN = "api_token";
@@ -174,9 +177,11 @@ public class GrappboxJustInTimeService extends IntentService {
     public static final String EXTRA_NAME = "name";
     public static final String EXTRA_ACCOUNT = "account";
     public static final String EXTRA_EVENT_ID = "eventId";
+    public static final String EXTRA_CALENDAR_FIRST_DAY = "firstDay";
     public static final String EXTRA_CALENDAR_EVENT_BEGIN = "begin";
     public static final String EXTRA_CALENDAR_EVENT_END = "end";
     public static final String EXTRA_CALENDAR_MONTH_OFFSET = "montOffset";
+
 
     public static final String CATEGORY_GRAPPBOX_ID = "com.grappbox.grappbox.sync.CATEGORY_GRAPPBOX_ID";
     public static final String CATEGORY_LOCAL_ID = "com.grappbox.grappbox.sync.CATEGORY_LOCAL_ID";
@@ -292,6 +297,25 @@ public class GrappboxJustInTimeService extends IntentService {
                 handleDeleteRole(intent.getLongExtra(EXTRA_ROLE_ID, -1), responseObserver);
             } else if (ACTION_REGISTER_DEVICE.equals(action)){
                 handleRegisterDevice(intent.hasExtra(EXTRA_ACCOUNT) ? (Account) intent.getParcelableExtra(EXTRA_ACCOUNT) : null);
+            } else if (ACTION_GET_MONTH_PLANNING.equals(action)){
+                handleCalendarMonthSync(intent.getStringExtra(EXTRA_CALENDAR_FIRST_DAY));
+            } else if (ACTION_SYNC_EVENT.equals(action)) {
+                handleSyncEvent(intent.getIntExtra(EXTRA_CALENDAR_MONTH_OFFSET, 0));
+            } else if (ACTION_CREATE_EVENT.equals(action)) {
+                Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
+                handleEventCreate(intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), responseObserver);
+            } else if (ACTION_EDIT_EVENT.equals(action)) {
+                Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
+                handleEventEdit(intent.getLongExtra(EXTRA_EVENT_ID, -1) ,intent.getLongExtra(EXTRA_PROJECT_ID, -1), intent.getStringExtra(EXTRA_TITLE), intent.getStringExtra(EXTRA_DESCRIPTION), intent.getStringExtra(EXTRA_CALENDAR_EVENT_BEGIN), intent.getStringExtra(EXTRA_CALENDAR_EVENT_END),(List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
+            } else if (ACTION_GET_EVENT.equals(action)) {
+                handleEventGet(intent.getLongExtra(EXTRA_EVENT_ID, -1));
+            } else if (ACTION_DELETE_EVENT.equals(action)) {
+                handleEventDelete(intent.getLongExtra(EXTRA_EVENT_ID, -1), responseObserver);
+            }  else if (ACTION_SET_PARTICIPANT_EVENT.equals(action)) {
+                Bundle arg = intent.getBundleExtra(EXTRA_BUNDLE);
+                handleEventSetParticipant(intent.getLongExtra(EXTRA_EVENT_ID, -1), (List<Long>) arg.getSerializable(EXTRA_ADD_PARTICIPANT), (List<Long>) arg.getSerializable(EXTRA_DEL_PARTICIPANT), responseObserver);
+            } else if (ACTION_SYNC_ALL_STATS.equals(action)) {
+                handleAllStatGet(intent.getStringExtra(EXTRA_API_TOKEN), intent.getLongExtra(EXTRA_PROJECT_ID, -1));
             }
         }
     }
