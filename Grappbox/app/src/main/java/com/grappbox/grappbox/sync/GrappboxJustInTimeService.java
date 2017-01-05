@@ -205,9 +205,9 @@ public class GrappboxJustInTimeService extends IntentService {
             if (ACTION_SYNC_USER_DETAIL.equals(action)){
                 Set<String> categories = intent.getCategories();
                 if (categories == null || categories.size() == 0 || categories.contains(CATEGORY_LOCAL_ID))
-                    handleUserDetailSync(intent.getLongExtra(EXTRA_USER_ID, -1));
+                    handleUserDetailSync(this, intent.getLongExtra(EXTRA_USER_ID, -1));
                 else
-                    handleUserDetailSync(intent.getStringExtra(EXTRA_USER_ID));
+                    handleUserDetailSync(this, intent.getStringExtra(EXTRA_USER_ID));
             }
             else if (ACTION_SYNC_TIMELINE_MESSAGES.equals(action)) {
                 handleTimelineMessagesSync(intent.getLongExtra(EXTRA_TIMELINE_ID, -1), intent.getIntExtra(EXTRA_OFFSET, 0), intent.getIntExtra(EXTRA_LIMIT, 50));
@@ -816,7 +816,7 @@ public class GrappboxJustInTimeService extends IntentService {
                 throw new NetworkErrorException(Utils.Errors.ERROR_INVALID_ID);
             handleSetUserRole(adminRole.getLong(0
             ), id, responseObserver);
-            handleUserDetailSync(data.getString("id"));
+            handleUserDetailSync(this, data.getString("id"));
             adminRole.close();
         } catch (NetworkErrorException | JSONException | IOException | OperationApplicationException e) {
             e.printStackTrace();
@@ -1752,7 +1752,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
                             if (creatorId == null || !creatorId.moveToFirst())
                             {
-                                handleUserDetailSync(grappboxCID);
+                                handleUserDetailSync(this, grappboxCID);
                                 creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
                                 if (creatorId == null || !creatorId.moveToFirst()){
                                     continue;
@@ -1846,7 +1846,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
                             if (creatorId == null || !creatorId.moveToFirst())
                             {
-                                handleUserDetailSync(grappboxCID);
+                                handleUserDetailSync(this, grappboxCID);
                                 creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
                                 if (creatorId == null || !creatorId.moveToFirst()){
                                     continue;
@@ -1919,7 +1919,7 @@ public class GrappboxJustInTimeService extends IntentService {
 
                                 if (userCursor == null || !userCursor.moveToFirst())
                                 {
-                                    handleUserDetailSync(currentUser.getString("id"));
+                                    handleUserDetailSync(this, currentUser.getString("id"));
                                     userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                                     if (userCursor == null || !userCursor.moveToFirst()){
                                         continue;
@@ -1965,7 +1965,7 @@ public class GrappboxJustInTimeService extends IntentService {
     {
         Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
         if (creator == null || !creator.moveToFirst()){
-            handleUserDetailSync(creatorId);
+            handleUserDetailSync(this, creatorId);
             creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
             if (creator == null || !creator.moveToFirst())
                 return null;
@@ -2529,21 +2529,21 @@ public class GrappboxJustInTimeService extends IntentService {
         Log.v(LOG_TAG, "Timeline sync end");
     }
 
-    public void handleUserDetailSync(long localUID) {
-        Cursor userGrappboxID = getContentResolver().query(UserEntry.buildUserWithLocalIdUri(localUID), new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
-        String apiToken = Utils.Account.getAuthTokenService(this, null);
+    public static void handleUserDetailSync(Context context, long localUID) {
+        Cursor userGrappboxID = context.getContentResolver().query(UserEntry.buildUserWithLocalIdUri(localUID), new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        String apiToken = Utils.Account.getAuthTokenService(context, null);
 
         if (userGrappboxID == null || !userGrappboxID.moveToFirst() || apiToken == null)
             return;
         try {
-            handleUserDetailSync(userGrappboxID.getString(0));
+            handleUserDetailSync(context, userGrappboxID.getString(0));
         } finally {
             userGrappboxID.close();
         }
     }
 
-    public void handleUserDetailSync(String apiUID) {
-        String apiToken = Utils.Account.getAuthTokenService(this, null);
+    public static void handleUserDetailSync(Context context, String apiUID) {
+        String apiToken = Utils.Account.getAuthTokenService(context, null);
 
         if (apiToken.isEmpty() || apiUID.isEmpty())
             return;
@@ -2576,7 +2576,7 @@ public class GrappboxJustInTimeService extends IntentService {
             userValue.put(UserEntry.COLUMN_SOCIAL_LINKEDIN, data.getString("linkedin"));
             userValue.put(UserEntry.COLUMN_SOCIAL_TWITTER, data.getString("twitter"));
             //TODO : manage client origin
-            getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
+            context.getContentResolver().insert(UserEntry.CONTENT_URI, userValue);
         } catch (IOException e) {
             Log.e(LOG_TAG, "IOException : ", e);
         } catch (JSONException e) {
@@ -2838,7 +2838,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     if (localProjectId != -1)
                         eventValues.put(EventEntry.COLUMN_LOCAL_PROJECT_ID, localProjectId);
                     if (creatorId == null || !creatorId.moveToFirst()){
-                        handleUserDetailSync(grappboxCID);
+                        handleUserDetailSync(this, grappboxCID);
                         creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
                         if (creatorId == null || !creatorId.moveToFirst()){
                             throw new UnknownError();
@@ -2857,7 +2857,7 @@ public class GrappboxJustInTimeService extends IntentService {
                         Cursor userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                         ContentValues currentUserParticipant = new ContentValues();
                         if (userCursor == null || !userCursor.moveToFirst()){
-                            handleUserDetailSync(currentUser.getString("id"));
+                            handleUserDetailSync(this, currentUser.getString("id"));
                             userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                             if (userCursor == null || !userCursor.moveToFirst()) {
                                 continue;
@@ -2992,7 +2992,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     if (localProjectId != -1)
                         eventValues.put(EventEntry.COLUMN_LOCAL_PROJECT_ID, localProjectId);
                     if (creatorId == null || !creatorId.moveToFirst()){
-                        handleUserDetailSync(grappboxCID);
+                        handleUserDetailSync(this, grappboxCID);
                         creatorId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
                         if (creatorId == null || !creatorId.moveToFirst()){
                             throw new UnknownError();
@@ -3011,7 +3011,7 @@ public class GrappboxJustInTimeService extends IntentService {
                         Cursor userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                         ContentValues currentUserParticipant = new ContentValues();
                         if (userCursor == null || !userCursor.moveToFirst()){
-                            handleUserDetailSync(currentUser.getString("id"));
+                            handleUserDetailSync(this, currentUser.getString("id"));
                             userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                             if (userCursor == null || !userCursor.moveToFirst()) {
                                 continue;
@@ -3166,7 +3166,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     Cursor userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                     ContentValues currentUserParticipant = new ContentValues();
                     if (userCursor == null || !userCursor.moveToFirst()){
-                        handleUserDetailSync(currentUser.getString("id"));
+                        handleUserDetailSync(this, currentUser.getString("id"));
                         userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{currentUser.getString("id")}, null);
                         if (userCursor == null || !userCursor.moveToFirst()) {
                             continue;
