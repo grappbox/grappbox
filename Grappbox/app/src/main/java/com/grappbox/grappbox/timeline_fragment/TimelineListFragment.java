@@ -1,18 +1,9 @@
 package com.grappbox.grappbox.timeline_fragment;
 
 import android.accounts.AccountManager;
-import android.app.Activity;
-import android.content.ContentValues;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.CursorIndexOutOfBoundsException;
-import android.database.CursorJoiner;
-import android.database.DatabaseUtils;
-import android.database.MatrixCursor;
-import android.database.MergeCursor;
-import android.database.sqlite.SQLiteDatabase;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
@@ -22,7 +13,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.support.v4.widget.CursorAdapter;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
@@ -31,35 +21,21 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.Transformation;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
-import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.adapter.TimelineListAdapter;
-import com.grappbox.grappbox.data.GrappboxContract;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TimelineMessageEntry;
-import com.grappbox.grappbox.data.GrappboxDBHelper;
 import com.grappbox.grappbox.item_decoration.HorizontalDivider;
 import com.grappbox.grappbox.model.TimelineModel;
 import com.grappbox.grappbox.receiver.RefreshReceiver;
 import com.grappbox.grappbox.singleton.Session;
 import com.grappbox.grappbox.sync.GrappboxJustInTimeService;
 
-import java.sql.Time;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 
 public class TimelineListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
@@ -71,9 +47,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public static final int TIMELINE_CLIENT = 1;
 
     public static final int TIMELINE_LIMIT = 10;
-
-    public static final String BUNDLE_OFFSET = "com.grappbox.grappbox.timeline_fragment.BUNDLE_OFFSET";
-    public static final String BUNDLE_LIMIT = "com.grappbox.grappbox.timeline_fragment.BUNDLE_LIMIT";
 
     public static final String[] projectionMessage = {
             TimelineEntry.TABLE_NAME + "." + TimelineEntry._ID,

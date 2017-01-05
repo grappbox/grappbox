@@ -25,18 +25,16 @@ public class CalendarDetailAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     private List<UserModel> mParticipant;
 
-    private CalendarEventModel mModel;
     private LayoutInflater mInflater;
     private Context mContext;
 
     public CalendarDetailAdapter(Context context) {
         mContext = context;
-        mInflater = LayoutInflater.from(context);
+        mInflater = LayoutInflater.from(mContext);
         mParticipant = new ArrayList<>();
     }
 
     public void setEventModel(CalendarEventModel model) {
-        mModel = model;
         mParticipant = model._user;
         notifyDataSetChanged();
     }

@@ -51,7 +51,6 @@ public class GrappboxContract {
     public static final String PATH_BUG_USER_REPARTITION = "bug_user_repartition";
     public static final String PATH_BUG_TAGS_REPARTITION = "bug_tags_repartition";
     public static final String PATH_BUG_EVOLUTION = "bug_evolution";
-    public static final String PATH_BUG_ASSIGNATION_TRACKER = "bug_assignation_tracker";
 
     public static final String GENERAL_GRAPPBOX_ID = "grappbox_id";
 

@@ -519,6 +519,14 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
         getContext().startService(launchNextMeetingSyncing);
     }
 
+    private void syncOccupation(String apiToken, long projectId) {
+        //synchronize occupation's informations
+        Intent launchOccupationSyncing = new Intent(getContext(), GrappboxJustInTimeService.class);
+        launchOccupationSyncing.setAction(GrappboxJustInTimeService.ACTION_SYNC_DASHBOARD_OCCUPATION);
+        launchOccupationSyncing.putExtra(GrappboxJustInTimeService.EXTRA_API_TOKEN, apiToken);
+        launchOccupationSyncing.putExtra(GrappboxJustInTimeService.EXTRA_PROJECT_ID, projectId);
+        getContext().startService(launchOccupationSyncing);
+    }
 
     public void syncCustomerAccess(long projectId) {
         Intent sync = new Intent(getContext(), GrappboxJustInTimeService.class);
@@ -566,6 +574,7 @@ public class GrappboxSyncAdapter extends AbstractThreadedSyncAdapter {
                 long projectId = projectsCursor.getLong(0);
 
                 syncNextMeeting(token, projectId);
+                syncOccupation(token, projectId);
                 syncBug(projectId, uid);
                 syncTimeline(token, projectId);
                 syncCustomerAccess(projectId);

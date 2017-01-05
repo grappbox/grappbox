@@ -1,11 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.RecyclerView
+    <ProgressBar
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/team_occupation_list"/>
+        android:padding="150dp"
+        android:indeterminateTint="@color/GrappRed"
+        android:id="@+id/loader"
+        android:indeterminate="true" />
 
-</LinearLayout>
+    <android.support.v4.widget.SwipeRefreshLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/refresh"
+        tools:context="com.grappbox.grappbox.bugtracker_fragments.TimelineListFragment"
+        android:visibility="gone">
+
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/team_occupation_list"/>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
+
+</FrameLayout>

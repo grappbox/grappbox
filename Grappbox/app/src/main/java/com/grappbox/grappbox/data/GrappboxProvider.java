@@ -1,5 +1,6 @@
 package com.grappbox.grappbox.data;
 
+import android.app.LoaderManager;
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.content.Context;
@@ -10,6 +11,7 @@ import android.os.Build;
 import android.provider.BaseColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.util.Log;
 
 import com.grappbox.grappbox.R;
 
@@ -491,6 +493,8 @@ public class GrappboxProvider extends ContentProvider {
         switch (sUriMatcher.match(uri)){
             case USER:
                 return GrappboxContract.UserEntry.TABLE_NAME;
+            case OCCUPATION:
+                return GrappboxContract.OccupationEntry.TABLE_NAME;
             case PROJECT:
                 return GrappboxContract.ProjectEntry.TABLE_NAME;
             case PROJECT_ACCOUNT:
@@ -880,6 +884,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER:
                 returnedUri = UserCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case OCCUPATION:
+                returnedUri = OccupationCursors.insert(uri, contentValues, mOpenHelper);
+                break;
             case PROJECT:
                 returnedUri = ProjectCursors.insert(uri, contentValues, mOpenHelper);
                 break;
@@ -995,6 +1002,9 @@ public class GrappboxProvider extends ContentProvider {
             case USER:
                 ret = UserCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case OCCUPATION:
+                ret = OccupationCursors.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             case PROJECT:
                 ret = ProjectCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
@@ -1097,6 +1107,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case USER:
                 returnCount = UserCursors.bulkInsert(uri, values, mOpenHelper);
+                break;
+            case OCCUPATION:
+                returnCount = OccupationCursors.bulkInsert(uri, values, mOpenHelper);
                 break;
             case ROLE_ASSIGNATION:
                 returnCount = RoleAssignationCursors.bulkInsert(uri, values, mOpenHelper);
