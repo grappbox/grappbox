@@ -47,7 +47,7 @@ class StatProjectAdvancement
     public function objectToArray()
     {
       return array(
-        "date" => $this->date,
+        "date" => $this->date ? $this->date->format('Y-m-d H:i:s') : null,
         "percentage" => $this->percentage,
         "progress" => $this->progress,
         "totalTasks" => $this->totalTasks,

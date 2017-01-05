@@ -380,7 +380,11 @@ class StatisticController extends RolesAndTokenVerificationController
 		else
 			$dueDate = $dueDate[0];
 
-		return array('projectStart' => $project->getCreatedAt(), 'projectEnd' => $dueDate['dueDate']);
+		$createdAt = $project->getCreatedAt();
+		$createdAt ? $createdAt = $createdAt->format('Y-m-d H:i:s') : null;
+		$dueDate['dueDate'] ? $dueDate = $dueDate['dueDate']->format('Y-m-d H:i:s') : null;
+
+		return array('projectStart' => $createdAt, 'projectEnd' => $dueDate);
 	}
 
 	private function getTimelinesMessageNumber($project)

@@ -51,7 +51,7 @@ class StatLateTasks
                         "firstname" => $this->getUser()->getFirstname(),
                         "lastname" => $this->getUser()->getLastname()),
         "role" => $this->role,
-        "date" => $this->date,
+        "date" => $this->date ? $this->date->format('Y-m-d H:i:s') : null,
         "lateTasks" => $this->lateTasks,
         "ontimeTasks" => $this->ontimeTasks,
       );

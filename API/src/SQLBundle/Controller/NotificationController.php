@@ -109,23 +109,20 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
 		$em = $this->getDoctrine()->getManager();
-		$device = $em->getRepository("SQLBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
+		$devices = $em->getRepository("SQLBundle:Devices")->findBy(array("user" => $user, "type" => $content->device_type, "token" => $content->device_token));
 
-		if ($device instanceof Devices)
-		{
-			$device->setName($content->name);
-			$em->flush();
+		foreach ($devices as $d) {
+			$em->remove($d);
 		}
-		else {
-			$device = new Devices();
-			$device->setName($content->device_name);
-			$device->setType($content->device_type);
-			$device->setToken($content->device_token);
-			$device->setUser($user);
 
-			$em->persist($device);
-			$em->flush();
-		}
+		$device = new Devices();
+		$device->setName($content->device_name);
+		$device->setType($content->device_type);
+		$device->setToken($content->device_token);
+		$device->setUser($user);
+
+		$em->persist($device);
+		$em->flush();
 
 		return $this->setCreated("1.15.3", "Notification", "registerDevice", "Complete Success", (Object)array());
 	}
@@ -350,6 +347,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	{
 		$firebase_tokens = array();
 		$this->get_access_token();
+
 		foreach ($usersIds as $userId) {
 			$user = $em->getRepository("SQLBundle:User")->find($userId);
 
@@ -443,6 +441,10 @@ class NotificationController extends RolesAndTokenVerificationController
 			"Authorization: Bearer $this->access_token"
 		);
 
+		print($this->access_token.'\n');
+		print(strlen($msg).'\n');
+		print($msg.'\n');
+
         $ch = curl_init($uri);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
@@ -465,7 +467,7 @@ class NotificationController extends RolesAndTokenVerificationController
 		        return false;
 		    }
 		}
-		return false;
+		return true;
 	}
 
 	private function get_access_token(){

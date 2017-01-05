@@ -37,7 +37,7 @@ class StatBugsEvolution
     public function objectToArray()
     {
         return array(
-          "date" => $this->date,
+          "date" => $this->date ? $this->date->format('Y-m-d H:i:s') : null,
           "createdBugs" => $this->createdBugs,
           "closedBugs" => $this->closedBugs
         );
