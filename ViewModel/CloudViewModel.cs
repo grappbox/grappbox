@@ -106,7 +106,7 @@ namespace Grappbox.ViewModel
             {
                 res = await HttpRequestManager.Get(token, "cloud/list");
             }
-            if (res.IsSuccessStatusCode)
+            if (res.IsSuccessStatusCode && res.StatusCode == HttpStatusCode.Ok)
             {
                 _listSecured.Clear();
                 _listDir.Clear();
@@ -129,6 +129,8 @@ namespace Grappbox.ViewModel
             }
             else
             {
+                if (res.StatusCode == HttpStatusCode.PartialContent)
+                    _passwordSafe = string.Empty;
                 MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
@@ -167,6 +169,15 @@ namespace Grappbox.ViewModel
 
                     // Attach progress and completion handlers.
                     await HandleDownloadAsync(download);
+
+                    ContentDialog cd = new ContentDialog();
+                    cd.Title = "Success";
+                    cd.Content = "Download completed";
+                    cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
+                    cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
+                    var t = cd.ShowAsync();
+                    await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
+                    t.Cancel();
                 }
             }
             else
@@ -174,6 +185,8 @@ namespace Grappbox.ViewModel
                 MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
+
+            FullPath.RemoveAt(FullPath.Count - 1);
         }
 
         public async System.Threading.Tasks.Task downloadFileSecure()
@@ -225,6 +238,8 @@ namespace Grappbox.ViewModel
                 MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
                 await msgbox.ShowAsync();
             }
+
+            FullPath.RemoveAt(FullPath.Count - 1);
         }
         #endregion GET
 

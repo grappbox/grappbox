@@ -1,5 +1,6 @@
 ﻿using Grappbox.CustomControls;
 using Grappbox.Helpers;
+using Grappbox.HttpRequest;
 using Grappbox.View;
 using System;
 using System.Collections.ObjectModel;
@@ -7,11 +8,13 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Windows.Web.Http;
 
 namespace Grappbox
 {
@@ -87,6 +90,13 @@ namespace Grappbox
                 },
                 new NavMenuItem()
                 {
+                    Symbol = Constants.StatsSymbol,
+                    Label = "Statistics",
+                    DestPage = typeof(StatsView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
                     Symbol = Constants.ProjectSettingsSymbol,
                     Label = "Project Settings",
                     DestPage = typeof(ProjectSettingsView),
@@ -103,7 +113,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.LogoutSymbol,
                     Label = "Logout",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(LoginPage),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
             });
@@ -133,7 +143,7 @@ namespace Grappbox
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
-                    Label = "Timeline",
+                    Label = "Tasks",
                     DestPage = typeof(TimelineView),
                     ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },
@@ -167,6 +177,13 @@ namespace Grappbox
                 },
                 new NavMenuItem()
                 {
+                    Symbol = Constants.StatsSymbol,
+                    Label = "Statistics",
+                    DestPage = typeof(StatsView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
+                new NavMenuItem()
+                {
                     Symbol = Constants.ProjectSettingsSymbol,
                     Label = "Project Settings",
                     DestPage = typeof(ProjectSettingsView),
@@ -183,7 +200,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.LogoutSymbol,
                     Label = "Logout",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(LoginPage),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
         };
@@ -292,7 +309,7 @@ namespace Grappbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="listViewItem"></param>
-        private void NavMenuList_ItemInvoked(object sender, ListViewItem listViewItem)
+        private async void NavMenuList_ItemInvoked(object sender, ListViewItem listViewItem)
         {
             foreach (var i in NavList)
             {
@@ -307,8 +324,24 @@ namespace Grappbox
                 if (item.DestPage != null &&
                     item.DestPage != this.AppFrame.CurrentSourcePageType)
                 {
+                    if (item.Label == "Logout")
+                        await logout();
                     this.AppFrame.Navigate(item.DestPage, item.Arguments);
                 }
+            }
+        }
+
+        private async System.Threading.Tasks.Task logout()
+        {
+            HttpResponseMessage res = await HttpRequestManager.Get(null, "account/logout");
+            if (res.IsSuccessStatusCode)
+            {
+                SessionHelper.GetSession().ResetSession();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
             }
         }
 
