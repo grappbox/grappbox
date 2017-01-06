@@ -441,10 +441,6 @@ class NotificationController extends RolesAndTokenVerificationController
 			"Authorization: Bearer $this->access_token"
 		);
 
-		print($this->access_token.'\n');
-		print(strlen($msg).'\n');
-		print($msg.'\n');
-
         $ch = curl_init($uri);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
