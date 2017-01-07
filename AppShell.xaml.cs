@@ -56,7 +56,7 @@ namespace Grappbox
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
-                    Label = "Timeline",
+                    Label = "Talks",
                     DestPage = typeof(TimelineView),
                     ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },
@@ -143,7 +143,7 @@ namespace Grappbox
                 new NavMenuItem()
                 {
                     Symbol = Constants.TimelineSymbol,
-                    Label = "Tasks",
+                    Label = "Talks",
                     DestPage = typeof(TimelineView),
                     ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
                 },

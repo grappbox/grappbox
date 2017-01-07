@@ -106,7 +106,7 @@
                             <ColumnDefinition Width="Auto" />
                         </Grid.ColumnDefinitions>
                         <TextBox Grid.Row="1" x:Name="CommentDescription" AcceptsReturn="True" TextWrapping="Wrap"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.Column="0" PlaceholderText="Type a message and press Send" Background="White" Margin="0"/>
-                        <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" ScrollViewer.VerticalScrollBarVisibility="Auto" Click="PostComment_Click" Margin="0">
+                        <Button Grid.Row="1" Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Click="PostComment_Click" Margin="0">
                             <SymbolIcon Symbol="Send" Foreground="White" />
                         </Button>
                     </Grid>

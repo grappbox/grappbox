@@ -155,11 +155,7 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Get(token, "bugtracker/ticket/reopen");
             if (res.IsSuccessStatusCode)
             {
-                _openBugs.Insert(0, _closeSelect);
-                _closeBugs.Remove(_closeSelect);
                 _closeSelect = null;
-                NotifyPropertyChanged("CloseList");
-                NotifyPropertyChanged("OpenList");
             }
             else
             {
@@ -215,17 +211,7 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/ticket/" + _model.Id);
             if (res.IsSuccessStatusCode)
             {
-                await getOpenTickets();
-                await getClosedTickets();
-
-                ContentDialog cd = new ContentDialog();
-                cd.Title = "Success";
-                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
-                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
-                var t = cd.ShowAsync();
-                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
-                t.Cancel();
+                
             }
             else
             {
@@ -235,29 +221,15 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
-        public async System.Threading.Tasks.Task editComment(BugtrackerModel comment)
+        public async System.Threading.Tasks.Task<bool> editComment(BugtrackerModel comment)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            props.Add("description", comment.Description);
+            props.Add("comment", comment.Comment);
             HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/comment/" + comment.Id);
             if (res.IsSuccessStatusCode)
             {
-                BugtrackerModel _comment = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
-
-                int range = _commentList.IndexOf(comment);
-                _commentList.Remove(comment);
-                _commentList.Insert(range, _comment);
-                NotifyPropertyChanged("CommentList");
-
-                ContentDialog cd = new ContentDialog();
-                cd.Title = "Success";
-                cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
-                cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
-                var t = cd.ShowAsync();
-                await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
-                t.Cancel();
+                return true;
             }
             else
             {
@@ -265,6 +237,7 @@ namespace Grappbox.ViewModel
                 await msgbox.ShowAsync();
             }
             props.Clear();
+            return false;
         }
 
         public async System.Threading.Tasks.Task<bool> editTag()
@@ -276,13 +249,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Put(props, "bugtracker/tag/" + _tagSelect.Id);
             if (res.IsSuccessStatusCode)
             {
-                TagModel _comment = SerializationHelper.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
-
-                int range = _tagList.IndexOf(_tagSelect);
-                _tagList.Remove(_tagSelect);
-                _tagList.Insert(range, _comment);
-                NotifyPropertyChanged("TagList");
-                _tagSelect = null;
                 return true;
             }
             else
@@ -374,21 +340,6 @@ namespace Grappbox.ViewModel
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
 
-            List<int> items = new List<int>();
-            foreach (int item in _toAdd)
-            {
-                foreach (var user in _userList)
-                {
-                    if (item == user.Id)
-                        items.Add(item);
-                }
-            }
-            foreach (int item in items)
-            {
-                _toAdd.Remove(item);
-            }
-            items.Clear();
-
             props.Add("projectId", SessionHelper.GetSession().ProjectId);
             props.Add("title", _model.Title);
             props.Add("description", _model.Description);
@@ -398,10 +349,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/ticket");
             if (res.IsSuccessStatusCode)
             {
-                _model = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
-                if (_openBugs != null)
-                    _openBugs.Insert(0, _model);
-                NotifyPropertyChanged("OpenList");
                 return true;
             }
             else
@@ -422,9 +369,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/comment");
             if (res.IsSuccessStatusCode)
             {
-                BugtrackerModel _comment = SerializationHelper.DeserializeJson<BugtrackerModel>(await res.Content.ReadAsStringAsync());
-                _commentList.Add(_comment);
-                NotifyPropertyChanged("CommentList");
             }
             else
             {
@@ -444,10 +388,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Post(props, "bugtracker/tag");
             if (res.IsSuccessStatusCode)
             {
-                TagModel _comment = SerializationHelper.DeserializeJson<TagModel>(await res.Content.ReadAsStringAsync());
-                _comment.Name = name;
-                _tagList.Add(_comment);
-                NotifyPropertyChanged("TagList");
                 return true;
             }
             else
@@ -467,11 +407,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/ticket/close");
             if (res.IsSuccessStatusCode)
             {
-                _closeBugs.Insert(0, _openSelect);
-                _openBugs.Remove(_openSelect);
-                _openSelect = null;
-                NotifyPropertyChanged("CloseList");
-                NotifyPropertyChanged("OpenList");
             }
             else
             {
@@ -486,8 +421,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/comment");
             if (res.IsSuccessStatusCode)
             {
-                _commentList.Remove(comment);
-                NotifyPropertyChanged("CommentList");
             }
             else
             {
@@ -502,9 +435,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/tag");
             if (res.IsSuccessStatusCode)
             {
-                _tagList.Remove(_tagSelect);
-                _tagSelect = null;
-                NotifyPropertyChanged("TagList");
                 return true;
             }
             else
@@ -521,8 +451,6 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Delete(token, "bugtracker/tag/remove");
             if (res.IsSuccessStatusCode)
             {
-                _model.Tags.Remove(tag);
-
                 ContentDialog cd = new ContentDialog();
                 cd.Title = "Success";
                 cd.Content = HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync());
@@ -681,24 +609,6 @@ namespace Grappbox.ViewModel
         {
             _model = new BugtrackerModel();
         }
-        
-        private void pushNotif(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
-        {
-            if (e.NotificationType == PushNotificationType.Raw)
-            {
-                string title = JObject.Parse(e.RawNotification.Content).GetValue("title").ToString();
-                switch (title)
-                {
-                    case "new bug":
-                        BugtrackerModel tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                        _openBugs.Insert(0, tmp);
-                        break;
-                    default:
-                        break;
-                }
-            }
-            e.Cancel = true;
-        }
 
         public async void OnPushNotification(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
         {
@@ -708,6 +618,8 @@ namespace Grappbox.ViewModel
                 if (e.NotificationType == PushNotificationType.Raw)
                 {
                     string title = JObject.Parse(e.RawNotification.Content).GetValue("title").ToString();
+                    int i = 0;
+                    int range = 0; 
                     BugtrackerModel tmp;
                     TagModel tag;
                     switch (title)
@@ -720,64 +632,103 @@ namespace Grappbox.ViewModel
                         case "assign tag bug":
                         case "participants bug":
                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            int pos = 0;
+                            range = 0;
                             foreach (var item in _openBugs)
                             {
                                 if (item.Id == tmp.Id)
-                                    pos = _openBugs.IndexOf(item);
+                                    range = _openBugs.IndexOf(item);
                             }
-                            if (pos != 0)
-                                _openBugs[pos] = tmp;
-                            if (tmp.Id == _openSelect.Id)
+                            if (range >= 0)
+                                _openBugs[range] = tmp;
+                            if (_openSelect != null && tmp.Id == _openSelect.Id)
                                 _openSelect = tmp;
-                            if (tmp.Id == _closeSelect.Id)
+                            if (_closeSelect != null && tmp.Id == _closeSelect.Id)
                                 _closeSelect = tmp;
                             break;
                         case "close bug":
                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            _openBugs.Remove(tmp);
-                            _closeBugs.Insert(0, tmp);
+                            range = 0;
+                            foreach (var item in _openBugs)
+                            {
+                                if (item.Id == tmp.Id)
+                                    range = _openBugs.IndexOf(item);
+                            }
+                            if (range >= 0)
+                            {
+                                _openBugs.RemoveAt(range);
+                                _closeBugs.Insert(0, tmp);
+                            }
                             break;
                         case "reopen bug":
                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            _closeBugs.Remove(tmp);
-                            _openBugs.Insert(0, tmp);
+                            range = 0;
+                            foreach (var item in _closeBugs)
+                            {
+                                if (item.Id == tmp.Id)
+                                    range = _closeBugs.IndexOf(item);
+                            }
+                            if (range >= 0)
+                            {
+                                _closeBugs.RemoveAt(range);
+                                _openBugs.Insert(0, tmp);
+                            }
                             break;
                         case "new comment bug":
                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            if (_commentList[0].ParentId == tmp.ParentId)
-                                _commentList.Insert(0, tmp);
+                            if (_model.Id == tmp.ParentId)
+                                _commentList.Add(tmp);
                             break;
                         case "edit comment bug":
                             tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            if (_commentList[0].ParentId == tmp.ParentId)
+                            if (_model.Id == tmp.ParentId)
                             {
-                                int pos2 = 0;
+                                range = 0;
                                 foreach (var item in _commentList)
                                 {
                                     if (item.Id == tmp.Id)
-                                        pos2 = _commentList.IndexOf(item);
+                                        range = _commentList.IndexOf(item);
                                 }
-                                _commentList[pos2] = tmp;
+                                _commentList[range] = tmp;
+                            }
+                            break;
+                        case "delete comment bug":
+                            tmp = SerializationHelper.DeserializeObject<BugtrackerModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
+                            if (_model.Id == tmp.ParentId)
+                            {
+                                range = 0;
+                                foreach (var item in _commentList)
+                                {
+                                    if (item.Id == tmp.Id)
+                                        range = _commentList.IndexOf(item);
+                                }
+                                if (range > 0)
+                                    _commentList.RemoveAt(range);
                             }
                             break;
                         case "new tag bug":
                             tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            _tagList.Insert(0, tag);
+                            _tagList.Add(tag);
                             break;
                         case "update tag bug":
                             tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            int pos3 = 0;
+                            int range3 = 0;
                             foreach (var item in _tagList)
                             {
                                 if (item.Id == tag.Id)
-                                    pos3 = _tagList.IndexOf(item);
+                                    range3 = _tagList.IndexOf(item);
                             }
-                            _tagList[pos3] = tag;
+                            _tagList[range3] = tag;
                             break;
                         case "delete tag bug":
                             tag = SerializationHelper.DeserializeObject<TagModel>(JObject.Parse(e.RawNotification.Content).GetValue("body").ToString());
-                            _tagList.Remove(tag);
+                            range = 0;
+                            foreach (var item in _tagList)
+                            {
+                                if (item.Id == tag.Id)
+                                    range = _tagList.IndexOf(tag);
+                            }
+                            if (range > 0)
+                                _tagList.RemoveAt(range);
                             break;
                         default:
                             break;

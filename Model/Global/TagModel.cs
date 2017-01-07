@@ -1,5 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
+using System.Globalization;
+using System.Text;
 using Windows.UI.Xaml.Media;
 
 namespace Grappbox.Model
@@ -24,6 +26,15 @@ namespace Grappbox.Model
         public SolidColorBrush GetSolidColorBrush(string hex)
         {
             hex = hex.Replace("#", string.Empty);
+            if (hex.Length == 3)
+            {
+                StringBuilder str = new StringBuilder();
+                for (int i = 0; i < hex.Length; i++)
+                {
+                    str.Append(string.Format("{0}{1}", hex[i], hex[i]));
+                }
+                hex = str.ToString();
+            }
             byte a = (byte)(Convert.ToUInt32("255", 16));
             byte r = (byte)(Convert.ToUInt32(hex.Substring(0, 2), 16));
             byte g = (byte)(Convert.ToUInt32(hex.Substring(2, 2), 16));

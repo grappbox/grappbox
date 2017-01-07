@@ -239,6 +239,8 @@ namespace Grappbox.View
             if ((sender as Button).DataContext as BugtrackerModel != null)
                 await vm.editComment((sender as Button).DataContext as BugtrackerModel);
 
+            CommentDescription.Text = string.Empty;
+
             dialog.Hide();
         }
 

@@ -41,7 +41,7 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         #region NavigationHelper
@@ -430,11 +430,14 @@ namespace Grappbox.View
                 UserModel md = (parent as Grid).DataContext as UserModel;
                 ProjectRoleModel role = await vm.getUserRole(((parent as Grid).DataContext as UserModel).Id);
                 int newRole = (int)value;
+                bool success = false;
                 if (role.RoleId != newRole)
                 {
                     if (role.RoleId == 0 || await vm.removeUserRole(md.Id, role.RoleId) == true)
-                        await vm.assignUserRole(md.Id, newRole);
+                        success = await vm.assignUserRole(md.Id, newRole);
                 }
+                if (success == false)
+                    (sender as ComboBox).SelectedValue = role.RoleId;
             }
         }
 
