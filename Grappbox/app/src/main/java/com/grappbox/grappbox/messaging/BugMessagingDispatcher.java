@@ -28,6 +28,7 @@ import android.content.OperationApplicationException;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.net.Uri;
+import android.util.Log;
 
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.data.GrappboxContract;
@@ -66,6 +67,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
     }
 
     private void processTagSync(long bugId, JSONObject body) throws JSONException {
+        Log.e("NOTIFTEST", body.toString());
         JSONArray tags = body.getJSONArray("tags");
         String tagDeletionSelection = "";
         for (int i = 0; i < tags.length(); ++i){
@@ -84,8 +86,9 @@ class BugMessagingDispatcher implements MessagingDispatcher {
             if (assignationExist == null || !assignationExist.moveToFirst()){
                 ContentValues values = new ContentValues();
                 values.put(GrappboxContract.BugTagEntry.COLUMN_LOCAL_BUG_ID, bugId);
+                Log.e("NOTIFTEST", String.valueOf(tag.getLong(0)));
                 values.put(GrappboxContract.BugTagEntry.COLUMN_LOCAL_TAG_ID, tag.getLong(0));
-                mContext.getContentResolver().insert(GrappboxContract.BugAssignationEntry.CONTENT_URI, values);
+                mContext.getContentResolver().insert(GrappboxContract.BugTagEntry.CONTENT_URI, values);
             } else{
                 assignationExist.close();
             }
