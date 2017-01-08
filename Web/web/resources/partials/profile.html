@@ -316,13 +316,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
                   <button type="submit" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]}" data-ng-click="profile.update()" data-ng-class="{ 'disabled': disabled.update }">Update</button>
                 </div>
+                <div class="clearfix"></div>
               </fieldset>
             </form>
           </div>
         </div>
 
         <!-- Password settings -->
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors[path.current] + '-background' }]}">lock</i>Password</h4>
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors[path.current] + '-background' }]}">security</i>Password</h4>
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box">
             <form>
@@ -351,6 +352,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
                   <button type="submit" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]}" data-ng-click="profile.updatePassword()" data-ng-class="{ 'disabled': disabled.updatePassword }">Change</button>
                 </div>
+                <div class="clearfix"></div>                
               </fieldset>
             </form>
           </div>
@@ -361,10 +363,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div data-ng-if="!view.valid">
       <div class="view-row">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-          <div class="box box-error">
-            <p><i class="material-icons" aria-hidden="true">warning</i>Something is wrong with GrappBox. Please give us a minute, and try again.</p>
+          <div class="box error">
+            <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
           </div>
         </div>
+        <div class="clearfix"></div>        
       </div>
     </div>
   </div>
