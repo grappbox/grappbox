@@ -22,6 +22,7 @@ public class GrappboxContract {
     public static final String PATH_PROJECT_ACCOUNT = "project_account";
     public static final String PATH_USER = "user";
     public static final String PATH_OCCUPATION = "occupation";
+    public static final String PATH_NEXT_MEETING = "next_meeting";
     public static final String PATH_EVENT = "event";
     public static final String PATH_EVENT_PARTICIPANT = "event_participant";
     public static final String PATH_TIMELINE = "timeline";
@@ -280,6 +281,25 @@ public class GrappboxContract {
             return buildOccupationWithLocalIdUri(project_id).buildUpon().appendEncodedPath(Long.toString(user_id)).build();
         }
 
+    }
+
+    public static final class NextMeetingEntry implements BaseColumns {
+        public static final String TABLE_NAME = "next_meeting";
+
+        public static final String COLUMN_EVENT_ID = "event_id";
+        public static final String COLUMN_LOCAL_PROJECT_ID = "local_project_id";
+        public static final String COLUMN_TITLE = "title";
+        public static final String COLUMN_DESCRIPTION = "description";
+        public static final String COLUMN_BEGIN_DATE = "begin_date";
+        public static final String COLUMN_END_DATE = "end_date";
+
+        public static final Uri CONTENT_URI = BASE_CONTENT_URI.buildUpon().appendPath(PATH_NEXT_MEETING).build();
+        public static final String CONTENT_TYPE = ContentResolver.CURSOR_DIR_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NEXT_MEETING;
+        public static final String CONTENT_ITEM_TYPE = ContentResolver.CURSOR_ITEM_BASE_TYPE + "/" + CONTENT_AUTHORITY + "/" + PATH_NEXT_MEETING;
+
+        public static Uri buildNextMeetingWithLocalIdUri(long id) {
+            return ContentUris.withAppendedId(CONTENT_URI, id);
+        }
     }
 
     public static final class EventEntry implements BaseColumns {
