@@ -77,6 +77,7 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
         $rootScope.user.firstname = response.data.data.firstname;
         $rootScope.user.lastname = response.data.data.lastname;
         $rootScope.user.email = response.data.data.email;
+        $rootScope.user.avatar = response.data.data.avatar;
       },
       function onError(response) {
         $rootScope.reject();
