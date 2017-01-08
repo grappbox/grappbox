@@ -13,8 +13,7 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
 
   // Scope variables initialization
   $scope.view = { loaded: false, valid: false };
-  $scope.method = { loadProject: "" };
-  $scope.projects = {};
+  $scope.projects = { list: "", load: "" };
 
   $rootScope.path.current = "/";
 
@@ -24,7 +23,7 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
 
   // Routine definition
   // Check and initialize local storage
-  $scope.method.loadProject = function(project) {
+  $scope.projects.load = function(project) {
     localStorageService.set("project.set", true);
     localStorageService.set("project.id", $base64.encode(project.id));
     localStorageService.set("project.name", $base64.encode(project.name));
@@ -42,18 +41,18 @@ app.controller("DashboardListController", ["$base64", "$http", "localStorageServ
 
   // Get user current projects (and progress)
   $http.get($rootScope.api.url + "/dashboard/projects", { headers: { 'Authorization': $rootScope.user.token }}).then(
-    function onGetGlobalProgressSuccess(response) {
+    function globalProgressReceived(response) {
       if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "1.2.1")
-        $scope.projects = (response && response.data && response.data.data && response.data.data.array ? response.data.data.array : null);
+        $scope.projects.list = (response.data.data.array ? response.data.data.array : null);
       else
-        $scope.projects = null;
+        $scope.projects.list = null;
       $scope.view.valid = true;
       $scope.view.loaded = true;
     },
-    function onGetGlobalProgressFail(response) {
+    function globalProgressNotReceived(response) {
       if (response && response.data && response.data.info && response.data.info.return_code && response.data.info.return_code == "2.3.3")
         $rootScope.reject();
-      $scope.data.projects = null;
+      $scope.projects.list = null;
       $scope.view.valid = false;
       $scope.view.loaded = true;
     }
