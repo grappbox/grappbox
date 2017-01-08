@@ -4,158 +4,131 @@
 * COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 */
 
-/**
-* Controller definition
-* APP dashboard
-*
-*/
-app.controller("DashboardController", ["$http", "$rootScope", "$route", "$scope",
-    function($http, $rootScope, $route, $scope) {
+// Controller definition
+// APP dashboard
+app.controller("DashboardController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope",
+    function($http, notificationFactory, $rootScope, $route, $scope) {
 
   /* ==================== INITIALIZATION ==================== */
 
 	// Scope variables initialization
-  $scope.data = { project_id: $route.current.params.project_id };
-  $scope.method = { formatObjectDate: "" };
+  $scope.project = { occupation: {}, meetings: {}, id: $route.current.params.project_id };
 
-	$scope.occupation = { list: "", onLoad: true, valid: false, message: "" };
-	$scope.meetings = { list: "", onLoad: true, valid: false, message: "" };
-
-
-
-  /* ==================== SCOPE ROUTINES ==================== */
-
-  // Routine definition (scope)
-  // Format date
-  $scope.method.formatObjectDate = function(dateToFormat) {
-    return dateToFormat.substring(0, dateToFormat.lastIndexOf(":"));
-  };
+	$scope.project.occupation = { list: "", loaded: false, valid: false, authorized: false };
+	$scope.project.meetings = { list: "", loaded: false, valid: false };
 
 
 
 	/* ==================== LOCAL ROUTINES ==================== */
 
   // Routine definition (local)
-	// Get current team occupation
+	// Get current team occupation (if authorized)
   var _getTeamOccupation = function() {
-  	$http.get($rootScope.api.url + "/dashboard/occupation/" + $scope.data.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onGetTeamOccupationSuccess(response) {
-        if (response.data.info) {
+  	$http.get($rootScope.api.url + "/dashboard/occupation/" + $scope.project.id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function teamOccupationReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "1.2.1":
-          	$scope.occupation.list = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
-          	$scope.occupation.valid = true;
-          	$scope.occupation.onLoad = false;
+          	$scope.project.occupation.list = (response.data.data && response.data.data.array ? response.data.data.array : null);
+          	$scope.project.occupation.valid = true;
+          	$scope.project.occupation.loaded = true;
+            $scope.project.occupation.authorized = true;
             break;
 
             case "1.2.3":
-          	$scope.occupation.list = null;
-          	$scope.occupation.message = "You don't have any collaborator."
-          	$scope.occupation.valid = true;
-          	$scope.occupation.onLoad = false;
+            $scope.project.occupation.list = null;
+            $scope.project.occupation.valid = true;
+            $scope.project.occupation.loaded = true;
+            $scope.project.occupation.authorized = true;
             break;
 
             default:
-          	$scope.occupation.list = null;
-          	$scope.occupation.message = "An error occurred. Please try again."
-          	$scope.occupation.valid = false;
-          	$scope.occupation.onLoad = false;
+            $scope.project.occupation.list = null;
+            $scope.project.occupation.valid = false;
+            $scope.project.occupation.loaded = true;
+            $scope.project.occupation.authorized = true;
             break;
           }
         }
-        else {
-  	      $scope.occupation.list = null;
-  	    	$scope.occupation.message = "An error occurred with the GrappBox API. Please try again."
-  	    	$scope.occupation.valid = false;
-  	    	$scope.occupation.onLoad = false;
-      	}
+        else
+          $rootScope.reject(true);
   		},
-  		function onGetTeamOccupationFail(response) {
-  			$scope.occupation.list = null;
-  			$scope.occupation.onLoad = false;
-  			$scope.occupation.valid = false;
-
-        if (response.data.info) {
+  		function teamOccupationNotReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
           switch(response.data.info.return_code) {
             case "2.1.3":
-            $rootScope.reject()
+            $rootScope.reject();
             break;
 
             case "2.1.9":
-          	$scope.occupation.message = "You don't have sufficent rights to perform this operation. Please try again."
+            $scope.project.occupation.list = null;
+            $scope.project.occupation.valid = true;
+            $scope.project.occupation.loaded = true;
+            $scope.project.occupation.authorized = false;
             break;
 
             default:
-          	$scope.occupation.message = "An error occurred. Please try again."
+            $scope.project.occupation.list = null;
+            $scope.project.occupation.valid = false;
+            $scope.project.occupation.loaded = true;
+            $scope.project.occupation.authorized = true;
             break;
           }
         }
         else
-        	$scope.occupation.message = "An error occurred with the GrappBox API. Please try again."
+          $rootScope.reject(true);
       }
     );
-  };
+  }; 
 
   // Routine definition (local)
-	// Get next meetings
+	// Get user next meetings
   var _getNextMeetings = function() {
-  	$http.get($rootScope.api.url + "/dashboard/meetings/" + $scope.data.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
-      function onGetMeetingsSuccess(response) {
-        if (response.data.info) {
+    $http.get($rootScope.api.url + "/dashboard/meetings/" + $scope.project.id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function nextMeetingsReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "1.2.1":
-          	$scope.meetings.list = (response.data && Object.keys(response.data.data).length ? response.data.data.array : null);
-          	$scope.meetings.valid = true;
-          	$scope.meetings.onLoad = false;
+            $scope.project.meetings.list = (response.data.data && response.data.data.array ? response.data.data.array : null);
+            $scope.project.meetings.valid = true;
+            $scope.project.meetings.loaded = true;
             break;
 
             case "1.2.3":
-          	$scope.meetings.list = null;
-          	$scope.meetings.message = "You don't have any meetings."
-          	$scope.meetings.valid = true;
-          	$scope.meetings.onLoad = false;
+            $scope.project.meetings.list = null;
+            $scope.project.meetings.valid = true;
+            $scope.project.meetings.loaded = true;
             break;
 
             default:
-          	$scope.meetings.list = null;
-          	$scope.meetings.message = "An error occurred. Please try again."
-          	$scope.meetings.valid = false;
-          	$scope.meetings.onLoad = false;
-            break;
-          }
-        }
-        else {
-  	      $scope.meetings.list = null;
-  	    	$scope.meetings.message = "An error occurred with the GrappBox API. Please try again."
-  	    	$scope.meetings.valid = false;
-  	    	$scope.meetings.onLoad = false;
-      	}
-  		},
-  		function onGetMeetingsFail(response) {
-  			$scope.meetings.list = null;
-  			$scope.meetings.onLoad = false;
-  			$scope.meetings.valid = false;
-
-        if (response.data.info) {
-          switch(response.data.info.return_code) {
-            case "2.2.3":
-            $rootScope.reject()
-            break;
-
-            case "2.2.9":
-          	$scope.meetings.message = "You don't have sufficent rights to perform this operation. Please try again."
-            break;
-
-            default:
-          	$scope.meetings.message = "An error occurred. Please try again."
+            $scope.project.meetings.list = null;
+            $scope.project.meetings.valid = false;
+            $scope.project.meetings.loaded = true;
             break;
           }
         }
         else
-        	$scope.meetings.message = "An error occurred with the GrappBox API. Please try again."
+          $rootScope.reject(true);
+      },
+      function nextMeetingsNotReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+          switch(response.data.info.return_code) {
+            case "2.1.3":
+            $rootScope.reject();
+            break;
+
+            default:
+            $scope.project.meetings.list = null;
+            $scope.project.meetings.valid = false;
+            $scope.project.meetings.loaded = true;
+            break;
+          }
+        }
+        else
+          $rootScope.reject(true);
       }
     );
-  };
+  }; 
 
 
 

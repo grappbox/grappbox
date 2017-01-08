@@ -136,12 +136,10 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
 
 
 
-/**
-* Controller definition (from view)
-* Confirmation prompt for whiteboard creation.
-*
-*/
+// Controller definition (from view)
+// Confirmation prompt for whiteboard creation.
 app.controller("WhiteboardCreationController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  
   $scope.whiteboardCreationConfirmed = function() {
     $scope.whiteboards.new.error = ($scope.whiteboards.new.name && $scope.whiteboards.new.name.length ? false : true);
     if (!$scope.whiteboards.new.error)

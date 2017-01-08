@@ -106,6 +106,7 @@
     '@AppBundle/Resources/public/js/app/app.js'
     '@AppBundle/Resources/public/js/app/root.js'
     '@AppBundle/Resources/public/js/app/routing.js'
+    '@AppBundle/Resources/public/js/app/directives/imageSourceDirective.js'
     '@AppBundle/Resources/public/js/app/factories/accessFactory.js'
     '@AppBundle/Resources/public/js/app/factories/notificationFactory.js'
     '@AppBundle/Resources/public/js/app/factories/rootFactory.js'
@@ -193,7 +194,7 @@
     <div class="navigation visible-xs {[{ path.colors[path.current] + '-background' }]} {[{ sidebar.open ? 'open' : '' }]}" data-ng-cloak>
       <div class="container-fluid">
         <div class="navigation-left">
-          <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons" aria-hidden="true">{[{ sidebar.open ? 'arrow_back' : 'menu' }]}</i></a>
+          <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-hover' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons" aria-hidden="true">menu</i></a>
           <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
         </div>
       </div>
@@ -205,7 +206,8 @@
       <div class="sidebar-header">
         <a class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" href="" data-ng-click="sidebar.toggle()" title="Close navigation drawer"><i class="material-icons" aria-hidden="true">arrow_back</i></a>
         <div class="profile">
-          <img src="../resources/img/app/default-avatar.min.png" alt="{[{ user.firstname }]} {[{ user.lastname }]}" width="65" height="65">
+          <img data-ng-if="!user.avatar" src="../resources/img/app/default-avatar.min.png" alt="{[{ user.firstname }]} {[{ user.lastname }]}" width="64" height="64">
+          <img data-ng-if="user.avatar" data-ng-src="https://static.grappbox.com/app/user/{[{ user.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" alt="{[{ user.firstname }]} {[{ user.lastname }]}" width="64" height="64">
           <p class="ellipsis">{[{ user.firstname }]} {[{ user.lastname }]}</p>
         </div>
         <div class="clearfix"></div>

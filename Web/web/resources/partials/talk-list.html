@@ -30,8 +30,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <!-- Team talks -->
           <input type="radio" name="tab" id="team" checked>
           <div class="tab-label-content" id="team-content">
-            <label for="team" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">group</i>Team members</label>
-            <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <label for="team" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">group</i><span class="hidden-xs">Team members</span></label>
+            <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
                 <a href="talk/{[{ ::talk.project_id }]}/{[{ ::talk.team.id }]}/new" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover new" title="Create a discussion for your team only">Create a new team talk</a>
               </div>
@@ -44,7 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="talk.team.valid && talk.team.messages" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 no-padding each-talk" data-ng-repeat="message in talk.team.messages">
                   <div class="box">
                     <div class="avatar">
-                      <img src="../resources/img/app/default-avatar.min.png" alt="{[{ ::message.creator.firstname }]} {[{ ::message.creator.lastname }]}" width="48" height="48">
+                      <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::message.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::message.creator.firstname }]} {[{ ::message.creator.lastname }]}">
                     </div>
                     <ul>
                       <li class="title"><strong>{[{ ::message.title }]}</strong></li>
@@ -74,8 +74,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <!-- Customer talks -->
           <input type="radio" name="tab" id="customer">
           <div class="tab-label-content" id="customer-content">
-            <label for="customer" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">location_city</i>Customers</label>
-            <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <label for="customer" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">public</i><span class="hidden-xs">Customers</span></label>
+            <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
                 <a href="talk/{[{ ::talk.project_id }]}/{[{ ::talk.customer.id }]}/new" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover new" title="Create a discussion for your customers only">Create a new customer talk</a>
               </div>
@@ -88,7 +88,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="talk.customer.valid && talk.customer.messages" class="col-lg-4 col-md-6 col-sm-12 col-xs-12 no-padding each-talk" data-ng-repeat="message in talk.customer.messages">
                   <div class="box">
                     <div class="avatar">
-                      <img src="../resources/img/app/default-avatar.min.png" alt="{[{ ::message.creator.firstname }]} {[{ ::message.creator.lastname }]}" width="48" height="48">
+                      <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::message.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::message.creator.firstname }]} {[{ ::message.creator.lastname }]}">
                     </div>
                     <ul>
                       <li class="title"><strong>{[{ ::message.title }]}</strong></li>

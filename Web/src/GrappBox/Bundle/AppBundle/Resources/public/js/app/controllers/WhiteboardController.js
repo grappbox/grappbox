@@ -540,11 +540,8 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
 
 
 
-/**
-* Controller definition (from view)
-* Confirmation prompt for whiteboard deletion.
-*
-*/
+// Controller definition (from view)
+// Confirmation prompt for whiteboard deletion.
 app.controller("WhiteboardDeletionController", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.whiteboardDeletionConfirmed = function() { $uibModalInstance.close(); };
