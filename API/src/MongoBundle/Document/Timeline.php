@@ -189,7 +189,7 @@ class Timeline
       return array(
         "id" => $this->id,
         "typeId" => $this->typeId,
-        "projectId" => $this->projectId,
+        "projectId" => $this->projects->getId(),
         "name" => $this->name
       );
     }

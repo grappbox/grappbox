@@ -77,7 +77,7 @@ class TimelineMessage
        return array(
          "id" => $this->id,
          "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
-         "timelineId" => $this->timelineId,
+         "timelineId" => $this->timelines->getId(),
          "title" => $this->title,
          "message" => $this->message,
          "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,

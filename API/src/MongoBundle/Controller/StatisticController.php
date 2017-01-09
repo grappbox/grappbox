@@ -8,16 +8,16 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
 use MongoBundle\Controller\RolesAndTokenVerificationController;
-use MongoBundle\Entity\StatProjectAdvancement;
-use MongoBundle\Entity\StatLateTasks;
-use MongoBundle\Entity\StatBugsEvolution;
-use MongoBundle\Entity\StatBugsTagsRepartition;
-use MongoBundle\Entity\StatBugAssignationTracker;
-use MongoBundle\Entity\StatBugsUsersRepartition;
-use MongoBundle\Entity\StatTasksRepartition;
-use MongoBundle\Entity\StatUserWorkingCharge;
-use MongoBundle\Entity\StatUserTasksAdvancement;
-use MongoBundle\Entity\StatStorageSize;
+use MongoBundle\Document\StatProjectAdvancement;
+use MongoBundle\Document\StatLateTasks;
+use MongoBundle\Document\StatBugsEvolution;
+use MongoBundle\Document\StatBugsTagsRepartition;
+use MongoBundle\Document\StatBugAssignationTracker;
+use MongoBundle\Document\StatBugsUsersRepartition;
+use MongoBundle\Document\StatTasksRepartition;
+use MongoBundle\Document\StatUserWorkingCharge;
+use MongoBundle\Document\StatUserTasksAdvancement;
+use MongoBundle\Document\StatStorageSize;
 use DateTime;
 
 /**
@@ -59,6 +59,7 @@ class StatisticController extends RolesAndTokenVerificationController
     if (!$user)
       return $this->setBadTokenError("16.1.3", "Stat", "getAll");
 
+    // GET INSTANT DATA
     $stat["projectTimeLimits"] = $this->getProjectTimeLimits($project);
 
     $stat["timelinesMessageNumber"] = $this->getTimelinesMessageNumber($project);
@@ -73,6 +74,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $stat["clientBugTracker"] = $this->getClientBugTracker($project);
 
+    // GET CUSTOM UPDATE DATA
     $data = $em->getRepository('MongoBundle:StatStorageSize')->findBy(array("project.id" => $project->getId()));
     if (!count($data))
       $stat["storageSize"] = array("occupied" => 0, "total" => 1000000000);
@@ -83,18 +85,6 @@ class StatisticController extends RolesAndTokenVerificationController
     $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["userTasksAdvancement"][] = $value->objectToArray();
-    }
-
-    $stat["lateTask"] = array();
-    $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project.id" => $project->getId()));
-    foreach ($data as $key => $value) {
-      $stat["lateTask"][] = $value->objectToArray();
-    }
-
-    $stat["bugsEvolution"] = array();
-    $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project.id" => $project->getId()));
-    foreach ($data as $key => $value) {
-      $stat["bugsEvolution"][] = $value->objectToArray();
     }
 
     $stat["bugsTagsRepartition"] = array();
@@ -127,8 +117,29 @@ class StatisticController extends RolesAndTokenVerificationController
       $stat["userWorkingCharge"][] = $value->objectToArray();
     }
 
+    // GET DAILY UPDATE DATA
+    $stat["lateTask"] = array();
+    $data = $em->getRepository('MongoBundle:StatLateTasks')->createQueryBuilder()
+                ->field('project.id')->equals($project->getId())
+                ->getQuery()->execute();
+    foreach ($data as $key => $value) {
+      $stat["lateTask"][] = $value->objectToArray();
+    }
+
+    $stat["bugsEvolution"] = array();
+    $data = $em->getRepository('MongoBundle:StatBugsEvolution')->createQueryBuilder()
+                ->field('project.id')->equals($project->getId())
+                ->getQuery()->execute();
+    foreach ($data as $key => $value) {
+      $stat["bugsEvolution"][] = $value->objectToArray();
+    }
+
+    // GET WEEKLY UPDATE DATA
     $stat["projectAdvancement"] = array();
-    $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project.id" => $project->getId()));
+    $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->createQueryBuilder()
+              ->field('project.id')->equals($project->getId())
+              ->getQuery()->execute();
+              //->findBy(array("project.id" => $project->getId()));
     foreach ($data as $key => $value) {
       $stat["projectAdvancement"][] = $value->objectToArray();
     }
@@ -188,34 +199,49 @@ class StatisticController extends RolesAndTokenVerificationController
         break;
       case 'usertasksadvancement':
         $stat["userTasksAdvancement"] = array();
-        $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+        //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["userTasksAdvancement"][] = $value->objectToArray();
         }
         break;
       case 'latetask':
         $stat["lateTask"] = array();
-        $data = $em->getRepository('MongoBundle:StatLateTasks')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatLateTasks')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+        //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["lateTask"][] = $value->objectToArray();
         }
         break;
       case 'bugsevolution':
         $stat["bugsEvolution"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsEvolution')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatBugsEvolution')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsEvolution"][] = $value->objectToArray();
         }
         break;
       case 'bugstagsrepartition':
         $stat["bugsTagsRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsTagsRepartition"][] = $value->objectToArray();
         }
         break;
       case 'bugassignationtracker':
-        $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatBugAssignationTracker')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         if (!count($data))
           $stat["bugAssignationTracker"] = array("assigned" => 0, "unassigned" => 0);
         else
@@ -223,28 +249,40 @@ class StatisticController extends RolesAndTokenVerificationController
         break;
       case 'bugsusersrepartition':
         $stat["bugsUsersRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["bugsUsersRepartition"][] = $value->objectToArray();
         }
         break;
       case 'tasksrepartition':
         $stat["tasksRepartition"] = array();
-        $data = $em->getRepository('MongoBundle:StatTasksRepartition')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatTasksRepartition')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["tasksRepartition"][] = $value->objectToArray();
         }
         break;
       case 'userworkingcharge':
         $stat["userWorkingCharge"] = array();
-        $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatUserWorkingCharge')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["userWorkingCharge"][] = $value->objectToArray();
         }
         break;
       case 'projectadvancement':
         $stat["projectAdvancement"] = array();
-        $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->findBy(array("project.id" => $project->getId()));
+        $data = $em->getRepository('MongoBundle:StatProjectAdvancement')->createQueryBuilder()
+                  ->field('project.id')->equals($project->getId())
+                  ->getQuery()->execute();
+                  //->findBy(array("project.id" => $project->getId()));
         foreach ($data as $key => $value) {
           $stat["projectAdvancement"][] = $value->objectToArray();
         }
@@ -258,7 +296,6 @@ class StatisticController extends RolesAndTokenVerificationController
   }
 
 
-
   // -----------------------------------------------------------------------
   //                 STATISTICS DATA - INSTANT VALUES
   // -----------------------------------------------------------------------
@@ -266,20 +303,20 @@ class StatisticController extends RolesAndTokenVerificationController
   private function getProjectTimeLimits($project)
   {
     $em = $this->get('doctrine_mongodb')->getManager();
-    $dueDate = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-               ->select('t.dueDate')
-               ->where('t.projects = :project')
-               ->orderBy('t.dueDate', 'DESC')
-               ->setParameter('project', $project)
-               ->setMaxResults(1)
-               ->getQuery()->execute();
 
-    if ($dueDate == null)
+    $qb = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+        ->field('projects.id')->equals($project->getId())
+        ->sort('dueDate', 'desc');
+		$req = $qb->getQuery()->getSingleResult();
+
+    if ($req === null)
       $dueDate = null;
-    else
-      $dueDate = $dueDate[0];
+    else {
+      $dueDate = $req->getDueDate();
+    }
 
-    return array('projectStart' => $project->getCreatedAt(), 'projectEnd' => $dueDate['dueDate']);
+    return array('projectStart' => $project->getCreatedAt()->format('Y-m-d H:i:s'),
+                  'projectEnd' => $dueDate->format('Y-m-d H:i:s'));
   }
 
   private function getTimelinesMessageNumber($project)
@@ -288,11 +325,10 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $result = array();
     foreach ($project->getTimelines() as $key => $timeline) {
-      $result[($timeline->getTypeId() == 1 ? 'customer' : 'team')] = $em->getRepository('MongoBundle:TimelineMessage')->createQueryBuilder('t')
-                 ->select('count(t)')
-                 ->where('t.timelines = :timeline')
-                 ->setParameters(array('timeline' => $timeline))
-                 ->getQuery()->getSingleScalarResult();
+      $req = $em->getRepository('MongoBundle:TimelineMessage')->createQueryBuilder()
+           ->field('timelines.id')->equals($timeline->getId())
+           ->getQuery()->execute();
+      $result[($timeline->getTypeId() == 1 ? 'customer' : 'team')] = count($req);
     }
 
     return $result;
@@ -313,17 +349,17 @@ class StatisticController extends RolesAndTokenVerificationController
   {
     $em = $this->get('doctrine_mongodb')->getManager();
 
-    $result['open'] = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-                        ->select('count(b)')
-                        ->where('b.state = true AND b.projects = :project')
-                        ->setParameters(array('project' => $project))
-                        ->getQuery()->getSingleScalarResult();
+    $req_open = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                        ->field('state')->equals(true)
+                        ->field('projects.id')->equals($project->getId())
+                        ->getQuery()->execute();
+    $result['open'] = count($req_open);
 
-    $result['closed'] = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-                        ->select('count(b)')
-                        ->where('b.state = false AND b.projects = :project')
-                        ->setParameters(array('project' => $project))
-                        ->getQuery()->getSingleScalarResult();
+    $req_close =  $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                        ->field('state')->equals(false)
+                        ->field('projects.id')->equals($project->getId())
+                        ->getQuery()->execute();
+    $result['closed'] = count($req_close);
 
     return $result;
   }
@@ -333,29 +369,37 @@ class StatisticController extends RolesAndTokenVerificationController
     $em = $this->get('doctrine_mongodb')->getManager();
     $date = new DateTime('now');
 
-    $result['done'] = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->select('count(t)')
-                        ->where('t.finishedAt IS NOT NULL AND t.projects = :project')
-                        ->setParameters(array('project' => $project))
-                        ->getQuery()->getSingleScalarResult();
+    $req_done = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->field('advance')->equals(100)
+                    //->where('finishedAt IS NOT NULL')
+                    ->getQuery()->execute();
+    $result['done'] = count($req_done);
 
-    $result['doing'] = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->select('count(t)')
-                        ->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects = :project')
-                        ->setParameters(array('project' => $project, 'date' => $date))
-                        ->getQuery()->getSingleScalarResult();
+    $req_doing = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->field('advance')->gt(0)
+                    ->field('advance')->lt(100)
+                    ->field('dueDate')->gt($date)
+                    // ->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects.id = :project')
+                    ->getQuery()->execute();
+    $result['doing'] = count($req_doing);
 
-    $result['toDo'] = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->select('count(t)')
-                        ->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects = :project')
-                        ->setParameters(array('project' => $project, 'date' => $date))
-                        ->getQuery()->getSingleScalarResult();
+    $req_todo = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->field('advance')->equals(0)
+                    ->field('dueDate')->gt($date)
+                    // ->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects.id = :project')
+                    ->getQuery()->execute();
+    $result['toDo'] = count($req_todo);
 
-    $result['late'] = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->select('count(t)')
-                        ->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects = :project')
-                        ->setParameters(array('project' => $project, 'date' => $date))
-                        ->getQuery()->getSingleScalarResult();
+    $req_late = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->field('advance')->lt(100)
+                    ->field('dueDate')->lte($date)
+                    // ->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects.id = :project')
+                    ->getQuery()->execute();
+    $result['late'] = count($req_late);
 
     return $result;
   }
@@ -364,11 +408,10 @@ class StatisticController extends RolesAndTokenVerificationController
   {
     $em = $this->get('doctrine_mongodb')->getManager();
 
-    $result = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->select('count(t)')
-                        ->where('t.projects = :project')
-                        ->setParameters(array('project' => $project))
-                        ->getQuery()->getSingleScalarResult();
+    $req = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                ->field('projects.id')->equals($project->getId())
+                ->getQuery()->execute();
+    $result = count($req);
 
     return $result;
   }
@@ -377,12 +420,12 @@ class StatisticController extends RolesAndTokenVerificationController
   {
       $em = $this->get('doctrine_mongodb')->getManager();
 
-      $result = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-                          ->select('count(b)')
-                          ->where('b.projects = :project AND b.clientOrigin = TRUE')
-                          ->andWhere('b.state = true')
-                          ->setParameters(array('project' => $project))
-                          ->getQuery()->getSingleScalarResult();
+      $req = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                  ->field('projects.id')->equals($project->getId())
+                  ->field('state')->equals(true)
+                  ->field('clientOrigin')->equals(true)
+                  ->getQuery()->execute();
+      $result = count($req);
 
       return $result;
   }
@@ -394,7 +437,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
   public function manuallyUpdateStatAction() {
     $em = $this->get('doctrine_mongodb')->getManager();
-      $projects = $em->getRepository('SQLBundle:Project')->findBy(array('deletedAt' => NULL));
+      $projects = $em->getRepository('MongoBundle:Project')->findBy(array('deletedAt' => NULL));
 
       $result = array();
       foreach ($projects as $key => $project) {
@@ -448,29 +491,39 @@ class StatisticController extends RolesAndTokenVerificationController
     $em = $this->get('doctrine_mongodb')->getManager();
     $date = new DateTime('now');
     $users = $project->getUsers();
+    $resources = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->getQuery()->execute();
 
     foreach ($users as $key => $user) {
       $result['Done'] = 0;
       $result['ToDo'] = 0;
       $result['Doing'] = 0;
       $result['Late'] = 0;
-      $resources = $user->getRessources();
-      foreach ($resources as $key => $res) {
-        $task = $res->getTask();
-        if ($task->getProjects()->getId() == $project->getId())
-        {
-          if($task->getAdvance() == 100)
-            $result['Done'] += 1;
-          elseif (!$task->getAdvance() == 0)
-            $result['ToDo'] += 1;
-          else if ($task->getAdvance() > 0 && $task->getAdvance() < 100)
-            $result['Doing'] += 1;
-          else if ($task->getAdvance() < 100 && $task->getDueDate() <= $date)
-            $result['Late'] += 1;
+
+      foreach ($resources as $key => $task) {
+        foreach ($task->getRessources() as $user_key => $res) {
+          $user_value = $res->getUser();
+          if ($user_value->getId() == $user->getId())
+          {
+            if($task->getAdvance() == 100)
+              $result['Done'] += 1;
+            else if ($task->getAdvance() == 0)
+              $result['ToDo'] += 1;
+            else if ($task->getAdvance() > 0 && $task->getAdvance() < 100 && $task->getDueDate() > $date)
+              $result['Doing'] += 1;
+            else if ($task->getAdvance() < 100 && $task->getDueDate() <= $date)
+              $result['Late'] += 1;
+          }
         }
       }
 
-      $statUserTasksAdvancement = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findOneBy(array('project.id' => $project->getId(), 'user.id' => $user->getId()));
+      $statUserTasksAdvancement = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->createQueryBuilder()
+        ->field('project.id')->equals($project->getId())
+        ->field('user.id')->equals($user->getId())
+        ->getQuery()->getSingleResult();
+        //->findOneBy(array('project.id' => $project->getId(), 'user.id' => $user->getId()));
+
       if (!$statUserTasksAdvancement instanceof StatUserTasksAdvancement)
       {
         $statUserTasksAdvancement = new StatUserTasksAdvancement();
@@ -486,7 +539,12 @@ class StatisticController extends RolesAndTokenVerificationController
       $em->flush();
     }
 
-    $stats = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->findBy(array('project.id' => $project->getId()));
+
+    $stats = $em->getRepository('MongoBundle:StatUserTasksAdvancement')->createQueryBuilder()
+      ->field('project.id')->equals($project->getId())
+      ->getQuery()->execute();
+    //->findBy(array('project.id' => $project->getId()));
+
     foreach ($stats as $key => $stat) {
       $isPresent = false;
       foreach ($users as $key2 => $user) {
@@ -508,16 +566,26 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $users = $project->getUsers();
 
+    $resources = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                      ->field('projects.id')->equals($project->getId())
+                      ->getQuery()->execute();
+
     foreach ($users as $key => $user) {
       $charge = 0;
-      $resources = $user->getRessources();
       foreach ($resources as $key => $res) {
-        $task = $res->getTask();
-          if ($task->getProjects()->getId() == $project->getId())
-            $charge += $res->getResource();
+        $users_res = $res->getRessources();
+        foreach ($users_res as $key => $user_value) {
+          if ($user_value->getUser()->getId() == $user->getId()) {
+              $charge += $user_value->getResource();
+          }
+        }
       }
 
-      $statUserWorkingCharge = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findOneBy(array('project.id' => $project->getId(), 'user.id' => $user->getId()));
+      $statUserWorkingCharge = $em->getRepository('MongoBundle:StatUserWorkingCharge')->createQueryBuilder()
+                                  ->field('project.id')->equals($project->getId())
+                                  ->field('user.id')->equals($user->getId())
+                                  ->getQuery()->getSingleResult();
+
       if (!$statUserWorkingCharge instanceof statUserWorkingCharge)
       {
         $statUserWorkingCharge = new StatUserWorkingCharge();
@@ -530,7 +598,10 @@ class StatisticController extends RolesAndTokenVerificationController
       $em->flush();
     }
 
-    $stats = $em->getRepository('MongoBundle:StatUserWorkingCharge')->findBy(array('project.id' => $project->getId()));
+    $stats = $em->getRepository('MongoBundle:StatUserWorkingCharge')->createQueryBuilder()
+                ->field('project.id')->equals($project->getId())
+                ->getQuery()->execute();
+
     foreach ($stats as $key => $stat) {
       $isPresent = false;
       foreach ($users as $key2 => $user) {
@@ -552,20 +623,18 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $users = $project->getUsers();
 
-    $tasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                   ->where("t.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->execute();
+    $tasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                  ->field('projects.id')->equals($project->getId())
+                  ->getQuery()->execute();
 
     foreach ($users as $key => $user) {
       $number = 0;
-      $role = $em->getRepository('MongoBundle:ProjectUserRole')->createQueryBuilder('u')
-              ->select('r.name')
-              ->join('MongoBundle\Entity\Role', 'r', 'WITH', 'r.id = u.roleId')
-              ->where('u.projectId = :projectId')
-              ->setParameter('projectId', $project->getId())
-              ->setMaxResults(1)
-              ->getQuery()->execute();
+      $pur = $em->getRepository('MongoBundle:ProjectUserRole')->createQueryBuilder()
+                ->field('projectId')->equals($project->getId())
+                ->field('userId')->equals($user->getId())
+                ->getQuery()->getSingleResult();
+
+      $role = $em->getRepository('MongoBundle:Role')->find($pur->getRoleId());
 
       foreach ($tasks as $key => $task) {
         foreach ($task->getRessources() as $key => $res) {
@@ -585,8 +654,8 @@ class StatisticController extends RolesAndTokenVerificationController
       {
         $statTasksRepartition = new StatTasksRepartition();
         $statTasksRepartition->setProject($project);
-        $statTasksRepartition->setUser($userFullname);
-        $statTasksRepartition->setRole($role[0]['name']);
+        $statTasksRepartition->setUser($user);
+        $statTasksRepartition->setRole($role->getName());
       }
       $statTasksRepartition->setValue($number);
       $statTasksRepartition->setPercentage($percentage);
@@ -603,21 +672,20 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $users = $project->getUsers();
 
-    $totalBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-                   ->select('count(b)')
-                   ->where("b.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->getSingleScalarResult();
+    $req_totalBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                   ->field('projects.id')->equals($project->getId())
+                   ->getQuery()->execute();
+    $totalBugs = count($req_totalBugs);
 
     foreach ($users as $key => $user) {
       if ($totalBugs != 0)
       {
-        $number = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-                       ->select('count(b)')
-                       ->where("b.projects = :project")
-                       ->andWhere(':user MEMBER OF b.users')
-                       ->setParameters(array('project' => $project, 'user' => $user))
-                       ->getQuery()->getSingleScalarResult();
+        $req_number = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                       ->field('projects.id')->equals($project->getId())
+                       ->field('users.id')->equals($user->getId())
+                       //->andWhere(':user MEMBER OF b.users')
+                       ->getQuery()->execute();
+        $number = count($req_number);
 
         $percentage = ($number * 100) / $totalBugs;
       }
@@ -626,17 +694,17 @@ class StatisticController extends RolesAndTokenVerificationController
         $percentage = 0;
       }
 
-      $statBugsTagsRepartition = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findOneBy(array('project.id' => $project->getId(), "user.id" => $user->getId()));
+      $statBugsUsersRepartition = $em->getRepository('MongoBundle:StatBugsUsersRepartition')->findOneBy(array('project.id' => $project->getId(), "user.id" => $user->getId()));
       if (!$statBugsUsersRepartition instanceof StatBugsUsersRepartition)
       {
-        $statBugsTagsRepartition = new StatBugsUsersRepartition();
-        $statBugsTagsRepartition->setProject($project);
-        $statBugsTagsRepartition->setUser($user);
+        $statBugsUsersRepartition = new StatBugsUsersRepartition();
+        $statBugsUsersRepartition->setProject($project);
+        $statBugsUsersRepartition->setUser($user);
       }
-      $statBugsTagsRepartition->setValue($number);
-      $statBugsTagsRepartition->setPercentage($percentage);
+      $statBugsUsersRepartition->setValue($number);
+      $statBugsUsersRepartition->setPercentage($percentage);
 
-      $em->persist($statBugsTagsRepartition);
+      $em->persist($statBugsUsersRepartition);
       $em->flush();
     }
 
@@ -683,35 +751,40 @@ class StatisticController extends RolesAndTokenVerificationController
     $em->persist($statBugAssignationTracker);
     $em->flush();
 
-    return array('assignedBug' => $assigned, "unassignedBug" => $unassigned);
+    return 'Data updated';
   }
 
   private function updateBugsTagsRepartition($project)
   {
     $em = $this->get('doctrine_mongodb')->getManager();
 
-    $tags = $em->getRepository('MongoBundle:Tag')->findBy(array('project' => $project));
+    $tags = $em->getRepository('MongoBundle:Tag')->createQueryBuilder()
+              ->field('project.id')->equals($project->getId())
+              ->getQuery()->execute();
 
-    $totalBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('t')
-                   ->select('count(t)')
-                   ->where("t.projects = :project")
-                   ->setParameters(array('project' => $project))
-                   ->getQuery()->getSingleScalarResult();
+    $req_totalBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                   ->field("projects.id")->equals($project->getId())
+                   ->getQuery()->execute();
+    $totalBugs = count($req_totalBugs);
 
     foreach ($tags as $key => $tag) {
-      $number = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('t')
-                     ->select('count(t)')
-                     ->where("t.projects = :project")
-                     ->andWhere(":tag MEMBER OF t.bugtracker_tags")
-                     ->setParameters(array('project' => $project, 'tag' => $tag))
-                     ->getQuery()->getSingleScalarResult();
+      $number = 0;
+      foreach ($req_totalBugs as $key => $bug_value) {
+        foreach ($bug_value->getBugtrackerTags() as $key => $tag_value) {
+          if ($tag_value->getId() == $tag->getId())
+            $number += 1;
+        }
+      }
 
       if ($totalBugs > 0)
         $percentage = ($number * 100) / $totalBugs;
       else
         $percentage = 0;
 
-      $statBugsTagsRepartition = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->findOneBy(array('project.id' => $project->getId(), 'name' => $tag->getName()));
+      $statBugsTagsRepartition = $em->getRepository('MongoBundle:StatBugsTagsRepartition')->createQueryBuilder()
+                                      ->field('project.id')->equals($project->getId())
+                                      ->field('name')->equals($tag->getName())
+                                      ->getQuery()->getSingleResult();
       if ($statBugsTagsRepartition === null)
       {
         $statBugsTagsRepartition = new StatBugsTagsRepartition();
@@ -724,6 +797,8 @@ class StatisticController extends RolesAndTokenVerificationController
       $em->persist($statBugsTagsRepartition);
       $em->flush();
     }
+
+    return 'Data updated';
   }
 
   // ------------ CLOUD STATISTICS UPDATE METHODS --------------------
@@ -736,16 +811,18 @@ class StatisticController extends RolesAndTokenVerificationController
     if ($project === null)
       return "Error: Bad project Id";
 
-    $this->updateStorageSize($project, $token, $request);
+    $this->updateStorageSize($project, $request);
     return "Success: Stat 'StorrageSize' updated.";
   }
 
-  private function updateStorageSize($project, $token, Request $request)
+  private function updateStorageSize($project, Request $request)
   {
-    $res = $this->calculateStorageSize($project, $token, ",", $request);
+    $res = $this->calculateStorageSize($project, ",", $request);
 
     $em = $this->get('doctrine_mongodb')->getManager();
-    $statStorageSize = $em->getRepository('MongoBundle:StatStorageSize')->findOneBy(array('project.id' => $project->getId()));
+    $statStorageSize = $em->getRepository('MongoBundle:StatStorageSize')->createQueryBuilder()
+                      ->field('project.id')->equals($project->getId())
+                      ->getQuery()->getSingleResult();
 
     if ($statStorageSize === null)
     {
@@ -766,7 +843,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
   private function calculateStorageSize($project, $path, Request $request)
   {
-    $response = $this->get('service_cloud')->getListAction($project->getId(), $path, $project->getSafePassword(), $request);
+    $response = $this->get('mongo_service_cloud')->getListAction($project->getId(), $path, $project->getSafePassword(), $request);
     $response = json_decode($response->getContent());
 
     if ($response->info->return_code != "1.3.1")
@@ -817,34 +894,41 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $users = $project->getUsers();
 
-    $ontimeProjectTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                        ->where('t.projects = :project')
-                        ->andWhere('t.deletedAt IS NULL')
-                        ->andWhere('t.finishedAt IS NOT NULL')
-                        ->andWhere('t.finishedAt <= t.dueDate')
-                        ->setParameters(array('project.id' => $project->getId()))
+    $ontimeProjectTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                        ->field('t.projects.id')->equals($project->getId())
+                        ->field('deletedAt')->equals(null)
+                        ->field('advance')->equals(100)
+                        ->field('finishedAt')->lte('dueDate')
                         ->getQuery()->execute();
 
-    $lateProjectTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                      ->where('t.projects = :project')
-                      ->andWhere('t.deletedAt IS NULL')
-                      ->andWhere('(t.finishedAt IS NOT NULL AND t.finishedAt > t.dueDate) OR (t.finishedAt IS NULL AND t.dueDate < :now)')
-                      ->setParameters(array('project.id' => $project->getId(), 'now' => new DateTime('now')))
-                      ->getQuery()->execute();
+    $lateProjectTasks = array();
+
+    $lateProjectTasksOne = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                        ->field('projects.id')->equals($project->getId())
+                        ->field('deletedAt')->equals(null)
+                        ->field('advance')->equals(100)
+                        // ->field('finishedAt')->gt('dueDate')
+                        ->getQuery()->execute();
+    $lateProjectTasksTwo = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                        ->field('projects.id')->equals($project->getId())
+                        ->field('deletedAt')->equals(null)
+                        ->field('advance')->lt(100)
+                        ->field('dueDate')->lt(new Datetime('now'))
+                        ->getQuery()->execute();
 
     $result = array();
     foreach ($users as $key => $user) {
   		$ontimeTasks = 0;
   		$lateTasks = 0;
-  		$role = $em->getRepository('MongoBundle:ProjectUserRole')->createQueryBuilder('u')
-  					->select('r.name')
-  					->join('MongoBundle\Document\Role', 'r', 'WITH', 'r.id = u.roleId')
-  					->where('u.projectId = :projectId')
-  					->setParameter('projectId', $project->getId())
-  					->setMaxResults(1)
-  					->getQuery()->getResult();
+  		$pur = $em->getRepository('MongoBundle:ProjectUserRole')->createQueryBuilder()
+              ->field('projectId')->equals($project->getId())
+              ->field('userId')->equals($user->getId())
+              ->getQuery()->getSingleResult();
+      $role = $em->getRepository('MongoBundle:Role')->createQueryBuilder()
+                ->field('id')->equals($pur->getRoleId())
+                ->getQuery()->getSingleResult();
 
-  		if ($role && $role[0]) {
+  		if ($role && $role != null) {
   			foreach ($ontimeProjectTasks as $key => $task) {
   				foreach ($task->getRessources() as $key => $res) {
   					if ($res->getUser()->getId() == $user->getId())
@@ -852,7 +936,16 @@ class StatisticController extends RolesAndTokenVerificationController
   				}
   			}
 
-  			foreach ($lateProjectTasks as $key => $task) {
+  			foreach ($lateProjectTasksOne as $key => $task) {
+          if ($task->getFinishedAt() <= $task->getDueDate()) {
+            foreach ($task->getRessources() as $key => $res) {
+    					if ($res->getUser()->getId() == $user->getId())
+    						$lateTasks += 1;
+    				}
+          }
+  			}
+
+        foreach ($lateProjectTasksTwo as $key => $task) {
   				foreach ($task->getRessources() as $key => $res) {
   					if ($res->getUser()->getId() == $user->getId())
   						$lateTasks += 1;
@@ -862,7 +955,7 @@ class StatisticController extends RolesAndTokenVerificationController
         $statLateTasks = new statLateTasks();
         $statLateTasks->setProject($project);
         $statLateTasks->setUser($user);
-        $statLateTasks->setRole($role[0]['name']);
+        $statLateTasks->setRole($role->getName());
         $statLateTasks->setLateTasks($lateTasks);
         $statLateTasks->setOntimeTasks($ontimeTasks);
         $statLateTasks->setDate(new DateTime('now'));
@@ -929,31 +1022,30 @@ class StatisticController extends RolesAndTokenVerificationController
   {
     $em = $this->get('doctrine_mongodb')->getManager();
 
-    $totalTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                  ->select('count(t)')
-                  ->where('t.projects = :project')
-                  //->andWhere('t.deletedAt IS NULL')
-                  ->setParameter('project', $project)
-                  ->getQuery()->getSingleScalarResult();
+    $req_totalTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                    ->field('projects.id')->equals($project->getId())
+                    ->getQuery()->execute();
+    $totalTasks = count($req_totalTasks);
 
-    $finishedTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder('t')
-                  ->select('count(t)')
-                  ->where('t.projects = :project')
-                  //->andWhere('t.deletedAt IS NULL')
-                  ->andWhere('t.finishedAt IS NOT NULL')
-                  ->setParameter('project', $project)
-                  ->getQuery()->getSingleScalarResult();
+    $req_finishedTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
+                  ->field('projects.id')->equals($project->getId())
+                  ->field('finishedAt')->notEqual(null)
+                  ->getQuery()->execute();
+    $finishedTasks = count($req_finishedTasks);
 
     if ($totalTasks != 0)
       $percentage = ($finishedTasks / $totalTasks) * 100;
     else
       $percentage = 0;
 
-    $prev = $em->getRepository('MongoBundle:statProjectAdvancement')->findBy(array("project.id" => $project->getId()), array('date' => 'DESC'));
+    $prev = $em->getRepository('MongoBundle:StatProjectAdvancement')->createQueryBuilder()
+                ->field('project.id')->equals($project->getId())
+                ->sort('date', 'desc')
+                ->getQuery()->getSingleResult();
     if ($prev == null)
       $progress = $percentage;
     else
-      $progress = $percentage - $prev[0]->getPercentage();
+      $progress = $percentage - $prev->getPercentage();
 
     $statProjectAdvancement = new StatProjectAdvancement();
     $statProjectAdvancement->setProject($project);
@@ -974,12 +1066,12 @@ class StatisticController extends RolesAndTokenVerificationController
   //                    STATISTICS DATA - INITIATE PROJECT
   // -----------------------------------------------------------------------
 
-  static function initiateStatistics($project, $token, $request)
+  public function initiateStatistics($project, $token, $request)
   {
     // INITIATE CUSTOM UPDATE STAT
     $this->updateUserTasksAdvancement($project);
     $this->updateUserWorkingCharge($project);
-    $this->updateTasksRepartition($project);
+    // $this->updateTasksRepartition($project);
     $this->updateBugsUsersRepartition($project);
     $this->updateBugAssignationTracker($project);
     $this->updateBugsTagsRepartition($project);
@@ -989,10 +1081,10 @@ class StatisticController extends RolesAndTokenVerificationController
 
     // INITIATE DAILY UPDATE STAT
     $this->updateBugsEvolution($project);
-    $this->updateTasksRepartition($project);
+    // ??? $this->updateTasksRepartition($project);
 
     // INITIATE WEEKLY UDATE STAT
-    $this->updateProjectAdvancement($project);
+    // $this->updateProjectAdvancement($project);
 
     return "Statistics initiated";
   }

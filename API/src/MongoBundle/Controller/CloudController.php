@@ -137,7 +137,7 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->get('doctrine_mongodb')->getManager();
-		$role = $db->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
+		$roles = $db->getRepository("MongoBundle:ProjectUserRole")->findBy(array("projectId" => $idProject, "userId" => $userId));
 		foreach($roles as $role)
 		{
 			if (is_null($role))
@@ -209,7 +209,7 @@ class CloudController extends Controller
 		$em->persist($stream);
 		$em->flush();
 
-		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - openStreamAction - Complete Success";
@@ -340,7 +340,7 @@ class CloudController extends Controller
 		foreach ($content as $i => $row)
 		{
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
-			$filename = split('/', $content[$i]["path"]);
+			$filename = explode('/', $content[$i]["path"]);
 			$filename = $filename[count($filename) - 1];
 			$filename = urldecode($filename);
 			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
@@ -563,7 +563,7 @@ class CloudController extends Controller
 				return new JsonResponse($response);
 			}
 
-			//$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+			$this->get('mongo_service_stat')->updateCloudStat($projectId, $token, $request);
 
 			$response["info"]["return_code"] = "1.3.1";
 			$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
@@ -600,7 +600,7 @@ class CloudController extends Controller
 		$apath = preg_replace("/\/\//", "/", $apath);
 		if (substr($apath, -1) == "/")
 			$apath = substr($apath, 0, -1);
-		$file = $this->getDoctrine()->getRepository("SQLBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$file = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
@@ -627,7 +627,7 @@ class CloudController extends Controller
 		$this->get('doctrine_mongodb')->getManager()->remove($file);
 		$this->get('doctrine_mongodb')->getManager()->flush();
 
-		$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($projectId, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
@@ -681,7 +681,7 @@ class CloudController extends Controller
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
 
-		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";

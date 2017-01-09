@@ -133,13 +133,6 @@ class ProjectController extends RolesAndTokenVerificationController
 
 		$em->flush();
 
-		$pur = new ProjectUserRole();
-		$pur->setProjectId($project->getId());
-		$pur->setUserId($user->getId());
-		$pur->setRoleId($role->getId());
-
-		$em->persist($pur);
-
 		//Assign the creator to the admin role
 		$pur = new ProjectUserRole();
 		$pur->setProjectId($project->getId());
@@ -210,9 +203,9 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->initiateStatistics($project, $request->headers->get('Authorization'), $request);
+		$this->get('mongo_service_stat')->initiateStatistics($project, $request->headers->get('Authorization'), $request);
 
 		return $this->setCreated("1.6.1", "Project", "projectcreation", "Complete Success", $project->objectToArray($em, $user));
 	}
@@ -317,7 +310,7 @@ class ProjectController extends RolesAndTokenVerificationController
 				$userNotif[] = $value->getId();
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		if (array_key_exists('phone', $content))
 			$project->setPhone($content->phone);
@@ -350,7 +343,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "updateinformations", "Complete Success", $project->objectToArray($em, $user));
 	}
@@ -363,14 +356,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	*/
-	public function getInformationsAction(Request $request, $projectId)
+	public function getInformationsAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return $this->setBadTokenError("6.3.3", "Project", "getinformations");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($id);
 		if ($project === null)
 			return $this->setBadRequest("6.3.4", "Project", "getinformations", "Bad Parameter: projectId");
 
@@ -415,7 +408,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - delproject - Complete Success";
@@ -457,7 +450,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - retrieveproject - Complete Success";
@@ -505,7 +498,8 @@ class ProjectController extends RolesAndTokenVerificationController
 		}
 		else
 		{
-			$customerAccess = $customerAccess[0];
+			$customerAccess = $customerAccess->getSingleResult();
+			//$customerAccess = $customerAccess[0];
 		}
 
 		$customerAccess->setCreatedAt(new \DateTime);
@@ -530,7 +524,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "generatecustomeraccess", "Complete Success", $customerAccess->objectToArray());
 	}
@@ -550,9 +544,12 @@ class ProjectController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("6.8.3", "Project", "getcustomeraccessbyproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$customerAccess = $em->getRepository('MongoBundle:CustomerAccess')->findByProjects($projectId);
-		if ($customerAccess === null)
+
+		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		if ($project === null)
 			return $this->setBadRequest("6.8.4", "Project", "getcustomeraccessbyproject", "Bad Parameter: projectId");
+
+		$customerAccess = $project->getCustomersAccess();
 
 		$arr = array();
 
@@ -576,7 +573,7 @@ class ProjectController extends RolesAndTokenVerificationController
 	*/
 	public function delCustomerAccessAction(Request $request, $projectId, $customerAccessId)
 	{
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.9.3", "Project", "delcustomeraccess"));
 
@@ -602,7 +599,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - delcustomeraccess - Complete Success";
@@ -662,7 +659,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.6.1", "Project", "addusertoproject", "Complete Success",
 			array("id" => $userToAdd->getId(), "firstname" => $userToAdd->getFirstname(), "lastname" => $userToAdd->getLastname(), "avatar" => $userToAdd->getAvatarDate()));
@@ -725,7 +722,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - removeuserconnected - Complete Success";
@@ -795,7 +792,7 @@ class ProjectController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$response["info"]["return_code"] = "1.6.1";
 		$response["info"]["return_message"] = "Project - removeusertoproject - Complete Success";
@@ -810,14 +807,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	*/
-	public function getUserToProjectAction(Request $request, $projectId)
+	public function getUserToProjectAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("6.12.3", "Project", "getusertoproject"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($id);
 		if ($project === null)
 			return $this->setBadRequest("6.12.4", "Project", "getusertoproject", "Bad Parameter: projectId");
 
@@ -921,10 +918,10 @@ class ProjectController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	*/
-	public function getProjectLogoAction(Request $request, $projectId)
+	public function getProjectLogoAction(Request $request, $id)
 	{
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
+		$project = $em->getRepository('MongoBundle:Project')->find($id);
 		if ($project === null)
 			return $this->setBadRequest("6.15.4", "Project", "getProjectLogo", "Bad Parameter: projectId");
 

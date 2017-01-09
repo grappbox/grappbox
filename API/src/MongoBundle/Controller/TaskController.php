@@ -355,28 +355,28 @@ class TaskController extends RolesAndTokenVerificationController
 
 
 		//notifs
-		$mdata['mtitle'] = "new task";
-		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
-		$wdata['type'] = "new task";
-		$wdata['targetId'] = $task->getId();
-		$wdata['message'] = json_encode($task->objectToArray(array()));
-		$userNotif = array();
-		if ($task->getProjects() != null) {
-			foreach ($task->getProjects()->getUsers() as $key => $value) {
-				$userNotif[] = $value->getId();
-			}
-		}
-		else {
-			foreach ($task->getRessources() as $key => $value) {
-				$userNotif[] = $value->getUser()->getId();
-			}
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "new task";
+		// $mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		// $wdata['type'] = "new task";
+		// $wdata['targetId'] = $task->getId();
+		// $wdata['message'] = json_encode($task->objectToArray(array()));
+		// $userNotif = array();
+		// if ($task->getProjects() != null) {
+		// 	foreach ($task->getProjects()->getUsers() as $key => $value) {
+		// 		$userNotif[] = $value->getId();
+		// 	}
+		// }
+		// else {
+		// 	foreach ($task->getRessources() as $key => $value) {
+		// 		$userNotif[] = $value->getUser()->getId();
+		// 	}
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
 
 		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", $task->objectToArray(array()));
 	}
@@ -809,27 +809,27 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		// Notifications
-		if (count($userNotif) != 0)
-		{
-			$mdata['mtitle'] = "update task";
-			$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
-			$wdata['type'] = "update task";
-			$wdata['targetId'] = $task->getId();
-			$wdata['message'] = json_encode($task->objectToArray($taskModified));
-			$userNotif = array();
-			if ($task->getProjects() != null) {
-				foreach ($task->getProjects()->getUsers() as $key => $value) {
-					$userNotif[] = $value->getId();
-				}
-			}
-			else {
-				foreach ($task->getRessources() as $key => $value) {
-					$userNotif[] = $value->getUser()->getId();
-				}
-			}
-			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
-		}
+		// if (count($userNotif) != 0)
+		// {
+		// 	$mdata['mtitle'] = "update task";
+		// 	$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
+		// 	$wdata['type'] = "update task";
+		// 	$wdata['targetId'] = $task->getId();
+		// 	$wdata['message'] = json_encode($task->objectToArray($taskModified));
+		// 	$userNotif = array();
+		// 	if ($task->getProjects() != null) {
+		// 		foreach ($task->getProjects()->getUsers() as $key => $value) {
+		// 			$userNotif[] = $value->getId();
+		// 		}
+		// 	}
+		// 	else {
+		// 		foreach ($task->getRessources() as $key => $value) {
+		// 			$userNotif[] = $value->getUser()->getId();
+		// 		}
+		// 	}
+		// 	if (count($userNotif) > 0)
+		// 		$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// }
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
 	}
@@ -887,28 +887,28 @@ class TaskController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		//notifs
-		$mdata['mtitle'] = "archive task";
-		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
-		$wdata['type'] = "archive task";
-		$wdata['targetId'] = $task->getId();
-		$wdata['message'] = json_encode($task->objectToArray(array()));
-		$userNotif = array();
-		if ($task->getProjects() != null) {
-			foreach ($task->getProjects()->getUsers() as $key => $value) {
-				$userNotif[] = $value->getId();
-			}
-		}
-		else {
-			foreach ($task->getRessources() as $key => $value) {
-				$userNotif[] = $value->getUser()->getId();
-			}
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "archive task";
+		// $mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		// $wdata['type'] = "archive task";
+		// $wdata['targetId'] = $task->getId();
+		// $wdata['message'] = json_encode($task->objectToArray(array()));
+		// $userNotif = array();
+		// if ($task->getProjects() != null) {
+		// 	foreach ($task->getProjects()->getUsers() as $key => $value) {
+		// 		$userNotif[] = $value->getId();
+		// 	}
+		// }
+		// else {
+		// 	foreach ($task->getRessources() as $key => $value) {
+		// 		$userNotif[] = $value->getUser()->getId();
+		// 	}
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "archivetask", "Complete Success", array("id" => $task->getId()));
 	}
@@ -937,31 +937,31 @@ class TaskController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("12.5.9", "Task", "taskdelete"));
 
 		//notifs
-		$mdata['mtitle'] = "delete task";
-		$mdata['mdesc'] = json_encode($task->objectToArray(array()));
-		$wdata['type'] = "delete task";
-		$wdata['targetId'] = $task->getId();
-		$wdata['message'] = json_encode($task->objectToArray(array()));
-		$userNotif = array();
-		if ($task->getProjects() != null) {
-			foreach ($task->getProjects()->getUsers() as $key => $value) {
-				$userNotif[] = $value->getId();
-			}
-		}
-		else {
-			foreach ($task->getRessources() as $key => $value) {
-				$userNotif[] = $value->getUser()->getId();
-			}
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "delete task";
+		// $mdata['mdesc'] = json_encode($task->objectToArray(array()));
+		// $wdata['type'] = "delete task";
+		// $wdata['targetId'] = $task->getId();
+		// $wdata['message'] = json_encode($task->objectToArray(array()));
+		// $userNotif = array();
+		// if ($task->getProjects() != null) {
+		// 	foreach ($task->getProjects()->getUsers() as $key => $value) {
+		// 		$userNotif[] = $value->getId();
+		// 	}
+		// }
+		// else {
+		// 	foreach ($task->getRessources() as $key => $value) {
+		// 		$userNotif[] = $value->getUser()->getId();
+		// 	}
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($task);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - taskdelete - Complete Success";
@@ -982,10 +982,11 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content)
+		 || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.8.6", "Task", "tagcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.8.3", "Task", "tagcreation"));
 
@@ -1009,19 +1010,19 @@ class TaskController extends RolesAndTokenVerificationController
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
 		//notifs
-		$mdata['mtitle'] = "new tag task";
-		$mdata['mdesc'] = json_encode($tagArray);
-		$wdata['type'] = "new tag task";
-		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tagArray);
-		$userNotif = array();
-		foreach ($project->getUsers() as $key => $value) {
-			$userNotif[] = $value->getId();
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "new tag task";
+		// $mdata['mdesc'] = json_encode($tagArray);
+		// $wdata['type'] = "new tag task";
+		// $wdata['targetId'] = $tag->getId();
+		// $wdata['message'] = json_encode($tagArray);
+		// $userNotif = array();
+		// foreach ($project->getUsers() as $key => $value) {
+		// 	$userNotif[] = $value->getId();
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", $tag->objectToArray());
 	}
@@ -1064,19 +1065,19 @@ class TaskController extends RolesAndTokenVerificationController
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
 		//notifs
-		$mdata['mtitle'] = "update tag task";
-		$mdata['mdesc'] = json_encode($tagArray);
-		$wdata['type'] = "update tag task";
-		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tagArray);
-		$userNotif = array();
-		foreach ($tag->getProject()->getUsers() as $key => $value) {
-			$userNotif[] = $value->getId();
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "update tag task";
+		// $mdata['mdesc'] = json_encode($tagArray);
+		// $wdata['type'] = "update tag task";
+		// $wdata['targetId'] = $tag->getId();
+		// $wdata['message'] = json_encode($tagArray);
+		// $userNotif = array();
+		// foreach ($tag->getProject()->getUsers() as $key => $value) {
+		// 	$userNotif[] = $value->getId();
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", $tag->objectToArray());
 	}
@@ -1133,22 +1134,22 @@ class TaskController extends RolesAndTokenVerificationController
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
 		//notifs
-		$mdata['mtitle'] = "delete tag task";
-		$mdata['mdesc'] = json_encode($tagArray);
-		$wdata['type'] = "delete tag task";
-		$wdata['targetId'] = $tag->getId();
-		$wdata['message'] = json_encode($tagArray);
-		$userNotif = array();
-		foreach ($tag->getProject()->getUsers() as $key => $value) {
-			$userNotif[] = $value->getId();
-		}
-		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// $mdata['mtitle'] = "delete tag task";
+		// $mdata['mdesc'] = json_encode($tagArray);
+		// $wdata['type'] = "delete tag task";
+		// $wdata['targetId'] = $tag->getId();
+		// $wdata['message'] = json_encode($tagArray);
+		// $userNotif = array();
+		// foreach ($tag->getProject()->getUsers() as $key => $value) {
+		// 	$userNotif[] = $value->getId();
+		// }
+		// if (count($userNotif) > 0)
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($tag);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - deletetag - Complete Success";
@@ -1169,7 +1170,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");

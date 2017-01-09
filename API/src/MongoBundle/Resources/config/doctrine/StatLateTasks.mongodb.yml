@@ -9,9 +9,6 @@ MongoBundle\Document\StatLateTasks:
             strategy: AUTO
         date:
             type: date
-        user:
-            type: string
-            length: 255
         role:
             type: string
             length: 255
@@ -23,4 +20,6 @@ MongoBundle\Document\StatLateTasks:
         project:
           targetDocument: Project
           inversedBy: statLateTasks
+        user:
+          targetDocument: User
     lifecycleCallbacks: {  }

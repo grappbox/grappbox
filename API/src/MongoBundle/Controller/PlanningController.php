@@ -22,6 +22,7 @@ use DateInterval;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiDescription")
 */
 
 class PlanningController extends RolesAndTokenVerificationController
@@ -48,11 +49,15 @@ class PlanningController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
-    	->innerJoin('e.users', 'u')
-    	->where('u.id = :user_id')
-			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
-    	->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
-    	->getQuery()->execute();
+			->field('users.id')->in(array($user->getId()))
+			->field('beginDate')->lt($date_end)
+			->field('endDate')->gt($date_begin)
+			->getQuery()->execute();
+    	// ->innerJoin('e.users', 'u')
+    	// ->where('u.id = :user_id')
+			// ->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
+    	// ->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+    	// ->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {
@@ -86,11 +91,16 @@ class PlanningController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
-			->innerJoin('e.users', 'u')
-			->where('u.id = :user_id')
-			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
-			->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+			->field('users.id')->in(array($user->getId()))
+			->field('beginDate')->lt($date_end)
+			->field('endDate')->gt($date_begin)
 			->getQuery()->execute();
+
+			// ->innerJoin('e.users', 'u')
+			// ->where('u.id = :user_id')
+			// ->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
+			// ->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+			// ->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {
@@ -124,11 +134,16 @@ class PlanningController extends RolesAndTokenVerificationController
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$repository = $em->getRepository('MongoBundle:Event');
 		$query = $repository->createQueryBuilder('e')
-			->innerJoin('e.users', 'u')
-			->where('u.id = :user_id')
-			->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
-			->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+			->field('users.id')->in(array($user->getId()))
+			->field('beginDate')->lt($date_end)
+			->field('endDate')->gt($date_begin)
 			->getQuery()->execute();
+
+			// ->innerJoin('e.users', 'u')
+			// ->where('u.id = :user_id')
+			// ->andWhere('e.beginDate < :end_day AND e.endDate > :begin_day')
+			// ->setParameters(array('user_id' => $user->getId(), 'begin_day' => $date_begin, 'end_day' => $date_end))
+			// ->getQuery()->execute();
 
 		$events = array();
 		foreach ($query as $key => $value) {

@@ -37,7 +37,7 @@ class StatBugsEvolution
     public function objectToArray()
     {
         return array(
-          "date" => $this->date,
+          "date" => $this->date->format('Y-m-d H:i:s'),
           "createdBugs" => $this->createdBugs,
           "closedBugs" => $this->closedBugs
         );
@@ -128,7 +128,7 @@ class StatBugsEvolution
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject( $project = null)
+    public function setProject( $project )
     {
         $this->project = $project;
 

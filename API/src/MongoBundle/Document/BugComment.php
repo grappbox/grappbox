@@ -165,7 +165,7 @@ class BugComment
      * @param MongoBundle\Document\Bug $bug
      * @return self
      */
-    public function setBugs($bug = null)
+    public function setBugs($bug)
     {
         $this->bugs = $bug;
         return $this;

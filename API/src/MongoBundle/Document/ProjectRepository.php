@@ -43,7 +43,7 @@ class ProjectRepository extends DocumentRepository
 				$id = $user->getId();
 				$firstName = $user->getFirstname();
 				$lastName = $user->getLastname();
-				$tasks = $user->getTasks();
+				$tasks = $user->getRessources();
 				$nbOfOngoingTasks = 0;
 				$nbOfTasksBegun = 0;
 				$busy = false;

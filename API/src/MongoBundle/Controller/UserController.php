@@ -147,7 +147,7 @@ class UserController extends RolesAndTokenVerificationController
 				}
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 		if (array_key_exists('phone', $content))
 			$user->setPhone($content->phone);
