@@ -200,7 +200,7 @@ class NotificationController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
-			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
+			return ($this->setBadTokenError("15.3.3", "Notification", "getuserdevices"));
 
 		$em = $this->getDoctrine()->getManager();
 		$device = $em->getRepository("SQLBundle:Devices")->findBy(array("user" => $user));
@@ -211,8 +211,8 @@ class NotificationController extends RolesAndTokenVerificationController
 		}
 
 		if (count($array) <= 0)
-			return $this->setNoDataSuccess("1.15.3", "Notification", "unregisterDevice");
-		return $this->setSuccess("1.15.1", "Notification", "unregisterDevice", "Complete Success", array("array" => $array));
+			return $this->setNoDataSuccess("1.15.3", "Notification", "getuserdevices");
+		return $this->setSuccess("1.15.1", "Notification", "getuserdevices", "Complete Success", array("array" => $array));
 	}
 
 	/**
@@ -477,7 +477,7 @@ class NotificationController extends RolesAndTokenVerificationController
         curl_setopt($ch, CURLOPT_POSTFIELDS, "$str");
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         $output = curl_exec($ch);
-        curl_close($ch);                       
+        curl_close($ch);
         $output = json_decode($output);
         if(isset($output->error)){
             return false;

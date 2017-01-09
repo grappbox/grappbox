@@ -15,7 +15,7 @@ class Setting
     protected $id;
 
     /**
-     * @var int $userId
+     * @var string $userId
      */
     protected $userId;
 
@@ -58,7 +58,7 @@ class Setting
     /**
      * Set userId
      *
-     * @param int $userId
+     * @param string $userId
      * @return self
      */
     public function setUserId($userId)
@@ -70,7 +70,7 @@ class Setting
     /**
      * Get userId
      *
-     * @return int $userId
+     * @return string $userId
      */
     public function getUserId()
     {

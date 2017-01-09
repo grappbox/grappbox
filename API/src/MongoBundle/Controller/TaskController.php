@@ -809,27 +809,27 @@ class TaskController extends RolesAndTokenVerificationController
 		}
 
 		// Notifications
-		// if (count($userNotif) != 0)
-		// {
-		// 	$mdata['mtitle'] = "update task";
-		// 	$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
-		// 	$wdata['type'] = "update task";
-		// 	$wdata['targetId'] = $task->getId();
-		// 	$wdata['message'] = json_encode($task->objectToArray($taskModified));
-		// 	$userNotif = array();
-		// 	if ($task->getProjects() != null) {
-		// 		foreach ($task->getProjects()->getUsers() as $key => $value) {
-		// 			$userNotif[] = $value->getId();
-		// 		}
-		// 	}
-		// 	else {
-		// 		foreach ($task->getRessources() as $key => $value) {
-		// 			$userNotif[] = $value->getUser()->getId();
-		// 		}
-		// 	}
-		// 	if (count($userNotif) > 0)
-		// 		$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
-		// }
+		if (count($userNotif) != 0)
+		{
+			$mdata['mtitle'] = "update task";
+			$mdata['mdesc'] = json_encode($task->objectToArray($taskModified));
+			$wdata['type'] = "update task";
+			$wdata['targetId'] = $task->getId();
+			$wdata['message'] = json_encode($task->objectToArray($taskModified));
+			$userNotif = array();
+			if ($task->getProjects() != null) {
+				foreach ($task->getProjects()->getUsers() as $key => $value) {
+					$userNotif[] = $value->getId();
+				}
+			}
+			else {
+				foreach ($task->getRessources() as $key => $value) {
+					$userNotif[] = $value->getUser()->getId();
+				}
+			}
+			if (count($userNotif) > 0)
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
 	}

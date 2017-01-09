@@ -20,7 +20,7 @@ class Timeline
     protected $typeId;
 
     /**
-     * @var int $projectId
+     * @var string $projectId
      */
     protected $projectId;
 
@@ -82,7 +82,7 @@ class Timeline
     /**
      * Set projectId
      *
-     * @param int $projectId
+     * @param string $projectId
      * @return self
      */
     public function setProjectId($projectId)
@@ -94,7 +94,7 @@ class Timeline
     /**
      * Get projectId
      *
-     * @return int $projectId
+     * @return string $projectId
      */
     public function getProjectId()
     {

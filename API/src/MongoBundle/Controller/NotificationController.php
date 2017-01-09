@@ -61,9 +61,14 @@ class NotificationController extends RolesAndTokenVerificationController
 			return ($this->setBadRequest("15.1.6", "Notification", "registerDevice", "Missing parameter"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user.id" => $user->getId(), "type" => $content->device_type, "token" => $content->device_token));
+		$device = $em->getRepository("MongoBundle:Devices")->createQueryBuilder()
+								->field('user.id')->equals($user->getId())
+								->field('type')->equals($content->device_type)
+								->field('token')->equals($content->device_token)
+								->getQuery()->getSingleResult();
+		//->findBy(array("user.id" => $user->getId(), "type" => $content->device_type, "token" => $content->device_token));
 
-		if ($device instanceof Devices)
+		if ($device === null)
 		{
 			$device->setName($content->name);
 			$em->flush();
@@ -94,10 +99,13 @@ class NotificationController extends RolesAndTokenVerificationController
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
-			return ($this->setBadTokenError("15.3.3", "Notification", "unregisterDevice"));
+			return ($this->setBadTokenError("15.3.3", "Notification", "getuserdevices"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$device = $em->getRepository("MongoBundle:Devices")->findBy(array("user.id" => $user->getId()));
+		$device = $em->getRepository("MongoBundle:Devices")->createQueryBuilder()
+								->field('user.id')->equals($user->getId())
+								->getQuery()->execute();
+		// ->findBy(array("user.id" => $user->getId()));
 
 		$array = array();
 		foreach ($device as $key => $value) {
@@ -105,8 +113,8 @@ class NotificationController extends RolesAndTokenVerificationController
 		}
 
 		if (count($array) <= 0)
-			return $this->setNoDataSuccess("1.15.3", "Notification", "unregisterDevice");
-		return $this->setSuccess("1.15.1", "Notification", "unregisterDevice", "Complete Success", array("array" => $array));
+			return $this->setNoDataSuccess("1.15.3", "Notification", "getuserdevices");
+		return $this->setSuccess("1.15.1", "Notification", "getuserdevices", "Complete Success", array("array" => $array));
 	}
 
 	/**
@@ -129,7 +137,14 @@ class NotificationController extends RolesAndTokenVerificationController
 			$read_value = false;
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$notification = $em->getRepository("MongoBundle:Notification")->findBy(array("user.id" => $user->getId(), "isRead" => $read), array(), $limit, $offset);
+		$notification = $em->getRepository("MongoBundle:Notification")
+		//->findBy(array("user.id" => $user->getId(), "isRead" => $read), array(), $limit, $offset);
+
+												->createQueryBuilder()
+												->field('user.id')->equals($user->getId())
+												->field('isRead')->equals($read)
+		// 									->limit($limit)
+												->getQuery()->execute();
 
 		$notif_array = array();
 		foreach ($notification as $key => $value) {
@@ -188,7 +203,10 @@ class NotificationController extends RolesAndTokenVerificationController
 			if ($user != null)
 			{
 				//notificaton for devices
-				$devices = $em->getRepository("MongoBundle:Devices")->findByUser($user);
+				$devices = $em->getRepository("MongoBundle:Devices")->createQueryBuilder()
+												->field('user.id')->equals($user->getId())
+												->getQuery()->execute();
+				// ->findByUser($user);
 
 				foreach ($devices as $device) {
 					$type = $device->getType();
@@ -225,7 +243,10 @@ class NotificationController extends RolesAndTokenVerificationController
 			$ret = json_decode($this->firebase($mdata, $firebase_tokens));
 			foreach ($ret->results as $key => $res) {
 				if (array_key_exists('error', $res)) {
-					$devices = $em->getRepository("MongoBundle:Devices")->findByToken($firebase_tokens[$key]);
+					$devices = $em->getRepository("MongoBundle:Devices")->createQueryBuilder()
+												->field('token')->equals($firebase_tokens[$key])
+												->getQuery()->execute();
+					//->findByToken($firebase_tokens[$key]);
 					foreach ($devices as $key => $value) {
 						$em->remove($value);
 						$em->flush();

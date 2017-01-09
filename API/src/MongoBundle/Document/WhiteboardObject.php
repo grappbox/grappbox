@@ -15,7 +15,7 @@ class WhiteboardObject
     protected $id;
 
     /**
-     * @var int
+     * @var string $whiteboardId
      */
     private $whiteboardId;
 
@@ -63,7 +63,7 @@ class WhiteboardObject
     /**
      * Set whiteboardId
      *
-     * @param int $whiteboardId
+     * @param string $whiteboardId
      * @return self
      */
     public function setWhiteboardId($whiteboardId)
@@ -76,7 +76,7 @@ class WhiteboardObject
     /**
      * Get whiteboardId
      *
-     * @return integer
+     * @return string $whiteboardId
      */
     public function getWhiteboardId()
     {

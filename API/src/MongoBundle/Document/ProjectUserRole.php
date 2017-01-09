@@ -15,17 +15,17 @@ class ProjectUserRole
     protected $id;
 
     /**
-     * @var int $projectId
+     * @var string $projectId
      */
     protected $projectId;
 
     /**
-     * @var int $userId
+     * @var string $userId
      */
     protected $userId;
 
     /**
-     * @var int $roleId
+     * @var string $roleId
      */
     protected $roleId;
 
@@ -43,7 +43,7 @@ class ProjectUserRole
     /**
      * Set projectId
      *
-     * @param int $projectId
+     * @param string $projectId
      * @return self
      */
     public function setProjectId($projectId)
@@ -55,7 +55,7 @@ class ProjectUserRole
     /**
      * Get projectId
      *
-     * @return int $projectId
+     * @return string $projectId
      */
     public function getProjectId()
     {
@@ -65,7 +65,7 @@ class ProjectUserRole
     /**
      * Set userId
      *
-     * @param int $userId
+     * @param string $userId
      * @return self
      */
     public function setUserId($userId)
@@ -77,7 +77,7 @@ class ProjectUserRole
     /**
      * Get userId
      *
-     * @return int $userId
+     * @return string $userId
      */
     public function getUserId()
     {
@@ -87,7 +87,7 @@ class ProjectUserRole
     /**
      * Set roleId
      *
-     * @param int $roleId
+     * @param string $roleId
      * @return self
      */
     public function setRoleId($roleId)
@@ -99,7 +99,7 @@ class ProjectUserRole
     /**
      * Get roleId
      *
-     * @return int $roleId
+     * @return string $roleId
      */
     public function getRoleId()
     {

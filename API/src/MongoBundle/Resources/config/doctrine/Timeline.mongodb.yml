@@ -11,7 +11,7 @@ MongoBundle\Document\Timeline:
             type: int
             name: type_id
         projectId:
-            type: int
+            type: string
             name: project_id
         name:
             type: string

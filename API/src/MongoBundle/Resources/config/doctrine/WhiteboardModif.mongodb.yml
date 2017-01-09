@@ -8,7 +8,7 @@ MongoBundle\Document\WhiteboardModif:
             id: true
             strategy: AUTO
         whiteboardId:
-            type: int
+            type: string
             name: whiteboard_id
         drawType:
             type: int
