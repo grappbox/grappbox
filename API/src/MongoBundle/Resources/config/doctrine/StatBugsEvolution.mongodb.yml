@@ -12,7 +12,7 @@ MongoBundle\Document\StatBugsEvolution:
         createdBugs:
             type: int
         closedBugs:
-            type: date
+            type: int
     referenceOne:
         project:
           targetDocument: Project

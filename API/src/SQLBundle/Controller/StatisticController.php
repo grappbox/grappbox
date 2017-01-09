@@ -978,33 +978,37 @@ class StatisticController extends RolesAndTokenVerificationController
 
 	private function updateBugsEvolution($project)
 	{
-		// $em = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
 
 		// $date = new DateTime('now');
-		// //TODO remove one day
 
-		// $createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-		//                ->select('count(b)')
-		//                ->where("b.projects = :project")
-		//                ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
-		//                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-		//                ->getQuery()->getSingleScalarResult();
+		$createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+		               ->select('count(b)')
+		               ->where("b.projects = :project")
+									 ->andWhere('b.state = true')
+									 ->setParameter('project', $project)
+		               //->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
+		               //->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+									 ->setParametersarray()
+									 ->getQuery()->getSingleScalarResult();
 
-		// $closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-		//                ->select('count(b)')
-		//                ->where("b.projects = :project")
-		//                ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
-		//                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-		//                ->getQuery()->getSingleScalarResult();
+		$closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+		               ->select('count(b)')
+		               ->where("b.projects = :project")
+									 ->andWhere('b.state = false')
+									 ->setParameter('project', $project)
+		              //  ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
+		              //  ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+		               ->getQuery()->getSingleScalarResult();
 
-		// $statBugsEvolution = new statBugsEvolution();
-		// $statBugsEvolution->setProject($project);
-		// $statBugsEvolution->setCreatedBugs($createdBugs);
-		// $statBugsEvolution->setClosedbugs($closedBugs);
-		// $statBugsEvolution->setDate($date);
+		$statBugsEvolution = new statBugsEvolution();
+		$statBugsEvolution->setProject($project);
+		$statBugsEvolution->setCreatedBugs($createdBugs);
+		$statBugsEvolution->setClosedbugs($closedBugs);
+		$statBugsEvolution->setDate($date);
 
-		// $em->persist($statBugsEvolution);
-		// $em->flush();
+		$em->persist($statBugsEvolution);
+		$em->flush();
 
 		return "Data updated";
 	}

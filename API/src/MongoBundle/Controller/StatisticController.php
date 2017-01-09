@@ -970,33 +970,37 @@ class StatisticController extends RolesAndTokenVerificationController
 
   private function updateBugsEvolution($project)
   {
-    // $em = $this->get('doctrine_mongodb')->getManager();
-    //
-    // $date = new DateTime('now');
-    // //TODO remove one day
-    //
-    // $createdBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-    //                ->select('count(b)')
-    //                ->where("b.projects = :project")
-    //                ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
-    //                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-    //                ->getQuery()->getSingleScalarResult();
-    //
-    // $closedBugs =  $em->getRepository('MongoBundle:Bug')->createQueryBuilder('b')
-    //                ->select('count(b)')
-    //                ->where("b.projects = :project")
-    //                ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
-    //                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-    //                ->getQuery()->getSingleScalarResult();
-    //
-    // $statBugsEvolution = new statBugsEvolution();
-    // $statBugsEvolution->setProject($project);
-    // $statBugsEvolution->setCreatedBugs($createdBugs);
-    // $statBugsEvolution->setClosedbugs($closedBugs);
-    // $statBugsEvolution->setDate($date);
-    //
-    // $em->persist($statBugsEvolution);
-    // $em->flush();
+    $em = $this->get('doctrine_mongodb')->getManager();
+
+    $date = new DateTime('now');
+    // $date.setDate($date.getDate() - 1);
+    // $date_begin = $date->format('Y-m-d').' 00:00:00';
+    // $date_end = $date->format('Y-m-d').' 23:59:59';
+
+    $req_createdBugs = $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                          ->field('projects.id')->equals($project->getId())
+                          ->field('state')->equals(true)
+                          // ->field('createdAt')->gte($date_begin)
+                          // ->field('createdAt')->lt($date_end)
+                          ->getQuery()->execute();
+    $createdBugs = count($req_createdBugs);
+
+    $req_closedBugs =  $em->getRepository('MongoBundle:Bug')->createQueryBuilder()
+                          ->field('projects.id')->equals($project->getId())
+                          ->field('state')->equals(false)
+                          // ->field('deletedAt')->gte($date_begin)
+                          // ->field('deletedAt')->lt($date_end)
+                          ->getQuery()->execute();
+    $closedBugs = count($req_closedBugs);
+
+    $statBugsEvolution = new statBugsEvolution();
+    $statBugsEvolution->setProject($project);
+    $statBugsEvolution->setCreatedBugs($createdBugs);
+    $statBugsEvolution->setClosedbugs($closedBugs);
+    $statBugsEvolution->setDate($date);
+
+    $em->persist($statBugsEvolution);
+    $em->flush();
 
     return "Data updated";
   }
