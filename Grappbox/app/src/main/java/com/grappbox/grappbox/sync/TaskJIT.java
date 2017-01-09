@@ -12,8 +12,11 @@ import android.util.Log;
 import com.grappbox.grappbox.BuildConfig;
 import com.grappbox.grappbox.Utils;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.data.GrappboxContract.TaskAssignationEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TaskDependenciesEntry;
 import com.grappbox.grappbox.data.GrappboxContract.TaskEntry;
+import com.grappbox.grappbox.data.GrappboxContract.TaskTagAssignationEntry;
+import com.grappbox.grappbox.data.GrappboxContract.TaskTagEntry;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -176,16 +179,43 @@ public class TaskJIT extends IntentService {
                             continue;
                         }
                     }
-
+                    Cursor assign = getContentResolver().query(TaskAssignationEntry.CONTENT_URI, new String[]{TaskAssignationEntry._ID}, TaskAssignationEntry.COLUMN_LOCAL_TASK+"=? AND " + TaskAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{String.valueOf(taskLocalId), String.valueOf(curUser.getLong(0))}, null);
                     ContentValues values = new ContentValues();
-                    values.put(GrappboxContract.TaskAssignationEntry.COLUMN_LOCAL_TASK, taskLocalId);
-                    values.put(GrappboxContract.TaskAssignationEntry.COLUMN_LOCAL_USER_ID, curUser.getLong(0));
-                    values.put(GrappboxContract.TaskAssignationEntry.COLUMN_PERCENTAGE, user.getInt("percent"));
-                    getContentResolver().insert(GrappboxContract.TaskAssignationEntry.CONTENT_URI, values);
+                    values.put(TaskAssignationEntry.COLUMN_LOCAL_TASK, taskLocalId);
+                    values.put(TaskAssignationEntry.COLUMN_LOCAL_USER_ID, curUser.getLong(0));
+                    values.put(TaskAssignationEntry.COLUMN_PERCENTAGE, user.getInt("percent"));
+                    if (assign == null || !assign.moveToFirst()){
+                        getContentResolver().insert(TaskAssignationEntry.CONTENT_URI, values);
+                    } else {
+                        getContentResolver().update(TaskAssignationEntry.CONTENT_URI, values, TaskAssignationEntry.COLUMN_LOCAL_TASK+"=? AND " + TaskAssignationEntry.COLUMN_LOCAL_USER_ID + "=?", new String[]{String.valueOf(taskLocalId), String.valueOf(curUser.getLong(0))});
+                        assign.close();
+                    }
                     curUser.close();
                 }
 
-                //TODO : tags
+                //tags
+                JSONArray tags = current.getJSONArray("tags");
+                for (int j = 0; j < tags.length(); ++j){
+                    JSONObject curtag = tags.getJSONObject(j);
+                    ContentValues values = new ContentValues();
+
+                    values.put(TaskTagEntry.COLUMN_PROJECT_ID, projectId);
+                    values.put(TaskTagEntry.COLUMN_GRAPPBOX_ID, curtag.getString("id"));
+                    values.put(TaskTagEntry.COLUMN_COLOR, curtag.getString("color"));
+                    values.put(TaskTagEntry.COLUMN_NAME, curtag.getString("name"));
+                    Uri inserted = getContentResolver().insert(TaskTagEntry.CONTENT_URI, values);
+                    long insId = Long.parseLong(inserted.getLastPathSegment());
+
+                    Cursor assign = getContentResolver().query(TaskTagAssignationEntry.CONTENT_URI, new String[]{TaskTagAssignationEntry._ID}, TaskTagAssignationEntry.COLUMN_LOCAL_TASK+"=? AND " + TaskTagAssignationEntry.COLUMN_LOCAL_TAG+"=?", new String[]{String.valueOf(taskLocalId), String.valueOf(insId)}, null);
+                    ContentValues assignContent = new ContentValues();
+                    assignContent.put(TaskTagAssignationEntry.COLUMN_LOCAL_TASK, taskLocalId);
+                    assignContent.put(TaskTagAssignationEntry.COLUMN_LOCAL_TAG, insId);
+                    if (assign == null || !assign.moveToFirst()){
+                        getContentResolver().insert(TaskTagAssignationEntry.CONTENT_URI, assignContent);
+                    } else {
+                        getContentResolver().update(TaskTagAssignationEntry.CONTENT_URI, assignContent, TaskTagAssignationEntry._ID+"=?", new String[]{String.valueOf(assign.getLong(0))});
+                    }
+                }
             }
         } catch (OperationApplicationException | IOException | NetworkErrorException | JSONException | ParseException e) {
             e.printStackTrace();
