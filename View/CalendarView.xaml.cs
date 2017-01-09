@@ -54,7 +54,7 @@ namespace Grappbox.View
                 }
             }
             base.OnNavigatedTo(e);
-            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            var dialog = new Grappbox.CustomControls.LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
             dialog.ShowAsync().GetResults();
             ViewModel.IsBusy = true;
             await ViewModel.PickDay(DateTime.Today);
@@ -71,7 +71,7 @@ namespace Grappbox.View
                 return;
             ViewModel.IsBusy = true;
             var selectedDate = dates[0];
-            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            var dialog = new Grappbox.CustomControls.LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
             dialog.ShowAsync().GetResults();
             await this.ViewModel.PickDay(selectedDate.Date);
             dialog.Hide();

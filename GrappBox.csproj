@@ -108,6 +108,13 @@
     <Compile Include="Constants\Colors.cs" />
     <Compile Include="Constants\Symbol.cs" />
     <Compile Include="CustomControls\BindableCalendarDatePicker.cs" />
+    <Compile Include="CustomControls\BooleanDataTrigger.cs" />
+    <Compile Include="CustomControls\BrushDialog.xaml.cs">
+      <DependentUpon>BrushDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\ColorDialog.xaml.cs">
+      <DependentUpon>ColorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
       <DependentUpon>GenericDashboardItem.xaml</DependentUpon>
@@ -135,11 +142,24 @@
     <Compile Include="CustomControls\TimelineContentDialog.xaml.cs">
       <DependentUpon>TimelineContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ToolDialog.xaml.cs">
+      <DependentUpon>ToolDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\WhiteboardText.xaml.cs">
+      <DependentUpon>WhiteboardText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Whiteboard\CustomCanvas.cs" />
+    <Compile Include="CustomControls\Whiteboard\NewWhiteboard.xaml.cs">
+      <DependentUpon>NewWhiteboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Whiteboard\WhiteBoardText.xaml.cs">
+      <DependentUpon>WhiteBoardText.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\FormatTimeHelper.cs" />
-    <Compile Include="Helpers\NotificationManager.cs" />
+    <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
@@ -161,9 +181,19 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
+    <Compile Include="Model\TaskModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
+    <Compile Include="Model\Whiteboard\CustomShapes.cs" />
+    <Compile Include="Model\Whiteboard\ICustomShape.cs" />
+    <Compile Include="Model\Whiteboard\ObjectModel.cs" />
+    <Compile Include="Model\Whiteboard\PullModel.cs" />
+    <Compile Include="Model\Whiteboard\ShapeControler.cs" />
+    <Compile Include="Model\Whiteboard\ShapeModelConverter.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
     <Compile Include="ViewModel\EventViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
@@ -171,9 +201,12 @@
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
+    <Compile Include="ViewModel\TaskViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
+    <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="View\BugtrackerView.xaml.cs">
       <DependentUpon>BugtrackerView.xaml</DependentUpon>
     </Compile>
@@ -192,6 +225,9 @@
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\GanttView.xaml.cs">
+      <DependentUpon>GanttView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\GenericDahsboard.xaml.cs">
       <DependentUpon>GenericDahsboard.xaml</DependentUpon>
     </Compile>
@@ -204,6 +240,9 @@
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\TasksView.xaml.cs">
+      <DependentUpon>TasksView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\TimelineMessageView.xaml.cs">
       <DependentUpon>TimelineMessageView.xaml</DependentUpon>
     </Compile>
@@ -212,6 +251,12 @@
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardListView.xaml.cs">
+      <DependentUpon>WhiteBoardListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardView.xaml.cs">
+      <DependentUpon>WhiteBoardView.xaml</DependentUpon>
     </Compile>
     <None Include="Model\Global\DateTimeFormator.cs" />
     <Compile Include="Helpers\HttpRequestManager.cs" />
@@ -249,6 +294,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CustomControls\BrushDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\ColorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\GenericDashboardItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -270,6 +323,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControls\TeamDashBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\ToolDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\WhiteboardText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Whiteboard\NewWhiteboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Whiteboard\WhiteBoardText.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -357,6 +426,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\GanttView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\GenericDahsboard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -373,6 +446,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\TasksView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\TimelineMessageView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -382,6 +459,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\UserView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\WhiteBoardListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\WhiteBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

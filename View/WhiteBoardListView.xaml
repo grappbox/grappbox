@@ -1,0 +1,65 @@
+﻿<Page
+    x:Class="Grappbox.View.WhiteBoardListView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Grappbox.CustomControls"
+    xmlns:models="using:Grappbox.Model"
+    xmlns:viewModel="using:Grappbox.ViewModel"
+    Background="White"
+    mc:Ignorable="d">
+    <Page.DataContext>
+        <viewModel:WhiteBoardListViewModel x:Name="viewModel" />
+    </Page.DataContext>
+    <Page.Resources>
+        <DataTemplate x:Key="whiteboardsListDataTemplate" x:DataType="models:WhiteBoardListModel">
+            <Border Background="White">
+                <StackPanel>
+                    <StackPanel.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="FontSize" Value="16"/>
+                            <Setter Property="Foreground" Value="Black"/>
+                        </Style>
+                    </StackPanel.Resources>
+                    <TextBlock Text="{x:Bind Name}" HorizontalAlignment="Center"/>
+                    <StackPanel Margin="0,10,0,0" Orientation="Horizontal">
+                        <FontIcon FontFamily="{StaticResource MaterialIconFontFamily}"
+                                  Glyph="&#xE856;"
+                                  Foreground="{StaticResource GreenGrappboxBrush}"></FontIcon>
+                        <TextBlock Margin="10,0,0,0" Text="{x:Bind CreatedAt}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </DataTemplate>
+    </Page.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <controls:PageHeader Grid.Row="0"
+                             Background="{StaticResource GreenGrappboxBrush}"
+                             HeaderContent="Whiteboards" />
+        <ListView Grid.Row="1"
+                  x:Name="whiteboardList"
+                  ItemTemplate="{StaticResource whiteboardsListDataTemplate}"
+                  IsItemClickEnabled="True"
+                  ItemClick="ListView_ItemClick"
+                  SelectionMode="None">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Margin" Value="5"></Setter>
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <Button Grid.Row="2" Background="{StaticResource GreenGrappboxBrush}" 
+                Foreground="White"
+                FontSize="24"
+                HorizontalAlignment="Stretch"
+                Click="CreateWhiteBoard">Create whiteboard</Button>
+    </Grid>
+</Page>

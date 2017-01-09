@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Grappbox.Model
 {
-    class Position
+    public class Position
     {
         [JsonProperty("x")]
         public double X { get; set; }

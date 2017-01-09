@@ -1,0 +1,88 @@
+﻿<ContentDialog
+    x:Class="Grappbox.CustomControls.ToolDialog"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    Background="Transparent"
+    mc:Ignorable="d">
+    <ContentDialog.Resources>
+        <Style x:Key="GridViewStyle" TargetType="GridViewItem">
+            <Setter Property="Padding" Value="10"></Setter>
+        </Style>
+    </ContentDialog.Resources>
+    <Border Height="auto"
+            Width="auto"
+            CornerRadius="15"
+            BorderThickness="1"
+            BorderBrush="WhiteSmoke"
+            Background="WhiteSmoke"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center">
+        <GridView x:Name="GridViewTools"
+                  HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch"
+                  Background="Transparent"
+                  ItemContainerStyle="{StaticResource GridViewStyle}"
+                  SelectionChanged="GridViewTools_SelectionChanged">
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <WrapGrid MaximumRowsOrColumns="3" Orientation="Horizontal" HorizontalChildrenAlignment="Stretch" VerticalChildrenAlignment="Stretch"></WrapGrid>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+            <GridViewItem>
+                <StackPanel>
+                    <Rectangle Height="30" Width="30" Stroke="{x:Bind Stroke}" Fill="{x:Bind Fill}" ></Rectangle>
+                    <TextBlock>Rectangle</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <Ellipse Height="30" Width="30" Stroke="{x:Bind Stroke}" Fill="{x:Bind Fill}" ></Ellipse>
+                    <TextBlock>Ellipse</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <Rectangle Height="30" Width="30" RenderTransformOrigin="0.5, 0.5" Stroke="{x:Bind Stroke}" Fill="{x:Bind Fill}" >
+                        <Rectangle.RenderTransform>
+                            <RotateTransform Angle="45" />
+                        </Rectangle.RenderTransform>
+                    </Rectangle>
+                    <TextBlock>Lozenge</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <Line Height="30" Width="30" X1="0" Y1="0" X2="30" Y2="30" Stroke="{x:Bind Stroke}" Fill="{x:Bind Fill}" ></Line>
+                    <TextBlock>Line</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <FontIcon FontFamily="{StaticResource MaterialIconFontFamily}" Glyph="&#xE155;" FontSize="30" Foreground="{x:Bind Stroke}" />
+                    <TextBlock>HandWritring</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <FontIcon FontFamily="{StaticResource MaterialIconFontFamily}" Glyph="&#xE165;" FontSize="30" Foreground="{x:Bind Stroke}" />
+                    <TextBlock>Text</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <FontIcon FontFamily="{StaticResource MaterialIconFontFamily}" Glyph="&#xE14C;" FontSize="30" Foreground="{x:Bind Stroke}" />
+                    <TextBlock>Erazer</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+            <GridViewItem>
+                <StackPanel>
+                    <FontIcon FontFamily="{StaticResource MaterialIconFontFamily}" Glyph="&#xE925;" FontSize="30" Foreground="{x:Bind Stroke}" />
+                    <TextBlock>Pointer</TextBlock>
+                </StackPanel>
+            </GridViewItem>
+        </GridView>
+    </Border>
+</ContentDialog>

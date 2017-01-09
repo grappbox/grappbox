@@ -29,18 +29,17 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
-        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            ListView lv = sender as ListView;
-            ProjectListModel plm = lv.SelectedItem as ProjectListModel;
-            SessionHelper.CreateSessionHelper(plm);
-            Debug.WriteLine("ProjectId= {0}", plm.Id);
-            Frame.Navigate(typeof(View.DashBoardView));
-        }
-
         private void CreateProject_Click(object sender, RoutedEventArgs e)
         {
             Frame.Navigate(typeof(View.ProjectSettingsView), "newProject");
+        }
+
+        private void ListView_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            ProjectListModel plm = e.ClickedItem as ProjectListModel;
+            SessionHelper.CreateSessionHelper(plm);
+            Debug.WriteLine("ProjectId= {0}", plm.Id);
+            Frame.Navigate(typeof(View.DashBoardView));
         }
     }
 }

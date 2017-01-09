@@ -5,6 +5,7 @@
     xmlns:local="using:Grappbox.View"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Grappbox.CustomControls"
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
     <Page.Resources>
@@ -22,7 +23,7 @@
                 <Image Name="image" Height="200" Width="300"
                        VerticalAlignment="Center"
                        HorizontalAlignment="Center"
-                       Source="/Assets/GrappBox-logo.png" />
+                       Source="/Assets/Grappbox-logo.png" />
             </Grid>
             <TextBox Grid.Row="1" Name="loginBlock"
                      Background="{StaticResource Grey3GrappboxBrush}"
@@ -41,7 +42,8 @@
                          Password="feytou_p"
                          Header="Password"
                          PasswordRevealMode="Peek" />
-            <Button Grid.Row="3" Name="DashBoardButton"
+            <Button Grid.Row="3"
+                    x:Name="DashBoardButton"
                     Content="Log In"
                     HorizontalAlignment="Stretch"
                     VerticalAlignment="Center"
