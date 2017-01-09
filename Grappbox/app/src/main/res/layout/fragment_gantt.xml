@@ -2,12 +2,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.grappbox.grappbox.project_fragments.GanttFragment">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
+    <com.grappbox.grappbox.views.GanttChart
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:text="@string/hello_blank_fragment" />
+        app:dividerColor="@color/GrappGrayLight"
+        android:id="@+id/gantt"/>
 
 </FrameLayout>

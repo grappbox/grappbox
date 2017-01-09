@@ -13,5 +13,6 @@
         <attr name="taskHeight" format="integer"/>
         <attr name="timelineHeight" format="integer"/>
         <attr name="accomplishementTaskColor" format="color"/>
+        <attr name="dividerWidth" format="integer" />
     </declare-styleable>
 </resources>

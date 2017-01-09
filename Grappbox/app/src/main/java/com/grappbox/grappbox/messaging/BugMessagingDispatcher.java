@@ -101,7 +101,7 @@ class BugMessagingDispatcher implements MessagingDispatcher {
         mContext.getContentResolver().notifyChange(GrappboxContract.BugEntry.CONTENT_URI, null);
     }
 
-    
+
     private void processUserSync(long bugId, JSONObject body) throws JSONException{
         JSONArray users = body.getJSONArray("users");
         String usersDeletionSelection = "";

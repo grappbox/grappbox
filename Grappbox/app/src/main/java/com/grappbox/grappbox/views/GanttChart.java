@@ -56,6 +56,9 @@ public class GanttChart extends View {
     private int mainDayLineHeight;
     private int otherDayLineHeight;
 
+    //Task divider
+    private int dividerWidth;
+
     //Brushes
     private Paint taskBrush;
     private Paint accomplishementBrush;
@@ -114,6 +117,7 @@ public class GanttChart extends View {
         taskHeight = typedArray.getInteger(R.styleable.GanttChart_taskHeight, 200);
         tasklistPadding = typedArray.getInteger(R.styleable.GanttChart_taskListPadding, 100);
         timelineHeight = typedArray.getInteger(R.styleable.GanttChart_timelineHeight, 100);
+        dividerWidth = typedArray.getInteger(R.styleable.GanttChart_dividerWidth, 50);
 
         pan = 0;
         panVertical = 0;
@@ -587,8 +591,8 @@ public class GanttChart extends View {
     private void drawTaskModifier(Canvas canvas)
     {
         int left = getPaddingLeft() + tasklistWidth + tasklistPadding / 4;
-        int right = left + tasklistPadding / 2;
-        int top = getPaddingTop() + timelineHeight;
+        int right = left + dividerWidth / 2;
+        int top = getPaddingTop();
         int bottom = canvas.getHeight();
 
         canvas.drawRect(left, top, right, bottom, dividerBrush);

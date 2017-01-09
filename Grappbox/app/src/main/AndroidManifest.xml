@@ -109,16 +109,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
-
-        <activity android:name=".timeline_fragment.TimelineMessageCommentActivity"
+        <activity
+            android:name=".timeline_fragment.TimelineMessageCommentActivity"
             android:label="@string/title_activity_timeline_message_comments"
-            android:theme="@style/TimelineTheme"
-            android:parentActivityName=".ProjectActivity">
+            android:parentActivityName=".ProjectActivity"
+            android:theme="@style/TimelineTheme">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
-
         <activity
             android:name=".bugtracker_fragments.NewBugActivity"
             android:label="@string/title_activity_new_bug"
@@ -163,21 +162,26 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
-        <activity android:name=".calendar_fragment.NewEventActivity"
+        <activity
+            android:name=".calendar_fragment.NewEventActivity"
             android:label="@string/title_activity_new_event"
             android:parentActivityName=".ProjectActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.grappbox.grappbox.ProjectActivity"/>
+                android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
-
-        <activity android:name=".calendar_fragment.EventDetailsActivity"
+        <activity
+            android:name=".calendar_fragment.EventDetailsActivity"
             android:label="@string/title_activity_event_detail"
             android:parentActivityName=".ProjectActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.grappbox.grappbox.ProjectActivity"/>
+                android:value="com.grappbox.grappbox.ProjectActivity" />
         </activity>
+
+        <service
+            android:name=".sync.TaskJIT"
+            android:exported="false"></service>
     </application>
 
 </manifest>
