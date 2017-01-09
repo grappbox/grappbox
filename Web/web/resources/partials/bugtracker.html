@@ -9,7 +9,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 </div>
 
 <div>
-  <p><a href="bugtracker/{[{ projectID }]}" class="btn btn-default"><i class="material-icons">keyboard_arrow_left</i> Back</a></p>
+  <p><a href="{[{'bugtracker/' + projectId}]}" class="btn btn-default"><i class="material-icons">keyboard_arrow_left</i> Back</a></p>
 </div>
 <!-- grappbox.data: bug ticket creation information -->
 <div data-ng-if="data.bugtracker_new">
@@ -137,9 +137,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)">
-                      <auto-complete source="tagsList"></auto-complete>
+                      <auto-complete source="tagsList"><!--
+                                     min-length="0"
+                                     load-on-focus="true"
+                                     load-on-empty="true"
+                                     max-results-to-show="tagsList.length" -->
+                       </auto-complete>
                     </tags-input>
+                    <button class="btn btn-default" ng-click="onNewTag()">Créer un tag</button>
                   </div>
+
                 </div>
                 <div class="form-group">
                   <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
@@ -188,6 +195,33 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
 </section>
 
+<!-- tag creation modal -->
+<div>
+  <script type="text/ng-template" id="modal_createNewBugTag.html">
+    <div class="modal-header">
+      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTagCreation()">×</button>
+      <h4 class="modal-title">Tag creation</h4>
+    </div>
+    <div class="modal-body">
+      <form class="form-horizontal">
+        <fieldset>
+          <div class="form-group {[{ error.name ? 'has-error' : '' }]}">
+            <label for="new-tag-name" class="col-md-1 control-label">Name</label>
+            <div class="col-md-11">
+              <input type="text" id="new-tag-name" class="form-control" data-ng-model="newTag" placeholder="Name">
+            </div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+    <div class="modal-footer">
+      <button type="button" class="btn btn-default" data-ng-click="modal_confirmTagCreation()">Create</button>
+      <button type="button" class="btn" data-ng-click="modal_cancelTagCreation()">Cancel</button>
+    </div>
+  </script>
+</div>
+
+
 <!-- grappbox.data: bug visual -->
 <section id="bugtracker-visual" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
   <div class="row">
@@ -208,7 +242,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <span data-ng-if="data.ticket.deletedAt">, close: {[{ formatObjectDate(data.ticket.deletedAt) }]}</span>
                 </h4>
               </div>
-              <p>{[{data.ticket.description}]}</p>
+              <!-- <p>{[{data.ticket.description}]}</p> -->
 
               <div class="col-md-12 bug-section">
                 <h4 class="bug-section-title"><i class="material-icons">description</i>Description</h4>
