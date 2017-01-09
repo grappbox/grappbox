@@ -1984,6 +1984,67 @@ public class GrappboxJustInTimeService extends IntentService {
         }
     }
 
+    private void handleNextMeetingsSync(long localPID) {
+        String apiToken = Utils.Account.getAuthTokenService(this, null);
+        if (apiToken.isEmpty() || localPID == -1)
+            return;
+
+        HttpURLConnection connection = null;
+        String returnedJson;
+        Cursor grappboxProjectId = getContentResolver().query(ProjectEntry.buildProjectWithLocalIdUri(localPID), new String[]{ProjectEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
+        if (grappboxProjectId == null || !grappboxProjectId.moveToFirst())
+            return;
+        try {
+            final URL url = new URL(BuildConfig.GRAPPBOX_API_URL + BuildConfig.GRAPPBOX_API_VERSION + "/dashboard/meetings/" + grappboxProjectId.getString(0));
+            connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestProperty("Authorization", apiToken);
+            connection.setRequestMethod("GET");
+            connection.connect();
+            returnedJson = Utils.JSON.readDataFromConnection(connection);
+            if (returnedJson != null && !returnedJson.isEmpty()) {
+                JSONObject json = new JSONObject(returnedJson);
+                if (Utils.Errors.checkAPIError(json)) {
+                    throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+                } else {
+                    JSONArray meetingData = json.getJSONObject("data").getJSONArray("array");
+                    ArrayList<Long> existingEntry = new ArrayList<>();
+                    for (int i = 0; i < meetingData.length(); ++i) {
+                        JSONObject nextMeeting = meetingData.getJSONObject(i);
+                        ContentValues ad = new ContentValues();
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_LOCAL_PROJECT_ID, localPID);
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_EVENT_ID, nextMeeting.getInt("id"));
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_TITLE, nextMeeting.getString("title"));
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_DESCRIPTION, nextMeeting.getString("description"));
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_BEGIN_DATE, nextMeeting.getString("begin_date"));
+                        ad.put(GrappboxContract.NextMeetingEntry.COLUMN_END_DATE, nextMeeting.getString("end_date"));
+                        Uri nextMeetingEntryURI = getContentResolver().insert(GrappboxContract.NextMeetingEntry.CONTENT_URI, ad);
+                        if (nextMeetingEntryURI == null)
+                            continue;
+                        long adEntryURI = Long.parseLong(nextMeetingEntryURI.getLastPathSegment());
+                        existingEntry.add(adEntryURI);
+                    }
+                    String selection = GrappboxContract.NextMeetingEntry.COLUMN_LOCAL_PROJECT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.NextMeetingEntry._ID + " NOT IN (" : "");
+                    if (existingEntry.size() > 0) {
+                        boolean isFirst = true;
+                        for (Long idAd : existingEntry) {
+                            selection += isFirst ? idAd.toString() : ", " + idAd.toString();
+                            isFirst = false;
+                        }
+                        selection += ")";
+                    }
+                    getContentResolver().delete(GrappboxContract.NextMeetingEntry.CONTENT_URI, selection, new String[]{ String.valueOf(localPID) });
+                }
+            }
+        } catch (IOException | JSONException | NetworkErrorException e) {
+            e.printStackTrace();
+        } finally {
+            grappboxProjectId.close();
+            if (connection != null)
+                connection.disconnect();
+        }
+    }
+
+
     private Cursor TimelineGetCreatorId(String creatorId)
     {
         Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
@@ -2136,8 +2197,6 @@ public class GrappboxJustInTimeService extends IntentService {
         }
         Log.v(LOG_TAG, "add finish");
     }
-
-    private void handleNextMeetingsSync(long localPID) {}
 
     private void handleTimelineCommentEdit(long localTimelineId, long messageId, String message, ResultReceiver resultReceiver, long parentId)
     {
@@ -2914,6 +2973,8 @@ public class GrappboxJustInTimeService extends IntentService {
                             responseObserver.send(Activity.RESULT_OK, answer);
                         }
                     }
+                    if (localProjectId != -1)
+                        handleNextMeetingsSync(localProjectId);
                 }
             }
         } catch (IOException | JSONException | NetworkErrorException | ParseException e) {
@@ -3458,44 +3519,48 @@ public class GrappboxJustInTimeService extends IntentService {
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
             Log.v(LOG_TAG, "returnedJSON : " + returnedJson);
-            JSONArray jsonArray = new JSONObject(returnedJson).getJSONObject("data").getJSONArray("array");
-            ArrayList<Long> existingEntry = new ArrayList<>();
-            for (int i = 0; i < jsonArray.length(); ++i){
-                JSONObject occupation = jsonArray.getJSONObject(i);
-                ContentValues ad = new ContentValues();
+            JSONObject json = new JSONObject(returnedJson);
+            if (Utils.Errors.checkAPIError(json)) {
+                throw new NetworkErrorException(Utils.Errors.ERROR_API_GENERIC);
+            } else {
+                JSONArray jsonArray = json.getJSONObject("data").getJSONArray("array");
+                ArrayList<Long> existingEntry = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); ++i) {
+                    JSONObject occupation = jsonArray.getJSONObject(i);
+                    ContentValues ad = new ContentValues();
 
-                String grappboxCID = occupation.getJSONObject("user").getString("id");
-                Cursor userId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
-                if (userId == null || !userId.moveToFirst())
-                {
-                    handleUserDetailSync(this, grappboxCID);
-                    userId = getContentResolver().query(UserEntry.CONTENT_URI, new String[] {UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
-                    if (userId == null || !userId.moveToFirst()){
-                        continue;
+                    String grappboxCID = occupation.getJSONObject("user").getString("id");
+                    Cursor userId = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                    if (userId == null || !userId.moveToFirst()) {
+                        handleUserDetailSync(this, grappboxCID);
+                        userId = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{grappboxCID}, null);
+                        if (userId == null || !userId.moveToFirst()) {
+                            continue;
+                        }
                     }
+                    ad.put(GrappboxContract.OccupationEntry.COLUMN_LOCAL_USER_ID, userId.getLong(0));
+                    ad.put(GrappboxContract.OccupationEntry.COLUMN_LOCAL_PROJECT_ID, projectId);
+                    ad.put(GrappboxContract.OccupationEntry.COLUMN_IS_BUSY, occupation.getString("occupation").equals("free") ? 0 : 1);
+                    ad.put(GrappboxContract.OccupationEntry.COLUMN_COUNT_TASK_BEGUN, occupation.getInt("number_of_tasks_begun"));
+                    ad.put(GrappboxContract.OccupationEntry.COLUMN_COUNT_TASK_ONGOING, occupation.getInt("number_of_ongoing_tasks"));
+                    userId.close();
+                    Uri adEntryURI = getContentResolver().insert(GrappboxContract.OccupationEntry.CONTENT_URI, ad);
+                    if (adEntryURI == null)
+                        continue;
+                    Long adEntryID = Long.parseLong(adEntryURI.getLastPathSegment());
+                    existingEntry.add(adEntryID);
                 }
-                ad.put(GrappboxContract.OccupationEntry.COLUMN_LOCAL_USER_ID, userId.getLong(0));
-                ad.put(GrappboxContract.OccupationEntry.COLUMN_LOCAL_PROJECT_ID, projectId);
-                ad.put(GrappboxContract.OccupationEntry.COLUMN_IS_BUSY, occupation.getString("occupation").equals("free") ? 0 : 1);
-                ad.put(GrappboxContract.OccupationEntry.COLUMN_COUNT_TASK_BEGUN, occupation.getInt("number_of_tasks_begun"));
-                ad.put(GrappboxContract.OccupationEntry.COLUMN_COUNT_TASK_ONGOING, occupation.getInt("number_of_ongoing_tasks"));
-                userId.close();
-                Uri adEntryURI = getContentResolver().insert(GrappboxContract.OccupationEntry.CONTENT_URI, ad);
-                if (adEntryURI == null)
-                    continue;
-                Long adEntryID = Long.parseLong(adEntryURI.getLastPathSegment());
-                existingEntry.add(adEntryID);
-            }
-            String selection = GrappboxContract.OccupationEntry.COLUMN_LOCAL_PROJECT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.OccupationEntry._ID + " NOT IN (" : "");
-            if (existingEntry.size() > 0) {
-                boolean isFirst = true;
-                for (Long idAd : existingEntry) {
-                    selection += isFirst ? idAd.toString() : ", " + idAd.toString();
-                    isFirst = false;
+                String selection = GrappboxContract.OccupationEntry.COLUMN_LOCAL_PROJECT_ID + "=?" + (existingEntry.size() > 0 ? " AND " + GrappboxContract.OccupationEntry._ID + " NOT IN (" : "");
+                if (existingEntry.size() > 0) {
+                    boolean isFirst = true;
+                    for (Long idAd : existingEntry) {
+                        selection += isFirst ? idAd.toString() : ", " + idAd.toString();
+                        isFirst = false;
+                    }
+                    selection += ")";
                 }
-                selection += ")";
+                getContentResolver().delete(GrappboxContract.OccupationEntry.CONTENT_URI, selection, new String[]{String.valueOf(projectId)});
             }
-            getContentResolver().delete(GrappboxContract.OccupationEntry.CONTENT_URI, selection, new String[]{String.valueOf(projectId)});
         } catch (IOException | NetworkErrorException | JSONException e) {
             e.printStackTrace();
         } finally {

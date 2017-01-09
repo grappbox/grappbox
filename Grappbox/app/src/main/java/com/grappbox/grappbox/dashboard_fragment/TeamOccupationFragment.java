@@ -98,10 +98,9 @@ public class TeamOccupationFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        Log.v(LOG_TAG, "onLoadFinished");
-        if (data == null || !data.moveToFirst()) {
+        mAdapter.clear();
+        if (data == null || !data.moveToFirst())
             return;
-        }
         List<OccupationModel> models = new ArrayList<>();
         do {
             models.add(new OccupationModel(data));
@@ -126,6 +125,6 @@ public class TeamOccupationFragment extends Fragment implements LoaderManager.Lo
 
     @Override
     public void onRefresh() {
-
+        getLoaderManager().initLoader(OCCUPATION, null, this);
     }
 }

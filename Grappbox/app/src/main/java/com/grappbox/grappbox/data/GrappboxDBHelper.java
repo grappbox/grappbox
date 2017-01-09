@@ -84,6 +84,16 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
                 " FOREIGN KEY (" + OccupationEntry.COLUMN_LOCAL_USER_ID + ") REFERENCES " + UserEntry.TABLE_NAME + " (" + UserEntry._ID + "), " +
                 " FOREIGN KEY (" + OccupationEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "));";
 
+        final String SQL_CREATE_NEXT_MEETING_TABLE = "CREATE TABLE IF NOT EXISTS " + NextMeetingEntry.TABLE_NAME + " (" +
+                NextMeetingEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                NextMeetingEntry.COLUMN_EVENT_ID + " INTEGER NOT NULL, " +
+                NextMeetingEntry.COLUMN_LOCAL_PROJECT_ID + " INTEGER NOT NULL, " +
+                NextMeetingEntry.COLUMN_TITLE + " TEXT, " +
+                NextMeetingEntry.COLUMN_DESCRIPTION + " TEXT, " +
+                NextMeetingEntry.COLUMN_BEGIN_DATE + " TEXT NOT NULL, " +
+                NextMeetingEntry.COLUMN_END_DATE + " TEXT NOT NULL, " +
+                " FOREIGN KEY (" + NextMeetingEntry.COLUMN_LOCAL_PROJECT_ID + ") REFERENCES " + ProjectEntry.TABLE_NAME + " (" + ProjectEntry._ID + "));";
+
         final String SQL_CREATE_EVENT_TABLE = "CREATE TABLE IF NOT EXISTS " + EventEntry.TABLE_NAME + " (" +
                 EventEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 EventEntry.COLUMN_GRAPPBOX_ID + " TEXT NOT NULL, " +
@@ -377,6 +387,7 @@ public class GrappboxDBHelper extends SQLiteOpenHelper {
         db.execSQL(SQL_CREATE_PROJECT_TABLE);
         db.execSQL(SQL_CREATE_PROJECT_ACCOUNT_TABLE);
         db.execSQL(SQL_CREATE_OCCUPATION_TABLE);
+        db.execSQL(SQL_CREATE_NEXT_MEETING_TABLE);
         db.execSQL(SQL_CREATE_EVENT_TABLE);
         db.execSQL(SQL_CREATE_EVENT_PARTICIPANT_TABLE);
         db.execSQL(SQL_CREATE_TIMELINE_TABLE);

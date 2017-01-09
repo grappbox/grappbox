@@ -62,6 +62,8 @@ public class TeamOccupationAdapter extends RecyclerView.Adapter<RecyclerView.Vie
         return mDataSet.size();
     }
 
+    public void clear() { mDataSet.clear(); }
+
     private static class OccupationHolder extends RecyclerView.ViewHolder{
 
         ImageView mAvatar;

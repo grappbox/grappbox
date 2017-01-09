@@ -158,6 +158,10 @@ public class GrappboxProvider extends ContentProvider {
     public static final int BUG_EVOLUTION_BY_ID = 351;
     public static final int BUG_EVOLUTION_BY_STAT_ID = 352;
 
+    public static final int NEXT_MEETING = 360;
+    public static final int NEXT_MEETING_BY_ID = 361;
+    public static final int NEXT_MEETING_BY_PROJECT_ID = 362;
+
     public static UriMatcher buildUriMatcher() {
         UriMatcher matcher = new UriMatcher(UriMatcher.NO_MATCH);
 
@@ -324,6 +328,11 @@ public class GrappboxProvider extends ContentProvider {
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/#", BUG_EVOLUTION_BY_ID);
         matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_BUG_EVOLUTION + "/stat/", BUG_EVOLUTION_BY_STAT_ID);
 
+        //Next Meeting related URIs
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_NEXT_MEETING, NEXT_MEETING);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_NEXT_MEETING + "/#", NEXT_MEETING_BY_ID);
+        matcher.addURI(GrappboxContract.CONTENT_AUTHORITY, GrappboxContract.PATH_NEXT_MEETING + "/project/#", NEXT_MEETING_BY_PROJECT_ID);
+
         return matcher;
     }
 
@@ -484,6 +493,11 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_EVOLUTION_BY_STAT_ID:
                 return GrappboxContract.BugEvolutionEntry.CONTENT_TYPE;
 
+            case NEXT_MEETING:
+            case NEXT_MEETING_BY_ID:
+            case NEXT_MEETING_BY_PROJECT_ID:
+                return GrappboxContract.NextMeetingEntry.CONTENT_TYPE;
+
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -551,6 +565,8 @@ public class GrappboxProvider extends ContentProvider {
                 return GrappboxContract.BugTagsRepartitionEntry.TABLE_NAME;
             case BUG_EVOLUTION:
                 return GrappboxContract.BugEvolutionEntry.TABLE_NAME;
+            case NEXT_MEETING:
+                return GrappboxContract.NextMeetingEntry.TABLE_NAME;
             default:
                 return "";
         }
@@ -856,6 +872,15 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_EVOLUTION_BY_STAT_ID:
                 retCursor = BugEvolutionCursors.query_BugEvolutionByStat(uri, projection, selection, args, sortOrder, mOpenHelper);
                 break;
+            case NEXT_MEETING:
+                retCursor = NextMeetingCursor.query_NextMeeting(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case NEXT_MEETING_BY_ID:
+                retCursor = NextMeetingCursor.query_NextMeetingById(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
+            case NEXT_MEETING_BY_PROJECT_ID:
+                retCursor = NextMeetingCursor.query_NextMeetingByProject(uri, projection, selection, args, sortOrder, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -973,6 +998,9 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_EVOLUTION:
                 returnedUri = BugEvolutionCursors.insert(uri, contentValues, mOpenHelper);
                 break;
+            case NEXT_MEETING:
+                returnedUri = NextMeetingCursor.insert(uri, contentValues, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException(mContext.getString(R.string.error_unsupported_uri, uri.toString()));
         }
@@ -1088,6 +1116,9 @@ public class GrappboxProvider extends ContentProvider {
             case BUG_EVOLUTION:
                 ret = BugEvolutionCursors.update(uri, contentValues, selection, args, mOpenHelper);
                 break;
+            case NEXT_MEETING:
+                ret = NextMeetingCursor.update(uri, contentValues, selection, args, mOpenHelper);
+                break;
             default:
                 throw new UnsupportedOperationException("Update not supported, use insert instead, tables construct with ON CONFLICT REPLACE system");
         }
@@ -1172,6 +1203,9 @@ public class GrappboxProvider extends ContentProvider {
                 break;
             case BUG_EVOLUTION:
                 returnCount = BugEvolutionCursors.bulkinsert(uri, values, mOpenHelper);
+                break;
+            case  NEXT_MEETING:
+                returnCount = NextMeetingCursor.bulkInsert(uri, values, mOpenHelper);
                 break;
             default:
                 return super.bulkInsert(uri, values);
