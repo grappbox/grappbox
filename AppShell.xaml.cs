@@ -48,62 +48,6 @@ namespace Grappbox
                 },
                 new NavMenuItem()
                 {
-                    Symbol = Constants.CloudSymbol,
-                    Label = "Cloud",
-                    DestPage = typeof(View.CloudView),
-                    ForegroundColor = SystemInformation.GetStaticResource("YellowGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.TimelineSymbol,
-                    Label = "Talks",
-                    DestPage = typeof(TimelineView),
-                    ForegroundColor = SystemInformation.GetStaticResource("OrangeGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.BugtrackerSymbol,
-                    Label = "Bugtracker",
-                    DestPage = typeof(BugtrackerView),
-                    ForegroundColor = SystemInformation.GetStaticResource("PurpleGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.TasksSymbol,
-                    Label = "Tasks",
-                    DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.GanttSymbol,
-                    Label = "Gantt",
-                    DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.WhiteboardSymbol,
-                    Label = "Whiteboard",
-                    DestPage = typeof(DashBoardView),
-                    ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.StatsSymbol,
-                    Label = "Statistics",
-                    DestPage = typeof(StatsView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.ProjectSettingsSymbol,
-                    Label = "Project Settings",
-                    DestPage = typeof(ProjectSettingsView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
                     Symbol = Constants.UserSettingsSymbol,
                     Label = "User Settings",
                     DestPage = typeof(UserView),
@@ -175,13 +119,13 @@ namespace Grappbox
                     DestPage = typeof(DashBoardView),
                     ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
                 },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.StatsSymbol,
-                    Label = "Statistics",
-                    DestPage = typeof(StatsView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                },
+                //new NavMenuItem()
+                //{
+                //    Symbol = Constants.StatsSymbol,
+                //    Label = "Statistics",
+                //    DestPage = typeof(StatsView),
+                //    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                //},
                 new NavMenuItem()
                 {
                     Symbol = Constants.ProjectSettingsSymbol,
@@ -492,6 +436,11 @@ namespace Grappbox
             {
                 UserNameTextBlock.Text = session.UserName;
             }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

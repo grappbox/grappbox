@@ -10,8 +10,6 @@ namespace Grappbox
 {
     public static partial class Constants
     {
-        #region Material Icons codes
-
         public const string DashboardSymbol = "\uE8F1";
         public const string CalendarSymbol = "\uE616";
         public const string CloudSymbol = "\uE2BD";

@@ -198,21 +198,7 @@
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\UsersModel.cs" />
-    <Compile Include="Model\Stats\BugAssignationTrackerModel.cs" />
-    <Compile Include="Model\Stats\BugsEvolutionModel.cs" />
-    <Compile Include="Model\Stats\BugsTagsRepartitionModel.cs" />
-    <Compile Include="Model\Stats\ProjectAdvancementModel.cs" />
-    <Compile Include="Model\Stats\UsersRepartitionModel.cs" />
-    <Compile Include="Model\Stats\CustomerAccessNumberModel.cs" />
-    <Compile Include="Model\Stats\LateTaskModel.cs" />
-    <Compile Include="Model\Stats\OpenCloseBugModel.cs" />
-    <Compile Include="Model\Stats\ProjectTimeLimitsModel.cs" />
-    <Compile Include="Model\Stats\StatsModel.cs" />
-    <Compile Include="Model\Stats\StorageSizeModel.cs" />
-    <Compile Include="Model\Stats\TaskStatusModel.cs" />
-    <Compile Include="Model\Stats\TimelinesMessageNumberModel.cs" />
-    <Compile Include="Model\Stats\UserTasksAdvancementModel.cs" />
-    <Compile Include="Model\Stats\UserWorkingChargeModel.cs" />
+    <Compile Include="Model\TaskModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
@@ -233,7 +219,6 @@
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
-    <Compile Include="ViewModel\StatsViewModel.cs" />
     <Compile Include="ViewModel\TaskViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
@@ -275,9 +260,6 @@
     </Compile>
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\StatsView.xaml.cs">
-      <DependentUpon>StatsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TasksView.xaml.cs">
       <DependentUpon>TasksView.xaml</DependentUpon>
@@ -504,10 +486,6 @@
     <Page Include="View\RoleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
-    </Page>
-    <Page Include="View\StatsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TasksView.xaml">
       <SubType>Designer</SubType>
