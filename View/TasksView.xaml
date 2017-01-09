@@ -1,0 +1,52 @@
+﻿<Page
+    x:Class="Grappbox.View.TasksView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:viewModels="using:Grappbox.ViewModel"
+    xmlns:models="using:Grappbox.Model"
+    xmlns:controls="using:Grappbox.CustomControls"
+    mc:Ignorable="d">
+    <Page.Resources>
+        <DataTemplate x:Key="tasksDataTemplate" x:DataType="models:TaskModel">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="25"></RowDefinition>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <TextBlock x:Name="title" Text="{x:Bind Title}" ></TextBlock>
+                </Grid>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto"/>
+                        <RowDefinition Height="auto"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0" Grid.Column="0" >Started date:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" >Due date:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StartedAt}" ></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind DueDate}" >Due date:</TextBlock>
+                </Grid>
+                <ProgressBar Grid.Row="2" Height="25" Maximum="100" Minimum="0" Value="{x:Bind Advance}" Foreground="{StaticResource RedGrappboxBrush}" ></ProgressBar>
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+    <Page.DataContext>
+        <viewModels:TaskViewModel x:Name="viewModel" />
+    </Page.DataContext>
+    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Tasks" />
+        <ListView Grid.Row="1" ItemTemplate="{StaticResource tasksDataTemplate}" ItemsSource="{x:Bind viewModel.Tasks}" ></ListView>
+    </Grid>
+</Page>

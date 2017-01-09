@@ -64,6 +64,7 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="168" />
                         <RowDefinition Height="*" />
+                        <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
                     <Border BorderThickness="0,0,0,1" Margin="0,48,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
                         <Grid x:Name="UserProfilGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
@@ -75,12 +76,28 @@
                                 <ColumnDefinition Width="60" />
                                 <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
-                            <Ellipse x:Name="UserAvatar" Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
+                            <!--<Ellipse x:Name="UserAvatar" Width="50" Height="50" HorizontalAlignment="Center" VerticalAlignment="Center">
                                 <Ellipse.Fill>
-                                    <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
+                                    <ImageBrush />
                                 </Ellipse.Fill>
-                            </Ellipse>
-                            <TextBlock Grid.Column="1" x:Name="UserNameTextBlock" HorizontalAlignment="Center" VerticalAlignment="Center" Text="" Style="{StaticResource PageTitleTextBlockStyle}" Foreground="Black" />
+                            </Ellipse>-->
+                            <FontIcon x:Name="UserAvatarIcon"
+                                      Width="60"
+                                      Height="60"
+                                      Glyph="&#xE853;"
+                                      FontSize="60"
+                                      FontWeight="Bold"
+                                      Foreground="{StaticResource Grey2GrappboxBrush}"
+                                      FontFamily="{StaticResource MaterialIconFontFamily}"
+                                      HorizontalAlignment="Center"
+                                      VerticalAlignment="Center">
+                            </FontIcon>
+                            <TextBlock Grid.Column="1"
+                                       x:Name="UserNameTextBlock"
+                                       HorizontalAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Text=""
+                                       Foreground="Black" />
                             <Button Grid.Row="1" Grid.ColumnSpan="2"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
@@ -109,6 +126,35 @@
                                               ScrollViewer.VerticalScrollMode="Enabled"
                                               ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                     </ScrollViewer>
+                    <Button Grid.Row="2"
+                            Background="Transparent"
+                            HorizontalAlignment="Stretch"
+                            HorizontalContentAlignment="Left"
+                            VerticalAlignment="Center"
+                            Click="Button_Click_1">
+                        <Button.Content>
+                            <Grid HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="48" />
+                                    <ColumnDefinition />
+                                </Grid.ColumnDefinitions>
+                                <FontIcon x:Name="Glyph"
+                                          Grid.Column="0"
+                                          FontFamily="{StaticResource MaterialIconFontFamily}"
+                                          FontSize="16"
+                                          VerticalAlignment="Center"
+                                          Glyph="{x:Bind local:Constants.LogoutSymbol}"
+                                          HorizontalAlignment="Center"
+                                          Foreground="Black"/>
+                                <TextBlock Grid.Column="1"
+                                           Text="Logout"
+                                           Style="{StaticResource BodyTextBlockStyle}"
+                                           TextWrapping="NoWrap"
+                                           VerticalAlignment="Center"
+                                           Foreground="Black" />
+                            </Grid>
+                        </Button.Content>
+                    </Button>
                 </Grid>
             </SplitView.Pane>
 

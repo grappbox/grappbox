@@ -37,15 +37,28 @@
                         </Ellipse.Fill>
                     </Ellipse>-->
 
-                    <Border Grid.Column="1" Background="DarkGray" CornerRadius="45" Width="60" Height="60">
+                    <!--<Border Grid.Column="1" Background="DarkGray" CornerRadius="45" Width="60" Height="60">
                         <FontIcon Glyph="&#xE13D;"
                                   FontSize="30"
                                   FontWeight="Bold"
                                   Foreground="White"
                                   FontFamily="{StaticResource MaterialIconFontFamily}"/>
-                    </Border>
+                    </Border>-->
+                    <FontIcon Grid.Column="1" Width="60" Height="60"
+                              Glyph="&#xE853;"
+                              FontSize="50"
+                              FontWeight="Bold"
+                              Foreground="{StaticResource Grey2GrappboxBrush}"
+                              FontFamily="{StaticResource MaterialIconFontFamily}"/>
 
-                    <TextBlock  Grid.Column="2" Name="name_tb" Text="{x:Bind UserName}" x:Phase="1" TextTrimming="CharacterEllipsis" Style="{StaticResource DashboardTeamUserName}" HorizontalAlignment="Left" />
+                    <TextBlock  Grid.Column="2"
+                                x:Name="name_tb"
+                                Text="{x:Bind UserName}"
+                                x:Phase="1"
+                                TextTrimming="CharacterEllipsis"
+                                Style="{StaticResource DashboardTeamUserName}"
+                                HorizontalAlignment="Left"
+                                FontWeight="Bold"/>
                     <StackPanel Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                         <StackPanel.Resources>
                             <Style TargetType="TextBlock">

@@ -11,7 +11,7 @@
     d:DesignHeight="48"
     d:DesignWidth="400">
 
-    <Grid x:Name="grid" Background="{x:Bind Background}">
+    <Grid x:Name="grid" Background="{x:Bind Background}" Height="48" HorizontalAlignment="Stretch">
         <TextBlock Margin="48,0,0,0"
                    VerticalAlignment="Center"
                    TextAlignment="Left"

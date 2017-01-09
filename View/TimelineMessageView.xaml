@@ -7,7 +7,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
     xmlns:customControl="using:Grappbox.CustomControls"
-    DataContext="GrappBox.ViewModel.TimelineViewModel">
+    DataContext="Grappbox.ViewModel.TimelineViewModel">
 
     <Page.Resources>
         <Style TargetType="ListViewItem" BasedOn="{StaticResource OrangeListview}"/>

@@ -110,6 +110,13 @@
     <Compile Include="Constants\Colors.cs" />
     <Compile Include="Constants\Symbol.cs" />
     <Compile Include="CustomControls\BindableCalendarDatePicker.cs" />
+    <Compile Include="CustomControls\BooleanDataTrigger.cs" />
+    <Compile Include="CustomControls\BrushDialog.xaml.cs">
+      <DependentUpon>BrushDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\ColorDialog.xaml.cs">
+      <DependentUpon>ColorDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\CloudInfos.xaml.cs">
       <DependentUpon>CloudInfos.xaml</DependentUpon>
     </Compile>
@@ -149,11 +156,24 @@
     <Compile Include="CustomControls\TimelineContentDialog.xaml.cs">
       <DependentUpon>TimelineContentDialog.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ToolDialog.xaml.cs">
+      <DependentUpon>ToolDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\UserRoleCB.xaml.cs">
       <DependentUpon>UserRoleCB.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\WhiteboardText.xaml.cs">
+      <DependentUpon>WhiteboardText.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Whiteboard\CustomCanvas.cs" />
+    <Compile Include="CustomControls\Whiteboard\NewWhiteboard.xaml.cs">
+      <DependentUpon>NewWhiteboard.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Whiteboard\WhiteBoardText.xaml.cs">
+      <DependentUpon>WhiteBoardText.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helpers\FormatTimeHelper.cs" />
-    <Compile Include="Helpers\NotificationManager.cs" />
+    <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
     <Compile Include="Helpers\SessionHelper.cs" />
     <Compile Include="Model\Bugtracker\BugtrackerModel.cs" />
@@ -178,24 +198,19 @@
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\UsersModel.cs" />
-    <Compile Include="Model\Stats\BugAssignationTrackerModel.cs" />
-    <Compile Include="Model\Stats\BugsEvolutionModel.cs" />
-    <Compile Include="Model\Stats\BugsTagsRepartitionModel.cs" />
-    <Compile Include="Model\Stats\ProjectAdvancementModel.cs" />
-    <Compile Include="Model\Stats\UsersRepartitionModel.cs" />
-    <Compile Include="Model\Stats\CustomerAccessNumberModel.cs" />
-    <Compile Include="Model\Stats\LateTaskModel.cs" />
-    <Compile Include="Model\Stats\OpenCloseBugModel.cs" />
-    <Compile Include="Model\Stats\ProjectTimeLimitsModel.cs" />
-    <Compile Include="Model\Stats\StatsModel.cs" />
-    <Compile Include="Model\Stats\StorageSizeModel.cs" />
-    <Compile Include="Model\Stats\TaskStatusModel.cs" />
-    <Compile Include="Model\Stats\TimelinesMessageNumberModel.cs" />
-    <Compile Include="Model\Stats\UserTasksAdvancementModel.cs" />
-    <Compile Include="Model\Stats\UserWorkingChargeModel.cs" />
+    <Compile Include="Model\TaskModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
+    <Compile Include="Model\Whiteboard\CustomShapes.cs" />
+    <Compile Include="Model\Whiteboard\ICustomShape.cs" />
+    <Compile Include="Model\Whiteboard\ObjectModel.cs" />
+    <Compile Include="Model\Whiteboard\PullModel.cs" />
+    <Compile Include="Model\Whiteboard\ShapeControler.cs" />
+    <Compile Include="Model\Whiteboard\ShapeModelConverter.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardListModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
+    <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
     <Compile Include="ViewModel\CloudViewModel.cs" />
     <Compile Include="ViewModel\EventViewModel.cs" />
@@ -204,10 +219,12 @@
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
-    <Compile Include="ViewModel\StatsViewModel.cs" />
+    <Compile Include="ViewModel\TaskViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
     <Compile Include="ViewModel\ViewModelBase.cs" />
+    <Compile Include="ViewModel\WhiteBoardListViewModel.cs" />
+    <Compile Include="ViewModel\WhiteBoardViewModel.cs" />
     <Compile Include="View\BugtrackerView.xaml.cs">
       <DependentUpon>BugtrackerView.xaml</DependentUpon>
     </Compile>
@@ -229,6 +246,9 @@
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\GanttView.xaml.cs">
+      <DependentUpon>GanttView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\GenericDahsboard.xaml.cs">
       <DependentUpon>GenericDahsboard.xaml</DependentUpon>
     </Compile>
@@ -241,8 +261,8 @@
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\StatsView.xaml.cs">
-      <DependentUpon>StatsView.xaml</DependentUpon>
+    <Compile Include="View\TasksView.xaml.cs">
+      <DependentUpon>TasksView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TimelineMessageView.xaml.cs">
       <DependentUpon>TimelineMessageView.xaml</DependentUpon>
@@ -252,6 +272,12 @@
     </Compile>
     <Compile Include="View\UserView.xaml.cs">
       <DependentUpon>UserView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardListView.xaml.cs">
+      <DependentUpon>WhiteBoardListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\WhiteBoardView.xaml.cs">
+      <DependentUpon>WhiteBoardView.xaml</DependentUpon>
     </Compile>
     <None Include="Model\Global\DateTimeFormator.cs" />
     <Compile Include="Helpers\HttpRequestManager.cs" />
@@ -305,6 +331,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControls\BrushDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\ColorDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\GenericDashboardItem.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -326,6 +360,22 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControls\TeamDashBoard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\ToolDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\WhiteboardText.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Whiteboard\NewWhiteboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Whiteboard\WhiteBoardText.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -422,6 +472,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="View\GanttView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\GenericDahsboard.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -438,7 +492,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\StatsView.xaml">
+    <Page Include="View\TasksView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -451,6 +505,14 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\UserView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\WhiteBoardListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\WhiteBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

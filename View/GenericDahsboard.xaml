@@ -29,8 +29,11 @@
                 <ListView
                     ItemsSource="{Binding ProjectList}"
                     ItemContainerStyle="{StaticResource GenericDashboardListViewitemStyle}"
-                    SelectionChanged="ListView_SelectionChanged"
-                    HorizontalAlignment="Stretch" IsDoubleTapEnabled="False" IsRightTapEnabled="False">
+                    IsItemClickEnabled="True"
+                    ItemClick="ListView_ItemClick"
+                    HorizontalAlignment="Stretch"
+                    IsDoubleTapEnabled="False"
+                    IsRightTapEnabled="False">
                     <ListView.ItemTemplate>
                         <DataTemplate>
                             <controls:GenericDashboardItem />

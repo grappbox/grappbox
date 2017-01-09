@@ -12,6 +12,7 @@ using Windows.UI;
 using Windows.UI.Xaml.Media;
 using Grappbox.Helpers;
 using Grappbox.CustomControls;
+using Grappbox.HttpRequest;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 

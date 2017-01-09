@@ -1,5 +1,6 @@
 ﻿using Grappbox.CustomControls;
 using Grappbox.Helpers;
+using Grappbox.HttpRequest;
 using Grappbox.Model;
 using Grappbox.ViewModel;
 using System;

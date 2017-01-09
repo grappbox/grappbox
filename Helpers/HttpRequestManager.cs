@@ -1,4 +1,17 @@
-﻿using Grappbox.Helpers;
+﻿// ***********************************************************************
+// Assembly         : Grappbox
+// Author           : pfeytout
+// Created          : 12-03-2016
+//
+// Last Modified By : pfeytout
+// Last Modified On : 12-17-2016
+// ***********************************************************************
+// <copyright file="HttpRequestManager.cs" company="Grappbox"
+//     Copyright ©  2016
+// </copyright>
+// <summary></summary>
+// ***********************************************************************
+using Grappbox.Helpers;
 using Grappbox.Model;
 using Grappbox.ViewModel;
 using Newtonsoft.Json;
@@ -14,19 +27,35 @@ using Windows.Web.Http.Headers;
 namespace Grappbox.HttpRequest
 {
     //This class is a singleton
+    /// <summary>
+    /// Class HttpRequestManager.
+    /// </summary>
     public static class HttpRequestManager
     {
         #region Private members
 
-        private const string baseAdress = "https://api.grappbox.com/";
+        /// <summary>
+        /// The base adress
+        /// </summary>
+        private const string baseAdress = "https://api.Grappbox.com/";
+        /// <summary>
+        /// The version
+        /// </summary>
         private const string version = "0.3/";
 
+        /// <summary>
+        /// The base URL
+        /// </summary>
         private const string baseUrl = baseAdress + version;
 
         #endregion Private members
 
         #region Utils
 
+        /// <summary>
+        /// Initializes the headers.
+        /// </summary>
+        /// <param name="client">The client.</param>
         private static void InitHeaders(HttpClient client)
         {
             client.DefaultRequestHeaders.Accept.Clear();
@@ -36,17 +65,27 @@ namespace Grappbox.HttpRequest
                 client.DefaultRequestHeaders.Authorization = new HttpCredentialsHeaderValue(session.UserToken);
         }
 
+        /// <summary>
+        /// Requests the URI.
+        /// </summary>
+        /// <param name="requestUrl">The request URL.</param>
+        /// <returns>Uri.</returns>
         private static Uri RequestUri(string requestUrl)
         {
             Uri reqUri = new Uri(baseUrl + requestUrl);
             return reqUri;
         }
 
+        /// <summary>
+        /// Gets the error message.
+        /// </summary>
+        /// <param name="jsonTxt">The json text.</param>
+        /// <returns>System.String.</returns>
         public static string GetErrorMessage(string jsonTxt)
         {
             if (jsonTxt == "")
                 return ("No internet connection");
-            string message = "Undeterminate Error";
+            string message = "Indeterminate Error";
             try
             {
                 JObject info = (JObject)JObject.Parse(jsonTxt).GetValue("info");
@@ -65,6 +104,12 @@ namespace Grappbox.HttpRequest
 
         #region Requests
 
+        /// <summary>
+        /// Posts the specified properties.
+        /// </summary>
+        /// <param name="properties">The properties.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
         public static async Task<HttpResponseMessage> Post(Dictionary<string, object> properties, string url)
         {
             JObject post = new JObject();
@@ -98,6 +143,12 @@ namespace Grappbox.HttpRequest
             }
         }
 
+        /// <summary>
+        /// Logins the specified username.
+        /// </summary>
+        /// <param name="username">The username.</param>
+        /// <param name="password">The password.</param>
+        /// <returns>Task&lt;System.Boolean&gt;.</returns>
         public static async Task<bool> Login(string username, string password)
         {
             JObject post = new JObject();
@@ -160,6 +211,12 @@ namespace Grappbox.HttpRequest
             }
         }
 
+        /// <summary>
+        /// Puts the specified properties.
+        /// </summary>
+        /// <param name="properties">The properties.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
         public static async Task<HttpResponseMessage> Put(Dictionary<string, object> properties, string url)
         {
             JObject put = new JObject();
@@ -194,6 +251,12 @@ namespace Grappbox.HttpRequest
             }
         }
 
+        /// <summary>
+        /// Gets the specified values.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
         public static async Task<HttpResponseMessage> Get(object[] values, string url)
         {
             using (var httpClient = new HttpClient())
@@ -225,6 +288,49 @@ namespace Grappbox.HttpRequest
             }
         }
 
+        /// <summary>
+        /// Gets the specified URL, variable parameters number
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="values">The values.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
+        public static async Task<HttpResponseMessage> Get(string url, params object[] values)
+        {
+            using (var httpClient = new HttpClient())
+            {
+                InitHeaders(httpClient);
+                HttpResponseMessage res = null;
+                try
+                {
+                    StringBuilder getParam = new StringBuilder("");
+                    if (values != null)
+                    {
+                        getParam.Append("/");
+                        for (int i = 0; i < values.Length; ++i)
+                        {
+                            getParam.Append(values[i]);
+                            if (i + 1 < values.Length)
+                                getParam.Append("/");
+                        }
+                    }
+                    res = await httpClient.GetAsync(RequestUri(url + getParam));
+                }
+                catch (Exception ex)
+                {
+                    Debug.WriteLine(ex.Message);
+                    res?.Dispose();
+                    return null;
+                }
+                return res;
+            }
+        }
+
+        /// <summary>
+        /// Deletes the specified values.
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <param name="url">The URL.</param>
+        /// <returns>Task&lt;HttpResponseMessage&gt;.</returns>
         public static async Task<HttpResponseMessage> Delete(object[] values, string url)
         {
             using (var httpClient = new HttpClient())
