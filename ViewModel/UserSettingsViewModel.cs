@@ -146,7 +146,7 @@ namespace Grappbox.ViewModel
 
         public DateTime Birthday
         {
-            get { if (model == null || model.Birthday == null) return DateTime.Today; Debug.WriteLine(model.Birthday); DateTime name = DateTime.Parse(model.Birthday); if (name != null) { return name; } else return DateTime.Today; }
+            get { if (model == null || model.Birthday == null) return DateTime.Today; DateTime name = DateTime.Parse(model.Birthday); if (name != null) { return name; } else return DateTime.Today; }
             set
             {
                 if (value != DateTime.Parse(model.Birthday))

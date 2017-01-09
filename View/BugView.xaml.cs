@@ -27,6 +27,7 @@ namespace Grappbox.View
         {
             this.InitializeComponent();
             this.DataContext = vm;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         //Required for navigation
@@ -47,6 +48,8 @@ namespace Grappbox.View
         /// handlers that cannot cancel the navigation request.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived += vm.OnPushNotification;
             //Mobile customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
@@ -78,6 +81,8 @@ namespace Grappbox.View
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived -= vm.OnPushNotification;
             vm.Title = string.Empty;
             vm.Description = string.Empty;
             Title.Text = string.Empty;
@@ -233,6 +238,8 @@ namespace Grappbox.View
 
             if ((sender as Button).DataContext as BugtrackerModel != null)
                 await vm.editComment((sender as Button).DataContext as BugtrackerModel);
+
+            CommentDescription.Text = string.Empty;
 
             dialog.Hide();
         }

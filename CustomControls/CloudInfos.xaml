@@ -1,0 +1,39 @@
+﻿<ContentDialog
+    x:Class="Grappbox.CustomControls.CloudInfos"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.CustomControls"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    x:Name="dialog"
+    Title="Infos">
+
+    <StackPanel Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+        <TextBlock Text="{x:Bind Filename}" TextTrimming="CharacterEllipsis" Foreground="{StaticResource Black3GrappboxBrush}" HorizontalAlignment="Left"/>
+        <Border Margin="0,10" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,0.5"/>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Text="File Size" Foreground="{StaticResource Black1GrappboxBrush}"/>
+            <TextBlock Text="{x:Bind FileSize}" Margin="10,0,0,0" Grid.Column="1" Foreground="{StaticResource Black1GrappboxBrush}"/>
+
+            <TextBlock Text="File Type" Grid.Row="1" Foreground="{StaticResource Black1GrappboxBrush}"/>
+            <TextBlock Text="{x:Bind Mimetype}" Margin="10,0,0,0" Grid.Row="1" Grid.Column="1" Foreground="{StaticResource Black1GrappboxBrush}"/>
+
+            <TextBlock Text="Modification" Grid.Row="2" Foreground="{StaticResource Black1GrappboxBrush}"/>
+            <TextBlock Text="{x:Bind Infos}" Margin="10,0,0,0" Grid.Row="2" Grid.Column="1" Foreground="{StaticResource Black1GrappboxBrush}"/>
+        </Grid>
+        <Border Margin="0,10" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,0.5"/>
+        <Grid HorizontalAlignment="Right">
+            <Button Style="{StaticResource YellowButton}" Content="&#xE5CD;" FontFamily="{StaticResource MaterialIconFontFamily}" FontSize="20" Foreground="{StaticResource White1GrappboxBrush}" Click="CancelInfos_Click" HorizontalAlignment="Center" Margin="10"/>
+        </Grid>
+    </StackPanel>
+</ContentDialog>

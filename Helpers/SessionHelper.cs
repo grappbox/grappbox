@@ -51,6 +51,11 @@ namespace Grappbox.Helpers
         static SessionHelper() { }
         #endregion
 
+        public void ResetSession()
+        {
+            _instance = null;
+        }
+
         UserViewModel User = null;
         ProjectViewModel Project = null;
 

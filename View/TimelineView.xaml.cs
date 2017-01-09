@@ -37,6 +37,7 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
+            this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
         #region NavigationHelper
@@ -60,7 +61,6 @@ namespace Grappbox.View
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));
             dialog.ShowAsync();
 
-            vm.MessageSelected = null;
             result = await vm.getTimelines();
             if (result == false)
             {
@@ -112,7 +112,8 @@ namespace Grappbox.View
 
         private async void TeamListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            vm.MessageSelected = (sender as ListView).SelectedItem as TimelineModel;
+            if ((sender as ListView).SelectedItem as TimelineModel != null)
+                vm.MessageSelected = (sender as ListView).SelectedItem as TimelineModel;
             if (vm.MessageSelected != null)
             {
                 var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("OrangeGrappboxBrush"));

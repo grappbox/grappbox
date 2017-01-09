@@ -25,24 +25,13 @@ namespace Grappbox.View
             this.DataContext = vm;
 
             //Required for navigation
-            this.NavigationCacheMode = NavigationCacheMode.Required;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             dialog.ShowAsync();
-
-            RoleName.Text = "";
-            TTNButton.IsChecked = true;
-            CTNButton.IsChecked = true;
-            GNButton.IsChecked = true;
-            WNButton.IsChecked = true;
-            BNButton.IsChecked = true;
-            ENButton.IsChecked = true;
-            TNButton.IsChecked = true;
-            PSNButton.IsChecked = true;
-            CNButton.IsChecked = true;
             
             if (e.Parameter != null)
             {
@@ -123,6 +112,17 @@ namespace Grappbox.View
             }
             else
             {
+                vm.RoleName = string.Empty;
+                RoleName.Text = string.Empty;
+                TTNButton.IsChecked = true;
+                CTNButton.IsChecked = true;
+                GNButton.IsChecked = true;
+                WNButton.IsChecked = true;
+                BNButton.IsChecked = true;
+                ENButton.IsChecked = true;
+                TNButton.IsChecked = true;
+                PSNButton.IsChecked = true;
+                CNButton.IsChecked = true;
                 Update.Visibility = Visibility.Collapsed;
                 Add.Visibility = Visibility.Visible;
             }

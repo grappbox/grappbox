@@ -28,6 +28,7 @@ namespace Grappbox.View
             this.InitializeComponent();
             view = CoreApplication.GetCurrentView();
             this.DataContext = vm;
+            this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
         //Required for navigation
@@ -60,7 +61,7 @@ namespace Grappbox.View
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
             if (vm.CommentSelected != null)
             {
-                await vm.updateComment(vm.CommentSelected);
+                await vm.updateComment(vm.CommentSelected, vm.MessageSelected.TimelineId);
             }
         }
 

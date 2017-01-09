@@ -20,9 +20,9 @@ namespace Grappbox.ViewModel
         private ObservableCollection<CustomerAccessModel> _customerAccessModel = new ObservableCollection<CustomerAccessModel>();
         private ObservableCollection<ProjectRoleModel> _projectRoleModel = new ObservableCollection<ProjectRoleModel>();
         private ProjectSettingsModel _projectSettingsModel = new ProjectSettingsModel();
-        private ObservableCollection<UserModel> _projectUserModel = new ObservableCollection<UserModel>();
+        private ObservableCollection<UsersModel> _projectUserModel = new ObservableCollection<UsersModel>();
         private RoleUserModel _roleUser = new RoleUserModel();
-        private UserModel _userSelected = new UserModel();
+        private UsersModel _userSelected = new UsersModel();
         private CustomerAccessModel _customerSelected = new CustomerAccessModel();
         private ProjectRoleModel _roleSelected = new ProjectRoleModel();
         private ProjectRoleModel _role = new ProjectRoleModel();
@@ -820,7 +820,7 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Post(props, "project/user");
             if (res.IsSuccessStatusCode)
             {
-                UserModel newUser = SerializationHelper.DeserializeJson<UserModel>(await res.Content.ReadAsStringAsync());
+                UsersModel newUser = SerializationHelper.DeserializeJson<UsersModel>(await res.Content.ReadAsStringAsync());
                 _projectUserModel.Add(newUser);
                 NotifyPropertyChanged("UserList");
             }
@@ -838,7 +838,7 @@ namespace Grappbox.ViewModel
             HttpResponseMessage res = await HttpRequestManager.Get(token, "project/users");
             if (res.IsSuccessStatusCode)
             {
-                _projectUserModel = SerializationHelper.DeserializeArrayJson<ObservableCollection<UserModel>>(await res.Content.ReadAsStringAsync());
+                _projectUserModel = SerializationHelper.DeserializeArrayJson<ObservableCollection<UsersModel>>(await res.Content.ReadAsStringAsync());
                 NotifyPropertyChanged("UserList");
             }
             else
@@ -885,13 +885,13 @@ namespace Grappbox.ViewModel
             }
         }
 
-        public ObservableCollection<UserModel> UserList
+        public ObservableCollection<UsersModel> UserList
         {
             get { return _projectUserModel; }
             set { _projectUserModel = value; NotifyPropertyChanged("UserList"); }
         }
 
-        public UserModel UserSelected
+        public UsersModel UserSelected
         {
             set
             {

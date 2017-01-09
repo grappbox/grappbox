@@ -58,6 +58,7 @@ namespace Grappbox
             }
 #endif
             await NotificationManager.RequestChannel();
+
             StatusBar sb = StatusBar.GetForCurrentView();
             sb.ForegroundColor = Colors.Black;
 

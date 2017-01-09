@@ -40,7 +40,6 @@ namespace Grappbox
             dm.date = dt.ToString("yyyy-MM-dd HH:mm:ss");
             dm.timezone_type = 3;
             dm.timezone = "Europe / Paris";
-            Debug.WriteLine(dm.date);
             return dm;
         }
         public static string GetMonthName(DateTime dt)

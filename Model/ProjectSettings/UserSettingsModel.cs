@@ -77,12 +77,5 @@ namespace Grappbox.Model
         //    string tmp = await BytesToImage.GetStoredImage(logoImgFmt);
         //    Avatar = tmp == null ? BytesToImage.GetDefaultLogo() : BytesToImage.String64ToImage(tmp);
         //}
-
-        static private UserSettingsModel instance = null;
-
-        static public UserSettingsModel GetUser()
-        {
-            return instance;
-        }
     }
 }

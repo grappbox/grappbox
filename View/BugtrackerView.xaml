@@ -16,20 +16,12 @@
             <Setter Property="Margin" Value="0,10,0,0" />
         </Style>
     </Page.Resources>
-    <Page.BottomAppBar>
-        <CommandBar x:Name="CB" ClosedDisplayMode="Compact">
-            <AppBarButton Name="AddBug" Label="Add" Click="AddBug_Click" Icon="Add"/>
-            <AppBarButton Name="EditOpenBug" Label="Edit" Click="EditOpenBug_Click" Icon="Edit"/>
-            <AppBarButton Visibility="Collapsed" Name="CloseBug" Label="Close Bug" Click="CloseBug_Click" Icon="Cancel"/>
-            <AppBarButton Visibility="Collapsed" Name="EditCloseBug" Label="Edit" Click="EditCloseBug_Click" Icon="Edit"/>
-            <AppBarButton Visibility="Collapsed" Name="ReopenBug" Label="Reopen Bug" Click="ReopenBug_Click" Icon="Undo"/>
-        </CommandBar>
-    </Page.BottomAppBar>
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="65" />
+            <RowDefinition Height="48" />
             <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource PurpleGrappboxBrush}" HeaderContent="Bugtracker" />
         <Pivot Grid.Row="1" Margin="0" Name="Pivot" Style="{StaticResource PurplePivot}" SelectionChanged="Pivot_SelectionChanged">
@@ -169,5 +161,12 @@
                 </ListView>
             </PivotItem>
         </Pivot>
+        <CommandBar x:Name="CB" Grid.Row="3" ClosedDisplayMode="Compact">
+            <AppBarButton Name="AddBug" Label="Add" Click="AddBug_Click" Icon="Add"/>
+            <AppBarButton Name="EditOpenBug" Label="Edit" Click="EditOpenBug_Click" Icon="Edit"/>
+            <AppBarButton Visibility="Collapsed" Name="CloseBug" Label="Close Bug" Click="CloseBug_Click" Icon="Cancel"/>
+            <AppBarButton Visibility="Collapsed" Name="EditCloseBug" Label="Edit" Click="EditCloseBug_Click" Icon="Edit"/>
+            <AppBarButton Visibility="Collapsed" Name="ReopenBug" Label="Reopen Bug" Click="ReopenBug_Click" Icon="Undo"/>
+        </CommandBar>
     </Grid>
 </Page>

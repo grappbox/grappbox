@@ -31,9 +31,13 @@ namespace Grappbox.View
             this.DataContext = vm;
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
+
         #region NavigationHelper
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived += vm.OnPushNotification;
+
             //Mobile customization
             if (ApiInformation.IsTypePresent("Windows.UI.ViewManagement.StatusBar"))
             {
@@ -65,6 +69,8 @@ namespace Grappbox.View
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
+            if (vm != null)
+                NotificationManager.NotificationChannel.PushNotificationReceived -= vm.OnPushNotification;
         }
         #endregion
 

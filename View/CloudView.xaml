@@ -1,0 +1,73 @@
+﻿<Page
+    x:Class="Grappbox.View.CloudView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Grappbox.View"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+    xmlns:customControl="using:Grappbox.CustomControls">
+
+    <Page.Resources>
+        <Style TargetType="ListViewItem" BasedOn="{StaticResource YellowListview}"/>
+        <Style TargetType="Pivot" BasedOn="{StaticResource YellowPivot}"/>
+        <Style TargetType="Button" BasedOn="{StaticResource YellowButton}"/>
+        <Style TargetType="TextBox" BasedOn="{StaticResource YellowTexBox}">
+            <Setter Property="Margin" Value="0,10,0,0" />
+        </Style>
+        <DataTemplate x:Key="ListTemplate">
+            <Grid Holding="Grid_Holding" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Tapped="listView_SelectionChanged" Margin="0,10,0,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="30"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Infos" Click="MenuFlyoutItem_InfoClick" IsEnabled="{Binding IsFile}"/>
+                        <MenuFlyoutItem Text="Download" Click="MenuFlyoutItem_DownloadClick" IsEnabled="{Binding IsFile}"/>
+                        <MenuFlyoutItem Text="Delete" Click="MenuFlyoutItem_DeleteClick"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
+                <Border Margin="0" Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,0.5"/>
+                <FontIcon Glyph="{Binding Icon}" Foreground="{StaticResource Grey2GrappboxBrush}" FontFamily="{StaticResource MaterialIconFontFamily}" Width="24" Height="24"/>
+                <TextBlock Grid.Column="1" Text="{Binding Filename}" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="5" />
+            </Grid>
+        </DataTemplate>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="1*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <customControl:PageHeader x:Name="PH" Background="{StaticResource YellowGrappboxBrush}" />
+        <ScrollViewer VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <StackPanel>
+                <Grid Background="{StaticResource Grey2GrappboxBrush}" Height="40">
+                    <TextBlock Text="Secured" Padding="10,0" Foreground="{StaticResource Black2GrappboxBrush}" VerticalAlignment="Center"/>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding ListSecured}"  Width="{Binding Width, ElementName=PageHeader}" ItemTemplate="{StaticResource ListTemplate}"/>
+                <Grid Background="{StaticResource Grey2GrappboxBrush}" Height="40">
+                    <TextBlock Text="Directories" Padding="10,0" Foreground="{StaticResource Black2GrappboxBrush}" VerticalAlignment="Center"/>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding ListDir}"  Width="{Binding Width, ElementName=PageHeader}" ItemTemplate="{StaticResource ListTemplate}"/>
+                <Grid Background="{StaticResource Grey2GrappboxBrush}" Height="40">
+                    <TextBlock Text="Files" Padding="10,0" Foreground="{StaticResource Black2GrappboxBrush}" VerticalAlignment="Center"/>
+                </Grid>
+                <ItemsControl ItemsSource="{Binding ListFile}"  Width="{Binding Width, ElementName=PageHeader}" ItemTemplate="{StaticResource ListTemplate}"/>
+            </StackPanel>
+        </ScrollViewer>
+        <CommandBar x:Name="CB" Grid.Row="3" ClosedDisplayMode="Compact">
+            <AppBarButton Name="PreviousFolder" Label="Previous" Click="PreviousFolder_Click" Icon="Back"/>
+            <AppBarButton Name="Home" Label="Home" Click="Home_Click" Icon="Home"/>
+            <AppBarButton Name="AddFolder" Label="New Folder" Click="AddFolder_Click" Icon="NewFolder"/>
+            <AppBarButton Name="UploadFile" Label="Upload File" Click="UploadFile_Click" Icon="Upload"/>
+        </CommandBar>
+    </Grid>
+</Page>

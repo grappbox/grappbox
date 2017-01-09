@@ -339,7 +339,7 @@ namespace Grappbox.ViewModel
             return true;
         }
 
-        public async System.Threading.Tasks.Task<bool> updateComment(TimelineModel message)
+        public async System.Threading.Tasks.Task<bool> updateComment(TimelineModel message, int timelineId)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
 
@@ -347,7 +347,7 @@ namespace Grappbox.ViewModel
                 return false;
             props.Add("commentId", message.Id);
             props.Add("comment", message.Comment);
-            HttpResponseMessage res = await HttpRequestManager.Put(props, "timeline/comment/" + _messageSelected.TimelineId);
+            HttpResponseMessage res = await HttpRequestManager.Put(props, "timeline/comment/" + timelineId);
             if (res == null)
                 return false;
             string json = await res.Content.ReadAsStringAsync();

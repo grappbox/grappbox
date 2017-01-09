@@ -19,6 +19,12 @@
         <Setter Property="BorderBrush" Value="Transparent" />
     </Style>
 
+    <Style x:Key="YellowButton" TargetType="Button">
+        <Setter Property="Background" Value="{StaticResource YellowGrappbox}" />
+        <Setter Property="Foreground" Value="{StaticResource White1Grappbox}" />
+        <Setter Property="BorderBrush" Value="Transparent" />
+    </Style>
+
     <Style x:Key="LeftMenuButton" TargetType="Button">
         <Setter Property="Background" Value="Transparent" />
         <Setter Property="Foreground" Value="{StaticResource Black1Grappbox}" />

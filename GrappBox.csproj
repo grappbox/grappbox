@@ -93,6 +93,8 @@
   <ItemGroup>
     <!-- A reference to the entire .Net Framework and Windows SDK are automatically included -->
     <Content Include="Assets\desk_office.png" />
+    <Content Include="Assets\file.png" />
+    <Content Include="Assets\folder.png" />
     <Content Include="Assets\MaterialIcons-Regular.otf" />
     <None Include="GrappBox_StoreKey.pfx" />
     <None Include="project.json" />
@@ -114,6 +116,18 @@
     </Compile>
     <Compile Include="CustomControls\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudInfos.xaml.cs">
+      <DependentUpon>CloudInfos.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudPasswordSafe.xaml.cs">
+      <DependentUpon>CloudPasswordSafe.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudPassword.xaml.cs">
+      <DependentUpon>CloudPassword.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CloudFolder.xaml.cs">
+      <DependentUpon>CloudFolder.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\CustomListView.cs" />
     <Compile Include="CustomControls\GenericDashboardItem.xaml.cs">
@@ -166,7 +180,9 @@
     <Compile Include="Model\CalendarModel.cs" />
     <Compile Include="Model\Calendar\Creator.cs" />
     <Compile Include="Model\Calendar\Event.cs" />
+    <Compile Include="Model\Cloud\CloudModel.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
+    <Compile Include="Model\Global\DateModel.cs" />
     <Compile Include="Model\Global\TagModel.cs" />
     <Compile Include="Model\Global\UserModel.cs" />
     <Compile Include="Model\Global\IdNameModel.cs" />
@@ -181,7 +197,22 @@
     <Compile Include="Model\ProjectSettings\ProjectSettingsModel.cs" />
     <Compile Include="Model\ProjectSettings\RoleUserModel.cs" />
     <Compile Include="Model\ProjectSettings\UserSettingsModel.cs" />
-    <Compile Include="Model\TaskModel.cs" />
+    <Compile Include="Model\ProjectSettings\UsersModel.cs" />
+    <Compile Include="Model\Stats\BugAssignationTrackerModel.cs" />
+    <Compile Include="Model\Stats\BugsEvolutionModel.cs" />
+    <Compile Include="Model\Stats\BugsTagsRepartitionModel.cs" />
+    <Compile Include="Model\Stats\ProjectAdvancementModel.cs" />
+    <Compile Include="Model\Stats\UsersRepartitionModel.cs" />
+    <Compile Include="Model\Stats\CustomerAccessNumberModel.cs" />
+    <Compile Include="Model\Stats\LateTaskModel.cs" />
+    <Compile Include="Model\Stats\OpenCloseBugModel.cs" />
+    <Compile Include="Model\Stats\ProjectTimeLimitsModel.cs" />
+    <Compile Include="Model\Stats\StatsModel.cs" />
+    <Compile Include="Model\Stats\StorageSizeModel.cs" />
+    <Compile Include="Model\Stats\TaskStatusModel.cs" />
+    <Compile Include="Model\Stats\TimelinesMessageNumberModel.cs" />
+    <Compile Include="Model\Stats\UserTasksAdvancementModel.cs" />
+    <Compile Include="Model\Stats\UserWorkingChargeModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
@@ -195,12 +226,14 @@
     <Compile Include="Model\Whiteboard\WhiteBoardModel.cs" />
     <Compile Include="Model\Whiteboard\WhiteboardObject.cs" />
     <Compile Include="ViewModel\BugtrackerViewModel.cs" />
+    <Compile Include="ViewModel\CloudViewModel.cs" />
     <Compile Include="ViewModel\EventViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
+    <Compile Include="ViewModel\StatsViewModel.cs" />
     <Compile Include="ViewModel\TaskViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
@@ -222,6 +255,9 @@
     <Compile Include="View\CalendarView.xaml.cs">
       <DependentUpon>CalendarView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="View\CloudView.xaml.cs">
+      <DependentUpon>CloudView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\DashBoardView.xaml.cs">
       <DependentUpon>DashBoardView.xaml</DependentUpon>
     </Compile>
@@ -239,6 +275,9 @@
     </Compile>
     <Compile Include="View\RoleView.xaml.cs">
       <DependentUpon>RoleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StatsView.xaml.cs">
+      <DependentUpon>StatsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\TasksView.xaml.cs">
       <DependentUpon>TasksView.xaml</DependentUpon>
@@ -293,6 +332,22 @@
     <Page Include="AppShell.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudInfos.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudPasswordSafe.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudPassword.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CloudFolder.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\BrushDialog.xaml">
       <SubType>Designer</SubType>
@@ -422,6 +477,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="View\CloudView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="View\DashBoardView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -445,6 +504,10 @@
     <Page Include="View\RoleView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\StatsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\TasksView.xaml">
       <SubType>Designer</SubType>

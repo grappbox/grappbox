@@ -9,7 +9,6 @@ namespace Grappbox.CustomControls
 {
     public sealed partial class BugTagContentDialog : ContentDialog
     {
-        public static readonly DependencyProperty TagModelProperty = DependencyProperty.Register("TagModel", typeof(string), typeof(BugTagContentDialog), null);
         private BugtrackerViewModel vm = BugtrackerViewModel.GetViewModel();
         
         public BugTagContentDialog(TagModel model)
