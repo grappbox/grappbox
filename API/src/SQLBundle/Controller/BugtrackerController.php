@@ -2430,7 +2430,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.24.9", "Bugtracker", "deleteComment"));
 
 		$com = $comment->objectToArray();
-		$com['projectId'] = $com->getBugs()->getProjects()->getId();
+		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
 		$mdata['mtitle'] = "delete comment bug";
 		$mdata['mdesc'] = json_encode($com);

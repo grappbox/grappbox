@@ -856,8 +856,8 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($role === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
-		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() != "Admin")
-			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't add the creator to another role than Admin role");
+		if ($role->getProjects()->getCreatorUser()->getId() == $content->userId && $role->getName() != "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "assignpersontorole", "Bad Parameter: You can't add the creator to another role than Admin role");
 		if ($userToAdd === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
@@ -1046,7 +1046,7 @@ class RoleController extends RolesAndTokenVerificationController
 		$role = $em->getRepository('SQLBundle:Role')->find($content->roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
-		
+
 		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() == "Admin")
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 

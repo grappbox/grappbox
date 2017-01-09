@@ -564,7 +564,7 @@ class StatisticController extends RolesAndTokenVerificationController
 						$result['Done'] += 1;
 					else if ($task->getAdvance() == 0)
 						$result['ToDo'] += 1;
-					else if ($task->getAdvance() > 0 && $task->getAdvance() < 100)
+					else if ($task->getAdvance() > 0 && $task->getAdvance() < 100 && $task->getDueDate() > $date)
 						$result['Doing'] += 1;
 					else if ($task->getAdvance() < 100 && $task->getDueDate() <= $date)
 						$result['Late'] += 1;

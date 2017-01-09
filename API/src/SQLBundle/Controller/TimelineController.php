@@ -446,7 +446,7 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$message = $em->getRepository('SQLBundle:TimelineMessage')->find($messageId);
 		if ($message === null)
-			return $this->setBadRequest("11.6.4", "Timeline", "deletemessage", "Bad Parameter: messageId");			
+			return $this->setBadRequest("11.6.4", "Timeline", "deletemessage", "Bad Parameter: messageId");
 
 		$messageArray = $message->objectToArray();
 		$messageArray['projectId'] = $message->getTimelines()->getProjects()->getId();
