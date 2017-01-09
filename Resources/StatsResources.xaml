@@ -1,0 +1,324 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="using:Grappbox.Resources"
+                    xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting">
+
+    <charting:ResourceDictionaryCollection x:Key="GrappboxPalette">
+        <!-- RedGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource RedGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- BlueGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource BlueGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- PurpleGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource PurpleGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- OrangeGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource OrangeGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- GreenGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource GreenGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- YellowGrappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource YellowGrappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Grey1Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Grey1Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- White1Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource White1Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Black1Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Black1Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Grey2Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Grey2Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- White2Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource White2Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Black2Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Black2Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Grey3Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Grey3Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- White3Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource White3Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+        <!-- Black3Grappbox -->
+        <ResourceDictionary>
+            <SolidColorBrush x:Key="Background"
+                             Color="{StaticResource Black3Grappbox}" />
+            <Style x:Key="DataPointStyle"
+                   TargetType="Control">
+                <Setter Property="Background"
+                        Value="{StaticResource Background}" />
+            </Style>
+            <Style x:Key="DataShapeStyle"
+                   TargetType="Shape">
+                <Setter Property="Stroke"
+                        Value="{StaticResource Background}" />
+                <Setter Property="StrokeThickness"
+                        Value="2" />
+                <Setter Property="StrokeMiterLimit"
+                        Value="1" />
+                <Setter Property="Fill"
+                        Value="{StaticResource Background}" />
+            </Style>
+        </ResourceDictionary>
+    </charting:ResourceDictionaryCollection>
+
+</ResourceDictionary>
