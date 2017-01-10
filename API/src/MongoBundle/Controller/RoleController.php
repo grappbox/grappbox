@@ -54,8 +54,8 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("13.1.3", "Role", "addprojectroles"));
 
-		if ($content->name == "Admin")
-			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin");
+		if ($content->name == "Admin" || $content->name == "Customer")
+			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin or Customer");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
@@ -86,17 +86,17 @@ class RoleController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		//notifs
-		// $mdata['mtitle'] = "new role";
-		// $mdata['mdesc'] = json_encode($role->objectToArray());
-		// $wdata['type'] = "new role";
-		// $wdata['targetId'] = $role->getId();
-		// $wdata['message'] = json_encode($role->objectToArray());
-		// $userNotif = array();
-		// foreach ($role->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "new role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "new role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.13.1", "Role", "addprojectroles", "Complete Success", $role->objectToArray());
 	}
@@ -124,25 +124,25 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
-		if ($role->getName() == "Admin")
-			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin role");
+		if ($role->getName() == "Admin" || $role->getName() == "Customer")
+			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin or Customer role");
 
 		$users = $em->getRepository("MongoBundle:ProjectUserRole")->findBy(array('roleId'=> $id));
 		if ($users != null)
 			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't delete role, there is still users linked to it");
 
 		//notifs
-		// $mdata['mtitle'] = "delete role";
-		// $mdata['mdesc'] = json_encode($role->objectToArray());
-		// $wdata['type'] = "delete role";
-		// $wdata['targetId'] = $role->getId();
-		// $wdata['message'] = json_encode($role->objectToArray());
-		// $userNotif = array();
-		// foreach ($role->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "delete role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "delete role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($role);
 		$em->flush();
@@ -182,6 +182,9 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($role->getName() == "Admin")
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Admin role");
 
+		if ($role->getName() == "Customer" && array_key_exists('name', $content))
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Customer role name");
+
 		$roles = $em->getRepository("MongoBundle:Role")->findBy(array('projects.id'=> $role->getProjects()->getId(), 'name' => $content->name));
 		if ($roles != null) {
 			$isSame = false;
@@ -217,17 +220,17 @@ class RoleController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		//notifs
-		// $mdata['mtitle'] = "update role";
-		// $mdata['mdesc'] = json_encode($role->objectToArray());
-		// $wdata['type'] = "update role";
-		// $wdata['targetId'] = $role->getId();
-		// $wdata['message'] = json_encode($role->objectToArray());
-		// $userNotif = array();
-		// foreach ($role->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "update role";
+		$mdata['mdesc'] = json_encode($role->objectToArray());
+		$wdata['type'] = "update role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode($role->objectToArray());
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putprojectroles", "Complete Success", $role->objectToArray());
 	}
@@ -333,17 +336,17 @@ class RoleController extends RolesAndTokenVerificationController
 			$em->flush();
 
 			//notifs
-			// $mdata['mtitle'] = "assign user role";
-			// $mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
-			// $wdata['type'] = "assign user role";
-			// $wdata['targetId'] = $role->getId();
-			// $wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
-			// $userNotif = array();
-			// foreach ($role->getProjects()->getUsers() as $key => $value) {
-			// 	$userNotif[] = $value->getId();
-			// }
-			// if (count($userNotif) > 0)
-			// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$mdata['mtitle'] = "assign user role";
+			$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
+			$wdata['type'] = "assign user role";
+			$wdata['targetId'] = $role->getId();
+			$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
+			$userNotif = array();
+			foreach ($role->getProjects()->getUsers() as $key => $value) {
+				$userNotif[] = $value->getId();
+			}
+			if (count($userNotif) > 0)
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
 		}
@@ -401,17 +404,17 @@ class RoleController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		//notifs
-		// $mdata['mtitle'] = "update user role";
-		// $mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
-		// $wdata['type'] = "update user role";
-		// $wdata['targetId'] = $role->getId();
-		// $wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
-		// $userNotif = array();
-		// foreach ($role->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "update user role";
+		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
+		$wdata['type'] = "update user role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $content->roleId, "project_id" => $content->projectId));
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putpersonrole", "Complete Success", array("id" => $pur->getId()));
 	}
@@ -486,17 +489,17 @@ class RoleController extends RolesAndTokenVerificationController
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameters");
 
 		//notifs
-		// $mdata['mtitle'] = "delete user role";
-		// $mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
-		// $wdata['type'] = "delete user role";
-		// $wdata['targetId'] = $role->getId();
-		// $wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
-		// $userNotif = array();
-		// foreach ($role->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "delete user role";
+		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
+		$wdata['type'] = "delete user role";
+		$wdata['targetId'] = $role->getId();
+		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
+		$userNotif = array();
+		foreach ($role->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$purId = $pur->getId();
 		$em->remove($pur);

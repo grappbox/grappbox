@@ -442,17 +442,17 @@ class TimelineController extends RolesAndTokenVerificationController
 		$commentArray['projectId'] = $comment->getMessages()->getTimelines()->getProjects()->getId();
 
 		//notifs
-		// $mdata['mtitle'] = "new comment message";
-		// $mdata['mdesc'] = json_encode($commentArray);
-		// $wdata['type'] = "new comment message";
-		// $wdata['targetId'] = $comment->getId();
-		// $wdata['message'] = json_encode($commentArray);
-		// $userNotif = array();
-		// foreach ($timeline->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "new comment message";
+		$mdata['mdesc'] = json_encode($commentArray);
+		$wdata['type'] = "new comment message";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($commentArray);
+		$userNotif = array();
+		foreach ($timeline->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.11.1", "Timeline", "postcomment", "Complete Success", $comment->objectToArray());
 	}

@@ -110,17 +110,17 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				}
 		}
 
-		// $mdata['mtitle'] = "new bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "new bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "new bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "new bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
 		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
@@ -234,16 +234,16 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		}
 
 		// NOTIFICATION
-		// $mdata['mtitle'] = "update bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "update bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		$mdata['mtitle'] = "update bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "update bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		// STATISTICS
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
@@ -281,17 +281,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		// $mdata['mtitle'] = "close bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "close bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		//notifs
+		$mdata['mtitle'] = "close bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "close bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -324,17 +325,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.25.9", "Bugtracker", "deleteTicket"));
 
-		// $mdata['mtitle'] = "delete bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "delete bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		//notifs
+		$mdata['mtitle'] = "delete bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "delete bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($bug);
 		$em->flush();
@@ -378,17 +380,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$class = new NotificationController();
 
-		// $mdata['mtitle'] = "reopen bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "reopen bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "reopen bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "reopen bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -661,17 +664,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
-		// $mdata['mtitle'] = "participants bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "participants bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "participants bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "participants bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
 		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
@@ -759,17 +763,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticket = $comment->objectToArray();
 		$ticket['projectId'] = $parent->getProjects()->getId();
 
-		// $mdata['mtitle'] = "new comment bug";
-		// $mdata['mdesc'] = json_encode($ticket);
-		// $wdata['type'] = "new comment bug";
-		// $wdata['targetId'] = $comment->getId();
-		// $wdata['message'] = json_encode($ticket);
-		// $userNotif = array();
-		// foreach ($parent->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "new comment bug";
+		$mdata['mdesc'] = json_encode($ticket);
+		$wdata['type'] = "new comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($ticket);
+		$userNotif = array();
+		foreach ($parent->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
 	}
@@ -811,17 +816,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$com = $comment->objectToArray();
 		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
-		// $mdata['mtitle'] = "edit comment bug";
-		// $mdata['mdesc'] = json_encode($com);
-		// $wdata['type'] = "edit comment bug";
-		// $wdata['targetId'] = $comment->getId();
-		// $wdata['message'] = json_encode($com);
-		// $userNotif = array();
-		// foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "edit comment bug";
+		$mdata['mdesc'] = json_encode($com);
+		$wdata['type'] = "edit comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($com);
+		$userNotif = array();
+		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $comment->objectToArray());
 	}
@@ -851,17 +857,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$com = $comment->objectToArray();
 		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
-		// $mdata['mtitle'] = "delete comment bug";
-		// $mdata['mdesc'] = json_encode($com);
-		// $wdata['type'] = "delete comment bug";
-		// $wdata['targetId'] = $comment->getId();
-		// $wdata['message'] = json_encode($com);
-		// $userNotif = array();
-		// foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "delete comment bug";
+		$mdata['mdesc'] = json_encode($com);
+		$wdata['type'] = "delete comment bug";
+		$wdata['targetId'] = $comment->getId();
+		$wdata['message'] = json_encode($com);
+		$userNotif = array();
+		foreach ($comment->getBugs()->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($comment);
 		$em->flush();
@@ -918,17 +925,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tagArray = $tag->objectToArray();
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
-		// $mdata['mtitle'] = "new tag bug";
-		// $mdata['mdesc'] = json_encode($tagArray);
-		// $wdata['type'] = "new tag bug";
-		// $wdata['targetId'] = $tag->getId();
-		// $wdata['message'] = json_encode($tagArray);
-		// $userNotif = array();
-		// foreach ($project->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "new tag bug";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "new tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($project->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
@@ -972,17 +980,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tagArray = $tag->objectToArray();
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
-		// $mdata['mtitle'] = "update tag bug";
-		// $mdata['mdesc'] = json_encode($tagArray);
-		// $wdata['type'] = "update tag bug";
-		// $wdata['targetId'] = $tag->getId();
-		// $wdata['message'] = json_encode($tagArray);
-		// $userNotif = array();
-		// foreach ($tag->getProject()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "update tag bug";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "update tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
@@ -1039,17 +1048,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tagArray = $tag->objectToArray();
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
-		// $mdata['mtitle'] = "delete tag bug";
-		// $mdata['mdesc'] = json_encode($tagArray);
-		// $wdata['type'] = "delete tag bug";
-		// $wdata['targetId'] = $tag->getId();
-		// $wdata['message'] = json_encode($tagArray);
-		// $userNotif = array();
-		// foreach ($tag->getProject()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "delete tag bug";
+		$mdata['mdesc'] = json_encode($tagArray);
+		$wdata['type'] = "delete tag bug";
+		$wdata['targetId'] = $tag->getId();
+		$wdata['message'] = json_encode($tagArray);
+		$userNotif = array();
+		foreach ($tag->getProject()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($tag);
 		$em->flush();
@@ -1104,17 +1114,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$bug->addBugtrackerTag($tagToAdd);
 		$em->flush();
 
-		// $mdata['mtitle'] = "assign tag bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "assign tag bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "assign tag bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "assign tag bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
@@ -1161,17 +1172,18 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($isAssign === false)
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
-		// $mdata['mtitle'] = "remove tag bug";
-		// $mdata['mdesc'] = json_encode($bug->objectToArray());
-		// $wdata['type'] = "remove tag bug";
-		// $wdata['targetId'] = $bug->getId();
-		// $wdata['message'] = json_encode($bug->objectToArray());
-		// $userNotif = array();
-		// foreach ($bug->getProjects()->getUsers() as $key => $value) {
-		// 	$userNotif[] = $value->getId();
-		// }
-		// if (count($userNotif) > 0)
-		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// notifs
+		$mdata['mtitle'] = "remove tag bug";
+		$mdata['mdesc'] = json_encode($bug->objectToArray());
+		$wdata['type'] = "remove tag bug";
+		$wdata['targetId'] = $bug->getId();
+		$wdata['message'] = json_encode($bug->objectToArray());
+		$userNotif = array();
+		foreach ($bug->getProjects()->getUsers() as $key => $value) {
+			$userNotif[] = $value->getId();
+		}
+		if (count($userNotif) > 0)
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$bug->removeBugtrackerTag($tagToRemove);
 		$em->flush();
