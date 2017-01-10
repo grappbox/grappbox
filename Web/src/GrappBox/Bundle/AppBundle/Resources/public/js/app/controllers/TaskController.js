@@ -651,7 +651,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
         $scope.data.message = '_valid';
         //memorizeTags();
         notificationFactory.success("Task posted");
-        $location.path("/tasks/" + $scope.projectID + "/" + $scope.taskID);
+        $location.path("/task/" + $scope.projectID + "/" + $scope.taskID);
       },
       function errorCallback(response) {
         notificationFactory.error("Unable to post task. Please try again.");

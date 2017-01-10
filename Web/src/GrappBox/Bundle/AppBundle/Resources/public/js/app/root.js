@@ -42,7 +42,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
       "/settings": "red",
       "/statistics": "red",
       "/talk": "orange",
-      "/tasks": "blue",
+      "/task": "blue",
       "/whiteboard": "green"
     },
     icons: {
@@ -58,7 +58,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
       "/statistics": "timeline",
       "/settings": "settings",
       "/talk": "chat",
-      "/tasks": "assignment_turned_in",
+      "/task": "assignment_turned_in",
       "/whiteboard": "create"
     },
     routes: {
@@ -73,7 +73,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
       "/settings": false,
       "/statistics": false,
       "/talk": false,
-      "/tasks": false,
+      "/task": false,
       "/whiteboard": false
     }
   };
