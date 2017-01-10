@@ -32,7 +32,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p class="ellipsis title">"{[{ ::project.name }]}"</p>
               <p><i class="material-icons {[{ ::path.colors['/bugtracker'] + '-color' }]}">{[{ ::path.icons['/bugtracker'] }]}</i>{[{ ::project.number_messages > 0 ? project.number_bugs : "No" }]} issues</p>
               <p><i class="material-icons {[{ ::path.colors['/talk'] + '-color' }]}">{[{ ::path.icons['/talk'] }]}</i>{[{ ::project.number_messages > 0 ? project.number_messages : "No" }]} messages</p>
-              <p><i class="material-icons {[{ ::path.colors['/tasks'] + '-color' }]}">{[{ ::path.icons['/tasks'] }]}</i>{[{ ::project.number_ongoing_tasks }]}/{[{ ::project.number_finished_tasks }]} finished tasks</p>
+              <p><i class="material-icons {[{ ::path.colors['/task'] + '-color' }]}">{[{ ::path.icons['/task'] }]}</i>{[{ ::project.number_ongoing_tasks }]}/{[{ ::project.number_finished_tasks }]} finished tasks</p>
             </div>
             <div class="clearfix"></div>
             <a href="" title="Load project '{[{ ::project.name }]}'" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="projects.load(project)">Open</a>

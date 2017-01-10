@@ -75,7 +75,7 @@ app.controller("TaskListController", ["$http", "$filter", "$location", "notifica
 
   // Open task detail page
   $scope.openTask = function(project, task){
-    $location.path("/tasks/" + project + "/" + task);
+    $location.path("/task/" + project + "/" + task);
   };
 
   /*-------------------------TAB FILTERS AND SWITCH ----------------------*/

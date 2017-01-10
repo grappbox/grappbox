@@ -239,8 +239,8 @@
               <i class="material-icons" aria-hidden="true">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</a>
           </li>
           <li data-ng-if="project.set">
-            <a data-ng-href="{[{ 'tasks/' + project.id }]}" title="Go to the tasks section" class="btn {[{ path.routes['/tasks'] ? 'active' : '' }]}">
-              <i class="material-icons" aria-hidden="true">{[{ path.icons['/tasks'] }]}</i>Tasks</a>
+            <a data-ng-href="{[{ 'task/' + project.id }]}" title="Go to the tasks section" class="btn {[{ path.routes['/task'] ? 'active' : '' }]}">
+              <i class="material-icons" aria-hidden="true">{[{ path.icons['/task'] }]}</i>Tasks</a>
           </li>
           <li data-ng-if="project.set">
             <a data-ng-href="{[{ 'gantt/' + project.id }]}" title="Go to the gantt section" class="btn {[{ path.routes['/gantt'] ? 'active' : '' }]}">

@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP bugtracker
-app.controller("BugtrackerController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "talkFactory",
-    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, talkFactory) {
+app.controller("BugtrackerController", ["$http", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal", "talkFactory",
+    function($http, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal, talkFactory) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
@@ -16,7 +16,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   // TODO: check edition right
 
   //Scope variables initialization
-  $scope.projectID = $routeParams.project_id;
+  $scope.projectId = $routeParams.project_id;
   $scope.ticketID = $routeParams.id;
   $scope.userId = $rootScope.user.id;
 
@@ -81,32 +81,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     getComments();
   }
 
-  // Get all tags from the project
-  var getProjectTags = function() {
-    $http.get($rootScope.api.url + '/bugtracker/project/tags/' + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-        $scope.tagsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
-      },
-      function errorCallback(response) {
-        $scope.tagsList = [];
-      });
-  };
-  getProjectTags();
-
-  // Get all users from the project
-  var getProjectUsers = function() {
-    $http.get($rootScope.api.url + '/project/users/' + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
-      .then(function successCallback(response) {
-        $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
-        angular.forEach($scope.usersList, function(user){
-          user['name'] = user.firstname + " " + user.lastname;
-        });
-      },
-      function errorCallback(response) {
-        $scope.usersList = [];
-      });
-  };
-  getProjectUsers();
 
   // ------------------------------------------------------//
   //                    DISPLAY HELP                       //
@@ -185,41 +159,47 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
       $scope.data.tagToRemove.push(tag);
   };
 
-  // var memorizeTags = function() {
-  //   var context = {"rootScope": $rootScope, "http": $http, "notificationFactory": notificationFactory, "scope": $scope};
-  //
-  //   angular.forEach($scope.data.tagToAdd, function(tag) {
-  //     if (!tag.id) {
-  //       var data = {"data": {"token": context.rootScope.user.token, "projectId": context.scope.projectID, "name": tag.name}};
-  //       context.http.post(context.rootScope.api.url + "/bugtracker/tagcreation", data)
-  //         .then(function successCallback(response) {
-  //             tag.id = (response.data.data.id);
-  //
-  //             var data = {"data": {"token": context.rootScope.user.token, "bugId": context.scope.ticketID, "tagId": tag.id}};
-  //             context.http.put(context.rootScope.api.url + "/bugtracker/assigntag", data)
-  //               .then(function successCallback(response) {
-  //
-  //               },
-  //               function errorCallback(resposne) {
-  //                   notificationFactory.warning("Unable to assign tag: " + tag.name + ". Please try again.");
-  //               });
-  //         },
-  //         function errorCallback(resposne) {
-  //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-  //         });
-  //     }
-  //   }, context);
-  //
-  //   angular.forEach($scope.data.tagToRemove, function(tag) {
-  //     context.http.delete(context.rootScope.api.url + "/bugtracker/removetag/" + context.rootScope.user.token + "/" + context.scope.ticketID + "/" + tag.id)
-  //       .then(function successCallback(response) {
-  //
-  //       },
-  //       function errorCallback(resposne) {
-  //           notificationFactory.warning("Unable to remove tag: " + tag.name + ". Please try again.");
-  //       });
-  //   }, context);
-  // };
+  // Get all users from the project
+  var getProjectTags = function() {
+    $http.get($rootScope.api.url + '/bugtracker/project/tags/' + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
+      .then(function successCallback(response) {
+        console.log('response.data', response.data.data);
+        $scope.tagsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
+        console.log("tagslist", $scope.tagsList.length);
+      },
+      function errorCallback(response) {
+        $scope.tagsList = [];
+      });
+  };
+  getProjectTags();
+
+  //----------------TAGS CREATION----------------------//
+
+  $scope.newTag = "";
+  // "Create Tag" button handler
+  $scope.onNewTag = function() {
+
+    var modal_createNewBugTag = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewBugTag.html", controller: "modal_createNewBugTag" });
+    modal_createNewBugTag.result.then(
+      function onModalConfirm() {
+
+        var random_color = Math.floor(Math.random()*16777215).toString(16);
+        var data = {"data": {"projectId": $scope.projectId, "name": $scope.newTag, "color": random_color }};
+
+        $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+            .then(function successCallback(response) {
+              notificationFactory.success("Tag created succesfuly.");
+              $scope.tagsList.push(response.data.data);
+            },
+            function errorCallback(response) {
+              notificationFactory.warning("Unable to create tag: " + data.name + ". Please try again.");
+            })
+
+        ,function onModalDismiss() { }
+      }
+    );
+  };
+
 
   //----------------USERS ASSIGNATION----------------------//
   $scope.data.userToAdd = [];
@@ -249,34 +229,28 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
       $scope.data.userToRemove.push(user.id);
   };
 
-  // var memorizeUsers = function() {
-  //   var toAdd = [];
-  //   angular.forEach($scope.data.userToAdd, function(user) {
-  //     toAdd.push(user.user_id);
-  //   }, toAdd);
-  //   var toRemove = [];
-  //   angular.forEach($scope.data.userToRemove, function(user) {
-  //     toRemove.push(user.id);
-  //   }, toRemove);
-  //
-  //   var data = {"data": {"token": $rootScope.user.token, "bugId": $scope.ticketID, "toAdd": toAdd, "toRemove": toRemove}};
-  //
-  //   $http.put($rootScope.api.url + "/bugtracker/setparticipants", data)
-  //     .then(function successCallback(response) {
-  //         notificationFactory.success("Users saved");
-  //     },
-  //     function errorCallback(resposne) {
-  //         notificationFactory.warning("Unable to save users. Please try again.");
-  //     });
-  //
-  // };
+  // Get all users from the project
+  var getProjectUsers = function() {
+    $http.get($rootScope.api.url + '/project/users/' + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
+      .then(function successCallback(response) {
+        $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
+        angular.forEach($scope.usersList, function(user){
+          user['name'] = user.firstname + " " + user.lastname;
+        });
+      },
+      function errorCallback(response) {
+        $scope.usersList = [];
+      });
+  };
+  getProjectUsers();
+
 
   // ------------------------------------------------------
   //                    TICKET
   // ------------------------------------------------------
 
   $scope.createTicket = function(ticket) {
-      var elem = {"projectId": $scope.projectID,
+      var elem = {"projectId": $scope.projectId,
                   "title": ticket.title,
                   "description": ticket.description ? ticket.description : "",
                   "clientOrigin": false,
@@ -284,25 +258,28 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
                   "users": $scope.data.userToAdd.length ? $scope.data.userToAdd : []
                   };
 
-      if ($scope.data.tagToAdd) {
-        var newTags = [];
-        angular.forEach($scope.data.tagToAdd, function(value, key) {
-          if (!value.id) {
-            var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
-            $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-              .then(function successCallback(response) {
-                  //tag.id = (response.data.data.id);
-                  this.push(response.data.data.id);
-              },
-              function errorCallback(response) {
-                  notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-              });
-          } else {
-            this.push(value.id);
-          }
-        }, newTags);
-        if (newTags.length)
-          elem.tags = newTags;
+      // if ($scope.data.tagToAdd) {
+      //   var newTags = [];
+      //   for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
+      //     if (!$scope.data.tagToAdd[i].id) {
+      //       var random_color = Math.floor(Math.random()*16777215).toString(16);
+      //       var data = {"data": {"projectId": $scope.projectId, "name": $scope.data.tagToAdd[i].name, "color": random_color }};
+      //       $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+      //         .then(function successCallback(response) {
+      //             newTags.push(response.data.data.id);
+      //         },
+      //         function errorCallback(response) {
+      //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
+      //         });
+      //     } else {
+      //       newTags.push($scope.data.tagToAdd[i].id);
+      //     }
+      //   }
+      //   elem.tags = newTags;
+      // }
+
+      for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
+        elem.tags.push($scope.data.tagToAdd[i].id)
       }
 
       var data = {"data": elem};
@@ -312,7 +289,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
           $scope.data.ticket = (response.data && response.data.data && Object.keys(response.data.data).length ? response.data.data : null);
           $scope.ticketID = $scope.data.ticket.id;
           notificationFactory.success('Issue posted');
-          $location.path('/turlututu/' + $scope.projectID + '/' + $scope.ticketID);
+          $location.path('/bugtracker/' + $scope.projectId + '/' + $scope.ticketID);
         },
         function errorCallback(response) {
           notificationFactory.error('Unable to post issue. Please try again.');
@@ -329,47 +306,31 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
                 "removeUsers": $scope.data.userToRemove.length ? $scope.data.userToRemove : []
               };
 
-    if ($scope.data.tagToAdd) {
-      var newTags = [];
-      var requests = [];
-
-      angular.forEach($scope.data.tagToAdd, function(value, key) {
-        if (!value.id) {
-          var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
-          this.push($http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }}));
-
-          // $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-          //   .then(function successCallback(response) {
-          //       newTags.push(response.data.data.id);
-          //   },
-          //   function errorCallback(response) {
-          //       notificationFactory.warning({ message: "Unable to create tag: " + tag.name + ". Please try again.".);
-          //   });
-        } else {
-          newTags.push(value.id);
-        }
-      }, requests);
-
-      var results = $q.all(requests).then(function(values) {
-        return values;
-      });
-
-      angular.forEach(results, function(item) {
-        console.log("item");
-        console.log(item);
-
-        //this.push(item.value[0].data.data.id);
-      }, newTags);
-
-      if (newTags.length) {
-        elem.addTags = newTags;
-      }
+    // if ($scope.data.tagToAdd) {
+    //   var newTags = [];
+    //   for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
+    //     if (!$scope.data.tagToAdd[i].id) {
+    //       var random_color = Math.floor(Math.random()*16777215).toString(16);
+    //       var data = {"data": {"projectId": $scope.projectId, "name": $scope.data.tagToAdd[i].name, "color": random_color }};
+    //
+    //       $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+    //         .then(function successCallback(response) {
+    //             newTags.push(response.data.data.id);
+    //         },
+    //         function errorCallback(response) {
+    //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
+    //         });
+    //     } else {
+    //       newTags.push($scope.data.tagToAdd[i].id);
+    //     }
+    //   }
+    //   elem.addTags = newTags;
+    // }
+    for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
+      elem.addTags.push($scope.data.tagToAdd[i].id)
     }
-    var data = {"data": elem};
 
-    console.log("data");
-    console.log(data);
-    return;
+    var data = {"data": elem};
 
     $http.put($rootScope.api.url + '/bugtracker/ticket/' + $scope.ticketID, data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
@@ -462,4 +423,31 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
       });
   };
 
+}]);
+
+
+// ------------------------------------------------------
+//                    MODALS
+// ------------------------------------------------------
+
+/**
+* Controller definition (from view)
+* BUGTAG CREATION => new message form.
+*
+*/
+app.controller("modal_createNewBugTag", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.error = { name: false };
+
+  $scope.modal_confirmTagCreation = function() {
+    $scope.error.name = ($scope.newTag && $scope.newTag.length > 0 ? false : true);
+
+    var hasErrors = false;
+    angular.forEach($scope.error, function(value, key) {
+      if (value)
+        hasErrors = true;
+    });
+    if (!hasErrors)
+      $uibModalInstance.close();
+  };
+  $scope.modal_cancelTagCreation = function() { $uibModalInstance.dismiss(); };
 }]);

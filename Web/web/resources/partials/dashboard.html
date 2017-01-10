@@ -33,11 +33,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <div class="preview">
                 <p class="ellipsis title">{[{ ::member.user.firstname }]} {[{ ::member.user.lastname }]}</p>
                 <p><i class="material-icons">info</i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}</p>
-                <p><i class="material-icons {[{ ::path.colors['/tasks'] + '-color' }]}">{[{ ::path.icons['/tasks'] }]}</i>{[{ ::member.number_of_tasks_begun }]} started tasks<br><span>{[{ ::member.number_of_ongoing_tasks }]} remaining</span></p>
+                <p><i class="material-icons {[{ ::path.colors['/task'] + '-color' }]}">{[{ ::path.icons['/task'] }]}</i>{[{ ::member.number_of_tasks_begun }]} started tasks<br><span>{[{ ::member.number_of_ongoing_tasks }]} remaining</span></p>
               </div>
               <div class="clearfix"></div>
-              <a data-ng-if="member.occupation == 'free'" href="tasks/{[{ ::project.id }]}" title="Assign a new task to {[{ ::member.user.firstname }]}" class="btn {[{ ::path.colors['/tasks'] + '-color' }]} {[{ ::path.colors['/tasks'] + '-background-hover' }]}">Assign</a>
-              <a data-ng-if="member.occupation != 'free'" href="" title="Assign a new task to {[{ ::member.user.firstname }]}" class="btn {[{ ::path.colors['/tasks'] + '-color' }]} {[{ ::path.colors['/tasks'] + '-background-hover' }]}" disabled>Assign</a>
+              <a data-ng-if="member.occupation == 'free'" href="task/{[{ ::project.id }]}" title="Assign a new task to {[{ ::member.user.firstname }]}" class="btn {[{ ::path.colors['/task'] + '-color' }]} {[{ ::path.colors['/task'] + '-background-hover' }]}">Assign</a>
+              <a data-ng-if="member.occupation != 'free'" href="" title="Assign a new task to {[{ ::member.user.firstname }]}" class="btn {[{ ::path.colors['/task'] + '-color' }]} {[{ ::path.colors['/task'] + '-background-hover' }]}" disabled>Assign</a>
               <div class="clearfix"></div>
             </div>
           </div>

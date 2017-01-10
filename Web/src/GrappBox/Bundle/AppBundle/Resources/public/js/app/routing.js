@@ -112,15 +112,15 @@ app.config(["$locationProvider", "$routeProvider", function($locationProvider, $
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
   })
   // Task pages	
-  .when("/tasks/:project_id", {
+  .when("/task/:project_id", {
 		title: "Tasks",
     controller  : "TaskListController",
 		templateUrl : "../resources/partials/task-list.html",
 		caseInsensitiveMatch : true,
     resolve: { projectAvailability: ["accessFactory", function(accessFactory) { return accessFactory.projectAvailable(); }]}
 	})
-  .when("/tasks/:project_id/:id", {
-		title: "Tasks",
+  .when("/task/:project_id/:id", {
+		title: "Task",
     controller  : "TaskController",
 		templateUrl : "../resources/partials/task.html",
 		caseInsensitiveMatch : true,

@@ -2,572 +2,495 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- Task -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
-
-
-<div>
-  <p><a href="tasks/{[{ projectID }]}" class="btn btn-default"><i class="material-icons">keyboard_arrow_left</i>Back</a></p>
-</div>
-
-<!-- grappbox.data: task creation information -->
-<div data-ng-if="data.task_new">
-  <h1>Task creation</h1>
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <p>
-        This page allows you to create a brand new task.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
-      </p>
+<!-- Task creation -->
+<section class="task-creation" data-ng-if="data.task_new">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/task.svg" width="300" height="auto" alt="Tasks">
     </div>
-  </div>
-</div>
-
-<!-- grappbox.data: task edition information -->
-<div data-ng-if="!data.ask_new && data.editMode['task']">
-  <h1>Task edition</h1>
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <p>
-        This page allows you to edit any part of the task.<br>Validate changes by using the <strong>"Update"</strong> button at the end of the page.
-      </p>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Task creation</h1>
+      <p>This page allows you to create and assign a new task.<br>Use the "Create" button at the end of this page when you're done.</p>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
     </div>
+    <div class="clearfix"></div>
   </div>
-</div>
 
-<!-- grappbox.data: task visual information -->
-<!-- <div class="panel panel-default" data-ng-if="!data.task_new && !data.editMode['task']">
-  <div class="panel-body">
-    <p>
-      This page shows you all informations about a task.<br>Switch to edition mode by using the <strong>"Edit"</strong> button at the end of the page.
-    </p>
-  </div>
-</div> -->
-
-<!-- grappbox.data: task creation -->
-<section id="task-creation" data-ng-if="data.task_new">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
+  <div class="box-row">
+    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
         <div data-ng-if="data.onLoad">
           <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
           </div>
         </div>
         <div data-ng-if="!data.onLoad">
-          <form class="form-horizontal" novalidate>
-            <fieldset>
-              <div class="form-group">
-                <label for="title" class="col-md-1 control-label">Title</label>
-                <div class="col-md-11">
-                  <input type="text" class="form-control" data-ng-model="data.task.title" id="title" placeholder="Title">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <form>
+              <fieldset>
+                <h3>General</h3>              
+                <div class="form-group label-floating">
+                  <label for="title" class="control-label">Title</label>
+                  <input type="text" class="form-control" data-ng-model="data.task.title" id="title">
                 </div>
-              </div>
-
-              <div class="form-group">
-                <label for="description" class="col-md-1 control-label">Description</label>
-                <div class="col-md-11">
-                  <textarea class="form-control" rows="3" data-ng-model="data.task.description" id="description" placeholder="Description"></textarea>
+                <div class="form-group label-floating">
+                  <label for="description" class="control-label">Description</label>
+                  <textarea class="form-control" rows="4" data-ng-model="data.task.description" id="description"></textarea>
                 </div>
-              </div>
-
-              <!-- OBJECT TYPE SELECTION -->
-              <div class="form-group">
-                <label class="col-md-1 control-label">Object type</label>
-                <div class="col-md-11">
+   
+                <!-- OBJECT TYPE SELECTION -->
+                <div class="form-group label-floating">
+                  <label class="control-label">Object type</label>
                   <select class="form-control" data-ng-model="data.task.type">
                     <option value="regular">Regular</option>
                     <option value="milestone">Milestone</option>
                     <option value="container">Container</option>
                   </select>
                 </div>
-              </div>
 
-              <!-- TASK CREATION -->
-              <div class="form-group" data-ng-if="data.task.type == 'regular'">
-                <label for="start_date" class="col-md-1 control-label">Starting Date</label>
-                <div class="col-md-11">
-                  <input type="date" class="form-control" data-ng-model="data.task.started_at" id="start_date">
-                </div>
-              </div>
-
-              <div class="form-group" data-ng-if="data.task.type == 'regular'">
-                <label for="due_date" class="col-md-1 control-label">Due Date</label>
-                <div class="col-md-11">
-                  <input type="date" class="form-control" data-ng-model="data.task.due_date" id="due_date">
-                </div>
-              </div>
-
-              <div class="form-group" data-ng-if="data.task.type == 'regular'">
-                <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="tags"
-                              display-property="name"
-                              replace-spaces-with-dashes="false"
-                              on-tag-added="tagAdded($tag)"
-                              on-tag-removed="tagRemoved($tag)">
-                    <auto-complete source="tagsList"></auto-complete>
-                  </tags-input>
-                  <span class="help-block">Use ',' to separate tags</span>
-                </div>
-
-              </div>
-
-              <h3 data-ng-if="data.task.type == 'regular'">Resource(s)</h3>
-              <div class="form-group" data-ng-if="data.task.type == 'regular'">
-                <label for="users" class="col-md-1 control-label">Add a user</label>
-                <div class="col-md-4">
-                  <select class="form-control" id="users" name="users" data-ng-model="user" data-ng-options="user as user.name for user in usersList">
-                    <option value="" disabled selected>Select a user</option>
-                    <!-- <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option> -->
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <select class="form-control" data-ng-model="user_percent" id="workcharge" convert-to-number data-ng-options="n as (n + '%') for n in [] | range:11">
-                    <option value="" disabled selected>Select user's work charge</option>
-                    <!-- <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option> -->
-                  </select>
-                </div>
-                <div class="col-md-1">
-                  <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addResource(user, user_percent)"><i class="material-icons">add</i></a>
-                </div>
-              </div>
-              <div class="form-group" data-ng-if="data.task.type == 'regular'" data-ng-repeat="user in data.task.users">
-                <div class="col-md-4 col-md-offset-1">
-                  <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
-                </div>
-                <div class="col-md-4">
-                  <select class="form-control" data-ng-model="user.percent" convert-to-number>
-                    <option value="" disabled selected>Select user's work charge</option>
-                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                  </select>
-                </div>
-                <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)"><i class="material-icons">delete</i></a>
-                </div>
-              </div>
-
-              <!-- CONTAINER CREATION -->
-              <div class="form-group {[{tasksList.length ? '' : 'has-warning'}]}" data-ng-if="data.task.type == 'container'">
-                <label for="tags" class="col-md-1 control-label">Task(s)</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="tasks"
-                              display-property="name"
-                              placeholder="Add a task"
-                              replace-spaces-with-dashes="false"
-                              add-from-autocomplete-only="true"
-                              on-tag-added="taskAdded($tag)"
-                              on-tag-removed="taskRemoved($tag)"
-                              >
-                    <auto-complete source="tasksList"></auto-complete>
-                  </tags-input>
-                  <p ng-if="!tasksList.length" class="help-block">No task in the project for the moment</p>
-                </div>
-              </div>
-
-              <!-- MILESTONE CREATION-->
-              <div class="form-group" data-ng-if="data.task.type == 'milestone'">
-                <label for="milestone_date" class="col-md-1 control-label">Date</label>
-                <div class="col-md-11">
-                  <input type="date" class="form-control" data-ng-model="data.task.due_date" id="milestone_date">
-                </div>
-              </div>
-
-              <!-- NOT CONTAINER CREATION -->
-              <h3 data-ng-if="data.task.type != 'container'">Dependencies</h3>
-              <div class="form-group" data-ng-if="data.task.type != 'container'">
-                <label for="tasks" class="col-md-1 control-label">Add a dependency</label>
-                <div class="col-md-4">
-                  <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
-                    <option value="" disabled selected>Select a task</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
-                    <option value="" disabled selected>Select a type of dependency</option>
-                  </select>
-                </div>
-                <div class="col-md-1">
-                  <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
-                </div>
-              </div>
-              <div class="form-group" data-ng-if="data.task.type != 'container'" data-ng-repeat="dependency in data.task.dependencies">
-                <div class="col-md-4 col-md-offset-1">
-                  <h4>{[{ dependency.title }]}</h4>
-                </div>
-                <div class="col-md-4">
-                  <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
-                    <option value="" disabled selected>Select a type of dependencies</option>
-                  </select>
-                </div>
-                <div class="col-md-1 col-xs-6">
-                  <a href="" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeDependency(dependency)"><i class="material-icons">delete</i></a>
-                </div>
-              </div>
-
-              <!-- VALIDATE BUTTON -->
-              <div class="form-group">
-                <div class="col-md-1 col-md-offset-10 col-xs-6">
-                  <button type="submit" class="btn btn-default" data-ng-click="createTask(data.task)">CREATE</button>
-                </div>
-              </div>
-            </fieldset>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- grappbox.data: task edition -->
-<section id="task-edition" data-ng-if="!data.task_new && data.editMode['task']">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
-        <div data-ng-if="data.onLoad">
-          <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-          </div>
-        </div>
-        <div data-ng-if="!data.onLoad">
-          <div data-ng-if="data.message == '_valid'">
-            <form class="form-horizontal" novalidate>
-              <fieldset>
-                <div class="form-group">
-                  <label for="title" class="col-md-1 control-label">Title</label>
-                  <div class="col-md-11">
-                    <input type="text" class="form-control" data-ng-model="data.edit.title" id="title" placeholder="Title">
+                <!-- TASK CREATION -->
+                <div data-ng-if="data.task.type == 'regular'">
+                  <div class="form-group">
+                    <label for="start_date" class="control-label">Starting date</label>
+                    <input type="date" class="form-control" data-ng-model="data.task.started_at" id="start_date">
                   </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="description" class="col-md-1 control-label">Description</label>
-                  <div class="col-md-11">
-                    <textarea class="form-control" rows="3" data-ng-model="data.edit.description" id="description" placeholder="Description"></textarea>
+                  <div class="form-group">
+                    <label for="due_date" class="control-label">Due date</label>
+                    <input type="date" class="form-control" data-ng-model="data.task.due_date" id="due_date">
                   </div>
-                </div>
-
-                <!-- OBJECT TYPE SELECTION -->
-                <div class="form-group">
-                  <label class="col-md-1 control-label">Object type</label>
-                  <div class="col-md-11">
-                    <select class="form-control" data-ng-model="data.edit.type" disabled="true">
-                      <option value="regular">Regular</option>
-                      <option value="milestone">Milestone</option>
-                      <option value="Container">Container</option>
-                    </select>
-                  </div>
-                </div>
-
-                <!-- TASK EDITION -->
-                <div class="form-group" data-ng-if="data.edit.type == 'regular'">
-                  <label for="start_date" class="col-md-1 control-label">Starting Date</label>
-                  <div class="col-md-11">
-                    <input type="date" class="form-control" data-ng-model="data.edit.started_at" id="start_date">
-                  </div>
-                </div>
-
-                <div class="form-group" data-ng-if="data.edit.type == 'regular'">
-                  <label for="due_date" class="col-md-1 control-label">Due Date</label>
-                  <div class="col-md-11">
-                    <input type="date" class="form-control" data-ng-model="data.edit.due_date" id="due_date">
-                  </div>
-                </div>
-
-                <div class="form-group" data-ng-if="data.edit.type == 'regular'">
-                  <label for="progress" class="col-md-1 control-label">Progress</label>
-                  <div class="col-md-11">
-                    <select id="progress" class="form-control" data-ng-model="data.edit.advance" convert-to-number>
-                      <option value="">None</option>
-                      <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div class="form-group" data-ng-if="data.edit.type == 'regular'">
-                  <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="data.task.tags"
-                                display-property="name"
-                                replace-spaces-with-dashes="false"
-                                on-tag-added="tagAdded($tag)"
-                                on-tag-removed="tagRemoved($tag)">
+                  <div class="form-group label-floating">
+                    <label for="tags" class="control-label">Tag(s)</label>
+                    <tags-input data-ng-model="tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)">
                       <auto-complete source="tagsList"></auto-complete>
                     </tags-input>
+                    <span class="help-block">Use ',' to separate tags</span>
                   </div>
-                  <span class="help-block">Use ',' to separate tags</span>
+                  <h3>Resource(s)</h3>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="form-group label-floating col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                      <select class="form-control" id="users" name="users" data-ng-model="user" data-ng-options="user as user.name for user in usersList">
+                        <option value="" disabled selected>Select a user</option>
+                      </select>
+                    </div>
+                    <div class="form-group label-floating col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                      <select class="form-control" data-ng-model="user_percent" id="workcharge" convert-to-number data-ng-options="n as (n + '%') for n in [] | range:11">
+                        <option value="" disabled selected>Select user's work charge</option>
+                      </select>
+                    </div>
+                    <div class="form-group label-floating col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addResource(user, user_percent)"><i class="material-icons" aria-hidden="true">add</i></a>
+                    </div>
+                  </div>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="form-group label-floating no-margin" data-ng-repeat="user in data.task.users">
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <p>{[{ user.firstname + " " + user.lastname }]}</p>
+                      </div>
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <select class="form-control" data-ng-model="user.percent" convert-to-number>
+                          <option value="" disabled selected>Select user's work charge</option>
+                          <option data-ng-repeat="n in [] | range:11" value="{[{ $index*10 }]}">{[{ $index*10 + ' %' }]}</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                        <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeResource(user)"><i class="material-icons" aria-hidden="true">delete</i></a>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
                 </div>
 
-                <h3 data-ng-if="data.edit.type == 'regular'">Resource(s)</h3>
-                <div class="form-group" data-ng-if="data.edit.type == 'regular'">
-                  <label for="users" class="col-md-1 control-label">Add a user</label>
-                  <div class="col-md-4">
-                    <select class="form-control" name="users" data-ng-model="new_user" data-ng-options="user as user.name for user in usersList">
-                      <option value="" disabled selected>Select a user</option>
-                      <!-- <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option> -->
-                    </select>
-                  </div>
-                  <div class="col-md-4">
-                    <select class="form-control" data-ng-model="user_percent">
-                      <option value="" disabled selected>Select user's work charge</option>
-                      <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                    </select>
-                  </div>
-                  <div class="col-md-1">
-                    <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons">add</i></a>
-                  </div>
-                </div>
-                <div class="form-group resource-row" data-ng-if="data.edit.type == 'regular'" data-ng-repeat="user in data.task.users" id="{[{'resource-'+$index}]}">
-                  <div class="col-md-4 col-md-offset-1">
-                    <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
-                  </div>
-                  <div class="col-md-4" id="{[{'select-resource-'+$index}]}">
-                    <select class="form-control" data-ng-model="user.percent" convert-to-number ng-disabled="user.old" data-ng-change="updateResource(user)">
-                      <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                    </select>
-                  </div>
-                  <div class="col-md-1 col-xs-6">
-                    <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></button>
-                    <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></button>
-                  </div>
-                  <!-- <div class="col-md-1 col-xs-6" data-ng-switch="user.old">
-                    <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet"
-                            data-ng-click="removeResource(user)" ng-switch-when="false"><i class="material-icons">delete</i></button>
-                    <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet"
-                            data-ng-click="recoverResource(user)" ng-switch-when="true" alt="recover"><i class="material-icons">refresh</i></button>
-                  </div> -->
-                </div>
-
-                <!-- CONTAINER EDITION -->
-                <div class="form-group" data-ng-if="data.edit.type == 'container'">
-                  <label for="tags" class="col-md-1 control-label">Task(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="data.task.tasks"
-                                display-property="name"
-                                placeholder="Add a task"
-                                replace-spaces-with-dashes="false"
-                                add-from-autocomplete-only="true"
-                                on-tag-added="taskAdded($tag)"
-                                on-tag-removed="taskRemoved($tag)">
+                <!-- CONTAINER CREATION -->
+                <div data-ng-if="data.task.type == 'container'">
+                  <div class="form-group label-floating {[{ tasksList.length ? '' : 'has-warning' }]}" >
+                    <label for="tags" class="control-label">Task(s)</label>
+                    <tags-input data-ng-model="tasks" display-property="name" placeholder="Add a task" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="taskAdded($tag)" on-tag-removed="taskRemoved($tag)">
                       <auto-complete source="tasksList"></auto-complete>
                     </tags-input>
+                    <p ng-if="!tasksList.length" class="help-block">No task in the project for the moment</p>
                   </div>
                 </div>
 
-                <!-- MILESTONE EDITION-->
-                <div class="form-group" data-ng-if="data.edit.type == 'milestone'">
-                  <label for="milestone_date" class="col-md-1 control-label">Date</label>
-                  <div class="col-md-11">
-                    <input type="date" class="form-control" data-ng-model="data.edit.due_date" id="milestone_date">
+                <!-- MILESTONE CREATION-->
+                <div data-ng-if="data.task.type == 'milestone'">
+                  <div class="form-group label-floating">
+                    <label for="milestone_date" class="control-label">Date</label>
+                    <input type="date" class="form-control" data-ng-model="data.task.due_date" id="milestone_date">
                   </div>
                 </div>
 
-                <!-- NOT CONTAINER EDITION -->
-                <h3 data-ng-if="data.edit.type != 'container'">Dependencies</h3>
-                <div class="form-group" data-ng-if="data.edit.type != 'container'">
-                  <label for="tasks" class="col-md-1 control-label">Add a dependency</label>
-                  <div class="col-md-4">
-                    <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
-                      <option value="" disabled selected>Select a task</option>
-                    </select>
+                <!-- NOT CONTAINER CREATION -->
+                <div data-ng-if="data.task.type != 'container'">
+                  <h3>Dependencies</h3>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="form-group label-floating col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                      <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
+                        <option value="" disabled selected>Select a task</option>
+                      </select>
+                    </div>
+                    <div class="form-group label-floating col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                      <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                        <option value="" disabled selected>Select a type of dependency</option>
+                      </select>
+                    </div>
+                    <div class="form-group label-floating col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons" aria-hidden="true">add</i></a>
+                    </div>
                   </div>
-                  <div class="col-md-4">
-                    <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
-                      <option value="" disabled selected>Select a type of dependency</option>
-                    </select>
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="form-group label-floating no-margin" data-ng-repeat="dependency in data.task.dependencies">
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <p>{[{ dependency.title }]}</p>
+                      </div>
+                      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
+                        <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                          <option value="" disabled selected>Select a type of dependencies</option>
+                        </select>
+                      </div>
+                      <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
+                        <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeDependency(dependency)"><i class="material-icons" aria-hidden="true">delete</i></a>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col-md-1">
-                    <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
-                  </div>
-                </div>
-                <div class="form-group dependency-row" data-ng-if="data.edit.type != 'container'" data-ng-repeat="dependency in data.task.dependencies">
-                  <div class="col-md-4 col-md-offset-1" id="{[{'dependency-'+$index}]}">
-                    <h4>{[{ dependency.task.title }]}</h4>
-                  </div>
-                  <div class="col-md-4" id="{[{'select-dependency-'+$index}]}">
-                    <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList" data-ng-change="updateDependency(dependency)" ng-disabled="dependency.old">
-                    </select>
-                  </div>
-                  <div class="col-md-1 col-xs-6">
-                    <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old"><i class="material-icons">delete</i></button>
-                    <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old"><i class="material-icons">refresh</i></button>
-                  </div>
+                  <div class="clearfix"></div>                  
                 </div>
 
-                <!-- VALIDATE BUTTON -->
-                <div class="form-group">
-                  <div class="col-md-1 col-md-offset-9 col-xs-6">
-                    <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">CANCEL</button>
-                  </div>
-                  <div class="col-md-1 col-xs-6">
-                    <button type="submit" class="btn btn-default" data-ng-click="editTask(data.task)">EDIT</button>
-                  </div>
+                <!-- SUBMIT -->
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                  <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="createTask(data.task)">Create</button>
                 </div>
+                <div class="clearfix"></div>
               </fieldset>
             </form>
           </div>
-          <div data-ng-if="data.message == '_empty'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-frown-o"></i>This task doesn't exist.</p>
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</section>
+
+<!-- Task edition -->
+<section class="task-edition" data-ng-if="!data.ask_new && data.editMode['task']">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/task.svg" width="300" height="auto" alt="Tasks">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Task edition</h1>
+      <p>This page allows you to edit and update an existing task.<br>Validate changes by using the <strong>"Update"</strong> button at the end of the page when you're done.</p>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="box-row">
+    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
+          </div>
+        </div>
+        <div data-ng-if="!data.onLoad">
+          <div data-ng-if="data.message == '_valid'"> 
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <form>
+                <fieldset>
+                  <h3>General</h3>              
+                  <div class="form-group">
+                    <label for="title" class="control-label">Title</label>
+                    <input type="text" class="form-control" data-ng-model="data.edit.title" id="title">
+                  </div>
+                  <div class="form-group">
+                    <label for="description" class="control-label">Description</label>
+                    <textarea class="form-control" rows="4" data-ng-model="data.edit.description" id="description"></textarea>
+                  </div>
+     
+                  <!-- OBJECT TYPE SELECTION -->
+                  <div class="form-group label-floating">
+                    <label class="control-label">Object type</label>
+                    <select class="form-control" data-ng-model="data.edit.type">
+                      <option value="regular">Regular</option>
+                      <option value="milestone">Milestone</option>
+                      <option value="container">Container</option>
+                    </select>
+                  </div>
+
+                  <!-- TASK EDITION -->
+                  <div data-ng-if="data.edit.type == 'regular'">
+                    <div class="form-group">
+                      <label for="start_date" class="control-label">Starting date</label>
+                      <input type="date" class="form-control" data-ng-model="data.edit.started_at" id="start_date">
+                    </div>
+                    <div class="form-group">
+                      <label for="due_date" class="control-label">Due date</label>
+                      <input type="date" class="form-control" data-ng-model="data.edit.due_date" id="due_date">
+                    </div>
+                    <div class="form-group">
+                      <label for="progress" class="control-label">Progress</label>
+                      <select id="progress" class="form-control" data-ng-model="data.edit.advance" convert-to-number>
+                        <option value="">None</option>
+                        <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 10 }]}">{[{ $index * 10 + ' %' }]}</option>
+                      </select>
+                    </div>
+                    <div class="form-group label-floating">
+                      <label for="tags" class="control-label">Tag(s)</label>
+                      <tags-input data-ng-model="data.task.tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)">
+                        <auto-complete source="tagsList"></auto-complete>
+                      </tags-input>
+                      <span class="help-block">Use ',' to separate tags</span>
+                    </div>
+                    <h3>Resource(s)</h3>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                      <div class="form-group label-floating col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <select class="form-control" id="users" name="users" data-ng-model="new_user" data-ng-options="user as user.name for user in usersList">
+                          <option value="" disabled selected>Select a user</option>
+                        </select>
+                      </div>
+                      <div class="form-group label-floating col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <select class="form-control" data-ng-model="user_percent" id="workcharge" convert-to-number>
+                          <option value="" disabled selected>Select user's work charge</option>
+                          <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 10 }]}">{[{ $index * 10 + ' %' }]}</option>
+                        </select>
+                      </div>
+                      <div class="form-group label-floating col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                        <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons" aria-hidden="true">add</i></a>
+                      </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                      <div class="form-group label-floating no-margin" data-ng-repeat="user in data.task.users" id="{[{ 'resource-' + $index }]}">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                          <p>{[{ user.firstname + " " + user.lastname }]}</p>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="{[{ 'select-resource-' + $index }]}">
+                         <select class="form-control" data-ng-model="user.percent" convert-to-number data-ng-disabled="user.old" data-ng-change="updateResource(user)">
+                            <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 10 }]}">{[{ $index * 10 + ' %' }]}</option>
+                          </select>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                          <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeResource(user)" data-ng-if="!user.old"><i class="material-icons" aria-hidden="true">delete</i></a>
+                          <a href="" class="btn btn-rounded green-hover green-focus green-background no-margin" data-ng-click="recoverResource(user)" data-ng-if="user.old"><i class="material-icons" aria-hidden="true">refresh</i></a>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+
+                  <!-- CONTAINER EDITION -->
+                  <div data-ng-if="data.edit.type == 'container'">
+                    <div class="form-group label-floating">
+                      <label for="tags" class="control-label">Task(s)</label>
+                      <tags-input data-ng-model="data.task.tasks" display-property="name" placeholder="Add a task" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="taskAdded($tag)" on-tag-removed="taskRemoved($tag)">
+                        <auto-complete source="tasksList"></auto-complete>
+                      </tags-input>
+                    </div>
+                  </div>
+
+                  <!-- MILESTONE EDITION -->
+                  <div data-ng-if="data.edit.type == 'milestone'">
+                    <div class="form-group label-floating">
+                      <label for="milestone_date" class="control-label">Date</label>
+                      <input type="date" class="form-control" data-ng-model="data.edit.due_date" id="milestone_date">
+                    </div>
+                  </div>
+
+                  <!-- NOT CONTAINER EDITION -->
+                  <div data-ng-if="data.edit.type != 'container'">
+                    <h3>Dependencies</h3>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                      <div class="form-group label-floating col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
+                          <option value="" disabled selected>Select a task</option>
+                        </select>
+                      </div>
+                      <div class="form-group label-floating col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                          <option value="" disabled selected>Select a type of dependency</option>
+                        </select>
+                      </div>
+                      <div class="form-group label-floating col-lg-1 col-md-1 col-sm-1 col-xs-12">
+                        <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons" aria-hidden="true">add</i></a>
+                      </div>
+                    </div>
+                    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                      <div class="form-group label-floating no-margin" data-ng-repeat="dependency in data.task.dependencies">
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="{[{ 'dependency-' + $index }]}">
+                          <p>{[{ dependency.task.title }]}</p>
+                        </div>
+                        <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="{[{ 'select-dependency-' + $index }]}">
+                          <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList" data-ng-change="updateDependency(dependency)" data-ng-disabled="dependency.old">
+                          </select>
+                        </div>
+                        <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                          <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeDependency(dependency)" data-ng-if="!dependency.old"><i class="material-icons" aria-hidden="true">delete</i></a>
+                          <a href="" class="btn btn-rounded green-hover green-focus green-background no-margin" data-ng-click="recoverDependency(dependency)" data-ng-if="dependency.old"><i class="material-icons" aria-hidden="true">refresh</i></a>
+                        </div>
+                        <div class="clearfix"></div>
+                      </div>
+                    </div>
+                    <div class="clearfix"></div>                  
+                  </div>
+
+                  <!-- SUBMIT -->
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                    <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')">Cancel</button>
+                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTask(data.task)">Edit</button>
+                  </div>
+                  <div class="clearfix"></div>
+                </fieldset>
+              </form>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div data-ng-if="data.message == '_empty'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
             </div>
           </div>
-          <div data-ng-if="data.message == '_invalid'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
+        </div>
+        <div data-ng-if="data.message == '_invalid'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
             </div>
           </div>
-          <div data-ng-if="data.message == '_denied'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+        </div>
+        <div data-ng-if="data.message == '_denied'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 </section>
 
-<!-- grappbox.data: task visual -->
-<section id="task-visual" data-ng-if="!data.task_new && !data.editMode['task']">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
+<!-- Task -->
+<section class="task" data-ng-if="!data.task_new && !data.editMode['task']">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/task.svg" width="300" height="auto" alt="Tasks">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Task</h1>
+      <p>This page details the selected task.<br>Use the actions buttons at the end of this page if you want to edit, delete or mark as done this task.</p>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="box-row">
+    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task detail</h4>
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
         <div data-ng-if="data.onLoad">
           <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
           </div>
         </div>
         <div data-ng-if="!data.onLoad">
-          <div data-ng-if="data.message == '_valid'">
-            <fieldset>
-              <div class="col-md-12">
-                <h1 class="ellipsis">{[{data.task.title}]}</h1>
-                <h3>{[{data.task.is_container ? 'container' : (data.task.is_milestone ? 'milestone' : 'regular task')}]}</h3>
-                <h4 data-ng-if="!data.task.is_milestone && !data.task.is_container">{[{ data.task.started_at ? formatObjectDate(data.task.started_at) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date) }]}</h4>
-                <h4 data-ng-if="data.task.is_milestone">at {[{ formatObjectDate(data.task.due_date) }]}</h4>
-              </div>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div data-ng-if="data.message == '_valid'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <h1 class="ellipsis">{[{ data.task.title }]}</h1>
+                <p class="no-padding">{[{ data.task.is_container ? 'Container' : (data.task.is_milestone ? 'Milestone' : 'Regular task' )}]}<br><span data-ng-if="!data.task.is_milestone && !data.task.is_container">{[{ data.task.started_at ? formatObjectDate(data.task.started_at) : "N/A" }]} to {[{ formatObjectDate(data.task.due_date) }]}</span><span data-ng-if="data.task.is_milestone">At {[{ formatObjectDate(data.task.due_date) }]}</span>
+                </p>
 
-              <div class="col-md-12 task-section">
-                <h4 class="task-section-title"><i class="material-icons">description</i>Description</h4>
-                <div class="col-md-12">
-                  <div class="">
-                    {[{data.task.description ? data.task.description : 'N/A'}]}
+                <h3>Description</h3>
+                <p class="no-padding">{[{ data.task.description ? data.task.description : 'None' }]}</p>
+
+                <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                  <h3>Progress</h3>
+                  <p class="no-padding">{[{ data.task.advance + ' %' }]} <span data-ng-if="data.task.finished_at">(finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></p>
+                </div>
+
+                <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                  <h3>Tag(s)</h3>
+                  <div class="label tag" style="background-color: #{[{ tag.color }]}; color: #212121;" data-ng-repeat="tag in data.task.tags">{[{tag.name}]}</div>
+                  <div data-ng-if="!((data.task.tags).length)">
+                    <p class="no-padding">No tag for this task</p>
                   </div>
                 </div>
-              </div>
-              <!-- <div class="col-md-12" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4>Task progress {[{data.task.advance + ' %'}]}<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></h4>
-                <div class="progress">
-                  <div class="progress-bar progress-bar-info" style="width: {[{data.task.advance}]}%"></div>
-                </div>
 
-              </div> -->
-              <div class="col-md-12 task-section" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4 class="task-section-title"><i class="material-icons">trending_up</i>Progress<span data-ng-if="data.task.finished_at"> (finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></h4>
-                <div class="col-md-12" style="display: inline-block">
-                  <div class="" style="font-size: 16px;">
-                    {[{data.task.advance + ' %'}]}
-                  </div>
-                </div>
-              </div>
-
-
-              <!-- <div class="col-md-12" data-ng-if="data.task.is_milestone">
-                <h4>Milestone at {[{ formatObjectDate(data.task.due_date) }]}</h4>
-              </div>
-              <div class="col-md-12" data-ng-if="data.task.is_container">
-                <h4>Container</h4>
-              </div> -->
-
-              <div class="col-md-12 task-section" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4 class="task-section-title"><i class="material-icons">label</i>Tag(s)</h4>
-                <div>
-                  <div class="label tag" style="background-color: #{[{tag.color}]};}]}" ng-repeat="tag in data.task.tags">
-                    <span>{[{tag.name}]}</span>
-                  </div>
-                </div>
-                <div class="col-md-12" data-ng-if="!((data.task.tags).length)">
-                  <div class="">No tag</div>
-                </div>
-              </div>
-
-              <div class="col-md-12 task-section" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4 class="task-section-title"><i class="material-icons">people</i>Assigned user(s)</h4>
-                <div>
-                  <div class="md-chip"  ng-repeat="user in data.task.users">
+                <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                  <h3>Assigned user(s)</h3>
+                  <div class="md-chip" data-ng-repeat="user in data.task.users">
                     <div class="md-chip-img">
-                      <img src="../resources/img/app/default-avatar.min.png" alt="avatar" />
+                      <img data-ng-src="https://static.grappbox.com/app/user/{[{ user.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ user.firstname }]} {[{ user.lastname }]}">
                     </div>
-                    <span class="md-chip-text">{[{user.firstname + " " + user.lastname + " (" + user.percent + "%)"}]}</span>
+                    <span class="md-chip-text">{[{ user.firstname + " " + user.lastname + " (" + user.percent + "%)" }]}</span>
+                  </div>
+                  <div data-ng-if="!((data.task.users).length)">
+                    <p class="no-padding">No assigned user for this task</p>
                   </div>
                 </div>
-                <div class="col-md-12" data-ng-if="!((data.task.users).length)">
-                  <div class="">No Assigned user </div>
-                </div>
-              </div>
 
-              <div class="col-md-12 task-section" data-ng-if="!data.task.is_milestone && !data.task.is_container">
-                <h4 class="task-section-title"><i class="material-icons">link</i>Dependencies</h4>
-                <div>
-                  <div class="md-chip" ng-repeat="dependency in data.task.dependencies">
-                    <div class="md-chip-img">
-                      <span class="md-chip-span">{[{ dependency.name.toUpperCase() }]}</span>
-                    </div>
+                <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                  <h3>Dependencies</h3>
+                  <div class="md-chip" data-ng-repeat="dependency in data.task.dependencies">
+                    <span class="md-chip-span">{[{ dependency.name.toUpperCase() }]}</span>
                     <span class="md-chip-text">{[{ dependency.task.title }]}</span>
                   </div>
-                </div>
-                <div class="col-md-12" data-ng-if="!((data.task.dependencies).length)">
-                  <div class="">No dependency</div>
-                </div>
-              </div>
-
-              <div class="col-md-12 task-section" data-ng-if="data.task.is_container">
-                <h4>Tasks</h4>
-                <div>
-                  <div class="md-chip" ng-repeat="task in data.task.tasks">
-                    <div class="md-chip-img">
-                      <span class="md-chip-span">{[{task.is_container ? 'C' : (task.is_milestone ? 'M' : 'T') }]}</span>
-                    </div>
-                    <span class="md-chip-text">{[{ task.title }]}</span>
+                  <div data-ng-if="!((data.task.dependencies).length)">
+                    <p class="no-padding">No associated dependency</p>
                   </div>
                 </div>
-                <div class="col-md-12" data-ng-if="!((data.task.tasks).length)">
-                  <div class="">No task</div>
+              
+                <div data-ng-if="data.task.is_container">
+                  <h3>Tasks</h3>
+                  <div class="md-chip" data-ng-repeat="task in data.task.tasks">
+                    <span class="md-chip-span">{[{ task.is_container ? 'C' : (task.is_milestone ? 'M' : 'T') }]}</span>
+                    <span class="md-chip-text">{[{ task.title }]}</span>
+                  </div>
+                  <div data-ng-if="!((data.task.tasks).length)">
+                    <p class="no-padding">No task for this container</p>
+                  </div>
                 </div>
               </div>
 
-              <div class="col-md-1 col-md-offset-8 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">
-                <button type="submit" class="btn btn-default" data-ng-if="data.task.started_at" data-ng-click="finishTask()">Finished</button>
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
+                <button class="btn red-color red-background-hover" data-ng-click="deleteTask(data.task)">Delete</button>
+                <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')" data-ng-if="data.task.finished_at || data.task.is_milestone || data.task.is_container">Edit</button>
+                <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">Edit</button>
+                <button class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="finishTask()" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">Mark as finished</button>
               </div>
-              <div class="col-md-1 col-md-offset-9 col-xs-6" data-ng-if="data.task.finished_at || data.task.is_milestone || data.task.is_container">
-                <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
-              </div>
-              <div class="col-md-1 col-xs-6" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">
-                <button type="submit" class="btn btn-default" data-ng-click="task_switchEditMode('task')">Edit</button>
-              </div>
-              <div class="col-md-1 col-xs-6">
-                <button type="submit" class="btn btn-default" data-ng-click="deleteTask(data.task)">Delete</button>
-              </div>
-            </fieldset>
+              <div class="clearfix"></div>
+            </div>
 
-          </div>
-          <div data-ng-if="data.message == '_empty'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-frown-o"></i>This task doesn't exist.</p>
+            <div data-ng-if="data.message == '_empty'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
+                </div>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_invalid'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                </div>
+              </div>
+            </div>
+            <div data-ng-if="data.message == '_denied'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                </div>
+              </div>
             </div>
           </div>
-          <div data-ng-if="data.message == '_invalid'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-            </div>
-          </div>
-          <div data-ng-if="data.message == '_denied'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
-            </div>
-          </div>
+          <div class="clearfix"></div>
         </div>
       </div>
     </div>
