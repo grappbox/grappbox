@@ -3131,6 +3131,8 @@ public class GrappboxJustInTimeService extends IntentService {
                 addUser.close();
             if (removeUser != null)
                 removeUser.close();
+            if (connection != null)
+                connection.disconnect();
         }
     }
 
@@ -3176,6 +3178,8 @@ public class GrappboxJustInTimeService extends IntentService {
         } finally {
             if (event != null)
                 event.close();
+            if (connection != null)
+                connection.disconnect();
         }
     }
 
@@ -3198,6 +3202,7 @@ public class GrappboxJustInTimeService extends IntentService {
             returnedJson = Utils.JSON.readDataFromConnection(connection);
             if (returnedJson == null || returnedJson.isEmpty())
                 throw new NetworkErrorException(Utils.Errors.ERROR_API_ANSWER_EMPTY);
+            Log.v(LOG_TAG, returnedJson);
             JSONObject json = new JSONObject(returnedJson);
             if (Utils.Errors.checkAPIError(json))
                 throw new OperationApplicationException(Utils.Errors.ERROR_API_GENERIC);
