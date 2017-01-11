@@ -11,13 +11,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task creation</h1>
       <p>This page allows you to create and assign a new task.<br>Use the "Create" button at the end of this page when you're done.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -181,13 +180,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task edition</h1>
       <p>This page allows you to edit and update an existing task.<br>Validate changes by using the <strong>"Update"</strong> button at the end of the page when you're done.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -355,6 +353,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="data.message == '_invalid'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -362,6 +361,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="data.message == '_denied'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -369,6 +369,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
       </div>
     </div>
@@ -385,13 +386,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task</h1>
       <p>This page details the selected task.<br>Use the actions buttons at the end of this page if you want to edit, delete or mark as done this task.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task detail</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -474,6 +474,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
             <div data-ng-if="data.message == '_invalid'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -481,6 +482,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
             <div data-ng-if="data.message == '_denied'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -488,11 +490,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
           </div>
           <div class="clearfix"></div>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 </section>
