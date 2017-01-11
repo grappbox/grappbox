@@ -22,12 +22,12 @@
     <meta property="og:title" content="GrappBox"/>
     <meta property="og:url" content="https://grappbox.com"/>
     <meta name="og:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">
-    <meta name="og:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <meta name="og:image" content="https://static.grappbox.com/resources/banner.min.jpg">
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@GrappBox">
     <meta name="twitter:title" content="GrappBox">
     <meta name="twitter:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">
-    <meta name="twitter:image" content="https://static.grappbox.com/public/social_banner.min.jpg">
+    <meta name="twitter:image" content="https://static.grappbox.com/resources/banner.min.jpg">
     <!-- SEO -->
     {% block canonical %}{% endblock %}
     <!-- Favicons -->
@@ -48,9 +48,18 @@
     <meta name="msapplication-TileColor" content="#ffffff">
     <meta name="msapplication-TileImage" content="resources/img/favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#ffffff">
+
+    <!-- Google Analytics -->
+    {% javascripts
+    '@AppBundle/Resources/public/js/home/analytics.js'
+    filter='?uglifyjs2' output='resources/js/data.min.js' %}
+    <script type="text/javascript" src="{{ asset_url }}" async></script>
+    {% endjavascripts %}
+
     <!-- Google Fonts -->
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900">
 
+    <!-- Styles -->
     {% stylesheets
     '@AppBundle/Resources/public/css/vendor/bootstrap.css'
     '@AppBundle/Resources/public/css/vendor/bootstrap-material.css'
@@ -65,8 +74,8 @@
     <!-- Responsive for IE8 -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-    <script src="resources/static/html5shiv.min.js"></script>
-    <script src="resources/static/respond.min.js"></script>
+    <script type="text/javascript" src="resources/static/html5shiv.min.js"></script>
+    <script type="text/javascript" src="resources/static/respond.min.js"></script>
     <![endif]-->
   </head>
 
@@ -91,13 +100,6 @@
     filter='?uglifyjs2' output='resources/js/home.min.js' %}
     <script type="text/javascript" src="{{ asset_url }}"></script>
     {% endjavascripts %}
-
-    {% javascripts
-    '@AppBundle/Resources/public/js/home/analytics.js'
-    filter='?uglifyjs2' output='resources/js/data.min.js' %}
-    <script type="text/javascript" src="{{ asset_url }}"></script>
-    {% endjavascripts %}
-
   </body>
 </html>
 
