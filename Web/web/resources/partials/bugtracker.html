@@ -227,9 +227,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
 
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
-                <button class="btn red-color red-background-hover" data-ng-click="closeTicket(data.ticket)" data-ng-if="!data.ticket.deletedAt">Mark as closed</button>
-                <button class="btn red-color red-background-hover" data-ng-click="reopenTicket(data.ticket)" data-ng-if="data.ticket.deletedAt">Reopen</button>
-                <button class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="bugtracker_switchEditMode('ticket')" data-ng-if="!data.ticket.deletedAt">Edit</button>
+                <button class="btn gray-color gray-background-hover" data-ng-click="bugtracker_switchEditMode('ticket')" data-ng-if="!data.ticket.deletedAt">Edit</button>
+                <button class="btn blue-color blue-background-hover" data-ng-click="closeTicket(data.ticket)" data-ng-if="!data.ticket.deletedAt">Mark as closed</button>
+                <button class="btn blue-color blue-background-hover" data-ng-click="reopenTicket(data.ticket)" data-ng-if="data.ticket.deletedAt">Reopen</button>
               </div>
               <div class="clearfix"></div>
             </div>
