@@ -17,6 +17,7 @@ namespace Grappbox
         public const string CalendarMonthCall = "planning/month";
         public const string GetProjectUsers = "project/users";
         public const string PostEvent = "event";
+        public const string EditEvent = "event";
         public const string GetProjectTasks = "tasks/project";
         public const string GetProjectTags = "tasks/tags/project";
         public const string CreateWhiteboard = "whiteboard";

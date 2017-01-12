@@ -7,98 +7,120 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:global="using:Grappbox"
     xmlns:viewModels="using:Grappbox.ViewModel"
-    xmlns:Models="using:Grappbox.Model"
+    xmlns:models="using:Grappbox.Model"
     xmlns:Controls="using:Grappbox.CustomControls"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <DataTemplate x:Key="EventUserListDataTemplate" x:DataType="Models:UserModel">
+        <DataTemplate x:Key="EventUserListDataTemplate" x:DataType="models:UserModel">
             <RelativePanel>
-                <Border x:Name="ParticipantIconBorder" CornerRadius="45" Background="DimGray" BorderThickness="0" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True">
-                    <FontIcon x:Name="ParticipantIcon"
-                                                      FontSize="24"
-                                                      Foreground="White"
-                                                      FontFamily="ms-appx:///Assets/MaterialIcons-Regular.otf#Material Icons"
-                                                      Glyph="{x:Bind global:Constants.PersonSymbol}"/>
-                </Border>
+                <FontIcon x:Name="ParticipantIcon"
+                          RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"
+                              FontSize="24"
+                              Foreground="White"
+                              FontFamily="{StaticResource MaterialIconFontFamily}"
+                              Glyph="{x:Bind global:Constants.PersonSymbol}"/>
                 <TextBlock x:Name="ParticipantName"
-                                                   Text="{x:Bind FullName}"
-                                                   Margin="5"
-                                                   FontSize="18"
-                                                   RelativePanel.AlignVerticalCenterWith="ParticipantIconBorder"
-                                                   RelativePanel.RightOf="ParticipantIconBorder"/>
+                           Text="{x:Bind FullName}"
+                           Margin="5"
+                           FontSize="18"
+                           RelativePanel.AlignVerticalCenterWith="ParticipantIcon"
+                           RelativePanel.RightOf="ParticipantIcon"/>
+                <Button RelativePanel.AlignVerticalCenterWith="ParticipantIcon"
+                        RelativePanel.RightOf="ParticipantName"
+                        RelativePanel.AlignRightWithPanel="True"
+                        Background="Transparent"
+                        Click="DeleteParticipant">
+                    <Button.Content>
+                        <SymbolIcon Foreground="{StaticResource BlueGrappboxBrush}"
+                                    Symbol="Delete"></SymbolIcon>
+                    </Button.Content>
+                </Button>
             </RelativePanel>
         </DataTemplate>
     </Page.Resources>
-
-    <ScrollViewer
-        ScrollViewer.VerticalScrollMode="Enabled"
-        ScrollViewer.VerticalScrollBarVisibility="Visible" >
-        <RelativePanel Grid.Row="1" Padding="15,15,15,0"
-                       HorizontalAlignment="Stretch">
-            <RelativePanel.Resources>
-                <Style TargetType="TextBlock">
-                    <Setter Property="FontSize" Value="16" />
-                </Style>
-                <Style TargetType="FontIcon">
-                    <Setter Property="FontSize" Value="16" />
-                </Style>
-            </RelativePanel.Resources>
-            <TextBlock x:Name="Title" Text="{x:Bind Event.Title}" FontSize="40"
-                     HorizontalAlignment="Stretch"
+    <Grid Padding="15,15,15,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="TextBlock">
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+            <Style TargetType="FontIcon">
+                <Setter Property="FontSize" Value="16" />
+            </Style>
+        </Grid.Resources>
+        <TextBox x:Name="Title" Grid.Row="0" Text="{x:Bind Event.Title}" FontSize="40"
+                     BorderThickness="0"
                      Foreground="{StaticResource BlueGrappboxBrush}"
-                     RelativePanel.AlignTopWithPanel="True"
-                     RelativePanel.AlignLeftWithPanel="True" />
-            <CalendarDatePicker x:Name="BeginDatePicker"
-                                DateChanged="BeginDatePicker_DateChanged"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                RelativePanel.Below="Title"/>
-            <TimePicker x:Name="BeginTimePicker"
-                        RelativePanel.Below="BeginDatePicker"
-                        RelativePanel.AlignLeftWith="BeginDatePicker"
-                        TimeChanged="TimePicker_TimeChanged_1"/>
-            <CalendarDatePicker x:Name="EndDatePicker"
-                                DateChanged="EndDatePicker_DateChanged"
-                                RelativePanel.AlignLeftWithPanel="True"
-                                RelativePanel.Below="BeginTimePicker"/>
-            <TimePicker x:Name="EndTimePicker"
-                        RelativePanel.Below="EndDatePicker"
-                        TimeChanged="TimePicker_TimeChanged"
-                        RelativePanel.AlignLeftWith="EndDatePicker"/>
-            
-            <FontIcon x:Name="CreatorIcon"
-                      Margin="5"
-                      FontFamily="{StaticResource MaterialIconFontFamily}"
-                      Glyph="{x:Bind global:Constants.PersonSymbol}"
-                      RelativePanel.AlignLeftWithPanel="True"
-                      RelativePanel.Below="EndTimePicker"/>
-            <TextBlock x:Name="CreatorName"
-                       Text="{x:Bind Event.Creator.FullName}"
-                       Margin="5"
-                       Foreground="DimGray"
-                       RelativePanel.AlignVerticalCenterWith="CreatorIcon"
-                       RelativePanel.RightOf="CreatorIcon"/>
-            <TextBlock x:Name="DescriptionText"
-                     Text="{x:Bind Event.Description , Mode=TwoWay}"
-                     Margin="5"
-                     HorizontalAlignment="Stretch"
-                     MinHeight="100"
-                     RelativePanel.AlignHorizontalCenterWithPanel="True"
-                     RelativePanel.Below="CreatorIcon">
-            </TextBlock>
-            <ListView Padding="10,0"
+                     PlaceholderText="Enter title"
+                     HorizontalAlignment="Stretch"/>
+        <CalendarDatePicker Grid.Row="1" x:Name="BeginDatePicker" DateChanged="BeginDatePicker_DateChanged" BorderThickness="0"/>
+        <TimePicker Grid.Row="2" x:Name="BeginTimePicker" TimeChanged="BeginTimePicker_TimeChanged" BorderThickness="0"/>
+        <CalendarDatePicker Grid.Row="3" x:Name="EndDatePicker" DateChanged="EndDatePicker_DateChanged" BorderThickness="0"/>
+        <TimePicker Grid.Row="4" x:Name="EndTimePicker" TimeChanged="EndTimePicker_TimeChanged" BorderThickness="0"/>
+        <TextBox Grid.Row="5" x:Name="DescriptionText" Text="{x:Bind Event.Description , Mode=TwoWay}"
+                     Margin="5" HorizontalAlignment="Stretch"
+                     PlaceholderText="Enter Description"
+                     BorderThickness="0"/>
+        <AutoSuggestBox Grid.Row="6" x:Name="ParticipantSearch"
+                        Visibility="Collapsed"
+                        FlowDirection="RightToLeft"
+                        TextChanged="ParticipantSearch_TextChanged"
+                        QuerySubmitted="ParticipantSearch_QuerySubmitted"
+                        SuggestionChosen="ParticipantSearch_SuggestionChosen"
+                        QueryIcon="OtherUser"
+                        PlaceholderText="EnterName"
+                        HorizontalAlignment="Stretch"
+                        Width="264"
+                        Margin="0,5,0,0">
+            <AutoSuggestBox.Header>
+                <TextBlock Text="Participants"
+                               Margin="-20,0,0,0"
+                               Foreground="{StaticResource BlueGrappboxBrush}"/>
+            </AutoSuggestBox.Header>
+        </AutoSuggestBox>
+        <ListView Grid.Row="7"
+                      Padding="10,0"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       HorizontalContentAlignment="Stretch"
                       VerticalContentAlignment="Stretch"
-                      Header="Participants:"
-                      RelativePanel.AlignLeftWithPanel="True"
-                      RelativePanel.Below="DescriptionText"
                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
                       ScrollViewer.VerticalScrollMode="Disabled"
                       ItemTemplate="{StaticResource EventUserListDataTemplate}"
-                      ItemsSource="{x:Bind Event.Users}">
-            </ListView>
-        </RelativePanel>
-    </ScrollViewer>
+                      ItemsSource="{x:Bind SelectedUsers, Mode=OneWay}">
+        </ListView>
+        <Grid Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0"
+                HorizontalAlignment="Stretch"
+                Foreground="White"
+                Background="{StaticResource BlueGrappboxBrush}" Click="Save">
+                <Button.Content>
+                    <TextBlock Text="Save" FontSize="24" />
+                </Button.Content>
+            </Button>
+            <Button Grid.Column="1"
+                HorizontalAlignment="Stretch"
+                Foreground="White"
+                Background="{StaticResource BlueGrappboxBrush}" Click="Cancel">
+                <Button.Content>
+                    <TextBlock Text="Cancel" FontSize="24" />
+                </Button.Content>
+            </Button>
+        </Grid>
+    </Grid>
 </Page>

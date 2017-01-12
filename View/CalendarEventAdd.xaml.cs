@@ -63,7 +63,7 @@ namespace Grappbox.View
             {
                 Id = 0
             },
-            ProjectId = 0,
+            ProjectId = null,
             Users = null,
             BeginDate = DateTime.Today.Date.ToString("yyyy-MM-dd HH:mm:ss"),
             EndDate = DateTime.Today.Date.ToString("yyyy-MM-dd HH:mm:ss"),
@@ -104,9 +104,13 @@ namespace Grappbox.View
 
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
+            var session = SessionHelper.GetSession();
             base.OnNavigatedTo(e);
-            await GetUsersList();
-            SessionHelper session = SessionHelper.GetSession();
+            if (session.IsProjectSelected)
+            {
+                await GetUsersList();
+                ParticipantSearch.Visibility = Visibility.Visible;
+            }
             DateTimeOffset? offset = e.Parameter as DateTimeOffset?;
             Event = new EventViewModel()
             {
@@ -128,6 +132,7 @@ namespace Grappbox.View
 
         private async Task<bool> PostEvent()
         {
+            var session = SessionHelper.GetSession();
             var list = new List<int>();
             if (SelectedUsers != null)
             {
@@ -142,8 +147,10 @@ namespace Grappbox.View
             values.Add("begin", Event.BeginDate);
             values.Add("end", Event.EndDate);
             values.Add("users", list);
-            if (Event.ProjectId != 0)
-                values.Add("projectId", Event.ProjectId);
+            if (session.IsProjectSelected)
+            {
+                values.Add("projectId", session.ProjectId);
+            }
             HttpResponseMessage res = await HttpRequest.HttpRequestManager.Post(values, Constants.PostEvent);
             return res.IsSuccessStatusCode;
         }
@@ -161,9 +168,6 @@ namespace Grappbox.View
 
         private void ParticipantSearch_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-            sender.Text = string.Empty;
-            sender.ItemsSource = Users;
-            sender.IsSuggestionListOpen = false;
         }
 
         private void ParticipantSearch_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
@@ -173,34 +177,67 @@ namespace Grappbox.View
             sender.ItemsSource = Users;
             sender.IsSuggestionListOpen = false;
         }
-        private void TimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+        private void BeginTimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
+        {
+            DateTimeOffset offset = new DateTimeOffset(Event.BeginDateTime.Date.Year, Event.BeginDateTime.Date.Month, Event.BeginDateTime.Date.Day, e.NewTime.Hours,
+                e.NewTime.Minutes, e.NewTime.Seconds, new TimeSpan(1, 0, 0));
+            Event.BeginDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        private void EndTimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
         {
             DateTimeOffset offset = new DateTimeOffset(Event.EndDateTime.Date.Year, Event.EndDateTime.Date.Month, Event.EndDateTime.Date.Day, e.NewTime.Hours,
                 e.NewTime.Minutes, e.NewTime.Seconds, new TimeSpan(1, 0, 0));
             Event.EndDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
-        private void TimePicker_TimeChanged_1(object sender, TimePickerValueChangedEventArgs e)
-        {
-            DateTimeOffset offset = new DateTimeOffset(Event.EndDateTime.Date.Year, Event.EndDateTime.Date.Month, Event.EndDateTime.Date.Day, e.NewTime.Hours,
-                e.NewTime.Minutes, e.NewTime.Seconds, new TimeSpan(1, 0, 0));
-            Event.BeginDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
-        }
-
         private void EndDatePicker_DateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
         {
-            DateTimeOffset offset = new DateTimeOffset(args.NewDate.Value.Date);
+            DateTimeOffset offset = new DateTimeOffset(args.NewDate.Value.Date.Year, args.NewDate.Value.Date.Month, args.NewDate.Value.Date.Day, EndTimePicker.Time.Hours,
+                EndTimePicker.Time.Minutes, EndTimePicker.Time.Seconds, new TimeSpan(1, 0, 0));
             Event.EndDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
         private void BeginDatePicker_DateChanged(CalendarDatePicker sender, CalendarDatePickerDateChangedEventArgs args)
         {
-            DateTimeOffset offset = new DateTimeOffset(args.NewDate.Value.Date);
+            DateTimeOffset offset = new DateTimeOffset(args.NewDate.Value.Date.Year, args.NewDate.Value.Date.Month, args.NewDate.Value.Date.Day, BeginTimePicker.Time.Hours,
+                BeginTimePicker.Time.Minutes, BeginTimePicker.Time.Seconds, new TimeSpan(1, 0, 0));
             Event.BeginDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+        private async Task<bool> CheckData()
+        {
+            bool result = true;
+            MessageDialog dialog = new MessageDialog("");
+            if (string.IsNullOrWhiteSpace(Event.Title))
+            {
+                dialog.Content = "Title is required";
+                result = false;
+            }
+            else if (string.IsNullOrWhiteSpace(Event.Description))
+            {
+                dialog.Content = "Description is required";
+                result = false;
+            }
+            else if (DateTime.Compare(Event.EndDateTime, Event.BeginDateTime) < 0)
+            {
+                dialog.Content = "Event can't start after the end";
+                result = false;
+            }
+            else if (DateTime.Compare(Event.EndDateTime, Event.BeginDateTime) == 0)
+            {
+                dialog.Content = "Event must have a duration of at least 1 minute";
+                result = false;
+            }
+            if (result == false)
+                await dialog.ShowAsync();
+            return result;
         }
 
         private async void Save(object sender, RoutedEventArgs e)
         {
+            if (await CheckData() == false)
+                return;
             LoaderDialog loader = new LoaderDialog();
             loader.ShowAsync();
             bool res = await PostEvent();
