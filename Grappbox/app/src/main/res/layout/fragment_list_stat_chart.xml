@@ -114,6 +114,12 @@
             tools:layout="@layout/statistic_cloud_fragment"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
+        <fragment android:name="com.grappbox.grappbox.statistic_fragment.StatisticBugUserRepartitionFragment"
+            android:id="@+id/user_bug_repartition_fragment"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            tools:layout="@layout/statistic_cloud_fragment"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </LinearLayout>
 
