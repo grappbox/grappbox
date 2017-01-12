@@ -161,8 +161,8 @@
                                                   ScrollViewer.VerticalScrollMode="Enabled"
                                                   ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                     </ScrollViewer>
-                    <Button Grid.Row="2"
-                            Background="Transparent"
+                    <Border Grid.Row="2" BorderBrush="Black" BorderThickness="0,1,0,0">
+                    <Button Background="Transparent"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
                             VerticalAlignment="Center"
@@ -190,6 +190,7 @@
                             </Grid>
                         </Button.Content>
                     </Button>
+                    </Border>
                 </Grid>
             </SplitView.Pane>
 

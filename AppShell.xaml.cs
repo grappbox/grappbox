@@ -15,6 +15,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 using Windows.UI.Xaml.Navigation;
 using Windows.Web.Http;
 
@@ -96,21 +97,21 @@ namespace Grappbox
                 {
                     Symbol = Constants.TasksSymbol,
                     Label = "Tasks",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(TasksView),
                     ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.GanttSymbol,
                     Label = "Gantt",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(GanttView),
                     ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
                 {
                     Symbol = Constants.WhiteboardSymbol,
                     Label = "Whiteboard",
-                    DestPage = typeof(DashBoardView),
+                    DestPage = typeof(WhiteBoardView),
                     ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
@@ -258,7 +259,7 @@ namespace Grappbox
         /// <param name="e"></param>
         private void OnNavigatingToPage(object sender, NavigatingCancelEventArgs e)
         {
-            if (e.SourcePageType == typeof(LoginPage))
+            if (e.SourcePageType == typeof(LoginPage) || e.SourcePageType == typeof(WhiteBoardView) || e.SourcePageType == typeof(CalendarEventDetail))
                 TogglePaneButton.Visibility = Visibility.Collapsed;
             else
             {
@@ -392,6 +393,7 @@ namespace Grappbox
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.AppFrame.Navigate(typeof(GenericDahsboard));
+            this.TogglePaneButton.IsChecked = false;
         }
 
         private void CheckUserIdentity()
@@ -411,6 +413,8 @@ namespace Grappbox
             if (res.IsSuccessStatusCode)
             {
                 SessionHelper.GetSession().ResetSession();
+                this.TogglePaneButton.IsChecked = false;
+                this.AppFrame.Navigate(typeof(LoginPage));
             }
             else
             {

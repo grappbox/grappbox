@@ -31,8 +31,6 @@ namespace Grappbox.View
         public TasksView()
         {
             this.InitializeComponent();
-            viewModel = new TaskViewModel();
-            this.DataContext = viewModel;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)

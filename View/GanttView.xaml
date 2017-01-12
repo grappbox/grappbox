@@ -21,13 +21,12 @@
 
         <controls:PageHeader HeaderContent="Gantt" />
 
-        <GridView Grid.Row="1">
+        <GridView Grid.Row="1" ItemsSource="Tasks">
             <GridView.ItemsPanel>
                 <ItemsPanelTemplate>
                     <ItemsWrapGrid Orientation="Vertical" />
                 </ItemsPanelTemplate>
             </GridView.ItemsPanel>
         </GridView>
-        <Line Canvas.ZIndex="100" Canvas.Top="0" Canvas.Left="0" X1="0" Y1="0" X2="500" Y2="500" Stroke="Red" StrokeThickness="2" ></Line>
     </Grid>
 </Page>

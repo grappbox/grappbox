@@ -181,6 +181,7 @@
     <Compile Include="Model\Calendar\Creator.cs" />
     <Compile Include="Model\Calendar\Event.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
+    <Compile Include="Model\GanttDto.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\DateModel.cs" />
     <Compile Include="Model\Global\TagModel.cs" />
@@ -231,6 +232,7 @@
     <Compile Include="ViewModel\EventViewModel.cs" />
     <Compile Include="ViewModel\CalendarViewModel.cs" />
     <Compile Include="ViewModel\DashBoardViewModel.cs" />
+    <Compile Include="ViewModel\GanttViewModel.cs" />
     <Compile Include="ViewModel\GenericDashboardViewModel.cs" />
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
@@ -249,6 +251,9 @@
     </Compile>
     <Compile Include="View\CalendarEventAdd.xaml.cs">
       <DependentUpon>CalendarEventAdd.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TaskDetail.xaml.cs">
+      <DependentUpon>TaskDetail.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CalendarEventDetail.xaml.cs">
       <DependentUpon>CalendarEventDetail.xaml</DependentUpon>
@@ -472,6 +477,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="View\CalendarEventAdd.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="View\TaskDetail.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

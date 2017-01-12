@@ -15,6 +15,7 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="25"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -34,7 +35,21 @@
                     <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StartedAt}" ></TextBlock>
                     <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind DueDate}" >Due date:</TextBlock>
                 </Grid>
-                <ProgressBar Grid.Row="2" Height="25" Maximum="100" Minimum="0" Value="{x:Bind Advance}" Foreground="{StaticResource RedGrappboxBrush}" ></ProgressBar>
+                <ListView Grid.Row="2" ItemsSource="{Binding Tags}" Margin="0" SelectionMode="None" ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding ColorTag}" Margin="0">
+                                <TextBlock Text="{Binding Name}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0, 3" Margin="0"/>
+                            </Border>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                    <ListView.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel Orientation="Horizontal" Margin="0"/>
+                        </ItemsPanelTemplate>
+                    </ListView.ItemsPanel>
+                </ListView>
+                <ProgressBar Grid.Row="3" Height="25" Maximum="100" Minimum="0" Value="{x:Bind Advance}" Foreground="{StaticResource RedGrappboxBrush}" ></ProgressBar>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -47,6 +62,6 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Tasks" />
-        <ListView Grid.Row="1" ItemTemplate="{StaticResource tasksDataTemplate}" ItemsSource="{x:Bind viewModel.Tasks}" ></ListView>
+        <ListView Grid.Row="1" ItemTemplate="{StaticResource tasksDataTemplate}" ItemsSource="{x:Bind viewModel.Tasks, Mode=OneWay}" IsItemClickEnabled="False" SelectionMode="None" ></ListView>
     </Grid>
 </Page>

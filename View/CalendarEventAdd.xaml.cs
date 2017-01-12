@@ -20,6 +20,7 @@ using Windows.Web.Http;
 using System.Threading.Tasks;
 using Grappbox.CustomControls;
 using Windows.UI.Popups;
+using System.Diagnostics;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -30,8 +31,8 @@ namespace Grappbox.View
     /// </summary>
     public sealed partial class CalendarEventAdd : Page
     {
-        private ObservableCollection<UserModel> _users;
-        public ObservableCollection<UserModel> Users
+        private List<UserModel> _users;
+        public List<UserModel> Users
         {
             get
             {
@@ -42,6 +43,20 @@ namespace Grappbox.View
                 _users = value;
             }
         }
+
+        private ObservableCollection<UserModel> _selectedUsers;
+        public ObservableCollection<UserModel> SelectedUsers
+        {
+            get
+            {
+                return _selectedUsers;
+            }
+            set
+            {
+                _selectedUsers = value;
+            }
+        }
+
         public EventViewModel Event { get; private set; } = new EventViewModel()
         {
             Creator = new Creator()
@@ -57,6 +72,7 @@ namespace Grappbox.View
         public CalendarEventAdd()
         {
             this.InitializeComponent();
+            SelectedUsers = new ObservableCollection<UserModel>();
         }
 
         private async Task GetUsersList()
@@ -71,12 +87,13 @@ namespace Grappbox.View
             {
                 string json = await res.Content.ReadAsStringAsync();
                 var list = SerializationHelper.DeserializeArrayJson<List<UserModel>>(json);
-                Users = new ObservableCollection<UserModel>(list);
+                Users = new List<UserModel>(list);
                 ParticipantSearch.ItemsSource = Users;
+                ParticipantSearch.DisplayMemberPath = "FullName";
             }
             else
             {
-                Users = new ObservableCollection<UserModel>();
+                Users = new List<UserModel>();
                 Users.Add(new UserModel()
                 {
                     Id = session.UserId,
@@ -112,9 +129,9 @@ namespace Grappbox.View
         private async Task<bool> PostEvent()
         {
             var list = new List<int>();
-            if (Users != null)
+            if (SelectedUsers != null)
             {
-                foreach (var u in Users)
+                foreach (var u in SelectedUsers)
                 {
                     list.Add(u.Id);
                 }
@@ -133,17 +150,28 @@ namespace Grappbox.View
 
         private void ParticipantSearch_TextChanged(AutoSuggestBox sender, AutoSuggestBoxTextChangedEventArgs args)
         {
-
+            if (args.Reason == AutoSuggestionBoxTextChangeReason.UserInput)
+            {
+                if (string.IsNullOrWhiteSpace(sender.Text))
+                    sender.ItemsSource = Users;
+                else
+                    sender.ItemsSource = Users.Where(u => u.FullName.Contains(sender.Text));
+            }
         }
 
         private void ParticipantSearch_QuerySubmitted(AutoSuggestBox sender, AutoSuggestBoxQuerySubmittedEventArgs args)
         {
-
+            sender.Text = string.Empty;
+            sender.ItemsSource = Users;
+            sender.IsSuggestionListOpen = false;
         }
 
         private void ParticipantSearch_SuggestionChosen(AutoSuggestBox sender, AutoSuggestBoxSuggestionChosenEventArgs args)
         {
-
+            SelectedUsers.Add((UserModel)args.SelectedItem);
+            sender.Text = string.Empty;
+            sender.ItemsSource = Users;
+            sender.IsSuggestionListOpen = false;
         }
         private void TimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
         {
@@ -171,7 +199,7 @@ namespace Grappbox.View
             Event.BeginDate = offset.ToString("yyyy-MM-dd HH:mm:ss");
         }
 
-        private async void Button_Click(object sender, RoutedEventArgs e)
+        private async void Save(object sender, RoutedEventArgs e)
         {
             LoaderDialog loader = new LoaderDialog();
             loader.ShowAsync();
@@ -186,7 +214,7 @@ namespace Grappbox.View
                 this.Frame.GoBack();
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private void Cancel(object sender, RoutedEventArgs e)
         {
             if (this.Frame.CanGoBack == true)
                 this.Frame.GoBack();
@@ -196,6 +224,11 @@ namespace Grappbox.View
         {
             TextBox tb = sender as TextBox;
             Event.Title = tb.Text;
+        }
+
+        private void DeleteParticipant(object sender, RoutedEventArgs e)
+        {
+            Debug.WriteLine(e.OriginalSource);
         }
     }
 }

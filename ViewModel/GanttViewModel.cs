@@ -5,17 +5,19 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Grappbox.ViewModel
 {
-    class TaskViewModel : ViewModelBase
+    class GanttViewModel : ViewModelBase
     {
-        private ObservableCollection<TaskModel> _tasks;
-        public ObservableCollection<TaskModel> Tasks
+        public DateTime StartDate;
+        public DateTime EndDate;
+        public ObservableCollection<TaskModel> Dates;
+        private List<TaskModel> _tasks;
+        public List<TaskModel> Tasks
         {
             get { return _tasks; }
             set
@@ -37,10 +39,16 @@ namespace Grappbox.ViewModel
                 {
                     DateFormatString = "yyyy-MM-dd HH:mm:ss"
                 };
-                Tasks = SerializationHelper.DeserializeArrayJson<ObservableCollection<TaskModel>>(json, settings);
-                foreach (var t in Tasks)
-                    Debug.WriteLine("Task: " + t.Description + "  duedate: " + t.DueDate.ToString());
+                var tasks = SerializationHelper.DeserializeArrayJson<List<TaskModel>>(json, settings);
+                Tasks = tasks.OrderBy(t => t.StartedAt).ToList();
+                StartDate = Tasks[0].StartedAt ?? new DateTime();
+                EndDate = Tasks.Last().DueDate;
             }
+        }
+
+        public void CreateDateTable()
+        {
+
         }
     }
 }

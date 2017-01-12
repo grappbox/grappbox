@@ -7,25 +7,34 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:global="using:Grappbox"
     xmlns:viewModels="using:Grappbox.ViewModel"
+    xmlns:models="using:Grappbox.Model"
     xmlns:Controls="using:Grappbox.CustomControls"
     mc:Ignorable="d">
 
     <Page.Resources>
-        <DataTemplate x:Key="EventUserListDataTemplate" x:DataType="viewModels:UserViewModel">
+        <DataTemplate x:Key="EventUserListDataTemplate" x:DataType="models:UserModel">
             <RelativePanel>
-                <Border x:Name="ParticipantIconBorder" CornerRadius="45" Background="DimGray" BorderThickness="0" RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True">
-                    <FontIcon x:Name="ParticipantIcon"
+                <FontIcon x:Name="ParticipantIcon"
+                          RelativePanel.AlignVerticalCenterWithPanel="True" RelativePanel.AlignLeftWithPanel="True"
                               FontSize="24"
                               Foreground="White"
                               FontFamily="{StaticResource MaterialIconFontFamily}"
                               Glyph="{x:Bind global:Constants.PersonSymbol}"/>
-                </Border>
                 <TextBlock x:Name="ParticipantName"
                            Text="{x:Bind FullName}"
                            Margin="5"
                            FontSize="18"
-                           RelativePanel.AlignVerticalCenterWith="ParticipantIconBorder"
-                           RelativePanel.RightOf="ParticipantIconBorder"/>
+                           RelativePanel.AlignVerticalCenterWith="ParticipantIcon"
+                           RelativePanel.RightOf="ParticipantIcon"/>
+                <Button RelativePanel.AlignVerticalCenterWith="ParticipantIcon"
+                        RelativePanel.RightOf="ParticipantName"
+                        RelativePanel.AlignRightWithPanel="True"
+                        Click="DeleteParticipant">
+                    <Button.Content>
+                        <SymbolIcon Foreground="{StaticResource BlueGrappboxBrush}"
+                                    Symbol="Delete"></SymbolIcon>
+                    </Button.Content>
+                </Button>
             </RelativePanel>
         </DataTemplate>
     </Page.Resources>
@@ -54,17 +63,19 @@
                 </Style>
             </Grid.Resources>
             <TextBox x:Name="Title" Grid.Row="0" Text="{x:Bind Event.Title}" FontSize="40"
+                     BorderThickness="0"
                      Foreground="{StaticResource BlueGrappboxBrush}"
                      PlaceholderText="Enter title"
                      HorizontalAlignment="Stretch"
                      TextChanged="Title_TextChanged"/>
-            <CalendarDatePicker Grid.Row="1" x:Name="BeginDatePicker" DateChanged="BeginDatePicker_DateChanged" />
-            <TimePicker Grid.Row="2" x:Name="BeginTimePicker" TimeChanged="TimePicker_TimeChanged" />
-            <CalendarDatePicker Grid.Row="3" x:Name="EndDatePicker" DateChanged="EndDatePicker_DateChanged" />
-            <TimePicker Grid.Row="4" x:Name="EndTimePicker" TimeChanged="TimePicker_TimeChanged_1" />
+            <CalendarDatePicker Grid.Row="1" x:Name="BeginDatePicker" DateChanged="BeginDatePicker_DateChanged" BorderThickness="0"/>
+            <TimePicker Grid.Row="2" x:Name="BeginTimePicker" TimeChanged="TimePicker_TimeChanged" BorderThickness="0"/>
+            <CalendarDatePicker Grid.Row="3" x:Name="EndDatePicker" DateChanged="EndDatePicker_DateChanged" BorderThickness="0"/>
+            <TimePicker Grid.Row="4" x:Name="EndTimePicker" TimeChanged="TimePicker_TimeChanged_1" BorderThickness="0"/>
             <TextBox Grid.Row="5" x:Name="DescriptionText" Text="{x:Bind Event.Description , Mode=TwoWay}"
                      Margin="5" HorizontalAlignment="Stretch"
-                     PlaceholderText="Enter Description"/>
+                     PlaceholderText="Enter Description"
+                     BorderThickness="0"/>
             <AutoSuggestBox Grid.Row="6" x:Name="ParticipantSearch"
                             TextChanged="ParticipantSearch_TextChanged"
                             QuerySubmitted="ParticipantSearch_QuerySubmitted"
@@ -89,7 +100,7 @@
                       ScrollViewer.VerticalScrollBarVisibility="Disabled"
                       ScrollViewer.VerticalScrollMode="Disabled"
                       ItemTemplate="{StaticResource EventUserListDataTemplate}"
-                      ItemsSource="{x:Bind Event.Users}">
+                      ItemsSource="{x:Bind SelectedUsers, Mode=OneWay}">
             </ListView>
             <Grid Grid.Row="8">
                 <Grid.ColumnDefinitions>
@@ -99,7 +110,7 @@
                 <Button Grid.Column="0"
                 HorizontalAlignment="Stretch"
                 Foreground="White"
-                Background="{StaticResource BlueGrappboxBrush}" Click="Button_Click">
+                Background="{StaticResource BlueGrappboxBrush}" Click="Save">
                     <Button.Content>
                         <TextBlock Text="Save" FontSize="24" />
                     </Button.Content>
@@ -107,7 +118,7 @@
                 <Button Grid.Column="1"
                 HorizontalAlignment="Stretch"
                 Foreground="White"
-                Background="{StaticResource BlueGrappboxBrush}" Click="Button_Click_1">
+                Background="{StaticResource BlueGrappboxBrush}" Click="Cancel">
                     <Button.Content>
                         <TextBlock Text="Cancel" FontSize="24" />
                     </Button.Content>

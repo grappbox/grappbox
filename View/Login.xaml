@@ -26,22 +26,22 @@
                        Source="/Assets/Grappbox-logo.png" />
             </Grid>
             <TextBox Grid.Row="1" Name="loginBlock"
-                     Background="{StaticResource Grey3GrappboxBrush}"
-                     BorderThickness="0"
+                     BorderThickness="0,0,0,1"
+                     BorderBrush="{StaticResource RedGrappboxBrush}"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
                      PlaceholderText="UserName"
                      Header="Username"
                      Text="pierre.feytout@epitech.eu" />
             <PasswordBox Grid.Row="2" Name="pwdBlock"
-                         Background="{StaticResource Grey3GrappboxBrush}"
-                         BorderThickness="0"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Stretch"
-                         PlaceholderText="Password"
-                         Password="feytou_p"
-                         Header="Password"
-                         PasswordRevealMode="Peek" />
+                     BorderThickness="0,0,0,1"
+                     BorderBrush="{StaticResource RedGrappboxBrush}"
+                     VerticalAlignment="Center"
+                     HorizontalAlignment="Stretch"
+                     PlaceholderText="Password"
+                     Password="feytou_p"
+                     Header="Password"
+                     PasswordRevealMode="Peek" />
             <Button Grid.Row="3"
                     x:Name="DashBoardButton"
                     Content="Log In"

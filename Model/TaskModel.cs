@@ -20,9 +20,9 @@ namespace Grappbox.Model
         [JsonProperty("due_date")]
         public DateTime DueDate { get; set; }
         [JsonProperty("started_at")]
-        public DateTime StartedAt { get; set; }
+        public DateTime? StartedAt { get; set; }
         [JsonProperty("finished_at")]
-        public DateTime FinishedAt { get; set; }
+        public DateTime? FinishedAt { get; set; }
         [JsonProperty("created_at")]
         public DateTime CreatedAt { get; set; }
         [JsonProperty("is_miletsone")]
@@ -36,7 +36,7 @@ namespace Grappbox.Model
         [JsonProperty("creator")]
         public Creator Creator { get; set; }
         [JsonProperty("users")]
-        public Creator Users { get; set; }
+        public List<Creator> Users { get; set; }
         [JsonProperty("tags")]
         public List<TagModel> Tags { get; set; }
         [JsonProperty("dependencies")]
