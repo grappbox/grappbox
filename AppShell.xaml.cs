@@ -2,8 +2,10 @@
 using Grappbox.Helpers;
 using Grappbox.HttpRequest;
 using Grappbox.View;
+using Grappbox.ViewModel;
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using Windows.Foundation;
 using Windows.UI;
@@ -22,10 +24,9 @@ namespace Grappbox
     /// The "chrome" layer of the app that provides top-level navigation with
     /// proper keyboarding navigation.
     /// </summary>
-    public sealed partial class AppShell : Page
+    public sealed partial class AppShell : Page, INotifyPropertyChanged
     {
-        private SessionHelper session = null;
-        private static AppShell instance;
+        private SessionHelper session = SessionHelper.GetSession();
         private bool _isPaddingAdded = false;
 
         // Declare the top level nav items
@@ -51,13 +52,6 @@ namespace Grappbox
                     Symbol = Constants.UserSettingsSymbol,
                     Label = "User Settings",
                     DestPage = typeof(UserView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.LogoutSymbol,
-                    Label = "Logout",
-                    DestPage = typeof(LoginPage),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
             });
@@ -119,13 +113,13 @@ namespace Grappbox
                     DestPage = typeof(DashBoardView),
                     ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
                 },
-                //new NavMenuItem()
-                //{
-                //    Symbol = Constants.StatsSymbol,
-                //    Label = "Statistics",
-                //    DestPage = typeof(StatsView),
-                //    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                //},
+                new NavMenuItem()
+                {
+                    Symbol = Constants.StatsSymbol,
+                    Label = "Statistics",
+                    DestPage = typeof(StatsView),
+                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
+                },
                 new NavMenuItem()
                 {
                     Symbol = Constants.ProjectSettingsSymbol,
@@ -138,13 +132,6 @@ namespace Grappbox
                     Symbol = Constants.UserSettingsSymbol,
                     Label = "User Settings",
                     DestPage = typeof(UserView),
-                    ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
-                },
-                new NavMenuItem()
-                {
-                    Symbol = Constants.LogoutSymbol,
-                    Label = "Logout",
-                    DestPage = typeof(LoginPage),
                     ForegroundColor = SystemInformation.GetStaticResource("RedGrappboxBrush") as SolidColorBrush
                 },
         };
@@ -179,20 +166,10 @@ namespace Grappbox
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
 
-            instance = null;
             NavMenuList.ItemsSource = NavList;
         }
 
-        public ObservableCollection<NavMenuItem> NavList
-        {
-            get
-            {
-                if (session != null && session.IsProjectSelected == true)
-                    return completeNavList;
-                else
-                    return partialNavList;
-            }
-        }
+        public ObservableCollection<NavMenuItem> NavList { get; private set; }
 
         public Frame AppFrame { get { return this.frame; } }
 
@@ -253,7 +230,7 @@ namespace Grappbox
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="listViewItem"></param>
-        private async void NavMenuList_ItemInvoked(object sender, ListViewItem listViewItem)
+        private void NavMenuList_ItemInvoked(object sender, ListViewItem listViewItem)
         {
             foreach (var i in NavList)
             {
@@ -268,24 +245,8 @@ namespace Grappbox
                 if (item.DestPage != null &&
                     item.DestPage != this.AppFrame.CurrentSourcePageType)
                 {
-                    if (item.Label == "Logout")
-                        await logout();
                     this.AppFrame.Navigate(item.DestPage, item.Arguments);
                 }
-            }
-        }
-
-        private async System.Threading.Tasks.Task logout()
-        {
-            HttpResponseMessage res = await HttpRequestManager.Get(null, "account/logout");
-            if (res.IsSuccessStatusCode)
-            {
-                SessionHelper.GetSession().ResetSession();
-            }
-            else
-            {
-                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
             }
         }
 
@@ -377,6 +338,11 @@ namespace Grappbox
             CheckUserIdentity();
             this.TogglePaneButton.Foreground = new SolidColorBrush(Colors.Black);
             this.CheckTogglePaneButtonSizeChanged();
+            if (session != null && session.IsProjectSelected == true)
+                NavList = completeNavList;
+            else
+                NavList = partialNavList;
+            NavMenuList.ItemsSource = NavList;
         }
 
         /// <summary>
@@ -430,6 +396,7 @@ namespace Grappbox
 
         private void CheckUserIdentity()
         {
+            session = SessionHelper.GetSession();
             if (session == null)
                 return;
             if (session.IsUserConnected == true)
@@ -438,9 +405,33 @@ namespace Grappbox
             }
         }
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
+        private async System.Threading.Tasks.Task logout()
         {
+            HttpResponseMessage res = await HttpRequestManager.Get(null, "account/logout");
+            if (res.IsSuccessStatusCode)
+            {
+                SessionHelper.GetSession().ResetSession();
+            }
+            else
+            {
+                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
+                await msgbox.ShowAsync();
+            }
+        }
 
+        private async void ButtonLogout_Click(object sender, RoutedEventArgs e)
+        {
+            await logout();
+        }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public void NotifyPropertyChanged(string property)
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(property));
+            }
         }
     }
 }

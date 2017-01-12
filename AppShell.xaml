@@ -10,7 +10,8 @@
       mc:Ignorable="d">
 
     <Page.Resources>
-        <DataTemplate x:Key="NavMenuItemTemplate" x:DataType="controls:NavMenuItem">
+        <DataTemplate x:Key="NavMenuItemTemplate"
+                      x:DataType="controls:NavMenuItem">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="48" />
@@ -66,8 +67,14 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="auto" />
                     </Grid.RowDefinitions>
-                    <Border BorderThickness="0,0,0,1" Margin="0,48,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
-                        <Grid x:Name="UserProfilGrid" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                    <Border BorderThickness="0,0,0,1"
+                            Margin="0,48,0,0"
+                            BorderBrush="{StaticResource Grey3GrappboxBrush}"
+                            VerticalAlignment="Stretch"
+                            HorizontalAlignment="Stretch">
+                        <Grid x:Name="UserProfilGrid"
+                              VerticalAlignment="Stretch"
+                              HorizontalAlignment="Stretch">
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="60" />
                                 <RowDefinition Height="48" />
@@ -98,17 +105,44 @@
                                        VerticalAlignment="Center"
                                        Text=""
                                        Foreground="Black" />
-                            <Button Grid.Row="1" Grid.ColumnSpan="2"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                Content="Change project" Click="Button_Click">
+                            <Button Grid.Row="1"
+                                    Grid.ColumnSpan="2"
+                                    HorizontalAlignment="Stretch"
+                                    VerticalAlignment="Center"
+                                    Click="Button_Click">
+                                <Button.Template>
+                                    <ControlTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <FontIcon Glyph="&#xE5C4;"
+                                                      FontSize="18"
+                                                      VerticalAlignment="Center"
+                                                      Foreground="Black"
+                                                      FontFamily="{StaticResource MaterialIconFontFamily}">
+                                            </FontIcon>
+                                            <TextBlock Text="Change project"
+                                                       Grid.Column="1"
+                                                       HorizontalAlignment="Stretch"
+                                                       VerticalAlignment="Center"
+                                                       Foreground="Black" />
+                                        </Grid>
+                                    </ControlTemplate>
+                                </Button.Template>
                                 <Button.Style>
                                     <Style TargetType="Button">
-                                        <Setter Property="Background" Value="Transparent" />
-                                        <Setter Property="BorderBrush" Value="Transparent" />
-                                        <Setter Property="BorderThickness" Value="0" />
-                                        <Setter Property="Foreground" Value="Black" />
-                                        <Setter Property="FontSize" Value="16" />
+                                        <Setter Property="Background"
+                                                Value="Transparent" />
+                                        <Setter Property="BorderBrush"
+                                                Value="Transparent" />
+                                        <Setter Property="BorderThickness"
+                                                Value="0" />
+                                        <Setter Property="Foreground"
+                                                Value="Black" />
+                                        <Setter Property="FontSize"
+                                                Value="16" />
                                     </Style>
                                 </Button.Style>
                             </Button>
@@ -117,21 +151,22 @@
 
                     <ScrollViewer Grid.Row="1">
                         <controls:NavMenuListView x:Name="NavMenuList"
-                                              ContainerContentChanging="NavMenuItemContainerContentChanging"
-                                              ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
-                                              ItemTemplate="{StaticResource NavMenuItemTemplate}"
-                                              ItemInvoked="NavMenuList_ItemInvoked"
-                                              ScrollViewer.HorizontalScrollMode="Disabled"
-                                              ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                              ScrollViewer.VerticalScrollMode="Enabled"
-                                              ScrollViewer.VerticalScrollBarVisibility="Hidden" />
+                                                  ContainerContentChanging="NavMenuItemContainerContentChanging"
+                                                  ItemContainerStyle="{StaticResource NavMenuItemContainerStyle}"
+                                                  ItemTemplate="{StaticResource NavMenuItemTemplate}"
+                                                  ItemsSource="{Binding NavList, Mode=OneWay}"
+                                                  ItemInvoked="NavMenuList_ItemInvoked"
+                                                  ScrollViewer.HorizontalScrollMode="Disabled"
+                                                  ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                  ScrollViewer.VerticalScrollMode="Enabled"
+                                                  ScrollViewer.VerticalScrollBarVisibility="Hidden" />
                     </ScrollViewer>
                     <Button Grid.Row="2"
                             Background="Transparent"
                             HorizontalAlignment="Stretch"
                             HorizontalContentAlignment="Left"
                             VerticalAlignment="Center"
-                            Click="Button_Click_1">
+                            Click="ButtonLogout_Click">
                         <Button.Content>
                             <Grid HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
@@ -145,7 +180,7 @@
                                           VerticalAlignment="Center"
                                           Glyph="{x:Bind local:Constants.LogoutSymbol}"
                                           HorizontalAlignment="Center"
-                                          Foreground="Black"/>
+                                          Foreground="Black" />
                                 <TextBlock Grid.Column="1"
                                            Text="Logout"
                                            Style="{StaticResource BodyTextBlockStyle}"
@@ -160,7 +195,7 @@
 
             <SplitView.Content>
                 <Frame x:Name="frame"
-                   Navigating="OnNavigatingToPage">
+                       Navigating="OnNavigatingToPage">
                     <Frame.ContentTransitions>
                         <TransitionCollection>
                             <NavigationThemeTransition>
