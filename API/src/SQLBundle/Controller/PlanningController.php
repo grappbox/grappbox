@@ -142,7 +142,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		 if (count($events) <= 0 && count($tasks) <= 0)
+		 if (count($events) <= 0)
 		 	return $this->setNoDataSuccess("1.5.3", "Calendar", "getDayPlanning");
 
 		return $this->setSuccess("1.5.1", "Calendar", "getDayPlanning", "Complete Success", array("array" => array("events" => $events)));
@@ -261,7 +261,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		if (count($events) <= 0 && count($tasks) <= 0)
+		if (count($events) <= 0)
 			return $this->setNoDataSuccess("1.5.3", "Calendar", "getWeekPlanning");
 
 		return $this->setSuccess("1.5.1", "Calendar", "getWeekPlanning", "Complete Success", array("array" => array("events" => $events)));
@@ -380,7 +380,7 @@ class PlanningController extends RolesAndTokenVerificationController
 			$events[] = $value->objectToArray();
 		}
 
-		if (count($events) <= 0 && count($tasks) <= 0)
+		if (count($events) <= 0)
 			return $this->setNoDataSuccess("1.5.3", "Calendar", "getMonthPlanning");
 
 		return $this->setSuccess("1.5.1", "Calendar", "getMonthPlanning", "Complete Success", array("array" => array("events" => $events)));
