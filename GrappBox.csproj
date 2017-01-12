@@ -139,6 +139,9 @@
     <Compile Include="CustomControls\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ModularDashboard.xaml.cs">
+      <DependentUpon>ModularDashboard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\NavMenuItem.cs" />
     <Compile Include="CustomControls\NavMenuListView.cs" />
     <Compile Include="CustomControls\PageHeader.xaml.cs">
@@ -191,7 +194,6 @@
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\MeetingDashBoard.cs" />
     <Compile Include="Model\ModelMapper.cs" />
-    <Compile Include="Model\ModelRequired.cs" />
     <Compile Include="Model\Occupations.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />
@@ -375,6 +377,10 @@
     <Page Include="CustomControls\MeetingDashBoardPanel.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\ModularDashboard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\PageHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
