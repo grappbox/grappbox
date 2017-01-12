@@ -596,11 +596,14 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 .dashboard .box { text-align: left; }
 .dashboard .box img { border-radius: 50%; float: left; margin: 15px 20px 50px 15px; }
 .dashboard .box .title { font-weight: 500!important; margin: 10px 0 0 0; }
-.dashboard .box .preview p { padding: 5px 0 0 0; }
 .dashboard p span { margin-left: 30px; }
 .dashboard .box .btn { float: right; margin: 15px 5px 10px 5px; }
 .dashboard .box .btn:focus,
 .dashboard .box .btn:hover { color: #fff!important; }
+
+.dashboard .each-member .box .preview p { padding: 5px 0 0 0; }
+.dashboard .each-meeting .box .preview p { padding: 5px 10px 0 15px; }
+
 
 @media (max-width: 405px) {
   .dashboard-list .box img { float: none; display: block; margin: 10px auto; }
