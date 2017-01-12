@@ -63,36 +63,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.todos.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>No task currently scheduled.<br><span>Assign or create a new one to get started.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>No task currently scheduled.<br><span>Assign or create a new one to get started.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>              
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- In progress -->
@@ -137,36 +143,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.doings.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>No task currently in progress.<br><span>Assign or create a new one to get started.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>No task currently in progress.<br><span>Assign or create a new one to get started.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- Done -->
@@ -211,36 +223,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.dones.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>None of these tasks are finished.<br><span>Closed tasks will be compiled here.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>None of these tasks are finished.<br><span>Closed tasks will be compiled here.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- Yours -->
@@ -285,36 +303,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.users.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>None of the tasks you created are finished.<br><span>Your closed tasks will be compiled here.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>None of the tasks you created are finished.<br><span>Your closed tasks will be compiled here.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- Containers -->
@@ -355,36 +379,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.containers.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>This project doesn't have any containers.<br><span>Create a new one to begin.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>This project doesn't have any container.<br><span>Create a new one to begin.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <!-- Milestones -->
@@ -425,36 +455,42 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="!data.milestones.length">
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                     <div class="box error">
-                      <p><i class="material-icons">help</i>This project doesn't have any milestone.<br><span>Mark a new one to begin.</span></p>
+                      <p><i class="material-icons" aria-hidden="true">help</i>This project doesn't have any milestone.<br><span>Mark a new one to begin.</span></p>
                     </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
               </div>
 
               <div data-ng-if="data.message == '_empty'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Unable to get current tasks.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_invalid'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
               <div data-ng-if="data.message == '_denied'">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
-                    <p><i class="material-icons">block</i>You don't have access to this page.</p>
+                    <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                   </div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
+        <div class="clearfix"></div>
       </div>
 
       <div class="slide {[{ ::path.colors[path.current] + '-background' }]}"></div>

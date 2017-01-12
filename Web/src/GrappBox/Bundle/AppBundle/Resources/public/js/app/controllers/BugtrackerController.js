@@ -349,9 +349,8 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   $scope.closeTicket = function() {
     $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + $scope.ticketID)
       .then(function successCallback(response) {
+          $location.path("bugtracker/" + $scope.projectId);
           notificationFactory.success("Ticket closed");
-          //$location.reload();
-          $route.reload();
       },
       function errorCallback(resposne) {
           notificationFactory.error("Unable to close issue. Please try again.");

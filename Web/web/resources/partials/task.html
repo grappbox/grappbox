@@ -11,13 +11,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task creation</h1>
       <p>This page allows you to create and assign a new task.<br>Use the "Create" button at the end of this page when you're done.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -96,6 +95,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
                         <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeResource(user)"><i class="material-icons" aria-hidden="true">delete</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -151,6 +151,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
                         <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeDependency(dependency)"><i class="material-icons" aria-hidden="true">delete</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>                  
@@ -158,6 +159,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                 <!-- SUBMIT -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                  <a href="{[{ 'task/' + projectID }]}" class="btn gray-color gray-background-hover">Cancel</a>
                   <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="createTask(data.task)">Create</button>
                 </div>
                 <div class="clearfix"></div>
@@ -181,13 +183,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task edition</h1>
       <p>This page allows you to edit and update an existing task.<br>Validate changes by using the <strong>"Update"</strong> button at the end of the page when you're done.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task information</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -242,7 +243,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <tags-input data-ng-model="data.task.tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)">
                         <auto-complete source="tagsList"></auto-complete>
                       </tags-input>
-                      <span class="help-block">Use ',' to separate tags</span>
                     </div>
                     <h3>Resource(s)</h3>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -316,6 +316,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="form-group label-floating col-lg-1 col-md-1 col-sm-1 col-xs-12">
                         <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons" aria-hidden="true">add</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                       <div class="form-group label-floating no-margin" data-ng-repeat="dependency in data.task.dependencies">
@@ -339,7 +340,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <!-- SUBMIT -->
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
                     <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')">Cancel</button>
-                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTask(data.task)">Edit</button>
+                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTask(data.task)">Update</button>
                   </div>
                   <div class="clearfix"></div>
                 </fieldset>
@@ -355,6 +356,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="data.message == '_invalid'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -362,6 +364,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="data.message == '_denied'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -369,6 +372,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
       </div>
     </div>
@@ -385,13 +389,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Task</h1>
       <p>This page details the selected task.<br>Use the actions buttons at the end of this page if you want to edit, delete or mark as done this task.</p>
-      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back</a>
+      <a href="{[{ 'task/' + projectID }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go back to the task list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
 
   <div class="box-row">
-    <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">{[{ ::path.icons[path.current] }]}</i>Task detail</h4>
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
       <div class="box">
         <div data-ng-if="data.onLoad">
@@ -412,7 +415,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                 <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
                   <h3>Progress</h3>
-                  <p class="no-padding">{[{ data.task.advance + ' %' }]} <span data-ng-if="data.task.finished_at">(finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></p>
+                  <p class="no-padding">{[{ data.task.advance + ' %' }]} <span data-ng-if="data.task.finished_at">(finished: {[{ formatObjectDate(data.task.finished_at) }]})</span></p>
                 </div>
 
                 <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
@@ -474,6 +477,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">error</i>This task doesn't exist.</p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
             <div data-ng-if="data.message == '_invalid'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -481,6 +485,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
             <div data-ng-if="data.message == '_denied'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -488,11 +493,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
                 </div>
               </div>
+              <div class="clearfix"></div>
             </div>
           </div>
           <div class="clearfix"></div>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 </section>

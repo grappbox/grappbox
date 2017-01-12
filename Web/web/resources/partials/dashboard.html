@@ -25,14 +25,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
       <!-- Team occupation -->
       <div data-ng-if="project.occupation.authorized">
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}">group</i>Team occupation</h4>
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors[path.current] + '-background' }]}" aria-hidden="true">group</i>Team occupation</h4>
         <div data-ng-if="project.occupation.valid && project.occupation.list">
           <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding" data-ng-repeat="member in ::project.occupation.list">
             <div class="box">
               <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::member.user.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::member.user.firstname }]} {[{ ::member.user.lastname }]}">
               <div class="preview">
                 <p class="ellipsis title">{[{ ::member.user.firstname }]} {[{ ::member.user.lastname }]}</p>
-                <p><i class="material-icons">info</i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}</p>
+                <p><i class="material-icons" aria-hidden="true">info</i>{[{ member.occupation == 'free' ? 'Available' : 'Busy' }]}</p>
                 <p><i class="material-icons {[{ ::path.colors['/task'] + '-color' }]}">{[{ ::path.icons['/task'] }]}</i>{[{ ::member.number_of_tasks_begun }]} started tasks<br><span>{[{ ::member.number_of_ongoing_tasks }]} remaining</span></p>
               </div>
               <div class="clearfix"></div>
@@ -47,29 +47,31 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="project.occupation.valid && !project.occupation.list">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
             <div class="box error">
-              <p><i class="material-icons">help</i>You don't have any team member.<br><span>Add new members using the project's settings page.</span></p>
+              <p><i class="material-icons" aria-hidden="true">help</i>You don't have any team member.<br><span>Add new members using the project's settings page.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="!project.occupation.valid">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
             <div class="box error text-center">
-              <p><i class="material-icons">error</i>Someting is wrong with GrappBox.<br><span>Please try again.</span></p>
+              <p><i class="material-icons" aria-hidden="true">error</i>Someting is wrong with GrappBox.<br><span>Please try again.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div class="clearfix"></div>
       </div>
 
       <!-- Next meetings -->
-      <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/calendar'] + '-background' }]}">{[{ ::path.icons['/calendar'] }]}</i>Next meetings</h4>
+      <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/calendar'] + '-background' }]}" aria-hidden="true">{[{ ::path.icons['/calendar'] }]}</i>Next meetings</h4>
       <div data-ng-if="project.meetings.valid && project.meetings.list">
         <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding" data-ng-repeat="meeting in ::project.meetings.list">
           <div class="box">
             <div class="preview">
               <p class="ellipsis title">{[{ ::meeting.title }]}</p>
-              <p><i class="material-icons">schedule</i>{[{ ::meeting.begin_date }]}</p>
-              <p class="ellipsis"><i class="material-icons">info</i>{[{ ::meeting.description }]}</p>
+              <p><i class="material-icons" aria-hidden="true">schedule</i>{[{ ::meeting.begin_date }]}</p>
+              <p class="ellipsis"><i class="material-icons" aria-hidden="true">info</i>{[{ ::meeting.description }]}</p>
             </div>
             <div class="clearfix"></div>
           </div>
@@ -80,16 +82,18 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div data-ng-if="project.meetings.valid && !project.meetings.list">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box error">
-            <p><i class="material-icons">help</i>You don't have any scheduled meeting.<br><span>Use the GrappBox calendar to add one.</span></p>
+            <p><i class="material-icons" aria-hidden="true">help</i>You don't have any scheduled meeting.<br><span>Use the GrappBox calendar to add one.</span></p>
           </div>
+          <div class="clearfix"></div>
         </div>
       </div>
       <div data-ng-if="!project.meetings.valid">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box error text-center">
-            <p><i class="material-icons">error</i>Someting is wrong with GrappBox.<br><span>Please try again.</span></p>
+            <p><i class="material-icons" aria-hidden="true">error</i>Someting is wrong with GrappBox.<br><span>Please try again.</span></p>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
       <div class="clearfix"></div>
 
