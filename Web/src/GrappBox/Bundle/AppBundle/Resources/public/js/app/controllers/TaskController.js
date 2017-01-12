@@ -796,8 +796,8 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
   $scope.deleteTask = function() {
     $http.delete($rootScope.api.url + "/task/" + $scope.taskID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
-          notificationFactory.success("Task deleted");
-          $route.reload();
+        $location.path("task/" + $scope.projectID);
+        notificationFactory.success("Task deleted");
       },
       function errorCallback(resposne) {
           notificationFactory.warning("Unable to delete task. Please try again.");

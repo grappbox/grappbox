@@ -159,6 +159,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                 <!-- SUBMIT -->
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                  <a href="{[{ 'task/' + projectID }]}" class="btn gray-color gray-background-hover">Cancel</a>
                   <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="createTask(data.task)">Create</button>
                 </div>
                 <div class="clearfix"></div>
@@ -339,7 +340,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <!-- SUBMIT -->
                   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
                     <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')">Cancel</button>
-                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTask(data.task)">Edit</button>
+                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTask(data.task)">Update</button>
                   </div>
                   <div class="clearfix"></div>
                 </fieldset>
@@ -414,7 +415,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                 <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
                   <h3>Progress</h3>
-                  <p class="no-padding">{[{ data.task.advance + ' %' }]} <span data-ng-if="data.task.finished_at">(finished at {[{ formatObjectDate(data.task.finished_at) }]})</span></p>
+                  <p class="no-padding">{[{ data.task.advance + ' %' }]} <span data-ng-if="data.task.finished_at">(finished: {[{ formatObjectDate(data.task.finished_at) }]})</span></p>
                 </div>
 
                 <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
