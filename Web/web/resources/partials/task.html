@@ -95,6 +95,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
                         <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeResource(user)"><i class="material-icons" aria-hidden="true">delete</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>
@@ -150,6 +151,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="col-lg-1 col-md-1 col-sm-12 col-xs-12">
                         <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeDependency(dependency)"><i class="material-icons" aria-hidden="true">delete</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                   </div>
                   <div class="clearfix"></div>                  
@@ -240,7 +242,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <tags-input data-ng-model="data.task.tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)">
                         <auto-complete source="tagsList"></auto-complete>
                       </tags-input>
-                      <span class="help-block">Use ',' to separate tags</span>
                     </div>
                     <h3>Resource(s)</h3>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
@@ -314,6 +315,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <div class="form-group label-floating col-lg-1 col-md-1 col-sm-1 col-xs-12">
                         <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons" aria-hidden="true">add</i></a>
                       </div>
+                      <div class="clearfix"></div>
                     </div>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                       <div class="form-group label-floating no-margin" data-ng-repeat="dependency in data.task.dependencies">
