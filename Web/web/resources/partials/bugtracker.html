@@ -2,380 +2,376 @@
 which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
-<!-- Bugtracker -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
-
-<div>
-  <p><a href="{[{'bugtracker/' + projectId}]}" class="btn btn-default"><i class="material-icons">keyboard_arrow_left</i> Back</a></p>
-</div>
-<!-- grappbox.data: bug ticket creation information -->
-<div data-ng-if="data.bugtracker_new">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <p>
-        This page allows you to create a brand new error ticket.<br>Use the <strong>"Create"</strong> button at the end of this page when you're done.
-      </p>
-      </div>
-  </div>
-</div>
-<!-- grappbox.data: ticket edition information -->
-<div data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
-  <div class="panel panel-default">
-    <div class="panel-body">
-      <p>This page allows you to edit any part of your ticket.<br>Validate using the <strong>"Update"</strong> button at the end of pages when you're done.</p>
+<!-- Bugtracker creation -->
+<section class="bugtracker-creation" data-ng-if="data.bugtracker_new">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/bugtracker.svg" width="300" height="auto" alt="Bugtracker">
     </div>
-  </div>
-</div>
-<!-- grappbox.data: ticket visual information -->
-<!-- <div data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
-  <div class="panel panel-default">
-    <div class="panel-heading">See your ticket</div>
-    <div class="panel-body">
-      <p>This page shows you all informations about your ticket.<br>Edit using the <strong>"Edit"</strong> button at the end of the page.</p>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Issue creation</h1>
+      <p>This page allows you to create and assign a new issue.<br>Use the "Create" button at the end of this page when you're done.</p>
+      <a href="{[{ 'bugtracker/' + projectId }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Return to the bugtracker main page">Back to list</a>
     </div>
+    <div class="clearfix"></div>
   </div>
-</div> -->
 
-<!-- grappbox.data: bug creation -->
-<section id="bugtracker-creation" data-ng-if="data.bugtracker_new">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
+  <div class="box-row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
         <div data-ng-if="data.onLoad">
           <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
           </div>
         </div>
         <div data-ng-if="!data.onLoad">
-          <form class="form-horizontal" novalidate>
-            <fieldset>
-              <div class="form-group">
-                <label for="title" class="col-md-1 control-label">Title</label>
-                <div class="col-md-11">
-                  <input type="text" class="form-control" data-ng-model="data.ticket.title" id="title" placeholder="Title">
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="description" class="col-md-1 control-label">Description</label>
-                <div class="col-md-11">
-                  <textarea class="form-control" rows="3" data-ng-model="data.ticket.description" id="description" placeholder="Description"></textarea>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="tags"
-                              display-property="name"
-                              replace-spaces-with-dashes="false"
-                              on-tag-added="tagAdded($tag)"
-                              on-tag-removed="tagRemoved($tag)">
-                    <auto-complete source="tagsList"></auto-complete>
-                  </tags-input>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
-                <div class="col-md-11">
-                  <tags-input ng-model="users"
-                              display-property="name"
-                              placeholder="Assign a user"
-                              replace-spaces-with-dashes="false"
-                              add-from-autocomplete-only="true"
-                              on-tag-added="userAdded($tag)"
-                              on-tag-removed="userRemoved($tag)">
-                    <auto-complete source="usersList"></auto-complete>
-                  </tags-input>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-md-1 col-md-offset-10 col-xs-6">
-                  <button type="submit" class="btn btn-default" data-ng-click="createTicket(data.ticket)">CREATE</button>
-                </div>
-              </div>
-            </fieldset>
-          </form>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
+          <div data-ng-if="data.message == '_valid'"> 
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <form>
+                <fieldset>
+                  <h3>General</h3>
+                  <div class="form-group">
+                    <label for="title" class="control-label">Title</label>
+                    <input type="text" class="form-control" data-ng-model="data.ticket.title" id="title">
+                  </div>
+                  <div class="form-group">
+                    <label for="description" class="control-label">Description</label>
+                    <textarea class="form-control" rows="4" data-ng-model="data.ticket.description" id="description"></textarea>
+                  </div>
 
-<!-- grappbox.data: bug edition -->
-<section id="bugtracker-edition" data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
-        <div data-ng-if="data.onLoad">
-          <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-          </div>
-        </div>
-        <div data-ng-if="!data.onLoad">
-          <div data-ng-if="data.message == '_valid'">
-            <form class="form-horizontal" novalidate>
-              <fieldset>
-                <div class="form-group">
-                  <label for="title" class="col-md-1 control-label">Title</label>
-                  <div class="col-md-11">
-                    <input type="text" class="form-control" data-ng-model="data.edit.title" id="title" placeholder="Title">
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="description" class="col-md-1 control-label">Description</label>
-                  <div class="col-md-11">
-                    <textarea class="form-control" rows="3" data-ng-model="data.edit.description" id="description" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <label for="tags" class="col-md-1 control-label">Tag(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="data.ticket.tags"
-                                display-property="name"
-                                replace-spaces-with-dashes="false"
-                                on-tag-added="tagAdded($tag)"
-                                on-tag-removed="tagRemoved($tag)">
-                      <auto-complete source="tagsList"><!--
-                                     min-length="0"
-                                     load-on-focus="true"
-                                     load-on-empty="true"
-                                     max-results-to-show="tagsList.length" -->
-                       </auto-complete>
+                  <div class="form-group label-floating">
+                    <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>                  
+                    <label for="tags" class="control-label">Tag(s)</label>
+                    <tags-input data-ng-model="tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)" class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding">
+                      <auto-complete source="tagsList"></auto-complete>
                     </tags-input>
-                    <button class="btn btn-default" ng-click="onNewTag()">Créer un tag</button>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 no-padding text-center">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="onNewTag()"><i class="material-icons" aria-hidden="true">add</i></a>
+                    </div>
+                    <div class="clearfix"></div>
                   </div>
 
-                </div>
-                <div class="form-group">
-                  <label for="tags" class="col-md-1 control-label">Assigned User(s)</label>
-                  <div class="col-md-11">
-                    <tags-input ng-model="data.ticket.users"
-                                display-property="name"
-                                placeholder="Assign a user"
-                                replace-spaces-with-dashes="false"
-                                add-from-autocomplete-only="true"
-                                on-tag-added="userAdded($tag)"
-                                on-tag-removed="userRemoved($tag)">
+                  <div class="form-group label-floating">
+                    <label for="users" class="control-label">Assigned user(s)</label>
+                    <tags-input data-ng-model="users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
                       <auto-complete source="usersList"></auto-complete>
                     </tags-input>
                   </div>
-                </div>
 
-                <div class="form-group">
-                  <div class="col-md-1 col-md-offset-9 col-xs-6">
-                    <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">CANCEL</button>
+                  <!-- SUBMIT -->
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                    <a href="{[{ 'bugtracker/' + projectId }]}" class="btn gray-color gray-background-hover">Cancel</a>
+                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="createTicket(data.ticket)">Create</button>
                   </div>
-                  <div class="col-md-1 col-xs-6">
-                    <button type="submit" class="btn btn-default" data-ng-click="editTicket(data.ticket)">EDIT</button>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-          <div data-ng-if="data.message == '_empty'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-frown-o"></i>This issue doesn't exist.</p>
+                  <div class="clearfix"></div>
+                </fieldset>
+              </form>
             </div>
-          </div>
-          <div data-ng-if="data.message == '_invalid'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-            </div>
-          </div>
-          <div data-ng-if="data.message == '_denied'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
-            </div>
+            <div class="clearfix"></div>
           </div>
         </div>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 </section>
 
-<!-- tag creation modal -->
-<div>
-  <script type="text/ng-template" id="modal_createNewBugTag.html">
-    <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTagCreation()">×</button>
-      <h4 class="modal-title">Tag creation</h4>
+<!-- Bugtracker edition -->
+<section class="bugtracker-edition" data-ng-if="!data.bugtracker_new && data.editMode['ticket']">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/bugtracker.svg" width="300" height="auto" alt="Bugtracker">
     </div>
-    <div class="modal-body">
-      <form class="form-horizontal">
-        <fieldset>
-          <div class="form-group {[{ error.name ? 'has-error' : '' }]}">
-            <label for="new-tag-name" class="col-md-1 control-label">Name</label>
-            <div class="col-md-11">
-              <input type="text" id="new-tag-name" class="form-control" data-ng-model="newTag" placeholder="Name">
-            </div>
-          </div>
-        </fieldset>
-      </form>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Issue edition</h1>
+      <p>This page allows you to edit and update an existing issue.<br>Validate changes by using the <strong>"Update"</strong> button at the end of the page when you're done.</p>
+      <a href="{[{ 'bugtracker/' + projectId }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Return to the bugtracker main page">Back to list</a>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmTagCreation()">Create</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelTagCreation()">Cancel</button>
-    </div>
-  </script>
-</div>
+    <div class="clearfix"></div>
+  </div>
 
-
-<!-- grappbox.data: bug visual -->
-<section id="bugtracker-visual" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
-  <div class="row">
-    <div class="col-lg-12">
-      <div class="well">
+  <div class="box-row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
         <div data-ng-if="data.onLoad">
           <div class="spinner section">
-            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
           </div>
         </div>
         <div data-ng-if="!data.onLoad">
-          <div data-ng-if="data.message == '_valid'">
-            <fieldset>
-              <div class="col-md-12">
-                <h1 class="ellipsis">{[{data.ticket.title}]}</h1>
-                <h4>by {[{data.ticket.creator.firstname+" "+data.ticket.creator.lastname}]} - post: {[{ formatObjectDate(data.ticket.createdAt) }]}
-                  <span data-ng-if="data.ticket.editedAt">, last edit: {[{ formatObjectDate(data.ticket.editedAt) }]}</span>
-                  <span data-ng-if="data.ticket.deletedAt">, close: {[{ formatObjectDate(data.ticket.deletedAt) }]}</span>
-                </h4>
-              </div>
-              <!-- <p>{[{data.ticket.description}]}</p> -->
-
-              <div class="col-md-12 bug-section">
-                <h4 class="bug-section-title"><i class="material-icons">description</i>Description</h4>
-                <div class="col-md-12">
-                  <div class="">
-                    {[{data.ticket.description ? data.ticket.description : 'N/A'}]}
+          <div data-ng-if="data.message == '_valid'"> 
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <form>
+                <fieldset>
+                  <h3>General</h3>
+                  <div class="form-group">
+                    <label for="title" class="control-label">Title</label>
+                    <input type="text" class="form-control" data-ng-model="data.edit.title" id="title">
                   </div>
-                </div>
-              </div>
-
-              <div class="col-md-12 bug-section">
-                <h4 class="bug-section-title"><i class="material-icons">label</i>Tag(s)</h4>
-                <div>
-                  <div class="label tag" style="background-color: #{[{tag.color}]};}]}" ng-repeat="tag in data.ticket.tags">
-                    <span>{[{tag.name}]}</span>
+                  <div class="form-group">
+                    <label for="description" class="control-label">Description</label>
+                    <textarea class="form-control" rows="4" data-ng-model="data.edit.description" id="description"></textarea>
                   </div>
-                </div>
-                <div class="col-md-12" data-ng-if="!((data.ticket.tags).length)">
-                  <div class="">No tag</div>
-                </div>
-              </div>
-              <div class="col-md-12 bug-section">
-                <h4 class="bug-section-title"><i class="material-icons">people</i>Assigned user(s)</h4>
-                <div>
-                  <div class="md-chip"  ng-repeat="user in data.ticket.users">
-                    <div class="md-chip-img">
-                      <img src="../resources/img/app/default-avatar.min.png" alt="avatar" />
+
+                  <div class="form-group label-floating">
+                    <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>                  
+                    <label for="tags" class="control-label">Tag(s)</label>
+                    <tags-input data-ng-model="data.ticket.tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)" class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding">
+                      <auto-complete source="tagsList"></auto-complete>
+                    </tags-input>
+                    <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 no-padding text-center">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="onNewTag()"><i class="material-icons" aria-hidden="true">add</i></a>
                     </div>
-                    <span class="md-chip-text">{[{user.firstname + " " + user.lastname}]}</span>
+                    <div class="clearfix"></div>
                   </div>
-                </div>
-                <div class="col-md-12" data-ng-if="!((data.ticket.users).length)">
-                  <div class="">No Assigned user </div>
-                </div>
-              </div>
-              <div class="col-md-1 col-md-offset-9" data-ng-if="!data.ticket.deletedAt">
-                <button type="submit" class="btn btn-default" data-ng-click="bugtracker_switchEditMode('ticket')">Edit</button>
-              </div>
-              <div class="col-md-1" data-ng-if="!data.ticket.deletedAt">
-                <button type="submit" class="btn btn-default" data-ng-click="closeTicket(data.ticket)">Close</button>
-              </div>
-              <div class="col-md-1 col-md-offset-9" data-ng-if="data.ticket.deletedAt">
-                <button type="submit" class="btn btn-default" data-ng-click="reopenTicket(data.ticket)">Reopen</button>
-              </div>
-            </fieldset>
-          </div>
-          <div data-ng-if="data.message == '_empty'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-frown-o"></i>This bug doesn't exist.</p>
+
+                  <div class="form-group label-floating">
+                    <label for="users" class="control-label">Assigned user(s)</label>
+                    <tags-input data-ng-model="data.ticket.users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
+                      <auto-complete source="usersList"></auto-complete>
+                    </tags-input>
+                  </div>
+
+                  <!-- SUBMIT -->
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+                    <button class="btn gray-color gray-background-hover" data-ng-click="bugtracker_switchEditMode('ticket')">Cancel</button>
+                    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="editTicket(data.ticket)">Update</button>
+                  </div>
+                  <div class="clearfix"></div>
+                </fieldset>
+              </form>
             </div>
-          </div>
-          <div data-ng-if="data.message == '_invalid'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-            </div>
-          </div>
-          <div data-ng-if="data.message == '_denied'">
-            <div class="data-wrapper error">
-              <p><i class="fa fa-times"></i>You don't have access to the bugtracker of this project.</p>
-            </div>
+            <div class="clearfix"></div>
           </div>
         </div>
+
+        <div data-ng-if="data.message == '_empty'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>This issue doesn't exist.</p>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div data-ng-if="data.message == '_invalid'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div data-ng-if="data.message == '_denied'">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </div>
       </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</section>
+
+<!-- Bugtracker -->
+<section class="bugtracker" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/bugtracker.svg" width="300" height="auto" alt="Bugtracker">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Issue</h1>
+      <p>This page details the selected issue.<br>Use the action buttons at the end of this page if you want to edit or delete this issue.</p>
+      <a href="{[{ 'bugtracker/' + projectId }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Return to the bugtracker main page">Back to list</a>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+
+  <div class="box-row">
+    <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+      <div class="box">
+        <div data-ng-if="data.onLoad">
+          <div class="spinner section">
+            <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
+          </div>
+        </div>
+        <div data-ng-if="!data.onLoad">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+            <div data-ng-if="data.message == '_valid'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <h1 class="ellipsis">{[{ data.ticket.title }]}</h1>
+                <p class="no-padding">By {[{ data.ticket.creator.firstname + " " + data.ticket.creator.lastname }]}<br><span data-ng-if="data.ticket.editedAt">Last edit: {[{ formatObjectDate(data.ticket.editedAt) }]}</span><span data-ng-if="data.ticket.deletedAt">Closed: {[{ formatObjectDate(data.ticket.deletedAt) }]}</span>
+                </p>
+
+                <h3>Description</h3>
+                <p class="no-padding">{[{ data.ticket.description ? data.ticket.description : 'None' }]}</p>
+
+                <h3>Tag(s)</h3>
+                <div class="label tag" style="background-color: #{[{ tag.color }]}; color: #212121;" data-ng-repeat="tag in data.ticket.tags">{[{ tag.name }]}</div>
+                <div data-ng-if="!((data.ticket.tags).length)">
+                  <p class="no-padding">No tag for this issue</p>
+                </div>
+
+                <h3>Assigned user(s)</h3>
+                <div class="md-chip" data-ng-repeat="user in data.ticket.users">
+                  <div class="md-chip-img">
+                    <img data-ng-src="https://static.grappbox.com/app/user/{[{ user.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ user.firstname }]} {[{ user.lastname }]}">
+                  </div>
+                  <span class="md-chip-text">{[{ user.firstname + " " + user.lastname }]}</span>
+                </div>
+                <div data-ng-if="!((data.ticket.users).length)">
+                  <p class="no-padding">No assigned user for this task</p>
+                </div>
+              </div>
+
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
+                <button class="btn red-color red-background-hover" data-ng-click="closeTicket(data.ticket)" data-ng-if="!data.ticket.deletedAt">Mark as closed</button>
+                <button class="btn red-color red-background-hover" data-ng-click="reopenTicket(data.ticket)" data-ng-if="data.ticket.deletedAt">Reopen</button>
+                <button class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="bugtracker_switchEditMode('ticket')" data-ng-if="!data.ticket.deletedAt">Edit</button>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+
+            <div data-ng-if="data.message == '_empty'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">error</i>This issue doesn't exist.</p>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div data-ng-if="data.message == '_invalid'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div data-ng-if="data.message == '_denied'">
+              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                <div class="box error">
+                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                </div>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+          </div>        
+          <div class="clearfix"></div>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+  </div>
+</section>
+
+<!-- Comments -->
+<section class="comments" data-ng-if="!data.bugtracker_new && !data.editMode['ticket']">
+  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+    <div class="box-row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ comment.creator.id == user.id ? path.colors[path.current] + '-border' : 'gray-border' }]}" data-ng-repeat="comment in commentsList">
+        <div class="box no-padding no-margin" data-ng-if="!data.editMode[comment.id]">
+          <div data-ng-if="comment.creator.id == user.id">
+            <div class="user-comment col-lg-10 col-md-10 col-sm-10 col-xs-12 no-padding">
+              <div class="avatar col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                <img data-ng-src="https://static.grappbox.com/app/user/{[{ comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}">
+              </div>
+              <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
+                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]}</span></p>
+                <p class="body">{[{ comment.comment }]}</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="user-actions col-lg-2 col-md-2 col-sm-2 col-xs-12 no-padding text-center">
+              <button class="btn btn-rounded small gray-color gray-background-hover" data-ng-click="bugtracker_switchEditMode(comment.id)"><i class="material-icons" aria-hidden="true">mode_edit</i></button>
+              <button class="btn btn-rounded small gray-color gray-background-hover" data-ng-click="deleteComment(comment.id)"><i class="material-icons" aria-hidden="true">delete</i></button>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div data-ng-if="comment.creator.id != user.id">
+            <div class="user-comment col-lg-10 col-md-10 col-sm-10 col-xs-12 no-padding">
+              <div class="avatar col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                <img data-ng-src="https://static.grappbox.com/app/user/{[{ comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ comments.creator.firstname }]} {[{ comments.creator.lastname }]}">
+              </div>
+              <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
+                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]}</span></p>
+                <p class="body">{[{ comment.comment }]}</p>
+              </div>
+              <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <div class="box no-padding no-margin accentuated" data-ng-if="data.editMode[comment.id]">
+          <div class="col-lg-10 col-md-10 col-sm-10 col-xs-12 no-padding">
+            <form>
+              <fieldset>
+                <div class="avatar col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                  <img data-ng-src="https://static.grappbox.com/app/user/{[{ user.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ user.firstname }]} {[{ creator.lastname }]}">
+                </div>
+                <div class="user-comment col-lg-10 col-md-10 col-sm-12 col-xs-12 no-padding">
+                  <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]}</span></p>                        
+                  <div class="form-group col-lg-10 col-md-10 col-sm-10 col-xs-12 no-margin">
+                    <textarea class="form-control" rows="1" data-ng-model="comment.comment" id="new_comment"></textarea>
+                  </div>
+                  <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 no-padding text-center">
+                    <button class="btn btn btn-rounded small gray-color gray-background-hover no-margin" data-ng-click="bugtracker_switchEditMode(comment.id)"><i class="material-icons" aria-hidden="true">clear</i></button>
+                    <button type="submit" class="btn btn-rounded small gray-color gray-background-hover no-margin" data-ng-click="editComment(comment)"><i class="material-icons" aria-hidden="true">check</i></button>
+                  </div>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+              </fieldset>
+            </form>
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ ::path.colors[path.current] + '-border' }]}">
+        <div class="box no-margin">
+          <form>
+            <fieldset>
+              <div class="form-group label-floating col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
+                <label for="new_comment" class="control-label">Comment</label>
+                <textarea class="form-control" rows="1" data-ng-model="data.comment" id="new_comment"></textarea>
+              </div>
+              <div class="col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                <button type="submit" class="btn btn-rounded small {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="createComment(data.comment)"><i class="material-icons" aria-hidden="true">comment</i></button>
+              </div>
+              <div class="clearfix"></div>
+            </fieldset>
+          </form>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </section>
 
-
-<!-- grappbox.data: comments -->
-<section id="bugtracker-comment" data-ng-if="!data.bugtracker_new">
-  <div class="row">
-      <div class="col-lg-12" data-ng-if="!data.onLoad && data.message == '_valid'">
-        <div class="panel panel-default" data-ng-repeat="comment in commentsList">
-          <div class="panel-body" data-ng-if="!data.editMode[comment.id]">
-            <div class="col-md-12">
-              <div class="col-md-10">
-                <img class="comment-avatar" src="../resources/img/app/default-avatar.min.png" alt="avatar" />
-                <div class="comment-user">{[{comment.creator.firstname + " " + comment.creator.lastname + " at " + formatObjectDate(comment.createdAt) + (comment.editedAt ? " - edited at " + formatObjectDate(comment.editedAt) : "")}]}</div>
-              </div>
-              <div class="btn-group btn-group-xs" data-ng-if="(!data.ticket.deletedAt) && (comment.creator.id == userId)">
-                <button class="btn btn-default btn-xs btn-access" ng-click="bugtracker_switchEditMode(comment.id)" aria-label="edit"><i class="material-icons">edit</i></button>
-                <button class="btn btn-default btn-xs btn-access" ng-click="deleteComment(comment.id)"><i class="material-icons">delete</i></button>
-              </div>
-              <p>{[{comment.comment}]}</p>
-            </div>
-          </div>
-          <!-- <div class="panel-footer" data-ng-if="!data.editMode[comment.id]">
-
-          </div> -->
-
-          <!-- EDIT COMMENT -->
-          <div class="panel-body" data-ng-if="data.editMode[comment.id]">
-            <form class="form-horizontal" novalidate>
-              <fieldset>
-                <div class="form-group">
-                  <label for="description" class="col-md-1 control-label">Comment</label>
-                  <div class="col-md-11">
-                    <textarea class="form-control" rows="3" data-ng-model="comment.comment" id="description" placeholder="Description"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-4 col-md-offset-8">
-                    <button class="btn btn-default btn-access" ng-click="bugtracker_switchEditMode(comment.id)" >Cancel</button>
-                    <button type="submit" class="btn btn-default" data-ng-click="editComment(comment)">Udpate</button>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-        <!-- POST COMMENT -->
-        <div class="panel panel-default" data-ng-if="!data.ticket.deletedAt">
-          <div class="panel-heading">
-              Post new comment
-          </div>
-          <div class="panel-body">
-            <form class="form-horizontal" novalidate>
-              <fieldset>
-                <div class="form-group">
-                  <label for="description" class="col-md-1 control-label">Comment</label>
-                  <div class="col-md-11">
-                    <textarea class="form-control" rows="3" data-ng-model="data.comment" id="description" placeholder="comment"></textarea>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="col-md-2 col-md-offset-10">
-                    <button type="submit" class="btn btn-default" data-ng-click="createComment(data.comment)">Post</button>
-                  </div>
-                </div>
-              </fieldset>
-            </form>
-          </div>
-        </div>
-      </div>
+<!-- Tag creation -->
+<script type="text/ng-template" id="modal_createNewBugTag.html" data-ng-if="!data.editMode['ticket']">
+  <div class="modal-header">
+    <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTagCreation()">×</button>
+    <h4 class="modal-title">Tag creation</h4>
   </div>
-</section>
+  <div class="modal-body">
+    <form>
+      <fieldset>
+        <div class="form-group label-floating {[{ error.name ? 'has-error' : '' }]}">
+          <label for="new-tag-name" class="control-label">Name</label>
+          <input type="text" id="new-tag-name" class="form-control" data-ng-model="newTag">
+        </div>
+      </fieldset>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover" data-ng-click="modal_cancelTagCreation()">Cancel</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="modal_confirmTagCreation()">Create</button>
+  </div>
+</script>
