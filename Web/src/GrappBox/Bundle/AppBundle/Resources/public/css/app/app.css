@@ -576,9 +576,13 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 
 
 
-/* ========================================================== */
-/* ==================== DASHBOARD (LIST) ==================== */
-/* ========================================================== */
+/* ================================================== */
+/* ==================== SECTIONS ==================== */
+/* ================================================== */
+
+/* =================================================== */
+/* ==================== DASHBOARD ==================== */
+/* =================================================== */
 
 .dashboard-list .box { text-align: left; }
 .dashboard-list .box img { border-radius: 50%; float: left; margin: 10px 0 10px 10px; }
@@ -588,6 +592,15 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 .dashboard-list .box .btn { float: right; margin: 15px 5px 10px 5px; }
 .dashboard-list .box .btn:focus,
 .dashboard-list .box .btn:hover { color: #fff!important; }
+
+.dashboard .box { text-align: left; }
+.dashboard .box img { border-radius: 50%; float: left; margin: 15px 20px 50px 15px; }
+.dashboard .box .title { font-weight: 500!important; margin: 10px 0 0 0; }
+.dashboard .box .preview p { padding: 5px 0 0 0; }
+.dashboard p span { margin-left: 30px; }
+.dashboard .box .btn { float: right; margin: 15px 5px 10px 5px; }
+.dashboard .box .btn:focus,
+.dashboard .box .btn:hover { color: #fff!important; }
 
 @media (max-width: 405px) {
   .dashboard-list .box img { float: none; display: block; margin: 10px auto; }
@@ -604,25 +617,6 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 @media (min-width: 1600px) and (max-width: 1800px) {
   .page.open .dashboard-list .box img { float: none; display: block; margin: 10px auto; }
 }
-
-
-
-/* ================================================== */
-/* ==================== SECTIONS ==================== */
-/* ================================================== */
-
-/* =================================================== */
-/* ==================== DASHBOARD ==================== */
-/* =================================================== */
-
-.dashboard .box { text-align: left; }
-.dashboard .box img { border-radius: 50%; float: left; margin: 15px 20px 50px 15px; }
-.dashboard .box .title { font-weight: 500!important; margin: 10px 0 0 0; }
-.dashboard .box .preview p { padding: 5px 0 0 0; }
-.dashboard p span { margin-left: 30px; }
-.dashboard .box .btn { float: right; margin: 15px 5px 10px 5px; }
-.dashboard .box .btn:focus,
-.dashboard .box .btn:hover { color: #fff!important; }
 
 
 
@@ -831,8 +825,13 @@ tags-input .tags .focused {
 /* ==================== PROFILE ==================== */
 /* ================================================= */
 
+.profile input[type="radio"][name="tab"]:nth-of-type(1):checked ~ .slide { left: 150px; }
+.profile input[type="radio"][name="tab"]:nth-of-type(2):checked ~ .slide { left: calc((100% / 2) * 1); }
+.profile .slide { width: calc(100% / 2 - 150px); }
+
 .profile .box p { padding: 10px 0; }
 .profile .box .hint:not(.error) { margin: -20px 0 3px 0!important; }
+
 
 
 
