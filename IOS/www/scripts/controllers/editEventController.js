@@ -19,8 +19,6 @@ angular.module('GrappBox.controllers')
 
   $scope.projectId = $stateParams.projectId;
   $scope.eventId = $stateParams.eventId;
-  /*$scope.startTime = new Date();
-  $scope.endTime = new Date();*/
 
   //Assign user list manually to scope because it seems that Ionic bug with ng-model and <select>
   $scope.updateUserList = function (selectedUsers) {
@@ -71,10 +69,6 @@ angular.module('GrappBox.controllers')
   }
   $scope.GetEvent();
 
-  //   $scope.roles = [{id:1, name:"Administrator"}, {id:2, name: "Student"}];
-  // $scope.user = {};
-  // $scope.user.roles = [ {id:1, name:"Administrator"} ];
-
   /*
   var A = [1, 2, 3, 4, 5];
   var B = [1, 4, 6, 7];
@@ -94,14 +88,14 @@ angular.module('GrappBox.controllers')
   $scope.EditEvent = function () {
     //$rootScope.showLoading();
     if ($scope.projectId) {
-    // If there are users from baseSelectedUsers in selectedUsers...
-    $scope.toRemoveUsers = $scope.baseSelectedUsers.filter(function(x) { return $scope.selectedUsers.indexOf(x) < 0 });
-    // If there are users from selectedUsers in baseSelectedUsers...
-    $scope.toAddUsers = $scope.selectedUsers.filter(function(x) { return $scope.baseSelectedUsers.indexOf(x) < 0 });
-    // console.log("TO REMOVE =");
-    // console.log($scope.toRemoveUsers);
-    // console.log("TO ADD =");
-    // console.log($scope.toAddUsers);
+      // If there are users from baseSelectedUsers in selectedUsers...
+      $scope.toRemoveUsers = $scope.baseSelectedUsers.filter(function(x) {
+        return $scope.selectedUsers.indexOf(x) < 0
+      });
+      // If there are users from selectedUsers in baseSelectedUsers...
+      $scope.toAddUsers = $scope.selectedUsers.filter(function(x) {
+        return $scope.baseSelectedUsers.indexOf(x) < 0
+      });
     }
     Event.Edit().update({
       id: $scope.event.id,
@@ -202,7 +196,7 @@ angular.module('GrappBox.controllers')
   ** POPUPS
   */
 
-  // Remove confirm popup for deleting project
+  // Remove confirm popup for deleting event
   $scope.PopupDeleteEvent = function () {
     var confirmPopup = $ionicPopup.confirm({
       title: 'Delete event',

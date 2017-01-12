@@ -40,6 +40,11 @@ console.log("PROJECTID = " + $stateParams.projectId);
 $rootScope.projectId = $stateParams.projectId;
 $scope.projectId = $stateParams.projectId;
 
+$scope.onReorder = function (fromIndex, toIndex) {
+  var moved = $scope.contacts.splice(fromIndex, 1);
+  $scope.contacts.splice(toIndex, 0, moved[0]);
+};
+
 //Get Team Occupation
 $scope.teamOccupationTab = {};
 $scope.GetTeamOccupation = function () {

@@ -1,0 +1,73 @@
+<!--
+Summary: Create task view
+-->
+
+<ion-view>
+  <ion-nav-title class="item-text-wrap">Create task</ion-nav-title>
+  <ion-content overflow-scroll="false">
+    <form name="createTask_form">
+
+      <!-- Title -->
+      <ion-input class="item item-input item-floating-label">
+        <ion-label>Title</ion-label>
+        <input type="text"
+        placeholder="Title"
+        name="createTask_title"
+        ng-model="task.title" required />
+      </ion-input>
+
+      <!-- Description -->
+      <ion-label class="textarea_left">Description</ion-label>
+      <textarea name="createTask_description"
+      rows="6"
+      placeholder="Place..."
+      ng-model="task.description" required></textarea>
+
+      <!-- Object type -->
+      <label ng-if="projectId" class="item item-input">
+        <span class="input-label">Resource(s)</span>
+        <select ng-model="objectType.selected">
+          <option value="regular">Regular</option>
+          <option value="milestone">Milestone</option>
+          <option value="container">Container</option>
+        </select>
+      </label>
+
+      <!-- Dates -->
+      <label class="item item-input">
+        <span class="input-label">Begin</span>
+        <input type="date" name="createTask_startTime" ng-model="task.beginDate" required></input>
+      </label>
+      <label class="item item-input">
+        <span class="input-label">End</span>
+        <input type="date" name="createTask_endTime" ng-model="task.endDate" required></input>
+      </label>
+    </form>
+
+    <!-- Add a resource -->
+    <form name="add_user_form">
+      <!-- Need to use a <div> tag here instead of a <label> because ng-click doesn't work in label in Ionic -->
+      <div class="item item-input">
+        <span class="input-label">Resource(s)</span>
+        <select ng-model="userSelected" ng-options="user as user.name for user in userList" required></select>
+        <select ng-model="chargeSelected" ng-options="n as (n + '%') for n in [] | range:11" required></select>
+        <button ng-disabled="add_user_form.$invalid" class="button button-clear icon ion-plus gb-color-dashboard" ng-click="addUserToTask(userSelected, chargeSelected)"></button>
+      </div>
+    </form>
+
+    <!-- Resources -->
+    <ion-list can-swipe="true">
+        <ion-item ng-repeat="user in usersToAdd"
+            <h2>{{user.firstname}} {{user.lastname}} : {{user.percent}}%</h2>
+            <ion-option-button class="button-assertive icon ion-ios-trash"
+                               ng-click="deleteFromUserToAdd(user.id)">
+            </ion-option-button>
+        </ion-item>
+    </ion-list>
+    <!-- CREATE button -->
+    <div class="text-center">
+      <button ng-disabled="createTask_form.$invalid" class="button button-clear gb-color-calendar" ng-click="CreateTask()">CREATE</button>
+    </div>
+    <!-- </form> -->
+  </ion-content>
+</ion-view>

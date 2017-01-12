@@ -72,15 +72,8 @@
                   on-refresh="doRefreshStats()">
                 </ion-refresher>
                 <div class="item item-divider">Statistics</div>
-                <ion-list>
-                  <!-- <div class="card">
-                    <div class="item item-divider">Line char</div>
-                    <div class="item item-text-wrap">
-                      <canvas id="line" class="chart chart-line" chart-data="data"
-                      chart-labels="labels" chart-series="series" chart-options="options"
-                      chart-dataset-override="datasetOverride" chart-click="onClick"</canvas>
-                    </div>
-                  </div> -->
+                <ion-list sortable draggable=".card" sorted="onReorder($fromIndex, $toIndex)">
+
                   <!-- PIE: Number of bugs assigned and number of bugs unassigned on bugtracker -->
                   <div class="card">
                     <div class="item item-divider">Bugs (un)assigned</div>
@@ -117,6 +110,35 @@
                       </canvas>
                     </div>
                   </div>
+                  <!-- INT: Clients bugs on bugtracker -->
+                  <div class="card">
+                    <div class="item item-divider">Clients bugs on bugtracker</div>
+                    <ion-item ng-if="errors.clientBugTracker">{{ errors.clientBugTracker }}</ion-item>
+                    <div ng-if="!errors.clientBugTracker" class="item item-text-wrap">
+                      {{ stats.clientBugTracker }}
+                    </div>
+                  </div>
+                  <!-- INTS: Number of bugs closed and number of bugs open -->
+                  <div class="card">
+                    <div class="item item-divider">Bugs closed and bugs open</div>
+                    <ion-item ng-if="errors.openCloseBug">{{ errors.openCloseBug }}</ion-item>
+                    <div ng-if="!errors.openCloseBug" class="item item-text-wrap">
+                      Open: {{ stats.openBug }} <br />
+                      Closed: {{ stats.closeBug }}
+                    </div>
+                  </div>
+                  <!-- PIE: Timeline message number per type of timeline -->
+                  <div class="card">
+                    <div class="item item-divider">Message user repartition on timeline</div>
+                    <ion-item ng-if="errors.timelinesMessageNumber">{{ errors.timelinesMessageNumber }}</ion-item>
+                    <div ng-if="!errors.timelinesMessageNumber" class="item item-text-wrap">
+                      <canvas class="chart chart-pie"
+                        chart-options="stats.options"
+                        chart-data="stats.timelinesMessageNumber.data"
+                        chart-labels="stats.timelinesMessageNumber.label">
+                      </canvas>
+                    </div>
+                  </div>
                   <!-- PIE: Tasks status repartition number -->
                   <div class="card">
                     <div class="item item-divider">Tasks status repartition</div>
@@ -141,18 +163,6 @@
                       </canvas>
                     </div>
                   </div>
-                  <!-- PIE: Timeline message number per type of timeline -->
-                  <div class="card">
-                    <div class="item item-divider">Message user repartition on timeline</div>
-                    <ion-item ng-if="errors.timelinesMessageNumber">{{ errors.timelinesMessageNumber }}</ion-item>
-                    <div ng-if="!errors.timelinesMessageNumber" class="item item-text-wrap">
-                      <canvas class="chart chart-pie"
-                        chart-options="stats.options"
-                        chart-data="stats.timelinesMessageNumber.data"
-                        chart-labels="stats.timelinesMessageNumber.label">
-                      </canvas>
-                    </div>
-                  </div>
                   <!-- BAR: Tasks status repartition number per user -->
                   <div class="card">
                     <div class="item item-divider">Tasks status repartition number per user</div>
@@ -166,67 +176,12 @@
                       </canvas>
                     </div>
                   </div>
-                  <!-- BAR: Users working charge -->
-                  <div class="card">
-                    <div class="item item-divider">Users working charge</div>
-                    <ion-item ng-if="errors.userWorkingCharge">{{ errors.userWorkingCharge }}</ion-item>
-                    <div ng-if="!errors.userWorkingCharge" class="item item-text-wrap">
-                      <canvas class="chart chart-bar"
-                        chart-options="stats.options"
-                        chart-data="stats.userWorkingCharge.data"
-                        chart-labels="stats.userWorkingCharge.label"
-                        chart-series="stats.userWorkingCharge.series">
-                      </canvas>
-                    </div>
-                  </div>
-                  <!-- INT: Clients bugs on bugtracker -->
-                  <div class="card">
-                    <div class="item item-divider">Clients bugs on bugtracker</div>
-                    <ion-item ng-if="errors.clientBugTracker">{{ errors.clientBugTracker }}</ion-item>
-                    <div ng-if="!errors.clientBugTracker" class="item item-text-wrap">
-                      {{ stats.clientBugTracker }}
-                    </div>
-                  </div>
-                  <!-- INT: Number of clients accesses-->
-                  <div class="card">
-                    <div class="item item-divider">Number of client accesses</div>
-                    <ion-item ng-if="errors.customerAccessNumber">{{ errors.customerAccessNumber }}</ion-item>
-                    <div ng-if="!errors.customerAccessNumber" class="item item-text-wrap">
-                      {{ stats.customerAccessNumber }}
-                    </div>
-                  </div>
                   <!-- INT: Total tasks -->
                   <div class="card">
                     <div class="item item-divider">Total tasks</div>
                     <ion-item ng-if="errors.totalTasks">{{ errors.totalTasks }}</ion-item>
                     <div ng-if="!errors.totalTasks" class="item item-text-wrap">
                       {{ stats.totalTasks }}
-                    </div>
-                  </div>
-                  <!-- INT: Percentage stockage occupied on total stockage -->
-                  <div class="card">
-                    <div class="item item-divider">Stockage occupied on total stockage</div>
-                    <ion-item ng-if="errors.storageSize">{{ errors.storageSize }}</ion-item>
-                    <div ng-if="!errors.storageSize" class="item item-text-wrap">
-                      {{ stats.occupiedStorageSize }} / {{ stats.totalStorageSize }}
-                    </div>
-                  </div>
-                  <!-- INTS: Number of bugs closed and number of bugs open -->
-                  <div class="card">
-                    <div class="item item-divider">Bugs closed and bugs open</div>
-                    <ion-item ng-if="errors.openCloseBug">{{ errors.openCloseBug }}</ion-item>
-                    <div ng-if="!errors.openCloseBug" class="item item-text-wrap">
-                      Open: {{ stats.openBug }} <br />
-                      Closed: {{ stats.closeBug }}
-                    </div>
-                  </div>
-                  <!-- DATES: /?\ Project time limits -->
-                  <div class="card">
-                    <div class="item item-divider">Project time limit</div>
-                    <ion-item ng-if="errors.projectTimeLimits">{{ errors.projectTimeLimits }}</ion-item>
-                    <div ng-if="!errors.projectTimeLimits" class="item item-text-wrap">
-                      Project start date: {{ stats.projectStart }} <br />
-                      Project end date: {{ stats.projectEnd }}
                     </div>
                   </div>
                   <!-- BAR: Late tasks -->
@@ -247,12 +202,55 @@
                       </ion-item> -->
                     </div>
                   </div>
+                  <!-- BAR: Users working charge -->
+                  <div class="card">
+                    <div class="item item-divider">Users working charge</div>
+                    <ion-item ng-if="errors.userWorkingCharge">{{ errors.userWorkingCharge }}</ion-item>
+                    <div ng-if="!errors.userWorkingCharge" class="item item-text-wrap">
+                      <canvas class="chart chart-bar"
+                        chart-options="stats.options"
+                        chart-data="stats.userWorkingCharge.data"
+                        chart-labels="stats.userWorkingCharge.label"
+                        chart-series="stats.userWorkingCharge.series">
+                      </canvas>
+                    </div>
+                  </div>
+                  <!-- INT: Number of clients accesses-->
+                  <div class="card">
+                    <div class="item item-divider">Number of client accesses</div>
+                    <ion-item ng-if="errors.customerAccessNumber">{{ errors.customerAccessNumber }}</ion-item>
+                    <div ng-if="!errors.customerAccessNumber" class="item item-text-wrap">
+                      {{ stats.customerAccessNumber }}
+                    </div>
+                  </div>
+                  <!-- INT: Percentage stockage occupied on total stockage -->
+                  <div class="card">
+                    <div class="item item-divider">Stockage occupied on total stockage</div>
+                    <ion-item ng-if="errors.storageSize">{{ errors.storageSize }}</ion-item>
+                    <div ng-if="!errors.storageSize" class="item item-text-wrap">
+                      {{ stats.occupiedStorageSize }} / {{ stats.totalStorageSize }}
+                    </div>
+                  </div>
+                  <!-- DATES: Project time limits -->
+                  <div class="card">
+                    <div class="item item-divider">Project time limit</div>
+                    <ion-item ng-if="errors.projectTimeLimits">{{ errors.projectTimeLimits }}</ion-item>
+                    <div ng-if="!errors.projectTimeLimits" class="item item-text-wrap">
+                      Project start date: {{ stats.projectStart }} <br />
+                      Project end date: {{ stats.projectEnd }}
+                    </div>
+                  </div>
+                  <!-- <div class="card">
+                    <div class="item item-divider">Line char</div>
+                    <div class="item item-text-wrap">
+                      <canvas id="line" class="chart chart-line" chart-data="data"
+                      chart-labels="labels" chart-series="series" chart-options="options"
+                      chart-dataset-override="datasetOverride" chart-click="onClick"</canvas>
+                    </div>
+                  </div> -->
                   <!-- INTS: Project advancement -->
+                  <!-- BAR: /?\ Bugs evolution -->
               </ion-list>
-
-
-              <!-- BAR: /?\ Bugs evolution -->
-
               </ion-content>
             </ion-pane>
         </ion-tab>

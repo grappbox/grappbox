@@ -86,7 +86,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get last messages team info successful !');
                 if (data.data.array.length == 0 && $scope.lastMessagesTeam.length == 0) {
-                    $scope.noMessageTeam = "There is no message in team timeline."
+                    $scope.noMessageTeam = "There is no message in team talks."
                 }
                 else {
                     for (var i = 0; i < data.data.array.length; i++) {
@@ -129,7 +129,7 @@ angular.module('GrappBox.controllers')
             .then(function (data) {
                 console.log('Get last messages customer info successful !');
                 if (data.data.array.length == 0 && $scope.lastMessagesCustomer.length == 0) {
-                    $scope.noMessageCustomer = "There is no message in customer timeline."
+                    $scope.noMessageCustomer = "There is no message in customer talks."
                 }
                 else {
                     for (var i = 0; i < data.data.array.length; i++) {

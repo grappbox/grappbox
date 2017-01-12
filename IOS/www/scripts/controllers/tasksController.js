@@ -1,126 +1,78 @@
-﻿/*
-    Summary: Task Controller
+/*
+Summary: Task Controller
 */
 
 angular.module('GrappBox.controllers')
 
-.controller('TasksCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Tasks) {
-    $scope.projectId = $stateParams.projectId;
-    /*$scope.data = [{
-        name: 'Milestones', height: '3em', sortable: false, classes: 'gantt-row-milestone', color: '#45607D', tasks: [
-           // Dates can be specified as string, timestamp or javascript date object. The data attribute can be used to attach a custom object
-           { name: 'Kickoff', color: '#93C47D', from: '2013-10-07T09:00:00', to: '2013-10-07T10:00:00', data: 'Can contain any custom data or object' },
-           { name: 'Concept approval', color: '#93C47D', from: new Date(2013, 9, 18, 18, 0, 0), to: new Date(2013, 9, 18, 18, 0, 0), est: new Date(2013, 9, 16, 7, 0, 0), lct: new Date(2013, 9, 19, 0, 0, 0) },
-           { name: 'Development finished', color: '#93C47D', from: new Date(2013, 10, 15, 18, 0, 0), to: new Date(2013, 10, 15, 18, 0, 0) },
-           { name: 'Shop is running', color: '#93C47D', from: new Date(2013, 10, 22, 12, 0, 0), to: new Date(2013, 10, 22, 12, 0, 0) },
-           { name: 'Go-live', color: '#93C47D', from: new Date(2013, 10, 29, 16, 0, 0), to: new Date(2013, 10, 29, 16, 0, 0) }
-        ], data: 'Can contain any custom data or object'
-    },
-    {
-        name: 'Status meetings', tasks: [
-           { name: 'Demo #1', color: '#9FC5F8', from: new Date(2013, 9, 25, 15, 0, 0), to: new Date(2013, 9, 25, 18, 30, 0) },
-           { name: 'Demo #2', color: '#9FC5F8', from: new Date(2013, 10, 1, 15, 0, 0), to: new Date(2013, 10, 1, 18, 0, 0) },
-           { name: 'Demo #3', color: '#9FC5F8', from: new Date(2013, 10, 8, 15, 0, 0), to: new Date(2013, 10, 8, 18, 0, 0) },
-           { name: 'Demo #4', color: '#9FC5F8', from: new Date(2013, 10, 15, 15, 0, 0), to: new Date(2013, 10, 15, 18, 0, 0) },
-           { name: 'Demo #5', color: '#9FC5F8', from: new Date(2013, 10, 24, 9, 0, 0), to: new Date(2013, 10, 24, 10, 0, 0) }
-        ]
-    },
-    {
-        name: 'Kickoff', movable: { allowResizing: false }, tasks: [
-           {
-               name: 'Day 1', color: '#9FC5F8', from: new Date(2013, 9, 7, 9, 0, 0), to: new Date(2013, 9, 7, 17, 0, 0),
-               progress: { percent: 100, color: '#3C8CF8' }, movable: false
-           },
-           {
-               name: 'Day 2', color: '#9FC5F8', from: new Date(2013, 9, 8, 9, 0, 0), to: new Date(2013, 9, 8, 17, 0, 0),
-               progress: { percent: 100, color: '#3C8CF8' }
-           },
-           {
-               name: 'Day 3', color: '#9FC5F8', from: new Date(2013, 9, 9, 8, 30, 0), to: new Date(2013, 9, 9, 12, 0, 0),
-               progress: { percent: 100, color: '#3C8CF8' }
-           }
-        ]
-    },
-    {
-        name: 'Create concept', tasks: [
-           {
-               name: 'Create concept', priority: 20, content: '<i class="fa fa-cog" ng-click="scope.handleTaskIconClick(task.model)"></i> {{task.model.name}}', color: '#F1C232', from: new Date(2013, 9, 10, 8, 0, 0), to: new Date(2013, 9, 16, 18, 0, 0), est: new Date(2013, 9, 8, 8, 0, 0), lct: new Date(2013, 9, 18, 20, 0, 0),
-               progress: 100
-           }
-        ]
-    },
-    {
-        name: 'Finalize concept', tasks: [
-           {
-               id: 'Finalize concept', name: 'Finalize concept', priority: 10, color: '#F1C232', from: new Date(2013, 9, 17, 8, 0, 0), to: new Date(2013, 9, 18, 18, 0, 0),
-               progress: 100
-           }
-        ]
-    },
-    { name: 'Development', children: ['Sprint 1', 'Sprint 2', 'Sprint 3', 'Sprint 4'], content: '<i class="fa fa-file-code-o" ng-click="scope.handleRowIconClick(row.model)"></i> {{row.model.name}}' },
-    {
-        name: 'Sprint 1', tooltips: false, tasks: [
-           {
-               id: 'Product list view', name: 'Product list view', color: '#F1C232', from: new Date(2013, 9, 21, 8, 0, 0), to: new Date(2013, 9, 25, 15, 0, 0),
-               progress: 25, dependencies: [{ to: 'Order basket' }, { from: 'Finalize concept' }]
-           }
-        ]
-    },
-    {
-        name: 'Sprint 2', tasks: [
-           {
-               id: 'Order basket', name: 'Order basket', color: '#F1C232', from: new Date(2013, 9, 28, 8, 0, 0), to: new Date(2013, 10, 1, 15, 0, 0),
-               dependencies: { to: 'Checkout' }
-           }
-        ]
-    },
-    {
-        name: 'Sprint 3', tasks: [
-           {
-               id: 'Checkout', name: 'Checkout', color: '#F1C232', from: new Date(2013, 10, 4, 8, 0, 0), to: new Date(2013, 10, 8, 15, 0, 0),
-               dependencies: { to: 'Login & Signup & Admin Views' }
-           }
-        ]
-    },
-    {
-        name: 'Sprint 4', tasks: [
-           {
-               id: 'Login & Signup & Admin Views', name: 'Login & Signup & Admin Views', color: '#F1C232', from: new Date(2013, 10, 11, 8, 0, 0), to: new Date(2013, 10, 15, 15, 0, 0),
-               dependencies: [{ to: 'HW' }, { to: 'SW / DNS/ Backups' }]
-           }
-        ]
-    },
-    { name: 'Hosting' },
-    {
-        name: 'Setup', tasks: [
-           { id: 'HW', name: 'HW', color: '#F1C232', from: new Date(2013, 10, 18, 8, 0, 0), to: new Date(2013, 10, 18, 12, 0, 0) }
-        ]
-    },
-    {
-        name: 'Config', tasks: [
-           { id: 'SW / DNS/ Backups', name: 'SW / DNS/ Backups', color: '#F1C232', from: new Date(2013, 10, 18, 12, 0, 0), to: new Date(2013, 10, 21, 18, 0, 0) }
-        ]
-    },
-    { name: 'Server', parent: 'Hosting', children: ['Setup', 'Config'] },
-    {
-        name: 'Deployment', parent: 'Hosting', tasks: [
-           { name: 'Depl. & Final testing', color: '#F1C232', from: new Date(2013, 10, 21, 8, 0, 0), to: new Date(2013, 10, 22, 12, 0, 0), 'classes': 'gantt-task-deployment' }
-        ]
-    },
-    {
-        name: 'Workshop', tasks: [
-           { name: 'On-side education', color: '#F1C232', from: new Date(2013, 10, 24, 9, 0, 0), to: new Date(2013, 10, 25, 15, 0, 0) }
-        ]
-    },
-    {
-        name: 'Content', tasks: [
-           { name: 'Supervise content creation', color: '#F1C232', from: new Date(2013, 10, 26, 9, 0, 0), to: new Date(2013, 10, 29, 16, 0, 0) }
-        ]
-    },
-     {
-         name: 'Documentation', tasks: [
-            { name: 'Technical/User documentation', color: '#F1C232', from: new Date(2013, 10, 26, 8, 0, 0), to: new Date(2013, 10, 28, 18, 0, 0) }
-         ]
-     }
-    ];*/
+.controller('TasksCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, Toast, Tasks) {
+
+  // Disable back button & set nav color
+  $scope.$on('$ionicView.beforeEnter', function (event, viewData) {
+    $rootScope.viewColor = $rootScope.GBNavColors.dashboard;
+    viewData.enableBack = false;
+  });
+
+  // Refresh
+  $scope.doRefreshTasksList = function () {
+    $scope.GetTasksList();
+    console.log("View refreshed !");
+  }
+
+  $scope.projectId = $stateParams.projectId;
+
+  //Get tasks list
+  $scope.tasksListData = {};
+  $scope.GetTasksList = function () {
+    //$rootScope.showLoading();
+    Tasks.List().get({
+      projectId: $scope.projectId
+    }).$promise
+    .then(function (data) {
+      console.log('Get tasks list successful !');
+      console.log(data.data.array);
+      $scope.tasksListData = data.data.array;
+      if (data.data.array.length == 0)
+        $scope.noTask = "You don't have any task.";
+      else {
+        $scope.noTask = false;
+      }
+    })
+    .catch(function (error) {
+      console.error('Get tasks list failed ! Reason: ' + error.status + ' ' + error.statusText);
+      console.error(error);
+    })
+    .finally(function () {
+      $scope.$broadcast('scroll.refreshComplete');
+      //$rootScope.hideLoading();
+    })
+  }
+  $scope.GetTasksList();
+
+  /*
+  ** Delete task
+  ** Method: DELETE
+  */
+  $scope.deteleTaskData = {};
+  $scope.DeleteTask = function (taskId) {
+    //$rootScope.showLoading();
+    Tasks.Delete().delete({
+      taskId: taskId
+    }).$promise
+    .then(function (data) {
+      console.log('Delete task successful !');
+      $scope.deteleTaskData = data.data;
+      console.log(data);
+      //$rootScope.hideLoading();
+      $scope.GetTasksList();
+    })
+    .catch(function (error) {
+      console.error('Delete task failed ! Reason: ' + error.status + ' ' + error.statusText);
+      Toast.show("Delete task failed");
+      console.error(error);
+    })
+    .finally(function () {
+      $scope.$broadcast('scroll.refreshComplete');
+      //$rootScope.hideLoading();
+    })
+  }
 })

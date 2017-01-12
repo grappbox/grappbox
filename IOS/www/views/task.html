@@ -1,0 +1,47 @@
+<!--
+Summary: Task view
+-->
+
+<ion-view>
+  <ion-nav-title class="item-text-wrap">{{task.title}}</ion-nav-title>
+  <ion-content overflow-scroll="false">
+
+    <!-- Refresher -->
+    <ion-refresher pulling-text="Pull to refresh..." on-refresh="doRefresh()"></ion-refresher>
+
+  <!-- Event information -->
+  <div class="item item-divider item-icon-right">Task information<i class="icon ion-edit gb-color-dashboard" ui-sref="app.editTask({projectId: projectId, taskId: taskId})"></i></div>
+  <ion-list class="list card">
+    <!-- Title -->
+    <ion-item class="item-icon-left item-text-wrap">
+      <i class="icon ion-easel gb-color-dashboard"></i>
+      <strong>Title: </strong> {{ task.title }}
+    </ion-item>
+    <!-- Description -->
+    <ion-item class="item-icon-left">
+      <ion-label><i class="icon ion-document-text gb-color-dashboard"></i> Description:</ion-label>
+      <textarea rows="6" ng-model="task.description" readonly></textarea>
+    </ion-item>
+    <!-- Creator & creating time -->
+    <ion-item class="item-icon-left item-text-wrap">
+      <i class="icon ion-ios-person gb-color-dashboard"></i>
+      <strong>Creator: </strong> {{ task.creator.firstname }} {{ task.creator.lastname }}<br />
+      At: {{ task.created_at }}
+    </ion-item>
+    <!-- Begin datetime -->
+    <ion-item class="item-icon-left">
+      <i class="icon ion-ios-calendar gb-color-dashboard"></i>
+      <strong>Begin at: </strong> {{ task.started_at }}
+    </ion-item>
+    <!-- End datetime -->
+    <ion-item class="item-icon-left">
+      <i class="icon ion-ios-calendar gb-color-dashboard"></i>
+      <strong>End at: </strong> {{ task.due_date }}
+    </ion-item>
+  </ion-list>
+  <div ng-if="projectId" class="item item-divider">Members</div>
+  <ion-item ng-if="task.users[0]">
+    <i class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button>
+  </ion-item>
+</ion-content>
+</ion-view>

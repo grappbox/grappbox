@@ -4,8 +4,11 @@ Summary: Create event on calendar view
 
 <ion-view>
   <ion-nav-title class="item-text-wrap">Create event</ion-nav-title>
+  <!-- Have to set scroll="false" because there is a bug with ionic: can't set multiple select otherwise (impossible to click from the browser) -->
   <ion-content overflow-scroll="false" scroll="false">
     <form name="createEvent_form">
+
+      <!-- Set event's title -->
       <ion-input class="item item-input item-floating-label">
         <ion-label>Title</ion-label>
         <input type="text"
@@ -13,25 +16,25 @@ Summary: Create event on calendar view
         name="createEvent_title"
         ng-model="event.title" required />
       </ion-input>
-      <!-- <ion-input class="item item-input"> -->
+
+      <!-- Set event's description -->
       <ion-label class="textarea_left">Description</ion-label>
       <textarea name="createEvent_description"
       rows="6"
       placeholder="Place..."
       ng-model="event.description" required></textarea>
-      <!-- </ion-input> -->
 
+      <!-- Set event's begin and end date -->
       <label class="item item-input">
         <span class="input-label">Begin</span>
         <input type="datetime-local" name="createEvent_startTime" ng-model="event.beginDate" required></input>
       </label>
-      <!--<pre>Date start = {{ startTime }}</pre>-->
       <label class="item item-input">
         <span class="input-label">End</span>
         <input type="datetime-local" name="createEvent_endTime" ng-model="event.endDate" required></input>
       </label>
 
-      <!--<div class="item item-divider"> Members assignable</div>-->
+      <!-- Set event's participants -->
       <label ng-if="projectId" class="item item-input">
         <span class="input-label">Participants</span>
         <select ng-model="selectedUsers" ng-change="updateUserList(selectedUsers)" name="createEvent_selectedUsers" multiple required>
@@ -39,17 +42,9 @@ Summary: Create event on calendar view
         </select>
       </label>
     </form>
+    <!-- CREATE button -->
     <div class="text-center">
-      <button ng-disabled="createEvent_form.$invalid"
-      class="button button-clear gb-color-calendar"
-      ng-click="CreateEvent()">
-      SAVE
-      </button>
+      <button ng-disabled="createEvent_form.$invalid" class="button button-clear gb-color-calendar" ng-click="CreateEvent()">CREATE</button>
     </div>
-  <!--<div class="item item-divider"> Members assignable</div>-->
-  <!--<div class="item item-divider"> Tags on this ticket</div>
-  <select ng-model="selectedTags" multiple>
-  <option ng-repeat="tag in tagsOnProject" value="{{tag.id}}">{{tag.name}}</option>
-</select>-->
 </ion-content>
 </ion-view>

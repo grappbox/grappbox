@@ -1,18 +1,179 @@
-﻿<!--
-    Summary: Task view
+<!--
+Summary: Task view
 -->
 
 <ion-view>
-    <ion-nav-title class="item-text-wrap">Tasks</ion-nav-title>
-    <ion-content overflow-scroll="false">
-        This section is under construction.
+  <ion-nav-title class="item-text-wrap">Tasks</ion-nav-title>
+  <!--<ion-content overflow-scroll="false">-->
+  <!-- Refresher -->
+  <!--<ion-refresher pulling-text="Pull to refresh..."
+  on-refresh="GetTasksList()">
+</ion-refresher>-->
 
-        <!--<div gantt data=data>
-            <gantt-tree enabled="true" header="Header">
-            </gantt-tree>
-            <gantt-dependencies enabled="true">
-            </gantt-dependencies>
-        </div>-->
-
+<!--This section is under construction.-->
+<ion-tabs class="tabs-positive tabs-striped">
+  <!-- TO DO tab -->
+  <ion-tab title="To Do" class="gb-tab">
+    <ion-floating-button has-footer="true" button-color="{{viewColor}}" icon="ion-plus" icon-color="#FFF" ui-sref="app.createTask({projectId: projectId})">
+    </ion-floating-button>
+    <ion-pane>
+      <ion-content overflow-scroll="false">
+        <!-- Refresher -->
+        <ion-refresher pulling-text="Pull to refresh..."
+        on-refresh="GetTasksList()">
+      </ion-refresher>
+      <ion-list can-swipe="true">
+          <ion-item ng-show="noTask">{{noTask}}</ion-item>
+          <ion-item ng-repeat="task in tasksListData"
+                    ng-if="task.advance == 0"
+                    ui-sref="app.task({projectId: projectId, taskId: task.id})">
+              <h2 style="text-align:center">{{task.title}}</h2>
+              <p>{{task.description}}</p>
+              <p>
+                  By {{task.creator.firstname}} {{task.creator.lastname}}<br />
+                  Due date: {{task.due_date}}<br />
+              </p>
+              <!-- Show tags if they are there -->
+              <!-- Tags on task -->
+              <i ng-if="task.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.tags[0]" ng-repeat="tag in task.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+              <!-- Users on task -->
+              <i ng-if="task.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.users[0]" ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="task.users[0]" /><br ng-if="task.users[0]" />-->
+              <ion-option-button class="button-assertive icon ion-ios-trash"
+                                 ng-click="DeleteTask(task.id)">
+              </ion-option-button>
+          </ion-item>
+      </ion-list>
     </ion-content>
+  </ion-pane>
+</ion-tab>
+<!-- DOING tab -->
+<ion-tab title="Doing" class="gb-tab">
+  <ion-pane>
+    <ion-content overflow-scroll="false">
+      <!-- Refresher -->
+      <ion-refresher pulling-text="Pull to refresh..."
+      on-refresh="GetTasksList()">
+    </ion-refresher>
+    <ion-list can-swipe="true">
+      <ion-item ng-show="noTask">{{noTask}}</ion-item>
+      <ion-item ng-repeat="task in tasksListData"
+      ng-if="task.advance > 0 && task.advance < 100"
+      ui-sref="app.task({projectId: projectId, taskId: task.id})">
+      <h2 style="text-align:center">{{task.title}}</h2>
+      <p>{{task.description}}</p>
+      <p>
+        By {{task.creator.firstname}} {{task.creator.lastname}}<br />
+        Due date: {{task.due_date}}<br />
+      </p>
+      <!-- Show tags if they are there -->
+      <!-- Tags on task -->
+      <i ng-if="task.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.tags[0]" ng-repeat="tag in task.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+      <!-- Users on task -->
+      <i ng-if="task.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.users[0]" ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="task.users[0]" /><br ng-if="task.users[0]" />-->
+      <ion-option-button class="button-assertive icon ion-ios-trash"
+                         ng-click="DeleteTask(task.id)">
+      </ion-option-button>
+    </ion-item>
+  </ion-list>
+  </ion-content>
+</ion-pane>
+<!-- DONE tab -->
+</ion-tab>
+<ion-tab title="Done" class="gb-tab">
+  <ion-pane>
+    <ion-content overflow-scroll="false">
+      <!-- Refresher -->
+      <ion-refresher pulling-text="Pull to refresh..."
+      on-refresh="GetTasksList()">
+    </ion-refresher>
+    <ion-list can-swipe="true">
+      <ion-item ng-show="noTask">{{noTask}}</ion-item>
+      <ion-item ng-repeat="task in tasksListData"
+      ng-if="task.advance == 100"
+      ui-sref="app.task({projectId: projectId, taskId: task.id})">
+      <h2 style="text-align:center">{{task.title}}</h2>
+      <p>{{task.description}}</p>
+      <p>
+        By {{task.creator.firstname}} {{task.creator.lastname}}<br />
+        Due date: {{task.due_date}}<br />
+      </p>
+      <!-- Show tags if they are there -->
+      <!-- Tags on task -->
+      <i ng-if="task.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.tags[0]" ng-repeat="tag in task.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+      <!-- Users on task -->
+      <i ng-if="task.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.users[0]" ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="task.users[0]" /><br ng-if="task.users[0]" />-->
+      <ion-option-button class="button-assertive icon ion-ios-trash"
+                         ng-click="DeleteTask(task.id)">
+      </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-pane>
+</ion-tab>
+<!-- CONTAINERS tab -->
+<ion-tab title="Containers" class="gb-tab">
+  <ion-pane>
+    <ion-content overflow-scroll="false">
+      <!-- Refresher -->
+      <ion-refresher pulling-text="Pull to refresh..."
+      on-refresh="GetTasksList()">
+    </ion-refresher>
+    <ion-list can-swipe="true">
+      <ion-item ng-show="noTask">{{noTask}}</ion-item>
+      <ion-item ng-repeat="task in tasksListData"
+      ng-if="task.is_container"
+      ui-sref="app.task({projectId: projectId, taskId: task.id})">
+      <h2 style="text-align:center">{{task.title}}</h2>
+      <p>{{task.description}}</p>
+      <p>
+        By {{task.creator.firstname}} {{task.creator.lastname}}<br />
+        Due date: {{task.due_date}}<br />
+      </p>
+      <!-- Show tags if they are there -->
+      <!-- Tags on task -->
+      <i ng-if="task.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.tags[0]" ng-repeat="tag in task.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+      <!-- Users on task -->
+      <i ng-if="task.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.users[0]" ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="task.users[0]" /><br ng-if="task.users[0]" />-->
+      <ion-option-button class="button-assertive icon ion-ios-trash"
+                         ng-click="DeleteTask(task.id)">
+      </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-pane>
+</ion-tab>
+<!-- MILESTONES tab -->
+<ion-tab title="Milestones" class="gb-tab">
+  <ion-pane>
+    <ion-content overflow-scroll="false">
+      <!-- Refresher -->
+      <ion-refresher pulling-text="Pull to refresh..."
+      on-refresh="GetTasksList()">
+    </ion-refresher>
+    <ion-list can-swipe="true">
+      <ion-item ng-show="noTask">{{noTask}}</ion-item>
+      <ion-item ng-repeat="task in tasksListData"
+      ng-if="task.is_milestone"
+      ui-sref="app.task({projectId: projectId, taskId: task.id})">
+      <h2 style="text-align:center">{{task.title}}</h2>
+      <p>{{task.description}}</p>
+      <p>
+        By {{task.creator.firstname}} {{task.creator.lastname}}<br />
+        Due date: {{task.due_date}}<br />
+      </p>
+      <!-- Show tags if they are there -->
+      <!-- Tags on task -->
+      <i ng-if="task.tags[0]" class="icon ion-ios-pricetag larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.tags[0]" ng-repeat="tag in task.tags" class="button button-small button-balanced gb-button-tag">{{ tag.name }}</button><br />
+      <!-- Users on task -->
+      <i ng-if="task.users[0]" class="icon ion-ios-person larger gb-color-bugtracker"></i>&nbsp;<button ng-if="task.users[0]" ng-repeat="user in task.users" class="button button-small button-calm gb-button-tag">{{ user.firstname }} {{ user.lastname }}</button><!--<br ng-if="task.users[0]" /><br ng-if="task.users[0]" />-->
+      <ion-option-button class="button-assertive icon ion-ios-trash"
+                         ng-click="DeleteTask(task.id)">
+      </ion-option-button>
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-pane>
+</ion-tab>
+</ion-tabs>
+<!--</ion-content>-->
 </ion-view>

@@ -464,6 +464,54 @@ angular.module('GrappBox', ['ionic', 'ngCordova', 'GrappBox.controllers', 'Grapp
         }
     })
 
+    // Tasks creation view
+    .state('app.createTask', {
+        url: "/projects/:projectId/tasks/create",
+        views: {
+            'menuList': {
+                templateUrl: "views/createTask.html",
+                controller: 'CreateTaskCtrl'
+            }
+        }
+    })
+
+    // Task view
+    .state('app.task', {
+        url: "/projects/:projectId/task/:taskId",
+        views: {
+            'menuList': {
+                templateUrl: "views/task.html",
+                controller: 'TaskCtrl'
+            }
+        }
+    })
+
+    // Task edition view
+    .state('app.editTask', {
+        url: "/projects/:projectId/task/:taskId/edit",
+        views: {
+            'menuList': {
+                templateUrl: "views/editTask.html",
+                controller: 'EditTaskCtrl'
+            }
+        }
+    })
+
+    /*
+    ** GANTT
+    */
+
+    // Gantt view
+    .state('app.gantt', {
+        url: "/projects/:projectId/gantt",
+        views: {
+            'menuList': {
+                templateUrl: "views/gantt.html",
+                controller: 'GanttCtrl'
+            }
+        }
+    })
+
     // if no state are found, here is the fallback url - It's also the default page when starting application
     $urlRouterProvider.otherwise('/auth');
     //$urlRouterProvider.otherwise('/app/whiteboards/1');
