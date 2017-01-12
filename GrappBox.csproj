@@ -194,6 +194,7 @@
     <Compile Include="Model\Global\Position.cs" />
     <Compile Include="Model\MeetingDashBoard.cs" />
     <Compile Include="Model\ModelMapper.cs" />
+    <Compile Include="Model\ModularModel.cs" />
     <Compile Include="Model\Occupations.cs" />
     <Compile Include="Model\ProjectListModel.cs" />
     <Compile Include="Model\ProjectSettings\CustomerAccessModel.cs" />

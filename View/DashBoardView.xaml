@@ -15,6 +15,11 @@
     <Page.Resources>
         <Style TargetType="Button" BasedOn="{StaticResource RedButton}" />
     </Page.Resources>
+
+    <Page.DataContext>
+        <viewModels:DashBoardViewModel x:Name="viewModel" />
+    </Page.DataContext>
+    
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
@@ -24,19 +29,15 @@
         <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Dashboard" />
         <Pivot Grid.Row="1"  Name="DbPivot" Style="{StaticResource RedPivot}">
         </Pivot>
-        <Popup Grid.Row="1" x:Name="SettingsPopUp" Visibility="Collapsed" IsOpen="True">
-            <StackPanel Width="{Binding ActualWidth, ElementName=slideInMenuContentControl, Mode=OneWay}" Background="#FF3b3b3b">
-                <TextBlock Text="Settings" Margin="15" Foreground="White" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="18" />
-                <StackPanel Margin="15,15,0,0">
-                    <TextBlock FontSize="24" Foreground="White">Displayed Pans</TextBlock>
-                    <CheckBox Name="TeamCb" Click="team_cb_Checked" Foreground="White" RequestedTheme="Light">Team</CheckBox>
-                    <CheckBox Name="MeetingsCb" Click="meetings_cb_Checked" Foreground="White" RequestedTheme="Light">Meetings</CheckBox>
-                </StackPanel>
-                <Button Content="Close" Click="CloseSettings_Click" Margin="15,0,0,0" />
-            </StackPanel>
-        </Popup>
-        <CommandBar Grid.Row="2" x:Name="Cb" ClosedDisplayMode="Compact">
-            <AppBarButton Label="Settings" Click="Settings_Click" Icon="Setting" />
+        <CommandBar Grid.Row="2" Background="{StaticResource Grey1GrappboxBrush}">
+            <AppBarButton Click="ModularSettings_Click">
+                Modular Settings
+                <AppBarButton.Icon>
+                    <FontIcon Foreground="{StaticResource RedGrappboxBrush}"
+                              FontFamily="{StaticResource MaterialIconFontFamily}"
+                              FontSize="24" Glyph="&#xE8B8;"></FontIcon>
+                </AppBarButton.Icon>
+            </AppBarButton>
         </CommandBar>
     </Grid>
 </Page>

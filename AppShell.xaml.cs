@@ -111,7 +111,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.WhiteboardSymbol,
                     Label = "Whiteboard",
-                    DestPage = typeof(WhiteBoardView),
+                    DestPage = typeof(WhiteBoardListView),
                     ForegroundColor = SystemInformation.GetStaticResource("GreenGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()
