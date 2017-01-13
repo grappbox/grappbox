@@ -219,8 +219,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="data.message == '_valid'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                 <h1 class="ellipsis">{[{ data.ticket.title }]}</h1>
-                <p class="no-padding">By {[{ data.ticket.creator.firstname + " " + data.ticket.creator.lastname }]}<br><span data-ng-if="data.ticket.editedAt">Last edit: {[{ formatObjectDate(data.ticket.editedAt) }]}</span><span data-ng-if="!data.ticket.state">Closed</span>
-                </p>
+                <div class="avatar">
+                  <img data-ng-src="https://static.grappbox.com/app/user/{[{ data.ticket.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ data.ticket.creator.firstname }]} {[{ data.ticket.creator.lastname }]}">
+                </div>
+                <ul>
+                  <li>{[{ data.ticket.creator.firstname + " " + data.ticket.creator.lastname }]}</li>
+                  <li><span>{[{ data.ticket.createdAt }]} <span data-ng-if="data.ticket.editedAt">(last edit: {[{ data.ticket.editedAt }]})</span></span></li>
+                  <li><span data-ng-if="!data.ticket.state" class="green-color bold">Closed</span></li>
+                </ul>
+                <div class="clearfix"></div>
 
                 <h3>Description</h3>
                 <p class="no-padding">{[{ data.ticket.description ? data.ticket.description : 'None' }]}</p>
@@ -296,7 +303,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <img data-ng-src="https://static.grappbox.com/app/user/{[{ comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}">
               </div>
               <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
-                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]}</span></p>
+                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]} <span data-ng-if="comment.editedAt">(edited)</span></span></p>
                 <p class="body">{[{ comment.comment }]}</p>
               </div>
               <div class="clearfix"></div>
@@ -313,7 +320,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <img data-ng-src="https://static.grappbox.com/app/user/{[{ comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ comments.creator.firstname }]} {[{ comments.creator.lastname }]}">
               </div>
               <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
-                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]}</span></p>
+                <p class="info"><strong>{[{ comment.creator.firstname }]} {[{ comment.creator.lastname }]}</strong> - <span>{[{ comment.createdAt }]} <span data-ng-if="comment.editedAt">(edited)</span></span></p>
                 <p class="body">{[{ comment.comment }]}</p>
               </div>
               <div class="clearfix"></div>
