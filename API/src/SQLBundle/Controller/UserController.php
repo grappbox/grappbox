@@ -331,6 +331,14 @@ class UserController extends RolesAndTokenVerificationController
 	*			"return_message": "User - putbasicinformations - Bad Parameter: oldPassword"
 	*		}
 	*	}
+  * @apiErrorExample Bad Parameter: avatar
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "7.1.4",
+	*			"return_message": "User - putbasicinformations - Bad Parameter: avatar"
+	*		}
+	*	}
 	*/
 	private function putBasicInformations($content, $user, $em)
 	{
@@ -351,14 +359,14 @@ class UserController extends RolesAndTokenVerificationController
 
 			$file = base64_decode($content->avatar);
 			if ($file == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			$image = imagecreatefromstring($file);
 			if ($image == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			if (!imagejpeg($image, $filepath, 80))
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			imagedestroy($image);
 

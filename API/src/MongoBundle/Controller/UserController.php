@@ -117,14 +117,14 @@ class UserController extends RolesAndTokenVerificationController
 
 			$file = base64_decode($content->avatar);
 			if ($file == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			$image = imagecreatefromstring($file);
 			if ($image == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			if (!imagejpeg($image, $filepath, 80))
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("7.1.4", "User", "putbasicinformations", "Bad Parameter: avatar");
 
 			imagedestroy($image);
 
@@ -284,5 +284,5 @@ class UserController extends RolesAndTokenVerificationController
 
 		return $this->setSuccess("1.7.1", "User", "getAllProjectUserAvatar", "Complete Success", array("array" => $data));
 	}
-	
+
 }

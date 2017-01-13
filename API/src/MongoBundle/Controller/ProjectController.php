@@ -84,14 +84,14 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			$file = base64_decode($content->logo);
 			if ($file == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.6", "Project", "projectCreation", "Bad Parameter: logo");
 
 			$image = imagecreatefromstring($file);
 			if ($image == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.6", "Project", "projectCreation", "Bad Parameter: logo");
 
 			if (!imagejpeg($image, $filepath, 80))
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.6", "Project", "projectCreation", "Bad Parameter: logo");
 
 			imagedestroy($image);
 
