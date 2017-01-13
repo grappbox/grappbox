@@ -46,6 +46,8 @@
     <Grid x:Name="LayoutRoot">
         <ToggleButton x:Name="TogglePaneButton"
                       Canvas.ZIndex="100"
+                      FocusVisualPrimaryThickness="0"
+                      FocusVisualSecondaryThickness="0"
                       Style="{StaticResource SplitViewTogglePaneButtonStyle}"
                       IsChecked="{Binding IsPaneOpen, ElementName=RootSplitView, Mode=TwoWay}"
                       Unchecked="TogglePaneButton_Unchecked"

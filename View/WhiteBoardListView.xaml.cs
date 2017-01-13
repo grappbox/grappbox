@@ -21,6 +21,7 @@ using Grappbox.CustomControls;
 using Grappbox.Helpers;
 using Windows.UI.ViewManagement;
 using Windows.UI;
+using Windows.UI.Popups;
 
 // The Blank Page item template is documented at http://go.microsoft.com/fwlink/?LinkID=390556
 
@@ -38,8 +39,10 @@ namespace Grappbox.View
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             StatusBar.GetForCurrentView().BackgroundColor = (Color)SystemInformation.GetStaticResource("GreenGrappbox");
+            LoaderDialog loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("GreenGrappboxBrush"));
+            loader.ShowAsync();
             await viewModel.GetWhiteboards();
-            whiteboardList.ItemsSource = viewModel.Whiteboards;
+            loader.Hide();
         }
 
         private async void CreateWhiteBoard(object sender, RoutedEventArgs e)
@@ -60,6 +63,34 @@ namespace Grappbox.View
             WhiteBoardListModel wblm = e.ClickedItem as WhiteBoardListModel;
             Debug.WriteLine(wblm.Name);
             this.Frame.Navigate(typeof(WhiteBoardView), wblm.Id);
+        }
+
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var confirmDialog = new ConfirmDeleteDialog("Delete Whiteboard", "Are you sure ?", SystemInformation.GetStaticResource<SolidColorBrush>("GreenGrappboxBrush"));
+            await confirmDialog.ShowAsync();
+            if (!confirmDialog.ConfirmDelete)
+                return;
+            var dialog = new Grappbox.CustomControls.LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("GreenGrappboxBrush"));
+            dialog.ShowAsync().GetResults();
+            bool result = await viewModel.DeleteWhiteboard(viewModel.ToDelete.Id);
+            if (!result)
+            {
+                dialog.Hide();
+                var errorDialog = new MessageDialog("Can't delete the whiteboard");
+                await errorDialog.ShowAsync();
+                return;
+            }
+            await viewModel.GetWhiteboards();
+            dialog.Hide();
+        }
+
+        private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            FrameworkElement senderElement = sender as FrameworkElement;
+            viewModel.ToDelete = senderElement.DataContext as WhiteBoardListModel;
+            FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
+            flyoutBase.ShowAt(senderElement);
         }
     }
 }

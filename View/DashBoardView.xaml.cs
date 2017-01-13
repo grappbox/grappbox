@@ -2,6 +2,7 @@
 using Grappbox.Helpers;
 using Grappbox.Model;
 using Grappbox.ViewModel;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Linq;
@@ -13,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using System;
 
 namespace Grappbox.View
 {
@@ -23,6 +25,7 @@ namespace Grappbox.View
     {
         private PivotItem team;
         private PivotItem meetings;
+        private PivotItem statistics;
         private DashBoardViewModel dvm;
 
         public DashBoardView()
@@ -30,9 +33,6 @@ namespace Grappbox.View
             this.InitializeComponent();
             this.DataContext = DashBoardViewModel.GetViewModel();
             this.NavigationCacheMode = NavigationCacheMode.Required;
-
-            TeamCb.IsChecked = SettingsManager.getOption<bool>("team_cb");
-            MeetingsCb.IsChecked = SettingsManager.getOption<bool>("meetings_cb");
             team = new PivotItem();
             meetings = new PivotItem();
         }
@@ -56,51 +56,29 @@ namespace Grappbox.View
                     statusBar.ForegroundColor = (Color)Application.Current.Resources["White1Grappbox"];
                 }
             }
-            var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
-            dialog.ShowAsync();
-            DbPivot.IsEnabled = true;
+            var loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
+            loader.ShowAsync();
             this.dvm = DashBoardViewModel.GetViewModel();
+            await this.dvm.InitialiseAsync();
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
+            //statistics = CreateStatisticsTab();
+            InitializePivot();
+            loader.Hide();
+        }
+
+        private void InitializePivot()
+        {
             DbPivot?.Items?.Clear();
-            DbPivot?.Items?.Add(this.team);
-            DbPivot?.Items?.Add(this.meetings);
-            TeamCb.IsChecked = true;
-            MeetingsCb.IsChecked = true;
-            await this.dvm.InitialiseAsync();
-            dialog.Hide();
-        }
-
-        private async void team_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("team_cb", TeamCb.IsChecked);
-            if (TeamCb.IsChecked == true)
+            foreach (var m in DashBoardViewModel.ModularList)
             {
-                if (DbPivot?.Items?.FirstOrDefault(i => i is TeamDashBoard) == null)
-                    DbPivot?.Items?.Add(team);
-                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
-                dialog.ShowAsync();
-                await this.dvm.InitialiseAsync();
-                dialog.Hide();
+                if (m.DisplayName == "Occupation" && m.Selected == true)
+                    DbPivot?.Items?.Add(this.team);
+                if (m.DisplayName == "Meeting" && m.Selected == true)
+                    DbPivot?.Items?.Add(this.meetings);
+                //if (m.DisplayName == "Statistics")
+                //    DbPivot?.Items?.Add();
             }
-            else
-                DbPivot?.Items?.Remove(team);
-        }
-
-        private async void meetings_cb_Checked(object sender, RoutedEventArgs e)
-        {
-            SettingsManager.setOption("meetings_cb", MeetingsCb.IsChecked);
-            if (MeetingsCb.IsChecked == true)
-            {
-                if (DbPivot?.Items?.FirstOrDefault(i => i is MeetingDashBoardPanel) == null)
-                    DbPivot?.Items?.Add(meetings);
-                var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
-                dialog.ShowAsync();
-                await this.dvm.InitialiseAsync();
-                dialog.Hide();
-            }
-            else
-                DbPivot?.Items?.Remove(meetings);
         }
 
         private void initPivotItem(string header, out PivotItem pivotItem)
@@ -109,10 +87,16 @@ namespace Grappbox.View
             pivotItem.Header = header;
         }
 
+        //public PivotItem CreateStatisticsTab()
+        //{
+        //}
+
         public PivotItem CreateOccupationTab()
         {
             PivotItem pivotItem;
             initPivotItem("Occupation", out pivotItem);
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
             TeamDashBoard td = new TeamDashBoard();
             td.HorizontalAlignment = HorizontalAlignment.Stretch;
             pivotItem.Content = td;
@@ -125,23 +109,22 @@ namespace Grappbox.View
         {
             PivotItem pivotItem;
             initPivotItem("Meetings", out pivotItem);
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
             MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
+            mdp.HorizontalAlignment = HorizontalAlignment.Stretch;
             pivotItem.Content = mdp;
             if (dvm.OccupationList != null)
                 this.dvm.NotifyPropertyChanged("MeetingList");
             return pivotItem;
         }
 
-        private void Settings_Click(object sender, RoutedEventArgs e)
+        private async void ModularSettings_Click(object sender, RoutedEventArgs e)
         {
-            SettingsPopUp.Visibility = Visibility.Visible;
-            DbPivot.IsEnabled = false;
-        }
-
-        private void CloseSettings_Click(object sender, RoutedEventArgs e)
-        {
-            SettingsPopUp.Visibility = Visibility.Collapsed;
-            DbPivot.IsEnabled = true;
+            var modularDialog = new ModularDashboard(DashBoardViewModel.ModularList);
+            await modularDialog.ShowAsync();
+            DashBoardViewModel.ModularList = modularDialog.Modulars.ToList();
+            InitializePivot();
         }
     }
 }

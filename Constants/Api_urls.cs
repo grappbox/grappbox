@@ -18,11 +18,12 @@ namespace Grappbox
         public const string GetProjectUsers = "project/users";
         public const string PostEvent = "event";
         public const string EditEvent = "event";
+        public const string DeleteEvent = "event";
         public const string GetProjectTasks = "tasks/project";
         public const string GetProjectTags = "tasks/tags/project";
         public const string CreateWhiteboard = "whiteboard";
-        public const string CloseWhiteboard = "whiteboard/";
-        public const string DeleteWhiteboard = "whiteboard/";
+        public const string CloseWhiteboard = "whiteboard";
+        public const string DeleteWhiteboard = "whiteboard";
         public const string DeleteWhiteboardObject = "whiteboard/object/";
         public const string ListWhiteboards = "whiteboards";
         public const string OpenWhiteboards = "whiteboard";

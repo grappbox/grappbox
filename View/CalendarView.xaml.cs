@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Grappbox.Model;
 using Grappbox.View;
+using Windows.UI.Popups;
 
 // Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -86,6 +87,36 @@ namespace Grappbox.View
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             this.Frame.Navigate(typeof(CalendarEventAdd), Calendar.SelectedDates.Count > 0 ? Calendar.SelectedDates[0] : DateTimeOffset.Now );
+        }
+
+        private async void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+        {
+            var confirmDialog = new ConfirmDeleteDialog("Delete event", "Are you sure ?", SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            await confirmDialog.ShowAsync();
+            if (!confirmDialog.ConfirmDelete)
+                return;
+            var dialog = new Grappbox.CustomControls.LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
+            dialog.ShowAsync().GetResults();
+            ViewModel.IsBusy = true;
+            bool result = await ViewModel.DeleteEvent(ViewModel.ToDelete.Id);
+            if (!result)
+            {
+                dialog.Hide();
+                var errorDialog = new MessageDialog("Can't delete the event");
+                await errorDialog.ShowAsync();
+                return;
+            }
+            await ViewModel.ForceReset(ViewModel.CurrentDate);
+            dialog.Hide();
+            ViewModel.IsBusy = false;
+        }
+
+        private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
+        {
+            FrameworkElement senderElement = sender as FrameworkElement;
+            ViewModel.ToDelete = senderElement.DataContext as EventViewModel;
+            FlyoutBase flyoutBase = FlyoutBase.GetAttachedFlyout(senderElement);
+            flyoutBase.ShowAt(senderElement);
         }
     }
 }

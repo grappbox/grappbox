@@ -3,6 +3,7 @@ using Grappbox.HttpRequest;
 using Grappbox.Model;
 
 using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
@@ -13,6 +14,12 @@ namespace Grappbox.ViewModel
 {
     public class DashBoardViewModel : ViewModelBase
     {
+        static public List<ModularModel> ModularList = new List<ModularModel>()
+        {
+            new ModularModel() { DisplayName="Occupation", Selected=true },
+            new ModularModel() { DisplayName="Meeting", Selected=true }
+            //new ModularModel() { DisplayName="Statistic", Selected=true }
+        };
         static private DashBoardViewModel instance = null;
 
         static public DashBoardViewModel GetViewModel()

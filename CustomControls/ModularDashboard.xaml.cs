@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Grappbox.Model;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -19,17 +21,17 @@ namespace Grappbox.CustomControls
 {
     public sealed partial class ModularDashboard : ContentDialog
     {
-        public ModularDashboard()
+        public ObservableCollection<ModularModel> Modulars;
+        public ModularDashboard(List<ModularModel> modulars)
         {
+            FullSizeDesired = true;
+            Modulars = new ObservableCollection<ModularModel>(modulars);
             this.InitializeComponent();
         }
 
-        private void ContentDialog_PrimaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
+        private void Button_Click(object sender, RoutedEventArgs e)
         {
-        }
-
-        private void ContentDialog_SecondaryButtonClick(ContentDialog sender, ContentDialogButtonClickEventArgs args)
-        {
+            this.Hide();
         }
     }
 }

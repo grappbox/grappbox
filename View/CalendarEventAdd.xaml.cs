@@ -36,7 +36,10 @@ namespace Grappbox.View
         {
             get
             {
-                return _users;
+                if (SelectedUsers != null && SelectedUsers.Count > 0)
+                    return _users.Where(u => !SelectedUsers.Any(s => u.Id == s.Id)).ToList();
+                else
+                    return _users;
             }
             set
             {
@@ -59,6 +62,7 @@ namespace Grappbox.View
 
         public EventViewModel Event { get; private set; } = new EventViewModel()
         {
+            Title = "",
             Creator = new Creator()
             {
                 Id = 0
@@ -177,6 +181,7 @@ namespace Grappbox.View
             sender.ItemsSource = Users;
             sender.IsSuggestionListOpen = false;
         }
+
         private void BeginTimePicker_TimeChanged(object sender, TimePickerValueChangedEventArgs e)
         {
             DateTimeOffset offset = new DateTimeOffset(Event.BeginDateTime.Date.Year, Event.BeginDateTime.Date.Month, Event.BeginDateTime.Date.Day, e.NewTime.Hours,
@@ -238,7 +243,7 @@ namespace Grappbox.View
         {
             if (await CheckData() == false)
                 return;
-            LoaderDialog loader = new LoaderDialog();
+            LoaderDialog loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
             loader.ShowAsync();
             bool res = await PostEvent();
             loader.Hide();
@@ -257,15 +262,11 @@ namespace Grappbox.View
                 this.Frame.GoBack();
         }
 
-        private void Title_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            TextBox tb = sender as TextBox;
-            Event.Title = tb.Text;
-        }
-
         private void DeleteParticipant(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(e.OriginalSource);
+            var button = sender as Button;
+            var user = button.DataContext as UserModel;
+            SelectedUsers.Remove(user);
         }
     }
 }

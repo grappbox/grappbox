@@ -36,7 +36,10 @@ namespace Grappbox.View
         {
             get
             {
-                return _users;
+                if (SelectedUsers != null && SelectedUsers.Count > 0)
+                    return _users.Where(u => !SelectedUsers.Any(s => u.Id == s.Id)).ToList();
+                else
+                    return _users;
             }
             set
             {
@@ -80,14 +83,19 @@ namespace Grappbox.View
             EndDatePicker.Date = end;
             BeginTimePicker.Time = begin.TimeOfDay;
             EndTimePicker.Time = end.TimeOfDay;
-            SelectedUsers = new ObservableCollection<UserModel>(Event.Users);
+            SelectedUsers = new ObservableCollection<UserModel>();
+
+            if (Event.Users == null)
+                return;
+            foreach (var u in Event.Users)
+                SelectedUsers.Add(u);
+            this.selectedUsersList.ItemsSource = SelectedUsers;
+            this.Focus(FocusState.Keyboard);
         }
 
         private async Task GetUsersList(int? projectId)
         {
             SessionHelper session = SessionHelper.GetSession();
-            if (session.IsProjectSelected == false)
-                return;
             object[] values = new object[1];
             values[0] = projectId;
             HttpResponseMessage res = await HttpRequest.HttpRequestManager.Get(values, Constants.GetProjectUsers);
@@ -97,7 +105,6 @@ namespace Grappbox.View
                 var list = SerializationHelper.DeserializeArrayJson<List<UserModel>>(json);
                 Users = new List<UserModel>(list);
                 ParticipantSearch.ItemsSource = Users;
-                ParticipantSearch.DisplayMemberPath = "FullName";
             }
             else
             {
@@ -194,13 +201,22 @@ namespace Grappbox.View
         {
             var session = SessionHelper.GetSession();
             var userList = new List<UserModel>();
-            userList = this.Event.Users.Where(u => !SelectedUsers.Contains(u)).ToList();
-            var list = new List<int>();
+            userList = SelectedUsers.Where(u => !Event.Users.Any(s => s.Id == u.Id)).ToList();
+            var addList = new List<int>();
+            var removeList = new List<int>();
             if (userList != null)
             {
                 foreach (var u in userList)
                 {
-                    list.Add(u.Id);
+                    addList.Add(u.Id);
+                }
+            }
+            userList = Event.Users.Where(u => !SelectedUsers.Any(s => s.Id == u.Id)).ToList();
+            if (userList != null)
+            {
+                foreach (var u in userList)
+                {
+                    removeList.Add(u.Id);
                 }
             }
             Dictionary <string, object> values = new Dictionary<string, object>();
@@ -208,13 +224,13 @@ namespace Grappbox.View
             values.Add("description", Event.Description);
             values.Add("begin", Event.BeginDate);
             values.Add("end", Event.EndDate);
-            values.Add("toAddUsers", list);
-//            values.Add("toRemoveUsers", null);
+            values.Add("toAddUsers", addList);
+            values.Add("toRemoveUsers", removeList);
             if (Event.ProjectId != null)
             {
                 values.Add("projectId", (int)Event.ProjectId);
             }
-            HttpResponseMessage res = await HttpRequest.HttpRequestManager.Post(values, Constants.EditEvent + "/" + Event.Id);
+            HttpResponseMessage res = await HttpRequest.HttpRequestManager.Put(values, Constants.EditEvent + "/" + Event.Id);
             return res.IsSuccessStatusCode;
         }
 
@@ -223,7 +239,7 @@ namespace Grappbox.View
             Event.Title = Title.Text;
             if (await CheckData() == false)
                 return;
-            LoaderDialog loader = new LoaderDialog();
+            LoaderDialog loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("BlueGrappboxBrush"));
             loader.ShowAsync();
             bool res = await PostEvent();
             loader.Hide();
@@ -244,7 +260,9 @@ namespace Grappbox.View
 
         private void DeleteParticipant(object sender, RoutedEventArgs e)
         {
-            Debug.WriteLine(e.OriginalSource);
+            var button = sender as Button;
+            var user = button.DataContext as UserModel;
+            SelectedUsers.Remove(user);
         }
     }
 }
