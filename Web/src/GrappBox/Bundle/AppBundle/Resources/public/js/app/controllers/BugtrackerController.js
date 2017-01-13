@@ -198,7 +198,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
               $scope.tagsList.push(response.data.data);
             },
             function errorCallback(response) {
-              notificationFactory.warning("Unable to create tag: " + data.name + ". Please try again.");
+              notificationFactory.warning("Unable to create tag: " + newTag + ". Please try again.");
             })
 
         ,function onModalDismiss() { }
@@ -296,6 +296,15 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
       if ($scope.data.tagToAdd[i].id)
         elem.addTags.push($scope.data.tagToAdd[i].id)
+    }
+
+    if ($scope.data.tagToRemove) {
+      var oldTags = [];
+      angular.forEach($scope.data.tagToRemove, function(value, key) {
+        this.push(value.id);
+      }, oldTags);
+      if (oldTags.length)
+        elem['removeTags'] = oldTags;
     }
 
     var data = {"data": elem};
