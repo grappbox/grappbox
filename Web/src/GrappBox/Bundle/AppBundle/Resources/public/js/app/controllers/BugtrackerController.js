@@ -163,7 +163,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   var getProjectTags = function() {
     $http.get($rootScope.api.url + '/bugtracker/project/tags/' + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
-        console.log('response.data', response.data.data);
         $scope.tagsList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
         console.log("tagslist", $scope.tagsList.length);
       },
@@ -173,6 +172,13 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
   getProjectTags();
 
+  $scope.loadTags = function($query) {
+    return $scope.tagsList.filter(function(tag) {
+      return tag.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+    });
+  };
+
+
   //----------------TAGS CREATION----------------------//
 
   $scope.newTag = "";
@@ -181,10 +187,10 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
 
     var modal_createNewBugTag = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewBugTag.html", controller: "modal_createNewBugTag" });
     modal_createNewBugTag.result.then(
-      function onModalConfirm() {
+      function onModalConfirm(newTag) {
 
         var random_color = Math.floor(Math.random()*16777215).toString(16);
-        var data = {"data": {"projectId": $scope.projectId, "name": $scope.newTag, "color": random_color }};
+        var data = {"data": {"projectId": $scope.projectId, "name": newTag, "color": random_color }}
 
         $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
             .then(function successCallback(response) {
@@ -192,11 +198,11 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
               $scope.tagsList.push(response.data.data);
             },
             function errorCallback(response) {
-              notificationFactory.warning("Unable to create tag: " + data.name + ". Please try again.");
+              notificationFactory.warning("Unable to create tag: " + newTag + ". Please try again.");
             })
 
         ,function onModalDismiss() { }
-      }
+      }//,function onModalDismiss() { }
     );
   };
 
@@ -258,28 +264,9 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
                   "users": $scope.data.userToAdd.length ? $scope.data.userToAdd : []
                   };
 
-      // if ($scope.data.tagToAdd) {
-      //   var newTags = [];
-      //   for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
-      //     if (!$scope.data.tagToAdd[i].id) {
-      //       var random_color = Math.floor(Math.random()*16777215).toString(16);
-      //       var data = {"data": {"projectId": $scope.projectId, "name": $scope.data.tagToAdd[i].name, "color": random_color }};
-      //       $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-      //         .then(function successCallback(response) {
-      //             newTags.push(response.data.data.id);
-      //         },
-      //         function errorCallback(response) {
-      //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-      //         });
-      //     } else {
-      //       newTags.push($scope.data.tagToAdd[i].id);
-      //     }
-      //   }
-      //   elem.tags = newTags;
-      // }
-
       for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
-        elem.tags.push($scope.data.tagToAdd[i].id)
+        if ($scope.data.tagToAdd[i].id)
+          elem.tags.push($scope.data.tagToAdd[i].id)
       }
 
       var data = {"data": elem};
@@ -306,28 +293,18 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
                 "removeUsers": $scope.data.userToRemove.length ? $scope.data.userToRemove : []
               };
 
-    // if ($scope.data.tagToAdd) {
-    //   var newTags = [];
-    //   for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
-    //     if (!$scope.data.tagToAdd[i].id) {
-    //       var random_color = Math.floor(Math.random()*16777215).toString(16);
-    //       var data = {"data": {"projectId": $scope.projectId, "name": $scope.data.tagToAdd[i].name, "color": random_color }};
-    //
-    //       $http.post($rootScope.api.url + "/bugtracker/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-    //         .then(function successCallback(response) {
-    //             newTags.push(response.data.data.id);
-    //         },
-    //         function errorCallback(response) {
-    //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-    //         });
-    //     } else {
-    //       newTags.push($scope.data.tagToAdd[i].id);
-    //     }
-    //   }
-    //   elem.addTags = newTags;
-    // }
     for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
-      elem.addTags.push($scope.data.tagToAdd[i].id)
+      if ($scope.data.tagToAdd[i].id)
+        elem.addTags.push($scope.data.tagToAdd[i].id)
+    }
+
+    if ($scope.data.tagToRemove) {
+      var oldTags = [];
+      angular.forEach($scope.data.tagToRemove, function(value, key) {
+        this.push(value.id);
+      }, oldTags);
+      if (oldTags.length)
+        elem['removeTags'] = oldTags;
     }
 
     var data = {"data": elem};
@@ -347,7 +324,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.closeTicket = function() {
-    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + $scope.ticketID)
+    $http.delete($rootScope.api.url + "/bugtracker/ticket/close/" + $scope.ticketID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           $location.path("bugtracker/" + $scope.projectId);
           notificationFactory.success("Ticket closed");
@@ -358,7 +335,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.reopenTicket = function() {
-    $http.put($rootScope.api.url + "/bugtracker/reopenticket/" + $rootScope.user.token + "/" + $scope.ticketID)
+    $http.get($rootScope.api.url + "/bugtracker/ticket/reopen/" + $scope.ticketID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           notificationFactory.success("issue reopened");
           //$location.reload();
@@ -377,7 +354,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
                 "comment": comment};
 
     var data = {'data': elem};
-    console.log(data);
 
     $http.post($rootScope.api.url + '/bugtracker/comment', data, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
@@ -412,7 +388,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.deleteComment = function(comment_id) {
-    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + comment_id)
+    $http.delete($rootScope.api.url + "/bugtracker/comment/" + comment_id, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           notificationFactory.success("Comment deleted");
           getComments();
@@ -438,6 +414,7 @@ app.controller("modal_createNewBugTag", ["$scope", "$uibModalInstance", function
   $scope.error = { name: false };
 
   $scope.modal_confirmTagCreation = function() {
+    console.log('newTag', $scope.newTag);
     $scope.error.name = ($scope.newTag && $scope.newTag.length > 0 ? false : true);
 
     var hasErrors = false;
@@ -446,7 +423,7 @@ app.controller("modal_createNewBugTag", ["$scope", "$uibModalInstance", function
         hasErrors = true;
     });
     if (!hasErrors)
-      $uibModalInstance.close();
+      $uibModalInstance.close($scope.newTag);
   };
   $scope.modal_cancelTagCreation = function() { $uibModalInstance.dismiss(); };
 }]);
