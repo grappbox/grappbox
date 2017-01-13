@@ -32,7 +32,6 @@ namespace Grappbox.View
         {
             this.InitializeComponent();
             this.DataContext = DashBoardViewModel.GetViewModel();
-            this.NavigationCacheMode = NavigationCacheMode.Required;
             team = new PivotItem();
             meetings = new PivotItem();
         }

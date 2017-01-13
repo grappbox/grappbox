@@ -166,7 +166,7 @@ namespace Grappbox
 
             SystemNavigationManager.GetForCurrentView().BackRequested += SystemNavigationManager_BackRequested;
             SystemNavigationManager.GetForCurrentView().AppViewBackButtonVisibility = AppViewBackButtonVisibility.Visible;
-
+            NavList = new ObservableCollection<NavMenuItem>();
             NavMenuList.ItemsSource = NavList;
         }
 
@@ -259,6 +259,7 @@ namespace Grappbox
         /// <param name="e"></param>
         private void OnNavigatingToPage(object sender, NavigatingCancelEventArgs e)
         {
+            NavMenuItem item = null;
             if (e.SourcePageType == typeof(LoginPage) || e.SourcePageType == typeof(WhiteBoardView)
                 || e.SourcePageType == typeof(CalendarEventDetail) || e.SourcePageType == typeof(CalendarEventAdd))
                 TogglePaneButton.Visibility = Visibility.Collapsed;
@@ -268,7 +269,11 @@ namespace Grappbox
                 this.CheckTogglePaneButtonSizeChanged();
             }
             if (e.NavigationMode != NavigationMode.Back) return;
-            var item = (from p in this.NavList where p.DestPage == e.SourcePageType select p).FirstOrDefault();
+            var tmp = this.NavList.Where(n => n.DestPage == e.SourcePageType).ToList();
+            if (tmp == null || tmp.Count == 0) { }
+            else
+                item = tmp.FirstOrDefault();
+            //var item = (from p in this.NavList where p.DestPage == e.SourcePageType select p).FirstOrDefault();
             if (item == null && this.AppFrame.BackStackDepth > 0)
             {
                 // In cases where a page drills into sub-pages then we'll highlight the most recent
