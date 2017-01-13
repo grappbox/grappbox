@@ -42,9 +42,36 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="form-group label-floating">
                     <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                     <label for="tags" class="control-label">Tag(s)</label>
-                    <tags-input data-ng-model="tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)" class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding">
-                      <auto-complete source="tagsList"></auto-complete>
+                    <tags-input data-ng-model="tags"
+                                display-property="name"
+                                replace-spaces-with-dashes="false"
+                                on-tag-added="tagAdded($tag)"
+                                on-tag-removed="tagRemoved($tag)"
+                                class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
+                                template="tag-template">
+                      <auto-complete source="loadTags($query)"
+                                     min-length="1"
+                                     load-on-focus="true" load-on-empty="false"
+                                     max-results-to-show="{[{tagsList.length}]}"
+                                     template="autocomplete-template">
+                      </auto-complete>
                     </tags-input>
+
+                    <tags-input data-ng-model="data.ticket.tags"
+                                display-property="name"
+                                replace-spaces-with-dashes="false"
+                                on-tag-added="tagAdded($tag)"
+                                on-tag-removed="tagRemoved($tag)"
+                                class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
+                                template="tag-template">
+                      <auto-complete source="loadTags($query)"
+                                     min-length="1"
+                                     load-on-focus="true" load-on-empty="false"
+                                     max-results-to-show="{[{tagsList.length}]}"
+                                     template="autocomplete-template">
+                      </auto-complete>
+                    </tags-input>
+
                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 no-padding text-center">
                       <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="onNewTag()"><i class="material-icons" aria-hidden="true">add</i></a>
                     </div>
@@ -116,9 +143,21 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="form-group label-floating">
                     <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                     <label for="tags" class="control-label">Tag(s)</label>
-                    <tags-input data-ng-model="data.ticket.tags" display-property="name" replace-spaces-with-dashes="false" on-tag-added="tagAdded($tag)" on-tag-removed="tagRemoved($tag)" class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding">
-                      <auto-complete source="tagsList"></auto-complete>
+                    <tags-input data-ng-model="data.ticket.tags"
+                                display-property="name"
+                                replace-spaces-with-dashes="false"
+                                on-tag-added="tagAdded($tag)"
+                                on-tag-removed="tagRemoved($tag)"
+                                class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
+                                template="tag-template">
+                      <auto-complete source="loadTags($query)"
+                                     min-length="1"
+                                     load-on-focus="true" load-on-empty="false"
+                                     max-results-to-show="{[{tagsList.length}]}"
+                                     template="autocomplete-template">
+                      </auto-complete>
                     </tags-input>
+
                     <div class="col-lg-1 col-md-1 col-sm-1 col-xs-2 no-padding text-center">
                       <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="onNewTag()"><i class="material-icons" aria-hidden="true">add</i></a>
                     </div>
@@ -373,5 +412,29 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div class="modal-footer">
     <button type="button" class="btn gray-color gray-background-hover" data-ng-click="modal_cancelTagCreation()">Cancel</button>
     <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="modal_confirmTagCreation()">Create</button>
+  </div>
+</script>
+
+<!-- tags-input templates -->
+<script type="text/ng-template" id="tag-template">
+  <div class="tag-template">
+    <div class="left-panel">
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}"></div>
+    </div>
+    <div class="right-panel">
+      <span>{[{$getDisplayText()}]}</span>
+      <a class="remove-button" ng-click="$removeTag()">&#10006;</a>
+    </div>
+  </div>
+</script>
+
+<script type="text/ng-template" id="autocomplete-template">
+  <div class="autocomplete-template">
+    <div class="left-panel">
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}"></div>
+    </div>
+    <div class="right-panel">
+      <span ng-bind-html="$highlight($getDisplayText())"></span>
+    </div>
   </div>
 </script>
