@@ -242,7 +242,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
 
               case "10.3.9":
               $scope.whiteboards.objects = null;
-              $scope.view.valid = false;
+              $scope.view.valid = true;
               $scope.view.loaded = true;
               $scope.view.authorized = false;
               deferred.reject();
@@ -322,7 +322,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
 
             case "10.5.9":
             $scope.whiteboards.objects = null;
-            $scope.view.valid = false;
+            $scope.view.valid = true;
             $scope.view.loaded = true;
             $scope.view.authorized = false;
             break;

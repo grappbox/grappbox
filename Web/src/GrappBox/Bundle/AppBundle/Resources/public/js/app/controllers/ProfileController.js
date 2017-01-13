@@ -78,19 +78,11 @@ app.controller("ProfileController", ["$http", "notificationFactory", "$rootScope
   $scope.profile.update = function() {
     if (!$scope.disabled.update && $scope.local.firstname && $scope.local.lastname) {
       $scope.disabled.update = true;
-      $http.put($rootScope.api.url + "/user",
-        { data: {
-          firstname: $scope.local.firstname,
-          lastname: $scope.local.lastname,
-          birthday: $scope.local.birthday,
-          avatar: ($scope.local.avatar.filename ? $scope.local.avatar.base64 : ''),
-          email: $scope.local.email,
-          phone: $scope.local.phone,
-          country: $scope.local.country,
-          linkedin: $scope.local.linkedin,
-          viadeo: $scope.local.viadeo,
-          twitter: $scope.local.twitter }},
-        { headers: { 'Authorization': $rootScope.user.token }}).then(
+      if  ($scope.local.avatar.filename)
+        var data = { firstname: $scope.local.firstname, lastname: $scope.local.lastname, birthday: $scope.local.birthday, avatar: $scope.local.avatar.base64, email: $scope.local.email, phone: $scope.local.phone, country: $scope.local.country, linkedin: $scope.local.linkedin, viadeo: $scope.local.viadeo, twitter: $scope.local.twitter };
+      else 
+        var data = { firstname: $scope.local.firstname, lastname: $scope.local.lastname, birthday: $scope.local.birthday, email: $scope.local.email, phone: $scope.local.phone, country: $scope.local.country, linkedin: $scope.local.linkedin, viadeo: $scope.local.viadeo, twitter: $scope.local.twitter };
+      $http.put($rootScope.api.url + "/user", { data: data }, { headers: { 'Authorization': $rootScope.user.token }}).then(
         function onSuccess() { userDataUpdated() },
         function onError(response) { userDataNotUpdated(response) }
       );

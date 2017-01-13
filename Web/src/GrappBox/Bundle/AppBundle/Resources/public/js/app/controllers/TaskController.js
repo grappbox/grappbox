@@ -48,14 +48,12 @@ app.directive('convertToNumber', function() {
 
 // Controller definition
 // APP tasks
-app.controller("TaskController", ["$http", "$filter", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope",
-    function($http, $filter, $location, notificationFactory, $rootScope, $route, $routeParams, $scope) {
+app.controller("TaskController", ["$http", "$filter", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
+    function($http, $filter, $location, notificationFactory, $rootScope, $route, $routeParams, $scope, $uibModal) {
 
   // ------------------------------------------------------
   //                PAGE IGNITIALIZATION
   // ------------------------------------------------------
-
-  // TODO: check edition right
 
   //Scope variables initialization
   $scope.projectID = $routeParams.project_id;
@@ -264,17 +262,38 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       $scope.tagToRemove.push(tag);
   };
 
-  // var memorizeTags = function() {
-  //   angular.forEach($scope.tagToRemove, function(tag) {
-  //     // $http.delete($rootScope.api.url + "/tasks/removetagtotask/" + $rootScope.user.token + "/" + $scope.taskID + "/" + tag.id)
-  //     //   .then(function successCallback(response) {
-  //     //
-  //     //   },
-  //     //   function errorCallback(response) {
-  //     //       notificationFactory.warning("Unable to remove tag: " + tag.name + ". Please try again.");
-  //     //   });
-  //   });
-  // };
+  $scope.loadTags = function($query) {
+    return $scope.tagsList.filter(function(tag) {
+      return tag.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+    });
+  };
+
+  //----------------TAGS CREATION----------------------//
+
+  $scope.newTag = "";
+  // "Create Tag" button handler
+  $scope.onNewTag = function() {
+
+    var modal_createNewTag = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewTag.html", controller: "modal_createNewTag" });
+    modal_createNewTag.result.then(
+      function onModalConfirm(newTag) {
+
+        var random_color = Math.floor(Math.random()*16777215).toString(16);
+        var data = {"data": {"projectId": $scope.projectID, "name": newTag, "color": random_color }}
+
+        $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+            .then(function successCallback(response) {
+              notificationFactory.success("Tag created succesfuly.");
+              $scope.tagsList.push(response.data.data);
+            },
+            function errorCallback(response) {
+              notificationFactory.warning("Unable to create tag: " + newTag + ". Please try again.");
+            })
+
+        ,function onModalDismiss() { }
+      }//,function onModalDismiss() { }
+    );
+  };
 
   //----------------TASKS ASSIGNATION----------------------//
   $scope.data.taskToAdd = [];
@@ -619,28 +638,10 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       elem['usersAdd'] = task.users;
     }
 
-    if ($scope.tagToAdd) {
-      var newTags = [];
-      angular.forEach($scope.tagToAdd, function(value, key) {
-        if (!value.id) {
-          var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": "#000"}}; //TODO add color
-          $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-            .then(function successCallback(response) {
-                //tag.id = (response.data.data.id);
-                this.push(response.data.data.id);
-            },
-            function errorCallback(response) {
-                notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-            });
-        } else {
-          this.push(value.id);
-        }
-      }, newTags);
-      if (newTags.length)
-        elem['tagsAdd'] = newTags;
+    for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
+      if ($scope.data.tagToAdd[i].id)
+        elem.tagsAdd.push($scope.data.tagToAdd[i].id)
     }
-
-    // TODO: tag remove
 
     var data = {"data": elem};
 
@@ -666,7 +667,6 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
         var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": randomColor}};
         $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
           .then(function successCallback(response) {
-              //tag.id = (response.data.data.id);
               list.push(response.data.data.id);
           },
           function errorCallback(response) {
@@ -684,8 +684,6 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     var elem = {"id": $scope.taskID,
                 "title": $scope.data.edit.title,
                 "description": $scope.data.edit.description,
-                //"is_milestone": false,
-                //"is_container": false,
                 "advance": $scope.data.edit.advance,
                 };
 
@@ -712,10 +710,10 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     else if ($scope.data.edit.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
 
-    if ($scope.tagToAdd) {
-      var newTags = setTags($scope.tagToAdd);
-      if (newTags.length)
-        elem['tagsAdd'] = newTags;
+
+    for (var i = 0; i < $scope.tagToAdd.length; i++) {
+      if ($scope.tagToAdd[i].id)
+        elem.tagsAdd.push($scope.tagToAdd[i].id)
     }
 
     if ($scope.tagToRemove) {
@@ -804,4 +802,32 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       });
   };
 
+}]);
+
+
+// ------------------------------------------------------
+//                    MODALS
+// ------------------------------------------------------
+
+/**
+* Controller definition (from view)
+* TASKTAG CREATION => new message form.
+*
+*/
+app.controller("modal_createNewTag", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
+  $scope.error = { name: false };
+
+  $scope.modal_confirmTagCreation = function() {
+    console.log('newTag', $scope.newTag);
+    $scope.error.name = ($scope.newTag && $scope.newTag.length > 0 ? false : true);
+
+    var hasErrors = false;
+    angular.forEach($scope.error, function(value, key) {
+      if (value)
+        hasErrors = true;
+    });
+    if (!hasErrors)
+      $uibModalInstance.close($scope.newTag);
+  };
+  $scope.modal_cancelTagCreation = function() { $uibModalInstance.dismiss(); };
 }]);

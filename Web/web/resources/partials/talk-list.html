@@ -4,13 +4,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Talks -->
 <section class="talk-list">
-  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
       <img src="../resources/img/app/talk.svg" width="300" height="auto" alt="Talks">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Talks</h1>
       <p>This section allows you to communicate <strong>privately</strong> (to your team only), or with any registered customer.<br>You can also convert any topic to a GrappBox issue and use it in your project's bugtracker.</p>
+      <a href="talk/{[{ talk.project_id }]}/{[{ talk.team.id }]}/new" data-ng-if="talk.active == 'team'" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Create a discussion for your team only">Create a new team talk</a>
+      <a href="talk/{[{ talk.project_id }]}/{[{ talk.customer.id }]}/new" data-ng-if="talk.active == 'customer'" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Create a discussion for your customers only">Create a new customer talk</a>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -21,20 +23,17 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </div>
   <div data-ng-if="view.loaded">
-    <div data-ng-if="view.valid && view.authorized">
+    <div data-ng-if="view.valid">
       <div class="box-row">
         
         <!-- Talks tabs -->
         <div class="tab-wrapper">
 
           <!-- Team talks -->
-          <input type="radio" name="tab" id="team" checked>
+          <input type="radio" name="tab" id="team" value="team" data-ng-model="talk.active" checked>
           <div class="tab-label-content" id="team-content">
             <label for="team" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">group</i><span class="hidden-xs">Team members</span></label>
             <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
-                <a href="talk/{[{ ::talk.project_id }]}/{[{ ::talk.team.id }]}/new" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover new" title="Create a discussion for your team only">Create a new team talk</a>
-              </div>
               <div data-ng-if="!talk.team.loaded">
                 <div class="spinner section">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
@@ -57,28 +56,41 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                   </div>
                 </div>
-                <div data-ng-if="talk.team.valid && !talk.team.messages" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-                  <div class="box error text-center">
-                    <p><i class="material-icons" aria-hidden="true">speaker_notes_off</i>This project doesn't contain any team talk.</p>
+                <div data-ng-if="talk.team.valid && !talk.team.messages">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">help</i>This project doesn't have any talk.<br><span>Create one to get started.</span></p>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
-                <div data-ng-if="!talk.team.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-                  <div class="box error text-center">
-                    <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+                <div data-ng-if="!talk.team.authorized">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
+                </div>             
+                <div data-ng-if="!talk.team.valid">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
+            <div class="clearfix"></div>
           </div>
 
           <!-- Customer talks -->
-          <input type="radio" name="tab" id="customer">
+          <input type="radio" name="tab" id="customer" value="customer" data-ng-model="talk.active">
           <div class="tab-label-content" id="customer-content">
             <label for="customer" class="{[{ ::path.colors[path.current] + '-color' }]}"><i class="material-icons" aria-hidden="true">public</i><span class="hidden-xs">Customers</span></label>
             <div class="tab-content col-lg-12 col-md-12 col-sm-12 col-xs-12">
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
-                <a href="talk/{[{ ::talk.project_id }]}/{[{ ::talk.customer.id }]}/new" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover new" title="Create a discussion for your customers only">Create a new customer talk</a>
-              </div>
               <div data-ng-if="!talk.customer.loaded">
                 <div class="spinner section">
                   <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
@@ -101,29 +113,37 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                   </div>
                 </div>
-                <div data-ng-if="talk.customer.valid && !talk.customer.messages" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-                  <div class="box error text-center">
-                    <p><i class="material-icons" aria-hidden="true">speaker_notes_off</i>This project doesn't contain any customer talk.</p>
+                <div data-ng-if="talk.customer.valid && !talk.customer.messages">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">help</i>This project doesn't have any talk.<br><span>Create one to get started.</span></p>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
                 </div>
-                <div data-ng-if="!talk.customer.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-                  <div class="box error text-center">
-                    <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+                <div data-ng-if="!talk.customer.authorized">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                    </div>
                   </div>
+                  <div class="clearfix"></div>
+                </div>             
+                <div data-ng-if="!talk.customer.valid">
+                  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+                    <div class="box error">
+                      <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+                    </div>
+                  </div>
+                  <div class="clearfix"></div>
                 </div>
+                <div class="clearfix"></div>
               </div>
             </div>
+            <div class="clearfix"></div>
           </div>
 
           <div class="slide {[{ ::path.colors[path.current] + '-background' }]}"></div>
-        </div>
-      </div>
-    </div>
-
-    <div data-ng-if="!view.authorized">
-      <div class="box-row">
-        <div class="box error text-center">
-          <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this project's talks.</p>
         </div>
       </div>
     </div>

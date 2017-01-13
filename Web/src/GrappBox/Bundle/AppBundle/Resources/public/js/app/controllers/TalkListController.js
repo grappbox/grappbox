@@ -12,12 +12,12 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
 	/* ==================== INITIALIZATION ==================== */
 
 	// Scope variables initialization
-	$scope.view = { loaded: false, valid: false, authorized: false };
+	$scope.view = { loaded: false, valid: false };
 	$scope.method = { formatObjectDate: "" };
-  $scope.talk = { project_id: $route.current.params.project_id, team: {}, customer: {} };
+  $scope.talk = { project_id: $route.current.params.project_id, team: {}, customer: {}, active: "team" };
 
-  $scope.talk.team = { id: "", loaded: false, valid: false, messages: null };
-  $scope.talk.customer = { id: "", loaded: false, valid: false, messages: null };
+  $scope.talk.team = { id: "", type: 2, loaded: false, valid: false, authorized: false, messages: null };
+  $scope.talk.customer = { id: "", type: 1, loaded: false, valid: false, authorized: false, messages: null };
 
 
 
@@ -26,8 +26,8 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   // Routine definition (local)
   // Reset talk list
   var _resetTalkList = function() {
-    $scope.talk.team = { id: "", loaded: false, valid: false, messages: null };
-    $scope.talk.customer = { id: "", loaded: false, valid: false, messages: null };
+    $scope.talk.team = { id: "", type: 2, loaded: false, valid: false, authorized: false, messages: null };
+    $scope.talk.customer = { id: "", type: 1, loaded: false, valid: false, authorized: false, messages: null };
   };
 
   // Routine definition (local)
@@ -42,11 +42,10 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   					case "1.11.1":
   					angular.forEach((response.data && response.data.data && response.data.data.array ? response.data.data.array : null), function(value, key) {
   						if (value.typeId == "2")
-  							$scope.talk.team = { id: value.id, loaded: false, valid: false, messages: null };
+  							$scope.talk.team = { id: value.id, type: 2, loaded: false, valid: false, authorized: false, messages: null };
   						else
-  							$scope.talk.customer = { id: value.id, loaded: false, valid: false, messages: null };
+  							$scope.talk.customer = { id: value.id, type: 1, loaded: false, valid: false, authorized: false, messages: null };
   					});
-            $scope.view.authorized = true;
   					deferred.resolve();
   					break;
 
@@ -55,7 +54,6 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
             _resetTalkList();
             $scope.talk.team.loaded = true;
             $scope.talk.customer.loaded = true;
-            $scope.view.authorized = false;
   					deferred.reject();
   					break;
 
@@ -102,20 +100,21 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
   					talk.messages = (response.data && response.data.data && response.data.data.array ? response.data.data.array : null);
   					talk.valid = true;
   					talk.loaded = true;
-            $scope.view.authorized = true;
+            talk.authorized = true;
   					break;
 
   					case "1.11.3":
   					talk.messages = null;
   					talk.valid = true;
   					talk.loaded = true;
-            $scope.view.authorized = true;
+            talk.authorized = true;
 						break;
 
   					default:
 						talk.messages = null;
 	  				talk.valid = false;
   					talk.loaded = true;
+            talk.authorized = true;
   					break;
   				}
   			}
@@ -131,15 +130,16 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
 
             case "11.4.9":
             talk.messages = null;
-            talk.valid = false;
+            talk.valid = true;
             talk.loaded = true;
-            $scope.view.authorized = false;
+            talk.authorized = false;
             break;
 
             default:
             talk.messages = null;
             talk.valid = false;
             talk.loaded = true;
+            talk.authorized = true;
             break;
           }
         }

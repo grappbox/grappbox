@@ -17,7 +17,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
 
   <div class="box-row">
-        
+
     <!-- Tasks tabs -->
     <div class="tab-wrapper">
 
@@ -44,7 +44,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <thead>
                         <tr>
                           <th class="col-lg-4 col-md-4 col-sm-12 col-xs-12">Title</th>
-                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tags</th>
+                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tag(s)</th>
                           <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Assigned user(s)</th>
                           <th class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Due date</th>
                         </tr>
@@ -94,7 +94,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
                 <div class="clearfix"></div>
               </div>
-            </div>              
+            </div>
           </div>
           <div class="clearfix"></div>
         </div>
@@ -124,7 +124,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <thead>
                         <tr>
                           <th class="col-lg-4 col-md-4 col-sm-12 col-xs-12">Title</th>
-                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tags</th>
+                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tag(s)</th>
                           <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Assigned user(s)</th>
                           <th class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Due date</th>
                         </tr>
@@ -204,7 +204,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <thead>
                         <tr>
                           <th class="col-lg-4 col-md-4 col-sm-12 col-xs-12">Title</th>
-                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tags</th>
+                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tag(s)</th>
                           <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Assigned user(s)</th>
                           <th class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Due date</th>
                         </tr>
@@ -284,7 +284,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <thead>
                         <tr>
                           <th class="col-lg-4 col-md-4 col-sm-12 col-xs-12">Title</th>
-                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tags</th>
+                          <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Tag(s)</th>
                           <th class="col-lg-3 col-md-3 col-sm-12 col-xs-12">Assigned user(s)</th>
                           <th class="col-lg-2 col-md-2 col-sm-12 col-xs-12">Due date</th>
                         </tr>
@@ -364,11 +364,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <thead>
                         <tr>
                           <th class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Title</th>
-                          <th class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Tags</th>
+                          <th class="col-lg-6 col-md-6 col-sm-12 col-xs-12">Task(s)</th>
                         </tr>
                       </thead>
                       <tbody>
-                        <tr data-ng-repeat="container in data.containers" data-ng-click="openTask(projectId, task.id)" title="Go the container page">
+                        <tr data-ng-repeat="container in data.containers" data-ng-click="openTask(projectId, container.id)" title="Go the container page">
                           <td>{[{ container.title }]}</td>
                           <td>{[{ container.tasks.length }]}</td>
                         </tr>
@@ -444,7 +444,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                         </tr>
                       </thead>
                       <tbody>
-                        <tr data-ng-repeat="milestone in data.milestones" data-ng-click="openTask(projectId, task.id)" title="Go the milestone page">
+                        <tr data-ng-repeat="milestone in data.milestones" data-ng-click="openTask(projectId, milestone.id)" title="Go the milestone page">
                           <td>{[{ milestone.title }]}</td>
                           <td>{[{ formatObjectDate(milestone.due_date) }]}</td>
                         </tr>
