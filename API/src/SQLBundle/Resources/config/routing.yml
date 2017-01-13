@@ -30,6 +30,11 @@ accountAdministration_register:
   defaults:   { _controller: SQLBundle:AccountAdministration:register, _format: json }
   methods:    [POST]
 
+accountAdministration_registerCustomer:
+  path:       account/registercustomer
+  defaults:   { _controller: SQLBundle:AccountAdministration:registerCustomer, _format: json }
+  methods:    [POST]
+
 # accountAdministration_clientLogin:
 #     path:       accountadministration/login
 #     defaults:   { _controller: SQLBundle:AccountAdministration:clientLogin, _format: json }
