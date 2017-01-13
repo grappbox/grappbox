@@ -15,7 +15,7 @@
     </Page.DataContext>
     <Page.Resources>
         <DataTemplate x:Key="whiteboardsListDataTemplate" x:DataType="models:WhiteBoardListModel">
-            <Border Background="White">
+            <Border Holding="Grid_Holding" Background="White">
                 <StackPanel>
                     <StackPanel.Resources>
                         <Style TargetType="TextBlock">
@@ -31,6 +31,11 @@
                         <TextBlock Margin="10,0,0,0" Text="{x:Bind CreatedAt}" />
                     </StackPanel>
                 </StackPanel>
+                <FlyoutBase.AttachedFlyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem Text="Delete" Click="MenuFlyoutItem_Click"/>
+                    </MenuFlyout>
+                </FlyoutBase.AttachedFlyout>
             </Border>
         </DataTemplate>
     </Page.Resources>
@@ -46,6 +51,7 @@
         <ListView Grid.Row="1"
                   x:Name="whiteboardList"
                   ItemTemplate="{StaticResource whiteboardsListDataTemplate}"
+                  ItemsSource="{x:Bind viewModel.Whiteboards, Mode=OneWay}"
                   IsItemClickEnabled="True"
                   ItemClick="ListView_ItemClick"
                   SelectionMode="None">

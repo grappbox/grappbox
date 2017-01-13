@@ -37,5 +37,8 @@ namespace Grappbox
         public const string Rectangle = "\uE3BC";
         public const string Delete = "\uE14C";
         public const string Pointer = "\uE925";
+
+        // Common
+        public const string Clear = "\uE14C";
     }
 }

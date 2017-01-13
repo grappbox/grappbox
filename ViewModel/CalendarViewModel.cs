@@ -16,6 +16,7 @@ namespace Grappbox.ViewModel
 {
     public class CalendarViewModel : ViewModelBase
     {
+        public EventViewModel ToDelete;
         public bool IsBusy;
 
 
@@ -81,6 +82,25 @@ namespace Grappbox.ViewModel
                     events = new ObservableCollection<EventViewModel>();
                 }
             }
+        }
+
+        public async Task<bool> DeleteEvent(int id)
+        {
+            object[] objects = new object[1] { id };
+            var response = await HttpRequestManager.Delete(objects, Constants.DeleteEvent);
+            if (response.IsSuccessStatusCode)
+                return true;
+            return false;
+        }
+
+        public async Task ForceReset(DateTime date)
+        {
+            await GetMonthApi(date);
+            CurrentDate = date;
+            FilteredEvents?.Clear();
+            FilteredEvents = new ObservableCollection<EventViewModel>(events.Where(
+                d => CurrentDate.Date >= DateTime.Parse(d.BeginDate).Date && CurrentDate.Date <= DateTime.Parse(d.EndDate).Date));
+            NotifyPropertyChanged("ListEmptyVisibility");
         }
 
         public async Task PickDay(DateTime date)

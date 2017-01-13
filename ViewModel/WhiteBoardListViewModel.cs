@@ -24,6 +24,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Windows.UI.Xaml.Controls;
+using Grappbox.HttpRequest;
 
 namespace Grappbox.ViewModel
 {
@@ -33,6 +34,7 @@ namespace Grappbox.ViewModel
     /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     class WhiteBoardListViewModel : ViewModelBase
     {
+        public WhiteBoardListModel ToDelete;
         /// <summary>
         /// The whiteboards
         /// </summary>
@@ -55,12 +57,11 @@ namespace Grappbox.ViewModel
         public async System.Threading.Tasks.Task GetWhiteboards()
         {
             SessionHelper session = SessionHelper.GetSession();
-            HttpResponseMessage res = await HttpRequest.HttpRequestManager.Get(Constants.ListWhiteboards, session.ProjectId);
+            HttpResponseMessage res = await HttpRequestManager.Get(Constants.ListWhiteboards, session.ProjectId);
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
                 Whiteboards =  SerializationHelper.DeserializeArrayJson<ObservableCollection<WhiteBoardListModel>>(await res.Content.ReadAsStringAsync());
-                NotifyPropertyChanged("Whiteboards");
             }
             else
             {
@@ -79,7 +80,7 @@ namespace Grappbox.ViewModel
             Dictionary<string, object> props = new Dictionary<string, object>();
             props.Add("projectId", id);
             props.Add("whiteboardName", name);
-            HttpResponseMessage res = await HttpRequest.HttpRequestManager.Post(props, Constants.CreateWhiteboard);
+            HttpResponseMessage res = await HttpRequestManager.Post(props, Constants.CreateWhiteboard);
             if (res.IsSuccessStatusCode)
             {
                 Debug.WriteLine(await res.Content.ReadAsStringAsync());
@@ -90,6 +91,14 @@ namespace Grappbox.ViewModel
             {
                 Debug.WriteLine("Can't create Whiteboard");
             }
+        }
+        public async Task<bool> DeleteWhiteboard(int id)
+        {
+            object[] objects = new object[1] { id };
+            var response = await HttpRequestManager.Delete(objects, Constants.DeleteWhiteboard);
+            if (response.IsSuccessStatusCode)
+                return true;
+            return false;
         }
     }
 }

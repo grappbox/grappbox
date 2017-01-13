@@ -139,6 +139,9 @@
     <Compile Include="CustomControls\MeetingDashBoardPanel.xaml.cs">
       <DependentUpon>MeetingDashBoardPanel.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\ConfirmDeleteDialog.xaml.cs">
+      <DependentUpon>ConfirmDeleteDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\ModularDashboard.xaml.cs">
       <DependentUpon>ModularDashboard.xaml</DependentUpon>
     </Compile>
@@ -376,6 +379,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\MeetingDashBoardPanel.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\ConfirmDeleteDialog.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

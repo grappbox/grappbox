@@ -28,6 +28,7 @@
             <TextBox Grid.Row="1" Name="loginBlock"
                      BorderThickness="0,0,0,1"
                      BorderBrush="{StaticResource RedGrappboxBrush}"
+                     InputScope="EmailNameOrAddress"
                      VerticalAlignment="Center"
                      HorizontalAlignment="Stretch"
                      PlaceholderText="UserName"

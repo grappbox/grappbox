@@ -259,7 +259,8 @@ namespace Grappbox
         /// <param name="e"></param>
         private void OnNavigatingToPage(object sender, NavigatingCancelEventArgs e)
         {
-            if (e.SourcePageType == typeof(LoginPage) || e.SourcePageType == typeof(WhiteBoardView) || e.SourcePageType == typeof(CalendarEventDetail))
+            if (e.SourcePageType == typeof(LoginPage) || e.SourcePageType == typeof(WhiteBoardView)
+                || e.SourcePageType == typeof(CalendarEventDetail) || e.SourcePageType == typeof(CalendarEventAdd))
                 TogglePaneButton.Visibility = Visibility.Collapsed;
             else
             {
