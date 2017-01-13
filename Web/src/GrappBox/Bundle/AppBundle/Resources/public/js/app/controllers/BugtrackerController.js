@@ -347,7 +347,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.closeTicket = function() {
-    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + $scope.ticketID)
+    $http.delete($rootScope.api.url + "/bugtracker/ticket/close/" + $scope.ticketID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           $location.path("bugtracker/" + $scope.projectId);
           notificationFactory.success("Ticket closed");
@@ -358,7 +358,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.reopenTicket = function() {
-    $http.put($rootScope.api.url + "/bugtracker/reopenticket/" + $rootScope.user.token + "/" + $scope.ticketID)
+    $http.get($rootScope.api.url + "/bugtracker/ticket/reopen/" + $scope.ticketID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           notificationFactory.success("issue reopened");
           //$location.reload();
@@ -412,7 +412,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
 
   $scope.deleteComment = function(comment_id) {
-    $http.delete($rootScope.api.url + "/bugtracker/closeticket/" + $rootScope.user.token + "/" + comment_id)
+    $http.delete($rootScope.api.url + "/bugtracker/comment/" + comment_id, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
           notificationFactory.success("Comment deleted");
           getComments();
