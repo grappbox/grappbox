@@ -4,13 +4,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Whiteboard -->
 <section class="whiteboard">
-  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
       <img src="../resources/img/app/whiteboard.svg" width="300" height="auto" alt="Whiteboard">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Whiteboard</h1>
       <p>Use the <strong>toolbox</strong> below to draw lines, shapes and words.<br>You can also go fullscreen to be more comfortable.</p>
+      <a href="{[{ 'whiteboard/' + route.project_id }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Return to the whiteboard list page">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -22,10 +23,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
   <div data-ng-if="view.loaded">
     <div data-ng-if="view.valid && view.authorized">
-      <div class="box-row {[{ canvas.fullscreen ? 'fullscreen' : '' }]}" id="wrapper">
+      <div class="box-row canvas-wrapper {[{ canvas.fullscreen ? 'fullscreen' : '' }]}" id="{[{ 'wrapper-' + canvas.identifier }]}">
 
         <!-- Information -->
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding {[{ canvas.fullscreen ? 'hidden' : '' }]}">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
           <div class="box flattened information">
             <div class="avatar">
              <img data-ng-src="https://static.grappbox.com/app/user/{[{ whiteboard.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ whiteboard.user.firstname }]} {[{ whiteboard.creator.lastname }]}">
@@ -35,8 +36,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <li class="author">{[{ whiteboard.creator.firstname }]} {[{ whiteboard.creator.lastname }]}</li>
               <li class="date"><span>{[{ whiteboard.date }]}</span></li>
             </ul>
-            <div class="submit" data-ng-if="whiteboard.creator.id == user.id">
-              <a href="" class="btn btn-rounded red-hover red-focus red-background" title="Delete this whiteboard" data-ng-click="whiteboard.delete()"><i class="material-icons" aria-hidden="true">delete</i></a>
+            <div class="submit">
+              <a href="" class="btn btn-rounded red-hover red-focus red-background white-background-hover" title="Delete this whiteboard" data-ng-if="whiteboard.creator.id == user.id" data-ng-click="whiteboard.delete()"><i class="material-icons" aria-hidden="true">delete</i></a>
+              <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]}" title="Exit fullscreen mode" data-ng-if="canvas.fullscreen" data-ng-click="canvas.toggle(false)"><i class="material-icons" aria-hidden="true">fullscreen_exit</i></a>
+              <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]}" title="Enter fullscreen mode" data-ng-if="!canvas.fullscreen" data-ng-click="canvas.toggle(true)"><i class="material-icons" aria-hidden="true">fullscreen</i></a>
             </div>
             <div class="clearfix"></div>
           </div>
@@ -45,7 +48,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <!-- Canvas -->
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center">
           <div class="box canvas {[{ tool.selected.name ? 'edit' : '' }]}" data-ng-attr-drag-scroll="!tool.selected.name">
-            <canvas id="canvas" height="2160px" width="4096px"></canvas>
+            <canvas id="{[{ 'canvas-' + canvas.identifier }]}" height="2160px" width="4096px"></canvas>
             <div class="clearfix"></div>
           </div>
         </div>
@@ -79,14 +82,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <i class="material-icons" aria-hidden="true">delete</i>
                 <input type="radio" data-ng-model="tool.selected.name" id="eraser" value="eraser">
               </label>
-              <label title="Enter fullscreen mode" for="fullscreen" class="btn btn-rounded small tool" data-ng-if="!canvas.fullscreen">
-                <i class="material-icons" aria-hidden="true">fullscreen</i>
-                <input type="radio" data-ng-click="canvas.expand()" id="fullscreen" value="fullscreen">
-              </label>
-              <label title="Exit fullscreen mode" for="fullscreen-exit" class="btn btn-rounded small white-color tool" data-ng-if="canvas.fullscreen">
-                <i class="material-icons" aria-hidden="true">fullscreen_exit</i>
-                <input type="radio" data-ng-click="canvas.expand()" id="fullscreen-exit" value="fullscreen-exit">
-              </label>
               <label title="Text mode (to use with input below)" for="text" class="btn btn-rounded small tool {[{ tool.selected.name == 'text' ? 'white-background gray-color' : '' }]}">
                 <i class="material-icons" aria-hidden="true">font_download</i>
                 <input type="radio" data-ng-model="tool.selected.name" id="text" value="text">
@@ -99,7 +94,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <i class="material-icons" aria-hidden="true">format_bold</i>
                 <input type="checkbox" data-ng-model="tool.selected.text.bold" id="bold" value="bold">
               </label>
-              <label title="Reset selection" for="reset" class="btn btn-rounded small tool {[{ !tool.selected.name ? 'white-background gray-color' : '' }]}">
+              <label title="Hand tool" for="reset" class="btn btn-rounded small tool {[{ !tool.selected.name ? 'white-background gray-color' : '' }]}">
                 <i class="material-icons" aria-hidden="true">open_with</i>
                 <input type=radio data-ng-click="tool.reset()" id="reset" value="reset">
               </label>
@@ -139,25 +134,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div class="clearfix"></div>
 
         <div data-ng-if="!view.valid">
-          <div class="box-row">
-            <div class="box error text-center">
-              <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
         <div data-ng-if="!view.authorized">
-          <div class="box-row">
-            <div class="box error text-center">
-              <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this project's whiteboards.</p>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
       </div>
     </div>
   </div>
 </section>
-
-
 
 <!-- Whiteboard deletion -->
 <script type="text/ng-template" id="whiteboardDeletion.html">

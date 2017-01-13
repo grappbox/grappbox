@@ -67,7 +67,7 @@ body {
   -moz-osx-font-smoothing: grayscale!important;
   text-rendering: optimizeLegibility!important;
   font-feature-settings: "liga"!important;
-  scrollbar-face-color: #757575;
+  scrollbar-face-color: #bdbdbd;
   scrollbar-track-color: #fff;
 }
 
@@ -187,17 +187,17 @@ a:hover { text-decoration: none; color: #4bf; }
 ::-ms-selection { color: #fff; background: #4bf; }
 ::selection { color: #fff; background: #4bf; }
 
-::-webkit-scrollbar { width: 0.5em; height: 0.5em; }
-::-webkit-scrollbar-thumb { background: #757575; }
+::-webkit-scrollbar { width: 0.75em; height: 0.75em; }
+::-webkit-scrollbar-thumb { background: #9e9e9e; }
 ::-webkit-scrollbar-track { background: #fff; }
-::-moz-scrollbar { width: 0.5em; height: 0.5em; }
-::-moz-scrollbar-thumb { background: #757575; }
+::-moz-scrollbar { width: 0.75em; height: 0.75em; }
+::-moz-scrollbar-thumb { background: #9e9e9e; }
 ::-moz-scrollbar-track { background: #fff; }
-::-o-scrollbar { width: 0.5em; height: 0.5em; }
-::-o-scrollbar-thumb { background: #757575; }
+::-o-scrollbar { width: 0.75em; height: 0.75em; }
+::-o-scrollbar-thumb { background: #9e9e9e; }
 ::-o-scrollbar-track { background: #fff; }
-::-ms-scrollbar { width: 0.5em; height: 0.5em; }
-::-ms-scrollbar-thumb { background: #757575; }
+::-ms-scrollbar { width: 0.75em; height: 0.75em; }
+::-ms-scrollbar-thumb { background: #9e9e9e; }
 ::-ms-scrollbar-track { background: #fff; }
 
 .gray-color { color: #757575!important; }
@@ -777,13 +777,15 @@ tags-input .tags .focused {
 .whiteboard-list .box .btn { margin: 0!important; }
 .whiteboard-list .new { margin-bottom: 30px; }
 
+.whiteboard .information { background: #616161; color: #fafafa; margin-bottom: -2px; }
 .whiteboard .information .avatar { float: left; padding: 15px 20px 15px 15px; }
 .whiteboard .information .avatar img { float: left; border-radius: 48px; border-radius: 50%; }
 .whiteboard .information ul { float: left; margin-top: 10px; }
 .whiteboard .information .submit { float: right; padding: 0 5px 5px 0!important; margin-top: 25px; }
 .whiteboard .information .btn { margin: 0!important; }
+.whiteboard .information span { color: #e0e0e0; }
 
-.whiteboard .toolbox { background: #616161; padding: 0 20px 20px 20px; }
+.whiteboard .toolbox { background: #616161; padding: 0 20px 20px 20px; margin-top: -2px; }
 .whiteboard .toolbox label { transition: none; }
 .whiteboard .tool { padding: 10px 11px; margin: 10px 1px 0 1px; }
 .whiteboard .tool input[type="radio"],
@@ -797,7 +799,7 @@ tags-input .tags .focused {
 .whiteboard .canvas { max-height: 80vh; overflow: auto; padding: 0; cursor: move; cursor: -webkit-grab; cursor: -moz-grab; }
 .whiteboard .canvas.edit { cursor: crosshair; }
 
-#wrapper.fullscreen { width: 100%; background: #f0f0f0; }
+.canvas-wrapper.fullscreen { width: 100%; background: #616161; }
 
 
 
