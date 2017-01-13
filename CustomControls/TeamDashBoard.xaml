@@ -8,8 +8,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:viewModel="using:Grappbox.ViewModel"
     xmlns:models="using:Grappbox.Model"
-    mc:Ignorable="d"
-    d:DataContext="{d:DesignInstance viewModel:DashBoardViewModel, IsDesignTimeCreatable=True}">
+    mc:Ignorable="d">
 
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
     Margin="0,2,0,0"

@@ -29,5 +29,6 @@ namespace Grappbox
         public const string OpenWhiteboards = "whiteboard";
         public const string PullWhiteboard = "whiteboard/draw/";
         public const string PushWhiteboard = "whiteboard/draw/";
+        public const string GetAvatar = "user/avatar";
     }
 }
