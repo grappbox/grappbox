@@ -639,18 +639,19 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 .talk-list input[type="radio"][name="tab"]:nth-of-type(2):checked ~ .slide { left: calc((100% / 2) * 1); }
 .talk-list .slide { width: calc(100% / 2 - 150px); }
 
-.talk-list .new { margin: 15px 0 20px 0; }
 .talk-list .box .submit { padding: 0 5px 5px 0!important; }
 .talk-list .box .btn { margin: 0!important; }
 
-.talk .talk-message .box .avatar { padding: 10px 15px 10px 10px; }
+.talk h3 { color: #212121; margin: 20px 0 5px 0; font-size: 16px; font-weight: 900; }
+.talk .talk-message .box .avatar { padding: 0 15px 10px 0; }
 .talk .talk-message .box .info { padding: 10px 0 2px 15px; }
-.talk .talk-message .box .body,
-.talk .each-comment .box .body { padding: 0 15px 10px 15px; }
+.talk .talk-message .box .body { padding: 0 15px 10px 0; }
 .talk .talk-message { margin-top: 10px; }
 .talk .talk-message .submit { padding: 0 10px!important; }
+
 .talk .each-comment { border-left: 5px solid; margin-left: 2px; width: calc(100% - 4px); }
 .talk .each-comment .box { padding: 0; margin: 0; }
+.talk .each-comment .box .avatar { padding-top: 5px!important; }
 .talk .each-comment .box .info { padding: 10px 0 2px 15px; }
 .talk .each-comment .box .info span { font-size: 12px; }
 .talk .each-comment .box .body { padding: 0 0 10px 15px; }
@@ -663,21 +664,13 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
   .talk-list .tab-wrapper .tab-label-content:nth-of-type(2) label { padding-right: 12px; }
 
   .talk .user-actions,
-  .talk .user-add { text-align: center; margin: 10px 15px; }
+  .talk .user-add { margin: 0 0 15px 0; }
 }
 
 @media (min-width: 768px) {
   .talk .user-actions,
-  .talk .user-add { text-align: right; }
   .talk .user-actions { margin-top: 5px; padding-right: 20px!important; }
-}
-
-@media (max-width: 992px) {
-  .talk .comment-add .box .btn { margin: 15px 10px 10px 0; }
-}
-
-@media (min-width: 992px) {
-  .talk .comment-add .box .btn { margin: 30px 15px 0 0; }
+  .talk .comment-add .box .btn { margin: 20px 20px 0 0; }
 }
 
 
@@ -705,6 +698,17 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 .comments .each-comment .box .info { padding: 10px 0 2px 15px; }
 .comments .each-comment .box .info span { font-size: 12px; }
 .comments .each-comment .box .body { padding: 0 0 10px 15px; }
+
+@media (max-width: 768px) {
+  .comments .user-actions,
+  .comments .user-add { margin: 0 0 15px 0; }
+}
+
+@media (min-width: 768px) {
+  .comments .user-actions,
+  .comments .user-actions { margin-top: 5px; padding-right: 20px!important; }
+  .comments .comment-add .box .btn { margin: 20px 20px 0 0; }
+}
 
 
 

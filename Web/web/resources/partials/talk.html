@@ -4,19 +4,24 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Talk -->
 <section class="talk">
-  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
       <img src="../resources/img/app/talk.svg" width="300" height="auto" alt="Talks">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <div data-ng-if="creation">
-        <h1>Talk creation</h1>
+        <h1 data-ng-if="!talks.type">Loading...</h1>
+        <h1 data-ng-if="talks.type == 1">Customer talk creation</h1>
+        <h1 data-ng-if="talks.type == 2">Team talk creation</h1>
         <p>Enter a title and a message to create your new talk.<br>If you change your mind, you can always edit them later.</p>
       </div>
       <div data-ng-if="!creation">
-        <h1>Talk</h1>
+        <h1 data-ng-if="!talks.type">Loading...</h1>
+        <h1 data-ng-if="talks.type == 1">Customer talk</h1>
+        <h1 data-ng-if="talks.type == 2">Team talk</h1>
         <p>This is your talk main view.<br>You can add, edit and delete comments, and convert this topic to a GrappBox issue.</p>
       </div>
+      <a href="{[{ 'talk/' + route.project_id }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Return to the talk list">Back to list</a>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -24,7 +29,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   <div data-ng-if="creation">
     <!-- Talk creation -->
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-      <h4 class="box-header"><i class="material-icons rounded {[{ path.colors[path.current] + '-background' }]}">forum</i>New talk</h4>
       <div class="box">
         <form>
           <fieldset>
@@ -39,12 +43,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               </div>
             </div>
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding form-group submit">
+              <a href="{[{ 'talk/' + route.project_id }]}" class="btn gray-color gray-background-hover">Cancel</a>
               <button type="submit" class="btn {[{ path.colors[path.current] + '-color' }]} {[{ path.colors[path.current] + '-background-hover' }]} {[{ new.disabled ? 'disabled' : '' }]}" title="Create a new talk" data-ng-click="talks.add()">Create</button>
             </div>
+            <div class="clearfix"></div>
           </fieldset>
         </form>
       </div>
     </div>
+    <div class="clearfix"></div>
   </div>
 
   <div data-ng-if="!creation">
@@ -60,56 +67,63 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
           <div class="box-row">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding talk-message">
               <div class="box">
-                <div class="avatar">
-                  <img src="../resources/img/app/default-avatar.min.png" alt="{[{ ::talks.data.creator.firstname }]} {[{ ::talks.data.creator.lastname }]}" width="48" height="48">
+                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                  <h1 class="ellipsis" data-ng-if="talks.data.creator.id != user.id">{[{ ::talks.data.title }]}</h1>
+                  <h1 class="ellipsis" data-ng-if="talks.data.creator.id == user.id">{[{ talks.data.title }]}</h1>
+                  <div class="avatar">
+                    <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::talks.data.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::talks.data.creator.firstname }]} {[{ ::talks.data.creator.lastname }]}">
+                  </div>
+                  <ul>
+                    <li>{[{ ::talks.data.creator.firstname }]} {[{ ::talks.data.creator.lastname }]}</li>
+                    <li><span>{[{ ::talks.data.createdAt }]}</span></li>
+                  </ul>
+                  <div class="clearfix"></div>
+                  <div data-ng-if="talks.data.creator.id != user.id">
+                    <p class="body">{[{ ::talks.data.message }]}</p>
+                    <div class="submit">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
+                    </div>
+                  </div>
+                  <div data-ng-if="talks.data.creator.id == user.id">
+                    <p class="body">{[{ talks.data.message }]}</p>
+                    <div class="submit">
+                      <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
+                      <a href="" class="btn btn-rounded gray-hover gray-focus gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
+                      <a href="" class="btn btn-rounded red-hover red-focus red-background" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)"><i class="material-icons" aria-hidden="true">delete</i></a>
+                    </div>
+                  </div>
                 </div>
-                <ul>
-                  <li>{[{ ::talks.data.creator.firstname }]} {[{ ::talks.data.creator.lastname }]}</li>
-                  <li><span>{[{ ::talks.data.createdAt }]}</span></li>
-                </ul>
                 <div class="clearfix"></div>
-                <div data-ng-if="talks.data.creator.id != user.id">
-                  <p class="info"><strong>{[{ ::talks.data.title }]}</strong></p>
-                  <p class="body">{[{ ::talks.data.message }]}</p>
-                  <div class="submit">
-                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
-                  </div>
-                </div>
-                <div data-ng-if="talks.data.creator.id == user.id">
-                  <p class="info"><strong>{[{ talks.data.title }]}</strong></p>
-                  <p class="body">{[{ talks.data.message }]}</p>
-                  <div class="submit">
-                    <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
-                    <a href="" class="btn btn-rounded gray-hover gray-focus gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
-                    <a href="" class="btn btn-rounded red-hover red-focus red-background" title="Delete this talk and all its comments" data-ng-click="talks.delete(talks.data.id)"><i class="material-icons" aria-hidden="true">delete</i></a>
-                  </div>
-                </div>
               </div>
             </div>
+            <div class="clearfix"></div>
           </div>
         </div>
-        <div data-ng-if="!talks.data" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-          <div class="box-row">
-            <div class="box error text-center">
-              <p><i class="material-icons" aria-hidden="true">speaker_notes_off</i>This talk is empty.</p>
+        <div data-ng-if="!talks.data">
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+            <div class="box error">
+              <p><i class="material-icons" aria-hidden="true">error</i>This talk is empty.<br><span>Please reload your page, or reload this page from the talk list again.</span></p>
             </div>
           </div>
+          <div class="clearfix"></div>
         </div>
       </div>
 
-      <div data-ng-if="!talks.valid && !talks.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-          <div class="box-row">
-          <div class="box error text-center">
-            <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this talk.</p>
+      <div data-ng-if="!talks.valid && !talks.authorized">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br>Please contact your project manager for more.</p>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
-      <div data-ng-if="!talks.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-        <div class="box-row">
-          <div class="box error text-center">
-            <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+      <div data-ng-if="!talks.valid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
     </div>
 
@@ -118,18 +132,34 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <div data-ng-if="comments.valid && comments.authorized">
         <div data-ng-if="comments.data">
           <div class="box-row">
-            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ comment.creator.id == user.id ? 'orange-border' : 'gray-border' }]}" data-ng-repeat="comment in comments.data">
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ comment.creator.id == user.id ? path.colors[path.current] + '-border' : 'gray-border' }]}" data-ng-repeat="comment in comments.data">
               <div class="box">
                 <div data-ng-if="comment.creator.id != user.id">
-                  <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
-                  <p class="body">{[{ ::comment.comment }]}</p>
-                </div>
-                <div data-ng-if="comment.creator.id == user.id">
-                  <div class="user-comment col-lg-9 col-md-8 col-sm-12 col-xs-12 no-padding">
-                    <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
-                    <p class="body">{[{ comment.comment }]}</p>
+                  <div class="user-comment col-lg-10 col-md-10 col-sm-10 col-xs-12 no-padding">
+                    <div class="avatar col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                      <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::comments.creator.firstname }]} {[{ ::comments.creator.lastname }]}">
+                    </div>
+                    <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
+                      <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
+                      <p class="body">{[{ ::comment.comment }]}</p>
+                    </div>
+                    <div class="clearfix"></div>
                   </div>
-                  <div class="user-actions col-lg-3 col-md-4 col-sm-12 col-xs-12 no-padding">
+                  <div class="clearfix"></div>
+                </div>
+
+                <div data-ng-if="comment.creator.id == user.id">
+                  <div class="user-comment col-lg-10 col-md-10 col-sm-10 col-xs-12 no-padding">                
+                    <div class="avatar col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center">
+                      <img data-ng-src="https://static.grappbox.com/app/user/{[{ ::comment.creator.id }]}" data-ng-error="../resources/img/app/default-avatar.min.png" height="48" width="48" alt="{[{ ::comments.creator.firstname }]} {[{ ::comments.creator.lastname }]}">
+                    </div>
+                    <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
+                      <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]}</span></p>
+                      <p class="body">{[{ comment.comment }]}</p>
+                    </div>
+                    <div class="clearfix"></div>
+                  </div>
+                  <div class="user-actions col-lg-2 col-md-2 col-sm-2 col-xs-12 no-padding text-center">
                     <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Edit this comment" data-ng-click="comments.edit(comment)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
                     <a href="" class="btn btn-rounded small gray-color gray-background-hover" title="Delete this comment" data-ng-click="comments.delete(comment.id)"><i class="material-icons" aria-hidden="true">delete</i></a>
                   </div>
@@ -137,45 +167,49 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
             </div>
+            <div class="clearfix"></div>
           </div>
         </div>
       </div>
 
-      <div data-ng-if="!comments.valid && !comments.authorized" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-        <div class="box-row">
-          <div class="box error text-center">
-            <p><i class="material-icons" aria-hidden="true">block</i>You don't have sufficient rights to see this talk's comments.</p>
+      <div data-ng-if="!comments.valid && !comments.authorized">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br>Please contact your project manager for more.</p>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
-      <div data-ng-if="!comments.valid" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-        <div class="box-row">
-          <div class="box error text-center">
-            <p><i class="material-icons" aria-hidden="true">clear</i>Someting is wrong with GrappBox. Please give us a minute, and try again.</p>
+      <div data-ng-if="!comments.valid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
     </div>
 
     <!-- Add comment input -->
     <div class="comment-add" data-ng-if="comments.loaded && comments.valid && comments.authorized">
       <div class="box-row">
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment blue-border">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ ::path.colors[path.current] + '-border' }]}">
           <div class="box">
             <form>
               <fieldset>
-                <div class="form-group label-floating col-lg-10 col-md-10 col-sm-12 col-xs-12 no-padding">
+                <div class="form-group label-floating col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
                   <label for="new_comment" class="control-label">Comment</label>
-                  <input id="new_comment" type="text" class="form-control" data-ng-model="new.comment" data-ng-disabled="new.disabled" required>
+                  <textarea class="form-control" rows="1" data-ng-model="new.comment" data-ng-disabled="new.disabled" required></textarea>
                 </div>
-                <div class="col-lg-2 col-md-2 col-sm-12 col-xs-12 no-padding user-add">
-                  <button class="btn blue-color blue-background-hover {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()">Comment</button>
+                <div class="col-lg-1 col-md-1 col-sm-2 col-xs-12 no-padding text-center user-add">
+                  <button class="btn btn-rounded small {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} {[{ new.disabled ? 'disabled' : '' }]}" title="Post a new comment" data-ng-click="comments.add()"><i class="material-icons" aria-hidden="true">comment</i></button>
                 </div>
-                <div class="clearfix">
+                <div class="clearfix"></div>
               </fieldset>
             </form>
           </div>
         </div>
+        <div class="clearfix"></div>
       </div>
     </div>
   </div>

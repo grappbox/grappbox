@@ -15,13 +15,58 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   $scope.route = { project_id: $route.current.params.project_id, talklist_id: $route.current.params.talklist_id, talk_id: $route.current.params.talk_id };
   $scope.creation = ($scope.route.talk_id == "new" ? true : false);
 
-  $scope.talks = { loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", convert: "", found: false };
+  $scope.talks = { type: "", loaded: false, valid: false, authorized: false, data: "", add: "", edit: "", delete: "", convert: "", found: false };
   $scope.comments = { loaded: false, valid: false, authorized: false, data: "", add: "" , edit: "", delete: "" };
   $scope.new = { loaded: false, valid: false, authorized: false, title: "", body: "", comment: "", disabled: false, error: { title: false, body: false } };
 
 
 
   /* ==================== LOCAL ROUTINES ==================== */
+
+  // Routine definition (local)
+  // Get talk list
+  var _getTalkList = function() {
+    $http.get($rootScope.api.url + "/timelines/" + $scope.route.project_id, { headers: { "Authorization": $rootScope.user.token }}).then(
+      function talkListReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+            case "1.11.1":
+            angular.forEach((response.data && response.data.data && response.data.data.array ? response.data.data.array : null), function(value, key) {
+              if (value.id == $scope.route.talklist_id)
+                $scope.talks.type = value.typeId;
+            });
+            break;
+
+            case "1.11.3":
+            $location.path("talk/" + $scope.route.project_id);
+            notificationFactory.warning("This talk doesn't exist.");
+            break;
+
+            default:
+            $scope.talks.data = null;
+            $scope.talks.valid = false;
+            $scope.talks.authorized = true;
+            $scope.talks.loaded = true;
+            break;
+          }
+        }
+        else
+          $rootScope.reject(true);
+      },
+      function talkListNotReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
+          if (response.data.info.return_code == "11.1.3")
+            $rootScope.reject();
+          $scope.talks.data = null;
+          $scope.talks.valid = false;
+          $scope.talks.authorized = true;
+          $scope.talks.loaded = true;
+        }
+        else
+          $rootScope.reject(true);
+      }
+    );
+  };
 
   // Routine definition (local)
   // Get talk content
@@ -485,6 +530,8 @@ app.controller("TalkController", ["accessFactory", "$http", "$location", "notifi
   /* ==================== EXECUTION ==================== */
 
   accessFactory.projectAvailable();
+  _getTalkList();
+
   if ($scope.route.talk_id != "new") {
     _getTalk();
     _getTalkComments();
