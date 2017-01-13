@@ -60,7 +60,7 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
 
             case "10.1.9":
             $scope.whiteboards.list = null;
-            $scope.view.valid = false;
+            $scope.view.valid = true;
             $scope.view.loaded = true;
             $scope.view.authorized = false;
             break;
