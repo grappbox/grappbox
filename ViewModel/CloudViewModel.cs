@@ -332,15 +332,6 @@ namespace Grappbox.ViewModel
                 HttpResponseMessage res = await HttpRequestManager.Put(props, "cloud/file");
                 if (res.IsSuccessStatusCode == true)
                 {
-                    ContentDialog cd = new ContentDialog();
-                    cd.Title = "Success";
-                    cd.Content = "Upload: " + ((float)_currentChunk / (float)_chunkNumber * 100) + "%";
-                    cd.HorizontalContentAlignment = Windows.UI.Xaml.HorizontalAlignment.Center;
-                    cd.VerticalContentAlignment = Windows.UI.Xaml.VerticalAlignment.Center;
-                    var t = cd.ShowAsync();
-                    await System.Threading.Tasks.Task.Delay(TimeSpan.FromSeconds(1.5));
-                    t.Cancel();
-
                     ++_currentChunk;
                     await upload();
                 }
