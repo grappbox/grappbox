@@ -12,8 +12,8 @@ app.factory("whiteboardObjectFactory", function() {
 
 	// Routine definition
 	// Create new pencil render object
-	var _newPencil = function(id, color, thickness, start_x, start_y, end_x, end_y, points) {
-	  return { id: id, tool: "pencil", color: color, thickness: Number(thickness), start: { x: start_x, y: start_y }, end: { x: end_x, y: end_y }, points: points };
+	var _newPencil = function(id, color, thickness, points) {
+	  return { id: id, tool: "pencil", color: color, thickness: Number(thickness), points: points };
 	};
 
 	// Routine definition
@@ -53,7 +53,7 @@ app.factory("whiteboardObjectFactory", function() {
 
 	  switch (tool.name) {
 	    case "pencil":
-	    data = _newPencil(id, tool.shape.color, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, points);
+	    data = _newPencil(id, tool.shape.color, tool.shape.thickness.value, points);
 	    break;
 
 	    case "line":
@@ -100,7 +100,7 @@ app.factory("whiteboardObjectFactory", function() {
 
 	  switch (object.type) {
 	    case "HANDWRITE":
-	    data = _newPencil(id, object.color, object.lineWeight, object.positionStart.x, object.positionStart.y, object.positionEnd.x, object.positionEnd.y, object.points);
+	    data = _newPencil(id, object.color, object.lineWeight, object.points);
 	    break;
 
 	    case "LINE":
@@ -142,8 +142,8 @@ app.factory("whiteboardObjectFactory", function() {
 
 	// Routine definition
 	// Convert pencil render object to API draw object
-	var _newPencil_API = function(color, thickness, start_x, start_y, end_x, end_y, points) {
-	  return { type: "HANDWRITE", lineWeight: Number(thickness), color: color, positionStart: { x: start_x, y: start_y }, positionEnd: { x: end_x, y: end_y }, points: points };
+	var _newPencil_API = function(color, thickness, points) {
+	  return { type: "HANDWRITE", lineWeight: Number(thickness), color: color, points: points };
 	};
 
 	// Routine definition
@@ -184,7 +184,7 @@ app.factory("whiteboardObjectFactory", function() {
 
 	  switch (tool.name) {
 	    case "pencil":
-	    data = _newPencil_API(tool.shape.color, tool.shape.thickness.value, mouse.start.x, mouse.start.y, mouse.end.x, mouse.end.y, points);
+	    data = _newPencil_API(tool.shape.color, tool.shape.thickness.value, points);
 	    break;
 
 	    case "line":

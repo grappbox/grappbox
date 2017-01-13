@@ -15,7 +15,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   $scope.view = { loaded: false, valid: false, authorized: false };
   $scope.route = { whiteboard_id: $route.current.params.id, project_id: $route.current.params.project_id };
   $scope.whiteboard = { objects: [], points: [], pull: {}, push: {}, name: "", creator: { id:"", firstname: "", lastname: "" }, date: "", delete: "" };
-  $scope.canvas = { mouse: {}, element: "", wrapper: "", fullscreen: false, expand: "" }
+  $scope.canvas = { mouse: {}, element: "", wrapper: "", fullscreen: false, toggle: "", identifier: "" }
   $scope.tool = { colors: [], sizes: [], thicknesses: [], selected: {}, reset: "" }
 
   $scope.whiteboard.pull = { date: "", add: {}, delete: {}, interval: "", time: 2 };
@@ -101,14 +101,14 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   // Routine definition (setup)
   // Set whiteboard canvas and context
   var _setCanvas = function() {
-    $scope.whiteboard.wrapper = document.getElementById("wrapper");
+    $scope.whiteboard.wrapper = document.getElementById("wrapper-" + $scope.canvas.identifier);
 
     document.addEventListener('webkitfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('mozfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('msfullscreenchange', _onFullscreenChange(), false);
     document.addEventListener('fullscreenchange', _onFullscreenChange(), false);
 
-    $scope.canvas.element = document.getElementById("canvas");
+    $scope.canvas.element = document.getElementById("canvas-" + $scope.canvas.identifier);
     whiteboardRenderFactory.setCanvas($scope.canvas.element);
     whiteboardRenderFactory.setCanvasContext($scope.canvas.element.getContext("2d"));
     whiteboardRenderFactory.clearCanvasBuffer();
@@ -121,10 +121,12 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
     $scope.canvas.element.onmousedown = function(event) {
       if ($scope.tool.selected.name) {
         $scope.canvas.mouse.pressed = true;
-        $scope.canvas.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-        $scope.canvas.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
-        $scope.canvas.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
-        $scope.canvas.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        if ($scope.tool.selected.name != "pencil") {
+          $scope.canvas.mouse.start.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+          $scope.canvas.mouse.start.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+          $scope.canvas.mouse.end.x = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].x : event.offsetX);
+          $scope.canvas.mouse.end.y = ($scope.whiteboard.points[0] ? $scope.whiteboard.points[0].y : event.offsetY);
+        }
         $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.tool.selected.color });
         if ($scope.tool.selected.name != "eraser")
           _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
@@ -137,8 +139,10 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
         if ($scope.canvas.mouse.pressed) {
           var last = $scope.whiteboard.points[$scope.whiteboard.points.length - 1];
           $scope.whiteboard.points.push({ x: event.offsetX, y: event.offsetY, color: $scope.tool.selected.color });
-          $scope.canvas.mouse.end.x = last.x;
-          $scope.canvas.mouse.end.y = last.y;
+          if ($scope.tool.selected.name != "pencil") {
+            $scope.canvas.mouse.end.x = last.x;
+            $scope.canvas.mouse.end.y = last.y;
+          }
           if ($scope.tool.selected.name != "eraser")
             _renderObject(whiteboardObjectFactory.setRenderObject(0, $scope.tool.selected, $scope.whiteboard.points, $scope.canvas.mouse));
         }
@@ -184,41 +188,43 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
     $http.get($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function whiteboardOpened(response) {
         if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
-          switch(response.data.info.return_code) {
-            case "1.10.1":
-            _setCanvas();
-            _setMouseHandlers();
+          if (response.data.data.id == $scope.route.whiteboard_id) {
+            switch(response.data.info.return_code) {
+              case "1.10.1":
+              _setCanvas();
+              _setMouseHandlers();
 
-            $scope.whiteboard.objects = [];
-            whiteboardRenderFactory.clearCanvasBuffer();
-            whiteboardRenderFactory.clearCanvas();
+              $scope.whiteboard.objects = [];
+              whiteboardRenderFactory.clearCanvasBuffer();
+              whiteboardRenderFactory.clearCanvas();
 
-            $scope.whiteboard.name = response.data.data.name;
-            $scope.whiteboard.creator.id = response.data.data.user.id;
-            $scope.whiteboard.creator.firstname = response.data.data.user.firstname;
-            $scope.whiteboard.creator.lastname = response.data.data.user.lastname;
-            $scope.whiteboard.date = response.data.data.createdAt;
-            $scope.whiteboard.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
-            moment($scope.whiteboard.pull.date).subtract($scope.whiteboard.pull.time, 'seconds');
+              $scope.whiteboard.name = response.data.data.name;
+              $scope.whiteboard.creator.id = response.data.data.user.id;
+              $scope.whiteboard.creator.firstname = response.data.data.user.firstname;
+              $scope.whiteboard.creator.lastname = response.data.data.user.lastname;
+              $scope.whiteboard.date = response.data.data.createdAt;
+              $scope.whiteboard.pull.date = moment().format("YYYY-MM-DD HH:mm:ss");
+              moment($scope.whiteboard.pull.date).subtract($scope.whiteboard.pull.time, 'seconds');
 
-            if (response.data.data.content)
-            angular.forEach(response.data.data.content, function(value, key) {
-              var data = whiteboardObjectFactory.convertToLocalObject(value.id, value.object);
-              this.whiteboard.objects.push(data);
-              whiteboardRenderFactory.addToCanvasBuffer(data);
-              whiteboardRenderFactory.renderObject(data);
-            }, $scope);
+              if (response.data.data.content)
+              angular.forEach(response.data.data.content, function(value, key) {
+                var data = whiteboardObjectFactory.convertToLocalObject(value.id, value.object);
+                this.whiteboard.objects.push(data);
+                whiteboardRenderFactory.addToCanvasBuffer(data);
+                whiteboardRenderFactory.renderObject(data);
+              }, $scope);
 
-            deferred.resolve();
-            break;
+              deferred.resolve();
+              break;
 
-            default:
-            $scope.whiteboards.objects = null;
-            $scope.view.valid = false;
-            $scope.view.loaded = true;
-            $scope.view.authorized = true;
-            deferred.reject();
-            break;
+              default:
+              $scope.whiteboards.objects = null;
+              $scope.view.valid = false;
+              $scope.view.loaded = true;
+              $scope.view.authorized = true;
+              deferred.reject();
+              break;
+            }
           }
         }
         else
@@ -227,33 +233,35 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       },
       function whiteboardNotOpened(response) {
         if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
-          switch(response.data.info.return_code) {
-            case "10.3.3":
-            $rootScope.reject();
-            deferred.reject();
-            break;
+          if (response.data.data.id == $scope.route.whiteboard_id) {
+            switch(response.data.info.return_code) {
+              case "10.3.3":
+              $rootScope.reject();
+              deferred.reject();
+              break;
 
-            case "10.3.9":
-            $scope.whiteboards.objects = null;
-            $scope.view.valid = false;
-            $scope.view.loaded = true;
-            $scope.view.authorized = false;
-            deferred.reject();
-            break;
+              case "10.3.9":
+              $scope.whiteboards.objects = null;
+              $scope.view.valid = false;
+              $scope.view.loaded = true;
+              $scope.view.authorized = false;
+              deferred.reject();
+              break;
 
-            case "10.3.4":
-            $location.path("whiteboard/" + $scope.route.project_id);
-            notificationFactory.warning("This whiteboard has been deleted.");
-            deferred.reject();
-            break;
+              case "10.3.4":
+              $location.path("whiteboard/" + $scope.route.project_id);
+              notificationFactory.warning("This whiteboard has been deleted.");
+              deferred.reject();
+              break;
 
-            default:
-            $scope.whiteboards.objects = null;
-            $scope.view.valid = false;
-            $scope.view.loaded = true;
-            $scope.view.authorized = true;
-            deferred.reject();
-            break;
+              default:
+              $scope.whiteboards.objects = null;
+              $scope.view.valid = false;
+              $scope.view.loaded = true;
+              $scope.view.authorized = true;
+              deferred.reject();
+              break;
+            }
           }
         }
         else
@@ -445,8 +453,8 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   };
 
   // "Fullscreen" button handler
-  $scope.canvas.expand = function() {
-    if (!$scope.canvas.fullscreen) {
+  $scope.canvas.toggle = function(requestedState) {
+    if (requestedState) {
       if ($scope.whiteboard.wrapper.requestFullscreen)
         $scope.whiteboard.wrapper.requestFullscreen();
       else if ($scope.whiteboard.wrapper.webkitRequestFullscreen)
@@ -484,6 +492,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
     function whiteboardOpened() {
+      $scope.canvas.identifier = Math.floor((Math.random() * 4096) + 1);
       $scope.whiteboard.pull.interval = $interval(_openWhiteboard, ($scope.whiteboard.pull.time * 1000));
     },
     function whiteboardNotOpened() { }
@@ -493,6 +502,22 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   $scope.$on('$destroy', function() {
     if ($scope.whiteboard.pull.interval)
       $interval.cancel($scope.whiteboard.pull.interval);
+    whiteboardRenderFactory.clearCanvasBuffer();
+    whiteboardRenderFactory.clearCanvas();
+  });
+
+  $scope.$on('$locationChangeStart', function() {
+    if ($scope.whiteboard.pull.interval)
+      $interval.cancel($scope.whiteboard.pull.interval);
+    whiteboardRenderFactory.clearCanvasBuffer();
+    whiteboardRenderFactory.clearCanvas();
+  });
+
+  $scope.$on('$routeChangeStart', function() {
+    if ($scope.whiteboard.pull.interval)
+      $interval.cancel($scope.whiteboard.pull.interval);
+    whiteboardRenderFactory.clearCanvasBuffer();
+    whiteboardRenderFactory.clearCanvas();
   });
 
 
@@ -501,6 +526,8 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
 
   // "Delete whiteboard" button handler
   $scope.whiteboard.delete = function() {
+    if ($scope.canvas.fullscreen)
+      $scope.canvas.toggle(false);
     var whiteboardDeletion = $uibModal.open({ animation: true, size: "lg", backdrop: "static", templateUrl: "whiteboardDeletion.html", controller: "WhiteboardDeletionController" });
     whiteboardDeletion.result.then(
       function whiteboardDeletionConfirmed(data) {
