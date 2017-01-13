@@ -53,6 +53,13 @@ namespace Grappbox.ViewModel
             NotifyPropertyChanged("BugsTagsRepartition");
             NotifyPropertyChanged("BugAssignationTracker");
             NotifyPropertyChanged("BugsUsersRepartition");
+            NotifyPropertyChanged("TasksAdvancement");
+            NotifyPropertyChanged("TaskInProgress");
+            NotifyPropertyChanged("TaskFinished");
+            NotifyPropertyChanged("TaskLate");
+            NotifyPropertyChanged("TeamMessages");
+            NotifyPropertyChanged("CustomerMessages");
+            NotifyPropertyChanged("CustomerAccessNumber");
         }
 
 
@@ -81,6 +88,16 @@ namespace Grappbox.ViewModel
             get { return _stats.BugsUsersRepartition; }
         }
 
+        public ObservableCollection<UserTasksAdvancementModel> TasksAdvancement
+        {
+            get { return _stats.UserTasksAdvancement; }
+        }
+
+        public ObservableCollection<UsersRepartitionModel> TasksUsersRepartition
+        {
+            get { return _stats.TasksRepartition; }
+        }
+
         public string ProjectLimits
         {
             get { if (_stats.ProjectTimeLimits != null) return string.Format("The project ends in {0} days", (DateTime.Parse(_stats.ProjectTimeLimits.ProjectEnd).ToLocalTime() - DateTime.Today.ToLocalTime()).Days); return ""; }
@@ -94,6 +111,54 @@ namespace Grappbox.ViewModel
         public string BugAssignationTracker
         {
             get { return string.Format("There are {0} bugs assigned and {1} bugs non assigned", _stats.BugAssignationTracker.Assigned, _stats.BugAssignationTracker.Unassigned); }
+        }
+
+        public string TaskInProgress
+        {
+            get
+            {
+                return string.Format("{0}/{1} tasks in progress", _stats.TaskStatus.Doing, _stats.TotalTasks);
+            }
+        }
+
+        public string TaskFinished
+        {
+            get
+            {
+                return string.Format("{0}/{1} finished tasks", _stats.TaskStatus.Done, _stats.TotalTasks);
+            }
+        }
+
+        public string TaskLate
+        {
+            get
+            {
+                return string.Format("{0}/{1} late tasks", _stats.TaskStatus.Late, _stats.TotalTasks);
+            }
+        }
+
+        public string TeamMessages
+        {
+            get
+            {
+                return string.Format("There are {0} threads on your team section", _stats.TimelinesMessageNumber.Team);
+            }
+        }
+
+        public string CustomerMessages
+        {
+            get
+            {
+                return string.Format("There are {0} threads on your customer section", _stats.TimelinesMessageNumber.Customer);
+            }
+        }
+
+        public string CustomerAccessNumber
+        {
+            get
+            {
+                return string.Format("You have {0} customer accesses on a maximum of {1}", _stats.CustomerAccessNumber.Actual, _stats.CustomerAccessNumber.Maximum);
+            }
         }
     }
 }

@@ -40,7 +40,6 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
             <RowDefinition Height="1*" />
-            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}"
                                   HeaderContent="Statistics" />
@@ -56,7 +55,7 @@
                 </PivotItem.Header>
                 <ScrollViewer>
                     <StackPanel>
-                        <TextBlock Text="{Binding ProjectLimits}"/>
+                        <TextBlock Text="{Binding ProjectLimits}" />
                         <Border />
                         <charting:Chart x:Name="UserWorkingCharge"
                                         Title="User Working Charge"
@@ -148,6 +147,54 @@
                     <customControl:TabHeader Label="Tasks"
                                              Glyph="&#xE862;" />
                 </PivotItem.Header>
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="{Binding TaskInProgress}" />
+                        <TextBlock Text="{Binding TaskLate}" />
+                        <TextBlock Text="{Binding TaskFinished}" />
+                        <Border />
+                        <charting:Chart x:Name="TasksUsersRepartition"
+                                        Title="Tasks Repartition By Users"
+                                        Palette="{StaticResource GrappboxPalette}"
+                                        Height="300">
+                            <charting:Chart.Series>
+                                <charting:PieSeries Title="Repartition"
+                                                    ItemsSource="{Binding TasksUsersRepartition}"
+                                                    IndependentValueBinding="{Binding Fullname}"
+                                                    DependentValueBinding="{Binding Value}"
+                                                    IsSelectionEnabled="False"
+                                                    Margin="0" />
+                            </charting:Chart.Series>
+                        </charting:Chart>
+                        <Border />
+                        <charting:Chart x:Name="TasksAdvancement"
+                                        Title="Task Advancement per user"
+                                        Palette="{StaticResource GrappboxPalette}"
+                                        Height="300">
+                            <charting:ColumnSeries Title="To Do"
+                                                   ItemsSource="{Binding TasksAdvancement}"
+                                                   IndependentValueBinding="{Binding Fullname}"
+                                                   DependentValueBinding="{Binding TasksToDo}"
+                                                   IsSelectionEnabled="False" />
+                            <charting:ColumnSeries Title="In Progress"
+                                                   ItemsSource="{Binding TasksAdvancement}"
+                                                   IndependentValueBinding="{Binding Fullname}"
+                                                   DependentValueBinding="{Binding TasksDoing}"
+                                                   IsSelectionEnabled="False" />
+                            <charting:ColumnSeries Title="Late"
+                                                   ItemsSource="{Binding TasksAdvancement}"
+                                                   IndependentValueBinding="{Binding Fullname}"
+                                                   DependentValueBinding="{Binding TasksLate}"
+                                                   IsSelectionEnabled="False" />
+                            <charting:ColumnSeries Title="Done"
+                                                   ItemsSource="{Binding TasksAdvancement}"
+                                                   IndependentValueBinding="{Binding Fullname}"
+                                                   DependentValueBinding="{Binding TasksDone}"
+                                                   IsSelectionEnabled="False" />
+
+                        </charting:Chart>
+                    </StackPanel>
+                </ScrollViewer>
 
             </PivotItem>
             <PivotItem>
@@ -155,19 +202,26 @@
                     <customControl:TabHeader Label="Talks"
                                              Glyph="&#xE0B7;" />
                 </PivotItem.Header>
-
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="{Binding TeamMessages}" />
+                        <Border />
+                        <TextBlock Text="{Binding CustomerMessages}" />
+                    </StackPanel>
+                </ScrollViewer>
             </PivotItem>
             <PivotItem>
                 <PivotItem.Header>
                     <customControl:TabHeader Label="Customer Access"
                                              Glyph="&#xE241;" />
                 </PivotItem.Header>
-
+                <ScrollViewer>
+                    <StackPanel>
+                        <TextBlock Text="{Binding CustomerAccessNumber}" />
+                        <Border />
+                    </StackPanel>
+                </ScrollViewer>
             </PivotItem>
         </Pivot>
-        <CommandBar x:Name="CB"
-                    Grid.Row="3"
-                    ClosedDisplayMode="Compact">
-        </CommandBar>
     </Grid>
 </Page>

@@ -23,5 +23,10 @@ namespace Grappbox.Model.Stats
 
         [JsonProperty("tasksLate")]
         public int TasksLate { get; set; }
+
+        public string Fullname
+        {
+            get { return string.Format("{0} {1}", User.Firstname, User.Lastname); }
+        }
     }
 }
