@@ -696,7 +696,7 @@ tags-input .tags .focused {
 .talk .talk-message .box .avatar { padding: 0 15px 10px 0; }
 .talk .talk-message .box .info { padding: 10px 0 2px 15px; }
 .talk .talk-message .box .body { padding: 0 15px 10px 0; }
-.talk .talk-message { margin-top: 10px; }
+.talk .talk-message .box .body.main { margin: 10px 0 5px 0; }
 .talk .talk-message .submit { padding: 0 10px!important; }
 
 .talk .each-comment { border-left: 5px solid; margin-left: 2px; width: calc(100% - 4px); }
@@ -742,6 +742,12 @@ tags-input .tags .focused {
 
 .bugtracker-creation .box .hint:not(.error),
 .bugtracker-edition .box .hint:not(.error) { padding: 5px 0 10px 0!important; }
+
+.bugtracker .box .avatar { float: left; }
+.bugtracker .box ul { margin-top: 15px; }
+.bugtracker .box .avatar { padding: 0 15px 10px 0; }
+.bugtracker .box .info { padding: 10px 0 2px 15px; }
+.bugtracker .box .body { padding: 0 15px 10px 0; }
 
 .comments .each-comment .box .avatar { padding-top: 5px!important; }
 .comments .each-comment .box .body { padding: 0 15px 10px 15px; }
