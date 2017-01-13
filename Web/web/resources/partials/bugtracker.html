@@ -318,8 +318,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <textarea class="form-control" rows="1" data-ng-model="comment.comment" id="new_comment"></textarea>
                   </div>
                   <div class="col-lg-2 col-md-2 col-sm-2 col-xs-12 no-padding text-center">
-                    <button class="btn btn btn-rounded small gray-color gray-background-hover no-margin" data-ng-click="bugtracker_switchEditMode(comment.id)"><i class="material-icons" aria-hidden="true">clear</i></button>
-                    <button type="submit" class="btn btn-rounded small gray-color gray-background-hover no-margin" data-ng-click="editComment(comment)"><i class="material-icons" aria-hidden="true">check</i></button>
+                    <button class="btn btn btn-rounded small gray-color gray-background-hover" data-ng-click="bugtracker_switchEditMode(comment.id)"><i class="material-icons" aria-hidden="true">clear</i></button>
+                    <button type="submit" class="btn btn-rounded small gray-color gray-background-hover" data-ng-click="editComment(comment)"><i class="material-icons" aria-hidden="true">check</i></button>
                   </div>
                   <div class="clearfix"></div>
                 </div>
@@ -332,7 +332,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div class="clearfix"></div>
       </div>
 
-      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment {[{ ::path.colors[path.current] + '-border' }]}">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding each-comment comment-add {[{ ::path.colors[path.current] + '-border' }]}">
         <div class="box no-margin">
           <form>
             <fieldset>
