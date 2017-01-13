@@ -13,4 +13,4 @@ sudo php bin/console cache:clear &&
 sudo git checkout vendor/ &&
 sudo chown www-data.www-data * -R &&
 sudo chown www-data.www-data .* -R &&
-sudo apidoc -f .php -i /var/www/api/versions/$VERSION/Grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/$VERSION/
+sudo apidoc -f .php -i /var/www/api/versions/$VERSION/grappbox/API/src/SQLBundle/Controller/ -o /var/www/doc/$VERSION/
