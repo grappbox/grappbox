@@ -45,7 +45,7 @@ class DashboardController extends RolesAndTokenVerificationController
 		if ($project === null)
 			return $this->setBadRequest("2.1.4", "Dashboard", "getteamoccupation", "Bad Parameter: projectId");
 
-		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findTeamOccupationV2($project->getId());
+		return $this->get('doctrine_mongodb')->getManager()->getRepository('MongoBundle:Project')->findTeamOccupation($project->getId());
 	}
 
 	/**

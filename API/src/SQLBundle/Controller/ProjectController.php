@@ -179,6 +179,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*			"return_message": "Project - projectcreation - Missing Parameter"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: logo
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.1.4",
+	*			"return_message": "Project - projectcreation - Bad Parameter: logo"
+	*		}
+	*	}
 	*/
 	public function projectCreationAction(Request $request)
 	{
@@ -223,14 +231,14 @@ class ProjectController extends RolesAndTokenVerificationController
 
 			$file = base64_decode($content->logo);
 			if ($file == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.4", "Project", "updateinformations", "Bad Parameter: logo");
 
 			$image = imagecreatefromstring($file);
 			if ($image == false)
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.4", "Project", "updateinformations", "Bad Parameter: logo");
 
 			if (!imagejpeg($image, $filepath, 80))
-				return $this->setBadRequest("6.2.6", "Project", "updateinformations", "Bad Parameter: logo");
+				return $this->setBadRequest("6.1.4", "Project", "updateinformations", "Bad Parameter: logo");
 
 			imagedestroy($image);
 
@@ -547,6 +555,14 @@ class ProjectController extends RolesAndTokenVerificationController
 	*		"info": {
 	*			"return_code": "6.2.4",
 	*			"return_message": "Project - updateinformations - Bad Parameter: oldPassword"
+	*		}
+	*	}
+	* @apiErrorExample Bad Parameter: logo
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "6.2.4",
+	*			"return_message": "Project - updateinformations - Bad Parameter: logo"
 	*		}
 	*	}
 	* @apiErrorExample Reading Error: role

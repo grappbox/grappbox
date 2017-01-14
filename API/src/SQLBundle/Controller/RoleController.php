@@ -160,12 +160,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - addprojectroles - Bad Parameter: projectId"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: Can't create a role named Admin
+	* @apiErrorExample Bad Parameter: Can't create a role named Admin or Customer
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "13.1.4",
-	*			"return_message": "Role - addprojectroles - Bad Parameter: Can't create a role named Admin"
+	*			"return_message": "Role - addprojectroles - Bad Parameter: Can't create a role named Admin or Customer"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: Role name already register for this project
@@ -192,8 +192,8 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("13.1.3", "Role", "addprojectroles"));
 
-		if ($content->name == "Admin")
-			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin");
+		if ($content->name == "Admin" || $content->name == "Customer")
+			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin or Customer");
 
 		$em = $this->getDoctrine()->getManager();
 		$project = $em->getRepository('SQLBundle:Project')->find($content->projectId);
@@ -307,12 +307,12 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - delprojectroles - Bad Parameter: id"
 	*		}
 	*	}
-	* @apiErrorExample Bad Parameter: Can't remove the Admin role
+	* @apiErrorExample Bad Parameter: Can't remove the Admin or Customer role
 	*	HTTP/1.1 400 Bad Request
 	*	{
 	*		"info": {
 	*			"return_code": "13.2.4",
-	*			"return_message": "Role - delprojectroles - Bad Parameter: Can't remove the Admin role"
+	*			"return_message": "Role - delprojectroles - Bad Parameter: Can't remove the Admin or Customer role"
 	*		}
 	*	}
 	* @apiErrorExample Bad Parameter: Can't delete role, there is still users linked to it
@@ -339,8 +339,8 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
-		if ($role->getName() == "Admin")
-			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin role");
+		if ($role->getName() == "Admin" || $role->getName() == "Customer")
+			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin or Customer role");
 
 		$users = $em->getRepository("SQLBundle:ProjectUserRole")->findBy(array('roleId'=> $id));
 		if ($users != null)
@@ -522,6 +522,14 @@ class RoleController extends RolesAndTokenVerificationController
 	*			"return_message": "Role - putprojectroles - Bad Parameter: Can't update the Admin role"
 	*		}
 	*	}
+	* @apiErrorExample Bad Parameter: Can't update the Customer role name
+	*	HTTP/1.1 400 Bad Request
+	*	{
+	*		"info": {
+	*			"return_code": "13.3.4",
+	*			"return_message": "Role - putprojectroles - Bad Parameter: Can't update the Customer role name"
+	*		}
+	*	}
 	* @apiErrorExample Bad Parameter: Role name already register for this project
 	*	HTTP/1.1 400 Bad Request
 	*	{
@@ -552,6 +560,9 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($role->getName() == "Admin")
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Admin role");
+
+		if ($role->getName() == "Customer" && array_key_exists('name', $content))
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Customer role name");
 
 		$roles = $em->getRepository("SQLBundle:Role")->findBy(array('projects'=> $role->getProjects(), 'name' => $content->name));
 		if ($roles != null) {
@@ -856,8 +867,8 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($role === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
-		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() != "Admin")
-			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't add the creator to another role than Admin role");
+		if ($role->getProjects()->getCreatorUser()->getId() == $content->userId && $role->getName() != "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "assignpersontorole", "Bad Parameter: You can't add the creator to another role than Admin role");
 		if ($userToAdd === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
@@ -1046,7 +1057,7 @@ class RoleController extends RolesAndTokenVerificationController
 		$role = $em->getRepository('SQLBundle:Role')->find($content->roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
-		
+
 		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() == "Admin")
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 

@@ -15,12 +15,12 @@ class TimelineMessage
     protected $id;
 
     /**
-     * @var int $userId
+     * @var string $userId
      */
     protected $userId;
 
     /**
-     * @var int $timelineId
+     * @var string $timelineId
      */
     protected $timelineId;
 
@@ -77,7 +77,7 @@ class TimelineMessage
        return array(
          "id" => $this->id,
          "creator"=> array("id" => $this->creator->getId(), "firstname" => $this->creator->getFirstname(), "lastname" => $this->creator->getLastname()),
-         "timelineId" => $this->timelineId,
+         "timelineId" => $this->timelines->getId(),
          "title" => $this->title,
          "message" => $this->message,
          "createdAt" => $this->createdAt ? $this->createdAt->format('Y-m-d H:i:s') : null,
@@ -98,7 +98,7 @@ class TimelineMessage
     /**
      * Set userId
      *
-     * @param int $userId
+     * @param string $userId
      * @return self
      */
     public function setUserId($userId)
@@ -110,7 +110,7 @@ class TimelineMessage
     /**
      * Get userId
      *
-     * @return int $userId
+     * @return string $userId
      */
     public function getUserId()
     {
@@ -120,7 +120,7 @@ class TimelineMessage
     /**
      * Set timelineId
      *
-     * @param int $timelineId
+     * @param string $timelineId
      * @return self
      */
     public function setTimelineId($timelineId)
@@ -132,7 +132,7 @@ class TimelineMessage
     /**
      * Get timelineId
      *
-     * @return int $timelineId
+     * @return string $timelineId
      */
     public function getTimelineId()
     {

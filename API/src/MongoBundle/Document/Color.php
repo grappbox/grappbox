@@ -67,7 +67,7 @@ class Color
      * @param MongoBundle\Document\User  $user
      * @return self
      */
-    public function setUser( $user = null)
+    public function setUser( $user )
     {
         $this->user = $user;
 

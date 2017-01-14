@@ -125,11 +125,11 @@ class CloudController extends Controller
 
 	private function getUserId($token)
 	{
-		// $userRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:User");
-		// $user = $userRepository->findOneByToken($token);
-		// return (is_null($user) ? -1 : $user->getId());
 		$authRepository = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Authentication");
-		$user = $authRepository->findOneByToken($token);
+		$user = $authRepository->createQueryBuilder()
+								->field('token')->equals($token)
+								->getQuery()->getSingleResult();
+		//->findOneByToken($token);
 		return (is_null($user) ? -1 : $user->getUser()->getId());
 	}
 
@@ -137,12 +137,21 @@ class CloudController extends Controller
 	private function checkUserCloudAuthorization($userId, $idProject)
 	{
 		$db = $this->get('doctrine_mongodb')->getManager();
-		$role = $db->getRepository("MongoBundle:ProjectUserRole")->findOneBy(array("projectId" => $idProject, "userId" => $userId));
+		// $roles = $db->getRepository("MongoBundle:ProjectUserRole")->findBy(array("projectId" => $idProject, "userId" => $userId));
+		$roles = $db->getRepository("MongoBundle:ProjectUserRole")
+							->createQueryBuilder()
+							->field('projectId')->equals($idProject)
+							->field('userId')->equals($userId)
+							->getQuery()->execute();
+
 		foreach($roles as $role)
 		{
 			if (is_null($role))
 				continue;
-			$roleTable = $db->getRepository("MongoBundle:Role")->findOneById($role->getRoleId());
+			$roleTable = $db->getRepository("MongoBundle:Role")->createQueryBuilder()
+											->field('id')->equals($role->getRoleId())
+											->getQuery()->getSingleResult();
+			// ->findOneById($role->getRoleId());
 			if (!is_null($roleTable) && $roleTable->getCloud() > 0)
 				return $roleTable->getCloud();
 		}
@@ -173,7 +182,12 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $receivedData["path"]);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+										->createQueryBuilder()
+										->field('id')->equals($idProject)
+										->getQuery()->getSingleResult();
+
+			// ->findOneById($idProject);
 			$passwordEncrypted = ($safePassword ? $this->grappSha1($safePassword) : NULL);
 		}
 		else {
@@ -209,7 +223,7 @@ class CloudController extends Controller
 		$em->persist($stream);
 		$em->flush();
 
-		// $this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - openStreamAction - Complete Success";
@@ -313,7 +327,12 @@ class CloudController extends Controller
 		$userId = $this->getUserId($token);
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe){
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+									->createQueryBuilder()
+									->field('id')->equals($idProject)
+									->getQuery()->getSingleResult();
+
+			//->findOneById($idProject);
 			$passwordEncrypted = $password; // TODO : SHA-1 512 Hashing when algo created!
 		}
 		else{
@@ -340,10 +359,17 @@ class CloudController extends Controller
 		foreach ($content as $i => $row)
 		{
 			$content[$i]["path"] = str_replace("remote.php/webdav/GrappBox%7cProjects/".(string)$idProject.$prepath.($prepath == "/" ? "": "/"), "", $content[$i]["path"]);
-			$filename = split('/', $content[$i]["path"]);
+			$filename = explode('/', $content[$i]["path"]);
 			$filename = $filename[count($filename) - 1];
 			$filename = urldecode($filename);
-			$content[$i]["is_secured"] = (!($securedFileRepository->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)) == null) || $filename == "Safe");
+
+			$tmp = $securedFileRepository->createQueryBuilder()
+							->field('filename')->equals($filename)
+							->field('cloudPath')->equals($rpath)
+							->getQuery();
+
+			// ->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)
+			$content[$i]["is_secured"] = ((!($tmp->getSingleResult()) == null) || $filename == "Safe");
 			$filename = str_replace('|', ' ', $filename);
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
@@ -382,11 +408,21 @@ class CloudController extends Controller
 			$cloudBasePath = "/" + $cloudBasePath;
 		if ($cloudBasePath === 0)
 		   $cloudBasePath = "/";
-		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
+											->createQueryBuilder()
+											->field('cloudPath')->equals("/GrappBox|Projects/".(string)$idProject.$cloudBasePath)
+											->field('filename')->equals($filename)
+											->getQuery()->getSingleResult();
+
+		//->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
 		$isSafe = preg_match("/Safe/", $cloudPath);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+								->createQueryBuilder()
+								->field('id')->equals($idProject)
+								->getQuery()->getSingleResult();
+			// ->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($passwordSafe);
 		}
 		else {
@@ -435,12 +471,22 @@ class CloudController extends Controller
 		if (substr($cloudBasePath, -1) == "/")
 			$cloudBasePath = substr($cloudBasePath, 0, -1);
 		$cloudBasePath = preg_replace("/\/\//", "/", $cloudBasePath);
-		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath, "filename" => $filename));
+		$filePassword = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
+												->createQueryBuilder()
+												->field('cloudPath')->equals("/GrappBox|Projects/".(string)$idProject.$cloudBasePath)
+												->field("filename")->equals($filename)
+												->getQuery()->getSingleResult();
+		//->findOneBy(array("cloudPath" => "/GrappBox|Projects/".(string)$idProject.$cloudBasePath,
+		// "filename" => $filename));
 
 		$isSafe = preg_match("/Safe/", $cloudPath);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+									->createQueryBuilder()
+									->field('id')->equals($idProject)
+									->getQuery()->getSingleResult();
+			// ->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($passwordSafe);
 		}
 		else {
@@ -486,7 +532,12 @@ class CloudController extends Controller
 		$token = $request->headers->get('Authorization');
 		$userId = $this->getUserId($token);
 		$idProject = (int)$json["data"]["project_id"];
-		$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+		$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+								->createQueryBuilder()
+								->field('id')->equals($idProject)
+								->getQuery()->getSingleResult();
+
+		// ->findOneById($idProject);
 		if ($userId < 0 || $this->checkUserCloudAuthorization($userId, $idProject) < 2 || is_null($project))
 		{
 			$response["info"]["return_code"] = "3.6.9";
@@ -531,11 +582,21 @@ class CloudController extends Controller
 			$apath = "/";
 		$apath = "/GrappBox|Projects/" . $projectId . $apath;
 
-		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
+							->createQueryBuilder()
+							->field('filename')->equals($filename)
+							->field('cloudPath')->equals($cloudPath)
+							->getQuery()->getSingleResult();
+
+		//->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($projectId);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+										->createQueryBuilder()
+										->field('id')->equals($projectId)
+										->getQuery()->getSingleResult();
+			// ->findOneById($projectId);
 			$passwordEncrypted = $this->grappSha1($password);
 		}
 		else {
@@ -563,7 +624,7 @@ class CloudController extends Controller
 				return new JsonResponse($response);
 			}
 
-			//$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+			$this->get('mongo_service_stat')->updateCloudStat($projectId, $token, $request);
 
 			$response["info"]["return_code"] = "1.3.1";
 			$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
@@ -600,11 +661,22 @@ class CloudController extends Controller
 		$apath = preg_replace("/\/\//", "/", $apath);
 		if (substr($apath, -1) == "/")
 			$apath = substr($apath, 0, -1);
-		$file = $this->getDoctrine()->getRepository("SQLBundle:CloudSecuredFileMetadata")->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
+		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
+							->createQueryBuilder()
+							->field('filename')->equals($filename)
+							->field('cloudPath')->equals($apath)
+							->getQuery()->getSingleResult();
+
+		// ->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
 		$isSafe = preg_match("/Safe/", $path);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($projectId);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+											->createQueryBuilder()
+											->field('id')->equals($projectId)
+											->getQuery()->getSingleResult();
+
+			// ->findOneById($projectId);
 			$passwordEncrypted = $this->grappSha1($safe_password);
 		}
 		else {
@@ -627,7 +699,7 @@ class CloudController extends Controller
 		$this->get('doctrine_mongodb')->getManager()->remove($file);
 		$this->get('doctrine_mongodb')->getManager()->flush();
 
-		$this->get('service_stat')->updateCloudStat($projectId, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($projectId, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - delAction - Complete Success";
@@ -656,7 +728,12 @@ class CloudController extends Controller
 		$isSafe = preg_match("/Safe/", $json["data"]["path"]);
 		if ($isSafe)
 		{
-			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")->findOneById($idProject);
+			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
+								->createQueryBuilder()
+								->field('id')->equals($idProject)
+								->getQuery()->getSingleResult();
+
+			// ->findOneById($idProject);
 			$passwordEncrypted = $this->grappSha1($json["data"]["password"]);
 		}
 		else {
@@ -681,7 +758,7 @@ class CloudController extends Controller
 		//HERE Create the dir in the cloud
 		$flysystem->createDir($rpath);
 
-		$this->get('service_stat')->updateCloudStat($idProject, $token, $request);
+		$this->get('mongo_service_stat')->updateCloudStat($idProject, $token, $request);
 
 		$response["info"]["return_code"] = "1.3.1";
 		$response["info"]["return_message"] = "Cloud - createDirAction - Complete Success";

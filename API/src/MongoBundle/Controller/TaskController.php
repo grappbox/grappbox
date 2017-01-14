@@ -372,11 +372,11 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($task->getProjects(), 'TasksRepartition');
 
 		return $this->setCreated("1.12.1", "Task", "taskcreation", "Complete Success", $task->objectToArray(array()));
 	}
@@ -828,7 +828,7 @@ class TaskController extends RolesAndTokenVerificationController
 				}
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
 		return $this->setSuccess("1.12.1", "Task", "taskupdate", "Complete Success", $task->objectToArray($taskModified));
@@ -904,11 +904,11 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "archivetask", "Complete Success", array("id" => $task->getId()));
 	}
@@ -954,14 +954,14 @@ class TaskController extends RolesAndTokenVerificationController
 			}
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($task);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($projectId, 'UserTasksAdvancement');
-		$this->get('service_stat')->updateStat($projectId, 'UserWorkingCharge');
-		$this->get('service_stat')->updateStat($projectId, 'TasksRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserTasksAdvancement');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'UserWorkingCharge');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'TasksRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - taskdelete - Complete Success";
@@ -982,10 +982,11 @@ class TaskController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content)))
+		if ($content === null || (!array_key_exists('name', $content) || !array_key_exists('projectId', $content)
+		 || !array_key_exists('color', $content)))
 			return $this->setBadRequest("12.8.6", "Task", "tagcreation", "Missing Parameter");
 
-		$user = $this->checkToken($content->token);
+		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("12.8.3", "Task", "tagcreation"));
 
@@ -1019,9 +1020,9 @@ class TaskController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+		// 	$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.12.1", "Task", "tagcreation", "Complete Success", $tag->objectToArray());
 	}
@@ -1074,9 +1075,9 @@ class TaskController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.12.1", "Task", "tagupdate", "Complete Success", $tag->objectToArray());
 	}
@@ -1143,12 +1144,12 @@ class TaskController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($tag);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.12.1";
 		$response["info"]["return_message"] = "Task - deletetag - Complete Success";
@@ -1169,7 +1170,7 @@ class TaskController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("12.14.3", "Task", "getprojecttasks"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 		if ($project === null)
 			return $this->setBadRequest("12.14.4", "Task", "getprojecttasks", "Bad Parameter: projectId");

@@ -15,7 +15,7 @@ class WhiteboardModif
     protected $id;
 
     /**
-     * @var int $whiteboardId
+     * @var string $whiteboardId
      */
     protected $whiteboardId;
 
@@ -48,7 +48,7 @@ class WhiteboardModif
     /**
      * Set whiteboardId
      *
-     * @param int $whiteboardId
+     * @param string $whiteboardId
      * @return self
      */
     public function setWhiteboardId($whiteboardId)
@@ -60,7 +60,7 @@ class WhiteboardModif
     /**
      * Get whiteboardId
      *
-     * @return int $whiteboardId
+     * @return string $whiteboardId
      */
     public function getWhiteboardId()
     {

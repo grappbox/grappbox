@@ -8,7 +8,7 @@ MongoBundle\Document\WhiteboardObject:
             id: true
             strategy: AUTO
         whiteboardId:
-            type: int
+            type: string
             column: whiteboard_id
         object:
             type: string

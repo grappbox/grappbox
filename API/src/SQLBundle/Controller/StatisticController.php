@@ -369,7 +369,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		$em = $this->getDoctrine()->getManager();
 		$dueDate = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 						->select('t.dueDate')
-						->where('t.projects = :project')
+						->where('t.projects = :project AND t.is_container = false')
 						->orderBy('t.dueDate', 'DESC')
 						->setParameter('project', $project)
 						->setMaxResults(1)
@@ -440,25 +440,25 @@ class StatisticController extends RolesAndTokenVerificationController
 
 		$result['done'] = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 								->select('count(t)')
-								->where('t.finishedAt IS NOT NULL AND t.projects = :project')
+								->where('t.finishedAt IS NOT NULL AND t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 								->setParameters(array('project' => $project))
 								->getQuery()->getSingleScalarResult();
 
 		$result['doing'] = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 								->select('count(t)')
-								->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects = :project')
+								->where('t.finishedAt IS NULL AND t.startedAt IS NOT NULL AND t.dueDate > :date AND t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 								->setParameters(array('project' => $project, 'date' => $date))
 								->getQuery()->getSingleScalarResult();
 
 		$result['toDo'] = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 								->select('count(t)')
-								->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects = :project')
+								->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 								->setParameters(array('project' => $project, 'date' => $date))
 								->getQuery()->getSingleScalarResult();
 
 		$result['late'] = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 								->select('count(t)')
-								->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects = :project')
+								->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 								->setParameters(array('project' => $project, 'date' => $date))
 								->getQuery()->getSingleScalarResult();
 
@@ -471,7 +471,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
 		$result = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 						->select('count(t)')
-						->where('t.projects = :project')
+						->where('t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 						->setParameters(array('project' => $project))
 						->getQuery()->getSingleScalarResult();
 
@@ -562,13 +562,14 @@ class StatisticController extends RolesAndTokenVerificationController
 			$resources = $user->getRessources();
 			foreach ($resources as $key => $res) {
 				$task = $res->getTask();
-				if ($task->getProjects()->getId() == $project->getId())
+				if ($task->getProjects()->getId() == $project->getId()
+						&& $task->getIsMilestone() == false && $task->getIsContainer() == false)
 				{
 					if($task->getAdvance() == 100)
 						$result['Done'] += 1;
 					else if ($task->getAdvance() == 0)
 						$result['ToDo'] += 1;
-					else if ($task->getAdvance() > 0 && $task->getAdvance() < 100)
+					else if ($task->getAdvance() > 0 && $task->getAdvance() < 100 && $task->getDueDate() > $date)
 						$result['Doing'] += 1;
 					else if ($task->getAdvance() < 100 && $task->getDueDate() <= $date)
 						$result['Late'] += 1;
@@ -618,7 +619,8 @@ class StatisticController extends RolesAndTokenVerificationController
 			$resources = $user->getRessources();
 			foreach ($resources as $key => $res) {
 				$task = $res->getTask();
-					if ($task->getProjects()->getId() == $project->getId())
+					if ($task->getProjects()->getId() == $project->getId()
+						&& $task->getIsMilestone() == false && $task->getIsContainer() == false)
 						$charge += $res->getResource();
 			}
 
@@ -658,7 +660,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		$users = $project->getUsers();
 
 		$tasks = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
-					->where("t.projects = :project")
+					->where("t.projects = :project AND t.is_milestone = false AND t.is_container = false")
 					->setParameters(array('project' => $project))
 					->getQuery()->getResult();
 
@@ -923,7 +925,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		$users = $project->getUsers();
 
 		$ontimeProjectTasks = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
-									->where('t.projects = :project')
+									->where('t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 									->andWhere('t.deletedAt IS NULL')
 									->andWhere('t.finishedAt IS NOT NULL')
 									->andWhere('t.finishedAt <= t.dueDate')
@@ -931,7 +933,7 @@ class StatisticController extends RolesAndTokenVerificationController
 									->getQuery()->getResult();
 
 		$lateProjectTasks = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
-								->where('t.projects = :project')
+								->where('t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 								->andWhere('t.deletedAt IS NULL')
 								->andWhere('(t.finishedAt IS NOT NULL AND t.finishedAt > t.dueDate) OR (t.finishedAt IS NULL AND t.dueDate < :now)')
 								->setParameters(array('project' => $project, 'now' => new DateTime('now')))
@@ -982,33 +984,37 @@ class StatisticController extends RolesAndTokenVerificationController
 
 	private function updateBugsEvolution($project)
 	{
-		// $em = $this->getDoctrine()->getManager();
+		$em = $this->getDoctrine()->getManager();
 
 		// $date = new DateTime('now');
-		// //TODO remove one day
 
-		// $createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-		//                ->select('count(b)')
-		//                ->where("b.projects = :project")
-		//                ->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
-		//                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-		//                ->getQuery()->getSingleScalarResult();
+		$createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+		               ->select('count(b)')
+		               ->where("b.projects = :project")
+									 ->andWhere('b.state = true')
+									 ->setParameter('project', $project)
+		               //->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
+		               //->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+									 ->setParametersarray()
+									 ->getQuery()->getSingleScalarResult();
 
-		// $closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
-		//                ->select('count(b)')
-		//                ->where("b.projects = :project")
-		//                ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
-		//                ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-		//                ->getQuery()->getSingleScalarResult();
+		$closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
+		               ->select('count(b)')
+		               ->where("b.projects = :project")
+									 ->andWhere('b.state = false')
+									 ->setParameter('project', $project)
+		              //  ->andWhere("b.deletedAt BETWEEN :date_begin AND :date_end")
+		              //  ->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
+		               ->getQuery()->getSingleScalarResult();
 
-		// $statBugsEvolution = new statBugsEvolution();
-		// $statBugsEvolution->setProject($project);
-		// $statBugsEvolution->setCreatedBugs($createdBugs);
-		// $statBugsEvolution->setClosedbugs($closedBugs);
-		// $statBugsEvolution->setDate($date);
+		$statBugsEvolution = new statBugsEvolution();
+		$statBugsEvolution->setProject($project);
+		$statBugsEvolution->setCreatedBugs($createdBugs);
+		$statBugsEvolution->setClosedbugs($closedBugs);
+		$statBugsEvolution->setDate($date);
 
-		// $em->persist($statBugsEvolution);
-		// $em->flush();
+		$em->persist($statBugsEvolution);
+		$em->flush();
 
 		return "Data updated";
 	}
@@ -1036,14 +1042,14 @@ class StatisticController extends RolesAndTokenVerificationController
 
 		$totalTasks = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 							->select('count(t)')
-							->where('t.projects = :project')
+							->where('t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 							->andWhere('t.deletedAt IS NULL')
 							->setParameter('project', $project)
 							->getQuery()->getSingleScalarResult();
 
 		$finishedTasks = $em->getRepository('SQLBundle:Task')->createQueryBuilder('t')
 							->select('count(t)')
-							->where('t.projects = :project')
+							->where('t.projects = :project AND t.is_milestone = false AND t.is_container = false')
 							->andWhere('t.deletedAt IS NULL')
 							->andWhere('t.finishedAt IS NOT NULL')
 							->setParameter('project', $project)

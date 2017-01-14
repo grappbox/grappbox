@@ -16,6 +16,18 @@ services:
     class: SQLBundle\Controller\NotificationController
     calls:
             - [setContainer, ["@service_container"]]
+  mongo_service_cloud:
+    class: MongoBundle\Controller\CloudController
+    calls:
+            - [setContainer, ["@service_container"]]
+  mongo_service_stat:
+    class: MongoBundle\Controller\StatisticController
+    calls:
+            - [setContainer, ["@service_container"]]
+  mongo_service_notifs:
+    class: MongoBundle\Controller\NotificationController
+    calls:
+            - [setContainer, ["@service_container"]]
 #    service_name:
 #        class: AppBundle\Directory\ClassName
 #        arguments: ["@another_service_name", "plain_value", "%parameter_name%"]

@@ -8,7 +8,7 @@ MongoBundle\Document\TimelineMessage:
             id: true
             strategy: AUTO
         timelineId:
-            type: int
+            type: string
             name: timeline_id
         title:
             type: string

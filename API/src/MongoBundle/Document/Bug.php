@@ -330,37 +330,6 @@ class Bug
         return $this->users;
     }
 
-    /**
-     * Add tag
-     *
-     * @param MongoBundle\Document\Tag $tag
-     * @return self
-     */
-    public function addTag( $tag)
-    {
-        $this->tags[] = $tag;
-        return $this;
-    }
-
-    /**
-     * Remove tag
-     *
-     * @param MongoBundle\Document\Tag $tag
-     */
-    public function removeTag( $tag)
-    {
-        $this->tags->removeElement($tag);
-    }
-
-    /**
-     * Get tags
-     *
-     * @return \Doctrine\Common\Collections\Collection $tags
-     */
-    public function getTags()
-    {
-        return $this->tags;
-    }
 
     /**
      * Add bugtracker_tags

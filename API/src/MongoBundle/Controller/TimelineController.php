@@ -25,6 +25,11 @@ use DateTime;
 *  @IgnoreAnnotation("apiParamExample")
 *  @IgnoreAnnotation("apiDescription")
 */
+
+/*
+* NOTE: customer timeline => typeId = 1 , team timeline => typeId = 2
+*/
+
 class TimelineController extends RolesAndTokenVerificationController
 {
 	/**
@@ -53,13 +58,12 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.2.4", "Timeline", "postmessage", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.2.9", "Timeline", "postmessage"));
 		}
 
@@ -88,7 +92,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.11.1", "Timeline", "postmessage", "Complete Success", $message->objectToArray());
 	}
@@ -119,13 +123,12 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.3.4", "Timeline", "editmessage", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.3.9", "Timeline", "editmessage"));
 		}
 
@@ -151,7 +154,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.11.1", "Timeline", "editmessage", "Complete Success", $message->objectToArray());
 	}
@@ -175,13 +178,12 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.6.4", "Timeline", "archivemessage", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.6.9", "Timeline", "archivemessage"));
 		}
 
@@ -203,7 +205,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($message);
 		$em->flush();
@@ -232,13 +234,12 @@ class TimelineController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("11.1.3", "Task", "gettimelines"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$timelines = $em->getRepository('MongoBundle:Timeline')->findBy(array("projectId" => $id));
+		$timelines = $em->getRepository('MongoBundle:Timeline')->findBy(array("projects.id" => $id));
 
 		$timeline_array = array();
 		foreach ($timelines as $key => $value) {
-			$type = $em->getRepository('MongoBundle:TimelineType')->find($value->getTypeId());
 			$tmp = $value->objectToArray();
-			$tmp["typeName"] = $type->getName();
+			$tmp["typeName"] = ($value->getTypeId() == 1 ? 'customerTimeline' : 'teamTimeline');
 			$timeline_array[] = $tmp;
 		}
 
@@ -264,22 +265,27 @@ class TimelineController extends RolesAndTokenVerificationController
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$timeline = $em->getRepository('MongoBundle:Timeline')->find($id);
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 1)
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 1)
 				return ($this->setNoRightsError("11.4.9", "Timeline", "getmessages"));
 		}
 
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId()), array("createdAt" => "DESC"));
+		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelines.id" => $timeline->getId()), array("createdAt" => "DESC"));
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 
 			$elem = $value->objectToArray();
-			$elem['nbComment'] = count($value->getComments());
+
+			$req = $em->getRepository('MongoBundle:TimelineComment')->createQueryBuilder()
+								->field("messages.id")->equals($value->getId())
+								->getQuery()->execute();
+
+			$elem['nbComment'] = count($req);
 			$timelineMessages[] = $elem;
 		}
 
@@ -308,17 +314,16 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.5.4", "Timeline", "getlastmessages", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 1)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 1)
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 1)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 1)
 				return ($this->setNoRightsError("11.5.9", "Timeline", "getlastmessages"));
 		}
 
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"), $limit, $offset);
+		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelines.id" => $timeline->getId(), "deletedAt" => null, "parentId" => null), array("createdAt" => "DESC"), $limit, $offset);
 		$timelineMessages = array();
 		foreach ($messages as $key => $value) {
 			$elem = $value->objectToArray();
@@ -356,21 +361,25 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.6.4", "Timeline", "getComments", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 1)
+				return ($this->setNoRightsError("11.6.9", "Timeline", "getComments"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline"))
-				return ($this->setNoRightsError());
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 1)
+				return ($this->setNoRightsError("11.6.9", "Timeline", "getComments"));
 		}
 
-		$messages = $em->getRepository('MongoBundle:TimelineMessage')->findBy(array("timelineId" => $timeline->getId(), "deletedAt" => null, "parentId" => $messageId), array("createdAt" => "ASC"));
+		$message = $em->getRepository('MongoBundle:TimelineMessage')->find($messageId);
 		if (!($message instanceof TimelineMessage))
 			return $this->setBadRequest("11.6.4", "Timeline", "getComments", "Bad Parameter: messageId");
 
-		$comments = $em->getRepository('SQLBundle:TimelineComment')->findBy(array("messages" => $message), array("createdAt" => "ASC"));
+		$comments = $em->getRepository('MongoBundle:TimelineComment')->createQueryBuilder()
+									->field('messages.id')->equals($message->getId())
+									->sort('createdAt', 'asc')
+									->getQuery()->execute();
+		//->findBy(array("messages.id" => $message->getId()), array("createdAt" => "ASC"));
+
 		$commentsArray = array();
 		foreach ($comments as $key => $value) {
 			$commentsArray[] = $value->objectToArray();
@@ -394,7 +403,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		if (!array_key_exists("comment", $content) || !array_key_exists("commentedId", $content))
 			return $this->setBadRequest("11.8.6", "Timeline", "postcomment", "Missing Parameter");
@@ -407,13 +416,12 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.8.4", "Timeline", "postcomment", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.8.9", "Timeline", "postcomment"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.8.9", "Timeline", "postcomment"));
 		}
 
@@ -444,7 +452,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.11.1", "Timeline", "postcomment", "Complete Success", $comment->objectToArray());
 	}
@@ -461,7 +469,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		$content = $request->getContent();
 		$content = json_decode($content);
 		$content = $content->data;
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		if (!array_key_exists("comment", $content) || !array_key_exists("commentId", $content))
 			return $this->setBadRequest("11.9.6", "Timeline", "editcomment", "Missing Parameter");
@@ -474,13 +482,12 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!($timeline instanceof Timeline))
 			return $this->setBadRequest("11.9.4", "Timeline", "editcomment", "Bad Parameter: id");
 
-		$type = $em->getRepository('MongoBundle:TimelineType')->find($timeline->getTypeId());
-		if ($type->getName() == "customerTimeline")
+		if ($timeline->getTypeId() == 1)
 		{
-			if ($this->checkRoles($user, $timeline->getProjectId(), "customerTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "customerTimeline") < 2)
 				return ($this->setNoRightsError("11.9.9", "Timeline", "editcomment"));
 		} else {
-			if ($this->checkRoles($user, $timeline->getProjectId(), "teamTimeline") < 2)
+			if ($this->checkRoles($user, $timeline->getProjects()->getId(), "teamTimeline") < 2)
 				return ($this->setNoRightsError("11.9.9", "Timeline", "editcomment"));
 		}
 
@@ -508,7 +515,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.11.1", "Timeline", "editcomment", "Complete Success", $comment->objectToArray());
 	}
@@ -526,7 +533,7 @@ class TimelineController extends RolesAndTokenVerificationController
 		if (!$user)
 			return ($this->setBadTokenError("11.6.3", "Timeline", "deleteComment"));
 
-		$em = $this->getDoctrine()->getManager();
+		$em = $this->get('doctrine_mongodb')->getManager();
 
 		$comment = $em->getRepository('MongoBundle:TimelineComment')->find($id);
 		if (!($comment instanceof TimelineComment))
@@ -549,7 +556,7 @@ class TimelineController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($comment);
 		$em->flush();

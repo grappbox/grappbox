@@ -10,8 +10,10 @@ use MongoBundle\Controller\RolesAndTokenVerificationController;
 
 use MongoBundle\Document\User;
 use MongoBundle\Document\Bug;
+use MongoBundle\Document\BugComment;
 use MongoBundle\Document\BugState;
 use MongoBundle\Document\Tag;
+use MongoBundle\Document\BugtrackerTag;
 use MongoBundle\Document\Project;
 use DateTime;
 
@@ -78,7 +80,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			if ($tagToAdd instanceof BugtrackerTag) {
 				$assigned = false;
 
-				$bugTags = $bug->getTags();
+				$bugTags = $bug->getBugtrackerTags();
 				if ($bugTags) {
 					foreach ($bugTags as $key => $value) {
 						if ($value->getId() == $tag)
@@ -87,7 +89,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 				}
 
 				if (!$assigned) {
-					$bug->addTag($tagToAdd);
+					$bug->addBugtrackerTag($tagToAdd);
 					$em->flush();
 				}
 			}
@@ -118,11 +120,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.4.1", "Bugtracker", "postTicket", "Complete Success", $bug->objectToArray());
 	}
@@ -168,7 +170,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		foreach ($content->removeTags as $tag) {
-			$bugTags = $bug->getTags();
+			$bugTags = $bug->getBugtrackerTags();
 			if($bugTags) {
 				$assigned = false;
 				foreach ($bugTags as $key => $value) {
@@ -181,7 +183,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 			if ($assigned) {
 				$tagToRemove = $em->getRepository('MongoBundle:BugtrackerTag')->find($tag);
-				$bug->removeTag($tagToRemove);
+				$bug->removeBugtrackerTag($tagToRemove);
 				$em->flush();
 			}
 		}
@@ -190,9 +192,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$tagToAdd = $em->getRepository('MongoBundle:BugtrackerTag')->find($tag);
 			if ($tagToAdd instanceof BugtrackerTag) {
 				$assigned = false;
-				$bugTags = $bug->getTags();
+				$bugTags = $bug->getBugtrackerTags();
 				if ($bugTags) {
-					foreach ($bug->getTags() as $key => $value) {
+					foreach ($bug->getBugtrackerTags() as $key => $value) {
 						if ($value->getId() == $tag) {
 							$assigned = true;
 							break;
@@ -200,7 +202,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 					}
 				}
 				if (!$assigned) {
-					$bug->addTag($tagToAdd);
+					$bug->addBugtrackerTag($tagToAdd);
 					$em->flush();
 				}
 			}
@@ -231,21 +233,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			}
 		}
 
-		$state = null;
-		if ($content->stateId != 0)
-			$state = $em->getRepository("MongoBundle:BugState")->find($content->stateId);
-		if ($state instanceof BugState)
-			$bug->setStateId($content->stateId);
-		else {
-			$state = new BugState();
-			$state->setName($content->stateName);
-
-			$em->persist($state);
-			$em->flush();
-
-			$bug->setStateId($state->getId());
-		}
-
+		// NOTIFICATION
 		$mdata['mtitle'] = "update bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "update bug";
@@ -255,11 +243,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+		// STATISTICS
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editTicket", "Complete Success", $bug->objectToArray());
 	}
@@ -292,6 +281,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
+		//notifs
 		$mdata['mtitle'] = "close bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "close bug";
@@ -302,11 +292,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - closeTicket - Complete Success";
@@ -335,6 +325,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $bug->getProjects()->getId(), "bugtracker") < 2)
 			return ($this->setNoRightsError("4.25.9", "Bugtracker", "deleteTicket"));
 
+		//notifs
 		$mdata['mtitle'] = "delete bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "delete bug";
@@ -345,14 +336,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($bug);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - deleteTicket - Complete Success";
@@ -389,6 +380,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$class = new NotificationController();
 
+		// notifs
 		$mdata['mtitle'] = "reopen bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "reopen bug";
@@ -399,11 +391,11 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - reopenTicket - Complete Success";
@@ -611,75 +603,6 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		return $this->setSuccess("1.4.1", "Bugtracker", "getTicketsByUser", "Commplete Success", array("array" => $ticketsArray));
 	}
 
-	// --------------------------------------------------------------------------------------------------
-	// TODO remove the two following request if no-one uses them, update creaotr/user fullname if they do
-	// --------------------------------------------------------------------------------------------------
-
-	/**
-	* @-api {get} /V0.2/bugtracker/getticketsbystate/:token/:id/:state/:offset/:limit /!\ DEPRECATED /!\ Get tickets by status
-	* @apiName getTicketsByStatus
-	* @apiGroup Bugtracker
-	* @apiDescription /!\ DEPRECATED /!\ Get X last tickets from offset Y with status Z
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function getTicketsByStateAction(Request $request, $token, $id, $state, $offset, $limit)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("4.13.3", "Bugtracker", "getTicketsByStatus"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$project = $em->getRepository("MongoBundle:Project")->find($id);
-		if (!($project instanceof Project))
-			return $this->setBadRequest("4.13.4", "Bugtracker", "getTicketsByStatus", "Bad Parameter: id");
-
-		if ($this->checkRoles($user, $id, "bugtracker") < 1)
-			return ($this->setNoRightsError("4.13.9", "Bugtracker", "getTicketsByStatus"));
-
-		$tickets = $em->getRepository("MongoBundle:Bug")->findBy(array("projects.id" => $project->getId(), "deletedAt" => null, "parentId" => null, "stateId" => $state), array(), $limit, $offset);
-		$ticketsArray = array();
-		foreach ($tickets as $key => $value) {
-			$object = $value->objectToArray();
-			$object['state'] = null; // $em->getRepository("MongoBundle:BugState")->find($value->getStateId())->objectToArray();
-			$object['tags'] = array();
-
-
-			$ticketsArray[] = $object;
-		}
-
-		if (count($ticketsArray) <= 0)
-			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getTicketsByStatus");
-		return $this->setSuccess("1.4.1", "Bugtracker", "getTicketsByStatus", "Commplete Success", array("array" => $ticketsArray));
-	}
-
-	/**
-	* @api {get} /V0.2/bugtracker/getstates/:token /!\ DEPRECATED /!\ Get status
-	* @apiName getStates
-	* @apiGroup Bugtracker
-	* @apiDescription Get tickets status
-	* @apiVersion 0.2.0
-	*
-	*/
-	public function getStatesAction(Request $request, $token)
-	{
-		$user = $this->checkToken($token);
-		if (!$user)
-			return ($this->setBadTokenError("4.14.3", "Bugtracker", "getStates"));
-
-		$em = $this->get('doctrine_mongodb')->getManager();
-		$states = $em->getRepository("MongoBundle:BugState")->findAll();
-
-		$states_array = array();
-		foreach ($states as $key => $value) {
-			$states_array[] = $value->objectToArray();
-		}
-
-		if (count($states_array) <= 0)
-			return $this->setNoDataSuccess("1.4.3", "Bugtracker", "getStates");
-		return $this->setSuccess("1.4.1", "Bugtracker", "getStates", "Commplete Success", array("array" => $states_array));
-	}
-
 
 	/*
 	 * --------------------------------------------------------------------
@@ -688,7 +611,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	*/
 
 	/**
-	* @api {put} /0.3/bugtracker/users/:id Set participants
+	* @-api {put} /0.3/bugtracker/users/:id Set participants
 	* @apiName setParticipants
 	* @apiGroup Bugtracker
 	* @apiDescription Assign/unassign users to a ticket
@@ -741,6 +664,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->persist($bug);
 		$em->flush();
 
+		// notifs
 		$mdata['mtitle'] = "participants bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "participants bug";
@@ -751,10 +675,10 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
-		$this->get('service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugsUsersRepartition');
+		$this->get('mongo_service_stat')->updateStat($bug->getProjects()->getId(), 'BugAssignationTracker');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "setParticipants", "Complete Success", $bug->objectToArray());
 	}
@@ -781,7 +705,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$ticket = $em->getRepository("MongoBundle:Bug")->find($ticketId);
-		if (!($ticket instanceof Project))
+		if (!($ticket instanceof Bug))
 			return $this->setBadRequest("4.4.4", "Bugtracker", "getComments", "Bad Parameter: id");
 
 		if ($this->checkRoles($user, $ticket->getProjects()->getId(), "bugtracker") < 1)
@@ -839,6 +763,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$ticket = $comment->objectToArray();
 		$ticket['projectId'] = $parent->getProjects()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "new comment bug";
 		$mdata['mdesc'] = json_encode($ticket);
 		$wdata['type'] = "new comment bug";
@@ -849,7 +774,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.4.1", "Bugtracker", "postComment", "Complete Success", $ticket);
 	}
@@ -891,6 +816,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$com = $comment->objectToArray();
 		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "edit comment bug";
 		$mdata['mdesc'] = json_encode($com);
 		$wdata['type'] = "edit comment bug";
@@ -901,7 +827,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "editComment", "Complete Success", $comment->objectToArray());
 	}
@@ -929,8 +855,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			return ($this->setNoRightsError("4.24.9", "Bugtracker", "deleteComment"));
 
 		$com = $comment->objectToArray();
-		$com['projectId'] = $com->getBugs()->getProjects()->getId();
+		$com['projectId'] = $comment->getBugs()->getProjects()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "delete comment bug";
 		$mdata['mdesc'] = json_encode($com);
 		$wdata['type'] = "delete comment bug";
@@ -941,7 +868,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($comment);
 		$em->flush();
@@ -971,7 +898,8 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('projectId', $content) || !array_key_exists('color', $content))
+		if ($content === null || !array_key_exists('name', $content) || !array_key_exists('projectId', $content)
+			|| !array_key_exists('color', $content))
 			return $this->setBadRequest("4.15.6", "Bugtracker", "tagCreation", "Missing Parameter");
 
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -995,8 +923,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$em->flush();
 
 		$tagArray = $tag->objectToArray();
-		$tagArray['projectId'] = $tagArray->getProject()->getId();
+		$tagArray['projectId'] = $tag->getProject()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "new tag bug";
 		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "new tag bug";
@@ -1007,9 +936,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($content->projectId, 'BugsTagsRepartition');
 
 		return $this->setCreated("1.4.1", "Bugtracker", "tagCreation", "Complete Success", $tag->objectToArray());
 	}
@@ -1051,6 +980,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tagArray = $tag->objectToArray();
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "update tag bug";
 		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "update tag bug";
@@ -1061,9 +991,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "tagUpdate", "Complete Success", $tag->objectToArray());
 	}
@@ -1076,14 +1006,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	*/
-	public function getTagInfosAction(Request $request, $tagId)
+	public function getTagInfosAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.17.3", "Bugtracker", "tagInformations"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$tag = $em->getRepository('MongoBundle:BugtrackerTag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:BugtrackerTag')->find($id);
 		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.17.4", "Bugtracker", "tagInformations", "Bad Parameter: tag id");
 
@@ -1101,14 +1031,14 @@ class BugtrackerController extends RolesAndTokenVerificationController
 	* @apiVersion 0.3.0
 	*
 	*/
-	public function deleteTagAction(Request $request, $tagId)
+	public function deleteTagAction(Request $request, $id)
 	{
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("4.18.3", "Bugtracker", "deleteTag"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$tag = $em->getRepository('MongoBundle:BugtrackerTag')->find($tagId);
+		$tag = $em->getRepository('MongoBundle:BugtrackerTag')->find($id);
 		if (!($tag instanceof BugtrackerTag))
 			return $this->setBadRequest("4.18.4", "Bugtracker", "deleteTag", "Bad Parameter: tag id");
 
@@ -1118,6 +1048,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		$tagArray = $tag->objectToArray();
 		$tagArray['projectId'] = $tag->getProject()->getId();
 
+		// notifs
 		$mdata['mtitle'] = "delete tag bug";
 		$mdata['mdesc'] = json_encode($tagArray);
 		$wdata['type'] = "delete tag bug";
@@ -1128,12 +1059,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($tag);
 		$em->flush();
 
-		// $this->get('service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($tag->getProject()->getId(), 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - deleteTag - Complete Success";
@@ -1174,15 +1105,16 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($tagToAdd instanceof BugtrackerTag))
 			return $this->setBadRequest("4.19.4", "Bugtracker", "assignTagToBug", "Bad Parameter: tagId");
 
-		$tags = $bug->getTags();
+		$tags = $bug->getBugtrackerTags();
 		foreach ($tags as $tag) {
 			if ($tag === $tagToAdd)
 				return $this->setBadRequest("4.192.7", "Bugtracker", "assignTagToBug", "Already In Database");
 		}
 
-		$bug->addTag($tagToAdd);
+		$bug->addBugtrackerTag($tagToAdd);
 		$em->flush();
 
+		// notifs
 		$mdata['mtitle'] = "assign tag bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "assign tag bug";
@@ -1193,9 +1125,9 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		return $this->setSuccess("1.4.1", "Bugtracker", "assignTagToBug", "Complete Success",
 			array("id" => $bug->getId(), "tag" => $tagToAdd->objectToArray()));
@@ -1228,7 +1160,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if (!($tagToRemove instanceof BugtrackerTag))
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
-		$tags = $bug->getTags();
+		$tags = $bug->getBugtrackerTags();
 		$isAssign = false;
 		foreach ($tags as $tag) {
 			if ($tag === $tagToRemove)
@@ -1240,6 +1172,7 @@ class BugtrackerController extends RolesAndTokenVerificationController
 		if ($isAssign === false)
 			return $this->setBadRequest("4.20.4", "Bugtracker", "removeTagToBug", "Bad Parameter: tagId");
 
+		// notifs
 		$mdata['mtitle'] = "remove tag bug";
 		$mdata['mdesc'] = json_encode($bug->objectToArray());
 		$wdata['type'] = "remove tag bug";
@@ -1250,12 +1183,12 @@ class BugtrackerController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
-		$bug->removeTag($tagToRemove);
+		$bug->removeBugtrackerTag($tagToRemove);
 		$em->flush();
 
-		$this->get('service_stat')->updateStat($projectId, 'BugsTagsRepartition');
+		$this->get('mongo_service_stat')->updateStat($projectId, 'BugsTagsRepartition');
 
 		$response["info"]["return_code"] = "1.4.1";
 		$response["info"]["return_message"] = "Bugtracker - removeTagToBug - Complete Success";

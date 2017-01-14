@@ -8,7 +8,7 @@ MongoBundle\Document\Setting:
             id: true
             strategy: AUTO
         userId:
-            type: int
+            type: string
             name: user_id
         bugAlert:
             type: int

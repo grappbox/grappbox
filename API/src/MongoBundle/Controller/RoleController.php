@@ -44,16 +44,18 @@ class RoleController extends RolesAndTokenVerificationController
 		$content = $content->data;
 
 		if (!array_key_exists('projectId', $content) || !array_key_exists('name', $content) || !array_key_exists('teamTimeline', $content)
-			|| !array_key_exists('customerTimeline', $content) || !array_key_exists('gantt', $content) || !array_key_exists('whiteboard', $content) || !array_key_exists('bugtracker', $content)
-			|| !array_key_exists('event', $content) || !array_key_exists('task', $content) || !array_key_exists('projectSettings', $content) || !array_key_exists('cloud', $content))
+			|| !array_key_exists('customerTimeline', $content) || !array_key_exists('gantt', $content)
+			|| !array_key_exists('whiteboard', $content) || !array_key_exists('bugtracker', $content)
+			|| !array_key_exists('event', $content) || !array_key_exists('task', $content) || !array_key_exists('projectSettings', $content)
+			|| !array_key_exists('cloud', $content))
 			return $this->setBadRequest("13.1.6", "Role", "addprojectroles", "Missing Parameter");
 
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("13.1.3", "Role", "addprojectroles"));
 
-		if ($content->name == "Admin")
-			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin");
+		if ($content->name == "Admin" || $content->name == "Customer")
+			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Can't create a role named Admin or Customer");
 
 		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($content->projectId);
@@ -64,7 +66,7 @@ class RoleController extends RolesAndTokenVerificationController
 			return $this->setNoRightsError("13.1.9", "Role", "addprojectroles");
 		$role = new Role();
 
-		$roles = $em->getRepository("MongoBundle:Role")->findBy(array('projects'=> $project, 'name' => $content->name));
+		$roles = $em->getRepository("MongoBundle:Role")->findBy(array('projects.id'=> $project->getId(), 'name' => $content->name));
 		if ($roles != null)
 			return $this->setBadRequest("13.1.4", "Role", "addprojectroles", "Bad Parameter: Role name already register for this project");
 
@@ -94,7 +96,7 @@ class RoleController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.13.1", "Role", "addprojectroles", "Complete Success", $role->objectToArray());
 	}
@@ -122,8 +124,8 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($this->checkRoles($user, $role->getProjects()->getId(), "projectSettings") < 2)
 			return $this->setNoRightsError("13.2.9", "Role", "delprojectroles");
 
-		if ($role->getName() == "Admin")
-			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin role");
+		if ($role->getName() == "Admin" || $role->getName() == "Customer")
+			return $this->setBadRequest("13.2.4", "Role", "delprojectroles", "Bad Parameter: Can't remove the Admin or Customer role");
 
 		$users = $em->getRepository("MongoBundle:ProjectUserRole")->findBy(array('roleId'=> $id));
 		if ($users != null)
@@ -140,7 +142,7 @@ class RoleController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$em->remove($role);
 		$em->flush();
@@ -180,7 +182,10 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($role->getName() == "Admin")
 			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Admin role");
 
-		$roles = $em->getRepository("MongoBundle:Role")->findBy(array('projects'=> $role->getProjects(), 'name' => $content->name));
+		if ($role->getName() == "Customer" && array_key_exists('name', $content))
+			return $this->setBadRequest("13.3.4", "Role", "putprojectroles", "Bad Parameter: Can't update the Customer role name");
+
+		$roles = $em->getRepository("MongoBundle:Role")->findBy(array('projects.id'=> $role->getProjects()->getId(), 'name' => $content->name));
 		if ($roles != null) {
 			$isSame = false;
 			foreach ($roles as $r) {
@@ -225,7 +230,7 @@ class RoleController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putprojectroles", "Complete Success", $role->objectToArray());
 	}
@@ -245,7 +250,8 @@ class RoleController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("13.4.3", "Role", "getprojectroles"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$roles = $em->getRepository('MongoBundle:Role')->findByprojects($projectId);
+		// $roles = $em->getRepository('MongoBundle:Role')->findByprojects($projectId);
+		$roles = $em->getRepository('MongoBundle:Role')->findBy(array('projects.id' => $projectId));
 		if ($roles === null)
 			return $this->setBadRequest("13.4.4", "Role", "getprojectroles", "Bad Parameter: projectId");
 
@@ -290,8 +296,8 @@ class RoleController extends RolesAndTokenVerificationController
 
 		if ($role === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: roleId");
-		if ($role->getProjects()->getCreatorUser()->getId() == $userId && $role->getName() != "Admin")
-			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't add the creator to another role than Admin role");
+		if ($role->getProjects()->getCreatorUser()->getId() == $content->userId && $role->getName() != "Admin")
+			return $this->setBadRequest("13.8.4", "Role", "assignpersontorole", "Bad Parameter: You can't add the creator to another role than Admin role");
 		if ($userToAdd === null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
@@ -308,14 +314,16 @@ class RoleController extends RolesAndTokenVerificationController
 		if (!$isInProject)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: userId");
 
-		$pur = $em->getRepository('SQLBundle:ProjectUserRole')->findBy(array('projectId'=> $projectId, 'userId'=> $content->userId));
+		$pur = $em->getRepository('MongoBundle:ProjectUserRole')->findBy(array('projectId'=> $projectId, 'userId'=> $content->userId));
 		if($pur != null)
 			return $this->setBadRequest("13.5.4", "Role", "assignpersontorole", "Bad Parameter: User already have a role");
 
 
-		$repository = $em->getRepository('SQLBundle:ProjectUserRole');
-		$qb = $repository->createQueryBuilder('p')->where('p.roleId = :roleId', 'p.userId = :userId')->setParameter('roleId', $content->roleId)->setParameter('userId', $content->userId)->getQuery();
-		$purs = $qb->getResult();
+		// $repository = $em->getRepository('MongoBundle:ProjectUserRole');
+		// $qb = $repository->createQueryBuilder('p')
+		// 	->where('p.roleId = :roleId', 'p.userId = :userId')->setParameter('roleId', $content->roleId)->setParameter('userId', $content->userId)->getQuery();
+		// $purs = $qb->getResult();
+		$purs = $em->getRepository('MongoBundle:ProjectUserRole')->findBy(array('roleId' => $content->roleId, 'userId' => $content->userId));
 
 		if (count($purs) == 0)
 		{
@@ -338,7 +346,7 @@ class RoleController extends RolesAndTokenVerificationController
 				$userNotif[] = $value->getId();
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 			return $this->setCreated("1.13.1", "Role", "assignpersontorole", "Complete Success", array("id" => $ProjectUserRole->getId()));
 		}
@@ -385,7 +393,7 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($pur === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter");
 
-		$role = $em->getRepository('SQLBundle:Role')->find($content->roleId);
+		$role = $em->getRepository('MongoBundle:Role')->find($content->roleId);
 		if ($role === null)
 			return $this->setBadRequest("13.6.4", "Role", "putpersonrole", "Bad Parameter: roleId");
 
@@ -406,7 +414,7 @@ class RoleController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.13.1", "Role", "putpersonrole", "Complete Success", array("id" => $pur->getId()));
 	}
@@ -426,7 +434,8 @@ class RoleController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("13.7.3", "Role", "getuserroles"));
 
 		$em = $this->get('doctrine_mongodb')->getManager();
-		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
+		//$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findByuserId($user->getId());
+		$userRoles = $em->getRepository('MongoBundle:ProjectUserRole')->findBy(array('userId' => $user->getId()));
 
 		if (count($userRoles) == 0 || $userRoles === null)
 			return $this->setNoDataSuccess("1.13.3", "Role", "getuserroles");
@@ -470,27 +479,27 @@ class RoleController extends RolesAndTokenVerificationController
 		if ($project->getCreatorUser()->getId() == $userId && $role->getName() == "Admin")
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameter: You can't remove the creator from the Admin role");
 
-		$repository = $em->getRepository('MongoBundle:ProjectUserRole');
-    $pur = $repository->findOneBy(array("projectId" => $projectId, "userId" => $userId, "roleId" => $roleId));
+		//$repository = $em->getRepository('MongoBundle:ProjectUserRole');
 		// $qb = $repository->createQueryBuilder('r')->where('r.projectId = :projectId', 'r.userId = :userId', 'r.roleId = :roleId')
 		// ->setParameter('projectId', $projectId)->setParameter('userId', $userId)->setParameter('roleId', $roleId)->getQuery();
 		// $pur = $qb->setMaxResults(1)->getOneOrNullResult();
+		$pur = $em->getRepository('MongoBundle:ProjectUserRole')->findOneBy(array("projectId" => $projectId, "userId" => $userId, "roleId" => $roleId));
 
 		if ($pur == null)
 			return $this->setBadRequest("13.8.4", "Role", "delpersonrole", "Bad Parameters");
 
 		//notifs
 		$mdata['mtitle'] = "delete user role";
-		$mdata['mdesc'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
+		$mdata['mdesc'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
 		$wdata['type'] = "delete user role";
 		$wdata['targetId'] = $role->getId();
-		$wdata['message'] = json_encode(array("user_id" => $content->userId, "role_id" => $content->roleId, "project_id" => $projectId));
+		$wdata['message'] = json_encode(array("user_id" => $userId, "role_id" => $roleId, "project_id" => $projectId));
 		$userNotif = array();
 		foreach ($role->getProjects()->getUsers() as $key => $value) {
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$purId = $pur->getId();
 		$em->remove($pur);
@@ -569,9 +578,7 @@ class RoleController extends RolesAndTokenVerificationController
 			return $this->setNoRightsError("13.10.9", "Role", "getusersforrole");
 
 		$purRepository = $em->getRepository('MongoBundle:ProjectUserRole');
-    $purs = $repository->findby(array("roleId" => $roleId));
-    //$qb = $purRepository->createQueryBuilder('pur')->where('pur.roleId = :id')->setParameter('id', $role->getId())->getQuery();
-		//$purs = $qb->getResult();
+    $purs = $purRepository->findBy(array("roleId" => $roleId));
 
 		$usersAssigned = array();
 		$usersNonAssigned = array();
@@ -597,11 +604,11 @@ class RoleController extends RolesAndTokenVerificationController
 	}
 
 	/**
-	* @-api {get} /V0.2/roles/getuserroleforpart/:token/:userId/:projectId/:part Get user's rights for a specific part
+	* @-api {get} /V0.3/role/user/part/:userId/:projectId/:part Get user's rights for a specific part
 	* @apiName getUserRoleForPArt
 	* @apiGroup Roles
-	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (timeline, bugtracker, ...)
-	* @apiVersion 0.2.0
+	* @apiDescription Get user's rights (0: none, 1: readonly, 2:read& write) for a specific part (customer_timeline, bugtracker, ...)
+	* @apiVersion 0.3.0
 	*/
 	public function getUserRoleForPartAction(Request $request, $userId, $projectId, $part)
 	{

@@ -63,7 +63,7 @@ class StatStorageSize
      * @param MongoBundle\Document\Project $project
      * @return Project
      */
-    public function setProject( $project = null)
+    public function setProject( $project )
     {
         $this->project = $project;
 

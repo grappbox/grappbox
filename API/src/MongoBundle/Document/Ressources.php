@@ -59,7 +59,7 @@ class Ressources
      * @param MongoBundle\Document\Task $task
      * @return self
      */
-    public function setTask( $task = null)
+    public function setTask( $task)
     {
         $this->task = $task;
 

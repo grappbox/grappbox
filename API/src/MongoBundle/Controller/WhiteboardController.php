@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use MongoBundle\Controller\RolesAndTokenVerificationController;
 use MongoBundle\Document\Whiteboard;
 use MongoBundle\Document\WhiteboardObject;
-use SQLBundle\Entity\WhiteboardPerson;
+use MongoBundle\Document\WhiteboardPerson;
 use DateTime;
 
 /**
@@ -24,6 +24,7 @@ use DateTime;
 *  @IgnoreAnnotation("apiErrorExample")
 *  @IgnoreAnnotation("apiParam")
 *  @IgnoreAnnotation("apiParamExample")
+*  @IgnoreAnnotation("apiDescription")
 */
 class WhiteboardController extends RolesAndTokenVerificationController
 {
@@ -51,7 +52,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			return ($this->setBadTokenError("10.1.3", "Whiteboard", "list"));
 		if (!$this->checkRoles($user, $projectId, "whiteboard"))
 			return ($this->setNoRightsError("10.1.9", "Whiteboard", "list"));
-		$em = $this->getDoctrine()->getManager();
+
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$project = $em->getRepository('MongoBundle:Project')->find($projectId);
 		$whiteboards = $project->getWhiteboards();
 		$whiteboardsList = array();
@@ -78,7 +80,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$content = json_decode($content);
 		$content = $content->data;
 
-		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content) || !array_key_exists('token', $content))
+		if (!array_key_exists('projectId', $content) || !array_key_exists('whiteboardName', $content))
 			return $this->setBadRequest("10.2.6", "Whiteboard", "new", "Missing Parameter");
 
 		$user = $this->checkToken($request->headers->get('Authorization'));
@@ -115,7 +117,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 			$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setCreated("1.10.1", "Whiteboard", "new", "Complete Success", $whiteboard->objectToArray());
 	}
@@ -169,7 +171,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$wdata['targetId'] = $whiteboard->getId();
 		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		$exist = $em->getRepository('MongoBundle:WhiteboardPerson')->findBy(array("user" => $user->getId(), "whiteboard" => $whiteboard->getId()));
 		if (count($exist) == 0) {
@@ -195,7 +197,8 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$user = $this->checkToken($request->headers->get('Authorization'));
 		if (!$user)
 			return ($this->setBadTokenError("10.3.3", "Whiteboard", "close"));
-		$em = $this->getDoctrine()->getManager();
+
+		$em = $this->get('doctrine_mongodb')->getManager();
 		$whiteboard =  $em->getRepository('MongoBundle:Whiteboard')->find($id);
 		if (!$whiteboard)
 			return $this->setBadRequest("10.3.4", "Whiteboard", "close", "Bad Parameter: id");
@@ -220,7 +223,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 		$wdata['targetId'] = $whiteboard->getId();
 		$wdata['message'] = json_encode(array("id" => $whiteboard->getId(), "projectId" => $whiteboard->getProjects()->getId(), "user" => array("id" => $user->getId(), "firstname" => $user->getFirstname(), "lastname" => $user->getLastname())));
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		foreach ($userConnect as $key => $value) {
 			$em->remove($value);
@@ -282,7 +285,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 				$userNotif[] = $value->getId();
 		}
 		if (count($userNotif) > 0)
-			$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+			$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 
 		return $this->setSuccess("1.10.1", "Whiteboard", "push", "Complete Success", $object->objectToArray());
 	}
@@ -337,7 +340,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 
 		$qb = $em->getRepository('MongoBundle:WhiteboardObject')->createQueryBuilder('w')
 						->field('whiteboardId')->equals($id)
-						->field('deletedAt')-gt($date);
+						->field('deletedAt')->gt($date);
 		$to_del = $qb->getQuery()->execute();
 
 		$toDel = array();
@@ -392,7 +395,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 				$userNotif[] = $value->getId();
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
 		$response["info"]["return_code"] = "1.10.1";
@@ -457,7 +460,7 @@ class WhiteboardController extends RolesAndTokenVerificationController
 					$userNotif[] = $value->getId();
 			}
 			if (count($userNotif) > 0)
-				$this->get('service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
+				$this->get('mongo_service_notifs')->notifs($userNotif, $mdata, $wdata, $em);
 		}
 
 		if (count($data) <= 0)
