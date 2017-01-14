@@ -365,7 +365,7 @@ class CloudController extends Controller
 
 			$tmp = $securedFileRepository->createQueryBuilder()
 							->field('filename')->equals($filename)
-							->field('cloudPath')->equals($cloudPath)
+							->field('cloudPath')->equals($rpath)
 							->getQuery();
 
 			// ->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)
@@ -594,7 +594,7 @@ class CloudController extends Controller
 		{
 			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
 										->createQueryBuilder()
-										->field('id')->equals($idProject)
+										->field('id')->equals($projectId)
 										->getQuery()->getSingleResult();
 			// ->findOneById($projectId);
 			$passwordEncrypted = $this->grappSha1($password);
@@ -664,7 +664,7 @@ class CloudController extends Controller
 		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
 							->createQueryBuilder()
 							->field('filename')->equals($filename)
-							->field('cloudPath')->equals($cloudPath)
+							->field('cloudPath')->equals($apath)
 							->getQuery()->getSingleResult();
 
 		// ->findOneBy(array("filename" => $filename, "cloudPath" => $apath));
@@ -673,7 +673,7 @@ class CloudController extends Controller
 		{
 			$project = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:Project")
 											->createQueryBuilder()
-											->field('id')->equals($idProject)
+											->field('id')->equals($projectId)
 											->getQuery()->getSingleResult();
 
 			// ->findOneById($projectId);
