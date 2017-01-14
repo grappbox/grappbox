@@ -995,7 +995,7 @@ class StatisticController extends RolesAndTokenVerificationController
 									 ->setParameter('project', $project)
 		               //->andWhere("b.createdAt BETWEEN :date_begin AND :date_end")
 		               //->setParameters(array('project' => $project, 'date_begin' => $date->format('Y-m-d').' 00:00:00', 'date_end' => $date->format('Y-m-d').' 23:59:59'))
-									 ->setParametersarray()
+									 //->setParametersarray()
 									 ->getQuery()->getSingleScalarResult();
 
 		$closedBugs =  $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
