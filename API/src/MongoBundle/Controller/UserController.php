@@ -128,7 +128,7 @@ class UserController extends RolesAndTokenVerificationController
 
 			imagedestroy($image);
 
-			$fileurl = 'https://static.grappbox.com/app/user/'.$id;
+			$fileurl = 'https://static.grappbox.com/app/user/'.$user->getId();
 
 			$user->setAvatar($fileurl);
 			$user->setAvatarDate(new \DateTime);
