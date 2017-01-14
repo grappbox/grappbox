@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="Grappbox.CustomControls.Stats.ProjectStats"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Grappbox.CustomControls.Stats"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting"
+             mc:Ignorable="d">
+
+    <UserControl.Resources>
+        <Style TargetType="Border"
+               BasedOn="{StaticResource BorderStatsStyle}" />
+        <Style TargetType="TextBlock"
+               BasedOn="{StaticResource TextBlockStatsStyle}" />
+    </UserControl.Resources>
+
+    <ScrollViewer Loaded="ScrollViewer_Loaded">
+        <StackPanel>
+            <TextBlock Text="{Binding ProjectLimits}" />
+            <Border />
+            <charting:Chart x:Name="UserWorkingCharge"
+                            Title="User Working Charge"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:Chart.Series>
+                    <charting:PieSeries Title="Working Charge"
+                                        ItemsSource="{Binding UserWorkingCharge}"
+                                        IndependentValueBinding="{Binding Fullname}"
+                                        DependentValueBinding="{Binding Charge}"
+                                        IsSelectionEnabled="False"
+                                        Margin="0" />
+                </charting:Chart.Series>
+            </charting:Chart>
+            <Border />
+            <charting:Chart x:Name="ProjectAdvancement"
+                            Title="Project Advancement"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:LineSeries Title="Advancement"
+                                     ItemsSource="{Binding ProjectAdvancement}"
+                                     IndependentValueBinding="{Binding DateFormat}"
+                                     DependentValueBinding="{Binding Percentage}"
+                                     IsSelectionEnabled="False" />
+
+            </charting:Chart>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

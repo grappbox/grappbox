@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="Grappbox.CustomControls.Stats.TasksStats"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Grappbox.CustomControls.Stats"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting">
+
+    <UserControl.Resources>
+        <Style TargetType="Border"
+               BasedOn="{StaticResource BorderStatsStyle}" />
+        <Style TargetType="TextBlock"
+               BasedOn="{StaticResource TextBlockStatsStyle}" />
+    </UserControl.Resources>
+
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="{Binding TaskInProgress}" />
+            <TextBlock Text="{Binding TaskLate}" />
+            <TextBlock Text="{Binding TaskFinished}" />
+            <Border />
+            <charting:Chart x:Name="TasksUsersRepartition"
+                            Title="Tasks Repartition By Users"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:Chart.Series>
+                    <charting:PieSeries Title="Repartition"
+                                        ItemsSource="{Binding TasksUsersRepartition}"
+                                        IndependentValueBinding="{Binding Fullname}"
+                                        DependentValueBinding="{Binding Value}"
+                                        IsSelectionEnabled="False"
+                                        Margin="0" />
+                </charting:Chart.Series>
+            </charting:Chart>
+            <Border />
+            <charting:Chart x:Name="TasksAdvancement"
+                            Title="Task Advancement per user"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:ColumnSeries Title="To Do"
+                                       ItemsSource="{Binding TasksAdvancement}"
+                                       IndependentValueBinding="{Binding Fullname}"
+                                       DependentValueBinding="{Binding TasksToDo}"
+                                       IsSelectionEnabled="False" />
+                <charting:ColumnSeries Title="In Progress"
+                                       ItemsSource="{Binding TasksAdvancement}"
+                                       IndependentValueBinding="{Binding Fullname}"
+                                       DependentValueBinding="{Binding TasksDoing}"
+                                       IsSelectionEnabled="False" />
+                <charting:ColumnSeries Title="Late"
+                                       ItemsSource="{Binding TasksAdvancement}"
+                                       IndependentValueBinding="{Binding Fullname}"
+                                       DependentValueBinding="{Binding TasksLate}"
+                                       IsSelectionEnabled="False" />
+                <charting:ColumnSeries Title="Done"
+                                       ItemsSource="{Binding TasksAdvancement}"
+                                       IndependentValueBinding="{Binding Fullname}"
+                                       DependentValueBinding="{Binding TasksDone}"
+                                       IsSelectionEnabled="False" />
+
+            </charting:Chart>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

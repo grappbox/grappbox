@@ -1,0 +1,68 @@
+﻿<UserControl x:Class="Grappbox.CustomControls.Stats.BugtrackerStats"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="using:Grappbox.CustomControls.Stats"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d"
+             xmlns:charting="using:WinRTXamlToolkit.Controls.DataVisualization.Charting">
+
+    <UserControl.Resources>
+        <Style TargetType="Border"
+               BasedOn="{StaticResource BorderStatsStyle}" />
+        <Style TargetType="TextBlock"
+               BasedOn="{StaticResource TextBlockStatsStyle}" />
+    </UserControl.Resources>
+    
+    <ScrollViewer>
+        <StackPanel>
+            <TextBlock Text="{Binding CustomerBugs}" />
+            <TextBlock Text="{Binding BugAssignationTracker}" />
+            <Border />
+            <charting:Chart x:Name="BugsUsersRepartition"
+                            Title="Bugs Repartition By Users"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:Chart.Series>
+                    <charting:PieSeries Title="Repartition"
+                                        ItemsSource="{Binding BugsUsersRepartition}"
+                                        IndependentValueBinding="{Binding Fullname}"
+                                        DependentValueBinding="{Binding Value}"
+                                        IsSelectionEnabled="False"
+                                        Margin="0" />
+                </charting:Chart.Series>
+            </charting:Chart>
+            <Border />
+            <charting:Chart x:Name="BugsTagsRepartition"
+                            Title="Bugs Repartition By Tag"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:Chart.Series>
+                    <charting:PieSeries Title="Repartition"
+                                        ItemsSource="{Binding BugsTagsRepartition}"
+                                        IndependentValueBinding="{Binding Name}"
+                                        DependentValueBinding="{Binding Value}"
+                                        IsSelectionEnabled="False"
+                                        Margin="0" />
+                </charting:Chart.Series>
+            </charting:Chart>
+            <Border />
+            <charting:Chart x:Name="BugsEvolution"
+                            Title="Bugs Evolution"
+                            Palette="{StaticResource GrappboxPalette}"
+                            Height="300">
+                <charting:ColumnSeries Title="Opened"
+                                       ItemsSource="{Binding BugEvolution}"
+                                       IndependentValueBinding="{Binding DateFormat}"
+                                       DependentValueBinding="{Binding CreatedBugs}"
+                                       IsSelectionEnabled="False" />
+                <charting:ColumnSeries Title="Closed"
+                                       ItemsSource="{Binding BugEvolution}"
+                                       IndependentValueBinding="{Binding DateFormat}"
+                                       DependentValueBinding="{Binding ClosedBugs}"
+                                       IsSelectionEnabled="False" />
+
+            </charting:Chart>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

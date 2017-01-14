@@ -17,8 +17,12 @@ namespace Grappbox.ViewModel
         static public List<ModularModel> ModularList = new List<ModularModel>()
         {
             new ModularModel() { DisplayName="Occupation", Selected=true },
-            new ModularModel() { DisplayName="Meeting", Selected=true }
-            //new ModularModel() { DisplayName="Statistic", Selected=true }
+            new ModularModel() { DisplayName="Meeting", Selected=true },
+            new ModularModel() { DisplayName="Project Stats", Selected=true },
+            new ModularModel() { DisplayName="Bugtracker Stats", Selected=true },
+            new ModularModel() { DisplayName="Tasks Stats", Selected=false },
+            new ModularModel() { DisplayName="Talks Stats", Selected=false },
+            new ModularModel() { DisplayName="Customer Access Stats", Selected=false }
         };
         static private DashBoardViewModel instance = null;
 

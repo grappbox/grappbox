@@ -40,5 +40,13 @@ namespace Grappbox.CustomControls
             this.InitializeComponent();
             this.DataContext = this;
         }
+
+        public TabHeader(string label, string glyph)
+        {
+            this.InitializeComponent();
+            this.DataContext = this;
+            Label = label;
+            Glyph = glyph;
+        }
     }
 }
