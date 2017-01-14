@@ -48,6 +48,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)"
+                                add-from-autocomplete-only="true"
                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                 template="tag-template">
                       <auto-complete source="loadTags($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{tagsList.length}]}" template="autocomplete-template">
@@ -62,8 +63,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                   <div class="form-group label-floating">
                     <label for="users" class="control-label">Assigned user(s)</label>
-                    <tags-input data-ng-model="users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
-                      <auto-complete source="usersList"></auto-complete>
+                    <tags-input data-ng-model="users"
+                                display-property="name"
+                                placeholder="Assign a user"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="userAdded($tag)"
+                                on-tag-removed="userRemoved($tag)">
+                      <auto-complete source="loadUsers($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{usersList.length}]}">
+                      </auto-complete>
                     </tags-input>
                   </div>
 
@@ -130,6 +138,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)"
+                                add-from-autocomplete-only="true"
                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                 template="tag-template">
                       <auto-complete source="loadTags($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{ tagsList.length }]}" template="autocomplete-template">
@@ -144,8 +153,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                   <div class="form-group label-floating">
                     <label for="users" class="control-label">Assigned user(s)</label>
-                    <tags-input data-ng-model="data.ticket.users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
-                      <auto-complete source="usersList"></auto-complete>
+                    <tags-input data-ng-model="data.ticket.users"
+                                display-property="name"
+                                placeholder="Assign a user"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="userAdded($tag)"
+                                on-tag-removed="userRemoved($tag)">
+                      <auto-complete source="loadUsers($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{usersList.length}]}"></auto-complete>
                     </tags-input>
                   </div>
 
