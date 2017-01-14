@@ -306,7 +306,7 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $qb = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
         ->field('projects.id')->equals($project->getId())
-        ->field('is_container')->equals(false)
+        ->field('isContainer')->equals(false)
         ->sort('dueDate', 'desc');
 		$req = $qb->getQuery()->getSingleResult();
 
@@ -372,8 +372,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req_done = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->field('advance')->equals(100)
                     //->where('finishedAt IS NOT NULL')
                     ->getQuery()->execute();
@@ -381,8 +381,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req_doing = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->field('advance')->gt(0)
                     ->field('advance')->lt(100)
                     ->field('dueDate')->gt($date)
@@ -392,8 +392,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req_todo = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->field('advance')->equals(0)
                     ->field('dueDate')->gt($date)
                     // ->where('t.startedAt IS NULL AND t.dueDate > :date AND t.projects.id = :project')
@@ -402,8 +402,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req_late = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->field('advance')->lt(100)
                     ->field('dueDate')->lte($date)
                     // ->where('t.finishedAt IS NULL AND t.dueDate <= :date AND t.projects.id = :project')
@@ -419,8 +419,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                 ->field('projects.id')->equals($project->getId())
-                ->field('is_milestone')->equals(false)
-                ->field('is_container')->equals(false)
+                ->field('isMilestone')->equals(false)
+                ->field('isContainer')->equals(false)
                 ->getQuery()->execute();
     $result = count($req);
 
@@ -504,8 +504,8 @@ class StatisticController extends RolesAndTokenVerificationController
     $users = $project->getUsers();
     $resources = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->getQuery()->execute();
 
     foreach ($users as $key => $user) {
@@ -581,8 +581,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $resources = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                       ->field('projects.id')->equals($project->getId())
-                      ->field('is_milestone')->equals(false)
-                      ->field('is_container')->equals(false)
+                      ->field('isMilestone')->equals(false)
+                      ->field('isContainer')->equals(false)
                       ->getQuery()->execute();
 
     foreach ($users as $key => $user) {
@@ -640,8 +640,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $tasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                   ->field('projects.id')->equals($project->getId())
-                  ->field('is_milestone')->equals(false)
-                  ->field('is_container')->equals(false)
+                  ->field('isMilestone')->equals(false)
+                  ->field('isContainer')->equals(false)
                   ->getQuery()->execute();
 
     foreach ($users as $key => $user) {
@@ -913,8 +913,8 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $ontimeProjectTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                         ->field('t.projects.id')->equals($project->getId())
-                        ->field('is_milestone')->equals(false)
-                        ->field('is_container')->equals(false)
+                        ->field('isMilestone')->equals(false)
+                        ->field('isContainer')->equals(false)
                         ->field('deletedAt')->equals(null)
                         ->field('advance')->equals(100)
                         ->field('finishedAt')->lte('dueDate')
@@ -924,16 +924,16 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $lateProjectTasksOne = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                         ->field('projects.id')->equals($project->getId())
-                        ->field('is_milestone')->equals(false)
-                        ->field('is_container')->equals(false)
+                        ->field('isMilestone')->equals(false)
+                        ->field('isContainer')->equals(false)
                         ->field('deletedAt')->equals(null)
                         ->field('advance')->equals(100)
                         // ->field('finishedAt')->gt('dueDate')
                         ->getQuery()->execute();
     $lateProjectTasksTwo = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                         ->field('projects.id')->equals($project->getId())
-                        ->field('is_milestone')->equals(false)
-                        ->field('is_container')->equals(false)
+                        ->field('isMilestone')->equals(false)
+                        ->field('isContainer')->equals(false)
                         ->field('deletedAt')->equals(null)
                         ->field('advance')->lt(100)
                         ->field('dueDate')->lt(new Datetime('now'))
@@ -1051,15 +1051,15 @@ class StatisticController extends RolesAndTokenVerificationController
 
     $req_totalTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                     ->field('projects.id')->equals($project->getId())
-                    ->field('is_milestone')->equals(false)
-                    ->field('is_container')->equals(false)
+                    ->field('isMilestone')->equals(false)
+                    ->field('isContainer')->equals(false)
                     ->getQuery()->execute();
     $totalTasks = count($req_totalTasks);
 
     $req_finishedTasks = $em->getRepository('MongoBundle:Task')->createQueryBuilder()
                   ->field('projects.id')->equals($project->getId())
-                  ->field('is_milestone')->equals(false)
-                  ->field('is_container')->equals(false)
+                  ->field('isMilestone')->equals(false)
+                  ->field('isContainer')->equals(false)
                   ->field('finishedAt')->notEqual(null)
                   ->getQuery()->execute();
     $finishedTasks = count($req_finishedTasks);
