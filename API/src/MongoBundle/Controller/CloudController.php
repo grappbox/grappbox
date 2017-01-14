@@ -369,7 +369,7 @@ class CloudController extends Controller
 							->getQuery();
 
 			// ->findOneBy(array("filename" => $filename, "cloudPath" => $rpath)
-			$content[$i]["is_secured"] = (!($tmp->getSingleResult()) == null) || $filename == "Safe");
+			$content[$i]["is_secured"] = ((!($tmp->getSingleResult()) == null) || $filename == "Safe");
 			$filename = str_replace('|', ' ', $filename);
 			$content[$i]["filename"] = $filename;
 			unset($content[$i]["path"]);
@@ -661,7 +661,7 @@ class CloudController extends Controller
 		$apath = preg_replace("/\/\//", "/", $apath);
 		if (substr($apath, -1) == "/")
 			$apath = substr($apath, 0, -1);
-		$file = $this->getDoctrine()->getRepository("MongoBundle:CloudSecuredFileMetadata")
+		$file = $this->get('doctrine_mongodb')->getManager()->getRepository("MongoBundle:CloudSecuredFileMetadata")
 							->createQueryBuilder()
 							->field('filename')->equals($filename)
 							->field('cloudPath')->equals($cloudPath)
