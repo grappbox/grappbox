@@ -157,7 +157,8 @@
         <div class="col-lg-4 col-md-4 col-sm-4 hidden-xs no-padding">
           <div class="navigation-left hidden-xs">
             <a href="" title="Toggle navigation drawer" class="btn toggle {[{ path.colors[path.current] + '-background-hover' }]} {[{ path.colors[path.current] + '-color' }]}" data-ng-click="sidebar.toggle()"><i class="material-icons" aria-hidden="true">menu</i></a>
-            <p>{[{ page.load ? 'Loading...' : page.title }]}</p>
+            <p data-ng-if="page.load">Loading...</p>
+            <p data-ng-if="!page.load">{[{ page.title ? page.title : 'Error' }]}</p>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-4 col-xs-10 no-padding brand">

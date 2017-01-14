@@ -72,7 +72,6 @@ body {
 }
 
 h1 { font-weight: 700; }
-h1.large { font-size: 145px; }
 
 h2 { font-weight: 600; line-height: 20px; margin: 0; text-transform: uppercase; color: #212121; }
 h3, h4 { font-weight: 500; color: #757575; }
@@ -170,6 +169,14 @@ th { font-weight: 900!important; }
 .no-margin { margin: 0!important; }
 .no-padding { padding: 0!important; }
 .no-shadow { box-shadow: none!important; }
+
+
+
+/* ====================================================== */
+/* ==================== ERROR LAYOUT ==================== */
+/* ====================================================== */
+
+.error h1 { font-size: 256px; margin: 13vh -150px 0 -150px; }
 
 
 
