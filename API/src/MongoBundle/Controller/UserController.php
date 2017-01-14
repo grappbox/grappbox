@@ -113,7 +113,7 @@ class UserController extends RolesAndTokenVerificationController
 		}
 		if (array_key_exists('avatar', $content))
 		{
-			$filepath = "/var/www/static/app/user/".$id;
+			$filepath = "/var/www/static/app/user/".$user->getId();
 
 			$file = base64_decode($content->avatar);
 			if ($file == false)
