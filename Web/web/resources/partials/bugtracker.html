@@ -181,7 +181,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="data.message == '_denied'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
             <div class="box error">
-              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br>Please contact your project manager for more.</p>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -277,7 +277,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="data.message == '_denied'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                 <div class="box error">
-                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br>Please contact your project manager for more.</p>
                 </div>
               </div>
               <div class="clearfix"></div>
@@ -404,7 +404,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="tag-template">
   <div class="tag-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}; color: #212121;"></div>
     </div>
     <div class="right-panel">
       <span>{[{ $getDisplayText() }]}</span>
@@ -416,7 +416,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="autocomplete-template">
   <div class="autocomplete-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}; color: #212121;"></div>
     </div>
     <div class="right-panel">
       <span ng-bind-html="$highlight($getDisplayText())"></span>
