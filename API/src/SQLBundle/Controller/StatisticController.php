@@ -986,7 +986,7 @@ class StatisticController extends RolesAndTokenVerificationController
 	{
 		$em = $this->getDoctrine()->getManager();
 
-		// $date = new DateTime('now');
+		$date = new DateTime('now');
 
 		$createdBugs = $em->getRepository('SQLBundle:Bug')->createQueryBuilder('b')
 		               ->select('count(b)')
