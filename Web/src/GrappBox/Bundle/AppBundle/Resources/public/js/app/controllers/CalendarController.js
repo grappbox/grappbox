@@ -291,23 +291,23 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
   $scope.view.authorized = true;
   $scope.view.valid = true;
 
-  var userProjects_promise = _getUserProjects();
+/*  var userProjects_promise = _getUserProjects();
   userProjects_promise.then(
     function onGetUserProjectSuccess() {
       var eventTypes_promise = _getEventTypes();
       eventTypes_promise.then(
         function onGetEventTypesSuccess() {
-          $scope.view.load = false;
+          $scope.view.load = false;*/
 
           /* ==================== REFRESH OBJECT (EVENT) ==================== */
 
           // "Previous/Today/Next" button handler
-          $scope.action.onRefreshView = function() {
+/*          $scope.action.onRefreshView = function() {
             _getUserPlanning((vm.mode == "year" ? "month" : vm.mode), moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
           };
-
+*/
           // Calendar mode (day/week/month/year) change watch
-          $scope.$watch("vm.mode", function() {
+/*          $scope.$watch("vm.mode", function() {
             $scope.action.onRefreshView();
           });
         },
@@ -319,7 +319,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
         $scope.view.valid = false;
       }
     }
-  );
+  );*/
 
 
 

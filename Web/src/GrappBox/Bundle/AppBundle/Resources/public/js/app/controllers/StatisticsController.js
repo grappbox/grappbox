@@ -163,10 +163,10 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
   };
 
   // Get project's statistics
-  $http.get($rootScope.api.url + "/statistics/" + $scope.statistics.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+/*  $http.get($rootScope.api.url + "/statistics/" + $scope.statistics.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
     function onSuccess(response) { statisticsReceived(response) },
     function onError(response) { statisticsNotReceived(response) }
-  );
+  );*/
 
 
 }]);
