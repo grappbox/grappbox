@@ -11,7 +11,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Bugtracker</h1>
       <p>Manage all your technical or functionnal issues thanks to this bugtracker.<br>You can assign your team members, but also create new tags to better track your changes.</p>
-      <a ng-if="data.canEdit" href="{[{ 'bugtracker/' + projectId + '/0' }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the issue creation page">Report a new issue</a>
+      <a data-ng-if="data.canEdit" href="{[{ 'bugtracker/' + projectId + '/0' }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the issue creation page">Report a new issue</a>
     </div>
     <div class="clearfix"></div>
   </div>

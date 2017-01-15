@@ -232,7 +232,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
         return deferred.promise;
       },
       function whiteboardNotOpened(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           if (response.data.data.id == $scope.route.whiteboard_id) {
             switch(response.data.info.return_code) {
               case "10.3.3":
@@ -314,7 +314,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
           $rootScope.reject(true);
       },
       function objectsNotPulled(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "10.5.3":
             $rootScope.reject();
@@ -370,7 +370,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
             notificationFactory.error();
         },
         function objectNotPushed(response) {
-          if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+          if (response && response.data && response.data.info && response.data.info.return_code) {
             switch(response.data.info.return_code) {
               case "10.4.3":
               $rootScope.reject();
@@ -421,7 +421,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
           notificationFactory.error();
       },
       function objectNotErased(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "10.4.3":
             $rootScope.reject();
@@ -489,6 +489,38 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   accessFactory.projectAvailable();
   accessFactory.whiteboardAvailable();
 
+  var _closeWhiteboard = function() {
+    $http.put($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function whiteboardClosed(response) {},
+      function whiteboardNotClosed(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
+          switch(response.data.info.return_code) {
+            case "10.3.3":
+            $rootScope.reject();
+            break;
+
+            case "10.3.9":
+            $location.path("whiteboard/" + $scope.route.project_id);
+            notificationFactory.warning("You don't have permission to edit whiteboards.");
+            break;
+
+            case "10.3.4":
+            $location.path("whiteboard/" + $scope.route.project_id);
+            notificationFactory.warning("This whiteboard has been deleted.");
+            break;
+
+            default:
+            $location.path("whiteboard/" + $scope.route.project_id);
+            notificationFactory.error();
+            break;
+          }
+        }
+        else
+          $rootScope.reject(true);
+      }
+    );
+  };
+
   var openWhiteboard = _openWhiteboard();
   openWhiteboard.then(
     function whiteboardOpened() {
@@ -504,6 +536,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       $interval.cancel($scope.whiteboard.pull.interval);
     whiteboardRenderFactory.clearCanvasBuffer();
     whiteboardRenderFactory.clearCanvas();
+    _closeWhiteboard();
   });
 
   $scope.$on('$locationChangeStart', function() {
@@ -511,6 +544,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       $interval.cancel($scope.whiteboard.pull.interval);
     whiteboardRenderFactory.clearCanvasBuffer();
     whiteboardRenderFactory.clearCanvas();
+    _closeWhiteboard();
   });
 
   $scope.$on('$routeChangeStart', function() {
@@ -518,6 +552,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       $interval.cancel($scope.whiteboard.pull.interval);
     whiteboardRenderFactory.clearCanvasBuffer();
     whiteboardRenderFactory.clearCanvas();
+    _closeWhiteboard();
   });
 
 
@@ -539,7 +574,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
             notificationFactory.success("Whiteboard successfully deleted.");
           },
           function whiteboardNotDeleted(response) {
-            if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
               switch(response.data.info.return_code) {
                 case "10.6.3":
                 $rootScope.reject();

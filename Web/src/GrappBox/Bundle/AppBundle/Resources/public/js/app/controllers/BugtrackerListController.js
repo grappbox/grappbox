@@ -113,7 +113,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   var getEditionRights = function() {
 
-    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectID + "/bugtracker", {headers: {"Authorization": $rootScope.user.token}})
+    $http.get($rootScope.api.url + "/role/user/part/" + $rootScope.user.id + "/" + $scope.projectId + "/bugtracker", {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
         $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
       },

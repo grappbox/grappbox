@@ -52,7 +52,7 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
           $rootScope.reject(true);
       },
       function whiteboardListNotReceived(response) {
-        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+        if (response && response.data && response.data.info && response.data.info.return_code) {
           switch(response.data.info.return_code) {
             case "10.1.3":
             $rootScope.reject();
@@ -106,14 +106,14 @@ app.controller("WhiteboardListController", ["accessFactory", "$http", "notificat
             $scope.whiteboards.new.name = "";
           },
           function whiteboardNotCreated(response) {
-            if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+            if (response && response.data && response.data.info && response.data.info.return_code) {
               switch(response.data.info.return_code) {
                 case "10.2.3":
                 $rootScope.reject();
                 break;
 
                 case "10.2.9":
-                notificationFactory.warning("You don\'t have permission to create a new whiteboard.");
+                notificationFactory.warning("You don\'t have permission to create new whiteboards.");
                 break;
 
                 default:
