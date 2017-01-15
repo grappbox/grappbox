@@ -122,8 +122,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <div data-ng-if="data.task.type == 'container'">
                   <div class="form-group label-floating {[{ tasksList.length ? '' : 'has-warning' }]}" >
                     <label for="tags" class="control-label">Task(s)</label>
-                    <tags-input data-ng-model="tasks" display-property="name" placeholder="Add a task" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="taskAdded($tag)" on-tag-removed="taskRemoved($tag)">
-                      <auto-complete source="tasksList"></auto-complete>
+                    <tags-input data-ng-model="tasks"
+                                display-property="name"
+                                placeholder="Add a task"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="taskAdded($tag)"
+                                on-tag-removed="taskRemoved($tag)">
+                      <auto-complete source="loadTasks($query)"
+                                     min-length="1"
+                                     load-on-focus="true" load-on-empty="false"
+                                     max-results-to-show="{[{tasksList.length}]}"
+                                     template="autocomplete-template">
+                       </auto-complete>
                     </tags-input>
                     <p ng-if="!tasksList.length" class="help-block">No task in the project for the moment</p>
                   </div>
@@ -258,7 +269,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="form-group label-floating">
                       <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                       <label for="tags" class="control-label">Tag(s)</label>
-                      <tags-input data-ng-model="data.task.tags"
+                      <tags-input data-ng-model="data.edit.tags"
                                   display-property="name"
                                   replace-spaces-with-dashes="false"
                                   on-tag-added="tagAdded($tag)"
@@ -282,7 +293,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <h3>Resource(s)</h3>
                     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                       <div class="form-group label-floating col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                        <select class="form-control" id="users" name="users" data-ng-model="new_user" data-ng-options="user as user.name for user in usersList">
+                        <select class="form-control" id="users" name="users" data-ng-model="new_user" data-ng-options="user as user.name for user in usersList ">
                           <option value="" disabled selected>Select a user</option>
                         </select>
                       </div>
@@ -320,8 +331,19 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div data-ng-if="data.edit.type == 'container'">
                     <div class="form-group label-floating">
                       <label for="tags" class="control-label">Task(s)</label>
-                      <tags-input data-ng-model="data.task.tasks" display-property="name" placeholder="Add a task" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="taskAdded($tag)" on-tag-removed="taskRemoved($tag)">
-                        <auto-complete source="tasksList"></auto-complete>
+                      <tags-input data-ng-model="data.task.tasks"
+                                  display-property="name"
+                                  placeholder="Add a task"
+                                  replace-spaces-with-dashes="false"
+                                  add-from-autocomplete-only="true"
+                                  on-tag-added="taskAdded($tag)"
+                                  on-tag-removed="taskRemoved($tag)">
+                        <auto-complete source="loadTasks($query)"
+                                       min-length="1"
+                                       load-on-focus="true" load-on-empty="false"
+                                       max-results-to-show="{[{tasksList.length}]}"
+                                       template="autocomplete-template">
+                         </auto-complete>
                       </tags-input>
                     </div>
                   </div>
@@ -474,7 +496,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                 </div>
 
-                <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
+                <div data-ng-if="!data.task.is_container">
                   <h3>Dependencies</h3>
                   <div class="md-chip" data-ng-repeat="dependency in data.task.dependencies">
                     <span class="md-chip-span">{[{ dependency.name.toUpperCase() }]}</span>
@@ -497,7 +519,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
+              <div ng-if="data.canEdit" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
                 <button class="btn red-color red-background-hover" data-ng-click="deleteTask(data.task)">Delete</button>
                 <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')" data-ng-if="data.task.finished_at || data.task.is_milestone || data.task.is_container">Edit</button>
                 <button class="btn gray-color gray-background-hover" data-ng-click="task_switchEditMode('task')" data-ng-if="!data.task.finished_at && !data.task.is_milestone && !data.task.is_container">Edit</button>

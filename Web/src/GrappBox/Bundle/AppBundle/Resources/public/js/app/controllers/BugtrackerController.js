@@ -13,8 +13,6 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   //                PAGE IGNITIALIZATION
   // ------------------------------------------------------
 
-  // TODO: check edition right
-
   //Scope variables initialization
   $scope.projectId = $routeParams.project_id;
   $scope.ticketID = $routeParams.id;
@@ -81,6 +79,17 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     getComments();
   }
 
+  var getEditionRights = function() {
+
+    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectId + "/bugtracker", {headers: {"Authorization": $rootScope.user.token}})
+      .then(function successCallback(response) {
+        $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
+      },
+      function errorCallback(response) {
+        $scope.data.canEdit = false;
+      });
+  }
+  getEditionRights();
 
   // ------------------------------------------------------//
   //                    DISPLAY HELP                       //
@@ -109,6 +118,7 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     $scope.data.userToRemove = [];
     $scope.data.edit.title = $scope.data.ticket.title;
     $scope.data.edit.description = $scope.data.ticket.description;
+    $scope.data.edit.tags = angular.copy($scope.data.ticket.tags);
   };
   //
   // var setCommentEditableContent = function(obj){

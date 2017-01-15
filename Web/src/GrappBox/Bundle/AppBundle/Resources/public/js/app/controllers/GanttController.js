@@ -304,7 +304,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
       labelsEnabled: true,
       maxHeight: false,
       mode: 'custom',
-      readOnly: false,//($scope.data.canEdit ? false : true),
+      readOnly: ($scope.data.canEdit ? false : true),
       scale: 'day',
       sideMode:'TreeTable',
       sortMode: undefined,
