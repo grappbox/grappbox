@@ -133,7 +133,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="form-group label-floating">
                     <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                     <label for="tags" class="control-label">Tag(s)</label>
-                    <tags-input data-ng-model="data.ticket.tags"
+                    <tags-input data-ng-model="data.edit.tags"
                                 display-property="name"
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
@@ -265,7 +265,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
+              <div ng-if="data.canEdit" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding submit">
                 <button class="btn gray-color gray-background-hover" data-ng-click="bugtracker_switchEditMode('ticket')" data-ng-if="data.ticket.state">Edit</button>
                 <button class="btn blue-color blue-background-hover" data-ng-click="closeTicket(data.ticket)" data-ng-if="data.ticket.state">Mark as closed</button>
                 <button class="btn blue-color blue-background-hover" data-ng-click="reopenTicket(data.ticket)" data-ng-if="!data.ticket.state">Reopen</button>
