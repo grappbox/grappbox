@@ -3,12 +3,12 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Calendar -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
+<div class="page-header construction construction-center {[{ path.colors[path.current] + '-stripes' }]}">
   <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
   <div class="clearfix"></div>
 </div>
 
-<div class="panel panel-default">
+<!-- <div class="panel panel-default">
   <div class="panel-heading">View and organize your meetings.</div>
   <div class="panel-body">
     <p>
@@ -16,14 +16,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </p>
   </div>
 </div>
-
+ -->
 <!-- calendar: new event fixed button -->
-<section>
+<!-- <section>
   <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new event" data-ng-click="action.onNewEvent()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
-</section>
+</section> -->
 
 <!-- calendar: navigation and view -->
-<section id="calendar">
+<!-- <section id="calendar">
   <div class="row">
     <div class="col-lg-12">
       <div data-ng-if="view.onLoad">
@@ -35,7 +35,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="view.authorized">
           <div data-ng-if="view.valid">
             <div class="well">
-              <!-- calendar: navigation -->
               <h3 class="col-md-12 col-xs-12 head">{[{ vm.title }]}</h3>
               <div class="col-md-12 col-xs-12 action">
                 <ul>
@@ -55,7 +54,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </ul>
               </div>
 
-              <!-- calendar: navigation -->
               <div class="calendar-wrapper">
                 <mwl-calendar
                   events="vm.events"
@@ -89,10 +87,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>          
     </div>
   </div>
-</section>
+</section> -->
 
 <!-- calendar: event creation modal -->
-<div>
+<!-- <div>
   <script type="text/ng-template" id="modal_createNewEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventCreation()">×</button>
@@ -153,10 +151,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <button type="button" class="btn" data-ng-click="modal_cancelEventCreation()">Cancel</button>
     </div>
   </script>
-</div>
+</div> -->
 
 <!-- calendar: event edition modal -->
-<div>
+<!-- <div>
   <script type="text/ng-template" id="modal_editEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventEdition()">×</button>
@@ -218,9 +216,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </script>
 </div>
-
+ -->
 <!-- calendar: event deletion modal -->
-<div>
+<!-- <div>
   <script type="text/ng-template" id="modal_deleteEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventDeletion()">×</button>

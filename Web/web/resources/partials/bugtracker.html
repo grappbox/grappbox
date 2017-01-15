@@ -48,6 +48,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)"
+                                add-from-autocomplete-only="true"
                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                 template="tag-template">
                       <auto-complete source="loadTags($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{tagsList.length}]}" template="autocomplete-template">
@@ -62,8 +63,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                   <div class="form-group label-floating">
                     <label for="users" class="control-label">Assigned user(s)</label>
-                    <tags-input data-ng-model="users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
-                      <auto-complete source="usersList"></auto-complete>
+                    <tags-input data-ng-model="users"
+                                display-property="name"
+                                placeholder="Assign a user"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="userAdded($tag)"
+                                on-tag-removed="userRemoved($tag)">
+                      <auto-complete source="loadUsers($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{usersList.length}]}">
+                      </auto-complete>
                     </tags-input>
                   </div>
 
@@ -130,6 +138,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)"
+                                add-from-autocomplete-only="true"
                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                 template="tag-template">
                       <auto-complete source="loadTags($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{ tagsList.length }]}" template="autocomplete-template">
@@ -144,8 +153,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
                   <div class="form-group label-floating">
                     <label for="users" class="control-label">Assigned user(s)</label>
-                    <tags-input data-ng-model="data.ticket.users" display-property="name" placeholder="Assign a user" replace-spaces-with-dashes="false" add-from-autocomplete-only="true" on-tag-added="userAdded($tag)" on-tag-removed="userRemoved($tag)">
-                      <auto-complete source="usersList"></auto-complete>
+                    <tags-input data-ng-model="data.ticket.users"
+                                display-property="name"
+                                placeholder="Assign a user"
+                                replace-spaces-with-dashes="false"
+                                add-from-autocomplete-only="true"
+                                on-tag-added="userAdded($tag)"
+                                on-tag-removed="userRemoved($tag)">
+                      <auto-complete source="loadUsers($query)" min-length="1" load-on-focus="true" load-on-empty="false" max-results-to-show="{[{usersList.length}]}"></auto-complete>
                     </tags-input>
                   </div>
 
@@ -181,7 +196,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="data.message == '_denied'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
             <div class="box error">
-              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -277,7 +292,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="data.message == '_denied'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                 <div class="box error">
-                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
                 </div>
               </div>
               <div class="clearfix"></div>
@@ -404,7 +419,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="tag-template">
   <div class="tag-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}; color: #212121;"></div>
     </div>
     <div class="right-panel">
       <span>{[{ $getDisplayText() }]}</span>
@@ -416,7 +431,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="autocomplete-template">
   <div class="autocomplete-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{ data.color }]}; color: #212121;"></div>
     </div>
     <div class="right-panel">
       <span ng-bind-html="$highlight($getDisplayText())"></span>

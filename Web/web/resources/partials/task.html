@@ -61,21 +61,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   <div class="form-group label-floating">
                     <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                     <label for="tags" class="control-label">Tag(s)</label>
-
-                    <!-- <tags-input data-ng-model="tags"
-                    display-property="name"
-                    replace-spaces-with-dashes="false"
-                    on-tag-added="tagAdded($tag)"
-                    on-tag-removed="tagRemoved($tag)">
-                      <auto-complete source="tagsList"></auto-complete>
-                    </tags-input>
-                    <span class="help-block">Use ',' to separate tags</span> -->
-
                     <tags-input data-ng-model="tags"
                                 display-property="name"
                                 replace-spaces-with-dashes="false"
                                 on-tag-added="tagAdded($tag)"
                                 on-tag-removed="tagRemoved($tag)"
+                                add-from-autocomplete-only="true"
                                 class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                 template="tag-template">
                       <auto-complete source="loadTags($query)"
@@ -267,19 +258,12 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <div class="form-group label-floating">
                       <p class="hint">If you want to add a tag that doesn't exist, you must create it first using the "+" button nearby.</p>
                       <label for="tags" class="control-label">Tag(s)</label>
-                      <!-- <tags-input data-ng-model="data.task.tags"
-                                display-property="name"
-                                replace-spaces-with-dashes="false"
-                                on-tag-added="tagAdded($tag)"
-                                 on-tag-removed="tagRemoved($tag)">
-                        <auto-complete source="tagsList"></auto-complete>
-                      </tags-input> -->
-
                       <tags-input data-ng-model="data.task.tags"
                                   display-property="name"
                                   replace-spaces-with-dashes="false"
                                   on-tag-added="tagAdded($tag)"
                                   on-tag-removed="tagRemoved($tag)"
+                                  add-from-autocomplete-only="true"
                                   class="col-lg-11 col-md-11 col-sm-11 col-xs-10 no-padding"
                                   template="tag-template">
                         <auto-complete source="loadTags($query)"
@@ -420,7 +404,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
         <div data-ng-if="data.message == '_denied'">
           <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
             <div class="box error">
-              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+              <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
             </div>
           </div>
           <div class="clearfix"></div>
@@ -541,7 +525,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div data-ng-if="data.message == '_denied'">
               <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                 <div class="box error">
-                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this page.</p>
+                  <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
                 </div>
               </div>
               <div class="clearfix"></div>
@@ -582,7 +566,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="tag-template">
   <div class="tag-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}; color: #212121"></div>
     </div>
     <div class="right-panel">
       <span>{[{$getDisplayText()}]}</span>
@@ -594,7 +578,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="autocomplete-template">
   <div class="autocomplete-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}; color: #212121"></div>
     </div>
     <div class="right-panel">
       <span ng-bind-html="$highlight($getDisplayText())"></span>

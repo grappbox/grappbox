@@ -72,7 +72,6 @@ body {
 }
 
 h1 { font-weight: 700; }
-h1.large { font-size: 145px; }
 
 h2 { font-weight: 600; line-height: 20px; margin: 0; text-transform: uppercase; color: #212121; }
 h3, h4 { font-weight: 500; color: #757575; }
@@ -170,6 +169,14 @@ th { font-weight: 900!important; }
 .no-margin { margin: 0!important; }
 .no-padding { padding: 0!important; }
 .no-shadow { box-shadow: none!important; }
+
+
+
+/* ====================================================== */
+/* ==================== ERROR LAYOUT ==================== */
+/* ====================================================== */
+
+.error h1 { font-size: 256px; margin: 13vh -150px 0 -150px; }
 
 
 
@@ -387,7 +394,9 @@ a:hover { text-decoration: none; color: #4bf; }
 .box p span { color: #9e9e9e; }
 .box.error p span { margin-left: 30px!important; }
 
-.box i { vertical-align: middle; margin-right: 10px; font-size: 20px; color: #757575; }
+.box i { vertical-align: middle; font-size: 20px; color: #757575; }
+.box i { margin-right: 10px; }
+.box i.standalone { margin-right: 0; }
 .box-header i { vertical-align: middle; margin-right: 10px; font-size: 20px; }
 .box .status-icon { position: absolute; top: 32%; right: 4% }
 .box .status-icon i { font-size: 28px; }
@@ -670,6 +679,32 @@ tags-input .tags .focused {
 @media (min-width: 1600px) and (max-width: 1800px) {
   .page.open .dashboard-list .box img { float: none; display: block; margin: 10px auto; }
 }
+
+
+
+/* =============================================== */
+/* ==================== CLOUD ==================== */
+/* =============================================== */
+
+.cloud .box { transition: none!important; }
+
+.cloud .toolbox .box { background: #616161; margin-bottom: -2px; color: #fafafa; }
+.cloud .toolbox .box a,
+.cloud .toolbox .box label { display: block; padding: 15px; }
+.cloud .toolbox .box label:hover i,
+.cloud .toolbox .box a:hover i { color: inherit; }
+.cloud .toolbox .box a,
+.cloud .toolbox .box i,
+.cloud .toolbox .box label { color: #fafafa; }
+.cloud .toolbox .box label { font-size: 14px; cursor: pointer; }
+.cloud .toolbox .box input { display: none; }
+
+.cloud .breadcrumb { margin-bottom: 0; }
+.cloud .breadcrumb .box { margin: 0 2px; background: #9e9e9e; color: #fafafa; padding: 10px 20px; }
+
+.cloud .content .box { margin-top: 0; }
+.cloud .content .box tr { cursor: pointer; }
+.cloud .content .box .selected i { color: inherit; }
 
 
 

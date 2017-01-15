@@ -250,6 +250,11 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
   };
   getProjectUsers();
 
+  $scope.loadUsers = function($query) {
+    return $scope.usersList.filter(function(user) {
+      return user.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+    });
+  };
 
   // ------------------------------------------------------
   //                    TICKET
@@ -414,7 +419,6 @@ app.controller("modal_createNewBugTag", ["$scope", "$uibModalInstance", function
   $scope.error = { name: false };
 
   $scope.modal_confirmTagCreation = function() {
-    console.log('newTag', $scope.newTag);
     $scope.error.name = ($scope.newTag && $scope.newTag.length > 0 ? false : true);
 
     var hasErrors = false;

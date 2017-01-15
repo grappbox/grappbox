@@ -638,9 +638,11 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       elem['usersAdd'] = task.users;
     }
 
-    for (var i = 0; i < $scope.data.tagToAdd.length; i++) {
-      if ($scope.data.tagToAdd[i].id)
-        elem.tagsAdd.push($scope.data.tagToAdd[i].id)
+    if ($scope.tagToAdd.length)
+      elem["tagsAdd"] = [];
+    for (var i = 0; i < $scope.tagToAdd.length; i++) {
+      if ($scope.tagToAdd[i].id)
+        elem["tagsAdd"].push($scope.tagToAdd[i].id);
     }
 
     var data = {"data": elem};
@@ -710,10 +712,11 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     else if ($scope.data.edit.advance < 100 && $scope.data.task.finished_at)
       elem['finished_at'] = null;
 
-
+    if ($scope.tagToAdd.length)
+      elem["tagsAdd"] = [];
     for (var i = 0; i < $scope.tagToAdd.length; i++) {
       if ($scope.tagToAdd[i].id)
-        elem.tagsAdd.push($scope.tagToAdd[i].id)
+        elem["tagsAdd"].push($scope.tagToAdd[i].id);
     }
 
     if ($scope.tagToRemove) {
