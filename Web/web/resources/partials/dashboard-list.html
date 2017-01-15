@@ -9,9 +9,11 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       <img src="../resources/img/app/dashboard.svg" width="300" height="auto" alt="Dashboard">
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
-      <h1>Welcome to GrappBox</h1>
-      <p>Choose your project to begin, or create a new one.</p>
-      <a href="settings/0" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the creation process page">Create a new project</a>
+      <h1>Welcome!</h1>
+      <p>This page is your dashboard, your gateway, your home, and the hub of all your projects!<br>Choose a project to begin, or create a new one.</p>
+      <a data-ng-if="view.loaded && projects.list" href="settings/0" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the creation process page">Create a new project</a>
+      <p class="space" data-ng-if="view.loaded && !projects.list">Use the button below to create a new project, and begin now your journey!</p>
+      <p class="space" data-ng-if="!view.loaded">Loading...</p>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -22,7 +24,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
   </div>
   <div data-ng-if="view.loaded">
-    <div data-ng-if="view.valid && projects">
+    <div data-ng-if="view.valid && projects.list">
       <div class="box-row">
         <div class="col-lg-3 col-md-6 col-sm-12 col-xs-12 no-padding" data-ng-repeat="project in projects.list">
           <div class="box">
@@ -39,27 +41,29 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             <div class="clearfix"></div>
           </div>
         </div>
-
-        <div data-ng-if="view.valid && !projects">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-            <div class="box error">
-              <p><i class="material-icons" aria-hidden="true">help</i><br>You don't have any project.<br><span>Create a new one to begin.</span></p>
-            </div>
-          </div>
-          <div class="clearfix"></div>
-        </div>
-        <div data-ng-if="!view.valid">
-          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
-            <div class="box error text-center">
-              <p><i class="material-icons" aria-hidden="true">error</i><br>Someting is wrong with GrappBox.<span>Please try again.</span></p>
-            </div>
-          </div>
-          <div class="clearfix"></div>
-        </div>
         <div class="clearfix"></div>
       </div>
     </div>
-  </div>
-  <div class="clearfix"></div>
 
+    <div data-ng-if="view.valid && !projects.list">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <div class="box flattened home">
+          <h3>You don't have any project.<br>Create a new one now to get started!</h3>
+          <a data-ng-if="view.valid && !projects.list" href="settings/0" class="btn btn-raised {[{ ::path.colors[path.current] + '-background' }]} {[{ ::path.colors[path.current] + '-hover' }]} white-background-hover" title="Go to the creation process page">Create a new project</a>
+          <div class="slide-up">
+            <i class="material-icons">trending_flat</i>
+          </div>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+    <div data-ng-if="!view.valid">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+        <div class="box error">
+          <p><i class="material-icons" aria-hidden="true">error</i>Someting is wrong with GrappBox.<span>Please try again.</span></p>
+        </div>
+      </div>
+      <div class="clearfix"></div>
+    </div>
+  </div>
 </section>

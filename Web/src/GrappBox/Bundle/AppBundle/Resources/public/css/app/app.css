@@ -132,8 +132,10 @@ th { font-weight: 900!important; }
 .page-header .title { color: #fff; }
 .page-header.light .title { color: #212121; }
 .page-header img { max-height: 100px; width: auto; }
+.page-header.master .title h1 { margin-top: 10px; }
 .page-header:not(.master) .title h1 { font-size: 28px; margin-top: 10px; }
 .page-header.master { margin-bottom: 60px; }
+.page-header.master .space { margin: 13px 0; }
 .page-header.master img,
 .page-header.big img { max-height: 145px; width: auto; }
 .page-header img.square { max-height: 115px; width: auto; }
@@ -649,8 +651,28 @@ tags-input .tags .focused {
 .dashboard-list .box .preview { float: left; margin: 10px 20px 0 20px; }
 .dashboard-list .box .preview p { padding: 2px 0; }
 .dashboard-list .box .btn { float: right; margin: 15px 5px 10px 5px; }
-.dashboard-list .box .btn:focus,
-.dashboard-list .box .btn:hover { color: #fff!important; }
+
+.dashboard-list .box.home { text-align: center; margin: 75px 0 35px 0; }
+.dashboard-list .box.home h3 { font-size: 28px; }
+.dashboard-list .box.home .btn { float: none; }
+.dashboard-list .box.home i { font-size: 128px; margin-top: 40px; transform: rotate(-90deg); }
+
+@-moz-keyframes slide-up {
+  0%, 100% { -moz-transform: translateY(0); transform: translateY(0); }
+  50% { -moz-transform: translateY(-30px); transform: translateY(-30px); }
+}
+
+@-webkit-keyframes slide-up {
+  0%, 100% { -webkit-transform: translateY(0); transform: translateY(0); }
+  50% { -webkit-transform: translateY(-30px); transform: translateY(-30px); }
+}
+
+@keyframes slide-up {
+  0%, 100% { -moz-transform: translateY(0); -ms-transform: translateY(0); -webkit-transform: translateY(0); transform: translateY(0); }
+  50% { -moz-transform: translateY(-30px); -ms-transform: translateY(-30px); -webkit-transform: translateY(-30px); transform: translateY(-30px); }
+}
+
+.slide-up { -moz-animation: slide-up 1s ease infinite; -webkit-animation: slide-up 1s ease infinite; animation: slide-up 1s ease infinite; }
 
 .dashboard .box { text-align: left; }
 .dashboard .box img { border-radius: 50%; float: left; margin: 15px 20px 50px 15px; }
