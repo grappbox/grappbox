@@ -21,10 +21,6 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
     notificationFactory.clear();
     if (error)
       notificationFactory.error();
-    $cookies.remove("G_LOGIN", { path: "/" });
-    $cookies.remove("G_TOKEN", { path: "/" });
-    $cookies.remove("G_ID", { path: "/" });
-    $cookies.remove("G_CUSTOMER", { path: "/" });
     $location.path("/");
     $rootScope.path.current = "/";
   };
