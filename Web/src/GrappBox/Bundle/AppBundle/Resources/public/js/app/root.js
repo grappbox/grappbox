@@ -16,7 +16,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
 
   // ROOTSCOPE variables
   $rootScope.api = { version: "", url: "" };
-  $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "" };
+  $rootScope.user = { id : "", token: "", firstname: "", lastname: "", email: "", is_client: "" };
   $rootScope.page = { load: false, title: "" };
   $rootScope.project = { set: false, id: "", name: "", logout: "" };
   $rootScope.sidebar = { open: true, toggle: "" };
@@ -26,6 +26,7 @@ app.run(["$base64", "$cookies", "rootFactory", "$rootScope",
 
   $rootScope.user.id = $base64.decode($cookies.get("G_ID"));
   $rootScope.user.token = $base64.decode($cookies.get("G_TOKEN"));
+  $rootScope.user.is_client = ($base64.decode($cookies.get("G_CUSTOMER")) == "_true" ? true : false);
 
   $rootScope.path = {
     current: "/",

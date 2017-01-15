@@ -52,6 +52,14 @@ $(document).ready(function() {
         default:
         break;
       }
+
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
+      Cookies.remove("G_LOGIN", { path: "/" });
+      Cookies.remove("G_TOKEN", { path: "/" });
+      Cookies.remove("G_ID", { path: "/" });      
+
+      $("#form-message").addClass("show");
     }
 
     var login = Cookies.get("G_LOGIN");
@@ -78,20 +86,62 @@ $(document).ready(function() {
         break;
 
         case "_mismatch":
-        $("#form-message p").text("You password and confirmation password do not match. Please try again.");
+        $("#form-message p").text("Your password and confirmation password do not match.");
+        break;
+
+        case "_missingtoken":
+        $("#form-message p").text("You need a valid token to get attached to a GrappBox team.");
+        break;
+
+        case "_badcode":
+        $("#form-message p").text("You need a valid GrappBox code to register.");
         break;
 
         default:
         break;
       }
 
-      Cookies.remove("G_PREORDER", { path: "/" });      
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
       Cookies.remove("G_LOGIN", { path: "/" });
       Cookies.remove("G_TOKEN", { path: "/" });
       Cookies.remove("G_ID", { path: "/" });
 
       $("#form-message").addClass("show");
     }
+
+    var customer = Cookies.get("G_CUSTOMER");
+    if (customer != undefined && window.atob(customer) != "_true" && window.atob(customer) != "_false") {
+      switch(window.atob(customer)) {
+        case "_already":
+        $("#form-message p").text("You are already associated to this project. Please login to your account.");
+        break;
+
+        case "_bad":
+        $("#form-message p").text("This customer access is not valid. Please contact your GrappBox team.");
+        break;
+
+        case "_badpassword":
+        $("#form-message p").text("The password entered doesn't match the account associated with your email.");
+        break;
+
+        case "_critical":
+        $("#form-message p").text("Something is wrong with GrappBox. Please give us a minute, and try again.");
+        break;
+
+        default:
+        break;
+      }
+
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
+      Cookies.remove("G_LOGIN", { path: "/" });
+      Cookies.remove("G_TOKEN", { path: "/" });
+      Cookies.remove("G_ID", { path: "/" });
+      
+      $("#form-message").addClass("show");
+    }
+
   };
 
   // Start point

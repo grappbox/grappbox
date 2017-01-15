@@ -13,7 +13,7 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
 
   // Scope variables initialization
   $scope.projectId = $routeParams.project_id;
-  $scope.data = { onLoad: true, closedOnLoad: true, userOnLoad: true,
+  $scope.data = { onLoad: true, closedOnLoad: true, userOnLoad: true, canEdit: false,
                   tickets: { }, closedTicket: { }, userTickets: { },
                   message: "_invalid", closedMessage: '_invalid', userMessage: '_invalid' };
 
@@ -109,6 +109,19 @@ app.controller("BugtrackerListController", ["$http", "$location", "notificationF
       });
   };
   getUserTicketsContent();
+
+
+  var getEditionRights = function() {
+
+    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectID + "/bugtracker", {headers: {"Authorization": $rootScope.user.token}})
+      .then(function successCallback(response) {
+        $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
+      },
+      function errorCallback(response) {
+        $scope.data.canEdit = false;
+      });
+  }
+  getEditionRights();
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {

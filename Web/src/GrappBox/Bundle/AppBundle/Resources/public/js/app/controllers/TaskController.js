@@ -46,6 +46,7 @@ app.directive('convertToNumber', function() {
   };
 });
 
+
 // Controller definition
 // APP tasks
 app.controller("TaskController", ["$http", "$filter", "$location", "notificationFactory", "$rootScope", "$route", "$routeParams", "$scope", "$uibModal",
@@ -59,6 +60,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
   $scope.projectID = $routeParams.project_id;
   $scope.projectName = $routeParams.projectName;
   $scope.taskID = $routeParams.id;
+  $scope.userId = $rootScope.user.id;
 
   $scope.data = { onLoad: true, task_new: false, canEdit: true, task: { }, edit: { }, tasks: [], tags: [], users: [], message: "_invalid" };
 
@@ -151,6 +153,17 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
   };
   getProjectTasks();
 
+  var getEditionRights = function() {
+
+    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectID + "/task", {headers: {"Authorization": $rootScope.user.token}})
+      .then(function successCallback(response) {
+        $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
+      },
+      function errorCallback(response) {
+        $scope.data.canEdit = false;
+      });
+  }
+  getEditionRights();
 
   // ------------------------------------------------------//
   //                    DISPLAY HELP                       //
@@ -196,6 +209,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
     $scope.data.taskToRemove = [];
     $scope.data.edit.title = $scope.data.task.title;
     $scope.data.edit.description = $scope.data.task.description;
+    $scope.data.edit.tags = angular.copy($scope.data.task.tags);
     $scope.data.edit.type = ($scope.data.task.is_milestone ? 'milestone' : ($scope.data.task.is_container ? 'container': 'regular'));
     $scope.data.edit.started_at = ($scope.data.task.started_at ? new Date($scope.data.task.started_at) : null);
     $scope.data.edit.due_date = ($scope.data.task.due_date ? new Date($scope.data.task.due_date) : null);
@@ -323,6 +337,12 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       $scope.data.taskToRemove.push(task.id);
   };
 
+  $scope.loadTasks = function($query) {
+    return $scope.tasksList.filter(function(tag) {
+      return tag.name.toLowerCase().indexOf($query.toLowerCase()) != -1;
+    });
+  };
+
   //-----------------USERS ASSIGNATION--------------------//
 
   $scope.addResource = function(user, workcharge) {
@@ -333,20 +353,20 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       return ;
     }
 
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
+      if ($scope.data.task.users[i].id == user.id)
+        index = i;
+    }
+    if (index >= 0) {
+      notificationFactory.warning("User already assigned.");
+      return;
+    }
+
     if ($scope.data.task_new) {
-      var index = -1;
-      for (var i = 0; i < $scope.data.task.users.length && index < 0; i++) {
-        if ($scope.data.task.users[i].id == user.id)
-          index = i;
-      }
-      if (index >= 0) {
-        notificationFactory.warning("User already assigned.");
-        return;
-      }
       $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
       return;
     }
-    //var user = JSON.parse(user);
 
     $scope.data.task.users.push({id: user.id, firstname: user.firstname, lastname: user.lastname, percent: workcharge});
     $scope.data.edit.newRes.push({"id": user.id, "percent": workcharge});
@@ -474,16 +494,17 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       return ;
     }
 
+    var index = -1;
+    for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
+      if ($scope.data.task.dependencies[i].id == dep.id)
+        index = i;
+    }
+    if (index >= 0) {
+      notificationFactory.warning("Dependency already existing.");
+      return;
+    }
+
     if ($scope.data.task_new) {
-      var index = -1;
-      for (var i = 0; i < $scope.data.task.dependencies.length && index < 0; i++) {
-        if ($scope.data.task.dependencies[i].id == dep.id)
-          index = i;
-      }
-      if (index >= 0) {
-        notificationFactory.warning("Dependency already existing.");
-        return;
-      }
       $scope.data.task.dependencies.push({id: dep.id, name: type, title: dep.title});
       return;
     }
@@ -661,25 +682,25 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       }, $scope);
   };
 
-  var setTags = function(tags) {
-    var list = [];
-    angular.forEach(tags, function(value, key) {
-      if (!value.id) {
-        var randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
-        var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": randomColor}};
-        $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
-          .then(function successCallback(response) {
-              list.push(response.data.data.id);
-          },
-          function errorCallback(response) {
-              notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
-          });
-      } else {
-        list.push(value.id);
-      }
-    });
-    return list;
-  }
+  // var setTags = function(tags) {
+  //   var list = [];
+  //   angular.forEach(tags, function(value, key) {
+  //     if (!value.id) {
+  //       var randomColor = '#'+(Math.random()*0xFFFFFF<<0).toString(16);
+  //       var data = {"data": {"projectId": $scope.projectID, "name": value.name, "color": randomColor}};
+  //       $http.post($rootScope.api.url + "/tasks/tag", data, {headers: { 'Authorization': $rootScope.user.token }})
+  //         .then(function successCallback(response) {
+  //             list.push(response.data.data.id);
+  //         },
+  //         function errorCallback(response) {
+  //             notificationFactory.warning("Unable to create tag: " + tag.name + ". Please try again.");
+  //         });
+  //     } else {
+  //       list.push(value.id);
+  //     }
+  //   });
+  //   return list;
+  // }
 
   $scope.editTask = function(task) {
 

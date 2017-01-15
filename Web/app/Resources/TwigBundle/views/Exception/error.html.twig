@@ -4,8 +4,6 @@
 # COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED.
 #}
 
-{% spaceless %}
-
 {% extends 'AppBundle:home:base.html.twig' %}
 
 {% block title %}{{ status_code }} - GrappBox{% endblock %}
@@ -15,14 +13,13 @@
 {% block body %}
 
 <!-- Error -->
-<div id="error">
+<div class="error">
   <div class="container text-center">
     <div class="section-title">
       <h1 class="big">{{ status_code }}</h1>
-      <hr class="red-bg">
     </div>
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <div class="about-text">
           <p>{{ status_code == "404" ?
                 "This resource seems to be unavailable, or has been moved. Please try again, or <a href='/#contact' title='Go to GrappBox contact section' class='raised'>contact us</a>. We're sorry for that." :
@@ -36,24 +33,23 @@
                 "Something is wrong with GrappBox. Please give us a minute, and try again.<br>Feel free to contact us by <a href='mailto:grappbox@gmail.com' alt='Contact GrappBox by email' target='_blank' class='raised'>mail</a>, <a href='https://www.facebook.com/GrappBox' alt='Contact GrappBox on Facebook' target='_blank' class='raised'>Facebook</a>, <a href='https://twitter.com/grappbox' alt='Contact GrappBox on Twitter' target='_blank' class='raised'>Twitter</a> or <a href='https://plus.google.com/115657691021326143456?prsrc=3' alt='Contact GrappBox on Google+' target='_blank' class='raised'>Google+</a> for more." }}</p>
         </div>
       </div>
-      <div class="col-md-12">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
         <p class="quote">"{{ status_code == "404" ? "Windows are structural weaknesses. Geth do not use them." :
                              status_code == "403" ? "Geth do not infiltrate." :
                              status_code == "500" ? "... No data available." :
                              "Windows are structural weaknesses. Geth do not use them." }}"</p>
       </div>
+      <div class="clearfix"></div>
     </div>
     {% if status_code != "500" %}
-      <div class="well-link"><a href="/" title="Return to GrappBox website"><i class="material-icons">keyboard_backspace</i>Back to GrappBox.com</a></div>
+      <div class="well-link"><a href="/" class="raised" title="Return to GrappBox website"><i class="material-icons" aria-hidden="true">keyboard_backspace</i>Back to GrappBox.com</a></div>
     {% endif %}
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>Copyright &copy; GrappBox 2017.<br>All rights reserved.</p>
   </div>
 </div>
 
-<!-- Footer -->
-<div class="footer footer-reverse footer-fixed">
-  <p>Copyright &copy; GrappBox 2016.<br>All rights reserved.</p>
-</div>
-
 {% endblock %}
-
-{% endspaceless %}
