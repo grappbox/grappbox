@@ -30,7 +30,7 @@ import java.util.List;
  * Created by tan_f on 02/01/2017.
  */
 
-public class NextMeetingFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener  {
+public class NextMeetingFragment extends AbstractDashboard implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener  {
 
     public static final String LOG_TAG = NextMeetingFragment.class.getSimpleName();
 

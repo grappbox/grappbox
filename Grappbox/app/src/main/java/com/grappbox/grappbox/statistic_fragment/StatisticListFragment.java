@@ -15,12 +15,13 @@ import android.widget.ProgressBar;
 
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.adapter.StatisticListAdapter;
+import com.grappbox.grappbox.dashboard_fragment.AbstractDashboard;
 
 /**
  * Created by tan_f on 22/12/2016.
  */
 
-public class StatisticListFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StatisticListFragment extends AbstractDashboard implements LoaderManager.LoaderCallbacks<Cursor> {
 
     @Nullable
     @Override

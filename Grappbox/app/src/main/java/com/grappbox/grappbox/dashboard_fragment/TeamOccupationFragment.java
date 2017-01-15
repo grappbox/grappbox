@@ -33,7 +33,7 @@ import java.util.List;
  * Created by tan_f on 02/01/2017.
  */
 
-public class TeamOccupationFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
+public class TeamOccupationFragment extends AbstractDashboard implements LoaderManager.LoaderCallbacks<Cursor>, SwipeRefreshLayout.OnRefreshListener {
 
     public static final String LOG_TAG = TeamOccupationFragment.class.getSimpleName();
 
