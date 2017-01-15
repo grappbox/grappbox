@@ -437,11 +437,11 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
             break;
 
             case "6.12.9":
-            $scope.data.message = "_denied";
+            $scope.data.users_message = "_denied";
             break;
 
             default:
-            $scope.data.message = "_invalid";
+            $scope.data.users_message = "_invalid";
             break;
           }
       });
@@ -609,10 +609,12 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
 
             case "13.4.9":
             $scope.data.roles_message = "_denied";
+            $scope.data.users_message = "_denied";
             break;
 
             default:
             $scope.data.roles_message = "_invalid";
+            $scope.data.users_message = "_denied";
             break;
           }
       });
