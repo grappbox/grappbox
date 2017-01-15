@@ -15,22 +15,11 @@ app.controller("TalkListController", ["accessFactory", "$http", "$q", "$rootScop
 	$scope.view = { loaded: false, valid: false };
 	$scope.method = { formatObjectDate: "" };
   $scope.talk = { project_id: $route.current.params.project_id, team: {}, customer: {}, active: "team" };
-  $scope.canEdit = false;
 
   $scope.talk.team = { id: "", type: 2, loaded: false, valid: false, authorized: false, messages: null };
   $scope.talk.customer = { id: "", type: 1, loaded: false, valid: false, authorized: false, messages: null };
 
-  var getEditionRights = function() {
 
-    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectID + "/task", {headers: {"Authorization": $rootScope.user.token}})
-      .then(function successCallback(response) {
-        $scope.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
-      },
-      function errorCallback(response) {
-        $scope.canEdit = false;
-      });
-  }
-  getEditionRights();
 
 	/* ==================== LOCAL ROUTINES ==================== */
 
