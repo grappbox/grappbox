@@ -34,7 +34,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     <a href="" data-ng-click="view_accessParentObject()" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-disabled="{[{ !button.parent ? 'true' : 'false' }]}"><i class="material-icons" aria-hidden="true">arrow_back</i>Parent folder</a>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" data-ng-if="data.authorized == 2">
-                    <a href="" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-click="view_onNewFolder()"><i class="material-icons" aria-hidden="true">create_new_folder</i>Add folder</a>
+                    <a href="" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-click="view_onNewFolder()">
+                      <i class="material-icons" aria-hidden="true">create_new_folder</i>Add folder</a>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" id="view_newFileWrapper" data-ng-if="data.authorized == 2">
                     <label for="view_newFileInput" class="{[{ ::path.colors[path.current] + '-hover' }]}">
@@ -96,7 +97,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
           </div>
 
-          <div data-ng-if="data.authorized < 1">
+          <div data-ng-if="data.valid && data.authorized == 0">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
               <div class="box error">
                 <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>

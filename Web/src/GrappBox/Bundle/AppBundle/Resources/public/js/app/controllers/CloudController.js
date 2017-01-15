@@ -28,7 +28,6 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     $scope.data.objects     = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
     $scope.data.valid       = true;
     $scope.data.loaded      = true;
-    $scope.data.authorized  = "2";
   };
 
   // Routine definition
@@ -37,7 +36,6 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     $scope.data.objects     = null;
     $scope.data.valid       = false;
     $scope.data.loaded      = true;
-    $scope.data.authorized  = "2";    
   };
 
   // Routine definition
@@ -128,11 +126,18 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   // Routine definition
   // Get Cloud rights for current user 
   var getRightsOnCloud = function() {
+    var deferred = $q.defer();
+
     $http.get($rootScope.api.url + "/role/user/part/" + $rootScope.user.id + "/" + $scope.project.id + "/cloud", { headers: { 'Authorization': $rootScope.user.token }}).then(
       function rightsReceived(response) {
         if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
-          if (response.data.info.return_code == "1.13.1")
+          if (response.data.info.return_code == "1.13.1") {
             $scope.data.authorized = response.data.data.value;
+            if ($scope.data.authorized == "0")
+              deferred.reject();
+            else
+              deferred.resolve();
+          }
         }
         else
           $rootScope.reject(true);
@@ -146,8 +151,10 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
       }
       else
         $rootScope.reject(true);
+      deferred.reject();
       }
     );
+    return deferred.promise;
   };    
 
   // Routine definition
@@ -187,8 +194,16 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   };
 
   // START
-  getRightsOnCloud();
-  getCurrentFolderContent();
+  var getRightsOnCloud = getRightsOnCloud();
+  getRightsOnCloud.then(
+    function userHasRights() {
+      getCurrentFolderContent();  
+    },
+    function userHasNoRights() {
+      $scope.data.valid = true;
+      $scope.data.loaded = true;
+    }
+  );
 
   // Single clic handler (file/folder)
   $scope.view_selectObject = function(object) {
