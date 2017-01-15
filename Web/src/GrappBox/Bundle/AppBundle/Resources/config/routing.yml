@@ -14,8 +14,8 @@ grappbox_app_customer_register:
     path: /register/customer
     defaults: { _controller: AppBundle:RegisterCustomer:index }
 
-# grappbox_app_register:
-#     path: /register
+# grappbox_app_preorder:
+#     path: /preorder
 #     defaults: { _controller: AppBundle:Preorder:index }
 
 grappbox_app_index:
