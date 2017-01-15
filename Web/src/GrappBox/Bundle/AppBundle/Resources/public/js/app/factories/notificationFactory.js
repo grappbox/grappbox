@@ -22,9 +22,9 @@ app.factory("notificationFactory", ['Notification', function(Notification) {
     // Operation in progress
     loading: function(message) {
       if (message)
-        Notification.success({ message: message + "<i class=\"material-icons\" aria-hidden=\"true\">more_vert</i>", delay: 1000 });
+        Notification.success({ message: message + "<i class=\"material-icons\" aria-hidden=\"true\">more_horiz</i>", delay: 2000 });
       else
-        Notification.success({ message: "Loading...<i class=\"material-icons\" aria-hidden=\"true\">more_vert</i>", delay: 1000 });
+        Notification.success({ message: "Loading...<i class=\"material-icons\" aria-hidden=\"true\">more_horiz</i>", delay: 2000 });
     },
 
     // "Information" routine
@@ -36,7 +36,7 @@ app.factory("notificationFactory", ['Notification', function(Notification) {
     // "Success" routine
     // Operation validated
     success: function(message) {
-      Notification.success({ message: message + "<i class=\"material-icons\" aria-hidden=\"true\">check</i>", delay: 1000 });
+      Notification.success({ message: message + "<i class=\"material-icons\" aria-hidden=\"true\">check</i>", delay: 2000 });
     },
     
     // "Warning" routine

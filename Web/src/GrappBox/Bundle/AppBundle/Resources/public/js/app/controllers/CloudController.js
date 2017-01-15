@@ -14,13 +14,13 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   // Scope variables initialization
   $scope.project    = { id: $routeParams.project_id };
   $scope.button     = { parent: false, delete: false };
-  $scope.data       = { loaded: false, valid: false, authorized: false, objects: "" };
+  $scope.data       = { loaded: false, valid: false, authorized: "", objects: "" };
 
   $scope.filePath   = { current: ",", parent: "", child: "" };
-  $scope.selected   = { current: { isSecured: "", name: "" }, previous: { isSecured: "", name: "" } };
-  $scope.newFolder  = { isSecured: "", password: "", name: "" };
-  $scope.newFile    = { isSecured: "", password: "" };
-  $scope.safe       = { password: "", isSet: false };
+  $scope.selected   = { current: { isSecured: "", name: "" }, previous: { isSecured: "", name: "" }, password: "", error: "" };
+  $scope.newFolder  = { isSecured: "", name: "", error: "" };
+  $scope.newFile    = { isSecured: "", password: "", password_confirmation: "", error: "", input: "" };
+  $scope.safe       = { password: "", isSet: false, error: "" };
 
   // Routine definition
   // Set scope variables with API return data (file/folder list)
@@ -28,7 +28,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     $scope.data.objects     = (response.data && response.data.data ? (Object.keys(response.data.data.array).length ? response.data.data.array : null) : null);
     $scope.data.valid       = true;
     $scope.data.loaded      = true;
-    $scope.data.authorized  = true;
+    $scope.data.authorized  = "2";
   };
 
   // Routine definition
@@ -37,7 +37,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     $scope.data.objects     = null;
     $scope.data.valid       = false;
     $scope.data.loaded      = true;
-    $scope.data.authorized  = true;    
+    $scope.data.authorized  = "2";    
   };
 
   // Routine definition
@@ -47,6 +47,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     $scope.selected.previous.name       = $scope.selected.current.name;
     $scope.selected.current.isSecured   = "";
     $scope.selected.current.name        = "";
+    $scope.selected.password            = "";
   };
 
   // Routine definition
@@ -86,10 +87,9 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
       deferred.resolve();
     }
     else {
-      modalInstance_getSafePassword = $uibModal.open({ animation: true, templateUrl: "view_safePasswordCheck.html", controller: "view_safePasswordCheck" });
+      modalInstance_getSafePassword = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_safePasswordCheck.html", controller: "view_safePasswordCheck" });
       modalInstance_getSafePassword.result.then(
-        function safePasswordProvided(data) {
-          $scope.safe.password = data;
+        function safePasswordProvided() {
           deferred.resolve();
         },
         function safePasswordNotProvided() {
@@ -124,6 +124,31 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
 
 
   /* ==================== START ==================== */
+
+  // Routine definition
+  // Get Cloud rights for current user 
+  var getRightsOnCloud = function() {
+    $http.get($rootScope.api.url + "/role/user/part/" + $rootScope.user.id + "/" + $scope.project.id + "/cloud", { headers: { 'Authorization': $rootScope.user.token }}).then(
+      function rightsReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+          if (response.data.info.return_code == "1.13.1")
+            $scope.data.authorized = response.data.data.value;
+        }
+        else
+          $rootScope.reject(true);
+      },
+      function rightsNotReceived(response) {
+        if (response && response.data && response.data.info && response.data.info.return_code && response.data.data) {
+          if (response.data.info.return_code == "13.11.3")
+            $rootScope.reject();
+        else
+          $rootScope.reject(true);
+      }
+      else
+        $rootScope.reject(true);
+      }
+    );
+  };    
 
   // Routine definition
   // Get current folder content 
@@ -162,24 +187,25 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   };
 
   // START
+  getRightsOnCloud();
   getCurrentFolderContent();
 
   // Single clic handler (file/folder)
-  $scope.view_selectObject = function($event) {
-    if ($scope.selected.current.element === $event.currentTarget) {
+  $scope.view_selectObject = function(object) {
+    if ($scope.selected.current.name === object.filename) {
       toggleDeleteButton(false);
       resetSelected();
     }
     else {
       toggleDeleteButton(true);
-      $scope.selected.current.name = angular.element(document.querySelector("#selected")).attr("data-id");
-      $scope.selected.current.isSecured = (angular.element(document.querySelector("#selected")).attr("data-secured") === "true");
+      $scope.selected.current.name = object.filename;
+      $scope.selected.current.isSecured = object.is_secured;
     }
   };
 
   // Object path format
   $scope.data.formatObjectPath = function(pathToFormat) {
-    return ("ROOT").concat((pathToFormat).split(",").join(" / "));
+    return ("cloud:/").concat((pathToFormat).split(",").join("/"));
   };
 
   // Object (last-modified) date format
@@ -207,19 +233,14 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   var local_retrieveSelectedFile = function(selectedFilename, isFileInSafeFolder) {
     var selectedFileURL = "";
 
-    selectedFileURL = $rootScope.api.url
-    + "/cloud/" + ($scope.selected.previous.isSecured ? "filesecured/" : "file/")
-    + $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + selectedFilename + "/"
-    + $scope.project.id
-    + ($scope.selected.previous.isSecured ? "/" + $scope.selected.previous.password : "")
-    + (isFileInSafeFolder ? "/" + $scope.safe.password : "");
-
+    selectedFileURL = $rootScope.api.url + "/cloud/" + ($scope.selected.previous.isSecured ? "filesecured/" : "file/") + $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + selectedFilename + "/" + $scope.project.id + ($scope.selected.previous.isSecured ? "/" + $scope.selected.password : "") + (isFileInSafeFolder ? "/" + $scope.safe.password : "");
     $http.get(selectedFileURL, { headers: { "Authorization": $rootScope.user.token }}).then(
       function downloadFileSuccess(response) {
         if (response.data && response.data.info && response.data.info.return_code == "11.1.3")
           $rootScope.reject();
         if (response.data && response.data.location) {
           storeSafePassword();
+          $scope.selected.password = "";
           notificationFactory.success("Downloaded: " + selectedFilename);
           $window.open(response.data.location);
         }
@@ -242,16 +263,16 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     var isFileInSafeFolder                    = "";
     var promise                               = "";
 
+    notificationFactory.loading();
     $scope.filePath.child = $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + object.filename;
     isFileInSafeFolder = isPathInSafeFolder($scope.filePath.child);
     promise = (isFileInSafeFolder ? getSafePassword() : $q.when(true));
     promise.then(
       function safeCheckSuccess() {
         if ($scope.selected.previous.isSecured) {
-          modalInstance_askSelectedFilePassword = $uibModal.open({ animation: true, templateUrl: "view_filePasswordCheck.html", controller: "view_filePasswordCheck" });
+          modalInstance_askSelectedFilePassword = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_filePasswordCheck.html", controller: "view_filePasswordCheck" });
           modalInstance_askSelectedFilePassword.result.then(
-            function passwordReceived(response) {
-              $scope.selected.previous.password = response;
+            function passwordReceived() {
               local_retrieveSelectedFile(object.filename, isFileInSafeFolder);
             },
             function passwordNotReceived() {
@@ -284,6 +305,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     var isFolderInSafeFolder  = "";
     var promise               = "";
 
+    notificationFactory.loading();
     $scope.filePath.child = $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + object.filename;
     isFolderInSafeFolder = isPathInSafeFolder($scope.filePath.child);
     promise = (isFolderInSafeFolder ? getSafePassword() : $q.when(true));
@@ -325,6 +347,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     var promise               = "";
 
     if ($scope.filePath.parent && $scope.button.parent) {
+      notificationFactory.loading();
       isParentInSafeFolder = isPathInSafeFolder($scope.filePath.parent);
       promise = (isParentInSafeFolder ? getSafePassword() : $q.when(true) );
       promise.then(
@@ -363,9 +386,9 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
 
   // "Delete" button handler (file/folder) [2/2]
   var local_deleteSelectedObject = function(isObjectInSafeFolder) {
-    notificationFactory.info("Loading...");
+    notificationFactory.loading();
 
-    $http.delete($rootScope.api.url + "/cloud/" + ($scope.selected.current.isSecured ? "filesecured/" : "file/") + $scope.project.id + "/" + $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + $scope.selected.current.name + ($scope.selected.current.isSecured ? "/" + $scope.selected.current.password : "") + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""), { headers: { "Authorization": $rootScope.user.token }}).then(
+    $http.delete($rootScope.api.url + "/cloud/" + ($scope.selected.current.isSecured ? "filesecured/" : "file/") + $scope.project.id + "/" + $scope.filePath.current + ($scope.filePath.current === "," ? "" : ",") + $scope.selected.current.name + ($scope.selected.current.isSecured ? "/" + $scope.selected.password : "") + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""), { headers: { "Authorization": $rootScope.user.token }}).then(
       function objectDeletionSuccess(response) {
         if (response.data.info && response.data.info.return_code == "1.3.1") {
           $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/" + $scope.filePath.current + (isObjectInSafeFolder ? "/" + $scope.safe.password : ""), { headers: { "Authorization": $rootScope.user.token }}).then(
@@ -409,10 +432,9 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
         promise.then(
           function safeCheckSuccess() {
             if ($scope.selected.current.isSecured) {
-              modalInstance_askSelectedOjectedPassword = $uibModal.open({ animation: true, templateUrl: "view_filePasswordCheck.html", controller: "view_filePasswordCheck" });
+              modalInstance_askSelectedOjectedPassword = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_filePasswordCheck.html", controller: "view_filePasswordCheck" });
               modalInstance_askSelectedOjectedPassword.result.then(
-                function passwordHasBeenEntered(response) {
-                  $scope.selected.current.password = response;
+                function passwordHasBeenEntered() {
                   local_deleteSelectedObject(isObjectInSafeFolder);
                 },
                 function passwordHasNotBeenEntered() {
@@ -440,38 +462,37 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   // Routine definition
   // Reset selected file to uplaod (view and scope)
   var resetUploadFileField = function() {
-    angular.element(document.querySelector("#view_newFileInput")).val("");
     $scope.view_newFile = "";
   };
 
   // "Upload file" button handler [3/3]
   var local_uploadFile = function(isNewFileInSafeFolder) {
-    var local_fileData = "";
-    var local_fileStreamID = "";
+    var local_fileData          = "";
+    var local_fileStreamID      = "";
     var local_fileDataChunkSent = 0;
 
-    notificationFactory.info("Loading...");
-    $http.post($rootScope.api.url + "/cloud/stream/" + $scope.project.id + (isNewFileInSafeFolder ? "/" + $scope.safe.password : ""), { data: { filename: $scope.view_newFile.filename, path: $scope.filePath.current.split(",").join("/"), password: ($scope.newFile.isSecured ? $scope.newFile.password : "")}}, { headers: { "Authorization": $rootScope.user.token }}).then(
+    notificationFactory.loading();
+    $http.post($rootScope.api.url + "/cloud/stream/" + $scope.project.id + (isNewFileInSafeFolder ? "/" + $scope.safe.password : ""), { data: { filename: $scope.newFile.input.filename, path: $scope.filePath.current.split(",").join("/"), password: ($scope.newFile.isSecured ? $scope.newFile.password : "")}}, { headers: { "Authorization": $rootScope.user.token }}).then(
       function streamOpeningSuccess(response) {
         if (response.data.info && response.data.info.return_code == "1.3.1") {
           storeSafePassword();
-          notificationFactory.info("Sending \"" + $scope.view_newFile.filename + "\"...");
+          notificationFactory.info("Sending \"" + $scope.newFile.input.filename + "\"...");
           local_fileStreamID = response.data.data.stream_id;
-          local_fileData = $scope.view_newFile.base64.match(/.{1,1048576}/g);
+          local_fileData = $scope.newFile.input.base64.match(/.{1,1048576}/g);
           for (var i = 0; i < local_fileData.length; ++i) {
             $http.put($rootScope.api.url + "/cloud/file", { data: { stream_id: local_fileStreamID, project_id: $scope.project.id, chunk_numbers: local_fileData.length, current_chunk: i, file_chunk: local_fileData[i] }}, { headers: { "Authorization": $rootScope.user.token }}).then(
               function chunkSendingSuccess(response) {
                 ++local_fileDataChunkSent;
-                notificationFactory.info("\"" + $scope.view_newFile.filename + "\" sent at " + parseInt(local_fileDataChunkSent / local_fileData.length * 100) + "%");
+                notificationFactory.info("\"" + $scope.newFile.input.filename + "\" sent at " + parseInt(local_fileDataChunkSent / local_fileData.length * 100) + "%");
                 if (local_fileDataChunkSent === local_fileData.length) {
                   $http.delete($rootScope.api.url + "/cloud/stream/" + $scope.project.id + "/" + local_fileStreamID, { headers: { "Authorization": $rootScope.user.token }}).then(
                     function streamClosingSuccess(response) {
-                      notificationFactory.success("Sent: \"" + $scope.view_newFile.filename + "\"");
+                      notificationFactory.success("Sent: \"" + $scope.newFile.input.filename + "\"");
                       resetUploadFileField();
                       getCurrentFolderContent();
                     },
                     function streamClosingFailure(response) {
-                      notificationFactory.warning("Unable to close stream for \"" + $scope.view_newFile.filename + "\". Please try again.");
+                      notificationFactory.warning("Unable to close stream for \"" + $scope.newFile.input.filename + "\". Please try again.");
                       resetUploadFileField();
                     }
                   );
@@ -485,13 +506,13 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
           }
         }
         else {
-          notificationFactory.warning("Unable to upload \"" + $scope.view_newFile.filename + "\". Please try again.");
+          notificationFactory.warning("Unable to upload \"" + $scope.newFile.input.filename + "\". Please try again.");
           resetSafePassword();
           resetUploadFileField();
         }
       },
       function streamOpeningFailure(response) {
-        notificationFactory.warning("Unable to open stream for \"" + $scope.view_newFile.filename + "\". Please try again.");
+        notificationFactory.warning("Unable to open stream for \"" + $scope.newFile.input.filename + "\". Please try again.");
       }
     );
   };
@@ -502,26 +523,26 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     var modalInstance_askNewFileFirstPassword   = "";
     var modalInstance_askNewFileSecondPassword  = "";
 
-    $scope.newFile.isSecured  = false;
-    $scope.newFile.password   = "";
+    $scope.newFile.isSecured              = false;
+    $scope.newFile.password               = "";
+    $scope.newFile.password_confirmation  = "";
 
-    modalInstance_askIfNewFileIsProtected = $uibModal.open({ animation: true, templateUrl: "view_isNewFileProtected.html", controller: "view_isNewFileProtected" });
+    modalInstance_askIfNewFileIsProtected = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_isNewFileProtected.html", controller: "view_isNewFileProtected" });
     modalInstance_askIfNewFileIsProtected.result.then(
       function fileWillHavePassword() {
-        modalInstance_askNewFileFirstPassword = $uibModal.open({ animation: true, templateUrl: "view_setNewFileFirstPassword.html", controller: "view_setNewFileFirstPassword" });
+        modalInstance_askNewFileFirstPassword = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_setNewFileFirstPassword.html", controller: "view_setNewFileFirstPassword" });
         modalInstance_askNewFileFirstPassword.result.then(
-          function fileFirstPasswordEntered(data) {
-            modalInstance_askNewFileSecondPassword = $uibModal.open({ animation: true, templateUrl: "view_setNewFileSecondPassword.html", controller: "view_setNewFileSecondPassword" });
-            $scope.newFile.password = data;
+          function fileFirstPasswordEntered() {
+            modalInstance_askNewFileSecondPassword = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_setNewFileSecondPassword.html", controller: "view_setNewFileSecondPassword" });
             modalInstance_askNewFileSecondPassword.result.then(
-              function fileSecondPasswordEntered(data) {
-                if ($scope.newFile.password === data) {
+              function fileSecondPasswordEntered() {
+                if ($scope.newFile.password === $scope.newFile.password_confirmation) {
                   $scope.newFile.isSecured = true;
                   local_uploadFile(isNewFileInSafeFolder);
                 }
                 else {
                   notificationFactory.warning("Passwords don't match. Please try again.");
-                  resetUploadFileField();
+                  local_setFileSecurity();
                 }
               },
               function fileSecondPasswordNotEntered() {
@@ -546,9 +567,9 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   // "Upload file" button handler [1/3]
   $scope.view_onNewFile = function() {
     var isNewFileInSafeFolder = "";
-    var promise = "";
+    var promise               = "";
 
-    if ($scope.view_newFile) {
+    if ($scope.newFile.input) {
       isNewFileInSafeFolder = isPathInSafeFolder($scope.filePath.current);
       promise = (isNewFileInSafeFolder ? getSafePassword() : $q.when(true) );
       promise.then(
@@ -575,15 +596,14 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     var isNewFolderInSafeFolder        = "";
     var promise                        = "";
 
-    modalInstance_askForFolderName = $uibModal.open({ animation: true, templateUrl: "view_setNewFolder.html", controller: "view_setNewFolder" });
+    modalInstance_askForFolderName = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_setNewFolder.html", controller: "view_setNewFolder" });
     modalInstance_askForFolderName.result.then(
-      function folderNameProvided(data) {
-        $scope.newFolder.name = data;
+      function folderNameProvided() {
         isNewFolderInSafeFolder = isPathInSafeFolder($scope.filePath.current);
         promise = (isNewFolderInSafeFolder ? getSafePassword() : $q.when(true) );
         promise.then(
           function safeCheckSuccess() {
-            notificationFactory.info("Loading...");
+            notificationFactory.loading("Creating folder...");
             $http.post($rootScope.api.url + "/cloud/createdir", { data: { project_id: $scope.project.id, path: $scope.filePath.current.split(",").join("/"), dir_name: $scope.newFolder.name, password: (isNewFolderInSafeFolder ? $scope.safe.password : "") }}, { headers: { "Authorization": $rootScope.user.token }}).then(
               function folderCreationSuccess(response) {
                 if (response.data.info && response.data.info.return_code == "1.3.1") {
@@ -591,10 +611,8 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
                   $http.get($rootScope.api.url + "/cloud/list/" + $scope.project.id + "/," + $scope.filePath.current + (isNewFolderInSafeFolder ? "/" + $scope.safe.password : ""), { headers: { "Authorization": $rootScope.user.token }}).then(
                     function folderContentReceived(response) {
                       setDataOnSuccess(response);
-                      notificationFactory.success("Created: \"" + $scope.newFolder.name + "\"");
+                      notificationFactory.success("Folder \"" + $scope.newFolder.name + "\" created.");
                       $scope.newFolder.name = "";
-                      $scope.newFolder.isSecured = "";
-                      angular.element(document.querySelector("#view_newFolder")).val("");
                     },
                     function folderContentNotReceived(response) {
                       setDataOnFailure();
@@ -627,10 +645,12 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
 
 // Controller definition (from view)
 // FOLDER CREATION => set folder name.
-app.controller("view_setNewFolder", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("view_setNewFolder", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.view_setNewFolderSuccess = function() {
-    modalInputService.getData("#view_newFolder", $uibModalInstance);
+    $scope.newFolder.error = ($scope.newFolder.name ? false : true);
+    if (!$scope.newFolder.error)
+      $uibModalInstance.close();
   };
   
   $scope.view_setNewFolderFailure = function() {
@@ -657,12 +677,14 @@ app.controller("view_isNewFileProtected", ["$scope", "$uibModalInstance", functi
 
 // Controller definition
 // FILE UPLOAD => set first password for new file.
-app.controller("view_setNewFileFirstPassword", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("view_setNewFileFirstPassword", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.view_newFileFirstPasswordSuccess = function() {
-    modalInputService.getData("#view_newFileFirstPassword", $uibModalInstance);
+    $scope.newFile.error = ($scope.newFile.password ? false : true);
+    if (!$scope.newFile.error)
+      $uibModalInstance.close();
   };
-  
+
   $scope.view_newFileFirstPasswordFailure = function() {
     $uibModalInstance.dismiss();
   };
@@ -672,12 +694,14 @@ app.controller("view_setNewFileFirstPassword", ["$scope", "modalInputService", "
 
 // Controller definition
 // FILE UPLOAD => set second password for new file (verification).
-app.controller("view_setNewFileSecondPassword", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("view_setNewFileSecondPassword", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.view_newFileSecondPasswordSuccess = function() {
-    modalInputService.getData("#view_newFileSecondPassword", $uibModalInstance);
+    $scope.newFile.error = ($scope.newFile.password_confirmation ? false : true);
+    if (!$scope.newFile.error)
+      $uibModalInstance.close();
   };
-  
+
   $scope.view_newFileSecondPasswordFailure = function() {
     $uibModalInstance.dismiss();
   };
@@ -687,10 +711,12 @@ app.controller("view_setNewFileSecondPassword", ["$scope", "modalInputService", 
 
 // Controller definition
 // FILE DOWNLOAD => get password for file.
-app.controller("view_filePasswordCheck", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("view_filePasswordCheck", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.view_filePasswordCheckSuccess = function() {
-    modalInputService.getData("#view_filePassword", $uibModalInstance);
+    $scope.selected.error = ($scope.selected.password ? false : true);
+    if (!$scope.selected.error)
+      $uibModalInstance.close();
   };
   
   $scope.view_filePasswordCheckFailure = function() {
@@ -702,10 +728,12 @@ app.controller("view_filePasswordCheck", ["$scope", "modalInputService", "$uibMo
 
 // Controller definition
 // SAFE ACCESS => get password for the "Safe" folder.
-app.controller("view_safePasswordCheck", ["$scope", "modalInputService", "$uibModalInstance", function($scope, modalInputService, $uibModalInstance) {
+app.controller("view_safePasswordCheck", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
 
   $scope.view_safePasswordCheckSuccess = function() {
-    modalInputService.getData("#view_safePassword", $uibModalInstance);
+    $scope.safe.error = ($scope.safe.password ? false : true);
+    if (!$scope.safe.error)
+      $uibModalInstance.close();
   };
   
   $scope.view_safePasswordCheckFailure = function() {

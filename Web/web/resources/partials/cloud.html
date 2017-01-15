@@ -10,7 +10,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Cloud</h1>
-      <p>Welcome to your storage area! Use the toolbar below to interact with your files and folders, or simply click and double click to select or download/enter a file/folder.</p>
+      <p>Welcome to your storage area! Use the toolbar below to interact with your files and folders, or simply click and double click to respectively select or download/enter a file/folder.</p>
     </div>
     <div class="clearfix"></div>
   </div>
@@ -24,25 +24,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </div>
       <div data-ng-if="data.loaded">
         <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
-          <div data-ng-if="data.valid && data.authorized">
+          <div data-ng-if="data.valid && data.authorized >= 1">
 
             <!-- Toolbox -->
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center toolbox">
               <div class="box no-padding">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding">
-                    <a href="" data-ng-click="view_accessParentObject()" class="{[{ ::path.colors[path.current] + '-hover' }]} {[{ button.parent ? '' : 'disabled' }]}"><i class="material-icons" aria-hidden="true">arrow_back</i>Parent folder</a>
+                    <a href="" data-ng-click="view_accessParentObject()" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-disabled="{[{ !button.parent ? 'true' : 'false' }]}"><i class="material-icons" aria-hidden="true">arrow_back</i>Parent folder</a>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding">
+                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" data-ng-if="data.authorized == 2">
                     <a href="" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-click="view_onNewFolder()"><i class="material-icons" aria-hidden="true">create_new_folder</i>Add folder</a>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" id="view_newFileWrapper">
+                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" id="view_newFileWrapper" data-ng-if="data.authorized == 2">
                     <label for="view_newFileInput" class="{[{ ::path.colors[path.current] + '-hover' }]}">
-                      <i class="material-icons" aria-hidden="true">file_upload</i>Upload file<input id="view_newFileInput" type="file" data-ng-model="view_newFile" ng-change="view_onNewFile()" base-sixty-four-input>
+                      <i class="material-icons" aria-hidden="true">file_upload</i>Upload file<input id="view_newFileInput" type="file" data-ng-model="newFile.input" data-ng-change="view_onNewFile()" base-sixty-four-input>
                     </label>
                   </div>
-                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding">
-                    <a href="" data-ng-click="view_deleteObject()" class="{[{ ::path.colors[path.current] + '-hover' }]} {[{ button.delete ? '' : 'disabled' }]}"><i class="material-icons" aria-hidden="true">delete</i>Delete</a>
+                  <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" data-ng-if="data.authorized == 2">
+                    <a href="" data-ng-click="view_deleteObject()" class="{[{ ::path.colors[path.current] + '-hover' }]}" data-ng-disabled="{[{ !button.delete ? 'true' : 'false' }]}"><i class="material-icons" aria-hidden="true">delete</i>Delete</a>
                   </div>                  
                 </div>
                 <div class="clearfix"></div>
@@ -73,7 +73,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       </tr>
                     </thead>
                     <tbody>
-                      <tr data-ng-repeat="object in data.objects" data-id="{[{ ::object.filename }]}" data-secured="{[{ ::object.is_secured }]}" data-ng-click="view_selectObject($event)" data-ng-dblClick="view_accessObject(object)" class="{[{ selected.current.name == object.filename ? path.colors[path.current] + '-background selected' : '' }]}">
+                      <tr data-ng-repeat="object in data.objects" data-ng-click="view_selectObject(object)" data-ng-dblClick="view_accessObject(object)" class="{[{ selected.current.name == object.filename ? path.colors[path.current] + '-background selected' : '' }]}">
                         <td><i class="material-icons" aria-hidden="true">{[{ object.type == 'file' ? 'insert_drive_file' : 'folder' }]}</i>{[{ ::object.filename }]}</td>
                         <td class="text-center"><i class="material-icons standalone" aria-hidden="true">{[{ object.is_secured ? 'lock' : 'lock_open' }]}</i></td>
                         <td class="text-center">{[{ data.formatObjectDate(object.last_modified.date) }]}</td>
@@ -84,7 +84,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </div>
               </div>
 
-              <div data-ng-if="!data.objects" class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+              <div data-ng-if="!data.objects">
                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
                   <div class="box error">
                     <p><i class="material-icons" aria-hidden="true">help</i>This folder is empty.<br><span>Upload a file to begin.</span></p>
@@ -96,10 +96,10 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
             </div>
           </div>
 
-          <div data-ng-if="!data.authorized">
+          <div data-ng-if="data.authorized < 1">
             <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
               <div class="box error">
-                <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br>Please contact your project manager for more.</p>
+                <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
               </div>
             </div>
             <div class="clearfix"></div>
@@ -129,16 +129,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Please enter the name of your new folder.</p>
     <form>
       <fieldset>
-        <div class="form-group label-floating">
+        <div class="form-group label-floating {[{ newFolder.error ? 'has-error' : '' }]}">
           <label for="view_newFolder" class="control-label">Folder name</label>
-          <input id="view_newFolder" type="text" class="form-control" data-ng-model="whiteboards.new.name" required autofocus>
+          <input id="view_newFolder" type="text" class="form-control" data-ng-model="newFolder.name" required autofocus>
         </div>
       </fieldset>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="view_setNewFolderFailure()">Cancel</button>
-    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_setNewFolderSuccess()">Validate</button>
+    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_setNewFolderSuccess()">Validate</button>
   </div>
 </script>
 
@@ -152,7 +152,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Do you want to set a password on this file?</p>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="view_newFileIsNotProtected()">Cancel</button>
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="view_newFileIsNotProtected()">No</button>
     <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_newFileIsProtected()">Set password</button>
   </div>
 </script>
@@ -167,16 +167,16 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Please set a password for this file.</p>
     <form>
       <fieldset>
-        <div class="form-group label-floating">
+        <div class="form-group label-floating {[{ newFile.error ? 'has-error' : '' }]}">
           <label for="view_newFileFirstPassword" class="control-label">File password</label>
-          <input id="view_newFileFirstPassword" type="text" class="form-control" required autofocus>
+          <input id="view_newFileFirstPassword" type="password" class="form-control" data-ng-model="newFile.password" required autofocus>
         </div>
       </fieldset>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="view_newFileFirstPasswordFailure()">Cancel</button>
-    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_newFileFirstPasswordSuccess()">Set password</button>
+    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_newFileFirstPasswordSuccess()">Set password</button>
   </div>
 </script>
 
@@ -190,9 +190,9 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>Please enter your password again to confirm it.</p>
     <form>
       <fieldset>
-        <div class="form-group label-floating">
+        <div class="form-group label-floating {[{ newFile.error ? 'has-error' : '' }]}">
           <label for="view_newFileSecondPassword" class="control-label">File password</label>
-          <input id="view_newFileSecondPassword" type="password" class="form-control" required autofocus>
+          <input id="view_newFileSecondPassword" type="password" class="form-control" data-ng-model="newFile.password_confirmation" required autofocus>
         </div>
       </fieldset>
     </form>
@@ -214,8 +214,8 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <form>
       <fieldset>
         <div class="form-group label-floating">
-          <label for="view_filePassword" class="control-label">File password</label>
-          <input id="view_filePassword" type="password" class="form-control" required autofocus>
+          <label for="view_filePassword" class="control-label {[{ selected.error ? 'has-error' : '' }]}">File password</label>
+          <input id="view_filePassword" type="password" class="form-control" data-ng-model="selected.password" required autofocus>
         </div>
       </fieldset>
     </form>
@@ -236,15 +236,15 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <p>The "Safe" folder is protected.</p>
     <form>
       <fieldset>
-        <div class="form-group label-floating">
+        <div class="form-group label-floating {[{ safe.error ? 'has-error' : '' }]}">
           <label for="view_safePassword" class="control-label">"Safe" password</label>
-          <input id="view_safePassword" type="password" class="form-control" required autofocus>
+          <input id="view_safePassword" type="password" class="form-control" data-ng-model="safe.password" required autofocus>
         </div>
       </fieldset>
     </form>
   </div>
   <div class="modal-footer">
     <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="view_safePasswordCheckFailure()">Cancel</button>
-    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_safePasswordCheckSuccess()">Validate</button>
+    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="view_safePasswordCheckSuccess()">Validate</button>
   </div>
 </script>

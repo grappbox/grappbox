@@ -686,6 +686,8 @@ tags-input .tags .focused {
 /* ==================== CLOUD ==================== */
 /* =============================================== */
 
+.cloud .box { transition: none!important; }
+
 .cloud .toolbox .box { background: #616161; margin-bottom: -2px; color: #fafafa; }
 .cloud .toolbox .box a,
 .cloud .toolbox .box label { display: block; padding: 15px; }
