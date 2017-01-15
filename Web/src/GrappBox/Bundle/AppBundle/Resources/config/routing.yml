@@ -6,17 +6,17 @@ grappbox_app_login:
     path: /login
     defaults: { _controller: AppBundle:Login:index }
 
-# grappbox_app_register:
-#     path: /register
-#     defaults: { _controller: AppBundle:Register:index }
+grappbox_app_register:
+    path: /register
+    defaults: { _controller: AppBundle:Register:index }
 
 grappbox_app_customer_register:
     path: /register/customer
     defaults: { _controller: AppBundle:RegisterCustomer:index }
 
-grappbox_app_preorder:
-    path: /register
-    defaults: { _controller: AppBundle:Preorder:index }
+# grappbox_app_preorder:
+#     path: /preorder
+#     defaults: { _controller: AppBundle:Preorder:index }
 
 grappbox_app_index:
     path: /app/

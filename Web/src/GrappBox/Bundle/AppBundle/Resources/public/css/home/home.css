@@ -24,7 +24,7 @@ body {
 
 h1 { font-weight: 700; }
 h2 { text-transform: uppercase; line-height: 20px; font-weight: 600; margin: 0; color: #212121; }
-h1.big { font-size: 145px; }
+h1.big { font-size: 160px; }
 
 h3,
 h4 { font-weight: 500; color: #616161; }
@@ -356,6 +356,8 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
 
 .error { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
 .error .quote { font-size: 12px; font-style: italic; }
+
+.account h4 { font-size: 16px; }
 
 .account .footer,
 .error .footer { position: absolute; width: 100%; bottom: 0; background: #212121; color: #fafafa; margin: 0; padding: 20px; }

@@ -16,6 +16,7 @@ app.controller("LogoutController", ["$cookies", "$http", "localStorageService", 
       $cookies.remove("G_LOGIN", { path: "/" });
       $cookies.remove("G_TOKEN", { path: "/" });
       $cookies.remove("G_ID", { path: "/" });
+      $cookies.remove("G_CUSTOMER", { path: "/" });
       localStorageService.clearAll();
       notificationFactory.clear();
       $window.location.href = "/";
