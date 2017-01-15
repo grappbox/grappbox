@@ -165,6 +165,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
   </div>
   <div class="modal-footer">
     <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="whiteboardDeletionCancelled()">Cancel</button>
-    <button type="button" class="btn red-color red-background-hover white-hover" data-ng-click="whiteboardDeletionConfirmed()">Delete</button>
+    <button type="button" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="whiteboardDeletionConfirmed()">Delete</button>
   </div>
 </script>
