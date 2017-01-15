@@ -85,12 +85,13 @@ public class StatisticCloudFragment extends Fragment implements LoaderManager.Lo
         }
         int used = data.getInt(data.getColumnIndex(GrappboxContract.StatEntry.COLUMN_STORAGE_OCCUPIED));
         int total = data.getInt(data.getColumnIndex(GrappboxContract.StatEntry.COLUMN_STORAGE_TOTAL));
+        int remain = total - used;
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappRed));
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappYellow));
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
         entries.add(new PieEntry(used, "Occupied"));
-        entries.add(new PieEntry(total - used, "Free"));
+        entries.add(new PieEntry(remain, "Free"));
         PieDataSet dataSet = new PieDataSet(entries, "Cloud Storage");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);

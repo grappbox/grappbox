@@ -29,7 +29,7 @@ import java.util.ArrayList;
  * Created by Arka on 12/01/2017.
  */
 
-public class StatisticBugUserRepartitionFragment  extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StatisticBugUserRepartitionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
     public static final String LOG_TAG = StatisticBugUserRepartitionFragment.class.getSimpleName();
     private PieChart mChart;
@@ -87,6 +87,7 @@ public class StatisticBugUserRepartitionFragment  extends Fragment implements Lo
             Log.v(LOG_TAG, "data null");
             return;
         }
+        int total = 100;
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappRed));
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappBlue));
@@ -99,9 +100,14 @@ public class StatisticBugUserRepartitionFragment  extends Fragment implements Lo
             if (data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_VALUE)) != 0)
             {
                 String username = data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)) + " " + data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME));
-                entries.add(new PieEntry(data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_VALUE)), username));
+                entries.add(new PieEntry(data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_PERCENTAGE)), username));
+                total -= data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_PERCENTAGE));
             }
         } while (data.moveToNext());
+
+        if (total > 0) {
+            entries.add(new PieEntry(total, "unassigned"));
+        }
 
         PieDataSet dataSet = new PieDataSet(entries, "Bug User Repartition");
         dataSet.setSliceSpace(3f);

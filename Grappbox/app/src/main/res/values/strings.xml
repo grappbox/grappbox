@@ -386,6 +386,7 @@
     <string name="stat_timeline">Timeline</string>
     <string name="stat_advancement">Advancement</string>
     <string name="stat_Storage">Storage</string>
+    <string name="stat_bugtracker">Bugtracker</string>
     <string name="stat_bug_user_repartition">Bug user repartion</string>
 
     <string name="occupation_label">Occupation</string>
