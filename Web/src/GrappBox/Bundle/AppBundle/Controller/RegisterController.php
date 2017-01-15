@@ -111,7 +111,7 @@ class RegisterController extends Controller
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
         $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode(($response["data"]["is_client"] == true ? "_true" : "_false")),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));        
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
         case "14.3.7":

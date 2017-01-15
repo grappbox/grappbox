@@ -126,13 +126,12 @@ class RegisterCustomerController extends Controller
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
-        case "14.3.4":
-        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode("_already"),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        break;
-
-        case "14.3.7":
-        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode("_bad"),
+        case "14.4.4":
+        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode(
+          (strpos($response["info"]["return_message"], "password") ? "_badpassword" :
+            (strpos($response["info"]["return_message"], "access") ? "_bad" :
+              (strpos($response["info"]["return_message"], "project") ? "_already" :
+                "_critical")))),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
