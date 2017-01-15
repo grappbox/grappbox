@@ -678,19 +678,11 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	*			"return_message": "AccountAdministration - registercustomer - Bad Parameter"
     *		}
 	* 	}
-	* @apiErrorExample Already in DB
-	* 	HTTP/1.1 400 Bad Request
-	* 	{
-	*		"info": {
-	*			"return_code": "14.4.7",
-	*			"return_message": "AccountAdministration - registercustomer - Already in Database"
-	*		}
-	* 	}
 	* @apiErrorExample Bad Customer Access
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "14.4.7",
+	*			"return_code": "14.4.4",
 	*			"return_message": "AccountAdministration - registercustomer - Bad Customer Access"
 	*		}
 	* 	}
@@ -698,8 +690,24 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 	* 	HTTP/1.1 400 Bad Request
 	* 	{
 	*		"info": {
-	*			"return_code": "14.4.7",
+	*			"return_code": "14.4.4",
 	*			"return_message": "AccountAdministration - registercustomer - Customer role don't exist"
+	*		}
+	* 	}
+	* @apiErrorExample Already in Database and password don't match
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.4.4",
+	*			"return_message": "AccountAdministration - registercustomer - Already in Database and password don't match"
+	*		}
+	* 	}
+	* @apiErrorExample Already in the project
+	* 	HTTP/1.1 400 Bad Request
+	* 	{
+	*		"info": {
+	*			"return_code": "14.4.4",
+	*			"return_message": "AccountAdministration - registercustomer - Already in the project"
 	*		}
 	* 	}
 	*
@@ -717,28 +725,38 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 			return $this->setBadRequest("14.3.6", "AccountAdministration", "registercustomer", "Missing Parameter");
 
 		if ($content->flag == "" || $content->device_name == "")
-			return $this->setBadRequest("14.3.6", "AccountAdministration", "registercustomer", "Bad Parameter");
+			return $this->setBadRequest("14.4.6", "AccountAdministration", "registercustomer", "Bad Parameter");
 
 		$em = $this->getDoctrine()->getManager();
-		if ($em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email)))
-			return $this->setBadRequest("14.3.4", "AccountAdministration", "registercustomer", "Already in Database");
+		$userdb = $em->getRepository('SQLBundle:User')->findOneBy(array('email' => $content->email));
+		if ($userdb)
+		{
+			$encoder = $this->container->get('security.password_encoder');
+			if (!($encoder->isPasswordValid($userdb, $content->password)))
+				return $this->setBadRequest("14.4.4", "User", "putbasicinformations", "Already in Database and password don't match");
+		}
 
 		$customer = $em->getRepository('SQLBundle:CustomerAccess')->findOneBy(array('hash' => $content->token));
 		if ($customer == null)
-			return $this->setBadRequest("14.3.4", "AccountAdministration", "registercustomer", "Bad Customer Access");
+			return $this->setBadRequest("14.4.4", "AccountAdministration", "registercustomer", "Bad Customer Access");
 
-		$user = new User();
-		$user->setFirstname($content->firstname);
-		$user->setLastname($content->lastname);
-		$user->setEmail($content->email);
-		$user->setIsClient(true);
+		if (!$userdb)
+		{
+			$user = new User();
+			$user->setFirstname($content->firstname);
+			$user->setLastname($content->lastname);
+			$user->setEmail($content->email);
+			$user->setIsClient(true);
 
-		$encoder = $this->container->get('security.password_encoder');
-		$encoded = $encoder->encodePassword($user, $content->password);
-		$user->setPassword($encoded);
+			$encoder = $this->container->get('security.password_encoder');
+			$encoded = $encoder->encodePassword($user, $content->password);
+			$user->setPassword($encoded);
 
-		$em->persist($user);
-		$em->flush();
+			$em->persist($user);
+			$em->flush();
+		}
+		else
+			$user = $userdb;
 
 		$auth = new Authentication();
 		$auth->setUser($user);
@@ -756,10 +774,17 @@ class AccountAdministrationController extends RolesAndTokenVerificationControlle
 		$em->persist($auth);
 		$em->flush();
 
+		$users = $customer->getProjects()->getUsers();
+		foreach ($users as $us) {
+			if ($us === $user)
+				return $this->setBadRequest("14.4.4", "AccountAdministration", "registercustomer", "Already in the project");
+		}
+
 		$customer->getProjects()->addUser($user);
+
 		$role = $em->getRepository('SQLBundle:Role')->findOneBy(array('name' => 'Customer', 'projects' => $customer->getProjects()));
 		if ($role == null)
-			return $this->setBadRequest("14.3.4", "AccountAdministration", "registercustomer", "Customer role don't exist");
+			return $this->setBadRequest("14.4.4", "AccountAdministration", "registercustomer", "Customer role don't exist");
 
 		$ProjectUserRole = new ProjectUserRole();
 		$ProjectUserRole->setProjectId($customer->getProjects()->getId());
