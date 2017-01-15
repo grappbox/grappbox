@@ -8,6 +8,18 @@
 
 {% block title %}GrappBox{% endblock %}
 
+{% block social %}
+<meta property="og:title" content="GrappBox"/>
+<meta property="og:url" content="https://grappbox.com"/>
+<meta name="og:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">
+<meta name="og:image" content="https://static.grappbox.com/resources/banner.min.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@GrappBox">
+<meta name="twitter:title" content="GrappBox">
+<meta name="twitter:description" content="A strong project manager with truly useful features, available on mobile, Web and desktop. Manage all your projects, teams, issues, files, and customers.">
+<meta name="twitter:image" content="https://static.grappbox.com/resources/banner.min.jpg">
+{% endblock %}
+
 {% block canonical %}<link rel="canonical" href="https://grappbox.com">{% endblock %}
 
 {% block body %}
@@ -16,7 +28,7 @@
 <nav class="navbar navbar-fixed-top navbar-custom navbar-home">
   <div class="container">
     <div class="navbar-header">
-      <a class="navbar-brand page-scroll" href="#home"><img src="resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo">Grapp<span class="red-color">Box</span></a>
+      <a class="navbar-brand page-scroll" href="#home"><img src="/resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo">Grapp<span class="red-color">Box</span></a>
     </div>
 
     <div class="collapse navbar-collapse navbar-right navbar-main-collapse">
@@ -25,7 +37,7 @@
         <li><a href="#services">Services</a></li>
         <li><a href="#team">Team</a></li>
         <li><a href="#contact">Contact</a></li>
-        <li><a class="login" href="/login"><i class="material-icons">open_in_new</i>Login</a></li>
+        <li><a class="login" href="/login"><i class="material-icons" aria-hidden="true">open_in_new</i>Login</a></li>
       </ul>
     </div>
   </div>
@@ -40,10 +52,11 @@
         <p class="home-text">A strong project manager with truly useful features.<br>Everything you need, everywhere.</p>
       </div>
       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 actions">
-        <a href="/login" class="btn btn-default login"><i class="material-icons">open_in_new</i>Login</a>
-        <a href="/register" class="btn btn-default register"><i class="material-icons">add_circle_outline</i>Register</a>
-        <a href="#about" class="btn btn-default more"><i class="material-icons">arrow_drop_down</i>Learn more</a>
+        <a href="/login" class="btn btn-default login"><i class="material-icons" aria-hidden="true">open_in_new</i>Login</a>
+        <a href="/register" class="btn btn-default register"><i class="material-icons" aria-hidden="true">add_circle_outline</i>Register</a>
+        <a href="#about" class="btn btn-default more"><i class="material-icons" aria-hidden="true">arrow_drop_down</i>Learn more</a>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>
@@ -64,19 +77,20 @@
           <p>Our goal is quite simple: to offer an innovative online platform, with all the needed tools to create and develop your IT projects.</p>
         </div>
       </div>
-      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"><img src="resources/img/grappbox.min.png" class="img-responsive" height="360" width="360" alt="GrappBox logo"></div>
+      <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12"><img src="/resources/img/home/grappbox.min.png" class="img-responsive" height="360" width="360" alt="GrappBox"></div>
       <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
         <div class="about-text">
           <h3>What's inside</h3>
           <p>Everything you need to manage your projects, teams, files, and even customers. Your actions and decisions are fully synchronized between all GrappBox platforms to maximize your productivity.</p>
           <ul>
-            <li><i class="material-icons">chevron_right</i>All the tools you need with a click</li>
-            <li><i class="material-icons">chevron_right</i>The evolution of all your projects at a glance</li>
-            <li><i class="material-icons">chevron_right</i>A new way to communicate with your customers</li>
-            <li><i class="material-icons">chevron_right</i>A set of applications for all your platforms (web, desktop or mobile)</li>
+            <li><i class="material-icons" aria-hidden="true">chevron_right</i>All the tools you need with a click</li>
+            <li><i class="material-icons" aria-hidden="true">chevron_right</i>The evolution of all your projects at a glance</li>
+            <li><i class="material-icons" aria-hidden="true">chevron_right</i>A new way to communicate with your customers</li>
+            <li><i class="material-icons" aria-hidden="true">chevron_right</i>A set of applications for all your platforms (web, desktop or mobile)</li>
           </ul>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>
@@ -91,60 +105,62 @@
     <div class="space"></div>
     <div class="row">
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop red-color">dashboard</i>
+        <div class="service"><i class="material-icons pop red-color" aria-hidden="true">dashboard</i>
           <h4>Dashboard</h4>
           <p>Detect problems before they occur thanks to a set of relevant statistics.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop yellow-color">cloud_queue</i>
+        <div class="service"><i class="material-icons pop yellow-color" aria-hidden="true">cloud_queue</i>
           <h4>Cloud</h4>
           <p>Safely store all your valuable files and assets safely via our secured private Cloud storage.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop green-color">mode_edit</i>
+        <div class="service"><i class="material-icons pop green-color" aria-hidden="true">mode_edit</i>
           <h4>Collborative whiteboard</h4>
           <p>Give life to your ideas thanks to a collaborative whiteboard shared on all GrappBox platforms.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop orange-color">forum</i>
+        <div class="service"><i class="material-icons pop orange-color" aria-hidden="true">forum</i>
           <h4>Team talks</h4>
           <p>Discuss and keep track of your interactions with your team.</p>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
     <div class="row">
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop orange-color">people_outline</i>
+        <div class="service"><i class="material-icons pop orange-color" aria-hidden="true">people_outline</i>
           <h4>Customer talks</h4>
           <p>A better way to discuss and exchange with your customers.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop purple-color">bug_report</i>
+        <div class="service"><i class="material-icons pop purple-color" aria-hidden="true">bug_report</i>
           <h4>Bugtracker</h4>
           <p>Use the power of teamwork to get rid of your functional and technical issues.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop blue-color">event</i>
+        <div class="service"><i class="material-icons pop blue-color" aria-hidden="true">event</i>
           <h4>Calendar</h4>
           <p>A beautifully simple calendar. View and manage all your meetings and tasks.</p>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="service"><i class="material-icons pop red-color">important_devices</i>
+        <div class="service"><i class="material-icons pop red-color" aria-hidden="true">important_devices</i>
           <h4>All-in-one</h4>
           <p>Available on Web, Windows, Mac, Linux, Android, iPhone and Windows Phone.</p>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>
 
-<div id="separation"></div>
+<div class="separation" id="separation-team"></div>
 
 <!-- Team -->
 <div id="team">
@@ -156,71 +172,73 @@
     </div>
     <div class="row">
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/allyriane_launois.min.jpg" alt="Allyriane Launois" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/allyriane_launois.min.jpg" alt="Allyriane Launois" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://hk.linkedin.com/in/allyrianelaunois" title="View Allyriane Launois's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Allyriane Launois</a></h4>
+            <h4><a href="https://hk.linkedin.com/in/allyrianelaunois" title="View Allyriane Launois's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Allyriane Launois</a></h4>
             <p>API and Web app developer</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/frederic_tan.min.jpg" alt="Frédéric Tan" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/frederic_tan.min.jpg" alt="Frédéric Tan" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-tan-b4024b69" title="View Frédéric Tan's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Frédéric Tan</a></h4>
+            <h4><a href="https://www.linkedin.com/in/fr%C3%A9d%C3%A9ric-tan-b4024b69" title="View Frédéric Tan's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Frédéric Tan</a></h4>
             <p>Android app developer</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/leo_nadeau.min.jpg" alt="Léo Nadeau" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/leo_nadeau.min.jpg" alt="Léo Nadeau" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/leo-nadeau-42838b93" title="View Léo Nadeau's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Léo Nadeau</a></h4>
+            <h4><a href="https://www.linkedin.com/in/leo-nadeau-42838b93" title="View Léo Nadeau's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Léo Nadeau</a></h4>
             <p>Desktop app developer</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/marc_wieser.min.jpg" alt="Marc Wieser" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/marc_wieser.min.jpg" alt="Marc Wieser" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://fr.linkedin.com/in/marcwieserdev" title="View Marc Wieser's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Marc Wieser</a></h4>
+            <h4><a href="https://fr.linkedin.com/in/marcwieserdev" title="View Marc Wieser's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Marc Wieser</a></h4>
             <p>Android app and Cloud developer</p>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
     <div class="row">
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/pierre_hofman.min.jpg" alt="Pierre Hofman" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/pierre_hofman.min.jpg" alt="Pierre Hofman" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/pierre-hofman-986575a3" title="View Pierre Feytout's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Pierre Hofman</a></h4>
+            <h4><a href="https://www.linkedin.com/in/pierre-hofman-986575a3" title="View Pierre Feytout's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Pierre Hofman</a></h4>
             <p>iOS app developer</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/pierre_feytout.min.jpg" alt="Pierre Feytout" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/pierre_feytout.min.jpg" alt="Pierre Feytout" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/pierrefeytout" title="View Pierre Feytout's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Pierre Feytout</a></h4>
+            <h4><a href="https://www.linkedin.com/in/pierrefeytout" title="View Pierre Feytout's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Pierre Feytout</a></h4>
             <p>UWP app developer</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/roland_hemmer.min.jpg" alt="Roland Hemmer" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/roland_hemmer.min.jpg" alt="Roland Hemmer" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/rolandhemmer" title="View Roland Hemmer's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Roland Hemmer</a></h4>
+            <h4><a href="https://www.linkedin.com/in/rolandhemmer" title="View Roland Hemmer's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Roland Hemmer</a></h4>
             <p>Web app developer and sysadmin</p>
           </div>
         </div>
       </div>
       <div class="col-lg-3 col-md-3 col-sm-6 col-xs-12">
-        <div class="thumbnail"><img src="resources/img/team/valentin_mougenot.min.jpg" alt="Valentin Mougenot" class="img-thumbnail team-img">
+        <div class="thumbnail"><img src="/resources/img/home/team/valentin_mougenot.min.jpg" alt="Valentin Mougenot" class="img-thumbnail team-img">
           <div class="caption">
-            <h4><a href="https://www.linkedin.com/in/valentinmougenot" title="View Valentin Mougenot's LinkedIn profile" target="_blank"><img src="resources/img/linkedin.min.png" height="20" width="20" alt="LinkedIn logo" class="linkedin">Valentin Mougenot</a></h4>
+            <h4><a href="https://www.linkedin.com/in/valentinmougenot" title="View Valentin Mougenot's LinkedIn profile" target="_blank"><img src="/resources/img/home/linkedin.min.png" height="20" width="20" alt="LinkedIn" class="linkedin">Valentin Mougenot</a></h4>
             <p>API and UWP app developer</p>
           </div>
         </div>
       </div>
+      <div class="clearfix"></div>
     </div>
   </div>
 </div>
@@ -236,15 +254,15 @@
     <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 text-center">
       <ul>
         <li class="col-lg-3 col-md-3 col-sm-3 col-xs-12 mail">
-          <a href="mailto:grappbox@gmail.com" title="Contact GrappBox by email" target="_blank"><i class="material-icons green-background">email</i><p>grappbox@gmail.com</p></a>
+          <a href="mailto:grappbox@gmail.com" title="Contact GrappBox by email" target="_blank"><i class="material-icons green-background" aria-hidden="true">email</i><p>grappbox@gmail.com</p></a>
         </li>
         <li class="col-lg-3 col-md-3 col-sm-3 col-xs-12 facebook">
-          <a href="https://www.facebook.com/GrappBox" title="Contact GrappBox on Facebook" target="_blank"><img src="resources/img/facebook.min.png" height="45" width="45" alt="GrappBox on Facebook">
+          <a href="https://www.facebook.com/GrappBox" title="Contact GrappBox on Facebook" target="_blank"><img src="/resources/img/home/facebook.min.png" height="45" width="45" alt="GrappBox on Facebook">
             <p>GrappBox</p>
           </a>
         </li>
         <li class="col-lg-3 col-md-3 col-sm-3 col-xs-12 twitter">
-          <a href="https://twitter.com/grappbox" title="Contact GrappBox on Twitter" target="_blank"><img src="resources/img/twitter.min.png" height="45" width="45" alt="GrappBox on Twitter">
+          <a href="https://twitter.com/grappbox" title="Contact GrappBox on Twitter" target="_blank"><img src="/resources/img/home/twitter.min.png" height="45" width="45" alt="GrappBox on Twitter">
             <p>@GrappBox</p>
           </a>
         </li>
@@ -253,10 +271,14 @@
             <p>@GrappBox</p>
           </a>
         </li>
+        <div class="clearfix"></div>
       </ul>
     </div>
+    <div class="clearfix"></div>
   </div>
 </div>
+
+<div class="separation" id="separation-contact"></div>
 
 <!-- Footer -->
 <div class="footer">

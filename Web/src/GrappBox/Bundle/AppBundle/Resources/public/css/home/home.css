@@ -36,17 +36,26 @@ a { color: #212121; }
 
 a:active,
 a:focus,
-a:hover { text-decoration: none; color: #44BBFF; }
+a:hover { text-decoration: none; color: #4bf; }
+
+b,
+strong { font-weight: 900; }
+input,
+p,
+textarea,
+select,
+.form-control { font-size: 14px!important; font-weight: 400!important; }
+textarea { resize: vertical!important; }
 
 ul,
 ol { list-style: none; padding: 0; }
 hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0 auto; margin-bottom: 30px; border: 0; }
 
-::-webkit-selection { color: #fff; background: #44BBFF; }
-::-moz-selection { color: #fff; background: #44BBFF; }
-::-o-selection { color: #fff; background: #44BBFF; }
-::-ms-selection { color: #fff; background: #44BBFF; }
-::selection { color: #fff; background: #44BBFF; }
+::-webkit-selection { color: #fff; background: #; }
+::-moz-selection { color: #fff; background: #fc575e; }
+::-o-selection { color: #fff; background: #fc575e; }
+::-ms-selection { color: #fff; background: #fc575e; }
+::selection { color: #fff; background: #fc575e; }
 
 .gray-color { color: #757575!important; }
 .red-color { color: #fc575e!important; }
@@ -127,25 +136,25 @@ hr { height: 4px; width: 70px; text-align: center; position: relative; margin: 0
 
 .center { text-align: center; }
 
-.well { box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02)!important; margin-bottom: 5px!important; border-radius: 0!important; }
+.well { box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02)!important; margin-bottom: 2px!important; border-radius: 0!important; padding: 15px!important; }
 .well a i,
 .well-link a i { padding-right: 5px; margin-left: -20px; }
 .well .submit { text-align: right; }
 
 .well a,
-a.raised { color: #44BBFF; }
+a.raised { color: #4bf; }
 
 .well a:active,
 .well a:focus,
 .well a:hover,
 a.raised:active,
 a.raised:focus,
-a.raised:hover { text-decoration: underline; color: #44BBFF; }
+a.raised:hover { text-decoration: underline; color: #4bf; }
 
-.well .btn.btn-default { color: #44BBFF!important; }
+.well .btn.btn-default { color: #4bf!important; }
 .well .btn.btn-default:active,
 .well .btn.btn-default:hover,
-.well .btn.btn-default:focus { color: #fafafa!important; background: #44BBFF!important; }
+.well .btn.btn-default:focus { color: #fafafa!important; background: #4bf!important; }
 
 .well-title { background: #212121; color: #f0f0f0; padding: 15px 0; margin-bottom: -1px; text-align: center; box-shadow: 0 1px 2px rgba(0,0,0,.15),0 -1px 0 rgba(0,0,0,.02)!important; font-weight: 400!important; }
 .well-logo { padding-right: 10px; margin-left: -20px; }
@@ -158,13 +167,13 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* =============================================== */
 
 .form-group.is-focused:not(.has-error) label,
-.form-group.is-focused:not(.has-error) label.control-label { color: #44BBFF; }
+.form-group.is-focused:not(.has-error) label.control-label { color: #4bf; }
 .form-group select { -webkit-appearance: menulist; -moz-appearance: menulist; appearance: normal; }
 .form-group.is-focused .form-control {
-  background-image: -webkit-gradient(linear, left top, left bottom, from(#44BBFF), to(#44BBFF)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));
-  background-image: -webkit-linear-gradient(#44BBFF, #44BBFF), -webkit-linear-gradient(#D2D2D2, #D2D2D2);
-  background-image: -o-linear-gradient(#44BBFF, #44BBFF), -o-linear-gradient(#D2D2D2, #D2D2D2);
-  background-image: linear-gradient(#44BBFF, #44BBFF), linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: -webkit-gradient(linear, left top, left bottom, from(#4bf), to(#4bf)), -webkit-gradient(linear, left top, left bottom, from(#D2D2D2), to(#D2D2D2));
+  background-image: -webkit-linear-gradient(#4bf, #4bf), -webkit-linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: -o-linear-gradient(#4bf, #4bf), -o-linear-gradient(#D2D2D2, #D2D2D2);
+  background-image: linear-gradient(#4bf, #4bf), linear-gradient(#D2D2D2, #D2D2D2);
 }
 
 .has-error .form-control { border-color: #FC575E; }
@@ -220,7 +229,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== HOME ==================== */
 /* ============================================== */
 
-#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#home { display: table; width: 100%; height: auto; padding: 60px 0; text-align: center; color: #fff; background: url(../img/home/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 #home .home-body { display: table-cell; vertical-align: middle; }
 #home .home-body h1 { font-size: 88px; font-weight: 700; text-transform: uppercase; }
 #home .home-body .home-text { font-size: 18px; }
@@ -255,13 +264,18 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 #home .actions .download:hover { background: #27AE60; color: #fafafa; }
 #home .actions .more:hover { background: #FF9F55; color: #fafafa; }
 
+.separation { width: 100%; height: auto; min-height: 420px; background-color: #000; }
+#separation-services { background: url(../img/home/home.min.jpg) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#separation-team { background: url(../img/home/contact.min.jpg) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+#separation-contact { background: url(../img/home/contact.min.jpg) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+
 
 
 /* =============================================== */
 /* ==================== ABOUT ==================== */
 /* =============================================== */
 
-#about { padding: 60px 0; background: #fafafa; }
+#about { padding: 60px 0; background: #fff; }
 #about .about-text { margin-left: 10px; }
 #about p { margin-top: 20px; margin-bottom: 30px; }
 #about li i { font-size: 14px; }
@@ -283,7 +297,7 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ==================== TEAM ==================== */
 /* ============================================== */
 
-#team { padding: 60px 0; background: #fafafa; }
+#team { padding: 60px 0; background: #fff; }
 #team .thumbnail .caption { padding: 0; text-align: center; }
 #team .thumbnail .team-img { width: 150px; height: 150px; border: 0; border-radius: 50%; background: none; transition: none; }
 #team .thumbnail { background: none; border: none; border-radius: 0; transition: none; }
@@ -294,8 +308,6 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 /* ================================================= */
 /* ==================== CONTACT ==================== */
 /* ================================================= */
-
-#separation { width: 100%; height: auto; min-height: 420px; background: url(../img/home.min.jpg) no-repeat center center fixed; background-color: #000; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
 
 #contact { padding: 60px 0; background: #fff; }
 #contact ul li a { display: block; color: #212121; transition-duration: .2s; }
@@ -331,41 +343,31 @@ a.raised:hover { text-decoration: underline; color: #44BBFF; }
 
 .footer { background: #212121; color: #cccccc; padding: 20px 0; text-align: center; }
 .footer p { font-size: 14px; padding: 10px; }
-.footer.footer-reverse { background: #f0f0f0; color: #212121; margin: 20px 0; padding: 0; }
-.footer.footer-reverse p { padding: 0; }
 
 
 
-/* =============================================== */
-/* ==================== LOGIN ==================== */
-/* =============================================== */
+/* ======================================================================== */
+/* ==================== LOGIN/REGISTER/PRE-ORDER/ERROR ==================== */
+/* ======================================================================== */
 
-#login { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
+.account { width: 100%; min-height: 100%; margin: 0; padding-top: 8%; background: url(../img/home/home.min.jpg) no-repeat center center fixed; -webkit-background-size: cover; -moz-background-size: cover; background-size: cover; -o-background-size: cover; }
+.account#register { padding-top: 5%; }
+.account#preorder .alert-preorder { background: #616161; color: #fafafa; }
 
-@media (max-width: 640px) {
-  #login .submit { text-align: center; }
-}
+.error { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
+.error .quote { font-size: 12px; font-style: italic; }
 
+.account .footer,
+.error .footer { position: absolute; width: 100%; bottom: 0; background: #212121; color: #fafafa; margin: 0; padding: 20px; }
+.error a.raised { color: #fc575e; }
 
-
-/* ============================================================ */
-/* ==================== REGISTER/PRE-ORDER ==================== */
-/* ============================================================ */
-
-#register { width: 100%; min-height: 90%; margin: 0; padding-top: 2%; }
-#preorder { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
-#preorder .alert-preorder { background: #616161; color: #fafafa; }
+.account .footer p,
+.error .footer p  { padding: 0; margin: 0; }
 
 @media (max-width: 640px) {
-  #register .submit { text-align: center; }
-  #preorder .submit { text-align: center; }
+  .account .submit { text-align: center; }
 }
 
-
-
-/* =============================================== */
-/* ==================== ERROR ==================== */
-/* =============================================== */
-
-#error { width: 100%; min-height: 90%; margin: 0; padding-top: 9%; }
-#error .quote { font-size: 12px; font-style: italic; }
+@media (max-width: 768px) {
+  .account#register .footer { position: initial; margin-top: 40px; }
+}

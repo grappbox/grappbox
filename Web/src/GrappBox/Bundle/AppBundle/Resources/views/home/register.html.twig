@@ -13,10 +13,10 @@
 {% block body %}
 
 <!-- Register -->
-<div id="register">
+<div class="account" id="register">
   <div class="container">
-    <div class="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-8 col-sm-offset-2 col-xs-12">
-      <h4 class="well-title"><a class="well-logo" href="/"><img src="resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox small logo"></a>Join GrappBox</h4>
+    <div class="col-lg-8 col-lg-offset-2 col-md-8 col-md-offset-2 col-sm-8 col-sm-offset-2 col-xs-12">
+      <h4 class="well-title"><a class="well-logo" href="/"><img src="/resources/img/favicon/apple-icon-180x180.png" height="35" width="35" alt="GrappBox"></a>Join GrappBox</h4>
       <div class="well">
         <div class="alert alert-danger" id="form-message">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -24,30 +24,41 @@
         </div>
         {{ form_start(form) }}
           <fieldset>
-            <div class="form-group label-floating">
-              <label for="form_firstname" class="control-label">Firstname</label>
-              {{ form_widget(form.firstname, {'attr': { 'class': 'form-control' }}) }}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="form-group label-floating">
+                <label for="form_firstname" class="control-label">Firstname</label>
+                {{ form_widget(form.firstname, {'attr': { 'class': 'form-control' }}) }}
+              </div>
+              <div class="form-group label-floating">
+                <label for="form_lastname" class="control-label">Lastname</label>
+                {{ form_widget(form.lastname, {'attr': { 'class': 'form-control' }}) }}
+              </div>
+              <div class="form-group label-floating">
+                <label for="form_email" class="control-label">Email</label>
+                {{ form_widget(form.email, {'attr': { 'class': 'form-control' }}) }}
+              </div>
             </div>
-            <div class="form-group label-floating">
-              <label for="form_lastname" class="control-label">Lastname</label>
-              {{ form_widget(form.lastname, {'attr': { 'class': 'form-control' }}) }}
+            <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+              <div class="form-group label-floating">
+                <label for="form_birthday" class="control-label">Birthday</label>
+                {{ form_widget(form.birthday, {'attr': { 'class': 'form-control' }}) }}
+              </div>
+              <div class="form-group label-floating">
+                <label for="form_password" class="control-label">Password</label>
+                {{ form_widget(form.password, {'attr': { 'class': 'form-control' }}) }}
+              </div>
+              <div class="form-group label-floating">
+                <label for="form_password_confirmation" class="control-label">Password confirmation</label>
+                {{ form_widget(form.password_confirmation, {'attr': { 'class': 'form-control' }}) }}
+              </div>
             </div>
-            <div class="form-group label-floating">
-              <label for="form_email" class="control-label">Email</label>
-              {{ form_widget(form.email, {'attr': { 'class': 'form-control' }}) }}
+            <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+              <div class="form-group label-floating">
+                <label for="form_code" class="control-label">Code</label>
+                {{ form_widget(form.code, {'attr': { 'class': 'form-control' }}) }}
+              </div>
             </div>
-            <div class="form-group label-floating">
-              <label for="form_birthday" class="control-label">Birthday</label>
-              {{ form_widget(form.birthday, {'attr': { 'class': 'form-control' }}) }}
-            </div>
-            <div class="form-group label-floating">
-              <label for="form_password" class="control-label">Password</label>
-              {{ form_widget(form.password, {'attr': { 'class': 'form-control' }}) }}
-            </div>
-            <div class="form-group label-floating">
-              <label for="form_password_confirmation" class="control-label">Password confirmation</label>
-              {{ form_widget(form.password_confirmation, {'attr': { 'class': 'form-control' }}) }}
-            </div>
+            <div class="clearfix"></div>
             <div class="form-group submit">
               {{ form_widget(form.submit, {'attr': {'title': 'Create your GrappBox account', 'class': 'btn btn-default' }}) }}
               {{ form_rest(form) }}
@@ -55,15 +66,16 @@
           </fieldset>
         {{ form_end(form) }}
       </div>
-      <div class="well text-center">Already registered to GrappBox? <a href="/login" title="Go to your GrappBox account">Login to your account.</a></div>
-      <div class="well-link"><a href="/" title="Return to GrappBox website"><i class="material-icons">keyboard_backspace</i>Back to GrappBox.com</a></div>      
+      <div class="well text-center">Already registered to GrappBox?<br><a href="/login" title="Go to your GrappBox account">Login to your account</a></div>
+      <div class="well text-center"><a href="/" title="Return to GrappBox website"><i class="material-icons" aria-hidden="true">keyboard_backspace</i>Back to GrappBox.com</a></div>
     </div>
+    <div class="clearfix"></div>
   </div>
-</div>
 
-<!-- Footer -->
-<div class="footer footer-reverse footer-fixed">
-  <p>Copyright &copy; GrappBox 2017.<br>All rights reserved.</p>
+  <!-- Footer -->
+  <div class="footer">
+    <p>Copyright &copy; GrappBox 2017.<br>All rights reserved.</p>
+  </div>
 </div>
 
 {% endblock %}
