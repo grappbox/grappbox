@@ -9,6 +9,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -76,10 +77,10 @@ public class DashboardFragment extends Fragment {
         mFab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DashboardTheme);
+                AlertDialog.Builder builder = new AlertDialog.Builder(mContext, R.style.DashboardDialogOverride);
                 builder.setTitle(R.string.set_dashboard);
 
-                if (mPagerAdapter == null || mPagerAdapter.getCount() == 0)
+                if (mPagerAdapter == null)
                     return;
 
                 boolean[] checkedTab = new boolean[mTabTitle.length];
