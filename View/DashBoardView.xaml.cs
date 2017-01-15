@@ -109,7 +109,10 @@ namespace Grappbox.View
             PivotItem pivotItem;
             initPivotItem("Project Stats", "\uE8F1", out pivotItem);
             pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
             ProjectStats td = new ProjectStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
             pivotItem.Content = td;
             return pivotItem;
         }
