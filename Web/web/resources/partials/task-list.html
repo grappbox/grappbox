@@ -11,7 +11,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
       <h1>Tasks</h1>
       <p>This section is the <strong>main hub</strong> for all task-related actions.<br>You can also manage your Gantt containers and milestones.</p>
-      <a ng-if="canEdit" href="{[{ 'task/' + projectId + '/0' }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the task creation page">Create a new task</a>
+      <a ng-if="data.canEdit" href="{[{ 'task/' + projectId + '/0' }]}" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" title="Go to the task creation page">Create a new task</a>
     </div>
     <div class="clearfix"></div>
   </div>

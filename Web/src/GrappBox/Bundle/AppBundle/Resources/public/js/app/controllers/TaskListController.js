@@ -13,7 +13,8 @@ app.controller("TaskListController", ["$http", "$filter", "$location", "notifica
 
   // Scope variables initialization
   $scope.projectId = $routeParams.project_id;
-  $scope.data = { onLoad: true, tasks: { }, todos: [], doings: [], dones: [], users: [], containers: [], milestones: [], message: "_invalid" };
+  $scope.userId = $rootScope.user.id;
+  $scope.data = { onLoad: true, canEdit: false, tasks: { }, todos: [], doings: [], dones: [], users: [], containers: [], milestones: [], message: "_invalid" };
 
   // Get all tasks of the project
   $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectId, {headers: { 'Authorization': $rootScope.user.token }})
@@ -43,6 +44,19 @@ app.controller("TaskListController", ["$http", "$filter", "$location", "notifica
         }
 
     });
+
+  var getEditionRights = function() {
+
+    $http.get($rootScope.api.url + "/role/user/part/" + $scope.userId + "/" + $scope.projectId + "/task", {headers: {"Authorization": $rootScope.user.token}})
+      .then(function successCallback(response) {
+        console.log('canEdit success');
+        $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
+      },
+      function errorCallback(response) {
+        $scope.data.canEdit = false;
+      });
+  }
+  getEditionRights();
 
   // Date format
   $scope.formatObjectDate = function(dateToFormat) {

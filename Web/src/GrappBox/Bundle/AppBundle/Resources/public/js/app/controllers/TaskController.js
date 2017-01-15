@@ -22,7 +22,7 @@ app.filter('dependencies', function() {
     var list = [];
 
       angular.forEach(input, function(value, key) {
-        if (!value.is_container && ref.id != value.id) {
+        if (!value.is_container && !value.is_milestone && ref.id != value.id) {
           value.name = value.title;
           list.push(value);
         }
@@ -666,6 +666,8 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
         elem["tagsAdd"].push($scope.tagToAdd[i].id);
     }
 
+    console.log('elem', elem);
+
     var data = {"data": elem};
 
     $http.post($rootScope.api.url + "/task", data, {headers: { 'Authorization': $rootScope.user.token }})
@@ -710,7 +712,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
                 "advance": $scope.data.edit.advance,
                 };
 
-    if ($scope.data.task.is_container) {
+    if ($scope.data.task.is_container && !$scope.data.task.is_milestone) {
       //elem['is_container'] = true;
       elem["tasksAdd"] = $scope.data.taskToAdd;
       elem["tasksRemove"] = $scope.data.taskToRemove;
@@ -739,6 +741,7 @@ app.controller("TaskController", ["$http", "$filter", "$location", "notification
       if ($scope.tagToAdd[i].id)
         elem["tagsAdd"].push($scope.tagToAdd[i].id);
     }
+        console.log('elem', elem);
 
     if ($scope.tagToRemove) {
       var oldTags = [];

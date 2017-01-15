@@ -501,27 +501,21 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
       }, $scope);
   };
 
-  $scope.changeProjectOwner = function() {
-    // TODO ???
-  };
+  // $scope.changeProjectOwner = function() {
+  //   // TODO ???
+  // };
 
   $scope.assignRoleToUser = function(user) {
     if (user.actualRole) {
-      var elem = {//"token": $rootScope.user.token,
-                  "userId": user.id,
+      var elem = {"userId": user.id,
+                  "projectId": $scope.projectID,
+                  "old_roleId": user.actualRole,
                   "roleId": user.role};
       var data = {"data": elem};
-      $http.post($rootScope.api.url + "/role/user", data, {headers: {"Authorization": $rootScope.user.token}})
+      $http.put($rootScope.api.url + "/role/user/" + user.id, data, {headers: {"Authorization": $rootScope.user.token}})
         .then(function successCallback(response) {
-          $http.delete($rootScope.api.url + "/role/user/" + $scope.projectID + "/" + user.id + "/" + user.actualRole, {headers: {"Authorization": $rootScope.user.token}})
-            .then(function successCallback(response) {
-              getUsersRoles();
-              notificationFactory.success("User role changed.");
-            },
-            function errorCallback(response) {
-              getUsersRoles();
-              notificationFactory.warning("Unable to change user role. Please try again.");
-            }, $scope);
+          getUsersRoles();
+          notificationFactory.success("User role changed");
         },
         function errorCallback(response) {
           getUsersRoles();
@@ -543,8 +537,7 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
         }, $scope);
     }
     else {
-      var elem = {//"token": $rootScope.user.token,
-                  "userId": user.id,
+      var elem = {"userId": user.id,
                   "roleId": user.role};
       var data = {"data": elem};
       $http.post($rootScope.api.url + "/role/user", data, {headers: {"Authorization": $rootScope.user.token}})
@@ -627,9 +620,7 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
 
   $scope.editRole = function(role) {
     var elem = {
-      //"token": $rootScope.user.token,
-		  //"roleId": role.roleId,
-		  "name": role.name,
+      "name": role.name,
 		  "teamTimeline": role.team_timeline,
 	    "customerTimeline": role.customer_timeline,
 	    "gantt": role.gantt,
@@ -673,8 +664,7 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
     console.log($scope.new_role);
     console.log(new_role);
 
-    var elem = {//"token": $rootScope.user.token,
-	              "projectId": $scope.projectID,
+    var elem = {"projectId": $scope.projectID,
 	              "name": new_role.name,
 	              "teamTimeline": new_role.team_timeline,
 	              "customerTimeline": new_role.customer_timeline,
@@ -740,7 +730,6 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
         // TODO check error -> do switch
       });
   };
-
 
 
   // ------------------------------------------------------
