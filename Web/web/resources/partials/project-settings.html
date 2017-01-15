@@ -663,7 +663,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                       <tbody>
                         <tr data-ng-repeat="customer in data.customers">
                           <td>{[{ customer.name }]}</td>
-                          <td>{[{ customer.customer_token }]}</td>
+                          <td><a href="https://grappbox.com/register/customer?t={[{ customer.token }]}" target="_blank">{[{ customer.token }]}</a></td>
                           <td data-ng-if="data.userRights >= 2">
                             <button class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" data-ng-click="deleteCustomerAccess(customer)">Delete</button>
                           </td>

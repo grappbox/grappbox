@@ -52,6 +52,14 @@ $(document).ready(function() {
         default:
         break;
       }
+
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
+      Cookies.remove("G_LOGIN", { path: "/" });
+      Cookies.remove("G_TOKEN", { path: "/" });
+      Cookies.remove("G_ID", { path: "/" });      
+
+      $("#form-message").addClass("show");
     }
 
     var login = Cookies.get("G_LOGIN");
@@ -81,17 +89,51 @@ $(document).ready(function() {
         $("#form-message p").text("You password and confirmation password do not match. Please try again.");
         break;
 
+        case "_missingtoken":
+        $("#form-message p").text("You need a token to get attached to a GrappBox team. Please try again.");
+        break;
+
+        case "_badcode":
+        $("#form-message p").text("You need a valid code to register. Please try again.");
+        break;
+
         default:
         break;
       }
 
-      Cookies.remove("G_PREORDER", { path: "/" });      
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
       Cookies.remove("G_LOGIN", { path: "/" });
       Cookies.remove("G_TOKEN", { path: "/" });
       Cookies.remove("G_ID", { path: "/" });
 
       $("#form-message").addClass("show");
     }
+
+    var customer = Cookies.get("G_CUSTOMER");
+    if (customer != undefined && window.atob(customer) != "_true" && window.atob(customer) != "_false") {
+      switch(window.atob(customer)) {
+        case "_already":
+        $("#form-message p").text("You are already registered with this token. Please login to your account.");
+        break;
+
+        case "_bad":
+        $("#form-message p").text("This customer access is not valid. Please contact your GrappBox team.");
+        break;
+
+        default:
+        break;
+      }
+
+      Cookies.remove("G_CUSTOMER", { path: "/" });
+      Cookies.remove("G_PREORDER", { path: "/" });
+      Cookies.remove("G_LOGIN", { path: "/" });
+      Cookies.remove("G_TOKEN", { path: "/" });
+      Cookies.remove("G_ID", { path: "/" });
+      
+      $("#form-message").addClass("show");
+    }
+
   };
 
   // Start point

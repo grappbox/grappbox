@@ -255,7 +255,7 @@
             <a data-ng-href="{[{ 'statistics/' + project.id }]}" title="View all statistics for this project" class="btn {[{ path.routes['/statistics'] ? 'active' : '' }]}">
               <i class="material-icons" aria-hidden="true">{[{ path.icons['/statistics'] }]}</i>Statistics</a>
           </li>
-          <li data-ng-if="project.set">
+          <li data-ng-if="project.set && !user.is_client">
             <a data-ng-href="{[{ 'settings/' + project.id }]}" title="Edit your current project settings" class="btn {[{ path.routes['/settings'] ? 'active' : '' }]}">
               <i class="material-icons" aria-hidden="true">{[{ path.icons['/settings'] }]}</i>Project settings</a>
           </li>

@@ -9,8 +9,10 @@
 namespace GrappBox\Bundle\AppBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpFoundation\Cookie;
@@ -18,7 +20,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use BrowscapPHP\Browscap;
 
-class LoginController extends Controller
+
+class RegisterCustomerController extends Controller
 {
   private $api_baseURL = "https://api.grappbox.com/";
   private $api_version = "0.3";
@@ -26,7 +29,7 @@ class LoginController extends Controller
 
 
   // Routine definition
-  // LoginController constructor
+  // RegisterCustomerController constructor
   public function __construct() {
     $this->cookies = array(
       "time" => time() + 2592000,
@@ -40,9 +43,9 @@ class LoginController extends Controller
 
   // Routine definition
   // On API critical error behavior
-  private function onCriticalError()
+  private function onCriticalError($token)
   {
-    $redirect = new RedirectResponse("/login");
+    $redirect = new RedirectResponse("/register/customer?t=".$token);
     $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_critical"),
       $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
 
@@ -51,12 +54,48 @@ class LoginController extends Controller
 
 
   // Routine definition
+  // On password mismatch error behavior
+  private function onPasswordMismatchError($token)
+  {
+    $redirect = new RedirectResponse("/register/customer?t=".$token);
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_mismatch"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+
+    return $redirect;
+  }
+
+
+  // Routine definition
+  // On missing access token error behavior
+  private function onMissingTokenError()
+  {
+    $redirect = new RedirectResponse("/register");
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_missingtoken"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+
+    return $redirect;
+  }
+
+
+  // Routine definition
+  // On wrong (or empty) access code behavior
+  private function onWrongCodeError($token)
+  {
+    $redirect = new RedirectResponse("/register/customer?t=".$token);
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_badcode"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+
+    return $redirect;
+  }
+
+
+  // Routine definition
   // Get initial user data from GrappBox API
-  private function getLoginData($formData)
+  private function getUserData($formData, $token)
   {
     $data = curl_init();
 
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/account/login");
+    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/account/registercustomer");
     curl_setopt($data, CURLOPT_POST, 1);
     curl_setopt($data, CURLOPT_TIMEOUT, 30);
     curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
@@ -65,11 +104,11 @@ class LoginController extends Controller
     $JSON_data = curl_exec($data);
 
     if (curl_error($data))
-      return $this->onCriticalError();
+      return $this->onCriticalError($token);
     curl_close($data);
 
     $response = json_decode($JSON_data, true);
-    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.14.1" ? "/app" : "/login") : null);
+    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.14.1" ? "/app" : "/register/customer?t=".$token) : null);
 
     if ($response["info"]["return_code"]) {
       switch ($response["info"]["return_code"]) {
@@ -87,8 +126,13 @@ class LoginController extends Controller
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
-        case "14.1.4":
-        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode((strpos($response["info"]["return_message"], "password") ? "_badpassword" : "_badlogin")),
+        case "14.3.4":
+        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode("_already"),
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+        break;
+
+        case "14.3.7":
+        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode("_bad"),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
         break;
 
@@ -103,89 +147,56 @@ class LoginController extends Controller
   }
 
 
-  // Routine definition
-  // Check stored user data before login   
-  private function setLoginState($token)
-  {
-    $data = curl_init();
-
-    $header = array();
-    $header[] = "Content-length: 0";
-    $header[] = "Content-type: application/json";
-    $header[] = "Authorization: ".$token;
-
-    curl_setopt($data, CURLOPT_URL, $this->api_baseURL.$this->api_version."/user");
-    curl_setopt($data, CURLOPT_HTTPHEADER, $header);
-    curl_setopt($data, CURLOPT_TIMEOUT, 30);
-    curl_setopt($data, CURLOPT_RETURNTRANSFER, 1);
-
-    $JSON_data = curl_exec($data);
-
-    if (curl_error($data))
-      return $this->onCriticalError();
-    curl_close($data);
-
-    $response = json_decode($JSON_data, true);
-    $redirect = ($response["info"]["return_code"] ? new RedirectResponse($response["info"]["return_code"] == "1.7.1" ? "/app" : "/login") : null);
-
-    if ($response["info"]["return_code"]) {
-      switch ($response["info"]["return_code"]) {
-        case "1.7.1":
-        break;
-
-        case "7.1.3":
-        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_denied"),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        $redirect->headers->clearCookie("G_TOKEN");
-        $redirect->headers->clearCookie("G_ID");
-        break;
-
-        default:
-        $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_critical"),
-          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
-        $redirect->headers->clearCookie("G_TOKEN");
-        $redirect->headers->clearCookie("G_ID");
-        break;
-      }
-    }
-    else
-      return $this->onCriticalError();
-    return $redirect;
-  }
-
-
   // Routine definition (public)
-  // Load APP login page  
+  // Load APP register page  
   public function indexAction(Request $request)
   {
     $request = Request::createFromGlobals();
     $cookieData = $request->cookies;
-
+    
     $browscap = new Browscap();
     $browserData = $browscap->getBrowser();
 
-    if ($cookieData->has("G_TOKEN") && $cookieData->get("G_TOKEN"))
-      return $this->setLoginState(base64_decode($cookieData->get("G_TOKEN")));
+    $data = array("token" => $request->query->get("t"));
+    if ($data["token"] == "")
+      return $this->onMissingTokenError();
 
-    $form_options = array();
-    $form = $this->createFormBuilder($form_options)
+    $form = $this->createFormBuilder($data)
+    ->add("token", HiddenType::class)
+    ->add("firstname", TextType::class)
+    ->add("lastname", TextType::class)
     ->add("email", EmailType::class)
-    ->add("password", PasswordType::class)
-    ->add("submit", SubmitType::class, array("label" => "Login"))
+    ->add('password', PasswordType::class)
+    ->add('password_confirmation', PasswordType::class)
+    ->add('code', PasswordType::class)
+    ->add("submit", SubmitType::class, array("label" => "Create account"))
     ->getForm();
 
     $form->handleRequest($request);
 
-    if ($form->isValid())
-      return $this->getLoginData(json_encode(array("data" => array(
-        "login" => strtolower($form["email"]->getData()),
+    if ($form->isValid()) {
+      $token = $form["token"]->getData();
+
+      $code = $form["code"]->getData();
+      if ($code != "XP16")
+        return $this->onWrongCodeError($token);
+
+      if (strcmp($form["password"]->getData(), $form["password_confirmation"]->getData()) !== 0)
+        return $this->onPasswordMismatchError($token);
+
+      return $this->getUserData(json_encode(array("data" => array(
+        "token" => $token,
+        "firstname" => $form["firstname"]->getData(),
+        "lastname" => $form["lastname"]->getData(),
+        "email" => strtolower($form["email"]->getData()),
         "password" => $form["password"]->getData(),
-        "is_client" => false,
+        "is_client" => true,
         "mac" => null,
         "flag" => "web",
-        "device_name" => $browserData->parent))));        
+        "device_name" => $browserData->parent))), $token);
+    }
 
-    return $this->render("AppBundle:home:login.html.twig", array("form" => $form->createView()));   
+    return $this->render("AppBundle:home:register-customer.html.twig", array("form" => $form->createView()));   
   }
 
 }

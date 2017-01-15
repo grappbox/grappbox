@@ -21,6 +21,10 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
     notificationFactory.clear();
     if (error)
       notificationFactory.error();
+    $cookies.remove("G_LOGIN", { path: "/" });
+    $cookies.remove("G_TOKEN", { path: "/" });
+    $cookies.remove("G_ID", { path: "/" });
+    $cookies.remove("G_CUSTOMER", { path: "/" });
     $location.path("/");
     $rootScope.path.current = "/";
   };
@@ -38,6 +42,7 @@ app.factory("rootFactory", ["$base64", "$cookies", "$http", "localStorageService
       $cookies.put("G_LOGIN", $base64.encode("_denied"), { path: "/" });      
     $cookies.remove("G_TOKEN", { path: "/" });
     $cookies.remove("G_ID", { path: "/" });
+    $cookies.remove("G_CUSTOMER", { path: "/" });
     $window.location.href = "/login";
   };
 

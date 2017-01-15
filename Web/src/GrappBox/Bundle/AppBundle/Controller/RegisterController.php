@@ -66,6 +66,18 @@ class RegisterController extends Controller
 
 
   // Routine definition
+  // On wrong (or empty) access code behavior
+  private function onWrongCodeError()
+  {
+    $redirect = new RedirectResponse("/register/");
+    $redirect->headers->setCookie(new Cookie("G_LOGIN", base64_encode("_badcode"),
+      $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+
+    return $redirect;
+  }
+
+
+  // Routine definition
   // Get initial user data from GrappBox API
   private function getUserData($formData)
   {
@@ -97,6 +109,9 @@ class RegisterController extends Controller
 
         $redirect->headers->setCookie(new Cookie("G_ID", base64_encode($response["data"]["id"]),
           $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));
+
+        $redirect->headers->setCookie(new Cookie("G_CUSTOMER", base64_encode(($response["data"]["is_client"] == true ? "_true" : "_false")),
+          $this->cookies["time"], $this->cookies["base"], $this->cookies["domain"], $this->cookies["secure"], $this->cookies["httponly"]));        
         break;
 
         case "14.3.7":
@@ -133,12 +148,17 @@ class RegisterController extends Controller
     ->add('password', PasswordType::class)
     ->add('password_confirmation', PasswordType::class)
     ->add("birthday", BirthdayType::class, array("widget" => "single_text", "html5" => false, "required" => false))
+    ->add('code', PasswordType::class)    
     ->add("submit", SubmitType::class, array("label" => "Create account"))
     ->getForm();
 
     $form->handleRequest($request);
 
     if ($form->isValid()) {
+      $code = $form["code"]->getData();
+      if ($code != "XP16")
+        return $this->onWrongCodeError();
+
       if (strcmp($form["password"]->getData(), $form["password_confirmation"]->getData()) !== 0)
         return $this->onPasswordMismatchError();
 
