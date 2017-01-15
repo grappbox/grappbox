@@ -62,7 +62,7 @@ Item {
         property var sectionTitles: [   "Dashboard",
                                         "Calendar",
                                         "Cloud",
-                                        "Timeline",
+                                        "Talks",
                                         "Bug Tracker",
                                         "Tasks",
                                         "Gantt",
@@ -138,13 +138,6 @@ Item {
                         }
                     },
 
-
-                    Action {
-                        iconName: "action/language"
-                        name: "Language"
-                        visible: demo.selectedComponent != "Login"
-                    },
-
                     Action {
                         iconName: "action/account_circle"
                         name: "Accounts"
@@ -175,6 +168,8 @@ Item {
 
                         onTriggered: {
                             demo.selectedComponent = "Login"
+                            demo.navOpen = false
+                            page.actionBar.closeOverflowMenu()
                         }
                     }
 
@@ -277,11 +272,22 @@ Item {
 
                         height: Units.dp(60)
                         action: CircleImageAsync {
+                            id: imageUserMenu
                             anchors.verticalCenter: parent.verticalCenter
                             avatarDate: SDataManager.user.avatarDate
-                            avatarId: SDataManager.user.id
+                            avatarId: undefined
                             width: height
                             height: Units.dp(40)
+                        }
+
+                        function idChange()
+                        {
+                            console.log("NEW ID");
+                            imageUserMenu.avatarId = "user#" + SDataManager.user.id;
+                        }
+
+                        Component.onCompleted: {
+                            SDataManager.user.idChanged.connect(idChange)
                         }
 
                         text: SDataManager.user.firstName + " " + SDataManager.user.lastName

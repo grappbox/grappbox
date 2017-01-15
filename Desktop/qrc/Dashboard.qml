@@ -21,6 +21,10 @@ Item {
 
     DashboardModel {
         id: dashboardModel
+
+        onUserProjectListChanged: {
+            statDashboard.reload()
+        }
     }
 
     Flickable {
@@ -290,10 +294,18 @@ Item {
 
     }
 
+    Statistics {
+        id: statDashboard
+        anchors.fill: parent
+        visible: SDataManager.hasProject
+        dashboardMod: dashboardModel
+        activateModule: true
+    }
+
     Flickable {
 
         id: dashboardProjectFlick
-        visible: SDataManager.hasProject
+        visible: false
 
         anchors.fill: parent
 
@@ -613,19 +625,90 @@ Item {
     }
 
 
-    /*ActionButton {
+    ActionButton {
+        visible: SDataManager.hasProject
+
         anchors {
             right: parent.right
             bottom: parent.bottom
             margins: Units. dp(32)
         }
 
-        iconName: "content/add"
+        iconName: "action/view_quilt"
 
         onClicked: {
-            taskFormDialog.show()
+            dialogStatActivation.open()
         }
-    }*/
+    }
+
+    Dialog {
+        id: dialogStatActivation
+        title: "Set preference for dashboard"
+        positiveButtonText: "Ok"
+        negativeButton.visible: false
+        width: Units.dp(400)
+        height: Units.dp(600)
+        Repeater {
+            id: parameters
+            model: []
+            delegate: ListItem.Standard {
+                id: mainList
+                text: modelData
+                anchors.left: parent.left
+                anchors.right: parent.right
+
+                property string formatedName
+
+                action: CheckBox {
+                    id: chbx
+
+                    property bool first: false
+
+                    Component.onCompleted: {
+                        var newStr = modelData;
+                        while (newStr.indexOf(' ') !== -1)
+                            newStr = newStr.replace(" ", "");
+                        mainList.formatedName = newStr
+                        console.log(dashboardModel.activatedStat[formatedName]);
+                        if (dashboardModel.activatedStat[formatedName] !== undefined)
+                            chbx.checked = dashboardModel.activatedStat[formatedName]
+                        else
+                            chbx.checked = false
+                    }
+
+                    onCheckedChanged: {
+                        console.log(formatedName, " ", checked);
+                        if (checked)
+                            dashboardModel.activate(formatedName);
+                        else
+                            dashboardModel.disable(formatedName);
+                    }
+                }
+
+                onClicked: {
+                    chbx.checked = !chbx.checked
+                }
+            }
+        }
+
+        onAccepted: {
+            parameters.model = []
+            statDashboard.reload()
+        }
+
+        onOpened: {
+            parameters.model = ["Members", "Next event", "Total progression",
+                                "Progression curve", "Progression bar", "Number of late and done tasks by role",
+                                "Number of late and done tasks by users", "Days on the project",
+                                "Days remaining", "Number of client", "Number of client message",
+                                "Number of team message", "Cloud storage", "Number of tasks late",
+                                "Number of tasks done", "Number of tasks waiting", "Number of tasks in development",
+                                "Repartition of tasks", "Number of bugs created by client", "Number of bug assigned",
+                                "Number of opened bugs", "Number of opened bugs by time",
+                                "Repartition of bugs by tags", "Repartition of bugs by users",
+                                "Users charge repartition", "Users tasks state"]
+        }
+    }
 
     Scrollbar {
         flickableItem: dashboardFlick

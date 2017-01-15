@@ -138,14 +138,39 @@ Column {
                     wrapMode: Text.Wrap
                 }
 
-                Label {
-                    id: tokenUser
+                Item {
+                    width: parent.width * purcentWidth[1]
                     anchors.margins: Units. dp(8)
-                    width: parent.width * purcentWidth[0]
+                    height: nameUser.height
                     anchors.verticalCenter: parent.verticalCenter
-                    text: modelData.token
-                    style: "body1"
-                    wrapMode: Text.Wrap
+
+                    Label {
+                        id: tokenUser
+                        anchors.left: parent.left
+                        height: nameUser.height
+                        anchors.verticalCenter: parent.verticalCenter
+                        anchors.right: copyLinkClipboard.left
+                        text: "<a href=\"https://grappbox.com/register/customer?t=" + modelData.token + "\">Go to client registration</a>"
+                        style: "body1"
+
+
+                        onLinkActivated: {
+                            Qt.openUrlExternally(link)
+                        }
+                    }
+
+                    IconButton {
+                        id: copyLinkClipboard
+                        anchors.right: parent.right
+                        width: height
+                        anchors.verticalCenter: parent.verticalCenter
+
+                        iconName: "editor/insert_link"
+
+                        onClicked: {
+                            SaveInfoManager.setClipboard("https://grappbox.com/register/customer?=" + modelData.token);
+                        }
+                    }
                 }
 
                 Button {

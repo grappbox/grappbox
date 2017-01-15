@@ -25,6 +25,7 @@
 #include "StatisticsModel.h"
 #include "NotificationInfoData.h"
 #include "NotificationModel.h"
+#include "Manager/SaveInfoManager.h"
 
 #define GRAPPBOX_URL "GrappBoxController"
 #define MAJOR_VERSION 1
@@ -46,6 +47,14 @@ static QObject *qobject_infomanager_provider(QQmlEngine *engine, QJSEngine *scri
     return SInfoManager::GetManager();
 }
 
+static QObject *qobject_saveinfomanager_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    return SaveInfoManager::instance();
+}
+
 static QObject *qobject_dataimageprovider_provider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
@@ -54,9 +63,33 @@ static QObject *qobject_dataimageprovider_provider(QQmlEngine *engine, QJSEngine
     return DataImageProvider::getInstance();
 }
 
+void myMessageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+{
+    QString txt;
+    switch (type) {
+    case QtDebugMsg:
+        txt = QString("Debug: %1").arg(msg);
+        break;
+    case QtWarningMsg:
+        txt = QString("Warning: %1").arg(msg);
+    break;
+    case QtCriticalMsg:
+        txt = QString("Critical: %1").arg(msg);
+    break;
+    case QtFatalMsg:
+        txt = QString("Fatal: %1").arg(msg);
+    break;
+    }
+    QFile outFile("GrappBoxlog.txt");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    QTextStream ts(&outFile);
+    ts << txt << endl;
+}
+
 int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
+    //qInstallMessageHandler(myMessageHandler);
 
     LOG(QString("Initialized !"));
 
@@ -94,6 +127,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<API::SDataManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SDataManager", qobject_datamanager_provider);
     qmlRegisterSingletonType<SInfoManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SInfoManager", qobject_infomanager_provider);
     qmlRegisterSingletonType<DataImageProvider>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "DataImageProvider", qobject_dataimageprovider_provider);
+    qmlRegisterSingletonType<SaveInfoManager>(GRAPPBOX_URL, MAJOR_VERSION, MINOR_VERSION, "SaveInfoManager", qobject_saveinfomanager_provider);
 
     QQmlApplicationEngine engine;
     engine.addImportPath("modules/");

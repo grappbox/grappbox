@@ -566,10 +566,14 @@ Item {
                         textColor: Theme.primaryColor
                         onClicked: {
                             var avatar = "";
+                            console.log("Avatar id : ", avatarProject.avatarId);
                             if (avatarProject.avatarId.indexOf("tmp#") != -1)
                             {
+                                console.log("Get 64 based image");
                                 avatar = DataImageProvider.get64BasedImage(avatarProject.avatarId)
+                                console.log("Replace image by new");
                                 DataImageProvider.replaceImageFromTmp(avatarProject.avatarId, "user#" + user.id)
+                                console.log("New image replaced");
                             }
 
                             var oldPasswordVal = ""

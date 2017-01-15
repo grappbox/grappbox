@@ -12,6 +12,9 @@ import QtCharts 2.0
 Column {
     property StatisticsModel modelStat
 
+    property DashboardModel modelDash
+    property bool module
+
     anchors.left: parent.left
     anchors.right: parent.right
     spacing: Units.dp(10)
@@ -22,6 +25,7 @@ Column {
         spacing: Units.dp(10)
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberoftaskslate"]
             Layout.fillWidth: true
             text: "%1 tasks late".arg(modelStat.taskInfo.taskLate)
             subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
@@ -29,6 +33,7 @@ Column {
         }
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberoftasksdone"]
             Layout.fillWidth: true
             text: "%1 tasks done".arg(modelStat.taskInfo.taskDone)
             subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
@@ -42,6 +47,7 @@ Column {
         spacing: Units.dp(10)
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberoftaskswaiting"]
             Layout.fillWidth: true
             text: "%1 tasks waiting".arg(modelStat.taskInfo.taskToDo)
             subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
@@ -49,6 +55,7 @@ Column {
         }
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberoftasksindevelopment"]
             Layout.fillWidth: true
             text: "%1 tasks in development".arg(modelStat.taskInfo.taskDoing)
             subText: "On a total of %1 tasks".arg(modelStat.taskInfo.taskTotal)
@@ -57,6 +64,7 @@ Column {
     }
 
     StatisticsPie {
+        visible: !module || dashboardModel.activatedStat["Repartitionoftasks"]
         anchors.left: parent.left
         anchors.right: parent.right
         height: Units.dp(400)

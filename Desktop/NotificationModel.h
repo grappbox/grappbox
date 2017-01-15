@@ -10,6 +10,7 @@
 
 #define TIME_NOTIFICATION_UPDATE 5000
 #define LIMIT_UPDATE 15
+#define NOTIFICATION_OFFSET "notification_offset"
 
 class NotificationModel : public QObject
 {

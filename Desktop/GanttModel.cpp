@@ -1,5 +1,6 @@
 #include <QDebug>
 #include "GanttModel.h"
+#include "WhiteboardModel.h"
 
 GanttModel::GanttModel(QObject *parent) : QObject(parent)
 {
@@ -168,6 +169,111 @@ void GanttModel::addTask(QString title,
     END_REQUEST;
 }
 
+void GanttModel::editTask(int id,
+                          QString title,
+                          QString description,
+                          bool isMilestone,
+                          bool isContainer,
+                          int progression,
+                          QDateTime startDate,
+                          QDateTime endDate,
+                          QVariantMap users,
+                          QVariantMap dependencies,
+                          QVariantMap containedTasks,
+                          QVariantMap tags)
+{
+    BEGIN_REQUEST_ADV(this, "OnEditTaskDone", "OnEditTaskFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(id);
+        ADD_FIELD("title", title);
+        ADD_FIELD("description", description);
+        ADD_FIELD("is_milestone", isMilestone);
+        ADD_FIELD("is_container", isContainer);
+        ADD_FIELD("started_at", startDate.toString("yyyy-MM-dd hh:mm:ss"));
+        ADD_FIELD("due_date", endDate.toString("yyyy-MM-dd hh:mm:ss"));
+        ADD_FIELD("advance", progression);
+        if (tags["Add"].toList().length() > 0)
+        {
+            ADD_ARRAY("tagsAdd");
+            for (QVariant var : tags["Add"].toList())
+            {
+                ADD_FIELD_ARRAY(var.toInt(), "tagsAdd");
+            }
+        }
+        if (tags["Remove"].toList().length() > 0)
+        {
+            ADD_ARRAY("tagsRemove");
+            for (QVariant var : tags["Remove"].toList())
+            {
+                ADD_FIELD_ARRAY(var.toInt(), "tagsRemove");
+            }
+        }
+        if (containedTasks["Add"].toList().length() > 0)
+        {
+            ADD_ARRAY("tasksAdd");
+            for (QVariant var : containedTasks["Add"].toList())
+            {
+                ADD_FIELD_ARRAY(var.toInt(), "tasksAdd");
+            }
+        }
+        if (containedTasks["Remove"].toList().length() > 0)
+        {
+            ADD_ARRAY("tasksRemove");
+            for (QVariant var : containedTasks["Remove"].toList())
+            {
+                ADD_FIELD_ARRAY(var.toInt(), "tasksRemove");
+            }
+        }
+        if (users["Add"].toList().length() > 0)
+        {
+            ADD_ARRAY("usersAdd");
+            for (QVariant var : users["Add"].toList())
+            {
+                ADD_FIELD_ARRAY(WhiteboardData::JSToJson(var.toMap()), "usersAdd");
+            }
+        }
+        if (users["Remove"].toList().length() > 0)
+        {
+            ADD_ARRAY("usersRemove");
+            for (QVariant var : users["Remove"].toList())
+            {
+                ADD_FIELD_ARRAY(WhiteboardData::JSToJson(var.toMap()), "usersRemove");
+            }
+        }
+        if (dependencies["Add"].toList().length() > 0)
+        {
+            ADD_ARRAY("dependencies");
+            for (QVariant var : dependencies["Add"].toList())
+            {
+                ADD_FIELD_ARRAY(WhiteboardData::JSToJson(var.toMap()), "dependencies");
+            }
+        }
+        if (dependencies["Remove"].toList().length() > 0)
+        {
+            ADD_ARRAY("dependenciesRemove");
+            for (QVariant var : dependencies["Remove"].toList())
+            {
+                ADD_FIELD_ARRAY(WhiteboardData::JSToJson(var.toMap()), "dependenciesRemove");
+            }
+        }
+        GENERATE_JSON_DEBUG;
+        PUT(API::DP_TASK, API::PUTR_EDIT_TASK);
+    }
+    END_REQUEST;
+}
+
+void GanttModel::deleteTask(int id)
+{
+    BEGIN_REQUEST_ADV(this, "OnEditTaskDone", "OnEditTaskFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(id);
+        DELETE_REQ(API::DP_TASK, API::DR_DELETE_TASK);
+    }
+    END_REQUEST;
+}
+
 void GanttModel::OnLoadTaskDone(int id, QByteArray data)
 {
     QJsonDocument doc;
@@ -310,6 +416,7 @@ void GanttModel::OnRemoveTagFail(int id, QByteArray data)
 void GanttModel::OnAddTaskDone(int id, QByteArray data)
 {
     Q_UNUSED(id)
+    Q_UNUSED(data)
     loadTasks();
 }
 
@@ -318,4 +425,18 @@ void GanttModel::OnAddTaskFail(int id, QByteArray data)
     Q_UNUSED(id)
     Q_UNUSED(data)
     emit error("Project task error", "Unable to add tasks.");
+}
+
+void GanttModel::OnEditTaskDone(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    loadTasks();
+}
+
+void GanttModel::OnEditTaskFail(int id, QByteArray data)
+{
+    Q_UNUSED(id)
+    Q_UNUSED(data)
+    emit error("Project task error", "Unable to edit task.");
 }

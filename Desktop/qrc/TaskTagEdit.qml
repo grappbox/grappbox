@@ -200,10 +200,17 @@ View {
             id: repeater
             model: []
             delegate: Button {
+                id: buttonAPI
                 text: modelData.name
                 elevation: 1
                 textColor: "#FFF"
                 backgroundColor: modelData.color
+                visible: toRemove.indexOf(modelData.id) === -1
+                onClicked: {
+                    tagEdit.tagId = modelData.id
+                    tagEdit.tagTmp = false
+                    tagEdit.open()
+                }
             }
         }
 
@@ -211,10 +218,17 @@ View {
             id: repeaterAdded
             model: toAdd
             delegate: Button {
+                id: buttonAdded
                 text: modelData.name
                 elevation: 1
                 textColor: "#FFF"
                 backgroundColor: modelData.color
+
+                onClicked: {
+                    tagEdit.tagId = index
+                    tagEdit.tagTmp = true
+                    tagEdit.open()
+                }
             }
         }
 
@@ -225,5 +239,47 @@ View {
                 addTagDialog.show()
             }
         }
+    }
+
+    BottomActionSheet {
+        id: tagEdit
+
+        title: "Action"
+        property var tagId
+        property bool tagTmp
+
+        actions: [
+            Action {
+                iconName: "action/delete"
+                name: "Delete from task"
+                onTriggered: {
+                    if (tagEdit.tagTmp)
+                    {
+                        console.log("Remove tmp tag ", tagEdit.tagId)
+                        var array = toAdd
+                        array.splice(tagEdit.tagId, 1)
+                        toAdd = array
+                        repeaterAdded.model = toAdd
+                    }
+                    else
+                    {
+                        console.log("Remove api tag ", tagEdit.tagId)
+                        toRemove.push(tagEdit.tagId)
+                        var tmpArray = repeater.model
+                        repeater.model = []
+                        repeater.model = tmpArray
+                    }
+                }
+            },
+            Action {
+                iconName: "action/delete"
+                name: "Delete permanently"
+
+                onTriggered: {
+                    bugModel.removeTags(tagEdit.assignedTag.id)
+                }
+            }
+
+        ]
     }
 }

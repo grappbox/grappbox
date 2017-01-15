@@ -9,6 +9,8 @@ import GrappBoxController 1.0
 import QtQuick.Controls.Styles 1.3 as Styles
 
 Item {
+    id: itemMain
+
     property var mouseCursor
     property var args: -1
 
@@ -26,6 +28,10 @@ Item {
 
     ProjectSettingsModel {
         id: projectSettingsModel
+
+        onHasToQuitProject: {
+            itemMain.parent.loadPage("Dashboard", [])
+        }
     }
 
     Flickable {

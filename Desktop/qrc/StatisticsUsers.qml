@@ -14,11 +14,15 @@ Column {
     anchors.right: parent.right
     spacing: Units.dp(10)
 
+    property DashboardModel modelDash
+    property bool module
+
     property StatisticsModel modelStat
 
     Repeater {
         model: modelStat.userInfo.workingCharge
         delegate: ListItem.Subtitled {
+            visible: !module || dashboardModel.activatedStat["Userschargerepartition"]
             elevation: 1
             anchors.left: parent.left
             anchors.right: parent.right
@@ -55,6 +59,7 @@ Column {
     }
 
     StatisticsBarStacked {
+        visible: !module || dashboardModel.activatedStat["Userstasksstate"]
         anchors.left: parent.left
         anchors.right: parent.right
         height: Units.dp(400)

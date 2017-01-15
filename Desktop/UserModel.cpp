@@ -24,6 +24,7 @@ void UserModel::getUserModel()
 
 void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPassword, QString avatar)
 {
+    qDebug() << avatar;
     BEGIN_REQUEST;
     {
         SET_CALL_OBJECT(this);
@@ -35,7 +36,7 @@ void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPas
         ADD_FIELD("birthday", user->birthday().toString("yyyy-MM-dd"));
         if (oldPassword != "" && newPassword != "")
         {
-            // Add here the old password.
+            ADD_FIELD("oldPassword", oldPassword);
             ADD_FIELD("password", newPassword);
         }
         if (avatar != "")
@@ -45,6 +46,7 @@ void UserModel::setUserModel(UserData *user, QString oldPassword, QString newPas
         ADD_FIELD("linkedin", user->linkedin());
         ADD_FIELD("twitter", user->twitter());
         ADD_FIELD("viadeo", user->viadeo());
+        GENERATE_JSON_DEBUG;
         PUT(API::DP_USER_DATA, API::PUTR_USERSETTINGS);
     }
     END_REQUEST;

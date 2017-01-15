@@ -60,19 +60,19 @@ Item {
             anchors.fill: parent
         }
 
-        Image {
+        /*Image {
             id: background
             source: Qt.resolvedUrl("qrc:/images/qrc/images/circle.png");
             anchors.fill: parent
             anchors.margins: iconMiddle.anchors.margins
             averageColor: Theme.accentColor
-        }
+        }*/
 
-        ColorOverlay {
+        /*ColorOverlay {
             anchors.fill: background
             source: background
             color: Theme.primaryColor
-        }
+        }*/
 
         CircleImageAsync {
             id: iconMiddle

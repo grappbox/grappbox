@@ -77,6 +77,42 @@ void StatisticsModel::UpdateProject(QJsonObject obj)
     }
     m_projectInfo["userLate"] = userList;
     m_projectInfo["roleLate"] = roleList;
+    QVariantList categoriesAdv;
+    QVariantList valuesAdv;
+    QVariantList progessAdv;
+    QDateTime lastDate;
+    int x = 1;
+    for (QJsonValueRef ref : obj["projectAdvancement"].toArray())
+    {
+        QJsonObject item = ref.toObject();
+        QDateTime date = JSON_TO_DATETIME(item["date"].toString());
+        lastDate = date;
+        if (categoriesAdv.length() == 0)
+        {
+            QDateTime tmpDate = date;
+            tmpDate = tmpDate.addMonths(-1);
+            categoriesAdv.append(tmpDate.toString("yyyy-MM-dd"));
+        }
+        categoriesAdv.append(date.toString("yyyy-MM-dd"));
+        {
+            QVariantMap tmpMap;
+            tmpMap["label"] = categoriesAdv[categoriesAdv.length()-1].toString();
+            tmpMap["value"] = (float)(item["progress"].toInt()) + 0.1f;
+            progessAdv.push_back(tmpMap);
+        }
+        {
+            QVariantMap tmpMap;
+            tmpMap["x"] = x;
+            tmpMap["value"] = (float)(item["percentage"].toInt()) + 0.1f;
+            valuesAdv.push_back(tmpMap);
+        }
+    }
+    QDateTime tmpDate = lastDate;
+    tmpDate = tmpDate.addMonths(1);
+    categoriesAdv.append(tmpDate.toString("yyyy-MM-dd"));
+    m_projectInfo["progressionDone"] = valuesAdv;
+    m_projectInfo["progressionTime"] = progessAdv;
+    m_projectInfo["categoriesProgression"] = categoriesAdv;
     projectInfoChanged(m_projectInfo);
 }
 
@@ -135,7 +171,7 @@ void StatisticsModel::UpdateBugTracker(QJsonObject obj)
         tmpList.push_back(item["createdBugs"].toInt());
         tmpList.push_back(item["closedBugs"].toInt());
 
-        bugEvolution[JSON_TO_DATETIME(item["date"].toObject()["date"].toString()).toString("MMMM yyyy")] = tmpList;
+        bugEvolution[JSON_TO_DATETIME(item["date"].toString()).toString("MMMM yyyy")] = tmpList;
     }
     QVariantList bugList;
     for (QMap<QString, QVariantList>::iterator it = bugEvolution.begin(); it != bugEvolution.end(); ++it)

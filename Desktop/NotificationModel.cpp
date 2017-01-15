@@ -1,21 +1,19 @@
 #include "NotificationInfoData.h"
 #include "NotificationModel.h"
+#include "Manager/SaveInfoManager.h"
 
 NotificationModel::NotificationModel(QObject *parent) : QObject(parent)
 {
     _timer = new QTimer();
     QObject::connect(_timer, SIGNAL(timeout()), this, SLOT(updateNotification()));
     _timer->start(TIME_NOTIFICATION_UPDATE);
-    qDebug() << "Initialized";
-    currentOffset = 0;
 }
 
 void NotificationModel::updateNotification()
 {
-    qDebug() << "Request sent";
     if (USER_TOKEN == "")
         return;
-    qDebug() << "Token not null";
+    currentOffset = SaveInfoManager::get(NOTIFICATION_OFFSET).toInt();
     BEGIN_REQUEST_ADV(this, "OnUpdateDone", "OnUpdateFail");
     {
         ADD_HEADER_FIELD("Authorization", USER_TOKEN);
@@ -32,7 +30,8 @@ void NotificationModel::OnUpdateDone(int id, QByteArray array)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
-    currentOffset += obj["array"].toArray().size();
+    currentOffset += obj["array"].toArray().size() - LIMIT_UPDATE;
+    SaveInfoManager::set(NOTIFICATION_OFFSET, QVariant(currentOffset));
     for (QJsonValueRef ref : obj["array"].toArray())
     {
         if (ref.toObject()["message"].toString().startsWith("{"))

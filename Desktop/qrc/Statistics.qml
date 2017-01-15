@@ -11,27 +11,29 @@ import QtCharts 2.0
 
 Item {
     property var mouseCursor
+    property var dashboardMod
+    property bool activateModule: false
 
     function finishedLoad() {
     }
 
     property var colorsUsed: ["#F44336", "#E91E63", "#9C27B0", "#673AB7", "#3F51B5", "#2196F3", "#03A9F4", "#00BCD4", "#009688", "#4CAF50", "#8BC34A", "#CDDC39", "#FFEB3B", "#FFC107", "#FF9800", "#FF5722", "#795548", "#607D8B"]
 
+    function reload() {
+        modelSt.updateStatisticsInfo();
+        loader.sourceComponent = undefined
+        loader.sourceComponent = statistics
+    }
+
     StatisticsModel {
         id: modelSt
 
         Component.onCompleted: {
-            updateStatisticsInfo();
+            if (!activateModule)
+                updateStatisticsInfo();
         }
 
         onLoaded: {
-            console.log(bugTrackerInfo.bugsTagsRepartition)
-            for (var item in bugTrackerInfo.bugsTagsRepartition)
-            {
-                console.log(bugTrackerInfo.bugsTagsRepartition[item].label);
-                console.log(bugTrackerInfo.bugsTagsRepartition[item].value);
-            }
-
             loader.sourceComponent = statistics
         }
     }
@@ -62,62 +64,81 @@ Item {
                     spacing: Units.dp(10)
 
                     StatisticsCategoryName {
+                        id: projectCategory
                         colorIcon: "#FC575E"
                         iconName: "action/dashboard"
                         categoryName: "Project"
+                        visible: !activateModule
                     }
 
                     StatisticsProject
                     {
                         modelStat: modelSt
+                        dashboardModel: dashboardMod
+                        module: activateModule
                     }
 
                     Item {
                         height: Units.dp(32)
                         width: parent.width
+                        visible: projectCategory.visible
                     }
 
                     StatisticsCategoryName {
+                        id: taskCategory
                         colorIcon: "#44BBFF"
                         iconName: "action/view_list"
                         categoryName: "Tasks"
+                        visible: !activateModule
                     }
 
                     StatisticsTasks
                     {
                         modelStat: modelSt
+                        modelDash: dashboardMod
+                        module: activateModule
                     }
 
                     Item {
                         height: Units.dp(32)
                         width: parent.width
+                        visible: taskCategory.visible
                     }
 
                     StatisticsCategoryName {
+                        id: bugTrackerCategory
                         colorIcon: "#9E58DC"
                         iconName: "action/bug_report"
                         categoryName: "BugTracker"
+                        visible: !activateModule
                     }
 
                     StatisticsBugTracker
                     {
                         modelState: modelSt
+                        modelDash: dashboardMod
+                        module: activateModule
                     }
 
                     Item {
                         height: Units.dp(32)
                         width: parent.width
+                        visible: bugTrackerCategory.visible
                     }
 
                     StatisticsCategoryName {
+                        id: userCategory
                         colorIcon: "#FC575E"
                         iconName: "action/account_circle"
                         categoryName: "Users"
+                        visible: !activateModule
                     }
 
                     StatisticsUsers
                     {
                         modelStat: modelSt
+                        modelDash: dashboardMod
+                        module: activateModule
                     }
 
                 }

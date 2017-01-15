@@ -120,7 +120,8 @@ namespace API
         DR_REMOVE_TAG_TO_BUG,
         DR_DELETE_COMMENT_TIMELINE,
         DR_DELETE_WHITEBOARD,
-        DR_DELETE_OBJECT
+        DR_DELETE_OBJECT,
+        DR_DELETE_TASK
     };
 
     enum PutRequest
@@ -142,7 +143,8 @@ namespace API
         PUTR_ROLE,
         PUTR_SET_EVENT_PARTICIPANT,
         PUTR_PUSH_WHITEBOARD,
-        PUTR_CLOSE_WHITEBOARD
+        PUTR_CLOSE_WHITEBOARD,
+        PUTR_EDIT_TASK
     };
 
 	enum RequestType

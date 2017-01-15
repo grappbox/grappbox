@@ -32,6 +32,7 @@ Column {
 
         onAccepted: {
             confirmation.text = ""
+            projectSettingsModel.deleteProject()
         }
 
         onRejected: {
@@ -40,6 +41,38 @@ Column {
 
         Component.onCompleted: {
             positiveButton.enabled = Qt.binding(function() { return confirmation.text == "DELETE" })
+        }
+    }
+
+    Dialog {
+        id: leaveProjectConfirmation
+        title: ""
+        text: "Enter LEAVE in the input and press OK to leave the project"
+
+        TextField {
+            id: confirmationL
+            anchors.left: parent.left
+            anchors.right: parent.right
+            placeholderText: "Deletion confirmation"
+            hasError: text != "" && text != "DELETE"
+        }
+
+        hasActions: true
+
+        positiveButtonText: "OK"
+        negativeButtonText: "DISCARD"
+
+        onAccepted: {
+            confirmationL.text = ""
+            projectSettingsModel.leaveProject()
+        }
+
+        onRejected: {
+            confirmationL.text = ""
+        }
+
+        Component.onCompleted: {
+            positiveButton.enabled = Qt.binding(function() { return confirmationL.text == "LEAVE" })
         }
     }
 
@@ -142,7 +175,7 @@ Column {
         backgroundColor: Theme.primaryColor
         textColor: Theme.dark.textColor
         elevation: 1
-        enabled: false
+        enabled: true
 
         onClicked: deleteProjectConfirmation.show()
     }
@@ -166,7 +199,8 @@ Column {
         backgroundColor: Theme.primaryColor
         textColor: Theme.dark.textColor
         elevation: 1
-        enabled: false
+        enabled: true
+        onClicked: leaveProjectConfirmation.show()
     }
 }
 

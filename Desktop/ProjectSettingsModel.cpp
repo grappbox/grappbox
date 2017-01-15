@@ -204,12 +204,25 @@ void ProjectSettingsModel::changePassword(QString oldPass, QString newPass)
 
 void ProjectSettingsModel::leaveProject()
 {
-
+    BEGIN_REQUEST_ADV(this, "onLeaveProjectDone", "onLeaveProjectFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_idProject);
+        ADD_URL_FIELD(API::SDataManager::GetDataManager()->user()->id());
+        DELETE_REQ(API::DP_PROJECT, API::DR_PROJECT_USER);
+    }
+    END_REQUEST;
 }
 
 void ProjectSettingsModel::deleteProject()
 {
-
+    BEGIN_REQUEST_ADV(this, "onDeleteProjectDone", "onDeleteProjectFail");
+    {
+        ADD_HEADER_FIELD("Authorization", USER_TOKEN);
+        ADD_URL_FIELD(m_idProject);
+        DELETE_REQ(API::DP_PROJECT, API::DP_PROJECT);
+    }
+    END_REQUEST;
 }
 
 void ProjectSettingsModel::onLoadProjectInfoDone(int id, QByteArray data)
@@ -329,6 +342,7 @@ void ProjectSettingsModel::onLoadCustomerAccessDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     QList<int> idToKeep;
+    SHOW_JSON(data);
     for (QJsonValueRef ref : obj["array"].toArray())
     {
         QJsonObject item = ref.toObject();
@@ -613,4 +627,24 @@ void ProjectSettingsModel::onUpdateRoleFail(int id, QByteArray data)
 	Q_UNUSED(id)
 	Q_UNUSED(data)
     SInfoManager::GetManager()->emitError("Project settings", "Somethings went wrong. Maybe you don't have the access to this part or this action.");
+}
+
+void ProjectSettingsModel::onLeaveProjectDone(int id, QByteArray data)
+{
+    emit hasToQuitProject();
+}
+
+void ProjectSettingsModel::onLeaveProjectFail(int id, QByteArray data)
+{
+
+}
+
+void ProjectSettingsModel::onDeleteProjectDone(int id, QByteArray data)
+{
+    emit hasToQuitProject();
+}
+
+void ProjectSettingsModel::onDeleteProjectFail(int id, QByteArray data)
+{
+
 }

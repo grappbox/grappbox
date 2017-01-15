@@ -26,7 +26,8 @@ SOURCES += main.cpp \
     WhiteboardModel.cpp \
     StatisticsModel.cpp \
     NotificationModel.cpp \
-    NotificationInfoData.cpp
+    NotificationInfoData.cpp \
+    Manager/SaveInfoManager.cpp
 
 RESOURCES += qml.qrc \
     images.qrc \
@@ -71,7 +72,8 @@ HEADERS += \
     WhiteboardModel.h \
     StatisticsModel.h \
     NotificationModel.h \
-    NotificationInfoData.h
+    NotificationInfoData.h \
+    Manager/SaveInfoManager.h
 
 RCC_DIR = qrc
 

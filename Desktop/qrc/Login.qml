@@ -48,6 +48,17 @@ Item {
         anchors.horizontalCenter: parent.horizontalCenter
         elevation: 1
 
+        opacity: 0
+        Component.onCompleted: {
+            opacity = 1
+        }
+
+        Behavior on opacity {
+            NumberAnimation {
+                duration: 200
+            }
+        }
+
         Rectangle {
             id: titleBlack
             anchors.top: parent.top
@@ -123,7 +134,7 @@ Item {
                 anchors.right: parent.right
                 height: 45
                 enabled: !loginItem.isLoading
-                text: "nadeau_l"
+                text: "test"
             }
 
             Button {
@@ -156,7 +167,11 @@ Item {
             anchors.fill: parent
             verticalAlignment: Text.AlignVCenter
             horizontalAlignment: Text.AlignHCenter
-            text: "New to GrappBox ? <a href=\"grappbox.com/register\">Create an account</a>"
+            text: "<html>New to GrappBox ? <a href=\"http://grappbox.com/register\">Create an account</a></html>"
+
+            onLinkActivated: {
+                Qt.openUrlExternally(link)
+            }
         }
     }
 

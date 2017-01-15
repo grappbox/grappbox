@@ -51,6 +51,7 @@ public:
         m_endDate = JSON_TO_DATETIME(obj["endDate"].toString());
         m_createdAt = JSON_TO_DATETIME(obj["createdAt"].toString());
         m_editedAt = JSON_TO_DATETIME(obj["editedAt"].toString());
+        QList<int> usersIds;
         if (obj.contains("users"))
         {
             for (QJsonValueRef ref : obj["users"].toArray())
@@ -58,6 +59,7 @@ public:
                 QJsonObject objUser = ref.toObject();
                 UserData *newUser = nullptr;
                 bool add = true;
+                usersIds.push_back(objUser["id"].toInt());
                 for (UserData *itemU : m_users)
                 {
                     if (itemU->id() == objUser["id"].toInt())
@@ -76,6 +78,14 @@ public:
                     m_users.push_back(newUser);
             }
         }
+        QList<UserData*> usersToDelete;
+        for (UserData* item : m_users)
+        {
+            if (!usersIds.contains(item->id()))
+                usersToDelete.push_back(item);
+        }
+        for (UserData* item : usersToDelete)
+            m_users.removeAll(item);
         usersChanged(users());
         creatorChanged(creator());
         idChanged(id());

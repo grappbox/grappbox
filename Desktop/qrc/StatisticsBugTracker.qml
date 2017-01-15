@@ -13,6 +13,9 @@ Column {
 
     property StatisticsModel modelState
 
+    property DashboardModel modelDash
+    property bool module
+
     anchors.left: parent.left
     anchors.right: parent.right
     spacing: Units.dp(10)
@@ -23,6 +26,7 @@ Column {
         spacing: Units.dp(10)
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberofbugscreatedbyclient"]
             Layout.fillWidth: true
             text: "%1 bugs created by clients.".arg(modelState.bugTrackerInfo.clientBug)
             subText: "On a total of %1 bugs".arg(modelState.bugTrackerInfo.totalBug)
@@ -30,6 +34,7 @@ Column {
         }
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberofbugassigned"]
             Layout.fillWidth: true
             text: "%1 assigned bugs and %2 not assigned bugs".arg(modelState.bugTrackerInfo.assignedBug).arg(modelState.bugTrackerInfo.unassignedBug)
             subText: "On a total of %1 bugs".arg(modelState.bugTrackerInfo.totalBug)
@@ -37,6 +42,7 @@ Column {
         }
 
         StatisticsField {
+            visible: !module || dashboardModel.activatedStat["Numberofopenedbugs"]
             Layout.fillWidth: true
             text: "%1 opened bugs and %2 closed bugs".arg(modelState.bugTrackerInfo.openBug).arg(modelState.bugTrackerInfo.closeBug)
             icon: "action/query_builder"
@@ -44,6 +50,7 @@ Column {
     }
 
     StatisticsBar {
+        visible: !module || dashboardModel.activatedStat["Numberofopenedbugsbytime"]
         anchors.left: parent.left
         anchors.right: parent.right
         height: Units.dp(400)
@@ -57,12 +64,16 @@ Column {
     }
 
     RowLayout {
-        height: Units.dp(400)
         anchors.left: parent.left
         anchors.right: parent.right
         spacing: Units.dp(10)
 
+        height: (repartitionBugTags.visible || repartitionBugUsers.visible) ? Units.dp(400) : 0
+
+
         StatisticsPie {
+            id: repartitionBugTags
+            visible: !module || dashboardModel.activatedStat["Repartitionofbugsbytags"]
             Layout.fillWidth: true
             Layout.fillHeight: true
             height: parent.height
@@ -73,6 +84,8 @@ Column {
         }
 
         StatisticsPie {
+            id: repartitionBugUsers
+            visible: !module || dashboardModel.activatedStat["Repartitionofbugsbyusers"]
             Layout.fillWidth: true
             Layout.fillHeight: true
             height: parent.height

@@ -144,7 +144,7 @@ Item {
                     title: modelData.title
                     description: modelData.message
                     information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
-                    avatarId: modelData.associatedUser.id
+                    avatarId: "user#" + modelData.associatedUser.id
                     avatarDate: modelData.associatedUser.avatarDate
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
@@ -157,6 +157,10 @@ Item {
                         commentary.messageData = modelData
                         modelTimeline.loadComments(true, modelData.id)
                         openedCommentary = true
+                    }
+
+                    Component.onCompleted: {
+                        console.log(modelData.associatedUser.id);
                     }
                 }
             }
@@ -235,7 +239,7 @@ Item {
                     title: modelData.title
                     description: modelData.message
                     information: "By " + modelData.associatedUser.firstName + " - " + Qt.formatDateTime(modelData.lastEdit, "dddd, MMMM dd - hh:mm AP")
-                    avatarId: modelData.associatedUser.id
+                    avatarId: "user#" + modelData.associatedUser.id
                     avatarDate: modelData.associatedUser.avatarDate
                     onRight: index % 2 == 0
                     large: parent.width >= 1170
@@ -248,6 +252,10 @@ Item {
                         commentary.messageData = modelData
                         modelTimeline.loadComments(false, modelData.id)
                         openedCommentary = true
+                    }
+
+                    Component.onCompleted: {
+                        console.log(modelData.associatedUser.id);
                     }
                 }
             }

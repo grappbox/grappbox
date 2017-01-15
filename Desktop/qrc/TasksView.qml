@@ -28,7 +28,7 @@ Column {
 
     Item {
 
-        height: Math.max(createTask.height, filters.height)
+        height: createTask.height + Units.dp(16)
         anchors.left: parent.left
         anchors.right: parent.right
 
@@ -37,7 +37,7 @@ Column {
             anchors.left: parent.left
             anchors.verticalCenter: parent.verticalCenter
             text: "Create a task"
-            backgroundColor: Theme.primaryColor
+            backgroundColor: "#44BBFF"
             textColor: Theme.dark.textColor
 
             onClicked: {
@@ -45,7 +45,7 @@ Column {
             }
         }
 
-        Label {
+        /*Label {
             text: "Filters : "
             anchors.verticalCenter: parent.verticalCenter
             anchors.right: filters.left
@@ -59,7 +59,7 @@ Column {
             anchors.verticalCenter: parent.verticalCenter
             width: Units.dp(256)
             model: ["To do", "Doing", "Done", "Containers", "Milestone"]
-        }
+        }*/
     }
 
     Item {

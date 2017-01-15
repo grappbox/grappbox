@@ -10,28 +10,37 @@ CircleImage {
 
     property bool isConnected: false
 
-    function onLoaded(id) {
+    function onLoaded(id, url) {
         if (id === avatarId)
         {
-            source = "image://api/" + avatarId
+            console.log("LOADED IMAGE for ", url)
+            source = url
             DataImageProvider.changed.disconnect(onLoaded)
         }
     }
 
+
     function loadParameters() {
+        console.log("Starting load parameters (", isConnected, ")");
         if (avatarId === undefined)
             return
-        if (avatarDate != undefined && DataImageProvider.isDataIdLoaded(avatarId, avatarDate))
-            source = "image://api/" + avatarId
-        else if (!isConnected)
+        console.log("Load parameters ok");
+        if (!isConnected)
         {
+            console.log("Data id is not loaded");
             isConnected = true
             console.log("Connect callback")
             DataImageProvider.changed.connect(onLoaded)
+            DataImageProvider.loadDataFromId(avatarId)
         }
+        else
+            console.warn("No possibility to load image.");
     }
 
-    onAvatarIdChanged: loadParameters()
+    onAvatarIdChanged: {
+        isConnected = false
+        loadParameters()
+    }
 
     Component.onCompleted: loadParameters()
 }

@@ -57,6 +57,7 @@ namespace API
 		QMap<int, QString> _DeleteMap;
 
 	private:
+        QJsonValue GetObjectFromVariant(QVariant var);
 		QJsonObject ParseMap(QMap<QString, QVariant> &data);
 
 	private:

@@ -1,11 +1,28 @@
 #include "DashboardModel.h"
 #include "Manager/SInfoManager.h"
+#include "Manager/SaveInfoManager.h"
+#include "API/SDataManager.h"
 
 DashboardModel::DashboardModel() : QObject(nullptr)
 {
     m_isLoading[0] = false;
     m_isLoading[1] = false;
     m_isLoading[2] = false;
+
+}
+
+void DashboardModel::activate(QString name)
+{
+    m_activatedStat[name] = QVariant(true);
+    SaveInfoManager::set(QVariant(PROJECT).toString() + "/" + name, QVariant(true));
+    activatedStatChanged(activatedStat());
+}
+
+void DashboardModel::disable(QString name)
+{
+    m_activatedStat[name] = QVariant(false);
+    SaveInfoManager::set(QVariant(PROJECT).toString() + "/" + name, QVariant(false));
+    activatedStatChanged(activatedStat());
 }
 
 void DashboardModel::loadProjectList()
@@ -62,6 +79,46 @@ void DashboardModel::selectProject(ProjectData *project)
     m_newEventList.clear();
     loadUserProjectList();
     loadNewEventList();
+    QString stat[] = {"Members", "Next event", "Total progression",
+            "Progression curve", "Progression bar", "Number of late and done tasks by role",
+            "Number of late and done tasks by users", "Days on the project",
+            "Days remaining", "Number of client", "Number of client message",
+            "Number of team message", "Cloud storage", "Number of tasks late",
+            "Number of tasks done", "Number of tasks waiting", "Number of tasks in development",
+            "Repartition of tasks", "Number of bugs created by client", "Number of bug assigned",
+            "Number of opened bugs", "Number of opened bugs by time",
+            "Repartition of bugs by tags", "Repartition of bugs by users",
+            "Users charge repartition", "Users tasks state"};
+    bool hasToUpdate = false;
+    for (QString item : stat)
+    {
+        if (!SaveInfoManager::has(QVariant(PROJECT).toString() + "/" + item.replace(" ", "")))
+        {
+            qDebug() << "HAS TO UPDATE : " << item;
+            hasToUpdate = true;
+            break;
+        }
+    }
+    if (hasToUpdate)
+    {
+        int min = 0;
+        for (QString item : stat)
+        {
+            if (min < 2)
+                activate(item.replace(" ", ""));
+            else
+                disable(item.replace(" ", ""));
+            min++;
+        }
+    }
+    else
+    {
+        for (QString item : stat)
+        {
+            m_activatedStat[item.replace(" ", "")] = SaveInfoManager::get(QVariant(PROJECT).toString() + "/" + item.replace(" ", ""), QVariant(false));
+        }
+    }
+    activatedStatChanged(activatedStat());
 }
 
 void DashboardModel::addANewProject(ProjectData *project, QString securedPassword)

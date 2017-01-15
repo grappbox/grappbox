@@ -89,7 +89,7 @@ Item {
                         width: 48
                         height: 48
 
-                        avatarId: messageData.associatedUser ? messageData.associatedUser.id : undefined
+                        avatarId: messageData.associatedUser ? ("user#" + messageData.associatedUser.id) : undefined
                         avatarDate: messageData.associatedUser ? messageData.associatedUser.avatarDate : undefined
 
                         anchors.left: parent.left
@@ -326,7 +326,7 @@ Item {
                             anchors.left: parent.left
                             anchors.top: parent.top
 
-                            avatarId: modelData.associatedUser.id
+                            avatarId: "user#" + modelData.associatedUser.id
                             avatarDate: modelData.associatedUser.avatarDate
 
                             height: Units. dp(48)

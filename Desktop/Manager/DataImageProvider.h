@@ -14,7 +14,6 @@ struct DataImage
     bool isLoaded;
     bool isDeprectated;
     bool isWaiting;
-    QDateTime time;
     QPixmap pixmap;
 
     DataImage(QPixmap __pixmap)
@@ -33,14 +32,14 @@ public:
     QPixmap requestPixmap(const QString &id, QSize *size, const QSize &requestedSize);
 
 public:
-    Q_INVOKABLE bool isDataIdLoaded(QString id, QDateTime time);
+    Q_INVOKABLE bool isDataIdLoaded(QString id);
     Q_INVOKABLE QString loadNewDataImage(QString url);
     Q_INVOKABLE QString get64BasedImage(QString url);
     Q_INVOKABLE void replaceImageFromTmp(QString tmp, QString idImage);
-    void loadDataFromId(QString id, QDateTime time);
+    Q_INVOKABLE void loadDataFromId(QString id);
 
 signals:
-    void changed(QString id); // user#id project#id
+    void changed(QString id, QString url); // user#id project#id
 
 public slots:
     void onAvatarUserDone(int id, QByteArray data);
@@ -51,13 +50,13 @@ public slots:
 private:
     DataImageProvider();
 
-    void callAPI(QString id, QDateTime time);
+    void callAPI(QString id);
 
     QPixmap _AvatarDefault;
     QPixmap _ImageDefault;
     QMap<QString, DataImage*> _Pixmap;
     QMap<int, QString> _LoadingImages;
-    QMap<int, QDateTime> _LoadingTimes;
+    QMap<QString, QString> _LoadedImages;
     QList<QPixmap*> _TmpImage;
 };
 

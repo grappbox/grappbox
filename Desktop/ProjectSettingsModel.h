@@ -114,8 +114,7 @@ class CustomerAccessData : public QObject
 public:
     explicit CustomerAccessData(QObject *parent = 0)
     {
-    Q_UNUSED(parent)
-
+        Q_UNUSED(parent)
     }
 
     CustomerAccessData(QJsonObject obj)
@@ -127,7 +126,7 @@ public:
     {
         m_id = obj["id"].toInt();
         m_name = obj["name"].toString();
-        m_token = obj["customer_token"].toString();
+        m_token = obj["token"].toString();
         emit idChanged(id());
         emit nameChanged(name());
         emit tokenChanged(token());
@@ -249,6 +248,8 @@ signals:
     void rolesChanged(QVariantList roles);
     void customersAccessChanged(QVariantList customersAccess);
 
+    void hasToQuitProject();
+
     void idProjectChanged(int idProject);
 
     void isLoadingChanged(bool isLoading);
@@ -313,6 +314,10 @@ public slots:
     void onDeleteRoleFail(int id, QByteArray data);
     void onUpdateRoleDone(int id, QByteArray data);
     void onUpdateRoleFail(int id, QByteArray data);
+    void onLeaveProjectDone(int id, QByteArray data);
+    void onLeaveProjectFail(int id, QByteArray data);
+    void onDeleteProjectDone(int id, QByteArray data);
+    void onDeleteProjectFail(int id, QByteArray data);
 
     void setIdProject(int idProject)
     {

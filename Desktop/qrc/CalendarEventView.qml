@@ -20,6 +20,7 @@ View {
     property bool onAdd: false
     property CalendarModel calendarModel
     property EventModelData eventData
+    property int idProject: 0
 
     Dialog {
         id: deleteEvent
@@ -46,6 +47,7 @@ View {
             {
                 if (projects[i].id === eventData.projectId)
                 {
+                    idProject = i;
                     viewProjectName.text = projects[i].name
                     return
                 }
@@ -366,7 +368,17 @@ View {
             spacing: Units.dp(8)
             visible: !onAdd && !onEdit
 
+            function usersChanged() {
+                repeaterUsers.model = [];
+                repeaterUsers.model = eventData.users;
+            }
+
+            Component.onCompleted: {
+                eventData.usersChanged.connect(usersChanged);
+            }
+
             Repeater {
+                id: repeaterUsers
                 model: (!visible || onAdd) ? [] : eventData.users
                 delegate: Button {
                     text: modelData.firstName// + " " + modelData.lastName
@@ -396,6 +408,9 @@ View {
                 model: []
                 delegate: ListItem.Standard {
                     text: modelData.firstName + " " + modelData.lastName
+                    id: mainListUsers
+                    property bool firstIsChecked: false
+
                     secondaryItem: Switch {
                         id: chooseForEvent
                         anchors.verticalCenter: parent.verticalCenter
@@ -403,15 +418,19 @@ View {
                         checked: !enabled
 
                         onCheckedChanged: {
+                            var asAdd = false
+                            console.log("Checked changed")
                             for (var i = 0; i < columnUsers.usersList.length; ++i)
                             {
                                 if (columnUsers.usersList[i][0] === modelData.id)
                                 {
+                                    asAdd = true
                                     columnUsers.usersList[i] = [modelData.id, checked]
                                     break
                                 }
                             }
-                            columnUsers.usersList.push([modelData.id, checked])
+                            if (!asAdd)
+                                columnUsers.usersList.push([modelData.id, checked])
                         }
                     }
 
@@ -419,9 +438,29 @@ View {
 
                     onClicked: chooseForEvent.checked = !chooseForEvent.checked
 
+                    function onEditChangedCallBack() {
+                        if (eventData.creator.id === modelData.id)
+                        {
+                            chooseForEvent.checked = true
+                        }
+                        else
+                        {
+                            for (var i = 0; i < eventData.users.length; ++i)
+                            {
+                                if (eventData.users[i].id === modelData.id)
+                                {
+                                    console.log("Checked !");
+                                    firstIsChecked = true
+                                    chooseForEvent.checked = true
+                                }
+                            }
+                        }
+                    }
+
                     Component.onCompleted: {
+                        onEditChanged.connect(onEditChangedCallBack);
                         if (onEdit) {
-                            if (eventData.creator.id == modelData.id)
+                            if (eventData.creator.id === modelData.id)
                             {
                                 chooseForEvent.checked = true
                             }
@@ -430,7 +469,11 @@ View {
                                 for (var i = 0; i < eventData.users.length; ++i)
                                 {
                                     if (eventData.users[i].id === modelData.id)
+                                    {
+                                        console.log("Checked !");
+                                        firstIsChecked = true
                                         chooseForEvent.checked = true
+                                    }
                                 }
                             }
                         }
@@ -472,7 +515,12 @@ View {
                 id: editComment
                 iconName: "image/edit"
 
-                onClicked: onEdit = true
+                onClicked: {
+                    editTitle.text = viewTitle.text
+                    editDescription.text = viewDescription.text
+                    editProjectChoice.selectedIndex = idProject
+                    onEdit = true
+                }
             }
 
             IconButton {
@@ -493,6 +541,7 @@ View {
                 onClicked: {
                     var dateBegin = new Date(buttonDateBegin.dateIn.getFullYear(), buttonDateBegin.dateIn.getMonth(), buttonDateBegin.dateIn.getDate(), buttonTimeBegin.timeIn.getHours(), buttonTimeBegin.timeIn.getMinutes(), 0, 0)
                     var dateEnd = new Date(buttonDateEnd.dateIn.getFullYear(), buttonDateEnd.dateIn.getMonth(), buttonDateEnd.dateIn.getDate(), buttonTimeEnd.timeIn.getHours(), buttonTimeEnd.timeIn.getMinutes(), 0, 0)
+                    console.log("USERS : ", columnUsers.usersList)
                     if (onEdit)
                     {
                         calendarModel.editEvent(eventData.id, editTitle.text, editDescription.text, SDataManager.projectList[editProjectChoice.selectedIndex].id, dateBegin, dateEnd, columnUsers.usersList)

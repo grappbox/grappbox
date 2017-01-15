@@ -15,6 +15,7 @@ class DashboardModel : public QObject
     Q_PROPERTY(QVariantList userProjectList READ userProjectList WRITE setUserProjectList NOTIFY userProjectListChanged)
     Q_PROPERTY(QVariantList newEventList READ newEventList WRITE setNewEventList NOTIFY newEventListChanged)
     Q_PROPERTY(bool isLoading READ isLoading NOTIFY isLoadingChanged)
+    Q_PROPERTY(QVariantMap activatedStat READ activatedStat WRITE setActivatedStat NOTIFY activatedStatChanged)
 
 public:
     DashboardModel();
@@ -22,6 +23,9 @@ public:
     {
         API::SDataManager::GetCurrentDataConnector()->unregisterObjectRequest(this);
     }
+
+    Q_INVOKABLE void activate(QString name);
+    Q_INVOKABLE void disable(QString name);
 
     Q_INVOKABLE void loadProjectList();
     Q_INVOKABLE void loadUserProjectList();
@@ -98,6 +102,20 @@ public:
         emit newEventListChanged(list);
     }
 
+    void setActivatedStat(QVariantMap activatedStat)
+    {
+        if (m_activatedStat == activatedStat)
+            return;
+
+        m_activatedStat = activatedStat;
+        emit activatedStatChanged(activatedStat);
+    }
+
+    QVariantMap activatedStat() const
+    {
+        return m_activatedStat;
+    }
+
 signals:
 
     void projectListChanged(QVariantList projectList);
@@ -112,6 +130,8 @@ signals:
 
     void isLoadingProjectChanged(bool isLoadingProject);
 
+    void activatedStatChanged(QVariantMap activatedStat);
+
 public slots:
 
     void OnLoadProjectListDone(int id, QByteArray data);
@@ -123,6 +143,7 @@ public slots:
     void OnCreateProjectDone(int id, QByteArray data);
     void OnCreateProjectFail(int id, QByteArray data);
 
+
 private:
     QList<ProjectData*> m_projectList;
 
@@ -131,6 +152,7 @@ private:
     QList<EventData*> m_newEventList;
 
     bool m_isLoading[3];
+    QVariantMap m_activatedStat;
 };
 
 #endif // DASHBOARDMODEL_H

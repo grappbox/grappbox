@@ -10,15 +10,15 @@ import QtQuick.Controls.Styles 1.3 as Styles
 
 View {
 
-    id: viewDependencies
+    id: viewTasks
     anchors.left: parent.left
     anchors.right: parent.right
-    height: expanded ? columnDependencies.implicitHeight : 0
+    height: expanded ? columnTasks.implicitHeight : 0
 
     property bool expanded: false
     property bool editMode: true
     property GanttModel ganttModel
-    property alias repeaterDependencies: repeater
+    property alias repeaterTasks: repeater
     property var toAdd: []
     property var toRemove: []
 
@@ -29,28 +29,14 @@ View {
     }
 
     Dialog {
-        id: newDependencyDialog
-        title: "Add a dependency to the task"
+        id: newTaskDialog
+        title: "Add a task contained by the task"
         width: Units.dp(300)
         hasActions: true
         positiveButtonText: "Add"
         negativeButtonText: "Cancel"
 
         property var idTasks: []
-
-        ListItem.Standard {
-
-
-            action: Label {
-                text: "Type"
-            }
-
-            content: MenuField {
-                width: parent.width
-                id: taskTypeDialog
-                model: columnDependencies.enumToTextType
-            }
-        }
 
         ListItem.Standard {
             action: Label {
@@ -69,14 +55,12 @@ View {
         onAccepted: {
             toAdd.push(
                         {
-                            id: idTasks[taskChoiceDialog.selectedIndex],
-                            type: taskTypeDialog.selectedIndex
+                            id: idTasks[taskChoiceDialog.selectedIndex]
                         })
             repeaterToAdd.model = toAdd
         }
 
         onOpened: {
-            taskTypeDialog.selectedIndex = 0
             taskChoiceDialog.selectedIndex = 0
             var modelTaskText = []
             idTasks = []
@@ -111,10 +95,8 @@ View {
     }
 
     Column {
-        id: columnDependencies
+        id: columnTasks
         anchors.fill: parent
-
-        property var enumToTextType: ["Finish to start", "Start to start", "Finish to finish", "Start to finish"]
 
         spacing: Units.dp(8)
 
@@ -125,21 +107,11 @@ View {
                     id: delegateAlreadyDepen
                     visible: toRemove.indexOf(modelData.id)
 
-                    secondaryItem: Label {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-
-                        text: columnDependencies.enumToTextType[modelData.type]
-                    }
-
                     Component.onCompleted: {
-                        console.log(modelData.type, " : ", modelData.linkedTask)
                         text = Qt.binding(function () {
-                            console.log(ganttModel.tasks)
                             for (var i = 0; i < ganttModel.tasks.length; ++i)
                             {
-                                console.log(ganttModel.tasks[i])
-                                if (ganttModel.tasks[i].id === modelData.linkedTask)
+                                if (ganttModel.tasks[i].id === modelData.id)
                                 {
                                     console.log(ganttModel.tasks[i].title);
                                     return ganttModel.tasks[i].title;
@@ -167,22 +139,13 @@ View {
                 id: repeaterToAdd
                 model: toAdd
                 delegate: ListItem.Standard {
-                    secondaryItem: Label {
-                        anchors.verticalCenter: parent.verticalCenter
-                        anchors.right: parent.right
-
-                        text: columnDependencies.enumToTextType[modelData.type]
-                    }
 
                     Component.onCompleted: {
                         text = Qt.binding(function () {
-                            console.log(ganttModel.tasks)
                             for (var i = 0; i < ganttModel.tasks.length; ++i)
                             {
-                                console.log(ganttModel.tasks[i])
                                 if (ganttModel.tasks[i].id === modelData.id)
                                 {
-                                    console.log(ganttModel.tasks[i].title);
                                     return ganttModel.tasks[i].title;
                                 }
                             }
@@ -215,11 +178,11 @@ View {
                     size: Units.dp(32)
                 }
 
-                text: "Add a new dependency to the task"
+                text: "Add a task contained by the task"
 
                 onClicked: {
                     console.log("Open");
-                    newDependencyDialog.open()
+                    newTaskDialog.open()
                 }
             }
     }

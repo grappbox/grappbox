@@ -18,13 +18,16 @@ Image {
     }
 
     function loadParameters() {
+        console.log("Starting load parameters");
         if (avatarId === undefined)
             return
-        if (avatarDate != undefined && DataImageProvider.isDataIdLoaded(avatarId, avatarDate))
+        console.log("Load parameters ok");
+        if (DataImageProvider.isDataIdLoaded(avatarId))
             source = "image://api/" + avatarId
         else if (!isConnected)
         {
             isConnected = true
+            DataImageProvider.loadNewDataImage(avatarId)
             console.log("Connect callback")
             DataImageProvider.changed.connect(onLoaded)
         }

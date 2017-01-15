@@ -83,6 +83,22 @@ void CalendarModel::addEvent(QString title, QString message, int projectId, QDat
 
 void CalendarModel::editEvent(int eventId, QString title, QString message, int projectId, QDateTime begin, QDateTime end, QVariantList users)
 {
+    QList<int> idToAdd;
+    QList<int> idToRemove;
+    for (QVariant var : users)
+    {
+        QVariantList l = var.toList();
+        idToRemove.removeAll(l[0].toInt());
+        idToAdd.removeAll(l[0].toInt());
+        if (l[1].toBool() == false)
+        {
+            idToRemove.push_back(l[0].toInt());
+        }
+        else if (l[1].toBool())
+        {
+            idToAdd.push_back(l[0].toInt());
+        }
+    }
     BEGIN_REQUEST_ADV(this, "onEditEventDone", "onEditEventFail");
     {
         ADD_URL_FIELD(eventId);
@@ -94,6 +110,10 @@ void CalendarModel::editEvent(int eventId, QString title, QString message, int p
         ADD_FIELD("end", end.toString("yyyy-MM-dd hh:mm:ss"));
         ADD_ARRAY("toAddUsers");
         ADD_ARRAY("toRemoveUsers");
+        for (int item : idToAdd)
+            ADD_FIELD_ARRAY(item, "toAddUsers");
+        for (int item : idToRemove)
+            ADD_FIELD_ARRAY(item, "toRemoveUsers");
         m_usersForEvents[PUT(API::DP_CALENDAR, API::PUTR_EDIT_EVENT)] = users;
     }
     END_REQUEST;
@@ -118,11 +138,12 @@ void CalendarModel::getEventForDay(QDate date)
 void CalendarModel::loadEventDay(QDate date)
 {
     m_eventDay.clear();
-    QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.find(date.year() * 10000 + date.month() * 100 + date.day());
+    QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.begin();
     for (; it != m_eventsLoaded.end(); ++it)
     {
-        QDate dateItem = it.value()->beginDate().date();
-        if (dateItem.day() == date.day() && dateItem.month() == date.month() && date.year() == date.year())
+        QDate dateItemB = it.value()->beginDate().date();
+        QDate dateItemE = it.value()->endDate().date();
+        if (date >= dateItemB && date <= dateItemE)
             m_eventDay.push_back(it.value());
     }
     emit eventDayChanged(eventDay());
@@ -130,7 +151,16 @@ void CalendarModel::loadEventDay(QDate date)
 
 int CalendarModel::getEventDayCount(QDate date)
 {
-    return m_eventsLoaded.count(CONVERT_TO_DATE_ID(date));
+    QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.begin();
+    int numb = 0;
+    for (; it != m_eventsLoaded.end(); ++it)
+    {
+        QDate dateItemB = it.value()->beginDate().date();
+        QDate dateItemE = it.value()->endDate().date();
+        if (date >= dateItemB && date <= dateItemE)
+            numb++;
+    }
+    return numb;
 }
 
 void CalendarModel::updateUser(EventModelData *event, QVariantList users, bool isAdd)
@@ -143,7 +173,9 @@ void CalendarModel::updateUser(EventModelData *event, QVariantList users, bool i
         if (l[1].toBool() == false && !isAdd)
             idToRemove.push_back(l[0].toInt());
         else if (l[1].toBool())
+        {
             idToAdd.push_back(l[0].toInt());
+        }
     }
     BEGIN_REQUEST_ADV(this, "onSetParticipantDone", "onSetParticipantFail");
     {
@@ -158,6 +190,8 @@ void CalendarModel::updateUser(EventModelData *event, QVariantList users, bool i
             for (int item : idToRemove)
                 ADD_FIELD_ARRAY(item, "toRemove");
         }
+        qDebug() << "DEBUG EVENT !!!";
+        GENERATE_JSON_DEBUG;
         m_eventsUserLink[PUT(API::DP_CALENDAR, API::PUTR_SET_EVENT_PARTICIPANT)] = event;
     }
     END_REQUEST;
@@ -170,12 +204,6 @@ void CalendarModel::onLoadingEventDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1" &&
-            info["return_code"].toString() != "1.5.3")
-    {
-        onLoadingEventFail(id, array);
-        return;
-    }
     for (QJsonValueRef ref : obj["array"].toObject()["events"].toArray())
     {
         QJsonObject event = ref.toObject();
@@ -219,11 +247,6 @@ void CalendarModel::onGetEventDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1")
-    {
-        onLoadingEventFail(id, array);
-        return;
-    }
     int itemId = obj["id"].toInt();
     QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toObject()["date"].toString());
     QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.find(CONVERT_TO_DATE_ID(t.date()));
@@ -248,14 +271,10 @@ void CalendarModel::onEditEventDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1")
-    {
-        onLoadingEventFail(id, array);
-        return;
-    }
     QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toString());
     QMultiMap<int, EventModelData*>::iterator it = m_eventsLoaded.begin();
     EventModelData *data;
+    SHOW_JSON(array);
     for (; it != m_eventsLoaded.end(); ++it)
     {
         if (it.value()->id() == obj["id"].toInt())
@@ -291,11 +310,6 @@ void CalendarModel::onAddEventDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1")
-    {
-        onLoadingEventFail(id, array);
-        return;
-    }
     QDateTime t = JSON_TO_DATETIME(obj["beginDate"].toString());
     EventModelData *item = new EventModelData(obj);
     m_eventsLoaded.insert(CONVERT_TO_DATE_ID(t.date()), item);
@@ -347,11 +361,6 @@ void CalendarModel::onSetParticipantDone(int id, QByteArray array)
     doc = QJsonDocument::fromJson(array);
     QJsonObject obj = doc.object()["data"].toObject();
     QJsonObject info = doc.object()["info"].toObject();
-    if (info["return_code"].toString() != "1.5.1")
-    {
-        onLoadingEventFail(id, array);
-        return;
-    }
     m_eventsUserLink[id]->modifyByJsonObject(obj);
     m_eventsUserLink.remove(id);
 }

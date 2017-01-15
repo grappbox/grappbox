@@ -65,8 +65,8 @@ DataConnectorOnline::DataConnectorOnline()
     _GetMap[GR_LIST_CLOUD] = "cloud/list";
     _GetMap[GR_DOWNLOAD_FILE] = "cloud/file";
     _GetMap[GR_DOWNLOAD_SECURE_FILE] = "cloud/filesecured";
-    _GetMap[GR_PROJECT_LOGO] = "projects/getprojectlogo";
-    _GetMap[GR_USER_AVATAR] = "user/getuseravatar";
+    _GetMap[GR_PROJECT_LOGO] = "project/logo";
+    _GetMap[GR_USER_AVATAR] = "user/avatar";
     _GetMap[GR_REOPEN_BUG] = "bugtracker/ticket/reopen";
     _GetMap[GR_LIST_WHITEBOARD] = "whiteboards";
     _GetMap[GR_OPEN_WHITEBOARD] = "whiteboard";
@@ -98,7 +98,7 @@ DataConnectorOnline::DataConnectorOnline()
     _DeleteMap[DR_PROJECT_ROLE] = "role";
 	_DeleteMap[DR_ROLE_DETACH] = "";
     _DeleteMap[DR_PROJECT_USER] = "project/user";
-	_DeleteMap[DR_PROJECT] = "";
+    _DeleteMap[DR_PROJECT] = "project";
     _DeleteMap[DR_CUSTOMER_ACCESS] = "project/customeraccess";
     _DeleteMap[DR_CLOSE_TICKET_OR_COMMENT] = "bugtracker/ticket/close";
     _DeleteMap[DR_REMOVE_BUGTAG] = "bugtracker/tag";
@@ -113,6 +113,7 @@ DataConnectorOnline::DataConnectorOnline()
     _DeleteMap[DR_DELETE_COMMENT_TIMELINE] = "bugtracker/comment";
     _DeleteMap[DR_DELETE_WHITEBOARD] = "whiteboard";
     _DeleteMap[DR_DELETE_OBJECT] = "whiteboard/object";
+    _DeleteMap[DR_DELETE_TASK] = "task";
 
 	// Initialize Put request
     _PutMap[PUTR_USERSETTINGS] = "user";
@@ -133,6 +134,7 @@ DataConnectorOnline::DataConnectorOnline()
     _PutMap[PUTR_ROLE] = "role";
     _PutMap[PUTR_PUSH_WHITEBOARD] = "whiteboard/draw";
     _PutMap[PUTR_CLOSE_WHITEBOARD] = "whiteboard";
+    _PutMap[PUTR_EDIT_TASK] = "task";
 }
 
 void DataConnectorOnline::unregisterObjectRequest(QObject *obj)
@@ -236,6 +238,31 @@ int API::DataConnectorOnline::Request(RequestType type, DataPart part, int reque
 	return maxInt;
 }
 
+QJsonValue DataConnectorOnline::GetObjectFromVariant(QVariant var)
+{
+    if (var.type() == QVariant::Bool)
+        return QJsonValue(var.toBool());
+    else if (var.type() == QVariant::Int)
+        return QJsonValue(var.toInt());
+    else if (var.type() == QVariant::Double)
+        return QJsonValue(var.toDouble());
+    else if (var.canConvert<QString>())
+        return QJsonValue(var.toString());
+    else if (var.canConvert<QList<QVariant> >())
+    {
+        QJsonArray arr;
+        QList<QVariant> strList = var.toList();
+        for (QVariant str : strList)
+            arr.append(GetObjectFromVariant(str));
+        return QJsonValue(arr);
+    }
+    else
+    {
+        QMap<QString, QVariant> map = var.toMap();
+        return ParseMap(map);
+    }
+}
+
 QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
 {
 	QJsonObject ret;
@@ -248,27 +275,8 @@ QJsonObject DataConnectorOnline::ParseMap(QMap<QString, QVariant> &data)
             QString realKey = it.key().split('#')[1];
             ret[realKey] = it.value().value<QJsonObject>();
         }
-        if (it.value().type() == QVariant::Bool)
-            ret[it.key()] = it.value().toBool();
-        else if (it.value().type() == QVariant::Int)
-            ret[it.key()] = it.value().toInt();
-        else if (it.value().type() == QVariant::Double)
-            ret[it.key()] = it.value().toDouble();
-        else if (it.value().canConvert<QString>())
-			ret[it.key()] = it.value().toString();
-        else if (it.value().canConvert<QList<QVariant> >())
-		{
-            QJsonArray arr;
-            QList<QVariant> strList = it.value().toList();
-            for (QVariant str : strList)
-                arr.append(str.toString());
-            ret[it.key()] = arr;
-		}
-		else
-        {
-            QMap<QString, QVariant> map = it.value().toMap();
-            ret[it.key()] = ParseMap(map);
-        }
+        else
+            ret[it.key()] = GetObjectFromVariant(it.value());
 	}
 	return ret;
 }
@@ -329,7 +337,7 @@ QNetworkReply * API::DataConnectorOnline::PutAction(QString urlIn, QMap<QString,
 	json["data"] = objData;
 
     QJsonDocument doc(json);
-    LOG(doc.toJson(QJsonDocument::Indented));
+    qDebug() << (doc.toJson(QJsonDocument::Indented));
 
     QByteArray jsonba = doc.toJson(QJsonDocument::Compact);
 

@@ -15,6 +15,7 @@ Column {
     anchors.fill: parent
     anchors.margins: Units.dp(16)
     property TaskData currentTask
+    property bool editMode: true
 
     function loadTask(task)
     {
@@ -25,15 +26,18 @@ Column {
             dates.text = "From " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm") + " to " + Qt.formatDateTime(currentTask.dueDate, "yyyy-MM-dd hh:mm");
         else
             dates.text = "The " + Qt.formatDateTime(currentTask.startDate, "yyyy-MM-dd hh:mm");
+        dateEdit.dateBegin = currentTask.startDate
+        dateEdit.dateEnd = currentTask.dueDate
         taskProgression.value = currentTask.progression;
         taskTag.repeaterTags.model = currentTask.tagAssigned;
         console.log(ganttModel)
-        repeaterUserAssigned.model = currentTask.usersAssigned;
-        console.log(currentTask.usersRessources)
+        taskUser.repeaterDependencies.model = currentTask.usersAssigned;
+        console.log(currentTask.usersAssigned)
         dependencies.repeaterDependencies.model = currentTask.dependenciesAssigned;
-        repeaterTasks.model = currentTask.taskChild;
+        taskContainer.repeaterTasks.model = currentTask.taskChild;
         console.log(currentTask.createDate)
         createdBy.text = "Created by " + currentTask.creator.firstName + " " + currentTask.creator.lastName + " the " + Qt.formatDateTime(currentTask.createDate, "yyyy-MM-dd hh:mm:ss");
+        milestone.checked = currentTask.isMilestone;
     }
 
     signal edit(var task)
@@ -61,6 +65,7 @@ Column {
         width: parent.width - Units.dp(56)
 
         Label {
+            visible: !editMode
             id: titleTicket
             anchors.left: parent.left
             anchors.right: parent.right
@@ -70,12 +75,21 @@ Column {
             style: "title"
         }
 
+        TextField {
+            id: editTitleTicket
+            width: parent.width
+            text: titleTicket.text
+            visible: editMode
+            placeholderText: "Title"
+        }
+
         Item {
             height: Units.dp(8)
             width: parent.width
         }
 
         Label {
+            visible: !editMode
             id: messageTicket
             anchors.left: parent.left
             anchors.right: parent.right
@@ -86,12 +100,23 @@ Column {
             wrapMode: Text.Wrap
         }
 
+        TextArea {
+            id: editMessageTicket
+            text: messageTicket.text
+            visible: editMode
+
+            width: parent.width
+            height: Units.dp(64)
+            placeHolderText: "Message"
+        }
+
         Item {
             height: Units.dp(16)
             width: parent.width
         }
 
         Label {
+            visible: !editMode
             id: dates
             anchors.left: parent.left
             anchors.right: parent.right
@@ -100,6 +125,14 @@ Column {
             text: "From XXXX to XXXX"
             style: "body2"
             wrapMode: Text.Wrap
+        }
+
+        TaskDateEdit {
+            visible: editMode
+            id: dateEdit
+            anchors.left: parent.left
+            anchors.right: parent.right
+            anchors.leftMargin: Units.dp(16)
         }
 
         Item {
@@ -121,6 +154,7 @@ Column {
             }
 
             ProgressBar {
+                visible: !editMode
                 id: taskProgression
                 anchors.left: labelProgression.right
                 anchors.leftMargin: Units.dp(8)
@@ -132,11 +166,43 @@ Column {
                 value: 60
             }
 
+            Slider {
+                id: sliderProgression
+                visible: editMode
+                anchors.left: taskProgression.left
+                anchors.right: taskProgression.right
+                color: "#44BBFF"
+                minimumValue: 0
+                maximumValue: 100
+                value: taskProgression.value
+                onValueChanged: {
+                    taskProgression.value = value
+                }
+            }
+
             Label {
                 anchors.left: taskProgression.right
                 anchors.leftMargin: Units.dp(8)
                 anchors.verticalCenter: parent.verticalCenter
                 text: Math.round(taskProgression.value) + "%"
+            }
+        }
+
+        Item {
+            visible: editMode
+            height: Units.dp(8)
+            width: parent.width
+        }
+
+        CheckBox {
+            visible: editMode
+            id: milestone
+            checked: false
+            text: "Is a milestone ?"
+
+            onCheckedChanged: {
+                headerTaskContain.visible = taskContainer.repeaterTasks.model.Length > 0 || (editMode && !milestone.checked);
+                taskContainer.visible = taskContainer.repeaterTasks.model.Length > 0 || (editMode && !milestone.checked);
             }
         }
 
@@ -161,6 +227,7 @@ Column {
             id: taskTag
             ganttModel: infoView.ganttModel
             expanded: sectionHeaderTag.expanded
+            editMode: infoView.editMode
         }
 
         Item {
@@ -180,77 +247,11 @@ Column {
             width: parent.width
         }
 
-        View {
-
-            id: viewUserAssigned
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: headerUserAssigned.expanded ? columnUserAssigned.implicitHeight : 0
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
-
-            Column {
-                id: columnUserAssigned
-                anchors.fill: parent
-
-                spacing: Units.dp(8)
-
-                    Repeater {
-                        id: repeaterUserAssigned
-                        model: []
-                        delegate: ListItem.Subtitled {
-
-                            action: CircleImageAsync {
-                                anchors.centerIn: parent
-                                width: Units.dp(32)
-                                height: Units.dp(32)
-                            }
-
-                            content: Item {
-                                anchors.left: parent.left
-                                anchors.top: parent.top
-                                anchors.bottom: parent.bottom
-
-                                width: progressUser.width + percentUser.width + Units.dp(8)
-
-                                ProgressBar {
-                                    id: progressUser
-                                    anchors.left: parent.left
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    width: Units.dp(120)
-                                    value: modelData.percent
-                                    minimumValue: 0
-                                    maximumValue: 100
-                                    color: modelData.percent >= 100 ? Theme.primaryColor : "#44BBFF"
-                                }
-
-                                Label {
-                                    id: percentUser
-                                    anchors.left: progressUser.right
-                                    anchors.leftMargin:  Units.dp(8)
-                                    anchors.verticalCenter: parent.verticalCenter
-                                    text: Math.round(modelData.percent) + "%"
-                                }
-                            }
-
-                            text: modelData.firstName + " " + modelData.lastName
-                        }
-                    }
-
-                    /*ListItem.Standard {
-                        action: Icon {
-                            anchors.centerIn: parent
-                            name: "content/add_circle_outline"
-                            size: Units.dp(32)
-                        }
-
-                        text: "Add a new user to the task"
-                    }*/
-            }
+        TagUsersEdit {
+            id: taskUser
+            ganttModel: infoView.ganttModel
+            expanded: headerUserAssigned.expanded
+            editMode: infoView.editMode
         }
 
         Item {
@@ -273,6 +274,7 @@ Column {
             id: dependencies
             ganttModel: infoView.ganttModel
             expanded: headerDependencies.expanded
+            editMode: infoView.editMode
         }
 
         Item {
@@ -282,7 +284,7 @@ Column {
 
         CustomListStandart {
             id: headerTaskContain
-            visible: repeaterTasks.model.Length > 0
+            visible: taskContainer.repeaterTasks.model.Length > 0 || (editMode && !milestone.checked)
 
             expandedColor: "#44BBFF"
 
@@ -295,73 +297,12 @@ Column {
             width: parent.width
         }
 
-        View {
-            visible: repeaterTasks.model.Length > 0
-            id: viewContain
-            anchors.left: parent.left
-            anchors.right: parent.right
-            height: headerTaskContain.expanded ? columnContain.implicitHeight : 0
-
-            Behavior on height {
-                NumberAnimation {
-                    duration: 200
-                }
-            }
-
-            Column {
-                id: columnContain
-                anchors.fill: parent
-
-                spacing: Units.dp(8)
-
-                    Repeater {
-                        id: repeaterTasks
-                        model: []
-                        delegate: ListItem.Standard {
-                            secondaryItem: Label {
-                                id: labelDate
-                                anchors.verticalCenter: parent.verticalCenter
-                                anchors.right: parent.right
-
-                                Component.onCompleted: {
-                                    text = Qt.binding(function () {
-                                        for (var i = 0; i < ganttModel.tasks; ++i)
-                                        {
-                                            if (ganttModel.tasks[i].id === modelData.linkedTask)
-                                            {
-                                                return Qt.formatDateTime(ganttModel.tasks[i].dueDate, "yyyy-MM-dd hh:mm");
-                                            }
-                                        }
-                                        return "";
-                                    })
-                                }
-                            }
-
-                            Component.onCompleted: {
-                                text = Qt.binding(function () {
-                                    for (var i = 0; i < ganttModel.tasks; ++i)
-                                    {
-                                        if (ganttModel.tasks[i].id === modelData.linkedTask)
-                                        {
-                                            return ganttModel.tasks[i].name;
-                                        }
-                                    }
-                                    return "";
-                                })
-                            }
-                        }
-                    }
-
-                    /*ListItem.Standard {
-                        action: Icon {
-                            anchors.centerIn: parent
-                            name: "content/add_circle_outline"
-                            size: Units.dp(32)
-                        }
-
-                        text: "Add a new child task"
-                    }*/
-            }
+        TaskContainerEdit {
+            visible: taskContainer.repeaterTasks.model.Length > 0 || (editMode && !milestone.checked)
+            id: taskContainer
+            ganttModel: infoView.ganttModel
+            expanded: headerTaskContain.expanded
+            editMode: infoView.editMode
         }
 
         Item {
@@ -399,21 +340,88 @@ Column {
                 anchors.right: closeButton.left
                 anchors.rightMargin: Units.dp(8)
 
-                text: "EDIT"
+                text: editMode ? "SAVE" : "EDIT"
 
                 onClicked: {
-                    edit(currentTask.id)
+                    if (editMode)
+                    {
+                        var user = {Add: [], Remove: []}
+                        var dep = {Add: [], Remove: []}
+                        var tag = {Add: [], Remove: []}
+                        var task = {Add: [], Remove: []}
+
+                        var enumToTextDep = ["fs", "ss", "ff", "sf"]
+
+                        // tag
+                        for (var item in taskTag.toAdd)
+                            tag.Add.push(taskTag.toAdd[item].id)
+                        tag.Remove = taskTag.toRemove
+
+                        console.log(tag.Remove);
+
+                        // user
+                        for (var itemU in taskUser.toAdd)
+                        {
+                            user.Add.push({id: taskUser.toAdd[itemU].id, percent: taskUser.toAdd[itemU].percent})
+                        }
+                        user.Remove = taskUser.toRemove
+
+                        console.log(user.Remove);
+
+                        // dep
+                        for (var itemD in dependencies.toAdd)
+                        {
+                            dep.Add.push(
+                                        {
+                                            name: enumToTextDep[dependencies.toAdd[itemD].type],
+                                            id: dependencies.toAdd[itemD].id
+                                        });
+                        }
+                        dep.Remove = dependencies.toRemove
+
+                        console.log(dep.Remove);
+
+                        // task
+                        for (var itemT in taskContainer.toAdd)
+                            task.Add.push(taskContainer.toAdd[itemT].id)
+                        task.Remove = taskContainer.toRemove
+
+                        console.log(task.Remove);
+
+                        var isntContainer = taskContainer.toAdd.length == 0 && (taskContainer.toRemove.length === taskContainer.repeaterTasks.model.length);
+
+                        ganttModel.editTask(currentTask.id,
+                                            editTitleTicket.text,
+                                            editMessageTicket.text,
+                                            milestone.checked,
+                                            !isntContainer,
+                                            sliderProgression.value,
+                                            dateEdit.getDateBegin(),
+                                            dateEdit.getDateEnd(),
+                                            user,
+                                            dep,
+                                            task,
+                                            tag);
+                    }
+                    else
+                        editMode = true
                 }
             }
 
             Button {
                 id: closeButton
                 anchors.right: parent.right
-                text: "DELETE"
+                text: editMode ? "CANCEL" : "DELETE"
                 textColor: Theme.primaryColor
 
                 onClicked: {
-                    back()
+                    if (editMode)
+                        editMode = false
+                    else
+                    {
+                        deleteUser.id = currentTask.id
+                        deleteUser.open()
+                    }
                 }
             }
 
@@ -426,31 +434,24 @@ Column {
     }
 
 
-/*    BottomActionSheet {
-        id: tagEdit
 
-        title: "Action"
-        property BugTrackerTags assignedTag
+    Dialog {
+        id: deleteUser
 
-        actions: [
-            Action {
-                iconName: "action/delete"
-                name: "Delete from task"
-                onTriggered: {
-                    bugModel.removeTagsToTicket(ticket.id, tagEdit.assignedTag.id)
-                }
-            },
-            Action {
-                iconName: "action/delete"
-                name: "Delete permanently"
+        title: "Do you want to remove this task ?"
+        text: "You will not be able to retrieve it."
+        hasActions: true
+        positiveButtonText: "Yes"
+        negativeButtonText: "No"
 
-                onTriggered: {
-                    bugModel.removeTags(tagEdit.assignedTag.id)
-                }
-            }
+        property int id
 
-        ]
+        width: Units.dp(300)
+
+        onAccepted: {
+            ganttModel.deleteTask(id)
+            back();
+        }
     }
-*/
 }
 

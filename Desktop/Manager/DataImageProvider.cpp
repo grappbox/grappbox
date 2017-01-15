@@ -21,8 +21,9 @@ DataImageProvider::DataImageProvider() : QQuickImageProvider(QQuickImageProvider
     _Pixmap["user#default"] = new DataImage(_AvatarDefault);
 }
 
-void DataImageProvider::callAPI(QString id, QDateTime time)
+void DataImageProvider::callAPI(QString id)
 {
+    qDebug() << "CALL API";
     bool isProject = id.contains("project#");
     DataImage *dataImg;
     if (_Pixmap.contains(id))
@@ -32,7 +33,6 @@ void DataImageProvider::callAPI(QString id, QDateTime time)
     dataImg->isDeprectated = false;
     dataImg->isLoaded = false;
     dataImg->isWaiting = true;
-    dataImg->time = time;
     _Pixmap[id] = dataImg;
     BEGIN_REQUEST_ADV(this, isProject ? "onLogoProjectDone" : "onAvatarUserDone", isProject ? "onLogoProjectFail" : "onAvatarUserFail");
     {
@@ -44,7 +44,6 @@ void DataImageProvider::callAPI(QString id, QDateTime time)
         else
             idReq = GET(API::DP_USER_DATA, API::GR_USER_AVATAR);
         _LoadingImages[idReq] = id;
-        _LoadingTimes[idReq] = time;
     }
     END_REQUEST;
 }
@@ -69,28 +68,11 @@ QPixmap DataImageProvider::requestPixmap(const QString &id, QSize *size, const Q
 
 
 
-bool DataImageProvider::isDataIdLoaded(QString id, QDateTime time)
+bool DataImageProvider::isDataIdLoaded(QString id)
 {
     if (id.contains("tmp#"))
         return true;
-    if (_Pixmap.contains(id))
-    {
-        DataImage *item = _Pixmap[id];
-        if (item->isLoaded && item->time == time)
-            return true;
-        else if (!item->isWaiting)
-        {
-            if (item->time != time)
-            {
-                item->time = time;
-                item->isLoaded = false;
-                item->isDeprectated = true;
-            }
-            loadDataFromId(id, time);
-        }
-        return false;
-    }
-    loadDataFromId(id, time);
+    loadDataFromId(id);
     return false;
 }
 
@@ -124,50 +106,24 @@ QString DataImageProvider::get64BasedImage(QString url)
 void DataImageProvider::replaceImageFromTmp(QString tmp, QString idImage)
 {
     DataImage *image = _Pixmap[idImage];
-    image->pixmap = *_TmpImage[QVariant(tmp.split("#")[1]).toInt()];
+    if (image == nullptr)
+    {
+        image = new DataImage(*_TmpImage[QVariant(tmp.split("#")[1]).toInt()]);
+        image->isLoaded = true;
+        _Pixmap[idImage] = image;
+    }
+    else
+        image->pixmap = *_TmpImage[QVariant(tmp.split("#")[1]).toInt()];
 }
 
-void DataImageProvider::loadDataFromId(QString id, QDateTime time)
+void DataImageProvider::loadDataFromId(QString id)
 {
     if (!id.contains("user#") && !id.contains("project#"))
         return;
-    QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-    if (!QDir(path).exists())
-        QDir().mkdir(path);
-    QString pathProject = path + "/projects";
-    if (!QDir(pathProject).exists())
-        QDir().mkdir(pathProject);
-    QString pathUsers = path + "/users";
-    if (!QDir(pathUsers).exists())
-        QDir().mkdir(pathUsers);
-    QString realPath = id.contains("user") ? pathUsers : pathProject;
-    qDebug() << "Load data from " << id;
-    if (!QDir(realPath + "/" + id).exists())
-        callAPI(id, time);
+    if (_LoadedImages.contains(id))
+        emit changed(id, _LoadedImages[id]);
     else
-    {
-        if (_Pixmap.contains(id))
-        {
-            DataImage *data = _Pixmap[id];
-            if (data->isDeprectated)
-                callAPI(id, time);
-            else if (data->isLoaded)
-                emit changed(id);
-            else
-            {
-                QPixmap map(realPath + "/" + id + "/image.png");
-                data->isLoaded = true;
-                data->isWaiting = false;
-                data->pixmap = map;
-                qDebug() << "For id #" << id << " : " << map;
-                emit changed(id);
-            }
-        }
-        else
-        {
-            callAPI(id, time);
-        }
-    }
+        callAPI(id);
 }
 
 void DataImageProvider::onAvatarUserDone(int id, QByteArray data)
@@ -177,43 +133,16 @@ void DataImageProvider::onAvatarUserDone(int id, QByteArray data)
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
     QByteArray dataimg = QByteArray::fromBase64(obj["avatar"].toString().toStdString().c_str());
-    QImage img = QImage::fromData(dataimg);
-    QPixmap pix = QPixmap::fromImage(img);
+    SHOW_JSON(data);
 
-    qDebug() << "Pix = " << pix;
-
-    bool hasToSave = true;
-    if (pix.isNull())
-    {
-        pix = _AvatarDefault;
-        hasToSave = false;
-    }
-
-    qDebug() << "pix = " << pix;
-    qDebug() << "pixmap contained = " << _Pixmap.contains(realId);
-
-    DataImage *dataImg = _Pixmap[realId];
-    dataImg->pixmap = pix;
-    dataImg->isDeprectated = false;
-    dataImg->isLoaded = true;
-    dataImg->isWaiting = false;
-    dataImg->time = _LoadingTimes[id];
-
-    _LoadingTimes.remove(id);
     _LoadingImages.remove(id);
-    emit changed(realId);
 
-    if (hasToSave)
+    if (obj["avatar"].isNull())
+        emit changed(realId, "image://api/user#default");
+    else
     {
-        QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-        if (!QDir(path).exists())
-            QDir().mkdir(path);
-        QString pathUsers = path + "/users";
-        if (!QDir(pathUsers).exists())
-            QDir().mkdir(pathUsers);
-        if (!QDir(pathUsers + "/" + realId).exists())
-            QDir().mkdir(pathUsers + "/" + realId);
-        pix.save(pathUsers + "/" + realId + "/image.png", "PNG");
+        _LoadedImages[realId] = obj["avatar"].toString();
+        emit changed(realId, obj["avatar"].toString());
     }
 }
 
@@ -230,40 +159,16 @@ void DataImageProvider::onLogoProjectDone(int id, QByteArray data)
     QJsonDocument doc;
     doc = QJsonDocument::fromJson(data);
     QJsonObject obj = doc.object()["data"].toObject();
-    QByteArray dataimg = QByteArray::fromBase64(obj["logo"].toString().toStdString().c_str());
-    QImage img = QImage::fromData(dataimg);
-    QPixmap pix = QPixmap::fromImage(img);
 
-    qDebug() << "Pix Project = " << pix;
-    bool hasToSave = true;
-    if (pix.isNull())
-    {
-        pix = _ImageDefault;
-        hasToSave = false;
-    }
+    qDebug() << obj["logo"].toString();
 
-    DataImage *dataImg = _Pixmap[realId];
-    dataImg->pixmap = pix;
-    dataImg->isDeprectated = false;
-    dataImg->isLoaded = true;
-    dataImg->isWaiting = false;
-    dataImg->time = _LoadingTimes[id];
-
-    _LoadingTimes.remove(id);
     _LoadingImages.remove(id);
-    emit changed(realId);
-
-    if (hasToSave)
+    if (obj["logo"].isNull())
+        emit changed(realId, "image://api/project#default");
+    else
     {
-        QString path = QStandardPaths::writableLocation(QStandardPaths::AppLocalDataLocation);
-        if (!QDir(path).exists())
-            QDir().mkdir(path);
-        QString pathProject = path + "/projects";
-        if (!QDir(pathProject).exists())
-            QDir().mkdir(pathProject);
-        if (!QDir(pathProject + "/" + realId).exists())
-            QDir().mkdir(pathProject + "/" + realId);
-        pix.save(pathProject + "/" + realId + "/image.png", "PNG");
+        emit changed(realId, obj["logo"].toString());
+        _LoadedImages[realId] = obj["logo"].toString();
     }
 }
 
