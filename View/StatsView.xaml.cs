@@ -31,6 +31,10 @@ namespace Grappbox.View
     {
         CoreApplicationView view;
         StatsViewModel vm = StatsViewModel.GetViewModel();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StatsView"/> class.
+        /// </summary>
         public StatsView()
         {
             this.InitializeComponent();
@@ -40,7 +44,11 @@ namespace Grappbox.View
         }
 
 
-        #region NavigationHelper
+        #region NavigationHelper        
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Mobile customization
@@ -62,6 +70,10 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
         }

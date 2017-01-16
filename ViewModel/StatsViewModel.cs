@@ -8,12 +8,20 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// Statistics view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     class StatsViewModel : ViewModelBase
     {
         static private StatsViewModel instance = null;
         private StatsModel _stats = new StatsModel();
         private int _random;
-        
+
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public StatsViewModel GetViewModel()
         {
             if (instance != null)
@@ -21,12 +29,20 @@ namespace Grappbox.ViewModel
             else
                 return new StatsViewModel();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StatsViewModel"/> class.
+        /// </summary>
         public StatsViewModel()
         {
             instance = this;
             _random = new Random().Next();
         }
-        
+
+        /// <summary>
+        /// Gets all stats.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getAllStats()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -43,6 +59,9 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Notifies all.
+        /// </summary>
         private void notifyAll()
         {
             NotifyPropertyChanged("UserWorkingCharge");

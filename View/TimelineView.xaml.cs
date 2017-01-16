@@ -2,20 +2,13 @@
 using Grappbox.Model;
 using Grappbox.ViewModel;
 using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
-using Windows.Foundation;
 using Windows.Foundation.Metadata;
-using Windows.Graphics.Display;
 using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Grappbox.Helpers;
@@ -32,6 +25,9 @@ namespace Grappbox.View
         private CoreApplicationView view;
         private TimelineViewModel vm = TimelineViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimelineView"/> class.
+        /// </summary>
         public TimelineView()
         {
             this.InitializeComponent();
@@ -40,8 +36,11 @@ namespace Grappbox.View
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        #region NavigationHelper
-
+        #region NavigationHelper        
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Mobile customization
@@ -81,6 +80,10 @@ namespace Grappbox.View
                 Frame.GoBack();
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             vm.TeamOffset = 0;
@@ -91,8 +94,12 @@ namespace Grappbox.View
 
         #endregion NavigationHelper
 
-        #region Selection changed
-
+        #region Selection changed        
+        /// <summary>
+        /// Handles the SelectionChanged event of the Pivot control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -110,6 +117,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the TeamListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private async void TeamListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as ListView).SelectedItem as TimelineModel != null)
@@ -128,8 +140,12 @@ namespace Grappbox.View
 
         #endregion Selection changed
 
-        #region Click
-
+        #region Click        
+        /// <summary>
+        /// Handles the Click event of the EditMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -139,6 +155,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the DeleteMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void DeleteMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -153,6 +174,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the Comments control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Comments_Click(object sender, RoutedEventArgs e)
         {
             vm.MessageSelected = (sender as Button).DataContext as TimelineModel;
@@ -168,6 +194,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the Bug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Bug_Click(object sender, RoutedEventArgs e)
         {
             BugtrackerViewModel bvm = BugtrackerViewModel.GetViewModel();
@@ -187,25 +218,44 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddTeam control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddTeam_Click(object sender, RoutedEventArgs e)
         {
             TimelineContentDialog dialog = new TimelineContentDialog(vm.TeamId);
             await dialog.ShowAsync();
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddCustomer control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddCustomer_Click(object sender, RoutedEventArgs e)
         {
             TimelineContentDialog dialog = new TimelineContentDialog(vm.CustomerId);
             await dialog.ShowAsync();
         }
-
         #endregion Click
 
+        /// <summary>
+        /// Handles the GotFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             CB.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Handles the LostFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             CB.Visibility = Visibility.Visible;

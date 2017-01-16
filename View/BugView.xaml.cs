@@ -6,7 +6,6 @@ using Grappbox.ViewModel;
 using System;
 using Windows.Foundation.Metadata;
 using Windows.UI;
-using Windows.UI.Popups;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;

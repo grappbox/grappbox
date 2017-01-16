@@ -23,6 +23,9 @@ namespace Grappbox.View
         private CoreApplicationView view;
         private TimelineViewModel vm = TimelineViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimelineMessageView"/> class.
+        /// </summary>
         public TimelineMessageView()
         {
             this.InitializeComponent();
@@ -34,7 +37,10 @@ namespace Grappbox.View
         //Required for navigation
 
         #region NavigationHelper
-
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             //Mobile customization
@@ -50,12 +56,20 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
         }
-
-        #endregion NavigationHelper
-
+        #endregion NavigationHelper    
+            
+        /// <summary>
+        /// Handles the Click event of the EditMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void EditMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
@@ -65,6 +79,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the DeleteMessage control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void DeleteMessage_Click(object sender, RoutedEventArgs e)
         {
             vm.CommentSelected = (sender as Button).DataContext as TimelineModel;
@@ -79,6 +98,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the PostComment control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void PostComment_Click(object sender, RoutedEventArgs e)
         {
             if (MessageTextBox.Text != "")
@@ -93,6 +117,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Called when [chat view container content changing].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="ContainerContentChangingEventArgs"/> instance containing the event data.</param>
         private void OnChatViewContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             if (args.InRecycleQueue) return;

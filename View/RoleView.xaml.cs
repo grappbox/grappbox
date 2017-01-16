@@ -19,6 +19,9 @@ namespace Grappbox.View
     {
         private ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RoleView"/> class.
+        /// </summary>
         public RoleView()
         {
             this.InitializeComponent();
@@ -28,6 +31,10 @@ namespace Grappbox.View
             this.NavigationCacheMode = NavigationCacheMode.Disabled;
         }
 
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -130,6 +137,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Checked event of the Button control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Button_Checked(object sender, RoutedEventArgs e)
         {
             RadioButton btn = sender as RadioButton;
@@ -184,6 +196,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the Update control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
             if (RoleName.Text != "")
@@ -197,6 +214,11 @@ namespace Grappbox.View
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddRole control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
             if (RoleName.Text != "")
@@ -213,6 +235,9 @@ namespace Grappbox.View
                 RoleName.BorderBrush = new SolidColorBrush(Colors.Red);
         }
 
+        /// <summary>
+        /// Sets the values.
+        /// </summary>
         private void setValues()
         {
             vm.RoleName = RoleName.Text;

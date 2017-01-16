@@ -4,18 +4,20 @@ using Grappbox.Model;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Popups;
-using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// Timeline view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     public class TimelineViewModel : ViewModelBase
     {
         static private TimelineViewModel instance = null;
@@ -31,6 +33,10 @@ namespace Grappbox.ViewModel
         public int CustomerOffset = 0;
         private int _incrementation = 5;
 
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public TimelineViewModel GetViewModel()
         {
             if (instance != null)
@@ -39,13 +45,19 @@ namespace Grappbox.ViewModel
                 return new TimelineViewModel();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TimelineViewModel"/> class.
+        /// </summary>
         public TimelineViewModel()
         {
             instance = this;
         }
 
-        #region API
-
+        #region API        
+        /// <summary>
+        /// Gets the team messages.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> getTeamMessages()
         {
             if (_Team.Id != 0)
@@ -84,6 +96,10 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Gets the customer messages.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> getCustomerMessages()
         {
             if (_Customer.Id != 0)
@@ -122,6 +138,10 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Gets the timelines.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> getTimelines()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -157,6 +177,12 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Gets the comments.
+        /// </summary>
+        /// <param name="timelineId">The timeline identifier.</param>
+        /// <param name="messageId">The message identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> getComments(int timelineId, int messageId)
         {
             object[] token = { timelineId, messageId };
@@ -180,6 +206,13 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Posts the message.
+        /// </summary>
+        /// <param name="timelineId">The timeline identifier.</param>
+        /// <param name="title">The title.</param>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> postMessage(int timelineId, string title, string message)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -211,6 +244,13 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Posts the comment.
+        /// </summary>
+        /// <param name="timelineId">The timeline identifier.</param>
+        /// <param name="message">The message.</param>
+        /// <param name="commentedId">The commented identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> postComment(int timelineId, string message, int commentedId)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -235,6 +275,11 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Removes the message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> removeMessage(TimelineModel message)
         {
             if (_messageSelected != null)
@@ -268,6 +313,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Removes the comment.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> removeComment(TimelineModel message)
         {
             if (_commentSelected != null)
@@ -294,6 +344,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Updates the message.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> updateMessage(TimelineModel message)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -339,6 +394,12 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Updates the comment.
+        /// </summary>
+        /// <param name="message">The message.</param>
+        /// <param name="timelineId">The timeline identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> updateComment(TimelineModel message, int timelineId)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();

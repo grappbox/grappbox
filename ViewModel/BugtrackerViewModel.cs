@@ -16,6 +16,10 @@ using Windows.UI.Core;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// Bugtracker view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     class BugtrackerViewModel : ViewModelBase
     {
         static private BugtrackerViewModel instance = null;
@@ -32,6 +36,10 @@ namespace Grappbox.ViewModel
         private BugtrackerModel _closeSelect;
         private TagModel _tagSelect;
 
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public BugtrackerViewModel GetViewModel()
         {
             if (instance != null)
@@ -39,13 +47,21 @@ namespace Grappbox.ViewModel
             else
                 return new BugtrackerViewModel();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BugtrackerViewModel"/> class.
+        /// </summary>
         public BugtrackerViewModel()
         {
             instance = this;
         }
 
         #region API
-        #region Get Api
+        #region Get Api        
+        /// <summary>
+        /// Gets the open tickets.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getOpenTickets()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -63,6 +79,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the closed tickets.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getClosedTickets()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -80,6 +100,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the yours tickets.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getYoursTickets()
         {
             object[] token = { SessionHelper.GetSession().ProjectId, SessionHelper.GetSession().UserId };
@@ -97,11 +121,19 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the ticket.
+        /// </summary>
+        /// <param name="md">The md.</param>
         public void getTicket(BugtrackerModel md)
         {
             _model = md;
         }
 
+        /// <summary>
+        /// Gets the tag list.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getTagList()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -118,6 +150,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the comments.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getComments()
         {
             object[] token = { _model.Id };
@@ -134,6 +170,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the users.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getUsers()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -149,6 +189,11 @@ namespace Grappbox.ViewModel
                 await msgbox.ShowAsync();
             }
         }
+
+        /// <summary>
+        /// Reopens the ticket.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task reopenTicket()
         {
             object[] token = { _closeSelect.Id };
@@ -165,7 +210,11 @@ namespace Grappbox.ViewModel
         }
         #endregion
 
-        #region Put Api
+        #region Put Api        
+        /// <summary>
+        /// Edits the bug.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task editBug()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -221,6 +270,11 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Edits the comment.
+        /// </summary>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> editComment(BugtrackerModel comment)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -240,6 +294,10 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Edits the tag.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> editTag()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -260,6 +318,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Assigns the tag.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task assignTag(TagModel tag)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -278,6 +341,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Sets the participants.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task setParticipants()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -335,7 +402,11 @@ namespace Grappbox.ViewModel
         }
         #endregion
 
-        #region Post API
+        #region Post API        
+        /// <summary>
+        /// Adds the bug.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> addBug()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -360,6 +431,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Adds the comment.
+        /// </summary>
+        /// <param name="description">The description.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task addComment(string description)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -378,6 +454,12 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Adds the tag.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <param name="color">The color.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> addTag(string name, string color)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -400,7 +482,11 @@ namespace Grappbox.ViewModel
         }
         #endregion
 
-        #region Delete Api
+        #region Delete Api        
+        /// <summary>
+        /// Closes the ticket.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task closeTicket()
         {
             object[] token = { _openSelect.Id };
@@ -415,6 +501,11 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Deletes the comment.
+        /// </summary>
+        /// <param name="comment">The comment.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task deleteComment(BugtrackerModel comment)
         {
             object[] token = { comment.Id };
@@ -429,6 +520,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Deletes the tag.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> deleteTag()
         {
             object[] token = { _tagSelect.Id };
@@ -445,6 +540,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Removes the assign tag.
+        /// </summary>
+        /// <param name="tag">The tag.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task removeAssignTag(TagModel tag)
         {
             object[] token = { _model.Id, tag.Id };
@@ -610,6 +710,11 @@ namespace Grappbox.ViewModel
             _model = new BugtrackerModel();
         }
 
+        /// <summary>
+        /// Called when [push notification].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="e">The <see cref="PushNotificationReceivedEventArgs"/> instance containing the event data.</param>
         public async void OnPushNotification(PushNotificationChannel sender, PushNotificationReceivedEventArgs e)
         {
             await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal,

@@ -3,9 +3,7 @@ using Grappbox.Model;
 using Grappbox.ViewModel;
 using System;
 using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
@@ -36,6 +34,9 @@ namespace Grappbox.View
         private DateTime defaultDate = DateTime.MinValue;
         private bool isNew = false;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectSettingsView"/> class.
+        /// </summary>
         public ProjectSettingsView()
         {
             this.InitializeComponent();
@@ -137,6 +138,10 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             vm.RoleList = null;
@@ -146,8 +151,12 @@ namespace Grappbox.View
 
         #endregion NavigationHelper
 
-        #region imgClicked
-
+        #region imgClicked        
+        /// <summary>
+        /// Handles the Click event of the Img control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Img_Click(object sender, RoutedEventArgs e)
         {
             ImagePath = string.Empty;
@@ -183,6 +192,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Storages the file to base64.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         private async Task<string> StorageFileToBase64(StorageFile file)
         {
             string Base64String = string.Empty;
@@ -202,6 +216,11 @@ namespace Grappbox.View
 
         #endregion imgClicked
 
+        /// <summary>
+        /// Handles the Click event of the ProjectSettingsUpdate control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ProjectSettingsUpdate_Click(object sender, RoutedEventArgs e)
         {
             if (isNew == false)
@@ -235,6 +254,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddUser control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddUser_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -246,6 +270,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the RemoveUserButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void RemoveUserButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -256,6 +285,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Delete control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Delete_Click(object sender, RoutedEventArgs e)
         {
             if (DateTime.Equals(vm.DeletedAt, defaultDate) == false)
@@ -283,11 +317,21 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the userListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void userListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.UserSelected = (sender as ListView).SelectedItem as UsersModel;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the Pivot control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = PivotPS.SelectedIndex;
@@ -342,16 +386,31 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the RegenerateCU control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void RegenerateCU_Click(object sender, RoutedEventArgs e)
         {
             await vm.regenerateCustomerAccess();
         }
 
+        /// <summary>
+        /// Handles the Click event of the RemoveCustomerButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void RemoveCustomerButton_Click(object sender, RoutedEventArgs e)
         {
             await vm.removeCustomerAccess();
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddCU control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddCU_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -387,21 +446,41 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the customerListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void customerListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.CustomerSelected = (sender as ListView).SelectedItem as CustomerAccessModel;
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddRole control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddRole_Click(object sender, RoutedEventArgs e)
         {
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(View.RoleView), null));
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the roleListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void roleListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.RoleSelected = (sender as ListView).SelectedItem as ProjectRoleModel;
         }
 
+        /// <summary>
+        /// Handles the Click event of the ModifyRole control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ModifyRole_Click(object sender, RoutedEventArgs e)
         {
             if (vm.RoleSelected != null)
@@ -410,6 +489,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the RemoveRoleButton control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void RemoveRoleButton_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -421,6 +505,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the ComboBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var parent = (sender as ComboBox).Parent;
@@ -441,6 +530,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the ComboBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
             UserModel md = (sender as ComboBox).DataContext as UserModel;
@@ -449,11 +543,21 @@ namespace Grappbox.View
                 (sender as ComboBox).SelectedValue = role.RoleId;
         }
 
+        /// <summary>
+        /// Handles the GotFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             CB.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Handles the LostFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             CB.Visibility = Visibility.Visible;

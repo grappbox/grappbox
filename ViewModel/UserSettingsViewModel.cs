@@ -12,11 +12,19 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// User settings view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     public class UserSettingsViewModel : ViewModelBase
     {
         static private UserSettingsViewModel instance = null;
         private UserSettingsModel model = new UserSettingsModel();
 
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public UserSettingsViewModel GetViewModel()
         {
             if (instance != null)
@@ -24,6 +32,9 @@ namespace Grappbox.ViewModel
             else return new UserSettingsViewModel();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserSettingsViewModel"/> class.
+        /// </summary>
         public UserSettingsViewModel()
         {
             instance = this;
@@ -36,6 +47,12 @@ namespace Grappbox.ViewModel
         //    NotifyPropertyChanged("Avatar");
         //}
 
+        /// <summary>
+        /// Updates the API.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <param name="oldPassword">The old password.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task updateAPI(string password = null, string oldPassword = null)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -86,6 +103,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Gets the API.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getAPI()
         {
             HttpResponseMessage res = await HttpRequestManager.Get(null, "user");
@@ -103,6 +124,9 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Notifies all.
+        /// </summary>
         private void notifyAll()
         {
             NotifyPropertyChanged("Firstname");
@@ -117,7 +141,6 @@ namespace Grappbox.ViewModel
         }
 
         #region ModelBindedPropertiesNotifiers
-
         public string Firstname
         {
             get { if (model == null) return ""; string name = model.Firstname; if (name != null) { return name; } else return ""; }
