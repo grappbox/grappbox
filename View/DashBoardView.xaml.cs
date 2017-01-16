@@ -140,7 +140,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the project tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Project Stats Tab</returns>
         public PivotItem CreateProjectTab()
         {
             PivotItem pivotItem;
@@ -157,7 +157,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the bugtracker tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Bug Stats Tab</returns>
         public PivotItem CreateBugtrackerTab()
         {
             PivotItem pivotItem;
@@ -174,7 +174,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the tasks tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Tasks Stats Tab</returns>
         public PivotItem CreateTasksTab()
         {
             PivotItem pivotItem;
@@ -191,7 +191,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the talks tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Talks Stats Tab</returns>
         public PivotItem CreateTalksTab()
         {
             PivotItem pivotItem;
@@ -208,7 +208,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the customer access tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Customer access Stats Tab</returns>
         public PivotItem CreateCustomerAccessTab()
         {
             PivotItem pivotItem;
@@ -225,7 +225,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the occupation tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Occupation Stats Tab</returns>
         public PivotItem CreateOccupationTab()
         {
             PivotItem pivotItem;
@@ -243,7 +243,7 @@ namespace Grappbox.View
         /// <summary>
         /// Creates the meetings tab.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>Return a new PivotItem containing the Meeting Stats Tab</returns>
         public PivotItem CreateMeetingsTab()
         {
             PivotItem pivotItem;

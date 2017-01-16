@@ -10,6 +10,9 @@
     xmlns:models="using:Grappbox.Model"
     mc:Ignorable="d">
 
+    <!--
+        This listview display the occupation list from the data binded by the OccupationList
+    -->
     <ListView Name="TeamGridView" ItemsSource="{Binding OccupationList}"
     Margin="0,2,0,0"
     ShowsScrollingPlaceholders="True"
@@ -21,6 +24,10 @@
     ScrollViewer.VerticalScrollBarVisibility="Hidden"
     IsDoubleTapEnabled="False" IsRightTapEnabled="False">
         <ListView.ItemTemplate>
+            <!--
+                TeamOccupation datatemplate
+                 this datatemplate determines how the occupations of user are displayed
+            -->
             <DataTemplate x:DataType="models:Occupations">
                 <Grid Height="100">
                     <Grid.ColumnDefinitions>
@@ -30,19 +37,6 @@
                         <ColumnDefinition Width="1*" />
                     </Grid.ColumnDefinitions>
                     <Border VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Background="{x:Bind OccupationColor}" />
-                    <!--<Ellipse Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"  Width="60" Height="60">
-                        <Ellipse.Fill>
-                            <ImageBrush ImageSource="ms-appx:///Assets/user_default.png" />
-                        </Ellipse.Fill>
-                    </Ellipse>-->
-
-                    <!--<Border Grid.Column="1" Background="DarkGray" CornerRadius="45" Width="60" Height="60">
-                        <FontIcon Glyph="&#xE13D;"
-                                  FontSize="30"
-                                  FontWeight="Bold"
-                                  Foreground="White"
-                                  FontFamily="{StaticResource MaterialIconFontFamily}"/>
-                    </Border>-->
                     <FontIcon Grid.Column="1" Width="60" Height="60"
                               Glyph="&#xE853;"
                               FontSize="50"

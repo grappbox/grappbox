@@ -14,6 +14,10 @@ namespace Grappbox.ViewModel
 {
     public class DashBoardViewModel : ViewModelBase
     {
+        #region StaticProperties
+        /// <summary>
+        /// Static list of modular panels
+        /// </summary>
         static public List<ModularModel> ModularList = new List<ModularModel>()
         {
             new ModularModel() { DisplayName="Occupation", Selected=true },
@@ -24,14 +28,46 @@ namespace Grappbox.ViewModel
             new ModularModel() { DisplayName="Talks Stats", Selected=false },
             new ModularModel() { DisplayName="Customer Access Stats", Selected=false }
         };
+        /// <summary>
+        /// Instance of the ViewModel
+        /// </summary>
         static private DashBoardViewModel instance = null;
 
+        /// <summary>
+        /// Get an instance of the DashboardViewModel
+        /// </summary>
+        /// <returns>Return a DashBoardViewModel object</returns>
         static public DashBoardViewModel GetViewModel()
         {
             if (instance == null)
                 instance = new DashBoardViewModel();
             return instance;
         }
+        #endregion
+
+        #region PublicProperties
+        private ObservableCollection<Occupations> _occupationList;
+
+        /// <summary>
+        /// List of user occupations
+        /// </summary>
+        public ObservableCollection<Occupations> OccupationList
+        {
+            get { return _occupationList; }
+            set { _occupationList = value; NotifyPropertyChanged("OccupationList"); }
+        }
+
+        private ObservableCollection<MeetingDashBoard> _meetingList;
+
+        /// <summary>
+        /// List of next meetings
+        /// </summary>
+        public ObservableCollection<MeetingDashBoard> MeetingList
+        {
+            get { return _meetingList; }
+            set { _meetingList = value; NotifyPropertyChanged("MeetingList"); }
+        }
+        #endregion
 
         public DashBoardViewModel()
         {
@@ -40,12 +76,21 @@ namespace Grappbox.ViewModel
             instance = this;
         }
 
+        /// <summary>
+        /// Initialize the ViewModel, invoke api calls
+        /// </summary>
+        /// <returns></returns>
         public async Task InitialiseAsync()
         {
             await this.getTeam();
             await this.getNextMeetings();
         }
 
+        #region ApiCalls_Methods
+        /// <summary>
+        /// Fetch the team occupation datas from api
+        /// </summary>
+        /// <returns></returns>
         public async Task getTeam()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -61,6 +106,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Fetch the nex meetings datas from api
+        /// </summary>
+        /// <returns></returns>
         public async Task<bool> getNextMeetings()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -94,21 +143,6 @@ namespace Grappbox.ViewModel
             }
             return true;
         }
-
-        private ObservableCollection<Occupations> _occupationList;
-
-        public ObservableCollection<Occupations> OccupationList
-        {
-            get { return _occupationList; }
-            set { _occupationList = value; NotifyPropertyChanged("OccupationList"); }
-        }
-
-        private ObservableCollection<MeetingDashBoard> _meetingList;
-
-        public ObservableCollection<MeetingDashBoard> MeetingList
-        {
-            get { return _meetingList; }
-            set { _meetingList = value; NotifyPropertyChanged("MeetingList"); }
-        }
+        #endregion
     }
 }

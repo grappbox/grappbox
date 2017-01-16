@@ -12,14 +12,17 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Page.Resources>
-        <Style TargetType="Button" BasedOn="{StaticResource RedButton}" />
-    </Page.Resources>
-
+    <!--
+        DashboardViewModel set as datacontext
+    -->
     <Page.DataContext>
         <viewModels:DashBoardViewModel x:Name="viewModel" />
     </Page.DataContext>
-    
+
+
+    <!--
+        Dashboard main grid which contain the pivot element
+    -->
     <Grid VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="48" />
@@ -27,8 +30,15 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
         <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Dashboard" />
+        <!--
+            Dashboard pivot which contain the modular elements
+        -->
         <Pivot Grid.Row="1"  Name="DbPivot" Style="{StaticResource RedPivot}">
         </Pivot>
+        <!--
+           Command bar which contain the settings button
+            this settings button open the modulardialog to choose which PivoItem to display
+        -->
         <CommandBar Grid.Row="2" Background="{StaticResource Grey1GrappboxBrush}">
             <AppBarButton Click="ModularSettings_Click">
                 Modular Settings
