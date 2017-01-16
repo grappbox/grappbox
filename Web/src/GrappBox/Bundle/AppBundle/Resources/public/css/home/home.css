@@ -371,5 +371,5 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
 }
 
 @media (max-width: 768px) {
-  .account#register .footer { position: initial; margin-top: 40px; }
+  .account .footer { position: initial; margin-top: 40px; }
 }
