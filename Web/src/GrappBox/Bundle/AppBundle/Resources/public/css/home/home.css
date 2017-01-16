@@ -214,8 +214,11 @@ a.raised:hover { text-decoration: underline; color: #4bf; }
 .navbar-custom .nav li a.login:hover,
 .navbar-custom .nav li a.login:focus { background: #fafafa; }
 
+.navbar .visible-small { display: none; }
+
 @media (max-width: 768px) {
 	.navbar .navbar-brand { width: 100%; text-align: center; }
+  .navbar .visible-small { display: inline-block; }
 }
 
 @media (max-width: 1199px) {
