@@ -299,8 +299,8 @@ app.controller("BugtrackerController", ["$http", "$location", "notificationFacto
     };
 
   $scope.editTicket = function(ticket) {
-    var elem = {"title": ticket.title,
-                "description": ticket.description ? ticket.description : null,
+    var elem = {"title": $scope.data.edit.title,
+                "description": $scope.data.edit.description ? $scope.data.edit.description : null,
                 "clientOrigin": false,
                 "addTags": [],
                 "removeTags" : $scope.data.tagToRemove.length ? $scope.data.tagToRemove : [],
