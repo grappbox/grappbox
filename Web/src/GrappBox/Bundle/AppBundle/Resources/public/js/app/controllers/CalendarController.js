@@ -52,7 +52,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
   var _getTeamMembers = function(project_id) {
     var deferred = $q.defer();
 
-    $http.get($rootScope.api.url + "/projects/getusertoproject/" + $rootScope.user.token + "/" + project_id).then(
+    $http.get($rootScope.api.url + "/project/users/" + project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetTeamMembersSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -111,18 +111,18 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
   var _getUserProjects = function() {
     var deferred = $q.defer();
 
-    $http.get($rootScope.api.url + "/user/getprojects/" + $rootScope.user.token).then(
+    $http.get($rootScope.api.url + "/dashboard/projects", { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetProjectsSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
-            case "1.7.1":
+            case "1.2.1":
             $scope.data.projects = response.data.data.array;
             for (var i = 0; i < $scope.data.projects.length; ++i)
               _getTeamMembers($scope.data.projects[i].id);
             deferred.resolve();
             break;
 
-            case "1.7.3":
+            case "1.2.3":
             $scope.data.projects = [];
             deferred.resolve();
             break;
@@ -141,7 +141,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
       function onGetProjectsFail(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
-            case "7.7.3":
+            case "7.1.3":
             $rootScope.reject();
             deferred.reject();
             break;
@@ -161,58 +161,6 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
     return deferred.promise;
   };
 
-  // Routine definition
-  // Get event types
-  var _getEventTypes = function() {
-    var deferred = $q.defer();
-
-    $http.get($rootScope.api.url + "/event/gettypes/" + $rootScope.user.token).then(
-      function onGetTypesSuccess(response) {
-        if (response.data.info) {
-          switch(response.data.info.return_code) {
-            case "1.5.1":
-            $scope.data.types = response.data.data.array;
-            deferred.resolve();
-            break;
-
-            case "1.5.3":
-            $scope.data.types = [];
-            deferred.resolve();
-            break;
-
-            default:
-            notificationFactory.error();
-            deferred.reject();
-            break;
-          }
-        }
-        else {
-          notificationFactory.error();
-          deferred.reject();
-        }
-      },
-      function onGetTypesFail(response) {
-        if (response.data.info) {
-          switch(response.data.info.return_code) {
-            case "5.1.3":
-            deferred.reject();
-            $rootScope.reject();
-            break;
-
-            default:
-            deferred.reject();            
-            notificationFactory.error();
-            break;
-          }
-        }
-        else {
-          deferred.reject();          
-          notificationFactory.error();
-        }
-      }
-    );
-    return deferred.promise;
-  };
 
   // Routine definition
   // Find project position in array by ID
@@ -226,7 +174,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
   // Routine definition
   // Get user month planning (based on given start date)
   var _getUserPlanning = function(mode, date) {
-    $http.get($rootScope.api.url + "/planning/get" + mode + "/" + $rootScope.user.token + "/" + date).then(
+    $http.get($rootScope.api.url + "/planning/" + mode + "/" + date, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function onGetPlanningSuccess(response) {
         if (response.data.info) {
           switch(response.data.info.return_code) {
@@ -241,8 +189,6 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
                   id: events[i].id,
                   projectId: (events[i].projectId ? events[i].projectId : null),
                   projectName: (events[i].projectId ? $scope.data.projects[_getProjectIndex(events[i].projectId)].name : null),
-                  typeName: events[i].type.name,
-                  typeId: events[i].type.id,
                   title: events[i].title,
                   description: events[i].description,
                   startsAt: moment(events[i].beginDate.date).toDate(),
@@ -291,35 +237,27 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
   $scope.view.authorized = true;
   $scope.view.valid = true;
 
-/*  var userProjects_promise = _getUserProjects();
+  var userProjects_promise = _getUserProjects();
   userProjects_promise.then(
     function onGetUserProjectSuccess() {
-      var eventTypes_promise = _getEventTypes();
-      eventTypes_promise.then(
-        function onGetEventTypesSuccess() {
-          $scope.view.load = false;*/
+      $scope.view.load = false;
 
-          /* ==================== REFRESH OBJECT (EVENT) ==================== */
+      /* ==================== REFRESH OBJECT (EVENT) ==================== */
 
-          // "Previous/Today/Next" button handler
-/*          $scope.action.onRefreshView = function() {
-            _getUserPlanning((vm.mode == "year" ? "month" : vm.mode), moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
-          };
-*/
-          // Calendar mode (day/week/month/year) change watch
-/*          $scope.$watch("vm.mode", function() {
-            $scope.action.onRefreshView();
-          });
-        },
-        function onGetEventTypesFail() {
-          $scope.view.valid = false;
-        }
-      ),
-      function onGetUserProjectFail() {
-        $scope.view.valid = false;
-      }
+      // "Previous/Today/Next" button handler
+      $scope.action.onRefreshView = function() {
+        _getUserPlanning((vm.mode == "year" ? "month" : vm.mode), moment($scope.view.date).startOf("month").format("YYYY-MM-DD"));
+      };
+
+      // Calendar mode (day/week/month/year) change watch
+      $scope.$watch("vm.mode", function() {
+        $scope.action.onRefreshView();
+      });
+    },
+    function onGetUserProjectFail() {
+      $scope.view.valid = false;
     }
-  );*/
+  );
 
 
 
@@ -351,23 +289,21 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
     var modal_newEvent = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_createNewEvent.html", controller: "modal_createNewEvent" });
     modal_newEvent.result.then(
       function onModalConfirm() {
-        $http.post($rootScope.api.url + "/event/postevent", {
+        $http.post($rootScope.api.url + "/event", {
         data: {
-          token: $rootScope.user.token,
           projectId: ($scope.new.project ? $scope.new.project.id : null),
           title: $scope.new.title,
           description: $scope.new.description,
           begin: $scope.new.date.begin,
           end: $scope.new.date.end,
-          typeId: $scope.new.type.id,
-          icon: "DATA" // TEMP
-        }}).then(
+          users: [],
+        }}, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onPostEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
               notificationFactory.error();
             else
               notificationFactory.success("Event created.");
-            $scope.action.onRefreshView();      
+            $scope.action.onRefreshView();
           },
           function onPostEventFail(response) {
             if (response.data.info)
@@ -377,7 +313,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
                 break;
 
                 case "5.4.9":
-                Notification.warning("You don't have sufficient rights to perform this operation.");
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
@@ -403,15 +339,15 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
     var modal_editEvent = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "modal_editEvent.html", controller: "modal_editEvent" });
     modal_editEvent.result.then(
       function onModalConfirm() {
-        $http.put($rootScope.api.url + "/event/editevent", {
+        $http.put($rootScope.api.url + "/event/" + $scope.edit.id, {
         data: (!$scope.edit.project.id ?
-          { token: $rootScope.user.token, eventId: $scope.edit.id, title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, typeId: $scope.edit.type.id, icon: "DATA" } : 
-          { token: $rootScope.user.token, eventId: $scope.edit.id, title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, typeId: $scope.edit.type.id, icon: "DATA", projectId: $scope.edit.project.id })}).then(
+          { title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, icon: "DATA" } : 
+          { title: $scope.edit.title, description: $scope.edit.description, begin: $scope.edit.date.begin, end: $scope.edit.date.end, icon: "DATA", projectId: $scope.edit.project.id })}, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onPutEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
               notificationFactory.error();
             else
-              Notification.success({ message: "Event successfully edited.", delay: 2000 });
+              notificationFactory.success("Event edited.");
             $scope.action.onRefreshView();      
           },
           function onPutEventFail(response) {
@@ -422,7 +358,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
                 break;
 
                 case "5.5.9":
-                Notification.warning("You don't have sufficient rights to perform this operation.");
+                notificationFactory.warning("You don't have sufficient rights to perform this operation.");
                 break;
 
                 default:
@@ -445,7 +381,7 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
     var modal_deleteEvent = $uibModal.open({ animation: true, size: "lg", backdrop: "static", windowClass: "submodal", templateUrl: "modal_deleteEvent.html", controller: "modal_deleteEvent" });
     modal_deleteEvent.result.then(
       function onModalConfirm(data) {
-        $http.delete($rootScope.api.url + "/event/delevent/" + $rootScope.user.token + "/" + event.id).then(
+        $http.delete($rootScope.api.url + "/event/" + event.id, { headers: { 'Authorization': $rootScope.user.token }}).then(
           function onDeleteEventSuccess(response) {
             if (response.data.info && response.data.info.return_code !== "1.5.1")
               notificationFactory.error();
@@ -484,14 +420,13 @@ app.controller("CalendarController", ["$http", "moment", "$q", "notificationFact
 *
 */
 app.controller("modal_createNewEvent", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-  $scope.error = { title: false, description: false, date_begin: false, date_end: false, type: false };
+  $scope.error = { title: false, description: false, date_begin: false, date_end: false };
 
   $scope.modal_confirmEventCreation = function() {
     $scope.error.title = ($scope.new.title && $scope.new.title.length > 0 ? false : true);
     $scope.error.description = ($scope.new.description && $scope.new.description.length > 0 ? false : true);
     $scope.error.date_begin = ($scope.new.date.begin && $scope.new.date.begin !== "" ? false : true);
     $scope.error.date_end = ($scope.new.date.end && $scope.new.date.end !== "" ? false : true);
-    $scope.error.type = ($scope.new.type && Object.keys($scope.new.type).length > 0 ? false : true);
 
     var hasErrors = false;
     angular.forEach($scope.error, function(value, key) {
@@ -512,14 +447,13 @@ app.controller("modal_createNewEvent", ["$scope", "$uibModalInstance", function(
 *
 */
 app.controller("modal_editEvent", ["$scope", "$uibModalInstance", function($scope, $uibModalInstance) {
-  $scope.error = { title: false, description: false, date_begin: false, date_end: false, type: false };
+  $scope.error = { title: false, description: false, date_begin: false, date_end: false };
 
   $scope.modal_confirmEventEdition = function() {
     $scope.error.title = ($scope.edit.title && $scope.edit.title.length > 0 ? false : true);
     $scope.error.description = ($scope.edit.description && $scope.edit.description.length > 0 ? false : true);
     $scope.error.date_begin = ($scope.edit.date.begin && $scope.edit.date.begin !== "" ? false : true);
     $scope.error.date_end = ($scope.edit.date.end && $scope.edit.date.end !== "" ? false : true);
-    $scope.error.type = ($scope.edit.type && Object.keys($scope.edit.type).length > 0 ? false : true);
 
     var hasErrors = false;
     angular.forEach($scope.error, function(value, key) {

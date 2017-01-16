@@ -3,94 +3,88 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Calendar -->
-<div class="page-header construction construction-center {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
-
-<!-- <div class="panel panel-default">
-  <div class="panel-heading">View and organize your meetings.</div>
-  <div class="panel-body">
-    <p>
-      Each GrappBox account comes with a <strong>fully-equipped calendar</strong>, allowing you to easily organize all your meetings and appointments.<br>Use the navigation controls to switch between days, weeks, months and even years view. You can add an event with the <strong>"Add"</strong> button.
-    </p>
+<section class="calendar">
+  <div class="page-header big {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/calendar.svg" width="300" height="auto" alt="Calendar">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Calendar</h1>
+      <p>Each GrappBox account comes with a <strong>fully-equipped calendar</strong>, allowing you to easily organize all your meetings and appointments. Use the navigation controls to switch between days, weeks, months and even years view.</p>
+      <a href="" class="btn btn-raised {[{ ::path.colors[path.current] + '-color' }]}" data-ng-click="action.onNewEvent()" data-ng-if="view.authorized" title="Create a new event">Schedule a new event</a>
+    </div>
+    <div class="clearfix"></div>
   </div>
-</div>
- -->
-<!-- calendar: new event fixed button -->
-<!-- <section>
-  <a href="" class="btn btn-danger btn-fab btn-fixed" title="Create a new event" data-ng-click="action.onNewEvent()" data-ng-if="view.authorized"><i class="material-icons">add</i></a>
-</section> -->
 
-<!-- calendar: navigation and view -->
-<!-- <section id="calendar">
-  <div class="row">
-    <div class="col-lg-12">
-      <div data-ng-if="view.onLoad">
-        <div class="spinner section">
-          <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
-        </div>
-      </div>
-      <div data-ng-if="!view.onLoad">
-        <div data-ng-if="view.authorized">
-          <div data-ng-if="view.valid">
-            <div class="well">
-              <h3 class="col-md-12 col-xs-12 head">{[{ vm.title }]}</h3>
-              <div class="col-md-12 col-xs-12 action">
-                <ul>
-                  <li><a href="" class="btn {[{ vm.mode == 'day' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'day'">Day</a></li>
-                  <li><a href="" class="btn {[{ vm.mode == 'week' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'week'">Week</a></li>
-                  <li><a href="" class="btn {[{ vm.mode == 'month' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'month'">Month</a></li>
-                  <li><a href="" class="btn {[{ vm.mode == 'year' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'year'">Year</a></li>
-                  <li>
-                    <a href="" class="btn btn-info" mwl-date-modifier date="vm.date" decrement="vm.mode" data-ng-click="action.onRefreshView()"><i class="material-icons">keyboard_arrow_left</i>Previous</a>
-                  </li>
-                  <li>
-                    <a href="" class="btn" mwl-date-modifier date="vm.date" set-to-today data-ng-click="action.onRefreshView()">Today</a>
-                  </li>
-                  <li>
-                    <a href="" class="btn btn-info" mwl-date-modifier date="vm.date" increment="vm.mode" data-ng-click="action.onRefreshView()">Next<i class="material-icons">keyboard_arrow_right</i></a>
-                  </li>
-                </ul>
-              </div>
-
-              <div class="calendar-wrapper">
-                <mwl-calendar
-                  events="vm.events"
-                  view="vm.mode"
-                  view-title="vm.title"
-                  view-date="vm.date"
-                  edit-event-html="'<a class=\'btn\'>Edit</a>'"
-                  delete-event-html="'<a class=\'btn btn-default\'>Delete</a>'"
-                  on-event-click="action.onEditEvent(calendarEvent)"
-                  on-edit-event-click="action.onEditEvent(calendarEvent)"
-                  on-delete-event-click="action.onDeleteEvent(calendarEvent)"
-                  cell-is-open="vm.cellOpen"
-                  day-view-start="00:00"
-                  day-view-end="23:00"
-                  day-view-split="30">
-                </mwl-calendar>
-              </div>
-            </div>
-          </div>
-          <div data-ng-if="!view.onLoad && !view.valid">
-            <div class="well text-center">
-              <p><i class="material-icons">clear</i><br>An error has occurred. Please try again.</p>
-            </div>
-          </div>
-        </div>
-        <div data-ng-if="!view.authorized">
-          <div class="well text-center">
-            <p><i class="material-icons">block</i><br>You don't have sufficient rights to perform this operation.</p>
-          </div>
-        </div>
-      </div>          
+  <div data-ng-if="view.load">
+    <div class="spinner section">
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
     </div>
   </div>
-</section> -->
+  <div data-ng-if="!view.load">
+    <div data-ng-if="view.valid && view.authorized">
+      <div class="box-row">
+        <div class="box">
+          <h3 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 head text-center">{[{ vm.title }]}</h3>
+          <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 action text-center">
+            <ul>
+<!--               <li><a href="" class="btn {[{ vm.mode == 'day' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'day'">Day</a></li>
+              <li><a href="" class="btn {[{ vm.mode == 'week' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'week'">Week</a></li>
+              <li><a href="" class="btn {[{ vm.mode == 'month' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'month'">Month</a></li>
+              <li><a href="" class="btn {[{ vm.mode == 'year' ? 'btn-default active' : '' }]}" data-ng-model="vm.mode" uib-btn-radio="'year'">Year</a></li> -->
+              <li>
+                <a href="" class="btn gray-color gray-background-hover" mwl-date-modifier date="vm.date" decrement="vm.mode" data-ng-click="action.onRefreshView()">Previous</a>
+              </li>
+              <li>
+                <a href="" class="btn btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]}" mwl-date-modifier date="vm.date" set-to-today data-ng-click="action.onRefreshView()">Today</a>
+              </li>
+              <li>
+                <a href="" class="btn gray-color gray-background-hover" mwl-date-modifier date="vm.date" increment="vm.mode" data-ng-click="action.onRefreshView()">Next</a>
+              </li>
+            </ul>
+          </div>
+
+          <div class="calendar-wrapper">
+            <mwl-calendar
+              events="vm.events"
+              view="vm.mode"
+              view-title="vm.title"
+              view-date="vm.date"
+              edit-event-html="'<a class=\'btn gray-color gray-background-hover\'>Edit</a>'"
+              delete-event-html="'<a class=\'btn red-color red-background-hover\'>Delete</a>'"
+              on-event-click="action.onEditEvent(calendarEvent)"
+              on-edit-event-click="action.onEditEvent(calendarEvent)"
+              on-delete-event-click="action.onDeleteEvent(calendarEvent)"
+              cell-is-open="vm.cellOpen"
+              day-view-start="00:00"
+              day-view-end="23:00"
+              day-view-split="30">
+            </mwl-calendar>
+          </div>
+        </div>
+      </div>
+      <div data-ng-if="view.valid && !view.authorized">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+      <div data-ng-if="!view.valid">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
+      </div>
+    </div>
+  </div>
+</section>
 
 <!-- calendar: event creation modal -->
-<!-- <div>
+<div>
   <script type="text/ng-template" id="modal_createNewEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventCreation()">×</button>
@@ -123,12 +117,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <input type="datetime-local" class="form-control" id="new-event-end-date" data-ng-model="new.date.end" placeholder="End date">
             </div>
           </div>
-          <div class="form-group {[{ error.type ? 'has-error' : '' }]}">
-            <label for="new-event-type" class="col-md-1 control-label">Event type</label>
-            <div class="col-md-11">
-              <select class="form-control" id="new-event-type" data-ng-options="type.name for type in data.types track by type.id" data-ng-model="new.type"></select>
-            </div>
-          </div>
           <div class="form-group {[{ error.project ? 'has-error' : '' }]}">
             <label for="new-event-project" class="col-md-1 control-label">Project</label>
             <div class="col-md-11">
@@ -147,14 +135,14 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventCreation()">Create</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelEventCreation()">Cancel</button>
+      <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="modal_cancelEventCreation()">Cancel</button>
+      <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="modal_confirmEventCreation()">Create</button>
     </div>
   </script>
-</div> -->
+</div>
 
 <!-- calendar: event edition modal -->
-<!-- <div>
+<div>
   <script type="text/ng-template" id="modal_editEvent.html">
     <div class="modal-header">
       <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventEdition()">×</button>
@@ -187,12 +175,6 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
               <input type="datetime-local" class="form-control" id="edit-event-end-date" data-ng-model="edit.date.end" placeholder="End date">
             </div>
           </div>
-          <div class="form-group {[{ error.type ? 'has-error' : '' }]}">
-            <label for="edit-event-type" class="col-md-1 control-label">Event type</label>
-            <div class="col-md-11">
-              <select class="form-control" id="edit-event-type" data-ng-options="type.name for type in data.types track by type.id" data-ng-model="edit.type"></select>
-            </div>
-          </div>
           <div class="form-group {[{ error.project ? 'has-error' : '' }]}">
             <label for="edit-event-project" class="col-md-1 control-label">Project</label>
             <div class="col-md-11">
@@ -211,25 +193,25 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
       </form>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventEdition()">Update</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelEventEdition()">Cancel</button>
+      <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="modal_cancelEventEdition()">Cancel</button>
+      <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="modal_confirmEventEdition()">Update</button>
     </div>
   </script>
 </div>
- -->
+
 <!-- calendar: event deletion modal -->
-<!-- <div>
+<div>
   <script type="text/ng-template" id="modal_deleteEvent.html">
     <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelEventDeletion()">×</button>
+      <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="modal_cancelEventDeletion()">×</button>
       <h4 class="modal-title">Event deletion</h4>
     </div>
     <div class="modal-body">
     <p>Are you sure you want to delete this event?</p>
     </div>
     <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmEventDeletion()">Yes</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelEventDeletion()">No</button>
+      <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="modal_cancelEventDeletion()">Cancel</button>
+      <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="modal_confirmEventDeletion()">Delete</button>
     </div>
   </script>
 </div>
