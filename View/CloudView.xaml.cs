@@ -4,7 +4,6 @@ using Grappbox.Model;
 using Grappbox.ViewModel;
 using System;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Activation;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation.Metadata;
 using Windows.Storage;
@@ -32,6 +31,9 @@ namespace Grappbox.View
         CoreApplicationView view;
         CloudViewModel vm = CloudViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CloudView"/> class.
+        /// </summary>
         public CloudView()
         {
             this.InitializeComponent();
@@ -80,17 +82,31 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
         }
         #endregion
 
+        /// <summary>
+        /// Handles the Click event of the AddFolder control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddFolder_Click(object sender, RoutedEventArgs e)
         {
             CloudFolder dialog = new CloudFolder();
             await dialog.ShowAsync();
         }
 
+        /// <summary>
+        /// Handles the Click event of the UploadFile control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void UploadFile_Click(object sender, RoutedEventArgs e)
         {
             FileOpenPicker openPicker = new FileOpenPicker();
@@ -107,6 +123,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Storages the file to base64.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         private async Task<string> StorageFileToBase64(StorageFile file)
         {
             string Base64String = string.Empty;
@@ -124,6 +145,11 @@ namespace Grappbox.View
             return Base64String;
         }
 
+        /// <summary>
+        /// Handles the DownloadClick event of the MenuFlyoutItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void MenuFlyoutItem_DownloadClick(object sender, RoutedEventArgs e)
         {
             if (vm.FileSelect.IsSecured)
@@ -136,6 +162,11 @@ namespace Grappbox.View
             await vm.downloadFile();
         }
 
+        /// <summary>
+        /// Handles the DeleteClick event of the MenuFlyoutItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void MenuFlyoutItem_DeleteClick(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("YellowGrappboxBrush"));
@@ -147,6 +178,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the PreviousFolder control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void PreviousFolder_Click(object sender, RoutedEventArgs e)
         {
             if (vm.FullPath.Count > 0)
@@ -166,6 +202,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the Home control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Home_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("YellowGrappboxBrush"));
@@ -178,6 +219,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Holding event of the Grid control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="HoldingRoutedEventArgs"/> instance containing the event data.</param>
         private void Grid_Holding(object sender, HoldingRoutedEventArgs e)
         {
             FrameworkElement senderElement = sender as FrameworkElement;
@@ -187,6 +233,11 @@ namespace Grappbox.View
             vm.FileSelect = (sender as Grid).DataContext as CloudModel;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the listView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="TappedRoutedEventArgs"/> instance containing the event data.</param>
         private async void listView_SelectionChanged(object sender, TappedRoutedEventArgs e)
         {
             vm.FileSelect = (sender as Grid).DataContext as CloudModel;
@@ -211,6 +262,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the InfoClick event of the MenuFlyoutItem control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void MenuFlyoutItem_InfoClick(object sender, RoutedEventArgs e)
         {
             CloudInfos dialoginfo = new CloudInfos();

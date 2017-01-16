@@ -35,11 +35,18 @@ namespace Grappbox.View
 
         static private UserView instance = null;
 
+        /// <summary>
+        /// Gets the user view instance.
+        /// </summary>
+        /// <returns></returns>
         static public UserView GetUser()
         {
             return instance;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserView"/> class.
+        /// </summary>
         public UserView()
         {
             this.InitializeComponent();
@@ -51,6 +58,10 @@ namespace Grappbox.View
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
@@ -74,6 +85,11 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Update control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Update_Click(object sender, RoutedEventArgs e)
         {
             if (! string.IsNullOrEmpty(password))
@@ -89,6 +105,11 @@ namespace Grappbox.View
                 await vm.updateAPI();
         }
 
+        /// <summary>
+        /// Handles the Click event of the Password control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void Password_Click(object sender, RoutedEventArgs e)
         {
             if (isPasswordVisible == false)
@@ -148,6 +169,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the Img control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void Img_Click(object sender, RoutedEventArgs e)
         {
             ImagePath = string.Empty;
@@ -183,6 +209,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Storages the file to base64.
+        /// </summary>
+        /// <param name="file">The file.</param>
+        /// <returns></returns>
         private async Task<string> StorageFileToBase64(StorageFile file)
         {
             string Base64String = string.Empty;
@@ -200,6 +231,11 @@ namespace Grappbox.View
             return Base64String;
         }
 
+        /// <summary>
+        /// Affs the message.
+        /// </summary>
+        /// <param name="isError">if set to <c>true</c> [is error].</param>
+        /// <param name="message">The message.</param>
         public async void affMessage(bool isError, string message)
         {
             if (isError == true)
@@ -220,11 +256,21 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the GotFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             AppBar.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Handles the LostFocus event of the TextBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void TextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             AppBar.Visibility = Visibility.Visible;

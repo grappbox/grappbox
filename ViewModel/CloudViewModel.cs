@@ -23,6 +23,10 @@ using System.Threading.Tasks;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// Cloud view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     class CloudViewModel : ViewModelBase
     {
         static private CloudViewModel instance = null;
@@ -43,6 +47,10 @@ namespace Grappbox.ViewModel
         private CoreApplicationView _view;
         private CancellationTokenSource _cts;
 
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public CloudViewModel GetViewModel()
         {
             if (instance != null)
@@ -50,6 +58,10 @@ namespace Grappbox.ViewModel
             else
                 return new CloudViewModel();
         }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CloudViewModel"/> class.
+        /// </summary>
         public CloudViewModel()
         {
             _view = CoreApplication.GetCurrentView();
@@ -57,6 +69,9 @@ namespace Grappbox.ViewModel
             instance = this;
         }
 
+        /// <summary>
+        /// Transforms the full path to path.
+        /// </summary>
         private void transformFullPathToPath()
         {
             _path = null;
@@ -71,6 +86,9 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Transforms the full path to path with slash.
+        /// </summary>
         private void transformFullPathToPathWithSlash()
         {
             _path = "/";
@@ -85,7 +103,11 @@ namespace Grappbox.ViewModel
         }
 
         #region API
-        #region GET
+        #region GET        
+        /// <summary>
+        /// Gets the ls.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getLS()
         {
             if (_fileSelect != null && _fileSelect.Filename == "Safe" && _fileSelect.Type == "dir" && string.IsNullOrEmpty(_passwordSafe))
@@ -136,6 +158,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Downloads the file.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task downloadFile()
         {
             transformFullPathToPath();
@@ -189,6 +215,10 @@ namespace Grappbox.ViewModel
             FullPath.RemoveAt(FullPath.Count - 1);
         }
 
+        /// <summary>
+        /// Downloads the file secure.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task downloadFileSecure()
         {
             transformFullPathToPath();
@@ -243,7 +273,11 @@ namespace Grappbox.ViewModel
         }
         #endregion GET
 
-        #region POST
+        #region POST        
+        /// <summary>
+        /// Creates the dir.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> createDir()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -269,6 +303,11 @@ namespace Grappbox.ViewModel
             return false;
         }
 
+        /// <summary>
+        /// Uploads the file.
+        /// </summary>
+        /// <param name="fileName">Name of the file.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task uploadFile(string fileName)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -306,7 +345,11 @@ namespace Grappbox.ViewModel
         }
         #endregion POST
 
-        #region PUT
+        #region PUT        
+        /// <summary>
+        /// Uploads this instance.
+        /// </summary>
+        /// <returns></returns>
         private async System.Threading.Tasks.Task upload()
         {
             if (_currentChunk < _chunkNumber && _fileData != null)
@@ -358,7 +401,11 @@ namespace Grappbox.ViewModel
         }
         #endregion PUT
 
-        #region DELETE
+        #region DELETE        
+        /// <summary>
+        /// Closes the stream.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task closeStream()
         {
             object[] token = { SessionHelper.GetSession().ProjectId, _streamId };
@@ -378,6 +425,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Deletes the file.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task deleteFile()
         {
             transformFullPathToPath();
@@ -454,7 +505,12 @@ namespace Grappbox.ViewModel
             get { return _listFile; }
         }
 
-        #region Download functions
+        #region Download functions        
+        /// <summary>
+        /// Handles the download asynchronous.
+        /// </summary>
+        /// <param name="download">The download.</param>
+        /// <returns></returns>
         private async System.Threading.Tasks.Task HandleDownloadAsync(DownloadOperation download)
         {
             try
@@ -483,7 +539,10 @@ namespace Grappbox.ViewModel
             
         }
 
-        // Note that this event is invoked on a background thread, so we cannot access the UI directly.
+        /// <summary>
+        /// Downloads the progress.
+        /// </summary>
+        /// <param name="download">The download.</param>
         private void DownloadProgress(DownloadOperation download)
         {
             // DownloadOperation.Progress is updated in real-time while the operation is ongoing. Therefore,
@@ -510,6 +569,16 @@ namespace Grappbox.ViewModel
                 // download.GetResultStreamAt(0);
             }
         }
+
+        /// <summary>
+        /// Determines whether [is exception handled] [the specified title].
+        /// </summary>
+        /// <param name="title">The title.</param>
+        /// <param name="ex">The ex.</param>
+        /// <param name="download">The download.</param>
+        /// <returns>
+        ///   <c>true</c> if [is exception handled] [the specified title]; otherwise, <c>false</c>.
+        /// </returns>
         private bool IsExceptionHandled(string title, Exception ex, DownloadOperation download = null)
         {
             WebErrorStatus error = BackgroundTransferError.GetStatus(ex.HResult);

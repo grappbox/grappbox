@@ -14,6 +14,10 @@ using Windows.Web.Http;
 
 namespace Grappbox.ViewModel
 {
+    /// <summary>
+    /// Project settings view model
+    /// </summary>
+    /// <seealso cref="Grappbox.ViewModel.ViewModelBase" />
     public class ProjectSettingsViewModel : ViewModelBase
     {
         static private ProjectSettingsViewModel instance = null;
@@ -27,6 +31,10 @@ namespace Grappbox.ViewModel
         private ProjectRoleModel _roleSelected = new ProjectRoleModel();
         private ProjectRoleModel _role = new ProjectRoleModel();
 
+        /// <summary>
+        /// Gets the view model.
+        /// </summary>
+        /// <returns></returns>
         static public ProjectSettingsViewModel GetViewModel()
         {
             if (instance != null)
@@ -35,14 +43,21 @@ namespace Grappbox.ViewModel
                 return new ProjectSettingsViewModel();
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProjectSettingsViewModel"/> class.
+        /// </summary>
         public ProjectSettingsViewModel()
         {
             instance = this;
             _role = new ProjectRoleModel();
         }
 
-        #region CustomerAccess
-
+        #region CustomerAccess        
+        /// <summary>
+        /// Adds the customer access.
+        /// </summary>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task addCustomerAccess(string name)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -63,6 +78,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Regenerates the customer access.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task regenerateCustomerAccess()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -83,6 +102,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Gets the customer accesses.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getCustomerAccesses()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -99,6 +122,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Removes the customer access.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task removeCustomerAccess()
         {
             if (_customerSelected != null)
@@ -136,11 +163,13 @@ namespace Grappbox.ViewModel
                 }
             }
         }
-
         #endregion CustomerAccess
 
-        #region ProjectRole
-
+        #region ProjectRole        
+        /// <summary>
+        /// Adds the role.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> addRole()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -172,6 +201,10 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Updates the role.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> updateRole()
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -210,6 +243,10 @@ namespace Grappbox.ViewModel
             return true;
         }
 
+        /// <summary>
+        /// Roles the specified role selected.
+        /// </summary>
+        /// <param name="roleSelected">The role selected.</param>
         public void role(ProjectRoleModel roleSelected)
         {
             _role = roleSelected;
@@ -217,6 +254,12 @@ namespace Grappbox.ViewModel
             notifySimpleRole();
         }
 
+        /// <summary>
+        /// Assigns the user role.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="roleId">The role identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> assignUserRole(int userId, int roleId)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -236,6 +279,12 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Removes the user role.
+        /// </summary>
+        /// <param name="userId">The user identifier.</param>
+        /// <param name="roleId">The role identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<bool> removeUserRole(int userId, int roleId)
         {
 
@@ -253,11 +302,18 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Sets the role.
+        /// </summary>
+        /// <param name="model">The model.</param>
         public void setRole(ProjectRoleModel model)
         {
             _role = model;
         }
 
+        /// <summary>
+        /// Notifies the simple role.
+        /// </summary>
         private void notifySimpleRole()
         {
             NotifyPropertyChanged("RoleName");
@@ -272,6 +328,10 @@ namespace Grappbox.ViewModel
             NotifyPropertyChanged("Cloud");
         }
 
+        /// <summary>
+        /// Gets the roles.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getRoles()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -288,6 +348,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Removes the role.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task removeRole()
         {
             if (_roleSelected != null)
@@ -460,7 +524,10 @@ namespace Grappbox.ViewModel
         #endregion ProjectRole
 
         #region ProjectSettings
-
+        /// <summary>
+        /// Gets the project logo.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getProjectLogo()
         {
             //await _projectSettingsModel.LogoUpdate();
@@ -468,6 +535,12 @@ namespace Grappbox.ViewModel
             //NotifyPropertyChanged("Logo");
         }
 
+        /// <summary>
+        /// Updates the project settings.
+        /// </summary>
+        /// <param name="oldPassword">The old password.</param>
+        /// <param name="newPassword">The new password.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task updateProjectSettings(string oldPassword = null, string newPassword = null)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -519,6 +592,11 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Creates the project.
+        /// </summary>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task createProject(string password)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -579,6 +657,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Gets the project settings.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getProjectSettings()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -595,6 +677,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Deletes the project.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task deleteProject()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -617,6 +703,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Retrieves the project.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task retrieveProject()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -639,6 +729,9 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Notifies the project settings.
+        /// </summary>
         private void notifyProjectSettings()
         {
             NotifyPropertyChanged("Name");
@@ -809,8 +902,12 @@ namespace Grappbox.ViewModel
 
         #endregion ProjectSettings
 
-        #region ProjectUser
-
+        #region ProjectUser        
+        /// <summary>
+        /// Adds the project user.
+        /// </summary>
+        /// <param name="email">The email.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task addProjectUser(string email)
         {
             Dictionary<string, object> props = new Dictionary<string, object>();
@@ -832,6 +929,10 @@ namespace Grappbox.ViewModel
             props.Clear();
         }
 
+        /// <summary>
+        /// Gets the project users.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task getProjectUsers()
         {
             object[] token = { SessionHelper.GetSession().ProjectId };
@@ -848,6 +949,11 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Gets the user role.
+        /// </summary>
+        /// <param name="id">The identifier.</param>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task<ProjectRoleModel> getUserRole(int id)
         {
             object[] token = { SessionHelper.GetSession().ProjectId, id };
@@ -865,6 +971,10 @@ namespace Grappbox.ViewModel
             }
         }
 
+        /// <summary>
+        /// Removes the project user.
+        /// </summary>
+        /// <returns></returns>
         public async System.Threading.Tasks.Task removeProjectUser()
         {
             if (_userSelected != null)
