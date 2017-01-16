@@ -1,10 +1,6 @@
 ﻿using Grappbox.CustomControls;
 using Grappbox.Helpers;
-using Grappbox.Model;
 using Grappbox.ViewModel;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
 using System.Linq;
 using Windows.Foundation.Metadata;
 using Windows.Graphics.Display;
@@ -20,8 +16,11 @@ using Grappbox.CustomControls.Stats;
 namespace Grappbox.View
 {
     /// <summary>
-    /// Une page vide peut être utilisée seule ou constituer une page de destination au sein d'un frame.
+    /// Project Dashboard page view
     /// </summary>
+    /// <seealso cref="Windows.UI.Xaml.Controls.Page" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector2" />
     public sealed partial class DashBoardView : Page
     {
         private PivotItem team;
@@ -34,6 +33,9 @@ namespace Grappbox.View
         private DashBoardViewModel dvm = DashBoardViewModel.GetViewModel();
         private StatsViewModel svm = StatsViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DashBoardView"/> class.
+        /// </summary>
         public DashBoardView()
         {
             this.InitializeComponent();
@@ -43,10 +45,9 @@ namespace Grappbox.View
         }
 
         /// <summary>
-        /// Invoqué lorsque cette page est sur le point d'être affichée dans un frame.
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
         /// </summary>
-        /// <param name="e">Données d’événement décrivant la manière dont l’utilisateur a accédé à cette page.
-        /// Ce paramètre est généralement utilisé pour configurer la page.</param>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             //Mobile customization
@@ -65,45 +66,81 @@ namespace Grappbox.View
             loader.ShowAsync();
             await this.dvm.InitialiseAsync();
             await svm.getAllStats();
-            team = CreateOccupationTab();
-            meetings = CreateMeetingsTab();
-            projectStats = CreateProjectTab();
-            bugtrackerStats = CreateBugtrackerTab();
-            tasksStats = CreateTasksTab();
-            talksStats = CreateTalksTab();
-            customerAccessStats = CreateCustomerAccessTab();
             InitializePivot();
             loader.Hide();
         }
 
+
+        /// <summary>
+        /// Initializes the pivot.
+        /// </summary>
         private void InitializePivot()
         {
             DbPivot?.Items?.Clear();
             foreach (var m in DashBoardViewModel.ModularList)
             {
-                if (m.DisplayName == "Occupation" && m.Selected == true && DbPivot?.Items.Contains(this.team) == false)
-                    DbPivot?.Items?.Add(this.team);
-                if (m.DisplayName == "Meeting" && m.Selected == true && DbPivot?.Items.Contains(this.meetings) == false)
-                    DbPivot?.Items?.Add(this.meetings);
-                if (m.DisplayName == "Project Stats" && m.Selected == true && DbPivot?.Items.Contains(this.projectStats) == false)
-                    DbPivot?.Items?.Add(this.projectStats);
-                if (m.DisplayName == "Bugtracker Stats" && m.Selected == true && DbPivot?.Items.Contains(this.bugtrackerStats) == false)
-                    DbPivot?.Items?.Add(this.bugtrackerStats);
-                if (m.DisplayName == "Tasks Stats" && m.Selected == true && DbPivot?.Items.Contains(this.tasksStats) == false)
-                    DbPivot?.Items?.Add(this.tasksStats);
-                if (m.DisplayName == "Talks Stats" && m.Selected == true && DbPivot?.Items.Contains(this.talksStats) == false)
-                    DbPivot?.Items?.Add(this.talksStats);
-                if (m.DisplayName == "Customer Access Stats" && m.Selected == true && DbPivot?.Items.Contains(this.customerAccessStats) == false)
-                    DbPivot?.Items?.Add(this.customerAccessStats);
+                if (m.Selected == true)
+                {
+                    switch (m.DisplayName)
+                    {
+                        case "Occupation":
+                            team = CreateOccupationTab();
+                            if (!DbPivot.Items.Contains(this.team))
+                                DbPivot.Items.Add(this.team);
+                            break;
+                        case "Meeting":
+                            meetings = CreateMeetingsTab();
+                            if (!DbPivot.Items.Contains(this.meetings))
+                                DbPivot.Items.Add(this.meetings);
+                            break;
+                        case "Project Stats":
+                            projectStats = CreateProjectTab();
+                            if (!DbPivot.Items.Contains(this.projectStats))
+                                DbPivot.Items.Add(this.projectStats);
+                            break;
+                        case "Bugtracker Stats":
+                            bugtrackerStats = CreateBugtrackerTab();
+                            if (!DbPivot.Items.Contains(this.bugtrackerStats))
+                                DbPivot.Items.Add(this.bugtrackerStats);
+                            break;
+                        case "Tasks Stats":
+                            tasksStats = CreateTasksTab();
+                            if (!DbPivot.Items.Contains(this.tasksStats))
+                                DbPivot.Items.Add(this.tasksStats);
+                            break;
+                        case "Talks Stats":
+                            talksStats = CreateTalksTab();
+                            if (!DbPivot.Items.Contains(this.talksStats))
+                                DbPivot.Items.Add(this.talksStats);
+                            break;
+                        case "Customer Access Stats":
+                            customerAccessStats = CreateCustomerAccessTab();
+                            if (!DbPivot.Items.Contains(this.customerAccessStats))
+                                DbPivot.Items.Add(this.customerAccessStats);
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
 
+        /// <summary>
+        /// Initializes the pivot item.
+        /// </summary>
+        /// <param name="label">The label.</param>
+        /// <param name="glyph">The glyph.</param>
+        /// <param name="pivotItem">The pivot item.</param>
         private void initPivotItem(string label, string glyph, out PivotItem pivotItem)
         {
             pivotItem = new PivotItem();
             pivotItem.Header = new TabHeader(label, glyph);
         }
 
+        /// <summary>
+        /// Creates the project tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateProjectTab()
         {
             PivotItem pivotItem;
@@ -117,6 +154,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the bugtracker tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateBugtrackerTab()
         {
             PivotItem pivotItem;
@@ -130,6 +171,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the tasks tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateTasksTab()
         {
             PivotItem pivotItem;
@@ -143,6 +188,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the talks tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateTalksTab()
         {
             PivotItem pivotItem;
@@ -156,6 +205,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the customer access tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateCustomerAccessTab()
         {
             PivotItem pivotItem;
@@ -169,6 +222,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the occupation tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateOccupationTab()
         {
             PivotItem pivotItem;
@@ -183,6 +240,10 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Creates the meetings tab.
+        /// </summary>
+        /// <returns></returns>
         public PivotItem CreateMeetingsTab()
         {
             PivotItem pivotItem;
@@ -197,6 +258,11 @@ namespace Grappbox.View
             return pivotItem;
         }
 
+        /// <summary>
+        /// Handles the Click event of the ModularSettings control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ModularSettings_Click(object sender, RoutedEventArgs e)
         {
             var modularDialog = new ModularDashboard(DashBoardViewModel.ModularList);

@@ -24,6 +24,10 @@ namespace Grappbox.View
     {
         BugtrackerViewModel vm = BugtrackerViewModel.GetViewModel();
         bool isAdd;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BugView"/> class.
+        /// </summary>
         public BugView()
         {
             this.InitializeComponent();
@@ -80,6 +84,10 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             if (vm != null)
@@ -92,6 +100,11 @@ namespace Grappbox.View
         }
         #endregion
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the Pivot control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -116,7 +129,12 @@ namespace Grappbox.View
             }
         }
 
-        #region Bug
+        #region Bug        
+        /// <summary>
+        /// Handles the Click event of the SaveBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void SaveBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.Title != "" && vm.Description != "")
@@ -138,7 +156,12 @@ namespace Grappbox.View
         }
         #endregion
 
-        #region Tag
+        #region Tag        
+        /// <summary>
+        /// Handles the Loaded event of the checkBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void checkBox_Loaded(object sender, RoutedEventArgs e)
         {
             //if (vm.Tags != null)
@@ -154,6 +177,12 @@ namespace Grappbox.View
             //    }
             //}
         }
+
+        /// <summary>
+        /// Handles the Checked event of the checkBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void checkBox_Checked(object sender, RoutedEventArgs e)
         {
             TagModel model = (sender as CheckBox).DataContext as TagModel;
@@ -164,6 +193,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Unchecked event of the checkBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void checkBox_Unchecked(object sender, RoutedEventArgs e)
         {
             TagModel model = (sender as CheckBox).DataContext as TagModel;
@@ -174,12 +208,22 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the AddTag control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddTag_Click(object sender, RoutedEventArgs e)
         {
             BugTagContentDialog dialog = new BugTagContentDialog(null);
             await dialog.ShowAsync();
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the tagListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private async void tagListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             vm.TagSelect = (sender as ListView).SelectedItem as TagModel;
@@ -189,7 +233,12 @@ namespace Grappbox.View
         }
         #endregion
 
-        #region User
+        #region User        
+        /// <summary>
+        /// Handles the Checked event of the userCheckBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void userCheckBox_Checked(object sender, RoutedEventArgs e)
         {
             UserModel model = (sender as CheckBox).DataContext as UserModel;
@@ -201,6 +250,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the userCheckBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void userCheckBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (vm.Users != null)
@@ -219,6 +273,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Unchecked event of the userCheckBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private void userCheckBox_Unchecked(object sender, RoutedEventArgs e)
         {
             UserModel model = (sender as CheckBox).DataContext as UserModel;
@@ -231,7 +290,12 @@ namespace Grappbox.View
         }
         #endregion
 
-        #region Comment
+        #region Comment        
+        /// <summary>
+        /// Handles the Click event of the EditComment control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void EditComment_Click(object sender, RoutedEventArgs e)
         {
             var dialog = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("PurpleGrappboxBrush"));
@@ -245,12 +309,22 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Handles the Click event of the DeleteComment control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void DeleteComment_Click(object sender, RoutedEventArgs e)
         {
             if ((sender as Button).DataContext as BugtrackerModel != null)
                 await vm.deleteComment((sender as Button).DataContext as BugtrackerModel);
         }
 
+        /// <summary>
+        /// Handles the Click event of the PostComment control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void PostComment_Click(object sender, RoutedEventArgs e)
         {
             if (!string.IsNullOrEmpty(CommentDescription.Text))
@@ -258,6 +332,11 @@ namespace Grappbox.View
         }
         #endregion
 
+        /// <summary>
+        /// Handles the Click event of the checkBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void checkBox_Click(object sender, RoutedEventArgs e)
         {
             TagModel model = (sender as CheckBox).DataContext as TagModel;
@@ -279,6 +358,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Called when [chat view container content changing].
+        /// </summary>
+        /// <param name="sender">The sender.</param>
+        /// <param name="args">The <see cref="ContainerContentChangingEventArgs"/> instance containing the event data.</param>
         private void OnChatViewContainerContentChanging(ListViewBase sender, ContainerContentChangingEventArgs args)
         {
             if (args.InRecycleQueue) return;

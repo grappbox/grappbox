@@ -7,6 +7,12 @@ using Windows.UI.Xaml.Controls;
 
 namespace Grappbox.CustomControls
 {
+    /// <summary>
+    /// User role content dialog
+    /// </summary>
+    /// <seealso cref="Windows.UI.Xaml.Controls.UserControl" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector2" />
     public sealed partial class UserRoleCB : UserControl
     {
         public static readonly DependencyProperty UserIdProperty =
@@ -20,11 +26,19 @@ namespace Grappbox.CustomControls
 
         private ProjectSettingsViewModel vm = ProjectSettingsViewModel.GetViewModel();
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserRoleCB"/> class.
+        /// </summary>
         public UserRoleCB()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the ComboBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private async void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             var value = (sender as ComboBox).SelectedValue;
@@ -43,6 +57,11 @@ namespace Grappbox.CustomControls
             }
         }
 
+        /// <summary>
+        /// Handles the Loaded event of the ComboBox control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ComboBox_Loaded(object sender, RoutedEventArgs e)
         {
             if (UserId != 0)
