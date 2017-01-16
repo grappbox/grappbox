@@ -54,8 +54,16 @@ namespace Grappbox.View
             var loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("GreenGrappboxBrush"));
             loader.ShowAsync();
             whiteboardId = (int)e.Parameter;
-            await viewModel.OpenWhiteboard(whiteboardId);
-            Debug.WriteLine(viewModel.model.Name);
+            bool result = await viewModel.OpenWhiteboard(whiteboardId);
+            if (result == false)
+            {
+                loader.Hide();
+                var dialog = new MessageDialog("Error can't open whiteboard - corrupted data");
+                await dialog.ShowAsync();
+                if (this.Frame.CanGoBack)
+                    this.Frame.GoBack();
+                return;
+            }
             foreach (WhiteboardObject wo in viewModel.ObjectsList)
             {
                 this.drawingCanvas.AddNewElement(wo);

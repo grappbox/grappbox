@@ -25,7 +25,7 @@
         <ScrollViewer Grid.Row="1" ZoomMode="Enabled" MinZoomFactor="0.25" MaxZoomFactor="10.0" IsZoomInertiaEnabled="False" HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto">
             <customControls:CustomCanvas x:Name="drawingCanvas"
                                          Background="White"
-                                         CurrDraw="{x:Bind viewModel.CurrentDraw}"
+                                         CurrDraw="{x:Bind viewModel.CurrentDraw, Mode=OneWay}"
                                          IsRightTapEnabled="False"
                                          ScrollViewer.HorizontalScrollBarVisibility="Visible"
                                          ManipulationStarted="{x:Bind viewModel.CanvasManipStartedAction}"

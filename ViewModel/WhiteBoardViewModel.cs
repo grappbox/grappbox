@@ -124,7 +124,7 @@ namespace Grappbox.ViewModel
 
         public ObservableCollection<WhiteboardObject> ObjectsList { get; set; }
         #region API
-        public async System.Threading.Tasks.Task OpenWhiteboard(int whiteboardId)
+        public async System.Threading.Tasks.Task<bool> OpenWhiteboard(int whiteboardId)
         {
             HttpResponseMessage res = await HttpRequestManager.Get(Constants.OpenWhiteboards, whiteboardId);
             if (res.IsSuccessStatusCode)
@@ -135,14 +135,23 @@ namespace Grappbox.ViewModel
                 {
                     DateFormatString = "yyyy-MM-dd HH:mm:ss"
                 };
-                model = SerializationHelper.DeserializeJson<WhiteBoardModel>(json, settings);
-                ObjectsList = model.Object;
-                LastUpdate = DateTime.Now;
+                try
+                {
+                    model = SerializationHelper.DeserializeJson<WhiteBoardModel>(json, settings);
+                    ObjectsList = model.Object;
+                    LastUpdate = DateTime.Now;
+                }
+                catch
+                {
+                    return false;
+                }
             }
             else
             {
                 Debug.WriteLine("Can't open whiteboard");
+                return false;
             }
+            return true;
         }
 
         public async Task<WhiteboardObject> pushDraw(ObjectModel om)
