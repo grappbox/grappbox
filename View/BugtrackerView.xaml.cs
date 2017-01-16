@@ -19,12 +19,19 @@ using Grappbox.HttpRequest;
 namespace Grappbox.View
 {
     /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
+    /// Bugtracker view page
     /// </summary>
+    /// <seealso cref="Windows.UI.Xaml.Controls.Page" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector2" />
     public sealed partial class BugtrackerView : Page
     {
         CoreApplicationView view;
         BugtrackerViewModel vm = BugtrackerViewModel.GetViewModel();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BugtrackerView"/> class.
+        /// </summary>
         public BugtrackerView()
         {
             this.InitializeComponent();
@@ -33,7 +40,11 @@ namespace Grappbox.View
             this.NavigationCacheMode = NavigationCacheMode.Required;
         }
 
-        #region NavigationHelper
+        #region NavigationHelper        
+        /// <summary>
+        /// Invoked when the Page is loaded and becomes the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the pending navigation that will load the current Page. Usually the most relevant property to examine is Parameter.</param>
         protected async override void OnNavigatedTo(NavigationEventArgs e)
         {
             if (vm != null)
@@ -68,6 +79,10 @@ namespace Grappbox.View
             dialog.Hide();
         }
 
+        /// <summary>
+        /// Invoked immediately after the Page is unloaded and is no longer the current source of a parent Frame.
+        /// </summary>
+        /// <param name="e">Event data that can be examined by overriding code. The event data is representative of the navigation that has unloaded the current Page.</param>
         protected override void OnNavigatedFrom(NavigationEventArgs e)
         {
             if (vm != null)
@@ -75,12 +90,22 @@ namespace Grappbox.View
         }
         #endregion
 
+        /// <summary>
+        /// Handles the Click event of the AddBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void AddBug_Click(object sender, RoutedEventArgs e)
         {
             vm.newModel();
             await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => this.Frame.Navigate(typeof(BugView), null));
         }
 
+        /// <summary>
+        /// Handles the Click event of the CloseBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void CloseBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.OpenSelect != null)
@@ -95,6 +120,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the ReopenBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void ReopenBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.CloseSelect != null)
@@ -109,6 +139,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the openListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void openListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as ListView).SelectedItem != null)
@@ -120,6 +155,11 @@ namespace Grappbox.View
                 CloseBug.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the closeListView control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void closeListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if ((sender as ListView).SelectedItem != null)
@@ -131,6 +171,11 @@ namespace Grappbox.View
                 ReopenBug.Visibility = Visibility.Collapsed;
         }
 
+        /// <summary>
+        /// Handles the SelectionChanged event of the Pivot control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="SelectionChangedEventArgs"/> instance containing the event data.</param>
         private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             int num = Pivot.SelectedIndex;
@@ -157,6 +202,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the EditOpenBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void EditOpenBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.OpenSelect != null)
@@ -172,6 +222,11 @@ namespace Grappbox.View
             }
         }
 
+        /// <summary>
+        /// Handles the Click event of the EditCloseBug control.
+        /// </summary>
+        /// <param name="sender">The source of the event.</param>
+        /// <param name="e">The <see cref="RoutedEventArgs"/> instance containing the event data.</param>
         private async void EditCloseBug_Click(object sender, RoutedEventArgs e)
         {
             if (vm.CloseSelect != null)

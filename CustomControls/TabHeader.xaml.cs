@@ -17,6 +17,12 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Grappbox.CustomControls
 {
+    /// <summary>
+    /// Pivot Tab header user control
+    /// </summary>
+    /// <seealso cref="Windows.UI.Xaml.Controls.UserControl" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector2" />
     public sealed partial class TabHeader : UserControl
     {
         public static readonly DependencyProperty GlyphProperty = DependencyProperty.Register("Glyph", typeof(string), typeof(TabHeader), null);
@@ -35,12 +41,20 @@ namespace Grappbox.CustomControls
             set { SetValue(LabelProperty, value); }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabHeader"/> class.
+        /// </summary>
         public TabHeader()
         {
             this.InitializeComponent();
             this.DataContext = this;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TabHeader"/> class.
+        /// </summary>
+        /// <param name="label">The label.</param>
+        /// <param name="glyph">The glyph.</param>
         public TabHeader(string label, string glyph)
         {
             this.InitializeComponent();

@@ -18,13 +18,28 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Grappbox.CustomControls
 {
+    /// <summary>
+    /// Page header user control
+    /// </summary>
+    /// <seealso cref="Windows.UI.Xaml.Controls.UserControl" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector" />
+    /// <seealso cref="Windows.UI.Xaml.Markup.IComponentConnector2" />
     public sealed partial class PageHeader : UserControl
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="PageHeader"/> class.
+        /// </summary>
         public PageHeader()
         {
             this.InitializeComponent();
         }
 
+        /// <summary>
+        /// Gets or sets the content of the header.
+        /// </summary>
+        /// <value>
+        /// The content of the header.
+        /// </value>
         public string HeaderContent
         {
             get { return (string)GetValue(HeaderContentProperty); }
