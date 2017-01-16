@@ -623,14 +623,14 @@ app.controller("ProjectSettingsController", ["$http", "$location", "notification
   $scope.editRole = function(role) {
     var elem = {
       "name": role.name,
-		  "teamTimeline": role.team_timeline,
-	    "customerTimeline": role.customer_timeline,
+		  "teamTimeline": role.teamTimeline,
+	    "customerTimeline": role.customerTimeline,
 	    "gantt": role.gantt,
       "whiteboard": role.whiteboard,
       "bugtracker": role.bugtracker,
       "event": role.event,
       "task": role.task,
-      "projectSettings": role.project_settings,
+      "projectSettings": role.projectSettings,
       "cloud": role.cloud
     };
     var data = {"data": elem };
