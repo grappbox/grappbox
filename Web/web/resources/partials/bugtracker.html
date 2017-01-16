@@ -248,7 +248,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 <p class="no-padding whitespace">{[{ data.ticket.description ? data.ticket.description : 'None' }]}</p>
 
                 <h3>Tag(s)</h3>
-                <div class="label tag" style="background-color: #{[{ tag.color }]}; color: #212121;" data-ng-repeat="tag in data.ticket.tags">{[{ tag.name }]}</div>
+                <div class="label tag" style="background-color: #{[{ tag.color }]};" data-ng-repeat="tag in data.ticket.tags">{[{ tag.name }]}</div>
                 <div data-ng-if="!((data.ticket.tags).length)">
                   <p class="no-padding">No tag for this issue</p>
                 </div>
