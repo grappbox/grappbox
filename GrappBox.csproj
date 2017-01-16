@@ -109,10 +109,25 @@
     <Compile Include="Constants\Api_urls.cs" />
     <Compile Include="Constants\Colors.cs" />
     <Compile Include="Constants\Symbol.cs" />
+    <Compile Include="CustomControls\AddDependencyDialog.xaml.cs">
+      <DependentUpon>AddDependencyDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\AddTaskDialog.xaml.cs">
+      <DependentUpon>AddTaskDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\BindableCalendarDatePicker.cs" />
     <Compile Include="CustomControls\BooleanDataTrigger.cs" />
     <Compile Include="CustomControls\BrushDialog.xaml.cs">
       <DependentUpon>BrushDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\AddUserToTaskDialog.xaml.cs">
+      <DependentUpon>AddUserToTaskDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\SelectTagDialog.xaml.cs">
+      <DependentUpon>SelectTagDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\CreateTagDialog.xaml.cs">
+      <DependentUpon>CreateTagDialog.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\ColorDialog.xaml.cs">
       <DependentUpon>ColorDialog.xaml</DependentUpon>
@@ -178,6 +193,7 @@
     <Compile Include="CustomControls\Whiteboard\WhiteBoardText.xaml.cs">
       <DependentUpon>WhiteBoardText.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\ColorExtension.cs" />
     <Compile Include="Helpers\FormatTimeHelper.cs" />
     <Compile Include="Helpers\HttpRequest\NotificationManager.cs" />
     <Compile Include="Helpers\SerializationHelper.cs" />
@@ -187,6 +203,7 @@
     <Compile Include="Model\Calendar\Creator.cs" />
     <Compile Include="Model\Calendar\Event.cs" />
     <Compile Include="Model\Cloud\CloudModel.cs" />
+    <Compile Include="Model\DependencyTask.cs" />
     <Compile Include="Model\GanttDto.cs" />
     <Compile Include="Model\Global\BytesToImage.cs" />
     <Compile Include="Model\Global\DateModel.cs" />
@@ -195,6 +212,8 @@
     <Compile Include="Model\Global\IdNameModel.cs" />
     <Compile Include="Model\Global\LogoModel.cs" />
     <Compile Include="Model\Global\Position.cs" />
+    <Compile Include="Model\LabelString.cs" />
+    <Compile Include="Model\LabelValue.cs" />
     <Compile Include="Model\MeetingDashBoard.cs" />
     <Compile Include="Model\ModelMapper.cs" />
     <Compile Include="Model\ModularModel.cs" />
@@ -222,6 +241,7 @@
     <Compile Include="Model\Stats\UserTasksAdvancementModel.cs" />
     <Compile Include="Model\Stats\UserWorkingChargeModel.cs" />
     <Compile Include="Model\TaskModel.cs" />
+    <Compile Include="Model\TaskUserModel.cs" />
     <Compile Include="Model\Timeline\TimelineListModel.cs" />
     <Compile Include="Model\Timeline\TimelineModel.cs" />
     <Compile Include="Helpers\SystemInformation.cs" />
@@ -244,6 +264,7 @@
     <Compile Include="ViewModel\ProjectSettingsViewModel.cs" />
     <Compile Include="ViewModel\ProjectViewModel.cs" />
     <Compile Include="ViewModel\StatsViewModel.cs" />
+    <Compile Include="ViewModel\TaskDetailViewModel.cs" />
     <Compile Include="ViewModel\TaskViewModel.cs" />
     <Compile Include="ViewModel\TimelineViewModel.cs" />
     <Compile Include="ViewModel\UserSettingsViewModel.cs" />
@@ -259,8 +280,8 @@
     <Compile Include="View\CalendarEventAdd.xaml.cs">
       <DependentUpon>CalendarEventAdd.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\TaskDetail.xaml.cs">
-      <DependentUpon>TaskDetail.xaml</DependentUpon>
+    <Compile Include="View\TaskDetailView.xaml.cs">
+      <DependentUpon>TaskDetailView.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\CalendarEventDetail.xaml.cs">
       <DependentUpon>CalendarEventDetail.xaml</DependentUpon>
@@ -346,6 +367,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="CustomControls\AddDependencyDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\AddTaskDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="CustomControls\CloudInfos.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -365,6 +394,18 @@
     <Page Include="CustomControls\BrushDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\AddUserToTaskDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\SelectTagDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\CreateTagDialog.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="CustomControls\ColorDialog.xaml">
       <SubType>Designer</SubType>
@@ -495,7 +536,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="View\TaskDetail.xaml">
+    <Page Include="View\TaskDetailView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

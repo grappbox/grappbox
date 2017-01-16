@@ -93,6 +93,11 @@ namespace Grappbox.Helpers
             get { return User.FullName; }
         }
 
+        public UserViewModel UserViewModel
+        {
+            get { return User; }
+        }
+
         public string ProjectIdString
         {
             get { return Convert.ToString(Project?.Id); }

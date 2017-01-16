@@ -13,8 +13,8 @@ namespace Grappbox.ViewModel
 {
     class GanttViewModel : ViewModelBase
     {
-        public DateTime StartDate;
-        public DateTime EndDate;
+        public DateTime? StartDate;
+        public DateTime? EndDate;
         public ObservableCollection<TaskModel> Dates;
         private List<TaskModel> _tasks;
         public List<TaskModel> Tasks

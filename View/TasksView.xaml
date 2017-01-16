@@ -11,15 +11,18 @@
     mc:Ignorable="d">
     <Page.Resources>
         <DataTemplate x:Key="tasksDataTemplate" x:DataType="models:TaskModel">
-            <Grid>
+            <Grid HorizontalAlignment="Stretch">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
+                    <RowDefinition Height="*"></RowDefinition>
                     <RowDefinition Height="auto"></RowDefinition>
-                    <RowDefinition Height="25"></RowDefinition>
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
-                    <TextBlock x:Name="title" Text="{x:Bind Title}" ></TextBlock>
+                    <TextBlock x:Name="title" FontWeight="Bold"
+                               FontSize="18"
+                               Foreground="{StaticResource BlueGrappboxBrush}"
+                               Text="{x:Bind Title}" ></TextBlock>
                 </Grid>
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
@@ -30,16 +33,18 @@
                         <RowDefinition Height="auto"/>
                         <RowDefinition Height="auto"/>
                     </Grid.RowDefinitions>
-                    <TextBlock Grid.Row="0" Grid.Column="0" >Started date:</TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="0" >Due date:</TextBlock>
-                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind StartedAt}" ></TextBlock>
-                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind DueDate}" >Due date:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="0" FontWeight="Bold" >Started date:</TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="0" FontWeight="Bold" >Due date:</TextBlock>
+                    <TextBlock Grid.Row="0" Grid.Column="1" Text="{x:Bind FormatedStartedDate}" ></TextBlock>
+                    <TextBlock Grid.Row="1" Grid.Column="1" Text="{x:Bind FormatedDueDate}" ></TextBlock>
                 </Grid>
-                <ListView Grid.Row="2" ItemsSource="{Binding Tags}" Margin="0" SelectionMode="None" ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
+                <ListView Grid.Row="2" ItemsSource="{x:Bind Tags, Mode=OneWay}" Margin="0" SelectionMode="None"
+                          ScrollViewer.HorizontalScrollMode="Auto" ScrollViewer.VerticalScrollMode="Disabled"
+                          ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
                     <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{Binding ColorTag}" Margin="0">
-                                <TextBlock Text="{Binding Name}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0, 3" Margin="0"/>
+                        <DataTemplate x:DataType="models:TagModel">
+                            <Border Background="{x:Bind ColorTag, Mode=OneWay}" Margin="0" Padding="5" CornerRadius="5">
+                                <TextBlock Text="{x:Bind Name, Mode=OneWay}" Foreground="White" TextAlignment="Center" TextWrapping="NoWrap" HorizontalAlignment="Center" VerticalAlignment="Center" Padding="0, 3" Margin="0"/>
                             </Border>
                         </DataTemplate>
                     </ListView.ItemTemplate>
@@ -49,7 +54,18 @@
                         </ItemsPanelTemplate>
                     </ListView.ItemsPanel>
                 </ListView>
-                <ProgressBar Grid.Row="3" Height="25" Maximum="100" Minimum="0" Value="{x:Bind Advance}" Foreground="{StaticResource RedGrappboxBrush}" ></ProgressBar>
+                <RelativePanel Grid.Row="3">
+                    <TextBlock x:Name="TaskProgressLabel"
+                               RelativePanel.AlignLeftWithPanel="True"
+                               RelativePanel.AlignVerticalCenterWithPanel="True">Progress</TextBlock>
+                    <ProgressBar x:Name="TaskProgressBar"
+                                 RelativePanel.RightOf="TaskProgressLabel"
+                                 RelativePanel.AlignRightWithPanel="True"
+                                 RelativePanel.AlignVerticalCenterWith="TaskProgressLabel"
+                                 Height="10" Maximum="100"
+                                 Minimum="0" Value="{x:Bind Advance}"
+                                 Foreground="{StaticResource BlueGrappboxBrush}" ></ProgressBar>
+                </RelativePanel>
             </Grid>
         </DataTemplate>
     </Page.Resources>
@@ -59,9 +75,40 @@
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.RowDefinitions>
             <RowDefinition Height="48"/>
+            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
         </Grid.RowDefinitions>
-        <controls:PageHeader Grid.Row="0" Background="{StaticResource RedGrappboxBrush}" HeaderContent="Tasks" />
-        <ListView Grid.Row="1" ItemTemplate="{StaticResource tasksDataTemplate}" ItemsSource="{x:Bind viewModel.TaskList, Mode=OneWay}" IsItemClickEnabled="False" SelectionMode="None" ></ListView>
+        <controls:PageHeader Grid.Row="0" Background="{StaticResource BlueGrappboxBrush}" HeaderContent="Tasks" />
+        <RelativePanel Grid.Row="1" Background="{StaticResource BlueGrappboxBrush}">
+            <Button Background="Transparent" x:Name="AllFilterButton" Foreground="White" RelativePanel.LeftOf="StartedFilterButton" Click="AllFilter_Click" Margin="5" >All</Button>
+            <Button Background="Transparent" x:Name="StartedFilterButton" Foreground="White" RelativePanel.AlignHorizontalCenterWithPanel="True" Click="StartedFilter_Click" Margin="5" >Started</Button>
+            <Button Background="Transparent" x:Name="FinishedFilterButton" Foreground="White" RelativePanel.RightOf="StartedFilterButton" Click="FinishedFilter_Click" Margin="5" >Finished</Button>
+        </RelativePanel>
+        <ListView Grid.Row="2"
+                  x:Name="TaskListView"
+                  ItemTemplate="{StaticResource tasksDataTemplate}"
+                  ItemsSource="{Binding FilteredTaskList}"
+                  IsItemClickEnabled="True"
+                  ItemClick="TaskListView_ItemClick"
+                  SelectionMode="None"
+                  HorizontalAlignment="Stretch">
+            <ListView.ItemContainerStyle>
+                <Style TargetType="ListViewItem">
+                    <Setter Property="Padding" Value="10" />
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    <Setter Property="HorizontalAlignment" Value="Stretch" />
+                </Style>
+            </ListView.ItemContainerStyle>
+        </ListView>
+        <Button Grid.Row="3"
+                HorizontalAlignment="Stretch"
+                Foreground="White"
+                Background="{StaticResource BlueGrappboxBrush}" Click="AddTask_Click">
+            <Button.Content>
+                <TextBlock Text="Add" FontSize="24" />
+            </Button.Content>
+        </Button>
     </Grid>
 </Page>

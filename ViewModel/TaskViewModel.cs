@@ -16,42 +16,49 @@ namespace Grappbox.ViewModel
 {
     class TaskViewModel : ViewModelBase
     {
+        public string TaskListFilter = "All";
         private ObservableCollection<TaskModel> _taskList = new ObservableCollection<TaskModel>();
-        private ObservableCollection<TagModel> _tagList = new ObservableCollection<TagModel>();
-        private List<int> _toAdd = new List<int>();
-        private List<int> _toRemove = new List<int>();
-        public ObservableCollection<TagModel> TagList
-        {
-            get { return _tagList; }
-            set
-            {
-                _tagList = value;
-                NotifyPropertyChanged("Tasks");
-            }
-        }
         public ObservableCollection<TaskModel> TaskList
         {
             get { return _taskList; }
             set
             {
                 _taskList = value;
-                NotifyPropertyChanged("Tasks");
+                NotifyPropertyChanged("TaskList");
             }
         }
 
-        public async System.Threading.Tasks.Task getTagList()
+        public ObservableCollection<TaskModel> FilteredTaskList
         {
-            object[] token = { SessionHelper.GetSession().ProjectId };
-            HttpResponseMessage res = await HttpRequestManager.Get(token, "tasks/tags/project/");
-            if (res.IsSuccessStatusCode)
+            get
             {
-                _tagList = SerializationHelper.DeserializeArrayJson<ObservableCollection<TagModel>>(await res.Content.ReadAsStringAsync());
-                NotifyPropertyChanged("TagList");
+                switch (TaskListFilter)
+                {
+                    case "All":
+                        return TaskList;
+                    case "Started":
+                        return StartedTaskList;
+                    case "Finished":
+                        return FinishedTaskList;
+                    default:
+                        return TaskList;
+                }
             }
-            else
+        }
+
+        public ObservableCollection<TaskModel> FinishedTaskList
+        {
+            get
             {
-                MessageDialog msgbox = new MessageDialog(HttpRequestManager.GetErrorMessage(await res.Content.ReadAsStringAsync()));
-                await msgbox.ShowAsync();
+                return new ObservableCollection<TaskModel>(_taskList?.Where(t => t.FinishedAt != null).ToList());
+            }
+        }
+
+        public ObservableCollection<TaskModel> StartedTaskList
+        {
+            get
+            {
+                return new ObservableCollection<TaskModel>(_taskList?.Where(t => t.StartedAt != null).ToList());
             }
         }
 

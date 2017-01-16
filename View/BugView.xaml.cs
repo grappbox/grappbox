@@ -141,18 +141,18 @@ namespace Grappbox.View
         #region Tag
         private void checkBox_Loaded(object sender, RoutedEventArgs e)
         {
-            if (vm.Tags != null)
-            {
-                int id = ((sender as CheckBox).DataContext as TagModel).Id;
+            //if (vm.Tags != null)
+            //{
+            //    int id = ((sender as CheckBox).DataContext as TagModel).Id;
 
-                foreach (var item in vm.Tags)
-                {
-                    if (id == item.Id)
-                    {
-                        (sender as CheckBox).IsChecked = true;
-                    }
-                }
-            }
+            //    foreach (var item in vm.Tags)
+            //    {
+            //        if (id == item.Id)
+            //        {
+            //            (sender as CheckBox).IsChecked = true;
+            //        }
+            //    }
+            //}
         }
         private async void checkBox_Checked(object sender, RoutedEventArgs e)
         {

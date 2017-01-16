@@ -40,7 +40,7 @@ namespace Grappbox.CustomControls
 
         public static readonly DependencyProperty CurrentDrawDependency =
             DependencyProperty.Register("CurrDraw", typeof(ShapeControler), typeof(CustomCanvas), new PropertyMetadata(null, OnValueChanged));
-
+        
         private static void OnValueChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             CustomCanvas source = d as CustomCanvas;

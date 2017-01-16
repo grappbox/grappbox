@@ -22,7 +22,6 @@ using Windows.Web.Http;
 using Grappbox.CustomControls;
 using System.Diagnostics;
 
-// Pour plus d'informations sur le modèle d'élément Page vierge, voir la page http://go.microsoft.com/fwlink/?LinkId=234238
 
 namespace Grappbox.View
 {

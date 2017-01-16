@@ -200,7 +200,7 @@ namespace Grappbox.HttpRequest
                     var session = SessionHelper.GetSession();
                     if (session.IsUserConnected == true)
                     {
-                        string token = session.UserToken;
+                        Debug.WriteLine(session.UserToken);
                         return true;
                     }
                     else
