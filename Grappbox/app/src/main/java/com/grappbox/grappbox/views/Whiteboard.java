@@ -103,7 +103,7 @@ public class Whiteboard extends View {
          */
         public void init(JSONObject object) throws JSONException{
             String color = object.isNull("color") ? "" : object.getString("color");
-            strokeColor = object.isNull("color") ? Integer.MAX_VALUE : Color.parseColor((color.startsWith("#") ? "" : "#") + color);
+            strokeColor = object.isNull("color") || color.isEmpty() ? Integer.MAX_VALUE : Color.parseColor((color.startsWith("#") ? "" : "#") + color);
             id = object.getString("id");
             isSent = true;
         }
@@ -198,7 +198,7 @@ public class Whiteboard extends View {
 
             super.init(object);
             String bgColor = object.isNull("background") ? "" : object.getString("background");
-            backgroundColor = object.isNull("background") ? Integer.MAX_VALUE : Color.parseColor((bgColor.startsWith("#") ? ""  : "#") + bgColor);
+            backgroundColor = object.isNull("background") || bgColor.isEmpty() ? Integer.MAX_VALUE : Color.parseColor((bgColor.startsWith("#") ? ""  : "#") + bgColor);
             positionStart = new Float2((float)startObject.getDouble("x"), (float)startObject.getDouble("y"));
             positionEnd = new Float2((float)endObject.getDouble("x"), (float)endObject.getDouble("y"));
             lineWeight = object.has("lineWeight") && !object.isNull("lineWeight") ? object.getInt("lineWeight") :  0;
@@ -762,9 +762,9 @@ public class Whiteboard extends View {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         canvas.scale(2, 2);
-        for (ObjectModel object : mObjects) {
+        List<ObjectModel> toDraw = new ArrayList<>(mObjects);
+        for (ObjectModel object : toDraw) {
             object.draw(canvas);
         }
         if (currentDraw != null)
