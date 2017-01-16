@@ -21,27 +21,28 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.grappbox.grappbox.ProjectActivity;
 import com.grappbox.grappbox.R;
 import com.grappbox.grappbox.data.GrappboxContract;
+import com.grappbox.grappbox.data.GrappboxContract.BugUserRepartitionEntry;
 
 import java.util.ArrayList;
 
 /**
- * Created by Arka on 02/01/2017.
+ * Created by Arka on 12/01/2017.
  */
 
-public class StatisticCloudFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
+public class StatisticBugUserRepartitionFragment extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final String LOG_TAG = StatisticCloudFragment.class.getSimpleName();
+    public static final String LOG_TAG = StatisticBugUserRepartitionFragment.class.getSimpleName();
     private PieChart mChart;
 
-    public StatisticCloudFragment() {
+    public StatisticBugUserRepartitionFragment() {
         super();
     }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View v = inflater.inflate(R.layout.statistic_cloud_fragment, container, false);
-        mChart = (PieChart)v.findViewById(R.id.sstorage_pie_chart);
+        View v = inflater.inflate(R.layout.statistic_bug_user_repartion_fragment, container, false);
+        mChart = (PieChart)v.findViewById(R.id.bug_user_repartition_pie);
         mChart.setUsePercentValues(true);
         mChart.getDescription().setEnabled(false);
         mChart.setExtraOffsets(5, 10, 5, 5);
@@ -66,15 +67,18 @@ public class StatisticCloudFragment extends Fragment implements LoaderManager.Lo
         String selection;
         String[] selectionArgs;
 
-        final String[] projectionAdvancement = {
-                GrappboxContract.StatEntry.TABLE_NAME + "." + GrappboxContract.StatEntry._ID,
-                GrappboxContract.StatEntry.TABLE_NAME + "." + GrappboxContract.StatEntry.COLUMN_STORAGE_OCCUPIED,
-                GrappboxContract.StatEntry.TABLE_NAME + "." + GrappboxContract.StatEntry.COLUMN_STORAGE_TOTAL,
+        final String[] projectBugUserRepartition = {
+                BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry._ID,
+                BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID,
+                BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_PERCENTAGE,
+                BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_VALUE,
+                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_FIRSTNAME,
+                GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_LASTNAME,
         };
         selection = GrappboxContract.StatEntry.TABLE_NAME + "." + GrappboxContract.StatEntry.COLUMN_LOCAL_PROJECT_ID + "=?";
         selectionArgs = new String[] {String.valueOf(lpid)};
 
-        return new CursorLoader(getActivity(), GrappboxContract.StatEntry.CONTENT_URI, projectionAdvancement, selection, selectionArgs, null);
+        return new CursorLoader(getActivity(), BugUserRepartitionEntry.CONTENT_URI, projectBugUserRepartition, selection, selectionArgs, null);
     }
 
     @Override
@@ -83,16 +87,29 @@ public class StatisticCloudFragment extends Fragment implements LoaderManager.Lo
             Log.v(LOG_TAG, "data null");
             return;
         }
-        int used = data.getInt(data.getColumnIndex(GrappboxContract.StatEntry.COLUMN_STORAGE_OCCUPIED));
-        int total = data.getInt(data.getColumnIndex(GrappboxContract.StatEntry.COLUMN_STORAGE_TOTAL));
-        int remain = total - used;
+        int total = 100;
         ArrayList<Integer> colors = new ArrayList<>();
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappRed));
+        colors.add(ContextCompat.getColor(getContext(), R.color.GrappBlue));
         colors.add(ContextCompat.getColor(getContext(), R.color.GrappYellow));
+        colors.add(ContextCompat.getColor(getContext(), R.color.GrappGrayMedium));
+        colors.add(ContextCompat.getColor(getContext(), R.color.GrappGreen));
+
         ArrayList<PieEntry> entries = new ArrayList<PieEntry>();
-        entries.add(new PieEntry(used, "Occupied"));
-        entries.add(new PieEntry(remain, "Free"));
-        PieDataSet dataSet = new PieDataSet(entries, "Cloud Storage");
+        do {
+            if (data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_VALUE)) != 0)
+            {
+                String username = data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_FIRSTNAME)) + " " + data.getString(data.getColumnIndex(GrappboxContract.UserEntry.COLUMN_LASTNAME));
+                entries.add(new PieEntry(data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_PERCENTAGE)), username));
+                total -= data.getInt(data.getColumnIndex(BugUserRepartitionEntry.COLUMN_PERCENTAGE));
+            }
+        } while (data.moveToNext());
+
+        if (total > 0) {
+            entries.add(new PieEntry(total, "unassigned"));
+        }
+
+        PieDataSet dataSet = new PieDataSet(entries, "Bug User Repartition");
         dataSet.setSliceSpace(3f);
         dataSet.setSelectionShift(5f);
         dataSet.setColors(colors);
@@ -111,7 +128,6 @@ public class StatisticCloudFragment extends Fragment implements LoaderManager.Lo
         mChart.highlightValues(null);
 
         mChart.invalidate();
-
 
     }
 

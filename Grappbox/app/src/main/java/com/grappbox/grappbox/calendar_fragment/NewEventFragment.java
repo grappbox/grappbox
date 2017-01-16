@@ -78,6 +78,7 @@ public class NewEventFragment extends Fragment implements LoaderManager.LoaderCa
         mParticipantsRecycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.VERTICAL, false));
         mParticipantsRecycler.setAdapter(mParticipantAdapter);
 
+
         if (getActivity() instanceof NewEventActivity) {
             ((NewEventActivity)getActivity()).registerActivityActionCallback(this);
         }

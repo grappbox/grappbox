@@ -3419,11 +3419,22 @@ public class GrappboxJustInTimeService extends IntentService {
             for (int i = 0; i < contentArray.length(); ++i) {
                 JSONObject userTaskAd = contentArray.getJSONObject(i);
                 ContentValues userTask = new ContentValues();
-                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID, userTaskAd.getJSONObject("user").getLong("id"));
+                Cursor userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{userTaskAd.getJSONObject("user").getString("id")}, null);
+
+                if (userCursor == null || !userCursor.moveToFirst())
+                {
+                    handleUserDetailSync(this, userTaskAd.getJSONObject("user").getString("id"));
+                    userCursor = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{userTaskAd.getJSONObject("user").getString("id")}, null);
+                    if (userCursor == null || !userCursor.moveToFirst()){
+                        continue;
+                    }
+                }
+                userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID, userCursor.getLong(0));
                 userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID, statId);
                 userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_VALUE, userTaskAd.getLong("value"));
                 userTask.put(GrappboxContract.BugUserRepartitionEntry.COLUMN_PERCENTAGE, userTaskAd.getLong("percentage"));
                 Uri userTaskAdEntry = getContentResolver().insert(GrappboxContract.BugUserRepartitionEntry.CONTENT_URI, userTask);
+                userCursor.close();
                 if (userTaskAdEntry == null)
                     continue;
                 long userTaskEntryId = Long.parseLong(userTaskAdEntry.getLastPathSegment());

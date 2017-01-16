@@ -89,6 +89,10 @@
         <item name="colorAccent">@color/GrappRed</item>
     </style>
 
+    <style name="DashboardDialogOverride" parent="@style/Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/GrappRed</item>
+    </style>
+
     <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="colorPrimary">@color/GrappRed</item>
         <item name="colorAccent">@color/GrappRed</item>

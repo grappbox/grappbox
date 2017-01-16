@@ -10,6 +10,7 @@ import android.support.annotation.NonNull;
 
 import com.grappbox.grappbox.data.GrappboxContract.BugUserRepartitionEntry;
 import com.grappbox.grappbox.data.GrappboxContract.StatEntry;
+import com.grappbox.grappbox.data.GrappboxContract.UserEntry;
 
 /**
  * Created by tan_f on 16/12/2016.
@@ -21,14 +22,16 @@ public class BugUserRepartitionCursors {
 
     static {
         sBugUserRepartitionWithStat = new SQLiteQueryBuilder();
-        sBugUserRepartitionWithStat.setTables(BugUserRepartitionEntry.TABLE_NAME + " INNER JOIN " + StatEntry.TABLE_NAME +
-        " ON " + BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + " = " + StatEntry.TABLE_NAME + "." + StatEntry._ID);
-
+        sBugUserRepartitionWithStat.setTables(
+        BugUserRepartitionEntry.TABLE_NAME + " LEFT JOIN " + StatEntry.TABLE_NAME +
+        " ON " + BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_LOCAL_STAT_ID + " = " + StatEntry.TABLE_NAME + "." + StatEntry._ID +
+        " LEFT JOIN " + UserEntry.TABLE_NAME +
+        " ON " + BugUserRepartitionEntry.TABLE_NAME + "." + BugUserRepartitionEntry.COLUMN_LOCAL_USER_ID + " = " + UserEntry.TABLE_NAME + "." + UserEntry._ID);
 
     }
 
     public static Cursor query_BugUserRepartition(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {
-        return openHelper.getReadableDatabase().query(BugUserRepartitionEntry.TABLE_NAME, projection, selection, args, null, null, sortOrder);
+        return sBugUserRepartitionWithStat.query(openHelper.getReadableDatabase(), projection, selection, args, null, null, sortOrder);
     }
 
     public static Cursor query_BugUserRepartitionById(@NonNull Uri uri, String[] projection, String selection, String[] args, String sortOrder, GrappboxDBHelper openHelper) {

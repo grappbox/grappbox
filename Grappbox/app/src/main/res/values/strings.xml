@@ -386,8 +386,13 @@
     <string name="stat_timeline">Timeline</string>
     <string name="stat_advancement">Advancement</string>
     <string name="stat_Storage">Storage</string>
+    <string name="stat_bugtracker">Bugtracker</string>
+    <string name="stat_bug_user_repartition">Bug user repartion</string>
 
     <string name="occupation_label">Occupation</string>
+    <string name="team_occupation_label">Team Occupation</string>
+    <string name="next_meeting_label">Next Meeting</string>
+    <string name="stat_label">Statistic</string>
     <string name="task_begun_for_this_user">Task begun for this user</string>
     <string name="task_on_doing_for_this_user">Task on doing for this user</string>
     <string name="occupation_free">Free</string>
@@ -395,5 +400,11 @@
     <string-array name="occupation_status">
         <item>@string/occupation_free</item>
         <item>@string/occupation_busy</item>
+    </string-array>
+    <string name="set_dashboard">Custom dashboard tab</string>
+    <string-array name="dashboard_tab">
+        <item>@string/team_occupation_label</item>
+        <item>@string/next_meeting_label</item>
+        <item>@string/stat_label</item>
     </string-array>
 </resources>
