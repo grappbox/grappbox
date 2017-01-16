@@ -73,7 +73,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                  filter-row="{'name': options.filterRow}"
                  sort-mode="options.sortMode"
                  view-scale="options.scale"
-                 column-width="getColumnWidth(options.width, options.scale, options.zoom) + 100"
+                 column-width="getColumnWidth(options.width, options.scale, options.zoom)"
                  auto-expand="options.autoExpand"
                  task-out-of-range="options.taskOutOfRange"
                  from-date = "options.fromDate"
@@ -82,7 +82,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                  current-date="options.currentDate"
                  current-date-value="options.currentDateValue"
                  headers="options.width && options.shortHeaders || options.longHeaders"
-                 max-height="options.maxHeight && 600 || 0"
+                 max-height="options.maxHeight && 300 || 0"
                  api="options.api"
                  column-magnet="options.columnMagnet">
                 <gantt-tree enabled="true"
