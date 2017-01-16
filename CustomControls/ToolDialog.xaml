@@ -50,7 +50,7 @@
                             <RotateTransform Angle="45" />
                         </Rectangle.RenderTransform>
                     </Rectangle>
-                    <TextBlock>Lozenge</TextBlock>
+                    <TextBlock>Diamond</TextBlock>
                 </StackPanel>
             </GridViewItem>
             <GridViewItem>
