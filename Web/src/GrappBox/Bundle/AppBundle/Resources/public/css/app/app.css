@@ -168,6 +168,7 @@ th { font-weight: 900!important; }
 }
 
 .ellipsis { display: -webkit-box; overflow: hidden; text-overflow: ellipsis; -webkit-line-clamp: 5; -webkit-box-orient: vertical; }
+.whitespace { white-space: pre-wrap; }
 .no-margin { margin: 0!important; }
 .no-padding { padding: 0!important; }
 .no-shadow { box-shadow: none!important; }
@@ -607,7 +608,7 @@ fieldset[disabled] .form-group .form-control { background: #e0e0e0; padding: 6px
 .md-chip-img img { -webkit-transform: translate(-50%); border-radius: 50%; margin-left: 23px; }
 .md-chip-text { display: inline-block; font-weight: 400; font-size: 14px; height: 48px; float: left; padding: 12px 18px 12px 10px; color: rgba(255, 255, 255, .87); }
 
-.label.tag { display: inline-block; font-size: 14px; margin: 5px; padding: 15px 20px; border-radius: 2px; border: 1px solid #757575; font-weight: 400; }
+.label.tag { display: inline-block; font-size: 14px; margin: 5px; padding: 15px 20px; border-radius: 2px; border: 1px solid #e0e0e0; font-weight: 400; color: #fafafa; }
 tags-input { padding-top: 10px!important; }
 tags-input .tags { border: none; border-radius: 0; box-shadow: none; border-bottom: 1px solid #d2d2d2; }
 tags-input .tags .input { color: #757575; font: inherit!important; padding: 0 5px; height: 35px; }
