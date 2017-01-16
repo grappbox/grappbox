@@ -128,8 +128,8 @@ namespace Grappbox.View
         /// <summary>
         /// Initializes the pivot item.
         /// </summary>
-        /// <param name="label">The label.</param>
-        /// <param name="glyph">The glyph.</param>
+        /// <param name="label">The pivot label.</param>
+        /// <param name="glyph">The pivot glyph.</param>
         /// <param name="pivotItem">The pivot item.</param>
         private void initPivotItem(string label, string glyph, out PivotItem pivotItem)
         {
