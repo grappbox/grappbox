@@ -27,7 +27,7 @@ angular.module('GrappBox.controllers')
   $scope.userSelected = [];
 
   // Add a user and its charge to currentUsers array
-  $scope.addUserToTask = function(userSelected, chargeSelected) {
+  $scope.addUserToSelection = function(userSelected, chargeSelected) {
     console.log("userSelected = " + userSelected + "| chargeSelected = " + chargeSelected);
     if (userSelected == undefined || chargeSelected == undefined) {
       console.error("No user or no charge selected");
@@ -48,7 +48,7 @@ angular.module('GrappBox.controllers')
   }
 
   // Delete a user and its charge from currentUsers array
-  $scope.deleteFromUserToAdd = function(userId) {
+  $scope.deleteUserFromSelection = function(userId) {
     for(var i = 0; $scope.currentUsers.length; i++){
       if ($scope.currentUsers[i].id === userId)
         $scope.currentUsers.splice(i, 1);

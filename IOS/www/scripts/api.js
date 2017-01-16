@@ -200,7 +200,7 @@ angular.module('GrappBox.api', ['ngResource'])
     },
     // Close ticket
     CloseTicket: function () {
-      return $resource($rootScope.API + 'bugtracker/ticket/:id', { id: "@id" });
+      return $resource($rootScope.API + 'bugtracker/ticket/close/:id', { id: "@id" });
     },
     // Reopen ticket
     ReopenTicket: function () {

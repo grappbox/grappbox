@@ -224,6 +224,7 @@ angular.module('GrappBox.controllers')
     $scope.archiveMessageData = {};
     $scope.ArchiveMessage = function (message) {
         //$rootScope.showLoading();
+        console.log("Deleting message");
         Timeline.ArchiveMessageAndComments().delete({
             id: message.timelineId,
             messageId: message.id
@@ -232,6 +233,12 @@ angular.module('GrappBox.controllers')
                 console.log('Archive message successful !');
                 Toast.show("Message deleted");
                 $scope.archiveMessageData = data.data;
+                if (message.timelineId == 1) {
+                  $scope.GetLastMessagesCustomer(false);
+                }
+                else {
+                  $scope.GetLastMessagesTeam(false);
+                }
                 //$state.go($state.currentState, { projectId: $stateParams.projectId }, { reload: true });
             })
             .catch(function (error) {
@@ -333,8 +340,11 @@ angular.module('GrappBox.controllers')
     */
     // Remove confirm popup for deleting message
     $scope.PopupDeleteMessage = function (message) {
+      console.log(message);
+      //<style>.popup-buttons { background-color: red !important; }</style>
         var confirmPopup = $ionicPopup.confirm({
             title: 'Delete Message',
+            cssClass: 'popup_timeline',
             template: 'Are you sure you want to delete this message ?'
         })
         .then(function (res) {

@@ -70,25 +70,25 @@
             </ion-item>
             <div class="button-bar">
                 <!-- If ticket is open & Comment is empty -->
-                <a ng-show="ticket.deletedAt == null && comment.description == null"
+                <a ng-if="ticket.state == true && comment.description == null"
                    class="button button-clear button-assertive"
                    ng-click="CloseTicket()">
                     CLOSE
                 </a>
                 <!-- If ticket is open & Comment isn't empty -->
-                <a ng-show="ticket.deletedAt == null && comment.description != null"
+                <a ng-if="ticket.state == true && comment.description != null"
                    class="button button-clear button-assertive"
                    ng-click="CloseTicketAndComment()">
                     CLOSE & COMMENT
                 </a>
                 <!-- If ticket is closed & Comment is empty -->
-                <a ng-show="ticket.deletedAt != null && comment.description == null"
+                <a ng-if="ticket.state == false && comment.description == null"
                    class="button button-clear button-assertive"
                    ng-click="ReopenTicket()">
                     REOPEN
                 </a>
                 <!-- If ticket is closed & Comment isn't empty -->
-                <a ng-show="ticket.deletedAt != null && comment.description != null"
+                <a ng-if="ticket.state == false && comment.description != null"
                    class="button button-clear button-assertive"
                    ng-click="ReopenTicketAndComment()">
                     REOPEN & COMMENT

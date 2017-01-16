@@ -20,10 +20,12 @@
                           placeholder="Message"
                           ng-model="message.message" required></textarea>
             <!-- </ion-input> -->
-            <button ng-disabled="createMessage_form.$invalid"
-                    class="button button-block button-positive icon ion-plus"
-                    ng-click="PostMessage()">
-            </button>
+            <div class="text-center">
+              <button ng-disabled="createMessage_form.$invalid" class="button button-clear gb-color-timeline"
+                      ng-click="PostMessage()">
+                    CREATE
+              </button>
+            </div>
         </form>
     </ion-content>
 </ion-view>

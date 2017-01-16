@@ -51,7 +51,7 @@ Summary: Edit task view
         <span class="input-label">Resource(s)</span>
         <select ng-model="userSelected" ng-options="user as user.name for user in usersList" required></select>
         <select ng-model="chargeSelected" ng-options="n as (n + '%') for n in [] | range:11" required></select>
-        <button ng-disabled="add_user_form.$invalid" class="button button-clear icon ion-plus gb-color-dashboard" ng-click="addUserToTask(userSelected, chargeSelected)"></button>
+        <button ng-disabled="add_user_form.$invalid" class="button button-clear icon ion-plus gb-color-dashboard" ng-click="addUserToSelection(userSelected, chargeSelected)"></button>
       </div>
     </form>
 
@@ -60,7 +60,7 @@ Summary: Edit task view
       <ion-item ng-repeat="user in currentUsers"
       <h2>{{user.firstname}} {{user.lastname}} : {{user.percent}}%</h2>
       <ion-option-button class="button-assertive icon ion-ios-trash"
-      ng-click="deleteFromUserToAdd(user.id)">
+      ng-click="deleteUserFromSelection(user.id)">
     </ion-option-button>
   </ion-item>
 </ion-list>

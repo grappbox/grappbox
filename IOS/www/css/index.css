@@ -152,6 +152,10 @@ ion-popover-view {
   border-color: transparent !important;
 }
 
+.popup_timeline .button-ok {
+    background-color: #FF9F55 !important;
+}
+
 /* button positive on click */
 .button-positive.button:active, .button-positive.button.active {
   box-shadow: none !important;
