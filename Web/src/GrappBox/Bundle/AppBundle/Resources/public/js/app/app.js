@@ -23,21 +23,16 @@ var app = angular.module("grappbox", [
   "ui.tree",
   "ng-drag-scroll",
   "ang-drag-drop",
-  "googlechart",
+  "chart.js",
   "gantt",
-  //"gantt.sortable",
   "gantt.movable",
-  //"gantt.drawtask",
   "gantt.tooltips",
-  //"gantt.bounds",
   "gantt.progress",
   "gantt.table",
   "gantt.tree",
   "gantt.groups",
   "gantt.dependencies",
-  //"gantt.overlap",
-  "gantt.resizeSensor"//,
-  //"mgcrea.ngStrap"
+  "gantt.resizeSensor"
 ]);
 
 
@@ -75,6 +70,25 @@ app.config(["localStorageServiceProvider", function(localStorageServiceProvider)
 // Bootstrap notifications settings
 app.config(["NotificationProvider", function(NotificationProvider) {
   NotificationProvider.setOptions({ positionX: "center", positionY: "bottom" });
+}]);
+
+// ChartJS
+app.config(["ChartJsProvider", function(ChartJsProvider) {
+  ChartJsProvider.setOptions({
+    legend: true,
+    tooltipFontFamily: "'Roboto', 'Helvetica Neue', 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', sans-serif",
+    tooltipFontSize: 14,
+    tooltipFontStyle: "normal",
+    tooltipFontColor: "#fff",
+    tooltipTitleFontFamily: "'Roboto', 'Helvetica Neue', 'Segoe UI', 'Oxygen', 'Ubuntu', 'Cantarell', 'Open Sans', sans-serif",
+    tooltipTitleFontSize: 14,
+    tooltipTitleFontStyle: "bold",
+    tooltipTitleFontColor: "#fff",
+    tooltipYPadding: 10,
+    tooltipXPadding: 10,
+    tooltipCornerRadius: 0,
+    tooltipXOffset: 10 
+  });
 }]);
 
 

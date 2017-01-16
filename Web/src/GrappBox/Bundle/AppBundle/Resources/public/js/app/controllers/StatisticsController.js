@@ -6,8 +6,8 @@
 
 // Controller definition
 // APP profile settings
-app.controller("StatisticsController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope", "statisticFactory",
-    function($http, notificationFactory, $rootScope, $route, $scope, statisticFactory) {
+app.controller("StatisticsController", ["$http", "notificationFactory", "$rootScope", "$route", "$scope",
+    function($http, notificationFactory, $rootScope, $route, $scope) {
 
   /* ==================== INITIALIZATION ==================== */
 
@@ -16,38 +16,37 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
   $scope.statistics = {
     project_id: $route.current.params.project_id,
     issue: {
+      total: "",
       assignation: { assigned: "", unassigned: "" },
+      status: { open: "", closed: "" },
       byCustomer: "",
       evolution: "",
       repartition: {
-        tag: { chart: "", empty: true, message : "" },
-        user: { chart: "", empty: true, message : "" }
+        tag: { chart: {}, valid: true },
+        user: { chart: {}, valid: true }
       }
     },
     customer: { actual: "", maximum: "" },
-    project: { advancement: "", dates: "" },
-    storage: { status: "" },
+    project: { advancement: { chart: {}, valid: true }, dates: { begin: "", end: "" } },
+    storage: { chart: {} },
     task: {
       current: "",
       done: "",
       late: "",
       total: "",
-      repartition: { chart: "", empty: true, message : "" }
+      repartition: { chart: {}, valid: true }
     },
-    talk: { count: { team: "", customer: "" } },
-    user: { advancement: "", charge: "" }
+    talk: { team: "", customer: "", total: "" },
+    user: { advancement: { chart: {}, valid: true }, charge: { chart: {}, valid: true } }
   };
   $scope.error = {
     issue: {
       none: "Your project doesn't have any issue.",
-      repartition: { tag: "None of your tasks are assigned to a tag.", user: "None of your issues are assigned to a user." }
+      repartition: { tag: "None of your issues are assigned to a tag.", user: "None of your issues are assigned to a user." }
     },
     tag: "Your project's bugtracker doesn't have any tag.",
-    task: {
-      none: "Your project doesn't have any task.",
-      repartition: "None of your tasks are assigned to a user."
-    },
-    user: "Your project doesn't have any user."
+    task: "None of your tasks are assigned to a user.",
+    user: "None of your tasks are assigned to a user."
   };
 
 
@@ -58,41 +57,52 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
     if (response && response.data && response.data.info && response.data.info.return_code) {
       if (response.data.info.return_code == "1.16.1") {
 
-        // Opened/closed issues (values)
+        // Project dates (begin/end) (values)
+        $scope.statistics.project.dates.begin = response.data.data.projectTimeLimits.projectStart;
+        $scope.statistics.project.dates.end = response.data.data.projectTimeLimits.projectEnd;
+
+        // Storage status (used/total ratio) (pie)
+        $scope.statistics.storage.chart = {};
+        $scope.statistics.storage.chart.label = ["Used", "Free"];
+        $scope.statistics.storage.chart.data = [+response.data.data.storageSize.occupied / 1048576, (+response.data.data.storageSize.total - +response.data.data.storageSize.occupied) / 1048576];
+        $scope.statistics.storage.chart.series = ["Space"];
+
+        // Opened/closed issues and total (values)
+        $scope.statistics.issue.status.open = response.data.data.openCloseBug.open;
+        $scope.statistics.issue.status.closed = response.data.data.openCloseBug.closed;
+        $scope.statistics.issue.total = +$scope.statistics.issue.status.open + +$scope.statistics.issue.status.closed;
+
+        // Assigned/Unassigned issues (values)
         $scope.statistics.issue.assignation.assigned = response.data.data.bugAssignationTracker.assigned;
         $scope.statistics.issue.assignation.unassigned = response.data.data.bugAssignationTracker.unassigned;
 
-        // Issues/user ratio (pie)
-        $scope.statistics.issue.repartition.user.chart = statisticFactory.pie(1, "##");
-        $scope.statistics.issue.repartition.user.chart.data.push(["User", "Issues"]);
-        if (!response.data.data.bugsUsersRepartition.length)
-          $scope.statistics.issue.repartition.user.message = (response.data.data.bugAssignationTracker.assigned + response.data.data.bugAssignationTracker.unassigned ? $scope.error.user : $scope.error.issue.none);
+        // Issue repartition by user (issues/user ratio) (pie)
+        if (!response.data.data.bugsUsersRepartition || !response.data.data.bugsUsersRepartition.length)
+          $scope.statistics.issue.repartition.user.valid = false;
         else {
-          angular.forEach(response.data.data.bugsUsersRepartition, function(key, value) {
-            this.statistics.issue.repartition.user.chart.data.push([key.user.firstname + " " + key.user.lastname, key.value]);
-            if (key.value)
-              this.statistics.issue.repartition.user.empty = false;
-          }, $scope);
-          if ($scope.statistics.issue.repartition.user.empty)
-            $scope.statistics.issue.repartition.user.message = $scope.error.issue.repartition.user;
+          $scope.statistics.issue.repartition.user.chart = {};
+          $scope.statistics.issue.repartition.user.chart.label = [];
+          $scope.statistics.issue.repartition.user.chart.data = [];
+          for (var i = 0; i < response.data.data.bugsUsersRepartition.length; ++i) {
+            $scope.statistics.issue.repartition.user.chart.label.push(response.data.data.bugsUsersRepartition[i].user.firstname + " " + response.data.data.bugsUsersRepartition[i].user.lastname);
+            $scope.statistics.issue.repartition.user.chart.data.push(response.data.data.bugsUsersRepartition[i].value);
+          }
         }
 
         // Customer issues (value)
         $scope.statistics.issue.byCustomer = response.data.data.clientBugTracker;
 
         // Issue repartition by tag (issues/tags ratio) (pie)
-        $scope.statistics.issue.repartition.tag.chart = statisticFactory.pie(1, "##");
-        $scope.statistics.issue.repartition.tag.chart.data.push(["Tags", "Issues"]);
-        if (!response.data.data.bugsTagsRepartition.length)
-          $scope.statistics.issue.repartition.tag.message = (response.data.data.bugAssignationTracker.assigned + response.data.data.bugAssignationTracker.unassigned ? $scope.error.tag : $scope.error.issue.none);
+        if (!response.data.data.bugsTagsRepartition || !response.data.data.bugsTagsRepartition.length)
+          $scope.statistics.issue.repartition.tag.valid = false;
         else {
-          angular.forEach(response.data.data.bugsTagsRepartition, function(key, value) {
-            this.statistics.issue.repartition.tag.chart.data.push([key.name, key.value]);
-            if (key.value)
-              this.statistics.issue.repartition.tag.empty = false;
-          }, $scope);
-          if ($scope.statistics.issue.repartition.tag.empty)
-            $scope.statistics.issue.repartition.tag.message = $scope.error.issue.repartition.tag;
+          $scope.statistics.issue.repartition.tag.chart = {};
+          $scope.statistics.issue.repartition.tag.chart.label = [];
+          $scope.statistics.issue.repartition.tag.chart.data = [];
+          for (var i = 0; i < response.data.data.bugsTagsRepartition.length; ++i) {
+            $scope.statistics.issue.repartition.tag.chart.label.push(response.data.data.bugsTagsRepartition[i].name);
+            $scope.statistics.issue.repartition.tag.chart.data.push(response.data.data.bugsTagsRepartition[i].value);
+          }
         }
 
         // Customer count (values)
@@ -112,23 +122,75 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
         $scope.statistics.task.late = response.data.data.taskStatus.late;
 
         // Task repartition (tasks/user ratio) (pie)
-        $scope.statistics.task.repartition.chart = statisticFactory.pie(1, "##");
-        $scope.statistics.task.repartition.chart.data.push(["User", "Tasks"]);
-        if (!response.data.data.tasksRepartition.length)
-          $scope.statistics.task.repartition.message = (response.data.data.totalTasks ? $scope.error.user : $scope.error.task.none);
+        if (!response.data.data.tasksRepartition || !response.data.data.tasksRepartition.length)
+          $scope.statistics.task.repartition.valid = false;
         else {
-          angular.forEach(response.data.data.tasksRepartition, function(key, value) {
-            this.statistics.task.repartition.chart.data.push([key.user.firstname + " " + key.user.lastname, key.value]);
-            if (key.value)
-              this.statistics.task.repartition.empty = false;
-          }, $scope);
-          if ($scope.statistics.task.repartition.empty)
-            $scope.statistics.task.repartition.message = $scope.error.task.repartition;
+          $scope.statistics.task.repartition.chart = {};
+          $scope.statistics.task.repartition.chart.label = [];
+          $scope.statistics.task.repartition.chart.data = [];
+          for (var i = 0; i < response.data.data.tasksRepartition.length; ++i) {
+            $scope.statistics.task.repartition.chart.label.push(response.data.data.tasksRepartition[i].user.firstname + " " + response.data.data.tasksRepartition[i].user.lastname);
+            $scope.statistics.task.repartition.chart.data.push(response.data.data.tasksRepartition[i].value);
+          }
         }
 
-        // Timelines messages (values)
-        $scope.statistics.talk.count.team = response.data.data.timelinesMessageNumber.team;
-        $scope.statistics.talk.count.customer = response.data.data.timelinesMessageNumber.customer;
+        // Talk messages count and total (values)
+        $scope.statistics.talk.team = response.data.data.timelinesMessageNumber.team;
+        $scope.statistics.talk.customer = response.data.data.timelinesMessageNumber.customer;
+        $scope.statistics.talk.total = +$scope.statistics.talk.team + +$scope.statistics.talk.customer;
+
+        // Task status repartition per user (user task advancement) (bar) -->
+        if (!response.data.data.userTasksAdvancement || !response.data.data.userTasksAdvancement.length)
+          $scope.statistics.user.advancement.valid = false;
+        else {
+          $scope.statistics.user.advancement.chart = {};
+          $scope.statistics.user.advancement.chart.label = [];
+          $scope.statistics.user.advancement.chart.data = [];
+          $scope.statistics.user.advancement.chart.series = ["Doing", "Done", "Late", "To Do"];
+
+          var doing = [];
+          var done = [];
+          var late = [];
+          var toDo = [];
+          for (var i = 0; i < response.data.data.userTasksAdvancement.length; ++i) {
+            $scope.statistics.user.advancement.chart.label.push(response.data.data.userTasksAdvancement[i].user.firstname + " " + response.data.data.userTasksAdvancement[i].user.lastname);
+            doing.push(response.data.data.userTasksAdvancement[i].tasksDoing);
+            done.push(response.data.data.userTasksAdvancement[i].tasksDone);
+            late.push(response.data.data.userTasksAdvancement[i].tasksLate);
+            toDo.push(response.data.data.userTasksAdvancement[i].tasksToDo);
+          }
+          $scope.statistics.user.advancement.chart.data.push(doing, done, late, toDo);
+        }
+
+        // User working charge (bar)
+        if (!response.data.data.userWorkingCharge || !response.data.data.userWorkingCharge.length)
+          $scope.statistics.user.charge.valid = false;
+        else {
+          $scope.statistics.user.charge.chart = {};
+          $scope.statistics.user.charge.chart.label = [];
+          $scope.statistics.user.charge.chart.data = [];
+          $scope.statistics.user.charge.chart.series = ["Charge"];
+
+          var charge = [];
+          for (var i = 0; i < response.data.data.userWorkingCharge.length; ++i) {
+            $scope.statistics.user.charge.chart.label.push(response.data.data.userWorkingCharge[i].user.firstname + " " + response.data.data.userWorkingCharge[i].user.lastname);
+            $scope.statistics.user.charge.chart.data.push(response.data.data.userWorkingCharge[i].charge);
+          }
+        }
+
+        // Project advancement (line) -->
+        if (!response.data.data.projectAdvancement || !response.data.data.projectAdvancement.length)
+          $scope.statistics.project.advancement.valid = false;
+        else {
+          $scope.statistics.project.advancement.chart = {};
+          $scope.statistics.project.advancement.chart.label = [];
+          $scope.statistics.project.advancement.chart.data = [];
+
+          for (var i = 0; i < response.data.data.projectAdvancement.length; ++i) {
+            $scope.statistics.project.advancement.chart.label.push(response.data.data.projectAdvancement[i].date);
+            $scope.statistics.project.advancement.chart.data.push(response.data.data.projectAdvancement[i].finishedTasks);
+          }
+        }
 
         $scope.view.loaded = true;
         $scope.view.valid = true;

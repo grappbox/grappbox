@@ -4,7 +4,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Statistics -->
 <section class="statistics">
-  <div class="page-header {[{ path.colors[path.current] + '-background' }]}">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
     <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
       <img src="../resources/img/app/statistics.svg" width="300" height="auto" alt="Statistics">
     </div>
@@ -24,95 +24,159 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
     <div data-ng-if="view.valid && user">
       <div class="box-row">
 
-        <!-- Tasks -->
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/task'] + '-background' }]}">{[{ path.icons['/task'] }]}</i>Tasks</h4>
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
+        <!-- Project -->
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/dashboard'] + '-background' }]}">{[{ ::path.icons['/dashboard'] }]}</i>Project</h4>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.task.current }]} tasks in progress<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
-            <span class="status-icon"><i class="material-icons" aria-hidden="true">access_time</i></span>
+            <p>Project will end on <strong>{[{ ::statistics.project.dates.end }]}</strong><br><span>It started the {[{ ::statistics.project.dates.begin }]}</span></p>
           </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.task.late }]} <strong>late</strong> tasks<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
-            <span class="status-icon">
-              <i class="material-icons {[{ statistics.task.late == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.task.late == '0' ? 'check' : 'warning' }]}</i>
-            </span>
+            <p>{[{ ::statistics.customer.actual }]} registered customers<br><span>On a maximum of {[{ ::statistics.customer.maximum }]}</span></p>
           </div>
         </div>
-        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
+
+        <!-- Cloud -->
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/cloud'] + '-background' }]}">{[{ ::path.icons['/cloud'] }]}</i>Cloud</h4>
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.task.done }]} finished tasks<br/><span>On a total of {[{ statistics.task.total }]} tasks</span></p>
-            <span class="status-icon"><i class="material-icons" aria-hidden="true">done_all</i></span>
+            <p>Storage status<br><span>(in MB)</span></p>
+            <div class="canvas-wrapper pie">
+              <canvas class="chart chart-pie" chart-data="statistics.storage.chart.data" chart-labels="statistics.storage.chart.label" chart-series="statistics.storage.chart.series"></canvas>
+            </div>
           </div>
         </div>
-        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+
+        <!-- Talks -->
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/talk'] + '-background' }]}" aria-hidden="true">{[{ ::path.icons['/talk'] }]}</i>Talks</h4>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>Tasks repartition<br/><span>(by user)</span></p>
-            <div class="chart" google-chart chart="statistics.task.repartition.chart" data-ng-if="!statistics.task.repartition.empty"></div>
-            <p class="chart-message" data-ng-if="statistics.task.repartition.empty"><i class="material-icons" aria-hidden="true">block</i>{[{ ::statistics.task.repartition.message }]}</p>
+            <p>{[{ ::statistics.talk.team }]} discussions on your <strong>team</strong> section<br><span>On a total of {[{ ::statistics.talk.total }]} discussions</span></p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ ::statistics.talk.customer }]} discussions on your <strong>customer</strong> section<br><span>On a total of {[{ ::statistics.talk.total }]} discussions</span></p>
           </div>
         </div>
 
         <!-- Issues -->
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ path.colors['/bugtracker'] + '-background' }]}">{[{ path.icons['/bugtracker'] }]}</i>Bugtracker</h4>
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/bugtracker'] + '-background' }]}">{[{ ::path.icons['/bugtracker'] }]}</i>Bugtracker</h4>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ ::statistics.issue.status.open }]} <strong>opened</strong> issues<br><span>On a total of {[{ ::statistics.issue.total }]} issues</span></p>
+            <span class="status-icon">
+              <i class="material-icons {[{ ::statistics.issue.status.open == '0' ? 'green-color' : 'orange-color' }]}" aria-hidden="true">{[{ ::statistics.issue.status.open == '0' ? 'check' : 'warning' }]}</i>
+            </span> 
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ ::statistics.issue.status.closed }]} closed issues<br><span>On a total of {[{ ::statistics.issue.total }]} issues</span></p>
+            <span class="status-icon"><i class="material-icons" aria-hidden="true">done_all</i></span>
+          </div>
+        </div>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.issue.assignation.assigned }]} assigned issues</p>
+            <p>{[{ ::statistics.issue.assignation.assigned }]} assigned issues<br><span>On a total of {[{ ::statistics.issue.total }]} issues</span></p>
             <span class="status-icon"><i class="material-icons" aria-hidden="true">access_time</i></span>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.issue.assignation.unassigned }]} <strong>unassigned</strong> issues</p>
+            <p>{[{ ::statistics.issue.assignation.unassigned }]} <strong>unassigned</strong> issues<br><span>On a total of {[{ ::statistics.issue.total }]} issues</span></p>
             <span class="status-icon">
-              <i class="material-icons {[{ statistics.issue.assignation.unassigned == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.issue.assignation.unassigned == '0' ? 'check' : 'warning' }]}</i>
+              <i class="material-icons {[{ ::statistics.issue.assignation.unassigned == '0' ? 'green-color' : 'orange-color' }]}" aria-hidden="true">{[{ ::statistics.issue.assignation.unassigned == '0' ? 'check' : 'warning' }]}</i>
             </span>
           </div>
         </div>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.issue.byCustomer }]} issues reported by your customers</p>
+            <p>{[{ ::statistics.issue.byCustomer }]} issues reported by your customers<br><span>On a total of {[{ ::statistics.issue.total }]} issues</span></p>
             <span class="status-icon">
-              <i class="material-icons {[{ statistics.issue.byCustomer == '0' ? 'green-color' : 'orange-color' }]}">{[{ statistics.issue.byCustomer == '0' ? 'check' : 'warning' }]}</i>
+              <i class="material-icons {[{ ::statistics.issue.byCustomer == '0' ? 'green-color' : 'orange-color' }]}" aria-hidden="true">{[{ ::statistics.issue.byCustomer == '0' ? 'check' : 'warning' }]}</i>
             </span>
           </div>
         </div>
-       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>Issues repartition<br/><span>(by user)</span></p>
-            <div class="chart" google-chart chart="statistics.issue.repartition.user.chart" data-ng-if="!statistics.issue.repartition.user.empty"></div>
-            <p class="chart-message" data-ng-if="statistics.issue.repartition.user.empty"><i class="material-icons" aria-hidden="true">block</i>{[{ ::statistics.issue.repartition.user.message }]}</p>
+            <p>Issues repartition<br><span>(by user)</span></p>
+            <div class="canvas-wrapper pie">
+              <canvas data-ng-if="statistics.issue.repartition.user.valid" class="chart chart-pie" chart-data="statistics.issue.repartition.user.chart.data" chart-labels="statistics.issue.repartition.user.chart.label"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.issue.repartition.user.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.issue.repartition.user }]}</p>
           </div>
         </div>
-       <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>Issues repartition<br/><span>(by tag)</span></p>
-            <div class="chart" google-chart chart="statistics.issue.repartition.tag.chart" data-ng-if="!statistics.issue.repartition.tag.empty"></div>
-            <p class="chart-message" data-ng-if="statistics.issue.repartition.tag.empty"><i class="material-icons" aria-hidden="true">block</i>{[{ ::statistics.issue.repartition.tag.message }]}</p>
-          </div>
-        </div>
-
-        <!-- Messages -->
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/talk'] + '-background' }]}">{[{ path.icons['/talk'] }]}</i>Talks</h4>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
-          <div class="box">
-            <p>{[{ statistics.talk.count.team }]} discussions on your <strong>team</strong> section</p>
-          </div>
-        </div>
-        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
-          <div class="box">
-            <p>{[{ statistics.talk.count.customer }]} discussions on your <strong>customer</strong> section</p>
+            <p>Issues repartition<br><span>(by tag)</span></p>
+            <div class="canvas-wrapper pie">
+              <canvas data-ng-if="statistics.issue.repartition.tag.valid" class="chart chart-pie" chart-data="statistics.issue.repartition.tag.chart.data" chart-labels="statistics.issue.repartition.tag.chart.label"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.issue.repartition.tag.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.issue.repartition.tag }]}</p>
           </div>
         </div>
 
-        <!-- Customers -->
-        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/settings'] + '-background' }]}">public</i>Customers</h4>
+        <!-- Tasks -->
+        <h4 class="col-lg-12 col-md-12 col-sm-12 col-xs-12 box-header"><i class="material-icons rounded {[{ ::path.colors['/task'] + '-background' }]}">{[{ ::path.icons['/task'] }]}</i>Tasks</h4>
         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
           <div class="box">
-            <p>{[{ statistics.customer.actual }]} registered customers<br/><span>On a maximum of {[{ statistics.customer.maximum }]}</span></p>
+            <p>{[{ ::statistics.task.current }]} tasks in progress<br><span>On a total of {[{ ::statistics.task.total }]} tasks</span></p>
+            <span class="status-icon"><i class="material-icons" aria-hidden="true">access_time</i></span>
           </div>
         </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ ::statistics.task.late }]} <strong>late</strong> tasks<br><span>On a total of {[{ ::statistics.task.total }]} tasks</span></p>
+            <span class="status-icon">
+              <i class="material-icons {[{ ::statistics.task.late == '0' ? 'green-color' : 'orange-color' }]}" aria-hidden="true">{[{ ::statistics.task.late == '0' ? 'check' : 'warning' }]}</i>
+            </span>
+          </div>
+        </div>
+        <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>{[{ ::statistics.task.done }]} finished tasks<br><span>On a total of {[{ ::statistics.task.total }]} tasks</span></p>
+            <span class="status-icon"><i class="material-icons" aria-hidden="true">done_all</i></span>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>User advancement<br><span>(task repartition by status, by user)</span></p>
+            <div class="canvas-wrapper bar">
+              <canvas data-ng-if="statistics.user.advancement.valid" class="chart chart-bar" chart-data="statistics.user.advancement.chart.data" chart-labels="statistics.user.advancement.chart.label" chart-series="statistics.user.advancement.chart.series"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.user.advancement.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.user }]}</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>User charge<br><span>(task ratio among users)</span></p>
+            <div class="canvas-wrapper bar">
+              <canvas data-ng-if="statistics.user.charge.valid" class="chart chart-bar" chart-data="statistics.user.charge.chart.data" chart-labels="statistics.user.charge.chart.label" chart-series="statistics.user.charge.chart.series"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.user.charge.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.user }]}</p>
+          </div>
+        </div>
+        <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>Project advancement<br><span>(finished tasks over time)</span></p>
+            <div class="canvas-wrapper line">
+              <canvas data-ng-if="statistics.project.advancement.valid" class="chart chart-line" chart-data="statistics.project.advancement.chart.data" chart-labels="statistics.project.advancement.chart.label" chart-series="statistics.project.advancement.chart.series"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.user.charge.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.user }]}</p>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12 no-padding">
+          <div class="box">
+            <p>Tasks repartition<br><span>(by user)</span></p>
+            <div class="canvas-wrapper pie" id="last">
+              <canvas data-ng-if="statistics.task.repartition.valid" class="chart chart-pie" chart-data="statistics.task.repartition.chart.data" chart-labels="statistics.task.repartition.chart.label"></canvas>
+            </div>
+            <p class="chart-message" data-ng-if="!statistics.task.repartition.valid"><i class="material-icons" aria-hidden="true">help</i>{[{ ::error.task }]}</p>
+          </div>
+        </div>
+
         <div class="clearfix"></div>
       </div>
     </div>

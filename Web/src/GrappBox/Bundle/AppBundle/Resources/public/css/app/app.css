@@ -909,10 +909,15 @@ tags-input .tags .focused {
 /* ==================== STATISTICS ==================== */
 /* ==================================================== */
 
-.statistics .box .ltr,
-.statistics .box svg,
-.statistics .box svg rect { width: 100%!important; height: auto!important; }
+.statistics .canvas-wrapper.pie { padding: 25px; }
+.statistics .canvas-wrapper.pie canvas { margin: 0 auto; }
 
+.statistics .canvas-wrapper.line { padding: 10px; }
+.statistics .canvas-wrapper.bar { padding: 10px; }
+
+@media (min-width: 992px) {
+  .statistics .canvas-wrapper.pie#last { margin-bottom: 22px; }  
+}
 
 
 /* ========================================================== */
