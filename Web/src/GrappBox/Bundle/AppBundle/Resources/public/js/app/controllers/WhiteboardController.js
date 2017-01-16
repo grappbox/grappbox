@@ -490,7 +490,7 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
   accessFactory.whiteboardAvailable();
 
   var _closeWhiteboard = function() {
-    $http.put($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+    $http.put($rootScope.api.url + "/whiteboard/" + $scope.route.whiteboard_id, { data: {} }, { headers: { 'Authorization': $rootScope.user.token }}).then(
       function whiteboardClosed(response) {},
       function whiteboardNotClosed(response) {
         if (response && response.data && response.data.info && response.data.info.return_code) {
@@ -544,7 +544,6 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       $interval.cancel($scope.whiteboard.pull.interval);
     whiteboardRenderFactory.clearCanvasBuffer();
     whiteboardRenderFactory.clearCanvas();
-    _closeWhiteboard();
   });
 
   $scope.$on('$routeChangeStart', function() {
@@ -552,7 +551,6 @@ app.controller("WhiteboardController", ["accessFactory", "$http", "$interval", "
       $interval.cancel($scope.whiteboard.pull.interval);
     whiteboardRenderFactory.clearCanvasBuffer();
     whiteboardRenderFactory.clearCanvas();
-    _closeWhiteboard();
   });
 
 

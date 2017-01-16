@@ -79,13 +79,13 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </ul>
                   <div class="clearfix"></div>
                   <div data-ng-if="talks.data.creator.id != user.id">
-                    <p class="body main">{[{ ::talks.data.message }]}</p>
+                    <p class="body main whitespace">{[{ ::talks.data.message }]}</p>
                     <div class="submit">
                       <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
                     </div>
                   </div>
                   <div data-ng-if="talks.data.creator.id == user.id">
-                    <p class="body main">{[{ talks.data.message }]}</p>
+                    <p class="body main whitespace">{[{ talks.data.message }]}</p>
                     <div class="submit">
                       <a href="" class="btn btn-rounded {[{ ::path.colors['/bugtracker'] + '-hover' }]} {[{ ::path.colors['/bugtracker'] + '-focus' }]} {[{ ::path.colors['/bugtracker'] + '-background' }]}" title="Report this talk as issue" data-ng-click="talks.convert(talks.data)"><i class="material-icons" aria-hidden="true">{[{ ::path.icons['/bugtracker'] }]}</i></a>
                       <a href="" class="btn btn-rounded gray-hover gray-focus gray-background" title="Edit this talk" data-ng-click="talks.edit(talks.data)"><i class="material-icons" aria-hidden="true">mode_edit</i></a>
@@ -141,7 +141,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
                       <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]} <span data-ng-if="comment.editedAt">(edited)</span></span></p>
-                      <p class="body">{[{ ::comment.comment }]}</p>
+                      <p class="body whitespace">{[{ ::comment.comment }]}</p>
                     </div>
                     <div class="clearfix"></div>
                   </div>
@@ -155,7 +155,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                     </div>
                     <div class="col-lg-11 col-md-11 col-sm-10 col-xs-12 no-padding">
                       <p class="info"><strong>{[{ ::comment.creator.firstname }]} {[{ ::comment.creator.lastname }]}</strong> - <span>{[{ ::comment.createdAt }]} <span data-ng-if="comment.editedAt">(edited)</span></span></p>
-                      <p class="body">{[{ comment.comment }]}</p>
+                      <p class="body whitespace">{[{ comment.comment }]}</p>
                     </div>
                     <div class="clearfix"></div>
                   </div>

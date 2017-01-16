@@ -468,7 +468,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                 </p>
 
                 <h3>Description</h3>
-                <p class="no-padding">{[{ data.task.description ? data.task.description : 'None' }]}</p>
+                <p class="no-padding whitespace">{[{ data.task.description ? data.task.description : 'None' }]}</p>
 
                 <div data-ng-if="!data.task.is_milestone && !data.task.is_container">
                   <h3>Progress</h3>
@@ -588,7 +588,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="tag-template">
   <div class="tag-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}; color: #212121"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]};"></div>
     </div>
     <div class="right-panel">
       <span>{[{$getDisplayText()}]}</span>
@@ -600,7 +600,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 <script type="text/ng-template" id="autocomplete-template">
   <div class="autocomplete-template">
     <div class="left-panel">
-      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]}; color: #212121"></div>
+      <div class="tag-color" ng-if="data.color" style="background-color: #{[{data.color}]};"></div>
     </div>
     <div class="right-panel">
       <span ng-bind-html="$highlight($getDisplayText())"></span>
