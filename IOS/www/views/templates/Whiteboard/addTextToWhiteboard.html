@@ -1,0 +1,14 @@
+<!-- Whiteboard text (when adding a text) -->
+<form>
+  <ion-input class="item item-input">
+    <ion-label>Text</ion-label>
+    <input type="text" placeholder="Your text" ng-model="textAdd.input" />
+  </ion-input>
+  <ion-list>
+    <ion-radio ng-model="textAdd.fontSize" ng-value="'20'">20</ion-radio>
+    <ion-radio ng-model="textAdd.fontSize" ng-value="'30'">30</ion-radio>
+    <ion-radio ng-model="textAdd.fontSize" ng-value="'40'">40</ion-radio>
+    <ion-checkbox ng-click="textAdd.fontStyle='italic'">Italic</ion-checkbox>
+    <ion-checkbox ng-click="textAdd.fontWeight='bold'">Bold</ion-checkbox>
+  </ion-list>
+</form>

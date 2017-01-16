@@ -5,12 +5,12 @@
 angular.module('GrappBox.controllers')
 
 // WHITEBOARD
-.controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, Whiteboard) {
+.controller('WhiteboardCtrl', function ($scope, $rootScope, $state, $stateParams, $ionicPopover, $ionicPopup, $ionicScrollDelegate, $interval, $http, Whiteboard) {
 
-    /*$scope.$on('$ionicView.beforeEnter', function () {
+    $scope.$on('$ionicView.beforeEnter', function () {
         $rootScope.viewColor = $rootScope.GBNavColors.whiteboard;
         console.log("ENTERED");
-    });*/
+    });
 
     $scope.projectId = $stateParams.projectId;
     $scope.whiteboardName = $stateParams.whiteboardName;
@@ -84,14 +84,15 @@ angular.module('GrappBox.controllers')
     ]
 
     // Cancel interval when quitting view
-    $scope.$on("$destroy", function () {
+    $scope.$on("$ionicView.leave", function () {
       console.log("I LEFT !");
-        //$interval.cancel(myInterval);
+        $interval.cancel(myInterval);
+        $scope.closeWhiteboard();
     });
 
-    /*var myInterval = $interval(function () {
+    var myInterval = $interval(function () {
         $scope.OpenWhiteboard();
-    }, 3000);*/
+    }, 3000);
 
     // Button move
     $scope.moveOn = function (moveOn) {
@@ -103,16 +104,16 @@ angular.module('GrappBox.controllers')
 
     //Change brush color
     $scope.changeBrushColor = function (colorChosen) {
-        if (colorChosen == 'transparent')
-            canvas.freeDrawingBrush.color = colorChosen;
-        else
-            canvas.freeDrawingBrush.color = "#000000";
-        $scope.brushcolor = colorChosen; //Set brush color to the new color chosen
-        $scope.popoverColors.hide();
+      if (colorChosen == 'transparent')
+        canvas.freeDrawingBrush.color = "#000000";
+      else
+        canvas.freeDrawingBrush.color = colorChosen;
+      $scope.brushcolor = colorChosen; //Set brush color to the new color chosen
+      $scope.popoverColors.hide();
     }
 
-    //Change brush size
-    $scope.changeBrushSize = function (brushSize) {
+    //Change brush size and push to whiteboard while path is over
+    $scope.changeBrushSizeAndPush = function (brushSize) {
         canvas.freeDrawingBrush.width = brushSize;
         canvas.off('mouse:down');
         canvas.isDrawingMode = true;
@@ -433,7 +434,7 @@ angular.module('GrappBox.controllers')
 
         //Ionic popup used to prompt user to enter text
         var myPopup = $ionicPopup.show({
-            templateUrl: 'addTextToWhiteboard.html',
+            templateUrl: 'views/templates/Whiteboard/addTextToWhiteboard.html',
             title: 'Enter Text',
             subTitle: '',
             scope: $scope,
@@ -481,32 +482,47 @@ angular.module('GrappBox.controllers')
 
     /*
     ** Delete an object on whiteboard
-    ** Method: PUT
+    ** Method: DELETE
     */
     $scope.deleteObjectData = {};
     $scope.DeleteObject = function (mouse_pos) {
-        //$rootScope.showLoading();
-        Whiteboard.DeleteObject().delete({
-            id: $scope.whiteboardId,
-            data: {
-                center: { x: mouse_pos.x, y: mouse_pos.y },
-                radius: 10
-            }
-        }).$promise
-            .then(function (data) {
-                console.log('Delete object successful !');
-                console.log(data.data);
-                $scope.deleteObjectData = data.data.array;
-            })
-            .catch(function (error) {
-                console.error('Delete object failed ! Reason: ' + error.status + ' ' + error.statusText);
-                console.error(error);
-            })
-            .finally(function () {
-                $scope.$broadcast('scroll.refreshComplete');
-                //$rootScope.hideLoading();
-            })
+      // Exceptionnaly use $http because it seems like $resource doesn't allow to use a body in DELETE requests
+      $http.delete($rootScope.API + "whiteboard/object/" + $scope.whiteboardId, {
+        data: {
+          data: {
+            radius: 30,
+            center: { x: mouse_pos.x, y: mouse_pos.y }
+          },
+          headers: { 'Authorization': $rootScope.userDatas.token }
+        }
+      }).then(function (data) {
+        console.log('Delete object successful !');
+        console.log(data.data);
+        $scope.deleteObjectData = data.data.array;
+      })
+      .catch(function (error) {
+        console.error('Delete object failed ! Reason: ' + error.status + ' ' + error.statusText);
+        console.error(error);
+      })
+      .finally(function () {
+        $scope.$broadcast('scroll.refreshComplete');
+        //$rootScope.hideLoading();
+      })
     }
+      // Code backup DELETE $resource:
+      // Whiteboard.DeleteObject().delete({
+      //     id: $scope.whiteboardId,
+      //     data: {
+      //       data: {
+      //         radius: 30,
+      //         center: {
+      //           x: mouse_pos.x,
+      //           y: mouse_pos.y
+      //         }
+      //       }
+      //     }
+      // }).$promise
+
 
     /*
     ** Open a whiteboard
@@ -703,12 +719,37 @@ angular.module('GrappBox.controllers')
             }
         }).$promise
             .then(function (data) {
-                console.log('List whiteboards successful !');
+                console.log('Pull whiteboard successful !');
                 console.log(data.data.array);
                 $scope.pullFromWhiteboardData = data.data.array;
             })
             .catch(function (error) {
-                console.error('List whiteboards failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error('Pull whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+
+    /*
+    ** Close whiteboard
+    ** Method: PUT
+    */
+    $scope.closeWhiteboardData = {};
+    $scope.closeWhiteboard = function () {
+        //$rootScope.showLoading();
+        Whiteboard.Close().update({
+          id: $scope.whiteboardId
+        }).$promise
+            .then(function (data) {
+                console.log('Close whiteboard successful !');
+                console.log(data.data);
+                $scope.pullFromWhiteboardData = data.data;
+            })
+            .catch(function (error) {
+                console.error('Close whiteboard failed ! Reason: ' + error.status + ' ' + error.statusText);
                 console.error(error);
             })
             .finally(function () {
@@ -720,22 +761,22 @@ angular.module('GrappBox.controllers')
     /*
     ** POPOVERS
     */
-    //Get "colorsPopup" html templateUrl in whiteboard.html
-    $scope.popoverColors = $ionicPopover.fromTemplateUrl('colorsPopup.html', {
+    //Get "colorsPopup" html templateUrl
+    $scope.popoverColors = $ionicPopover.fromTemplateUrl('views/templates/Whiteboard/colorsPopup.html', {
         scope: $scope
     }).then(function (popoverColors) {
         $scope.popoverColors = popoverColors;
     });
 
-    //Get "shapesPopup" html templateUrl in whiteboard.html
-    $scope.popoverShapes = $ionicPopover.fromTemplateUrl("shapesPopup.html", {
+    //Get "shapesPopup" html templateUrl
+    $scope.popoverShapes = $ionicPopover.fromTemplateUrl("views/templates/Whiteboard/shapesPopup.html", {
         scope: $scope
     }).then(function (popoverShapes) {
         $scope.popoverShapes = popoverShapes;
     });
 
-    //Get "drawPopup" html templateUrl in whiteboard.html
-    $scope.popoverDraw = $ionicPopover.fromTemplateUrl("drawPopup.html", {
+    //Get "drawPopup" html templateUrl
+    $scope.popoverDraw = $ionicPopover.fromTemplateUrl("views/templates/Whiteboard/drawPopup.html", {
         scope: $scope
     }).then(function (popoverDraw) {
         $scope.popoverDraw = popoverDraw;

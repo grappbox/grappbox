@@ -1,0 +1,19 @@
+<!--Colors options in the popover-->
+<ion-popover-view>
+  <!-- <ion-header-bar>
+    <h1 class="title">Fill colors</h1>
+  </ion-header-bar> -->
+  <ion-content scroll="false">
+    <!-- "ion-record" is the round ionic font for colors -->
+    <!-- "ng-repeat" goes in controller and picks in colorsTab list the good color to display -->
+    <!-- "style" creates a "color" CSS element and assigns it the "colorDisplayed" found in previous ng-repeat "colorDisplayed" -->
+    <!-- "changeBrushColor" allows to send the good color to be picked after the previous assigned color -->
+    <button class="button button-icon ion-record"
+    ng-repeat="colorDisplayed in colorTab"
+    style="font-size: 36.5px; color: {{colorDisplayed.colorHex}};"
+    ng-click="changeBrushColor(colorDisplayed.colorHex)"></button>
+    <button class="button button-icon ion-android-cancel"
+    style="font-size: 36.5px"
+    ng-click="changeBrushColor('transparent')"></button>
+  </ion-content>
+</ion-popover-view>

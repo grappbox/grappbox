@@ -1,0 +1,15 @@
+<!-- Draws options in the popover -->
+<ion-popover-view>
+  <!-- style="height:110px;" -->
+  <ion-header-bar>
+    <h1 class="title">Brush size</h1>
+  </ion-header-bar>
+  <ion-content scroll="false" class="padding">
+    <button class="button button-icon"
+    style="font-size: 25px"
+    ng-repeat="brushsize in brushSizeTab"
+    ng-click="changeBrushSizeAndPush(brushsize.brushSize)">
+    {{brushsize.brushSize}}
+  </button>
+</ion-content>
+</ion-popover-view>

@@ -434,9 +434,10 @@ angular.module('GrappBox.api', ['ngResource'])
       return $resource($rootScope.API + 'whiteboard/:id', { id: "@id" });
     },
     // Delete an object on a whiteboard
-    DeleteObject: function () {
-      return $resource($rootScope.API + 'whiteboard/object/:id', { id: "@id" });
-    },
+    // Replaced by $http request
+    // DeleteObject: function () {
+    //   return $resource($rootScope.API + 'whiteboard/object/:id', { id: "@id" });
+    // },
     // List all whiteboards
     List: function () {
       return $resource($rootScope.API + 'whiteboards/:projectId', { projectId: "@projectId" });
@@ -452,6 +453,11 @@ angular.module('GrappBox.api', ['ngResource'])
     // Push whiteboard modification
     Push: function () {
       return $resource($rootScope.API + 'whiteboard/draw/:id', { id: "@id" }, {
+        'update': { method: 'PUT' }
+      });
+    },
+    Close: function () {
+      return $resource($rootScope.API + 'whiteboard/:id', { id: "@id" }, {
         'update': { method: 'PUT' }
       });
     }
