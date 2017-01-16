@@ -65,8 +65,8 @@ class TimelineMessageDispatcher implements MessagingDispatcher {
             Cursor timeline = null, creator = null;
 
             try {
-                timeline = mContext.getContentResolver().query(GrappboxContract.TimelineEntry.CONTENT_URI, new String[]{GrappboxContract.TimelineEntry._ID}, GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("timelineId")}, null);
-                creator = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI, new String[]{GrappboxContract.UserEntry._ID}, GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getJSONObject("creator").getString("id")}, null);
+                timeline = mContext.getContentResolver().query(GrappboxContract.TimelineEntry.CONTENT_URI, new String[]{GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry._ID}, GrappboxContract.TimelineEntry.TABLE_NAME + "." + GrappboxContract.TimelineEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("timelineId")}, null);
+                creator = mContext.getContentResolver().query(GrappboxContract.UserEntry.CONTENT_URI, new String[]{GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry._ID}, GrappboxContract.UserEntry.TABLE_NAME + "." + GrappboxContract.UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getJSONObject("creator").getString("id")}, null);
                 if (timeline == null || !timeline.moveToFirst() || creator == null || !creator.moveToFirst())
                     throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
                 values.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, body.getString("id"));
@@ -75,7 +75,8 @@ class TimelineMessageDispatcher implements MessagingDispatcher {
                 values.put(TimelineMessageEntry.COLUMN_MESSAGE, body.getString("message"));
                 values.put(TimelineMessageEntry.COLUMN_TITLE, body.getString("title"));
                 values.putNull(TimelineMessageEntry.COLUMN_PARENT_ID);
-                String editedAt = Utils.Date.getDateFromGrappboxAPIToUTC(body.getString(body.isNull("edited_at") ? "created_at" : "edited_at"));
+                values.put(TimelineMessageEntry.COLUMN_COUNT_ANSWER, 0);
+                String editedAt = Utils.Date.getDateFromGrappboxAPIToUTC(body.getString(body.isNull("editedAt") ? "createdAt" : "editedAt"));
                 values.put(TimelineMessageEntry.COLUMN_DATE_LAST_EDITED_AT_UTC, editedAt);
                 mContext.getContentResolver().insert(TimelineMessageEntry.CONTENT_URI, values);
             } catch (JSONException | OperationApplicationException | ParseException e) {

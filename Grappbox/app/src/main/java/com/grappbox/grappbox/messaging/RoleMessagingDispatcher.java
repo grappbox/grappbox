@@ -109,8 +109,8 @@ class RoleMessagingDispatcher implements MessagingDispatcher {
             Cursor role = null, user = null;
 
             try {
-                role = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry._ID}, RolesEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("role_id")}, null);
-                user = mContext.getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("user_id")}, null);
+                role = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry.TABLE_NAME + "." + RolesEntry._ID}, RolesEntry.TABLE_NAME + "." + RolesEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("role_id")}, null);
+                user = mContext.getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.TABLE_NAME + "." + UserEntry._ID}, UserEntry.TABLE_NAME + "." + UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("user_id")}, null);
                 if (role == null || !role.moveToFirst() || user == null || !user.moveToFirst())
                     throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
                 ContentValues values = new ContentValues();
@@ -135,12 +135,12 @@ class RoleMessagingDispatcher implements MessagingDispatcher {
             Cursor role = null, user = null, oldRole = null, project = null;
 
             try {
-                role = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry._ID}, RolesEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("role_id")}, null);
-                user = mContext.getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("user_id")}, null);
-                project = mContext.getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry._ID}, ProjectEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("project_id")}, null);
+                role = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry.TABLE_NAME + "." + RolesEntry._ID},RolesEntry.TABLE_NAME + "." + RolesEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("role_id")}, null);
+                user = mContext.getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.TABLE_NAME + "." +UserEntry._ID},UserEntry.TABLE_NAME + "." + UserEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("user_id")}, null);
+                project = mContext.getContentResolver().query(ProjectEntry.CONTENT_URI, new String[]{ProjectEntry.TABLE_NAME + "." + ProjectEntry._ID},ProjectEntry.TABLE_NAME + "." + ProjectEntry.COLUMN_GRAPPBOX_ID+"=?", new String[]{body.getString("project_id")}, null);
                 if (role == null || !role.moveToFirst() || user == null || !user.moveToFirst() || project == null || !project.moveToFirst())
                     throw new OperationApplicationException(Utils.Errors.ERROR_INVALID_ID);
-                oldRole = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry._ID}, RolesEntry.COLUMN_LOCAL_PROJECT_ID+"=?", new String[]{body.getString("role_id")}, null);
+                oldRole = mContext.getContentResolver().query(RolesEntry.CONTENT_URI, new String[]{RolesEntry.TABLE_NAME + "." + RolesEntry._ID}, RolesEntry.TABLE_NAME + "." + RolesEntry.COLUMN_LOCAL_PROJECT_ID+"=?", new String[]{body.getString("role_id")}, null);
                 if (oldRole != null && oldRole.moveToFirst()){
                     String deleteSelection = RolesAssignationEntry.COLUMN_LOCAL_USER_ID+"="+user.getLong(0)+" AND " + RolesAssignationEntry.COLUMN_LOCAL_ROLE_ID + " IN (";
                     do{
