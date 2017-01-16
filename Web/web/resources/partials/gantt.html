@@ -3,302 +3,332 @@ which is part of the GRAPPBOX source code package.
 COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
 
 <!-- Gantt -->
-<div class="page-header construction {[{ path.colors[path.current] + '-stripes' }]}">
-  <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding text-center"><p><i class="material-icons">warning</i>This section is in construction.</p></div>
-  <div class="clearfix"></div>
-</div>
+<section class="gantt">
+  <div class="page-header {[{ ::path.colors[path.current] + '-background' }]}">
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding text-center">
+      <img src="../resources/img/app/gantt.svg" width="300" height="auto" alt="Gantt">
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 col-xs-12 no-padding title">
+      <h1>Gantt</h1>
+      <p>This section allows you to interpret and display your tasks in a new light.<br>Use the controls to set the view as desired.</p>
+    </div>
+    <div class="clearfix"></div>
+  </div>
 
-<h1>Gantt</h1>
-
-<section id="gantt">
   <div data-ng-if="data.onLoad">
     <div class="spinner section">
-      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"/></circle></svg>
+      <svg class="circular" viewBox="25 25 50 50"><circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="2" stroke-miterlimit="10"></circle></svg>
     </div>
   </div>
   <div data-ng-if="!data.onLoad">
-    <div data-ng-if="data.message == '_valid'">
-      <div class="panel panel-default">
-        <div class="panel-body">
-          <form class="form" novalidate>
-            <div class="form-group col-md-2">
-              <label class="control-label">From</label>
-              <input type="date" class="form-control" data-ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+    <div class="box-row">  
+      <div data-ng-if="data.message == '_valid'">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="panel panel-default">
+            <div class="panel-body">
+              <form>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <label class="control-label">From</label>
+                  <input type="date" class="form-control" data-ng-model="options.fromDate" max-date="{{options.toDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+                </div>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <label class="control-label">to</label>
+                  <input type="date" class="form-control" data-ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
+                </div>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <label class="control-label">Labels</label>
+                  <select class="form-control" data-ng-model="options.labelsEnabled"
+                          ng-options="opt.value as opt.name for opt in labelsEnabledOpt">
+                  </select>
+                </div>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <label class="control-label">View scale</label>
+                  <select class="form-control" data-ng-model="options.width"
+                          ng-options="opt.value as opt.name for opt in viewScaleOpt">
+                  </select>
+                </div>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12">
+                  <label class="control-label">Containers</label>
+                  <select class="form-control" ng-model="options.containersExpansion" ng-change="containersExpansionChange()">
+                      <option value="expand">Expand all</option>
+                      <option value="collapse">Collapse all</option>
+                  </select>
+                </div>
+                <div class="form-group col-lg-2 col-md-2 col-sm-2 col-xs-12 text-center">
+                  <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]}" data-ng-click="reload()"><i class="material-icons" aria-hidden="true">refresh</i></a>
+                </div>
+                <div class="clearfix"></div>
+              </form>
             </div>
-            <div class="form-group col-md-2">
-              <label class="control-label">to</label>
-              <input type="date" class="form-control" data-ng-model="options.toDate" min-date="{{options.fromDate}}" start-date="{{options.currentDateValue.toString()}}" start-week="1">
-            </div>
-            <div class="form-group col-md-2">
-              <label class="control-label">Labels</label>
-              <select class="form-control" data-ng-model="options.labelsEnabled"
-                      ng-options="opt.value as opt.name for opt in labelsEnabledOpt">
-              </select>
-            </div>
-            <div class="form-group col-md-2">
-              <label class="control-label">View scale</label>
-              <select class="form-control" data-ng-model="options.width"
-                      ng-options="opt.value as opt.name for opt in viewScaleOpt">
-              </select>
-            </div>
-            <div class="form-group col-md-2">
-              <label class="control-label">Containers</label>
-              <select class="form-control" ng-model="options.containersExpansion" ng-change="containersExpansionChange()">
-                  <option value="expand">Expand all</option>
-                  <option value="collapse">Collapse all</option>
-              </select>
-            </div>
-            <div class="form-group col-md-2 text-center">
-              <a class="btn red-color red-background-hover btn-fab btn-fab-mini" data-ng-click="reload()"alt="refresh data"><i class="material-icons">refresh</i></a>
-            </div>
-          </form>
+          </div>
         </div>
+
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box no-margin">
+            <div gantt
+                 data="data.gantt"
+                 show-side="options.labelsEnabled"
+                 daily="options.daily"
+                 filter-task="{'name': options.filterTask}"
+                 filter-row="{'name': options.filterRow}"
+                 sort-mode="options.sortMode"
+                 view-scale="options.scale"
+                 column-width="getColumnWidth(options.width, options.scale, options.zoom) + 100"
+                 auto-expand="options.autoExpand"
+                 task-out-of-range="options.taskOutOfRange"
+                 from-date = "options.fromDate"
+                 to-date = "options.toDate"
+                 allow-side-resizing = "options.allowSideResizing"
+                 current-date="options.currentDate"
+                 current-date-value="options.currentDateValue"
+                 headers="options.width && options.shortHeaders || options.longHeaders"
+                 max-height="options.maxHeight && 600 || 0"
+                 api="options.api"
+                 column-magnet="options.columnMagnet">
+                <gantt-tree enabled="true"
+                            header-content="options.treeHeaderContent"
+                            keep-ancestor-on-filter-row="true">
+                </gantt-tree>
+                <gantt-table enabled="true"
+                             columns="options.treeTableColumns"
+                             headers="options.columnsHeaders"
+                             classes="options.columnsClasses"
+                             formatters="options.columnsFormatters"
+                             contents="options.columnsContents"
+                             header-contents="options.columnsHeaderContents">
+                </gantt-table>
+                <gantt-groups enabled="true" display="options.groupDisplayMode"></gantt-groups>
+                <gantt-tooltips></gantt-tooltips>
+                <gantt-progress></gantt-progress>
+                <gantt-movable enabled="!options.readOnly"></gantt-movable>
+                <gantt-resize-sensor></gantt-resize-sensor>
+                <gantt-dependencies enabled="options.dependencies" read-only="options.readOnly"></gantt-dependencies>
+            </div>
+          </div>
+        </div>
+        <div class="clearfix"></div>
       </div>
 
-      <div class="well">
-        <div gantt
-             data="data.gantt"
-             show-side="options.labelsEnabled"
-             daily="options.daily"
-             filter-task="{'name': options.filterTask}"
-             filter-row="{'name': options.filterRow}"
-             sort-mode="options.sortMode"
-             view-scale="options.scale"
-             column-width="getColumnWidth(options.width, options.scale, options.zoom)"
-             auto-expand="options.autoExpand"
-             task-out-of-range="options.taskOutOfRange"
-             from-date = "options.fromDate"
-             to-date = "options.toDate"
-             allow-side-resizing = "options.allowSideResizing"
-             current-date="options.currentDate"
-             current-date-value="options.currentDateValue"
-             headers="options.width && options.shortHeaders || options.longHeaders"
-             max-height="options.maxHeight && 300 || 0"
-             api="options.api"
-             column-magnet="options.columnMagnet">
-            <gantt-tree enabled="true"
-                        header-content="options.treeHeaderContent"
-                        keep-ancestor-on-filter-row="true">
-            </gantt-tree>
-            <gantt-table enabled="true"
-                         columns="options.treeTableColumns"
-                         headers="options.columnsHeaders"
-                         classes="options.columnsClasses"
-                         formatters="options.columnsFormatters"
-                         contents="options.columnsContents"
-                         header-contents="options.columnsHeaderContents">
-            </gantt-table>
-            <gantt-groups enabled="true" display="options.groupDisplayMode"></gantt-groups>
-            <gantt-tooltips></gantt-tooltips>
-            <!-- <gantt-bounds></gantt-bounds> -->
-            <gantt-progress></gantt-progress>
-            <gantt-movable enabled="!options.readOnly"></gantt-movable>
-            <!-- <gantt-draw-task
-                enabled="options.canDraw"
-                move-threshold="2"
-                task-factory="options.drawTaskFactory">
-            </gantt-draw-task>-->
-            <!-- <gantt-overlap global="true"></gantt-overlap> -->
-            <gantt-resize-sensor></gantt-resize-sensor>
-            <gantt-dependencies enabled="options.dependencies" read-only="options.readOnly"></gantt-dependencies>
-        </div><!-- !gantt -->
+      <div data-ng-if="data.message == '_empty'">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">help</i>No task currently scheduled.<br><span>Assign or create a new one to get started.</span></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
       </div>
-
-    </div>
-    <div data-ng-if="data.message == '_empty'" class="well">
-      <div class="data-wrapper error">
-        <p><i class="fa fa-frown-o"></i>No task for this project.</p>
+      <div data-ng-if="data.message == '_invalid'">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">error</i>Something is wrong with GrappBox.<br><span>Please try again.</span></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
       </div>
-    </div>
-    <div data-ng-if="data.message == '_invalid'" class="well">
-      <div class="data-wrapper error">
-        <p><i class="fa fa-times"></i>An error has occurred. Please try again.</p>
-      </div>
-    </div>
-    <div data-ng-if="data.message == '_denied'" class="well">
-      <div class="data-wrapper error">
-        <p><i class="fa fa-times"></i>You don't have access to the tasks of this project.</p>
+      <div data-ng-if="data.message == '_denied'">
+        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 no-padding">
+          <div class="box error">
+            <p><i class="material-icons" aria-hidden="true">block</i>You don't have access to this section.<br><span>Please contact your project manager for more.</span></p>
+          </div>
+        </div>
+        <div class="clearfix"></div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- gantt: task edition modal -->
-<div class="modal">
-  <script type="text/ng-template" id="modal_editTask.html">
-    <div class="modal-header">
-      <button type="button" class="close" aria-hidden="true" data-ng-click="modal_cancelTaskEdition()">×</button>
-      <h4 class="modal-title">Edit task</h4>
-    </div>
-    <div class="modal-body">
-      <div id="tab-pannel" data-ng-if="data.edit.type == 'regular'">
+<!-- Gantt task edition modal -->
+<script type="text/ng-template" id="modal_editTask.html">
+  <div class="modal-header">
+    <button type="button" class="close gray-hover" aria-hidden="true" data-ng-click="modal_cancelTaskEdition()">×</button>
+    <h4 class="modal-title">Edit task</h4>
+  </div>
+  <div class="modal-body">
+    <!-- Gantt task edition tabs -->
+    <div id="tab-pannel" data-ng-if="data.edit.type == 'regular'">
+      <ul class="nav nav-tabs" role="tablist">
+        <li id="task-title" role="presentation" class="col-lg-4 col-md-4 col-sm-4 col-xs-12 active">
+          <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#task-content', '#task-title')">Task</a>
+        </li>
+        <li id="users-title" role="presentation" class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#users-content', '#users-title')">Resources</a>
+        </li>
+        <li id="dependencies-title" role="presentation" class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+          <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#dependencies-content', '#dependencies-title')">Dependencies</a>
+        </li>
+      </ul>
 
-        <!-- gantt task edition: all tabs -->
-        <ul class="nav nav-tabs" role="tablist">
-          <li id="task-title" role="presentation" class="col-md-2 col-xs-12 active">
-            <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#task-content', '#task-title')">Task</a>
-          </li>
-          <li id="users-title" role="presentation" class="col-md-2 col-xs-12">
-            <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#users-content', '#users-title')">Resources</a>
-          </li>
-          <li id="dependencies-title" role="presentation" class="col-md-2 col-xs-12">
-            <a href="" role="tab" data-toggle="tab" data-ng-click="displayTab('#dependencies-content', '#dependencies-title')">Dependencies</a>
-          </li>
-        </ul>
-        <!-- gantt task edition: all content -->
-        <div class="tab-content">
-          <div role="tabpanel" class="tab-pane active" id="task-content">
-            <form novalidate>
-              <fieldset>
-                <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
-                  <label for="edit-task-title" class="col-md-1 control-label">Title</label>
-                  <div class="col-md-11">
-                    <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
-                  </div>
+      <div class="tab-content">
+        <!-- General -->
+        <div role="tabpanel" class="tab-pane active" id="task-content">
+          <form>
+            <fieldset>
+              <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+                <label for="edit-task-title" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Title</label>
+                <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+                  <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
                 </div>
-                <div class="form-group">
-                  <label for="edit-task-description" class="col-md-1 control-label">Description</label>
-                  <div class="col-md-11">
-                    <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
-                  </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="edit-task-progress" class="col-md-1 control-label">Progress</label>
-                  <div class="col-md-11">
-                    <select id="edit-task-progress" class="form-control" data-ng-model="data.edit.advance" convert-to-number>
-                      <option value="">None</option>
-                      <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                    </select>
-                  </div>
-                </div>
-
-              </fieldset>
-            </form>
-          </div>
-          <div role="tabpanel" class="tab-pane" id="users-content">
-            <div class="form-group">
-              <label for="users" class="col-md-1 control-label">Add a user</label>
-              <div class="col-md-4">
-                <select class="form-control" name="users" data-ng-model="new_user">
-                  <option value="" disabled selected>Select a user</option>
-                  <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{user.name}]}</option>
-                </select>
+                <div class="clearfix"></div>
               </div>
-              <div class="col-md-4">
-                <select class="form-control" data-ng-model="user_percent">
-                  <option value="" disabled selected>Select user's work charge</option>
-                  <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
-                </select>
-              </div>
-              <div class="col-md-1">
-                <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons">add</i></a>
-              </div>
-            </div>
-            <div class="form-group resource-row col-md-12" data-ng-repeat="user in data.edit.users" id="{[{'resource-'+$index}]}">
-                <div class="col-md-4 col-md-offset-1" >
-                  <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
+              <div class="form-group">
+                <label for="edit-task-description" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Description</label>
+                <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+                  <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
                 </div>
-                <div class="col-md-4" id="{[{'select-resource-'+$index}]}">
-                  <select class="form-control" data-ng-model="user.percent" convert-to-number ng-disabled="user.old" data-ng-change="updateResource(user)">
-                    <option data-ng-repeat="n in [] | range:11" value="{[{$index*10}]}">{[{$index*10 + ' %'}]}</option>
+                <div class="clearfix"></div>
+              </div>
+              <div class="form-group">
+                <label for="edit-task-progress" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Progress</label>
+                <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+                  <select id="edit-task-progress" class="form-control" data-ng-model="data.edit.advance" convert-to-number>
+                    <option value="">None</option>
+                    <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 100 }]}">{[{ $index * 10 + ' %' }]}</option>
                   </select>
                 </div>
-                <div class="col-md-1 col-xs-6">
-                  <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeResource(user)" ng-if="!user.old"><i class="material-icons">delete</i></button>
-                  <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverResource(user)" ng-if="user.old" alt="recover"><i class="material-icons">refresh</i></button>
-                </div>
+                <div class="clearfix"></div>
+              </div>
+            </fieldset>
+          </form>
+        </div>
+
+        <!-- Users -->
+        <div role="tabpanel" class="tab-pane" id="users-content">
+          <div class="form-group">
+            <label for="users" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Add a user</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+              <select class="form-control" name="users" data-ng-model="new_user">
+                <option value="" disabled selected>Select a user</option>
+                <option data-ng-repeat="user in usersList" value="{[{user}]}">{[{ user.name }]}</option>
+              </select>
             </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+              <select class="form-control" data-ng-model="user_percent">
+                <option value="" disabled selected>Select user's work charge</option>
+                <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 10 }]}">{[{ $index*10 + ' %' }]}</option>
+              </select>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+              <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addResource(new_user, user_percent)"><i class="material-icons" aria-hidden="true">add</i></a>
+            </div>
+            <div class="clearfix"></div>
           </div>
-          <div role="tabpanel" class="tab-pane" id="dependencies-content">
-            <div class="form-group">
-              <label for="tasks" class="col-md-1 control-label">Add a dependency</label>
-              <div class="col-md-4">
-                <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
-                  <option value="" disabled selected>Select a task</option>
-                </select>
-              </div>
-              <div class="col-md-4">
-                <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
-                  <option value="" disabled selected>Select a type of dependency</option>
-                </select>
-              </div>
-              <div class="col-md-1">
-                <a href="" class="btn btn-primary btn-fab btn-fab-mini" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons">add</i></a>
-              </div>
+          <div class="form-group resource-row col-md-12" data-ng-repeat="user in data.edit.users" id="{[{ 'resource-' + $index }]}">
+            <div class="col-lg-4 col-lg-offset-1 col-md-4 col-md-offset-1 col-sm-4 col-sm-offset-1 col-xs-12">
+              <h4>{[{ user.firstname + " " + user.lastname }]}</h4>
             </div>
-            <div class="form-group dependency-row col-md-12" data-ng-repeat="dependency in data.edit.dependencies">
-              <div class="col-md-4 col-md-offset-1" id="{[{'dependency-'+$index}]}">
-                <h4>{[{ dependency.task.title }]}</h4>
-              </div>
-              <div class="col-md-4" id="{[{'select-dependency-'+$index}]}">
-                <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList"
-                        data-ng-change="updateDependency(dependency)" ng-disabled="dependency.old">
-                </select>
-              </div>
-              <div class="col-md-1 col-xs-6">
-                <button aria-label="delete" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="removeDependency(dependency)" ng-if="!dependency.old"><i class="material-icons">delete</i></button>
-                <button aria-label="recover" class="btn btn-default btn-fab btn-fab-mini btn-fab-discreet" data-ng-click="recoverDependency(dependency)" ng-if="dependency.old"><i class="material-icons">refresh</i></button>
-              </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="{[{ 'select-resource-' + $index }]}">
+              <select class="form-control" data-ng-model="user.percent" convert-to-number data-ng-disabled="user.old" data-ng-change="updateResource(user)">
+                <option data-ng-repeat="n in [] | range:11" value="{[{ $index * 10 }]}">{[{ $index * 10 + ' %' }]}</option>
+              </select>
             </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
+              <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeResource(user)" data-ng-if="!user.old"><i class="material-icons" aria-hidden="true">delete</i></a>
+              <a href="" class="btn btn-rounded green-hover green-focus green-background no-margin" data-ng-click="recoverResource(user)" data-ng-if="user.old"><i class="material-icons" aria-hidden="true">refresh</i></a>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </div>
+
+        <!-- Dependencies -->
+        <div role="tabpanel" class="tab-pane" id="dependencies-content">
+          <div class="form-group">
+            <label for="tasks" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Add a dependency</label>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+              <select class="form-control" name="tasks" data-ng-model="new_dependency" data-ng-options="task as task.name for task in tasksList">
+                <option value="" disabled selected>Select a task</option>
+              </select>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+              <select class="form-control" data-ng-model="dependency_type" data-ng-options="dep.key as dep.name for dep in dependenciesList">
+                <option value="" disabled selected>Select a type of dependency</option>
+              </select>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-12">
+              <a href="" class="btn btn-rounded {[{ ::path.colors[path.current] + '-hover' }]} {[{ ::path.colors[path.current] + '-focus' }]} {[{ ::path.colors[path.current] + '-background' }]} no-margin" data-ng-click="addDependency(new_dependency, dependency_type)"><i class="material-icons" aria-hidden="true">add</i></a>            
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group dependency-row col-md-12" data-ng-repeat="dependency in data.edit.dependencies">
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 col-md-offset-1" id="{[{ 'dependency-' + $index }]}">
+              <h4>{[{ dependency.task.title }]}</h4>
+            </div>
+            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12" id="{[{'select-dependency-'+$index}]}">
+              <select class="form-control" data-ng-model="dependency.name" data-ng-options="dep.key as dep.name for dep in dependenciesList"
+              data-ng-change="updateDependency(dependency)" data-ng-disabled="dependency.old"></select>
+            </div>
+            <div class="col-lg-1 col-md-1 col-sm-1 col-xs-6">
+              <a href="" class="btn btn-rounded red-hover red-focus red-background no-margin" data-ng-click="removeDependency(dependency)" data-ng-if="!dependency.old"><i class="material-icons" aria-hidden="true">delete</i></a>
+              <a href="" class="btn btn-rounded green-hover green-focus green-background no-margin" data-ng-click="recoverDependency(dependency)" data-ng-if="dependency.old"><i class="material-icons" aria-hidden="true">refresh</i></a>
+            </div>
+            <div class="clearfix"></div>
           </div>
         </div>
       </div>
-      <div id="tab-pannel" data-ng-if="data.edit.type == 'container'">
-        <form novalidate>
-          <fieldset>
-            <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
-              <label for="edit-task-title" class="col-md-1 control-label">Title</label>
-              <div class="col-md-11">
-                <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="edit-task-description" class="col-md-1 control-label">Description</label>
-              <div class="col-md-11">
-                <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="tags" class="col-md-1 control-label">Task(s)</label>
-              <div class="col-md-11">
-                <tags-input ng-model="data.edit.tasks"
-                            display-property="name"
-                            placeholder="Add a task"
-                            replace-spaces-with-dashes="false"
-                            add-from-autocomplete-only="true"
-                            on-tag-added="taskAdded($tag)"
-                            on-tag-removed="taskRemoved($tag)">
-                  <auto-complete source="tasksList"></auto-complete>
-                </tags-input>
-              </div>
-            </div>
-            <!-- TODO: add tasks tag-inputs -->
-          </fieldset>
-        </form>
-      </div>
-      <div data-ng-if="data.edit.type == 'milestone'">
-        <form novalidate>
-          <fieldset>
-            <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
-              <label for="edit-task-title" class="col-md-1 control-label">Title</label>
-              <div class="col-md-11">
-                <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
-              </div>
-            </div>
-            <div class="form-group">
-              <label for="edit-task-description" class="col-md-1 control-label">Description</label>
-              <div class="col-md-11">
-                <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
-              </div>
-            </div>
-          </fieldset>
-        </form>
-      </div>
     </div>
-    <div class="modal-footer">
-      <button type="button" class="btn btn-default" data-ng-click="modal_confirmTaskEdition()">Update</button>
-      <button type="button" class="btn" data-ng-click="modal_cancelTaskEdition()">Cancel</button>
+
+    <!-- Gantt container edition tabs -->
+    <div id="tab-pannel" data-ng-if="data.edit.type == 'container'">
+      <form>
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="edit-task-title" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Title</label>
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+              <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <label for="edit-task-description" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Description</label>
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+              <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <label for="tags" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Task(s)</label>
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+              <tags-input data-ng-model="data.edit.tasks"
+                display-property="name"
+                placeholder="Add a task"
+                replace-spaces-with-dashes="false"
+                add-from-autocomplete-only="true"
+                on-tag-added="taskAdded($tag)"
+                on-tag-removed="taskRemoved($tag)">
+                <auto-complete source="tasksList"></auto-complete>
+              </tags-input>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <!-- TODO: add tasks tag-inputs -->
+        </fieldset>
+      </form>
     </div>
-  </script>
-</div>
+
+    <!-- Gantt milestone edition tabs -->
+    <div data-ng-if="data.edit.type == 'milestone'">
+      <form novalidate>
+        <fieldset>
+          <div class="form-group {[{ error.title ? 'has-error' : '' }]}">
+            <label for="edit-task-title" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Title</label>
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+              <input type="text" class="form-control" id="edit-task-title" data-ng-model="data.edit.title" placeholder="Title">
+            </div>
+            <div class="clearfix"></div>
+          </div>
+          <div class="form-group">
+            <label for="edit-task-description" class="col-lg-1 col-md-1 col-sm-1 col-xs-12 control-label">Description</label>
+            <div class="col-lg-11 col-md-11 col-sm-11 col-xs-12">
+              <textarea rows="4" class="form-control" id="edit-task-description" data-ng-model="data.edit.description" placeholder="Description"></textarea>
+            </div>
+            <div class="clearfix"></div>
+          </div>
+        </fieldset>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-footer">
+    <button type="button" class="btn gray-color gray-background-hover white-hover" data-ng-click="modal_cancelTaskEdition()">Cancel</button>
+    <button type="submit" class="btn {[{ ::path.colors[path.current] + '-color' }]} {[{ ::path.colors[path.current] + '-background-hover' }]} white-hover" data-ng-click="modal_confirmTaskEdition()">Update</button>
+  </div>
+</script>
