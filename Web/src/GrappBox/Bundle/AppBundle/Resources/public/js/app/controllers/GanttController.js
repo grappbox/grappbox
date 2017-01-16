@@ -34,12 +34,18 @@ app.filter('dependencies', function() {
   return function(input, ref) {
     var list = [];
 
-      angular.forEach(input, function(value, key) {
-        if (!value.is_container && ref.id != value.id) {
-          value.name = value.title;
-          list.push(value);
+      for (var i = 0; i < input.length; i++) {
+        if (!input[i].is_container && !input[i].is_milestone && ref.id != input[i].id) {
+          input[i].name = input[i].title;
+          list.push(input[i]);
         }
-      });
+      };
+      // angular.forEach(input, function(value, key) {
+      //   if (!value.is_container && !value.is_milestone && ref.id != value.id) {
+      //     value.name = value.title;
+      //     list.push(value);
+      //   }
+      // });
 
       return list;
     };
@@ -99,11 +105,9 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
     $http.get($rootScope.api.url + "/role/user/part/" + $scope.user.id + "/" + $scope.projectID + "/gantt", {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
-        console.log('edit true');
         $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
       },
       function errorCallback(response) {
-        console.log('edit false');
         $scope.data.canEdit = false;
       });
   }
@@ -118,12 +122,19 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
     //$scope.data.gantt = [];
     var elem = {};
     var dep = {};
+    // $scope.firstDate = new Date();
+    // $scope.lastDate = new Date();
     angular.forEach($scope.data.tasks, function(value, key) {
+      // var first = new Date(value.started_at);
+      // var last = new Date(value.due_date);
+      // if ($scope.firstDate > first)
+      //   $scope.firstDate =
 
       if (value.is_milestone) {
         elem = {id: value.id,
                 name: value.title,
                 description: value.description,
+                dependencies: value.dependencies,
                 type: "milestone",
                 from: new Date(value.due_date),
                 to: new Date(value.due_date),
@@ -137,6 +148,43 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
                   }
                 ]
               };
+
+        if (value.dependencies.length)
+          elem.tasks[0].dependencies = [];
+
+        angular.forEach(value.dependencies, function(value2, key2) {
+          switch (value2.name) {
+            case 'fs':
+              dep = {from: value2.task.id
+                    };
+              this.push(dep);
+              break;
+            case 'sf':
+              dep = {to: value2.task.id,
+                     type: "sf"
+                    };
+              this.push(dep);
+              break;
+            case 'ss':
+              dep = {from: value2.task.id,
+                     type: "ss"
+                    };
+              this.push(dep);
+              break;
+            case 'ff':
+              dep = {from: value2.task.id,
+                     type: "ff"
+                    };
+              this.push(dep);
+              break;
+            default:
+              dep = {from: value2.task.id,
+                     connectParameters: { } // Parameters given to jsPlumb.connect() function call.
+                    };
+              this.push(dep);
+              break;
+          }
+        }, elem.tasks[0].dependencies);
       }
       else if (value.is_container) {
         elem = {id: value.id,
@@ -151,8 +199,6 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
         }, elem.children);
       }
       else if (!value.is_milestone && !value.is_container) {
-        // console.log('-----------------------------------');
-        // console.log(value.id+': '+value.title);
         elem = {id: value.id,
                 name: value.title,
                 description: value.description,
@@ -173,8 +219,9 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
                   }
                 ]
               };
-          if (value.dependencies.length)
-            elem.tasks[0].dependencies = [];
+
+        if (value.dependencies.length)
+          elem.tasks[0].dependencies = [];
 
         angular.forEach(value.dependencies, function(value2, key2) {
           switch (value2.name) {
@@ -182,28 +229,24 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
               dep = {from: value2.task.id
                     };
               this.push(dep);
-              // console.log("fs with "+value2.task.title);
               break;
             case 'sf':
               dep = {to: value2.task.id,
                      type: "sf"
                     };
               this.push(dep);
-              // console.log("sf with "+value2.task.title);
               break;
             case 'ss':
               dep = {from: value2.task.id,
                      type: "ss"
                     };
               this.push(dep);
-              // console.log("ss with "+value2.task.title);
               break;
             case 'ff':
               dep = {from: value2.task.id,
                      type: "ff"
                     };
               this.push(dep);
-              // console.log("ff with "+value2.task.title);
               break;
             default:
               dep = {from: value2.task.id,
@@ -324,7 +367,6 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
               api.tasks.on.change($scope, addEventName('tasks.on.change', updateTask));
               api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
-              api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent));
 
               if (api.tasks.on.moveBegin) {
                   api.tasks.on.moveBegin($scope, addEventName('tasks.on.moveBegin', logTaskEvent));
@@ -419,7 +461,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
   // ------------------------------------------------------
 
   // Get all users from the project
-  var getProjectUsers = function() { 
+  var getProjectUsers = function() {
     $http.get($rootScope.api.url + "/project/users/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
@@ -438,7 +480,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
     $http.get($rootScope.api.url + "/tasks/project/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.tasksList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : []);
-        $scope.tasksList = $filter('dependencies')($scope.tasksList, $scope.data.task);
+        // $scope.tasksList = $filter('dependencies')($scope.tasksList, $scope.data.task);
       },
       function errorCallback(response) {
         $scope.tasksList = [];
@@ -448,7 +490,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
   // "Edit task" button handler
   var onEditTask = function(row) {
-    console.info(row);
+    // console.info(row);
 
     angular.forEach(row.dependencies, function(value, key) {
       value.old = false;
@@ -483,6 +525,8 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
     // FORMAT TASKS FOR DEPENDENCIES MANIPULATION
     $scope.tasksList = $scope.data.tasks;
+    $scope.tasksList = $filter('dependencies')($scope.tasksList, row);
+
     angular.forEach($scope.tasksList, function(task){
       task["name"] = task.title;
     });
