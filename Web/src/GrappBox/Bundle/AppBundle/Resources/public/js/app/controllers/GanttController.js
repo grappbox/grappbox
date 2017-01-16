@@ -99,9 +99,11 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
     $http.get($rootScope.api.url + "/role/user/part/" + $scope.user.id + "/" + $scope.projectID + "/gantt", {headers: {"Authorization": $rootScope.user.token}})
       .then(function successCallback(response) {
+        console.log('edit true');
         $scope.data.canEdit = (response.data && response.data.data && Object.keys(response.data.data).length && response.data.data.value && response.data.data.value > 1 ? true : false);
       },
       function errorCallback(response) {
+        console.log('edit false');
         $scope.data.canEdit = false;
       });
   }
@@ -304,7 +306,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
       labelsEnabled: true,
       maxHeight: false,
       mode: 'custom',
-      readOnly: ($scope.data.canEdit ? false : true),
+      readOnly: $scope.data.canEdit,
       scale: 'day',
       sideMode:'TreeTable',
       sortMode: undefined,
@@ -320,30 +322,17 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
 
          api.core.on.ready($scope, function() {
 
-              //api.tasks.on.add($scope, addEventName('tasks.on.add', logTaskEvent));
               api.tasks.on.change($scope, addEventName('tasks.on.change', updateTask));
               api.tasks.on.change($scope, addEventName('tasks.on.change', logTaskEvent));
-              //api.tasks.on.rowChange($scope, addEventName('tasks.on.rowChange', logTaskEvent)); // TODO: block row change
-              api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent)); // TODO: what ??
+              api.tasks.on.remove($scope, addEventName('tasks.on.remove', logTaskEvent));
 
               if (api.tasks.on.moveBegin) {
                   api.tasks.on.moveBegin($scope, addEventName('tasks.on.moveBegin', logTaskEvent));
-                  api.tasks.on.moveEnd($scope, addEventName('tasks.on.moveEnd', logTaskEvent)); // TODO: update task with new dates, only if progress < 100
+                  api.tasks.on.moveEnd($scope, addEventName('tasks.on.moveEnd', logTaskEvent));
 
-                  api.tasks.on.resizeBegin($scope, addEventName('tasks.on.resizeBegin', logTaskEvent)); // TODO: same as moveEnd
-                  api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent)); // TODO: same as moveEnd
+                  api.tasks.on.resizeBegin($scope, addEventName('tasks.on.resizeBegin', logTaskEvent));
+                  api.tasks.on.resizeEnd($scope, addEventName('tasks.on.resizeEnd', logTaskEvent));
               }
-              // TODO: block rows events
-              // api.rows.on.add($scope, addEventName('rows.on.add', logRowEvent));
-              // api.rows.on.change($scope, addEventName('rows.on.change', logRowEvent));
-              // api.rows.on.move($scope, addEventName('rows.on.move', logRowEvent));
-              // api.rows.on.remove($scope, addEventName('rows.on.remove', logRowEvent));
-
-              // api.data.on.change($scope, function(newData) {
-              //     console.info('[api.data.on.change] :' + newData);
-              // });
-
-              //$scope.load();
 
               // Add some DOM events
               api.directives.on.new($scope, function(directiveName, directiveScope, element) {
@@ -430,7 +419,7 @@ function($filter, $http, utils, mouseOffset, $location, moment, notificationFact
   // ------------------------------------------------------
 
   // Get all users from the project
-  var getProjectUsers = function() { //"/dashboard/getprojectpersons/"
+  var getProjectUsers = function() { 
     $http.get($rootScope.api.url + "/project/users/" + $scope.projectID, {headers: { 'Authorization': $rootScope.user.token }})
       .then(function successCallback(response) {
         $scope.usersList = (response.data && response.data.data && Object.keys(response.data.data.array).length ? response.data.data.array : null);
