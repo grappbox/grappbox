@@ -69,7 +69,7 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
           $scope.statistics.issue.repartition.user.message = (response.data.data.bugAssignationTracker.assigned + response.data.data.bugAssignationTracker.unassigned ? $scope.error.user : $scope.error.issue.none);
         else {
           angular.forEach(response.data.data.bugsUsersRepartition, function(key, value) {
-            this.statistics.issue.repartition.user.chart.data.push([key.user, key.value]);
+            this.statistics.issue.repartition.user.chart.data.push([key.user.firstname + " " + key.user.lastname, key.value]);
             if (key.value)
               this.statistics.issue.repartition.user.empty = false;
           }, $scope);
@@ -80,14 +80,14 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
         // Customer issues (value)
         $scope.statistics.issue.byCustomer = response.data.data.clientBugTracker;
 
-        // Issues/tags ratio (pie)
+        // Issue repartition by tag (issues/tags ratio) (pie)
         $scope.statistics.issue.repartition.tag.chart = statisticFactory.pie(1, "##");
         $scope.statistics.issue.repartition.tag.chart.data.push(["Tags", "Issues"]);
         if (!response.data.data.bugsTagsRepartition.length)
           $scope.statistics.issue.repartition.tag.message = (response.data.data.bugAssignationTracker.assigned + response.data.data.bugAssignationTracker.unassigned ? $scope.error.tag : $scope.error.issue.none);
         else {
           angular.forEach(response.data.data.bugsTagsRepartition, function(key, value) {
-            this.statistics.issue.repartition.tag.chart.data.push([key.user, key.value]);
+            this.statistics.issue.repartition.tag.chart.data.push([key.name, key.value]);
             if (key.value)
               this.statistics.issue.repartition.tag.empty = false;
           }, $scope);
@@ -111,14 +111,14 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
         // Late tasks (value)
         $scope.statistics.task.late = response.data.data.taskStatus.late;
 
-        // Tasks/user ratio (pie)
+        // Task repartition (tasks/user ratio) (pie)
         $scope.statistics.task.repartition.chart = statisticFactory.pie(1, "##");
         $scope.statistics.task.repartition.chart.data.push(["User", "Tasks"]);
         if (!response.data.data.tasksRepartition.length)
           $scope.statistics.task.repartition.message = (response.data.data.totalTasks ? $scope.error.user : $scope.error.task.none);
         else {
           angular.forEach(response.data.data.tasksRepartition, function(key, value) {
-            this.statistics.task.repartition.chart.data.push([key.user, key.value]);
+            this.statistics.task.repartition.chart.data.push([key.user.firstname + " " + key.user.lastname, key.value]);
             if (key.value)
               this.statistics.task.repartition.empty = false;
           }, $scope);
@@ -163,10 +163,9 @@ app.controller("StatisticsController", ["$http", "notificationFactory", "$rootSc
   };
 
   // Get project's statistics
-/*  $http.get($rootScope.api.url + "/statistics/" + $scope.statistics.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
+  $http.get($rootScope.api.url + "/statistics/" + $scope.statistics.project_id, { headers: { 'Authorization': $rootScope.user.token }}).then(
     function onSuccess(response) { statisticsReceived(response) },
     function onError(response) { statisticsNotReceived(response) }
-  );*/
-
+  );
 
 }]);
