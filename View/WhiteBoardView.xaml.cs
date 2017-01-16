@@ -24,17 +24,6 @@ namespace Grappbox.View
     /// </summary>
     public sealed partial class WhiteBoardView : Page
     {
-        private static readonly List<string> buttonsBinding = new List<string>()
-        {
-            "ms-appx:///Assets/rectangle.png",
-            "ms-appx:///Assets/ellipse.png",
-            "ms-appx:///Assets/lozenge.png",
-            "ms-appx:///Assets/line.png",
-            "ms-appx:///Assets/handwrite.png",
-            "ms-appx:///Assets/text.png",
-            "ms-appx:///Assets/erazer.png",
-            "ms-appx:///Assets/pointer.png"
-        };
         private int whiteboardId;
 
         public WhiteBoardView()
@@ -85,10 +74,17 @@ namespace Grappbox.View
                 return;
             e.Cancel = true;
             notificationContent = e.RawNotification.Content;
-            Debug.WriteLine("Notif= " + notificationContent);
             if (!notificationContent.ToLower().Contains("whiteboard"))
                 return;
-            viewModel.PullModel = SerializationHelper.DeserializeJson<PullModel>(notificationContent);
+            try
+            {
+                viewModel.PullModel = SerializationHelper.DeserializeJson<PullModel>(notificationContent);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine(ex.Message);
+                return;
+            }
             runPull();
         }
 

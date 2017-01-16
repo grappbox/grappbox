@@ -104,7 +104,7 @@ namespace Grappbox
                 {
                     Symbol = Constants.GanttSymbol,
                     Label = "Gantt",
-                    DestPage = typeof(GanttView),
+                    DestPage = typeof(DashBoardView),
                     ForegroundColor = SystemInformation.GetStaticResource("BlueGrappboxBrush") as SolidColorBrush
                 },
                 new NavMenuItem()

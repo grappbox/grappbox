@@ -110,6 +110,8 @@ namespace Grappbox.ViewModel
                 return;
             WhiteboardObject wo = null;
             CurrentDraw.Update(p);
+            var loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("GreenGrappboxBrush"));
+            loader.ShowAsync();
             try
             {
                 wo = await pushDraw(ShapeModelConverter.ShapeToModel(CurrentDraw));
@@ -118,6 +120,10 @@ namespace Grappbox.ViewModel
             catch (Exception ex)
             {
                 Debug.WriteLine(ex.Message);
+            }
+            finally
+            {
+                loader.Hide();
             }
             CurrentDraw = null;
         }
