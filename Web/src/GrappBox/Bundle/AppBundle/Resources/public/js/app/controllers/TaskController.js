@@ -21,12 +21,12 @@ app.filter('dependencies', function() {
   return function(input, ref) {
     var list = [];
 
-      angular.forEach(input, function(value, key) {
-        if (!value.is_container && !value.is_milestone && ref.id != value.id) {
-          value.name = value.title;
-          list.push(value);
+      for (var i = 0; i < input.length; i++) {
+        if (!input[i].is_container && !input[i].is_milestone && ref.id != input[i].id) {
+          input[i].name = input[i].title;
+          list.push(input[i]);
         }
-      });
+      };
 
       return list;
     };
