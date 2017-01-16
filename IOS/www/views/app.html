@@ -33,7 +33,7 @@
             <ion-list>
                 <!-- Display user picture & name -->
                 <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
-                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="data:image/png;base64, {{userAvatar.avatar}}" />
+                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="{{userAvatar.avatar}}" /><!-- data:image/png;base64, -->
                     <img ng-if="!userAvatar.avatar" id="projectLogo" ng-src="./images/noavatar.png" />
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>
@@ -68,7 +68,7 @@
             <ion-list>
                 <!-- Display user picture & name -->
                 <ion-item menu-close class="item item-thumbnail-left" ui-sref="app.profile">
-                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="data:image/png;base64, {{userAvatar.avatar}}" />
+                    <img ng-if="userAvatar.avatar" id="projectLogo" ng-src="{{userAvatar.avatar}}" />
                     <img ng-if="!userAvatar.avatar" id="projectLogo" ng-src="./images/noavatar.png" />
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.firstname }}</h2>
                     <h2 style="font-size: 1.5em;" class="text-center col">{{ userDatas.lastname }}</h2>

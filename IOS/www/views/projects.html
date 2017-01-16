@@ -24,7 +24,7 @@
         <ion-list ng-show="!noProject" class="card">
             <ion-item class="item item-thumbnail-left"
                       ng-repeat="project in projectsTab">
-                <img ng-if="project.logo" id="projectLogo" ng-src="data:image/png;base64, {{project.logo}}" />
+                <img ng-if="project.logo" id="projectLogo" ng-src="{{project.logo}}" />
                 <img ng-if="!project.logo" id="projectLogo" ng-src="./images/noproject.png" />
                 <h2>{{ project.name }}</h2><br />
                 <div class="button-bar">

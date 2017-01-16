@@ -17,7 +17,7 @@
             <ion-item>
                 <!--<img class="full-image" data-ng-src="data:image/png;base64, {{projectInfo.logo}}" />-->
                 <!--<img class="full-image" ng-src="data:image/png;base64, {{ projectLogo.logo ? projectLogo.logo : './images/noproject.png' }}" />-->
-                <img ng-if="projectLogo.logo" id="projectLogo" ng-src="data:image/png;base64, {{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                <img ng-if="projectLogo.logo" id="projectLogo" ng-src="{{projectLogo.logo}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                 <img ng-if="!projectLogo.logo" id="projectLogo" ng-src="./images/noproject.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
 
                 <!-- Edit project button -->
@@ -81,8 +81,8 @@
                       class="item-avatar"
                       ng-repeat="userOnProject in userList"
                       ui-sref="app.user({ userId: userOnProject.id, projectId: projectId })"><!--ng-click="showMemberActionSheet(userOnProject.id)"-->
-                <img ng-if="findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(userOnProject.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
-                <img ng-if="!findUserAvatar(userOnProject.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                      <img ng-if="usersAvatars" id="userAvatar" ng-src="{{findUserAvatar(userOnProject.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                      <img ng-if="!usersAvatars" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
 
                 <h2>{{ userOnProject.firstname }} {{ userOnProject.lastname }}</h2>
                 <ion-option-button class="button-assertive icon ion-ios-trash"

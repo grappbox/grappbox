@@ -24,8 +24,8 @@
                            ng-repeat="teamOccupation in teamOccupationTab"
                            ui-sref="app.tasks({projectId: projectId})">
                             <!--ui-sref="app.user({userId: teamOccupation.user.id})"-->
-                            <img ng-if="findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="data:image/png;base64, {{findUserAvatar(teamOccupation.user.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
-                            <img ng-if="!findUserAvatar(teamOccupation.user.id)" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="usersAvatars" id="userAvatar" ng-src="{{findUserAvatar(teamOccupation.user.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!usersAvatars" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                             <h2>{{ teamOccupation.user.firstname }} {{ teamOccupation.user.lastname }}</h2>
                             <h3>{{ teamOccupation.occupation }}</h3>
                             <h3>Tasks begun: {{ teamOccupation.number_of_tasks_begun }}</h3>

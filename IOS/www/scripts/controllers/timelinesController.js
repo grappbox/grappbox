@@ -3,7 +3,7 @@
 */
 
 angular.module('GrappBox.controllers')
-.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Timeline) {
+.controller('TimelinesCtrl', function ($ionicPlatform, $scope, $rootScope, $state, $stateParams, $ionicPopup, Toast, Users, Timeline) {
 
     $scope.$on('$ionicView.beforeEnter', function () {
         $rootScope.viewColor = $rootScope.GBNavColors.timeline;
@@ -336,7 +336,44 @@ angular.module('GrappBox.controllers')
     }
 
     /*
-    ** POPUS
+    ** Get users avatars
+    ** Method: GET
+    */
+    $scope.usersAvatars = {};
+    $scope.GetUsersAvatars = function () {
+        //$rootScope.showLoading();
+        Users.Avatars().get({
+            token: $rootScope.userDatas.token,
+            projectId: $scope.projectId
+        }).$promise
+            .then(function (data) {
+                console.log('Get members avatars successful !');
+                $scope.usersAvatars = data.data.array;
+                console.log(data);
+            })
+            .catch(function (error) {
+                console.error('Get members avatars failed ! Reason: ' + error.status + ' ' + error.statusText);
+                console.error(error);
+            })
+            .finally(function () {
+                $scope.$broadcast('scroll.refreshComplete');
+                //$rootScope.hideLoading();
+            })
+    }
+    $scope.GetUsersAvatars();
+
+    // Find user avatar
+    $scope.findUserAvatar = function (id) {
+        for (var i = 0; i < $scope.usersAvatars.length; i++) {
+            if ($scope.usersAvatars[i].userId === id) {
+                return $scope.usersAvatars[i].avatar;
+            }
+        }
+    }
+
+
+    /*
+    ** POPUPS
     */
     // Remove confirm popup for deleting message
     $scope.PopupDeleteMessage = function (message) {

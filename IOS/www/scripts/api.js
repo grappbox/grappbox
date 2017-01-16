@@ -39,7 +39,7 @@ angular.module('GrappBox.api', ['ngResource'])
     // Get Next Meetings
     NextMeetings: function () {
       return $resource($rootScope.API + 'dashboard/meetings/:id', { id: "@id" });
-    }
+    },
   }
 })
 

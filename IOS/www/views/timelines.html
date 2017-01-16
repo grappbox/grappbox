@@ -31,7 +31,9 @@
                          ng-repeat="message in lastMessagesTeam">
                          <!--ng-if="message.deletedAt === null">--><!-- ng-show="!noMessageTeam" -->
                         <div class="item item-avatar">
-                            <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
+                            <!-- <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" /> -->
+                            <img ng-if="usersAvatars" id="userAvatar" ng-src="{{findUserAvatar(message.creator.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!usersAvatars" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                             <h2>{{ message.creator.firstname }} {{ message.creator.lastname }}</h2>
                             <p>Created: {{ message.createdAt }}<br>
                             <span ng-show="message.editedAt">Edited: {{ message.editedAt }}</span></p>
@@ -144,7 +146,9 @@
                          <!--ng-if="message.deletedAt === null">--> <!-- ng-show="!noMessageCustomer" -->
                         <div class="item item-avatar">
                             <!--<img src="mcfly.jpg">-->
-                            <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" />
+                            <!-- <img ng-src="{{ message.creator.avatar ? message.creator.avatar : './images/noavatar.png' }}" /> -->
+                            <img ng-if="usersAvatars" id="userAvatar" ng-src="{{findUserAvatar(message.creator.id)}}" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
+                            <img ng-if="!usersAvatars" id="userAvatar" ng-src="./images/noavatar.png" style="width: 140px; height: 140px; display:block; margin-left: auto; margin-right: auto;" />
                             <h2>{{ message.creator.firstname }} {{ message.creator.lastname }}</h2>
                             <p>Created: {{ message.createdAt }}<br>
                             <span ng-show="message.editedAt">Edited: {{ message.editedAt }}</span></p>

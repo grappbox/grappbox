@@ -355,6 +355,30 @@ $scope.GetUsersAvatars = function () {
 }
 $scope.GetUsersAvatars();
 
+/*
+** Get specific user avatar
+** Method: GET
+*/
+$scope.GetUserAvatar = function (userId) {
+  //$rootScope.showLoading();
+  Users.Avatar().get({
+    userId: userId
+  }).$promise
+  .then(function (data) {
+    console.log('Get specific user avatar successful !');
+    console.log(data);
+  })
+  .catch(function (error) {
+    console.error('Get specific user avatar failed ! Reason: ' + error.status + ' ' + error.statusText);
+    console.error(error);
+  })
+  .finally(function () {
+    $scope.$broadcast('scroll.refreshComplete');
+    //$rootScope.hideLoading();
+  })
+}
+
+
 // Find user avatar
 $scope.findUserAvatar = function (id) {
   for (var i = 0; i < $scope.usersAvatars.length; i++) {
