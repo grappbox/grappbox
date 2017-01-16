@@ -165,6 +165,21 @@
     <Compile Include="CustomControls\PageHeader.xaml.cs">
       <DependentUpon>PageHeader.xaml</DependentUpon>
     </Compile>
+    <Compile Include="CustomControls\Stats\BugtrackerStats.xaml.cs">
+      <DependentUpon>BugtrackerStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Stats\CustomerAccessStats.xaml.cs">
+      <DependentUpon>CustomerAccessStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Stats\ProjectStats.xaml.cs">
+      <DependentUpon>ProjectStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Stats\TalksStats.xaml.cs">
+      <DependentUpon>TalksStats.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\Stats\TasksStats.xaml.cs">
+      <DependentUpon>TasksStats.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\TabHeader.xaml.cs">
       <DependentUpon>TabHeader.xaml</DependentUpon>
     </Compile>
@@ -434,6 +449,26 @@
     <Page Include="CustomControls\PageHeader.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="CustomControls\Stats\BugtrackerStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Stats\CustomerAccessStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Stats\ProjectStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Stats\TalksStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="CustomControls\Stats\TasksStats.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="CustomControls\TabHeader.xaml">
       <Generator>MSBuild:Compile</Generator>

@@ -160,5 +160,27 @@ namespace Grappbox.ViewModel
                 return string.Format("You have {0} customer accesses on a maximum of {1}", _stats.CustomerAccessNumber.Actual, _stats.CustomerAccessNumber.Maximum);
             }
         }
+
+        public Int32 MinValue
+        {
+            get
+            {
+                return 0;
+            }
+        }
+        public Int32 MaxValue
+        {
+            get
+            {
+                return 100;
+            }
+        }
+        public Int32 IntervalValue
+        {
+            get
+            {
+                return 10;
+            }
+        }
     }
 }

@@ -59,16 +59,6 @@ namespace Grappbox.View
 
             await vm.getAllStats();
 
-            ((LineSeries)ProjectAdvancement.Series[0]).DependentRangeAxis =
-                        new LinearAxis
-                        {
-                            Minimum = 0,
-                            Maximum = 100,
-                            Orientation = AxisOrientation.Y,
-                            Interval = 10,
-                            ShowGridLines = true
-                        };
-
             dialog.Hide();
         }
 
@@ -76,10 +66,5 @@ namespace Grappbox.View
         {
         }
         #endregion
-
-        private void Pivot_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

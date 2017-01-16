@@ -1,18 +1,19 @@
-﻿<Page
-    x:Class="Grappbox.View.ProjectSettingsView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Grappbox.View"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
-    xmlns:customControl="using:Grappbox.CustomControls"
-    xmlns:root="using:Grappbox.ViewModel"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+﻿<Page x:Class="Grappbox.View.ProjectSettingsView"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:local="using:Grappbox.View"
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+      mc:Ignorable="d"
+      xmlns:customControl="using:Grappbox.CustomControls"
+      xmlns:root="using:Grappbox.ViewModel"
+      Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Page.Resources>
-        <Style TargetType="ListViewItem" BasedOn="{StaticResource RedListview}"/>
-        <Style TargetType="Button" BasedOn="{StaticResource RedButton}"/>
+        <Style TargetType="ListViewItem"
+               BasedOn="{StaticResource RedListview}" />
+        <Style TargetType="Button"
+               BasedOn="{StaticResource RedButton}" />
     </Page.Resources>
     <Grid>
         <Grid.RowDefinitions>
@@ -20,53 +21,160 @@
             <RowDefinition Height="1*" />
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}" HeaderContent="Project settings" />
-        <Pivot Grid.Row="1" Name="PivotPS" Style="{StaticResource RedPivot}" SelectionChanged="Pivot_SelectionChanged">
-            <PivotItem Margin="0" VerticalAlignment="Stretch">
+        <customControl:PageHeader Background="{StaticResource RedGrappboxBrush}"
+                                  HeaderContent="Project settings" />
+        <Pivot Grid.Row="1"
+               Name="PivotPS"
+               Style="{StaticResource RedPivot}"
+               SelectionChanged="Pivot_SelectionChanged">
+            <PivotItem Margin="0"
+                       VerticalAlignment="Stretch">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Settings" Glyph="&#xE8B8;" />
+                    <customControl:TabHeader Label="Settings"
+                                             Glyph="&#xE8B8;" />
                 </PivotItem.Header>
                 <ScrollViewer>
                     <StackPanel Margin="15">
                         <StackPanel.Resources>
                             <Style TargetType="TextBox">
-                                <Setter Property="Margin" Value="0,20,0,0" />
-                                <Setter Property="FontSize" Value="15" />
+                                <Setter Property="Margin"
+                                        Value="0,20,0,0" />
+                                <Setter Property="FontSize"
+                                        Value="15" />
                             </Style>
                         </StackPanel.Resources>
-                        <TextBlock Name="DeleteDate" Visibility="Collapsed" Foreground="Red" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" />
-                        <TextBox Name="ProjectName" Header="Name" PlaceholderText="Name" Text="{Binding Name, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Name="ProjectDescription" Header="Description" TextWrapping="Wrap" AcceptsReturn="True" PlaceholderText="Description" Text="{Binding Description, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Auto" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Header="Logo" Height="1" MinHeight="26" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-                            <Image x:Name="img" Source="{Binding Logo, Mode=TwoWay}" Height="100" Width="100" />
-                            <Button Content="Button" Opacity="0" Height="100" Width="100" Click="Img_Click" />
-                            <Border BorderBrush="Black" BorderThickness="2" Height="100" Width="100" />
+                        <TextBlock Name="DeleteDate"
+                                   Visibility="Collapsed"
+                                   Foreground="Red"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   TextWrapping="Wrap"
+                                   FontFamily="Segoe WP"
+                                   FontSize="15" />
+                        <TextBox Name="ProjectName"
+                                 Header="Name"
+                                 PlaceholderText="Name"
+                                 Text="{Binding Name, Mode=TwoWay}"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Name="ProjectDescription"
+                                 Header="Description"
+                                 TextWrapping="Wrap"
+                                 AcceptsReturn="True"
+                                 PlaceholderText="Description"
+                                 Text="{Binding Description, Mode=TwoWay}"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Header="Logo"
+                                 Height="1"
+                                 MinHeight="26"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <Grid HorizontalAlignment="Center"
+                              VerticalAlignment="Center">
+                            <Image x:Name="img"
+                                   Source="{Binding Logo, Mode=TwoWay}"
+                                   Height="100"
+                                   Width="100" />
+                            <Button Content="Button"
+                                    Opacity="0"
+                                    Height="100"
+                                    Width="100"
+                                    Click="Img_Click" />
+                            <Border BorderBrush="Black"
+                                    BorderThickness="2"
+                                    Height="100"
+                                    Width="100" />
                         </Grid>
-                        <TextBox Name="Phone" Header="Phone" PlaceholderText="Phone" Text="{Binding Phone, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Name="Company" Header="Company" PlaceholderText="Company" Text="{Binding Company, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Name="Mail" Header="Contact mail" PlaceholderText="Contact mail" Text="{Binding ContactMail, Mode=TwoWay}" InputScope="EmailSmtpAddress" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Name="Facebook" Header="Facebook" PlaceholderText="Facebook" Text="{Binding Facebook, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <TextBox Name="Twitter" Header="Twitter" PlaceholderText="Twitter" Text="{Binding Twitter, Mode=TwoWay}" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                        <StackPanel Name="NewPassword" Visibility="Collapsed">
-                            <PasswordBox x:Name="password" Header="Cloud's safe folder password" BorderBrush="Transparent" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <TextBox Name="Phone"
+                                 Header="Phone"
+                                 PlaceholderText="Phone"
+                                 Text="{Binding Phone, Mode=TwoWay}"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Name="Company"
+                                 Header="Company"
+                                 PlaceholderText="Company"
+                                 Text="{Binding Company, Mode=TwoWay}"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Name="Mail"
+                                 Header="Contact mail"
+                                 PlaceholderText="Contact mail"
+                                 Text="{Binding ContactMail, Mode=TwoWay}"
+                                 InputScope="EmailSmtpAddress"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Name="Facebook"
+                                 Header="Facebook"
+                                 PlaceholderText="Facebook"
+                                 Text="{Binding Facebook, Mode=TwoWay}"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <TextBox Name="Twitter"
+                                 Header="Twitter"
+                                 PlaceholderText="Twitter"
+                                 Text="{Binding Twitter, Mode=TwoWay}"
+                                 GotFocus="TextBox_GotFocus"
+                                 LostFocus="TextBox_LostFocus" />
+                        <StackPanel Name="NewPassword"
+                                    Visibility="Collapsed">
+                            <PasswordBox x:Name="password"
+                                         Header="Cloud's safe folder password"
+                                         BorderBrush="Transparent"
+                                         VerticalAlignment="Stretch"
+                                         GotFocus="TextBox_GotFocus"
+                                         LostFocus="TextBox_LostFocus" />
                         </StackPanel>
-                        <StackPanel Name="UpdatePassword" Visibility="Collapsed">
-                            <Border Margin="0,20,0,0" BorderBrush="{StaticResource Grey3GrappboxBrush}" HorizontalAlignment="Stretch" BorderThickness="0,1"/>
-                            <TextBlock Text="Cloud's safe folder password" Foreground="Black" Margin="0,20,0,0" HorizontalAlignment="Left" VerticalAlignment="Center" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="17" />
-                            <PasswordBox x:Name="oldPassword" Header="Old password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                            <PasswordBox x:Name="newPassword" Header="New password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
-                            <PasswordBox x:Name="retypePassword" Header="Retype password" Margin="0,20,0,0" VerticalAlignment="Stretch" GotFocus="TextBox_GotFocus" LostFocus="TextBox_LostFocus"/>
+                        <StackPanel Name="UpdatePassword"
+                                    Visibility="Collapsed">
+                            <Border Margin="0,20,0,0"
+                                    BorderBrush="{StaticResource Grey3GrappboxBrush}"
+                                    HorizontalAlignment="Stretch"
+                                    BorderThickness="0,1" />
+                            <TextBlock Text="Cloud's safe folder password"
+                                       Foreground="Black"
+                                       Margin="0,20,0,0"
+                                       HorizontalAlignment="Left"
+                                       VerticalAlignment="Center"
+                                       TextWrapping="Wrap"
+                                       FontFamily="Segoe WP"
+                                       FontSize="17" />
+                            <PasswordBox x:Name="oldPassword"
+                                         Header="Old password"
+                                         Margin="0,20,0,0"
+                                         VerticalAlignment="Stretch"
+                                         GotFocus="TextBox_GotFocus"
+                                         LostFocus="TextBox_LostFocus" />
+                            <PasswordBox x:Name="newPassword"
+                                         Header="New password"
+                                         Margin="0,20,0,0"
+                                         VerticalAlignment="Stretch"
+                                         GotFocus="TextBox_GotFocus"
+                                         LostFocus="TextBox_LostFocus" />
+                            <PasswordBox x:Name="retypePassword"
+                                         Header="Retype password"
+                                         Margin="0,20,0,0"
+                                         VerticalAlignment="Stretch"
+                                         GotFocus="TextBox_GotFocus"
+                                         LostFocus="TextBox_LostFocus" />
                         </StackPanel>
                     </StackPanel>
                 </ScrollViewer>
             </PivotItem>
             <PivotItem Name="User">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Users" Glyph="&#xE7EF;" />
+                    <customControl:TabHeader Label="Users"
+                                             Glyph="&#xE7EF;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
-                    <ListView x:Name="userListView" ItemsSource="{Binding UserList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="userListView_SelectionChanged">
+                    <ListView x:Name="userListView"
+                              ItemsSource="{Binding UserList}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              SelectionChanged="userListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <customControl:UserRoleCB UserId="{Binding Id}" />
@@ -78,17 +186,33 @@
                             <ColumnDefinition Width="8*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="UserMail" FontSize="15" Margin="0,0,5,0" PlaceholderText="Email" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                        <Button Content="Add" FontSize="15" Margin="5,0,0,0" Click="AddUser_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                        <TextBox x:Name="UserMail"
+                                 FontSize="15"
+                                 Margin="0,0,5,0"
+                                 PlaceholderText="Email"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Center" />
+                        <Button Content="Add"
+                                FontSize="15"
+                                Margin="5,0,0,0"
+                                Click="AddUser_Click"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
             </PivotItem>
             <PivotItem Name="CustomerAccess">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Customer access" Glyph="&#xE241;" />
+                    <customControl:TabHeader Label="Customer access"
+                                             Glyph="&#xE241;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
-                    <ListView x:Name="CustomerListView" ItemsSource="{Binding CustomerList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="customerListView_SelectionChanged">
+                    <ListView x:Name="CustomerListView"
+                              ItemsSource="{Binding CustomerList}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              SelectionChanged="customerListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
                                 <Grid Margin="0,0,0,10">
@@ -96,8 +220,23 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
-                                    <TextBlock Text="{Binding Token}" Grid.Column="1" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                    <TextBlock Text="{Binding Name}"
+                                               Grid.Column="0"
+                                               TextWrapping="Wrap"
+                                               FontFamily="Segoe WP"
+                                               FontSize="15"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Margin="5" />
+
+                                    <HyperlinkButton Content="{Binding Token}"
+                                                     NavigateUri="{Binding CustomerUri}"
+                                                     Grid.Column="1"
+                                                     Margin="5"
+                                                     FontFamily="Segoe WP"
+                                                     FontSize="15"
+                                                     HorizontalAlignment="Left"
+                                                     VerticalAlignment="Center" />
                                 </Grid>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -107,38 +246,96 @@
                             <ColumnDefinition Width="8*" />
                             <ColumnDefinition Width="2*" />
                         </Grid.ColumnDefinitions>
-                        <TextBox x:Name="CustomerName" FontSize="15" Margin="0,0,5,0" PlaceholderText="Customer name" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
-                        <Button Content="Add" FontSize="15" Margin="5,0,0,0" Click="AddCU_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                        <TextBox x:Name="CustomerName"
+                                 FontSize="15"
+                                 Margin="0,0,5,0"
+                                 PlaceholderText="Customer name"
+                                 HorizontalAlignment="Stretch"
+                                 VerticalAlignment="Center" />
+                        <Button Content="Add"
+                                FontSize="15"
+                                Margin="5,0,0,0"
+                                Click="AddCU_Click"
+                                Grid.Column="1"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Center" />
                     </Grid>
                 </StackPanel>
             </PivotItem>
             <PivotItem Name="Roles">
                 <PivotItem.Header>
-                    <customControl:TabHeader Label="Roles" Glyph="&#xE897;" />
+                    <customControl:TabHeader Label="Roles"
+                                             Glyph="&#xE897;" />
                 </PivotItem.Header>
                 <StackPanel Margin="15">
-                    <ListView x:Name="RolesListView" ItemsSource="{Binding RoleList}" HorizontalAlignment="Stretch"  VerticalAlignment="Stretch" SelectionChanged="roleListView_SelectionChanged">
+                    <ListView x:Name="RolesListView"
+                              ItemsSource="{Binding RoleList}"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch"
+                              SelectionChanged="roleListView_SelectionChanged">
                         <ListView.ItemTemplate>
                             <DataTemplate>
-                                <TextBlock Text="{Binding Name}" Grid.Column="0" TextWrapping="Wrap" FontFamily="Segoe WP" FontSize="15" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5" />
+                                <TextBlock Text="{Binding Name}"
+                                           Grid.Column="0"
+                                           TextWrapping="Wrap"
+                                           FontFamily="Segoe WP"
+                                           FontSize="15"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Margin="5" />
                             </DataTemplate>
                         </ListView.ItemTemplate>
                     </ListView>
-                    <Button Margin="0,20,0,0" Content="Add" Click="AddRole_Click" Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Center" />
+                    <Button Margin="0,20,0,0"
+                            Content="Add"
+                            Click="AddRole_Click"
+                            Grid.Column="1"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center" />
                 </StackPanel>
             </PivotItem>
         </Pivot>
-        <CommandBar Visibility="Collapsed" Grid.Row="3" x:Name="CB" ClosedDisplayMode="Compact">
+        <CommandBar Visibility="Collapsed"
+                    Grid.Row="3"
+                    x:Name="CB"
+                    ClosedDisplayMode="Compact">
             <CommandBar.PrimaryCommands>
-                <AppBarButton Visibility="Collapsed" Name="UpdateSettings" Label="Save" Click="ProjectSettingsUpdate_Click" Icon="Save" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveUser" Label="Remove" Click="RemoveUserButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveCU" Label="Remove" Click="RemoveCustomerButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="RegenerateCu" Label="Regenerate" Click="RegenerateCU_Click" Icon="Sync" />
-                <AppBarButton Visibility="Collapsed" Name="RemoveRole" Label="Remove" Click="RemoveRoleButton_Click" Icon="Delete" />
-                <AppBarButton Visibility="Collapsed" Name="ModifyRole" Label="Edit" Click="ModifyRole_Click" Icon="Edit" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="UpdateSettings"
+                              Label="Save"
+                              Click="ProjectSettingsUpdate_Click"
+                              Icon="Save" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="RemoveUser"
+                              Label="Remove"
+                              Click="RemoveUserButton_Click"
+                              Icon="Delete" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="RemoveCU"
+                              Label="Remove"
+                              Click="RemoveCustomerButton_Click"
+                              Icon="Delete" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="RegenerateCu"
+                              Label="Regenerate"
+                              Click="RegenerateCU_Click"
+                              Icon="Sync" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="RemoveRole"
+                              Label="Remove"
+                              Click="RemoveRoleButton_Click"
+                              Icon="Delete" />
+                <AppBarButton Visibility="Collapsed"
+                              Name="ModifyRole"
+                              Label="Edit"
+                              Click="ModifyRole_Click"
+                              Icon="Edit" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Name="ProjectDelete" Label="Delete Project" Icon="Delete" Click="Delete_Click" />
+                <AppBarButton Name="ProjectDelete"
+                              Label="Delete Project"
+                              Icon="Delete"
+                              Click="Delete_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Grid>

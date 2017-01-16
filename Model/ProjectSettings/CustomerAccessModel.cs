@@ -20,5 +20,13 @@ namespace Grappbox.Model
 
         [JsonProperty("project_id")]
         public string ProjectId { get; set; }
+
+        public string CustomerUri
+        {
+            get
+            {
+                return string.Format("https://grappbox.com/register/customer?t=<{0}>", Token);
+            }
+        }
     }
 }

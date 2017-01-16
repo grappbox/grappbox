@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using System;
+using Grappbox.CustomControls.Stats;
 
 namespace Grappbox.View
 {
@@ -25,13 +26,18 @@ namespace Grappbox.View
     {
         private PivotItem team;
         private PivotItem meetings;
-        private PivotItem statistics;
-        private DashBoardViewModel dvm;
+        private PivotItem projectStats;
+        private PivotItem bugtrackerStats;
+        private PivotItem tasksStats;
+        private PivotItem talksStats;
+        private PivotItem customerAccessStats;
+        private DashBoardViewModel dvm = DashBoardViewModel.GetViewModel();
+        private StatsViewModel svm = StatsViewModel.GetViewModel();
 
         public DashBoardView()
         {
             this.InitializeComponent();
-            this.DataContext = DashBoardViewModel.GetViewModel();
+            this.DataContext = dvm;
             team = new PivotItem();
             meetings = new PivotItem();
         }
@@ -57,11 +63,15 @@ namespace Grappbox.View
             }
             var loader = new LoaderDialog(SystemInformation.GetStaticResource<SolidColorBrush>("RedGrappboxBrush"));
             loader.ShowAsync();
-            this.dvm = DashBoardViewModel.GetViewModel();
             await this.dvm.InitialiseAsync();
+            await svm.getAllStats();
             team = CreateOccupationTab();
             meetings = CreateMeetingsTab();
-            //statistics = CreateStatisticsTab();
+            projectStats = CreateProjectTab();
+            bugtrackerStats = CreateBugtrackerTab();
+            tasksStats = CreateTasksTab();
+            talksStats = CreateTalksTab();
+            customerAccessStats = CreateCustomerAccessTab();
             InitializePivot();
             loader.Hide();
         }
@@ -71,29 +81,98 @@ namespace Grappbox.View
             DbPivot?.Items?.Clear();
             foreach (var m in DashBoardViewModel.ModularList)
             {
-                if (m.DisplayName == "Occupation" && m.Selected == true)
+                if (m.DisplayName == "Occupation" && m.Selected == true && DbPivot?.Items.Contains(this.team) == false)
                     DbPivot?.Items?.Add(this.team);
-                if (m.DisplayName == "Meeting" && m.Selected == true)
+                if (m.DisplayName == "Meeting" && m.Selected == true && DbPivot?.Items.Contains(this.meetings) == false)
                     DbPivot?.Items?.Add(this.meetings);
-                //if (m.DisplayName == "Statistics")
-                //    DbPivot?.Items?.Add();
+                if (m.DisplayName == "Project Stats" && m.Selected == true && DbPivot?.Items.Contains(this.projectStats) == false)
+                    DbPivot?.Items?.Add(this.projectStats);
+                if (m.DisplayName == "Bugtracker Stats" && m.Selected == true && DbPivot?.Items.Contains(this.bugtrackerStats) == false)
+                    DbPivot?.Items?.Add(this.bugtrackerStats);
+                if (m.DisplayName == "Tasks Stats" && m.Selected == true && DbPivot?.Items.Contains(this.tasksStats) == false)
+                    DbPivot?.Items?.Add(this.tasksStats);
+                if (m.DisplayName == "Talks Stats" && m.Selected == true && DbPivot?.Items.Contains(this.talksStats) == false)
+                    DbPivot?.Items?.Add(this.talksStats);
+                if (m.DisplayName == "Customer Access Stats" && m.Selected == true && DbPivot?.Items.Contains(this.customerAccessStats) == false)
+                    DbPivot?.Items?.Add(this.customerAccessStats);
             }
         }
 
-        private void initPivotItem(string header, out PivotItem pivotItem)
+        private void initPivotItem(string label, string glyph, out PivotItem pivotItem)
         {
             pivotItem = new PivotItem();
-            pivotItem.Header = header;
+            pivotItem.Header = new TabHeader(label, glyph);
         }
 
-        //public PivotItem CreateStatisticsTab()
-        //{
-        //}
+        public PivotItem CreateProjectTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Project Stats", "\uE8F1", out pivotItem);
+            pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
+            ProjectStats td = new ProjectStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pivotItem.Content = td;
+            return pivotItem;
+        }
+
+        public PivotItem CreateBugtrackerTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Bugtracker Stats", "\uE868", out pivotItem);
+            pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
+            BugtrackerStats td = new BugtrackerStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pivotItem.Content = td;
+            return pivotItem;
+        }
+
+        public PivotItem CreateTasksTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Tasks Stats", "\uE862", out pivotItem);
+            pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
+            TasksStats td = new TasksStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pivotItem.Content = td;
+            return pivotItem;
+        }
+
+        public PivotItem CreateTalksTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Talks Stats", "\uE0B7", out pivotItem);
+            pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
+            TalksStats td = new TalksStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pivotItem.Content = td;
+            return pivotItem;
+        }
+
+        public PivotItem CreateCustomerAccessTab()
+        {
+            PivotItem pivotItem;
+            initPivotItem("Customer Access Stats", "\uE241", out pivotItem);
+            pivotItem.DataContext = svm;
+            pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+            pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
+            CustomerAccessStats td = new CustomerAccessStats();
+            td.HorizontalAlignment = HorizontalAlignment.Stretch;
+            pivotItem.Content = td;
+            return pivotItem;
+        }
 
         public PivotItem CreateOccupationTab()
         {
             PivotItem pivotItem;
-            initPivotItem("Occupation", out pivotItem);
+            initPivotItem("Occupation", "\uE7EF", out pivotItem);
             pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
             TeamDashBoard td = new TeamDashBoard();
@@ -107,7 +186,7 @@ namespace Grappbox.View
         public PivotItem CreateMeetingsTab()
         {
             PivotItem pivotItem;
-            initPivotItem("Meetings", out pivotItem);
+            initPivotItem("Meetings", "\uE616", out pivotItem);
             pivotItem.HorizontalContentAlignment = HorizontalAlignment.Stretch;
             pivotItem.VerticalContentAlignment = VerticalAlignment.Stretch;
             MeetingDashBoardPanel mdp = new MeetingDashBoardPanel();
