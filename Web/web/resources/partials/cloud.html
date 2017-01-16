@@ -39,7 +39,7 @@ COPYRIGHT GRAPPBOX. ALL RIGHTS RESERVED. -->
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" id="view_newFileWrapper" data-ng-if="data.authorized == 2">
                     <label for="view_newFileInput" class="{[{ ::path.colors[path.current] + '-hover' }]}">
-                      <i class="material-icons" aria-hidden="true">file_upload</i>Upload file<input id="view_newFileInput" type="file" data-ng-model="newFile.input" data-ng-change="view_onNewFile()" base-sixty-four-input>
+                      <i class="material-icons" aria-hidden="true">file_upload</i>Upload file<input id="view_newFileInput" type="file" data-ng-model="newFile.input" data-ng-change="view_onNewFile()" base-sixty-four-input do-not-parse-if-oversize maxsize="5000" required>
                     </label>
                   </div>
                   <div class="col-lg-3 col-md-3 col-sm-3 col-xs-12 no-padding" data-ng-if="data.authorized == 2">

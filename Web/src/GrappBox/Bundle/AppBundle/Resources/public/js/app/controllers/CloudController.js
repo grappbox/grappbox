@@ -477,10 +477,11 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
   // Routine definition
   // Reset selected file to uplaod (view and scope)
   var resetUploadFileField = function() {
-    $scope.view_newFile = "";
+    $scope.newFile.input = "";
   };
 
-  // "Upload file" button handler [3/3]
+  // "Upload file" button handler
+  // FILE UPLOAD [3/3]  
   var local_uploadFile = function(isNewFileInSafeFolder) {
     var local_fileData          = "";
     var local_fileStreamID      = "";
@@ -528,19 +529,23 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
       },
       function streamOpeningFailure(response) {
         notificationFactory.warning("Unable to open stream for \"" + $scope.newFile.input.filename + "\". Please try again.");
+        resetUploadFileField();
       }
     );
   };
 
-  // "Upload file" button handler [2/3]
-  var local_setFileSecurity = function(isNewFileInSafeFolder) {
+  // "Upload file" button handler
+  // FILE UPLOAD [2/3]
+  var local_setFileSecurity = function(isNewFileInSafeFolder, isRecursive) {
     var modalInstance_askIfNewFileIsProtected   = "";
     var modalInstance_askNewFileFirstPassword   = "";
     var modalInstance_askNewFileSecondPassword  = "";
 
-    $scope.newFile.isSecured              = false;
-    $scope.newFile.password               = "";
-    $scope.newFile.password_confirmation  = "";
+    if (!isRecursive) {
+      $scope.newFile.isSecured              = false;
+      $scope.newFile.password               = "";
+      $scope.newFile.password_confirmation  = "";
+    }
 
     modalInstance_askIfNewFileIsProtected = $uibModal.open({ animation: true, size: "lg", backdrop: "static", scope: $scope, templateUrl: "view_isNewFileProtected.html", controller: "view_isNewFileProtected" });
     modalInstance_askIfNewFileIsProtected.result.then(
@@ -557,7 +562,7 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
                 }
                 else {
                   notificationFactory.warning("Passwords don't match. Please try again.");
-                  local_setFileSecurity();
+                  local_setFileSecurity(true);
                 }
               },
               function fileSecondPasswordNotEntered() {
@@ -579,22 +584,28 @@ app.controller("CloudController", ["accessFactory", "$rootScope", "$scope", "$ro
     )
   };
 
-  // "Upload file" button handler [1/3]
+  // "Upload file" button handler
+  // FILE UPLOAD [1/3]
   $scope.view_onNewFile = function() {
     var isNewFileInSafeFolder = "";
     var promise               = "";
 
     if ($scope.newFile.input) {
-      isNewFileInSafeFolder = isPathInSafeFolder($scope.filePath.current);
-      promise = (isNewFileInSafeFolder ? getSafePassword() : $q.when(true) );
-      promise.then(
-        function safeCheckSuccess() {
-          local_setFileSecurity(isNewFileInSafeFolder);
-        },
-        function safeCheckFailure() {
-          notificationFactory.warning("You must provide the \"Safe\" password in order to create any \"Safe\"-based file or folder. Please try again.");
-        }
-      );
+      if (!$scope.newFile.input.base64)
+        notificationFactory.warning("Files to upload must not exceed 5MB. Please try again.");
+      else {
+        isNewFileInSafeFolder = isPathInSafeFolder($scope.filePath.current);
+        promise = (isNewFileInSafeFolder ? getSafePassword() : $q.when(true) );
+        promise.then(
+          function safeCheckSuccess() {
+            local_setFileSecurity(isNewFileInSafeFolder);
+          },
+          function safeCheckFailure() {
+            notificationFactory.warning("You must provide the \"Safe\" password in order to create any \"Safe\"-based file or folder. Please try again.");
+            resetUploadFileField();
+          }
+        );
+      }
     }
   };
 
