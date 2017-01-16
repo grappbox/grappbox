@@ -43,8 +43,8 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
     public static final String ARG_LIST_TYPE = "com.grappbox.grappbox.timeline_fragment.ARG_LIST_TYPE";
     public static final String LOG_TAG = TimelineListFragment.class.getSimpleName();
 
-    public static final int TIMELINE_TEAM = 0;
-    public static final int TIMELINE_CLIENT = 1;
+    public static final int TIMELINE_TEAM = 1;
+    public static final int TIMELINE_CLIENT = 0;
 
     public static final int TIMELINE_LIMIT = 10;
 
