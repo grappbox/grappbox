@@ -2047,10 +2047,10 @@ public class GrappboxJustInTimeService extends IntentService {
 
     private Cursor TimelineGetCreatorId(String creatorId)
     {
-        Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+        Cursor creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
         if (creator == null || !creator.moveToFirst()){
             handleUserDetailSync(this, creatorId);
-            creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry.COLUMN_GRAPPBOX_ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
+            creator = getContentResolver().query(UserEntry.CONTENT_URI, new String[]{UserEntry._ID}, UserEntry.COLUMN_GRAPPBOX_ID + "=?", new String[]{creatorId}, null);
             if (creator == null || !creator.moveToFirst())
                 return null;
         }
@@ -2130,6 +2130,7 @@ public class GrappboxJustInTimeService extends IntentService {
     private void handleTimelineAddMessage(long localTimelineId, String title, String message, ResultReceiver resultReceiver) {
         Cursor timelineGrappbox = getContentResolver().query(TimelineEntry.buildTimelineWithLocalIdUri(localTimelineId), new String[]{TimelineEntry.TABLE_NAME + "." + TimelineEntry.COLUMN_GRAPPBOX_ID}, null, null, null);
         String apiToken = Utils.Account.getAuthTokenService(this, null);
+        Log.v(LOG_TAG, "Message Creation");
         if (timelineGrappbox == null || !timelineGrappbox.moveToFirst())
             return;
 
@@ -2173,6 +2174,7 @@ public class GrappboxJustInTimeService extends IntentService {
                     Cursor creator = TimelineGetCreatorId(creatorId);
                     if (creator == null || !creator.moveToFirst())
                         return;
+                    Log.v(LOG_TAG, "json add message returned " + current.toString());
                     messagesValues.put(TimelineMessageEntry.COLUMN_GRAPPBOX_ID, current.getString("id"));
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_CREATOR_ID, creator.getLong(0));
                     messagesValues.put(TimelineMessageEntry.COLUMN_LOCAL_TIMELINE_ID, localTimelineId);

@@ -206,6 +206,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         toBugtracker.setAction(NewBugActivity.ACTION_NEW_FROM_TIMELINE);
         toBugtracker.putExtra(NewBugActivity.EXTRA_TITLE_BUG, item._title);
         toBugtracker.putExtra(NewBugActivity.EXTRA_MESSAGE_BUG, item._message);
+        toBugtracker.putExtra(NewBugActivity.EXTRA_PROJECT_ID, mContext.getIntent().getLongExtra(ProjectActivity.EXTRA_PROJECT_ID, -1));
         mContext.startActivity(toBugtracker);
     }
 
@@ -240,7 +241,7 @@ public class TimelineListAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 launchMessageComment(item);
             }
         });
-        if (Long.valueOf(item._createID) == cursorUserId.getLong(0)) {
+        if (Long.valueOf(item._createID) == uid/*cursorUserId.getLong(0)*/) {
             holder.mEdit.setVisibility(View.VISIBLE);
             holder.mDelete.setVisibility(View.VISIBLE);
             holder.mEdit.setOnClickListener(new View.OnClickListener() {

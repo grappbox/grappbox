@@ -73,10 +73,10 @@ public class NewBugActivity extends AppCompatActivity {
         } else if (ACTION_NEW_FROM_TIMELINE.equals(action)){
             mTitle.setText(getIntent().getStringExtra(EXTRA_TITLE_BUG));
             mDescription.setText(getIntent().getStringExtra(EXTRA_MESSAGE_BUG));
+            mProjectID = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
         } else {
             mProjectID = getIntent().getLongExtra(EXTRA_PROJECT_ID, -1);
         }
-
     }
 
     public void registerActivityActionCallback(BugReceiver.Callback action){

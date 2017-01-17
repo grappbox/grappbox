@@ -140,7 +140,6 @@ public class TimelineListFragment extends Fragment implements LoaderManager.Load
                         AlertDialog dialog = (AlertDialog) dialogInterface;
                         EditText title = (EditText) dialog.findViewById(R.id.input_title);
                         EditText message = (EditText) dialog.findViewById(R.id.input_content);
-
                         if (title == null || message == null ||
                                 title.getText().toString().equals("") || message.getText().toString().equals("")) {
                             dialog.cancel();
