@@ -772,7 +772,7 @@ class StatisticController extends RolesAndTokenVerificationController
 		$assigned = 0;
 		$unassigned = 0;
 		foreach ($bugs as $key => $bug) {
-			if($bug->getUsers() != null)
+			if(count($bug->getUsers()) > 0)
 				$assigned += 1;
 			else
 				$unassigned += 1;
