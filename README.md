@@ -15,18 +15,18 @@ For example, if you want to checkout the latest API code, checkout the API-dev b
 # Authors
 The section is a special thank to all the grappbox team for their work during the last 2 years on it.
 
-*rolandhemmer* : Web developer and web designer
+**rolandhemmer** : Web developer and web designer
 
-*launois* : Web and API developer
+**launois** : Web and API developer
 
-*mougen-v* : API and Universal Windows Platform developer
+**mougen-v** : API and Universal Windows Platform developer
 
-*feytou-p* : Universal Windows Platform developer
+**feytou-p** : Universal Windows Platform developer
 
-*hofman-p* : Cordova/Ionic developer
+**hofman-p** : Cordova/Ionic developer
 
-*nadeaul* : Qt developer
+**nadeaul** : Qt developer
 
-*tan-frederic* : Android developer
+**tan-frederic** : Android developer
 
-*wieser-m* : Project leader, Android developer and Cloud API developer
+**wieser-m** : Project leader, Android developer and Cloud API developer
